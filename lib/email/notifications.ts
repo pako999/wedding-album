@@ -1,6 +1,9 @@
 import { Resend } from "resend";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+// Lazy — avoids crash at build time when env vars aren't set
+function getResend() {
+  return new Resend(process.env.RESEND_API_KEY ?? "");
+}
 const FROM = process.env.RESEND_FROM ?? "album@wedflow.app";
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://photos.wedflow.app";
 
@@ -22,7 +25,7 @@ export async function sendNewPhotoNotification({
   const albumUrl = `${APP_URL}/${albumSlug}`;
   const dashboardUrl = `${APP_URL}/dashboard/${albumSlug}`;
 
-  await resend.emails.send({
+  await getResend().emails.send({
     from: `WedFlow Album <${FROM}>`,
     to,
     subject: `Nova fotografija v vašem albumu — ${coupleName}`,
