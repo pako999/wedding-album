@@ -87,7 +87,7 @@ export default function HomePage() {
         <nav className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-0.5">
             <span className="font-extrabold text-[1.3rem] text-[#2C2825] tracking-tight">WeddingAlbum</span>
-            <span className="text-[#C9A96E] font-black text-2xl leading-none" style={{ marginTop: 2 }}>.</span>
+            <span className="text-[#C4738A] font-black text-2xl leading-none" style={{ marginTop: 2 }}>.</span>
           </Link>
 
           <div className="hidden md:flex items-center gap-7 text-sm font-medium text-gray-500">
@@ -104,7 +104,7 @@ export default function HomePage() {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
               </svg>
             </Link>
-            <Link href="/dashboard" className="px-5 py-2.5 bg-[#2C2825] text-white text-sm font-bold rounded-xl hover:bg-[#C9A96E] transition-colors duration-200">
+            <Link href="/dashboard" className="px-5 py-2.5 bg-[#2C2825] text-white text-sm font-bold rounded-xl hover:bg-[#C4738A] transition-colors duration-200">
               Ustvari album
             </Link>
           </div>
@@ -112,12 +112,14 @@ export default function HomePage() {
       </header>
 
       {/* ── Hero ────────────────────────────────────────────────────────────── */}
-      <section className="max-w-6xl mx-auto px-6 pt-14 pb-4 grid lg:grid-cols-2 gap-10 items-center" style={{ minHeight: 'calc(100vh - 4rem)' }}>
+      <section className="relative max-w-6xl mx-auto px-6 pt-14 pb-4 grid lg:grid-cols-2 gap-10 items-center" style={{ minHeight: 'calc(100vh - 4rem)' }}>
+        {/* Soft rose glow background */}
+        <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(ellipse at 70% 40%, rgba(196,115,138,0.09) 0%, transparent 65%)' }} />
         {/* Left */}
         <div>
           <h1 className="font-extrabold leading-[1.05] tracking-tight text-[#2C2825] mb-5" style={{ fontSize: 'clamp(2.8rem, 6vw, 4.5rem)' }}>
             Ne izgubi slik<br />
-            <span className="text-[#C9A96E]">svoje poroke.</span>
+            <span className="text-[#C4738A]">svoje poroke.</span>
           </h1>
           <p className="text-lg text-gray-500 leading-relaxed mb-9 max-w-[420px]">
             Zberite vse fotografije gostov na enem mestu — z eno samo QR kodo. Brez aplikacije, brez prijave.
@@ -157,7 +159,7 @@ export default function HomePage() {
           <Link
             href="/dashboard"
             className="inline-flex items-center gap-2.5 px-8 py-4 font-bold text-base text-white rounded-full transition-all duration-200 shadow-lg"
-            style={{ background: '#C9A96E', boxShadow: '0 8px 24px rgba(201,169,110,0.35)' }}
+            style={{ background: '#C4738A', boxShadow: '0 8px 24px rgba(196,115,138,0.35)' }}
           >
             Ustvari svojo galerijo zdaj
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
@@ -188,7 +190,7 @@ export default function HomePage() {
               <span className="text-2xl">🥂</span>
               <div>
                 <p className="font-bold text-[13px] text-[#2C2825]">Poroka Ana & Marko</p>
-                <p className="text-xs text-[#C9A96E] font-semibold">+183 novih fotografij ❤️</p>
+                <p className="text-xs text-[#C4738A] font-semibold">+183 novih fotografij ❤️</p>
               </div>
             </div>
             {/* Floating QR card */}
@@ -220,7 +222,7 @@ export default function HomePage() {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 py-6 px-4 text-center">
             <div className="text-amber-400 text-base leading-none shrink-0">★★★★★</div>
             <div>
-              <p className="font-extrabold text-xl text-[#C9A96E]">5.0/5</p>
+              <p className="font-extrabold text-xl text-[#C4738A]">5.0/5</p>
               <p className="text-xs text-gray-400 max-w-[90px] leading-snug">na podlagi prvih ocen</p>
             </div>
           </div>
@@ -247,7 +249,7 @@ export default function HomePage() {
               <div key={n} className="flex justify-center">
                 <div
                   className="relative z-10 w-12 h-12 rounded-full text-white font-extrabold text-lg flex items-center justify-center shadow-lg"
-                  style={{ background: '#C9A96E', boxShadow: '0 4px 16px rgba(201,169,110,0.4)' }}
+                  style={{ background: '#C4738A', boxShadow: '0 4px 16px rgba(196,115,138,0.4)' }}
                 >{n}</div>
               </div>
             ))}
@@ -262,7 +264,7 @@ export default function HomePage() {
             ].map((s, i) => (
               <div key={i} className="flex flex-col items-center gap-4">
                 {/* Mobile: show number */}
-                <div className="md:hidden w-12 h-12 rounded-full text-white font-extrabold text-lg flex items-center justify-center" style={{ background: '#C9A96E' }}>
+                <div className="md:hidden w-12 h-12 rounded-full text-white font-extrabold text-lg flex items-center justify-center" style={{ background: '#C4738A' }}>
                   {i + 1}
                 </div>
                 <div>
@@ -313,7 +315,7 @@ export default function HomePage() {
                     {/* App header */}
                     <div className="px-4 py-3 text-center" style={{ background: '#2C2825' }}>
                       <p className="text-white font-semibold text-sm tracking-wide">ana &amp; marko</p>
-                      <p className="text-[10px] mt-0.5" style={{ color: '#C9A96E' }}>Hvala, ker deliš spomine z nama.</p>
+                      <p className="text-[10px] mt-0.5" style={{ color: '#C4738A' }}>Hvala, ker deliš spomine z nama.</p>
                     </div>
                     {/* Buttons */}
                     <div className="p-4 space-y-3" style={{ background: '#1a1a2e' }}>
@@ -335,7 +337,7 @@ export default function HomePage() {
                     <div className="px-3 pb-3 pt-1" style={{ background: '#1a1a2e' }}>
                       <div className="flex items-center justify-between mb-2">
                         <span className="text-[10px] text-gray-500 font-medium">Zadnji spomini</span>
-                        <span className="text-[10px]" style={{ color: '#C9A96E' }}>V živo</span>
+                        <span className="text-[10px]" style={{ color: '#C4738A' }}>V živo</span>
                       </div>
                       <div className="flex gap-1.5">
                         {[
@@ -364,9 +366,9 @@ export default function HomePage() {
               <div className="px-4 py-3 flex items-center justify-between border-b border-gray-100">
                 <div>
                   <p className="font-bold text-sm text-[#2C2825]">Vsa zbirka</p>
-                  <p className="text-xs mt-0.5" style={{ color: '#C9A96E' }}>182 fotografij · 24 videov</p>
+                  <p className="text-xs mt-0.5" style={{ color: '#C4738A' }}>182 fotografij · 24 videov</p>
                 </div>
-                <button className="text-xs text-white px-3 py-1.5 rounded-lg font-bold" style={{ background: '#C9A96E' }}>
+                <button className="text-xs text-white px-3 py-1.5 rounded-lg font-bold" style={{ background: '#C4738A' }}>
                   Prenesi vse
                 </button>
               </div>
@@ -405,7 +407,7 @@ export default function HomePage() {
             <Link
               href="/dashboard"
               className="inline-flex items-center gap-2.5 px-9 py-4 text-white font-bold rounded-full transition-all duration-200"
-              style={{ background: '#C9A96E', boxShadow: '0 6px 20px rgba(201,169,110,0.35)' }}
+              style={{ background: '#C4738A', boxShadow: '0 6px 20px rgba(196,115,138,0.35)' }}
             >
               Ustvari svojo galerijo zdaj →
             </Link>
@@ -414,7 +416,7 @@ export default function HomePage() {
       </section>
 
       {/* ── Why you need it ─────────────────────────────────────────────────── */}
-      <section id="why" className="py-24" style={{ background: '#FAF7F2' }}>
+      <section id="why" className="py-24" style={{ background: '#FEF2F4' }}>
         <div className="max-w-6xl mx-auto px-6">
           <h2 className="text-[2.5rem] font-extrabold text-center text-[#2C2825] mb-4">Zakaj to potrebuješ?</h2>
           <p className="text-center text-gray-400 text-base mb-14 max-w-md mx-auto">
@@ -426,8 +428,8 @@ export default function HomePage() {
               { icon: "📱", title: "Slike ostanejo na telefonih",     desc: "Fotografije ostanejo zaklenjene v klepetih WhatsApp in jih nikoli ne prejmete. Za vedno izgubljene." },
               { icon: "👁",  title: "Vse iz vseh zornih kotov",       desc: "Dobite celotno zgodbo vašega dne, skozi oči vseh vaših gostov — od strica Franca do sestrične Tine." },
             ].map((f) => (
-              <div key={f.title} className="bg-white border border-gray-100 rounded-2xl p-7 hover:shadow-md hover:border-[#C9A96E]/30 transition-all duration-200">
-                <div className="w-12 h-12 border border-gray-100 rounded-2xl flex items-center justify-center text-2xl mb-5 shadow-sm" style={{ background: '#FAF7F2' }}>
+              <div key={f.title} className="bg-white border border-gray-100 rounded-2xl p-7 hover:shadow-md hover:border-[#C4738A]/30 transition-all duration-200">
+                <div className="w-12 h-12 border border-gray-100 rounded-2xl flex items-center justify-center text-2xl mb-5 shadow-sm" style={{ background: '#FEF2F4' }}>
                   {f.icon}
                 </div>
                 <h3 className="font-bold text-[#2C2825] text-lg mb-2">{f.title}</h3>
@@ -455,7 +457,7 @@ export default function HomePage() {
               <div key={title} className="flex flex-col items-center">
                 <div
                   className="w-16 h-16 rounded-2xl flex items-center justify-center mb-5"
-                  style={{ background: 'rgba(201,169,110,0.12)', color: '#C9A96E' }}
+                  style={{ background: 'rgba(196,115,138,0.12)', color: '#C4738A' }}
                 >
                   <Icon />
                 </div>
@@ -468,7 +470,7 @@ export default function HomePage() {
       </section>
 
       {/* ── Testimonials ────────────────────────────────────────────────────── */}
-      <section id="reviews" className="py-24" style={{ background: '#FAF7F2' }}>
+      <section id="reviews" className="py-24" style={{ background: '#FEF2F4' }}>
         <div className="max-w-6xl mx-auto px-6">
           <h2 className="text-[2.5rem] font-extrabold text-center text-[#2C2825] mb-14">Mnenja naših parov</h2>
           <div className="grid md:grid-cols-3 gap-5">
@@ -487,7 +489,7 @@ export default function HomePage() {
                 </div>
                 <p className="text-gray-600 text-sm leading-relaxed mb-5 italic">&ldquo;{t.text}&rdquo;</p>
                 <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-full flex items-center justify-center text-base shrink-0" style={{ background: 'rgba(201,169,110,0.15)' }}>💑</div>
+                  <div className="w-9 h-9 rounded-full flex items-center justify-center text-base shrink-0" style={{ background: 'rgba(196,115,138,0.15)' }}>💑</div>
                   <div>
                     <p className="font-bold text-sm text-[#2C2825]">{t.name}</p>
                     <p className="text-xs text-gray-400">{t.date}</p>
@@ -518,7 +520,7 @@ export default function HomePage() {
               <ul className="space-y-3 flex-1 mb-8">
                 {["Unikatna QR koda","Do 50 gostov","Do 200 fotografij","Dostop do galerije 1 mesec","Prenos vseh slik (ZIP)"].map(f => (
                   <li key={f} className="flex items-center gap-2.5">
-                    <svg className="w-4 h-4 shrink-0 text-[#C9A96E]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+                    <svg className="w-4 h-4 shrink-0 text-[#C4738A]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
                     <span className="text-sm text-gray-600">{f}</span>
                   </li>
                 ))}
@@ -529,14 +531,14 @@ export default function HomePage() {
             </div>
 
             {/* PLUS — highlighted */}
-            <div className="relative bg-white rounded-3xl p-8 flex flex-col" style={{ border: '2px solid #C9A96E', boxShadow: '0 8px 40px rgba(201,169,110,0.2)', transform: 'translateY(-8px)' }}>
-              <div className="absolute -top-4 left-1/2 -translate-x-1/2 text-white text-[10px] font-bold tracking-widest uppercase px-5 py-1.5 rounded-full" style={{ background: '#C9A96E' }}>
+            <div className="relative bg-white rounded-3xl p-8 flex flex-col" style={{ border: '2px solid #C4738A', boxShadow: '0 8px 40px rgba(196,115,138,0.2)', transform: 'translateY(-8px)' }}>
+              <div className="absolute -top-4 left-1/2 -translate-x-1/2 text-white text-[10px] font-bold tracking-widest uppercase px-5 py-1.5 rounded-full" style={{ background: '#C4738A' }}>
                 NAJBOLJ PRILJUBLJENO
               </div>
               <p className="font-extrabold text-lg text-[#2C2825] mb-1">Plus</p>
               <p className="text-sm text-gray-400 mb-6">Za večje dogodke in poroke</p>
               <div className="flex items-end gap-2 mb-7">
-                <span className="font-extrabold text-[3rem] leading-none" style={{ color: '#C9A96E' }}>49€</span>
+                <span className="font-extrabold text-[3rem] leading-none" style={{ color: '#C4738A' }}>49€</span>
                 <span className="text-gray-300 line-through text-lg mb-1.5">69€</span>
               </div>
               <ul className="space-y-3 flex-1 mb-8">
@@ -551,12 +553,12 @@ export default function HomePage() {
                   "E-mail obvestila za par",
                 ].map(f => (
                   <li key={f} className="flex items-center gap-2.5">
-                    <svg className="w-4 h-4 shrink-0 text-[#C9A96E]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+                    <svg className="w-4 h-4 shrink-0 text-[#C4738A]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
                     <span className="text-sm text-gray-600">{f}</span>
                   </li>
                 ))}
               </ul>
-              <Link href="/dashboard" className="block text-center py-3.5 rounded-2xl font-bold text-sm text-white transition-colors" style={{ background: '#C9A96E' }}>
+              <Link href="/dashboard" className="block text-center py-3.5 rounded-2xl font-bold text-sm text-white transition-colors" style={{ background: '#C4738A' }}>
                 Izberi Plus
               </Link>
             </div>
@@ -584,7 +586,7 @@ export default function HomePage() {
                   "Prioritetna podpora",
                 ].map(f => (
                   <li key={f} className="flex items-center gap-2.5">
-                    <svg className="w-4 h-4 shrink-0 text-[#C9A96E]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+                    <svg className="w-4 h-4 shrink-0 text-[#C4738A]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
                     <span className="text-sm text-gray-600">{f}</span>
                   </li>
                 ))}
@@ -606,7 +608,7 @@ export default function HomePage() {
       </section>
 
       {/* ── FAQ ─────────────────────────────────────────────────────────────── */}
-      <section id="faq" className="py-24" style={{ background: '#FAF7F2' }}>
+      <section id="faq" className="py-24" style={{ background: '#FEF2F4' }}>
         <div className="max-w-2xl mx-auto px-6">
           <h2 className="text-[2.5rem] font-extrabold text-center text-[#2C2825] mb-12">Pogosta vprašanja</h2>
           <div className="space-y-3">
@@ -635,13 +637,13 @@ export default function HomePage() {
       <section className="py-28 bg-white text-center px-6">
         <h2 className="font-extrabold text-[#2C2825] mb-4" style={{ fontSize: 'clamp(2rem, 5vw, 3.2rem)' }}>
           Začnite zbirati spomine<br />
-          <span style={{ color: '#C9A96E' }}>danes.</span>
+          <span style={{ color: '#C4738A' }}>danes.</span>
         </h2>
         <p className="text-gray-400 text-lg mb-10 max-w-md mx-auto">Brezplačno, brez kreditne kartice. Pripravljeno v 2 minutah.</p>
         <Link
           href="/dashboard"
           className="inline-flex items-center gap-2.5 px-10 py-5 text-white font-bold text-lg rounded-full transition-all duration-200 shadow-2xl"
-          style={{ background: '#C9A96E', boxShadow: '0 12px 32px rgba(201,169,110,0.35)' }}
+          style={{ background: '#C4738A', boxShadow: '0 12px 32px rgba(196,115,138,0.35)' }}
         >
           Ustvari svojo galerijo zdaj
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
@@ -656,9 +658,9 @@ export default function HomePage() {
         <div className="max-w-6xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
             <span className="font-extrabold text-sm text-[#2C2825]">WeddingAlbum</span>
-            <span className="text-[#C9A96E] font-black text-base leading-none">.</span>
+            <span className="text-[#C4738A] font-black text-base leading-none">.</span>
             <span className="text-gray-300 mx-1">·</span>
-            <span className="text-xs text-gray-400">del <a href="https://wedflow.app" className="hover:underline" style={{ color: '#C9A96E' }}>WedFlow</a></span>
+            <span className="text-xs text-gray-400">del <a href="https://wedflow.app" className="hover:underline" style={{ color: '#C4738A' }}>WedFlow</a></span>
           </div>
           <div className="flex items-center gap-6 text-xs text-gray-400">
             <Link href="/dashboard" className="hover:text-[#2C2825] transition-colors">Prijava</Link>

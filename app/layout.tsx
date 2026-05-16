@@ -18,7 +18,7 @@ const cormorant = Cormorant_Garamond({
 });
 
 export const viewport: Viewport = {
-  themeColor: "#C9A96E",
+  themeColor: "#C4738A",
 };
 
 export const metadata: Metadata = {
