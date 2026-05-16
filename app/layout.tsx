@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { DM_Sans, Cormorant_Garamond } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
 import "./globals.css";
@@ -17,6 +17,10 @@ const cormorant = Cormorant_Garamond({
   display: "swap",
 });
 
+export const viewport: Viewport = {
+  themeColor: "#C9A96E",
+};
+
 export const metadata: Metadata = {
   title: {
     default: "Wedding Album | Photos",
@@ -24,7 +28,6 @@ export const metadata: Metadata = {
   },
   description: "Share and collect your wedding memories.",
   manifest: "/manifest.json",
-  themeColor: "#C9A96E",
   openGraph: {
     siteName: "Wedding Album by WedFlow",
     type: "website",
