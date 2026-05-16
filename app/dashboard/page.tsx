@@ -53,9 +53,9 @@ export default async function DashboardPage() {
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="font-serif text-3xl font-light text-[#2C2825]">Vaši albumi</h1>
+            <h1 className="font-serif text-3xl font-light text-[#2C2825]">Moje galerije</h1>
             <p className="text-sm text-[#2C2825]/50 mt-1">
-              {userAlbums.length} {userAlbums.length === 1 ? "album" : "albumov"}
+              {userAlbums.length} {userAlbums.length === 1 ? "galerija" : "galerij"}
             </p>
           </div>
           {!dbError && (
@@ -67,7 +67,7 @@ export default async function DashboardPage() {
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
               </svg>
-              Ustvari album
+              Nova galerija
             </Link>
           )}
         </div>
@@ -80,10 +80,11 @@ export default async function DashboardPage() {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
               </svg>
             </div>
-            <h2 className="font-serif text-2xl font-light text-[#2C2825] mb-2">Začnite z prvim albumom</h2>
-            <p className="text-sm text-[#2C2825]/40 mb-8 max-w-xs mx-auto">
-              Ustvarite album, dodajte QR kodo na mize in zbirajte spomine od vseh gostov.
+            <h2 className="font-serif text-2xl font-light text-[#2C2825] mb-2">Ustvarite prvo galerijo</h2>
+            <p className="text-sm text-[#2C2825]/40 mb-2 max-w-xs mx-auto">
+              Poroka, rojstni dan, obletnica — ustvarite galerijo in zbirajte spomine.
             </p>
+            <p className="text-xs text-[#2C2825]/30 mb-8">💍 🎂 💑 🎉 👶 🎓</p>
             <Link
               href="/dashboard/new"
               className="inline-flex items-center gap-2 px-8 py-3.5 text-white font-semibold rounded-2xl transition-all duration-200"
@@ -92,7 +93,7 @@ export default async function DashboardPage() {
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
               </svg>
-              Ustvari prvi album
+              Ustvari prvo galerijo
             </Link>
             <p className="text-xs text-[#2C2825]/30 mt-4">Brezplačno · Do 200 fotografij · QR koda vključena</p>
           </div>
@@ -115,9 +116,14 @@ export default async function DashboardPage() {
                     />
                   ) : (
                     <div className="absolute inset-0 flex flex-col items-center justify-center gap-2">
-                      <svg className="w-10 h-10" style={{ color: "rgba(196,115,138,0.35)" }} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
-                      </svg>
+                      <span className="text-5xl opacity-40">
+                        {album.eventType === "wedding" ? "💍" :
+                         album.eventType === "birthday" ? "🎂" :
+                         album.eventType === "anniversary" ? "💑" :
+                         album.eventType === "party" ? "🎉" :
+                         album.eventType === "baptism" ? "👶" :
+                         album.eventType === "graduation" ? "🎓" : "📸"}
+                      </span>
                       <span className="text-xs" style={{ color: "rgba(196,115,138,0.5)" }}>Brez naslovnice</span>
                     </div>
                   )}
@@ -177,7 +183,7 @@ export default async function DashboardPage() {
                   <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                 </svg>
               </div>
-              <span className="text-sm font-semibold" style={{ color: "#C4738A" }}>Novi album</span>
+              <span className="text-sm font-semibold" style={{ color: "#C4738A" }}>Nova galerija</span>
             </Link>
           </div>
         )}

@@ -20,6 +20,7 @@ async function main() {
       id            TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
       slug          TEXT NOT NULL UNIQUE,
       owner_clerk_id TEXT NOT NULL,
+      event_type    TEXT NOT NULL DEFAULT 'wedding',
       couple_name   TEXT NOT NULL DEFAULT '',
       wedding_date  TEXT,
       location      TEXT,
@@ -77,6 +78,10 @@ async function main() {
     )
   `;
   console.log("✅ guests table ready");
+
+  // Safe migrations — add columns if they don't exist yet
+  await sql`ALTER TABLE albums ADD COLUMN IF NOT EXISTS event_type TEXT NOT NULL DEFAULT 'wedding'`;
+  console.log("✅ event_type column ready");
 
   // Index for fast album lookups
   await sql`CREATE INDEX IF NOT EXISTS albums_owner_idx ON albums(owner_clerk_id)`;

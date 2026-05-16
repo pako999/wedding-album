@@ -16,32 +16,40 @@ function slugify(text: string): string {
 }
 
 export async function createAlbum(formData: FormData) {
-  const session = await auth();
-  if (!session.userId) redirect("/sign-in");
+  let userId: string | null = null;
+  try {
+    const session = await auth();
+    userId = session.userId;
+  } catch {
+    redirect("/sign-in");
+  }
+  if (!userId) redirect("/sign-in");
 
-  const coupleName  = (formData.get("coupleName")  as string ?? "").trim();
-  const weddingDate = (formData.get("weddingDate")  as string ?? "").trim();
-  const location    = (formData.get("location")     as string ?? "").trim() || null;
-  const password    = (formData.get("password")     as string ?? "").trim() || null;
+  const eventType  = (formData.get("eventType")   as string ?? "wedding").trim();
+  const coupleName = (formData.get("coupleName")   as string ?? "").trim();
+  const eventDate  = (formData.get("eventDate")    as string ?? "").trim();
+  const location   = (formData.get("location")     as string ?? "").trim() || null;
+  const password   = (formData.get("password")     as string ?? "").trim() || null;
 
-  if (!coupleName || !weddingDate) {
-    throw new Error("Ime para in datum poroke sta obvezni polji.");
+  if (!coupleName || !eventDate) {
+    throw new Error("Ime in datum sta obvezni polji.");
   }
 
-  // Unique slug: couple-name-XXXX
+  // Unique slug: event-name-XXXX
   const suffix = Math.random().toString(36).slice(2, 6);
   const slug   = `${slugify(coupleName)}-${suffix}`;
 
   await db.insert(albums).values({
     slug,
-    ownerClerkId:  session.userId,
+    ownerClerkId:      userId,
+    eventType,
     coupleName,
-    weddingDate,
+    weddingDate:       eventDate,
     location,
     password,
-    isPublished:   true,
-    plan:          "free",
-    maxPhotos:     200,
+    isPublished:       true,
+    plan:              "free",
+    maxPhotos:         200,
     moderationEnabled: false,
   });
 

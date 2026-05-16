@@ -83,140 +83,161 @@ export default function HomePage() {
     <div className="min-h-screen bg-white text-[#2C2825] font-sans">
 
       {/* ── Navbar ──────────────────────────────────────────────────────────── */}
-      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-sm border-b border-gray-100">
-        <nav className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+      <header className="absolute top-0 left-0 right-0 z-40">
+        <nav className="max-w-7xl mx-auto px-8 h-18 flex items-center justify-between" style={{ height: 72 }}>
           <Link href="/" className="flex items-center gap-0.5">
-            <span className="font-extrabold text-[1.3rem] text-[#2C2825] tracking-tight">WeddingAlbum</span>
-            <span className="text-[#C4738A] font-black text-2xl leading-none" style={{ marginTop: 2 }}>.</span>
+            <span className="font-serif italic text-xl font-bold text-white drop-shadow">WeddingAlbum</span>
+            <span className="font-black text-2xl leading-none text-white drop-shadow" style={{ color: '#f9a8c0' }}>.</span>
           </Link>
-
-          <div className="hidden md:flex items-center gap-7 text-sm font-medium text-gray-500">
-            <a href="#how"     className="hover:text-[#2C2825] transition-colors">Kako deluje</a>
-            <a href="#why"     className="hover:text-[#2C2825] transition-colors">Zakaj to potrebuješ</a>
-            <a href="#pricing" className="hover:text-[#2C2825] transition-colors">Cenik</a>
-            <a href="#reviews" className="hover:text-[#2C2825] transition-colors">Mnenja</a>
-            <a href="#faq"     className="hover:text-[#2C2825] transition-colors">FAQ</a>
+          <div className="hidden md:flex items-center gap-8 text-sm font-medium text-white/80">
+            <a href="#how" className="hover:text-white transition-colors">Kako deluje</a>
+            <a href="#templates" className="hover:text-white transition-colors">Predloge</a>
+            <a href="#pricing" className="hover:text-white transition-colors">Cenik</a>
+            <a href="#faq" className="hover:text-white transition-colors">FAQ</a>
           </div>
-
           <div className="flex items-center gap-3">
-            <Link href="/dashboard" className="hidden sm:flex items-center justify-center w-9 h-9 text-gray-400 hover:text-[#2C2825] hover:bg-gray-100 transition-colors rounded-full">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.8}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
-              </svg>
-            </Link>
-            <Link href="/dashboard" className="px-5 py-2.5 bg-[#2C2825] text-white text-sm font-bold rounded-xl hover:bg-[#C4738A] transition-colors duration-200">
-              Ustvari album
+            <Link href="/dashboard" className="text-sm font-medium text-white/80 hover:text-white transition-colors hidden sm:block">Prijava</Link>
+            <Link href="/dashboard/new" className="px-5 py-2.5 rounded-full text-sm font-bold transition-all duration-200 text-white" style={{ background: '#C4738A', boxShadow: '0 4px 16px rgba(196,115,138,0.5)' }}>
+              Začni brezplačno
             </Link>
           </div>
         </nav>
       </header>
 
-      {/* ── Hero ────────────────────────────────────────────────────────────── */}
-      <section className="relative max-w-6xl mx-auto px-6 pt-14 pb-4 grid lg:grid-cols-2 gap-10 items-center" style={{ minHeight: 'calc(100vh - 4rem)' }}>
-        {/* Soft rose glow background */}
-        <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(ellipse at 70% 40%, rgba(196,115,138,0.09) 0%, transparent 65%)' }} />
-        {/* Left */}
-        <div>
-          <h1 className="font-extrabold leading-[1.05] tracking-tight text-[#2C2825] mb-5" style={{ fontSize: 'clamp(2.8rem, 6vw, 4.5rem)' }}>
-            Ne izgubi slik<br />
-            <span className="text-[#C4738A]">svoje poroke.</span>
-          </h1>
-          <p className="text-lg text-gray-500 leading-relaxed mb-9 max-w-[420px]">
-            Zberite vse fotografije gostov na enem mestu — z eno samo QR kodo. Brez aplikacije, brez prijave.
-          </p>
+      {/* ── Hero ─── full viewport split */}
+      <section className="relative flex" style={{ height: '100vh', minHeight: 680 }}>
 
-          {/* Stacked photo fan */}
-          <div className="relative h-52 mb-10 select-none pointer-events-none">
+        {/* LEFT 60% — photo collage panel */}
+        <div className="relative overflow-hidden" style={{ width: '60%' }}>
+          {/* Main background photo */}
+          <img
+            src="https://images.unsplash.com/photo-1606800052052-a08af7148866?w=1400&h=1200&fit=crop&crop=faces,center&q=90"
+            alt="Wedding memories"
+            className="absolute inset-0 w-full h-full object-cover"
+          />
+          {/* Dark gradient overlay */}
+          <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.15) 40%, rgba(0,0,0,0.55) 100%)' }} />
+
+          {/* TOP: Horizontal photo strip (wedtrove style) */}
+          <div className="absolute top-0 left-0 right-0 flex gap-1.5 p-3 pt-20">
             {[
-              {
-                rot: '-6deg', left: '0px', top: '14px', z: 10,
-                src: "https://images.unsplash.com/photo-1529634806980-85c3dd6d34ac?w=300&h=400&fit=crop&q=75",
-                alt: "Wedding guests celebrating",
-              },
-              {
-                rot:  '3deg', left: '100px', top: '0px', z: 20,
-                src: "https://images.unsplash.com/photo-1537633552985-df8429e8048b?w=300&h=400&fit=crop&q=75",
-                alt: "Wedding couple",
-              },
-              {
-                rot: '-2deg', left: '195px', top: '18px', z: 30,
-                src: "https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=300&h=400&fit=crop&q=75",
-                alt: "Wedding reception dancing",
-              },
-            ].map((p, i) => (
-              <div
-                key={i}
-                className="absolute w-[148px] h-[188px] rounded-2xl shadow-xl border-[3px] border-white overflow-hidden"
-                style={{ transform: `rotate(${p.rot})`, left: p.left, top: p.top, zIndex: p.z }}
-              >
-                <img src={p.src} alt={p.alt} className="w-full h-full object-cover" />
-                <div className="absolute bottom-0 inset-x-0 h-10 bg-gradient-to-t from-black/20 to-transparent" />
+              'photo-1529634806980-85c3dd6d34ac',
+              'photo-1537633552985-df8429e8048b',
+              'photo-1469371670807-013ccf25f16a',
+              'photo-1558636508-e0969431e51e',
+              'photo-1465495976277-4387d4b0b4c6',
+            ].map((id) => (
+              <div key={id} className="flex-1 rounded-xl overflow-hidden shadow-lg border-2 border-white/30" style={{ height: 90 }}>
+                <img src={`https://images.unsplash.com/${id}?w=220&h=140&fit=crop&q=70`} alt="" className="w-full h-full object-cover" />
               </div>
             ))}
           </div>
 
-          {/* CTA — pill button like kliksy */}
-          <Link
-            href="/dashboard"
-            className="inline-flex items-center gap-2.5 px-8 py-4 font-bold text-base text-white rounded-full transition-all duration-200 shadow-lg"
-            style={{ background: '#C4738A', boxShadow: '0 8px 24px rgba(196,115,138,0.35)' }}
-          >
-            Ustvari svojo galerijo zdaj
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-            </svg>
-          </Link>
-          <p className="mt-4 text-sm text-emerald-600 font-medium flex items-center gap-2">
-            <svg className="w-4 h-4 shrink-0" viewBox="0 0 20 20" fill="currentColor">
-              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clipRule="evenodd" />
-            </svg>
-            Varno. Zasebno. Samo za vas in vaše goste.
-          </p>
+          {/* BOTTOM LEFT: QR card mockup (like the wedtrove sign photo) */}
+          <div className="absolute bottom-10 left-10 bg-white rounded-3xl shadow-2xl p-5 w-52">
+            <p className="font-serif text-center text-sm font-light text-[#2C2825] mb-0.5">Zberi spomine</p>
+            <p className="text-center text-[10px] text-gray-400 mb-3">Skeniraj QR kodo in dodaj foto</p>
+            <div className="flex justify-center mb-3">
+              <QRPattern />
+            </div>
+            <div className="border-t border-gray-100 pt-3 text-center">
+              <p className="font-serif text-sm italic text-[#C4738A]">Ana & Marko</p>
+              <p className="text-[10px] text-gray-400">14. junij 2025</p>
+            </div>
+          </div>
+
+          {/* BOTTOM RIGHT: photo count badge */}
+          <div className="absolute bottom-10 right-6 bg-white/95 backdrop-blur rounded-2xl shadow-lg px-4 py-3 flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0" style={{ background: 'rgba(196,115,138,0.15)' }}>
+              <svg className="w-4 h-4" style={{ color: '#C4738A' }} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5z" />
+              </svg>
+            </div>
+            <div>
+              <p className="text-xs font-bold text-[#2C2825]">+183 novih fotografij</p>
+              <p className="text-[10px] text-gray-400">danes · v živo</p>
+            </div>
+          </div>
         </div>
 
-        {/* Right — hero photo with floating UI */}
-        <div className="hidden lg:block relative">
-          <div className="relative rounded-3xl overflow-hidden shadow-2xl" style={{ height: 520 }}>
-            {/* Real wedding couple photo */}
-            <Image
-              src="https://images.unsplash.com/photo-1606800052052-a08af7148866?w=800&h=1100&fit=crop&crop=faces,center&q=85"
-              alt="Wedding couple"
-              fill
-              className="object-cover object-center"
-              priority
-            />
-            {/* Floating notification badge */}
-            <div className="absolute top-5 right-5 bg-white/96 backdrop-blur rounded-2xl shadow-xl px-4 py-3 flex items-center gap-3 border border-white">
-              <span className="text-2xl">🥂</span>
-              <div>
-                <p className="font-bold text-[13px] text-[#2C2825]">Poroka Ana & Marko</p>
-                <p className="text-xs text-[#C4738A] font-semibold">+183 novih fotografij ❤️</p>
-              </div>
+        {/* RIGHT 40% — white form panel */}
+        <div className="bg-white flex flex-col items-center justify-center px-10 xl:px-16" style={{ width: '40%' }}>
+          <div className="w-full max-w-sm">
+
+            {/* Logo mark */}
+            <div className="flex items-center gap-1 mb-10">
+              <svg className="w-5 h-5" style={{ color: '#C4738A' }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
+                <path d="M12 21C12 21 3 13.5 3 8a5 5 0 0 1 9-3 5 5 0 0 1 9 3c0 5.5-9 13-9 13z" />
+              </svg>
+              <span className="font-serif italic text-xl font-bold text-[#2C2825]">WeddingAlbum</span>
+              <span className="font-black text-2xl leading-none" style={{ color: '#C4738A' }}>.</span>
             </div>
-            {/* Floating QR card */}
-            <div className="absolute bottom-5 left-5 bg-white/96 backdrop-blur rounded-2xl shadow-xl px-4 py-3.5 flex items-center gap-3.5 border border-white">
-              <div className="w-11 h-11 bg-[#2C2825] rounded-xl flex items-center justify-center shrink-0">
-                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 013.75 9.375v-4.5zM3.75 14.625c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5a1.125 1.125 0 01-1.125-1.125v-4.5zM13.5 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 0113.5 9.375v-4.5z" />
+
+            {/* Headline */}
+            <h1 className="font-extrabold text-[#2C2825] leading-tight mb-3" style={{ fontSize: 'clamp(1.8rem, 3vw, 2.6rem)' }}>
+              Zberi fotografije<br />vseh gostov
+            </h1>
+            <p className="text-gray-500 text-sm leading-relaxed mb-7">
+              QR koda za poroko, rojstni dan, obletnico in vsak poseben trenutek. Gostje delijo — brez aplikacije.
+            </p>
+
+            {/* Event type pills */}
+            <div className="flex flex-wrap gap-1.5 mb-8">
+              {['💍 Poroka', '🎂 Rojstni dan', '💑 Obletnica', '🎉 Zabava', '👶 Krst', '🎓 Diploma'].map((t) => (
+                <span key={t} className="px-3 py-1 rounded-full text-xs font-medium text-gray-600 border border-gray-100 bg-gray-50">{t}</span>
+              ))}
+            </div>
+
+            {/* Get started form */}
+            <div className="space-y-3 mb-6">
+              <input
+                type="email"
+                placeholder="Vaš email naslov"
+                className="w-full px-4 py-3.5 rounded-2xl border border-gray-200 text-sm text-[#2C2825] outline-none transition-colors text-center"
+                style={{ background: '#fafafa' }}
+                readOnly
+              />
+              <Link
+                href="/dashboard/new"
+                className="w-full flex items-center justify-center gap-2 py-4 rounded-2xl text-white font-bold text-sm transition-all duration-200"
+                style={{ background: '#C4738A', boxShadow: '0 8px 24px rgba(196,115,138,0.38)' }}
+              >
+                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 21.593c-5.63-5.539-11-10.297-11-14.402 0-3.791 3.068-5.191 5.281-5.191 1.312 0 4.151.501 5.719 4.457 1.59-3.968 4.464-4.447 5.726-4.447 2.54 0 5.274 1.621 5.274 5.181 0 4.069-5.136 8.625-11 14.402z"/></svg>
+                Začni brezplačno
+              </Link>
+            </div>
+
+            <p className="text-center text-xs text-gray-400 mb-8">
+              Že imate račun?{' '}
+              <Link href="/dashboard" className="font-semibold hover:underline" style={{ color: '#C4738A' }}>
+                Prijava
+              </Link>
+            </p>
+
+            {/* Trust badges */}
+            <div className="flex items-center justify-center gap-5 text-xs text-gray-400">
+              <span className="flex items-center gap-1">
+                <svg className="w-3.5 h-3.5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
                 </svg>
-              </div>
-              <div>
-                <p className="font-bold text-[13px] text-[#2C2825]">Skeniraj QR kodo</p>
-                <p className="text-xs text-gray-400">Dodaj fotografijo takoj</p>
-              </div>
+                SSL
+              </span>
+              <span>500+ galerij</span>
+              <span>Brezplačno</span>
+              <span>GDPR</span>
             </div>
           </div>
         </div>
       </section>
 
       {/* ── Stats ───────────────────────────────────────────────────────────── */}
-      <section className="max-w-2xl mx-auto px-6 pb-20">
+      <section className="max-w-2xl mx-auto px-6 pb-20 pt-20">
         <div className="bg-white rounded-3xl border border-gray-100 shadow-sm grid grid-cols-3 divide-x divide-gray-100">
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 py-6 px-4 text-center">
             <span className="text-[1.4rem]">👫👫👫</span>
             <div>
               <p className="font-extrabold text-xl text-[#2C2825]">500+</p>
-              <p className="text-xs text-gray-400 max-w-[90px] leading-snug">parov je izbralo Wedding Album</p>
+              <p className="text-xs text-gray-400 max-w-[90px] leading-snug">ustvarjenih galerij</p>
             </div>
           </div>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 py-6 px-4 text-center">
@@ -232,6 +253,99 @@ export default function HomePage() {
               <p className="font-extrabold text-xl text-[#2C2825]">25.000+</p>
               <p className="text-xs text-gray-400 max-w-[90px] leading-snug">zbranih fotografij</p>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Print Templates ─────────────────────────────────────────────────── */}
+      <section id="templates" className="py-24 bg-white">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="text-center mb-14">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold mb-4 uppercase tracking-widest" style={{ background: 'rgba(196,115,138,0.1)', color: '#C4738A' }}>
+              Predloge za tisk
+            </div>
+            <h2 className="text-[2.5rem] font-extrabold text-[#2C2825] mb-4">Prelepe predloge za vaš dogodek</h2>
+            <p className="text-gray-400 max-w-lg mx-auto leading-relaxed">
+              Natisnite kartico s QR kodo in jo postavite na mize. Gostje skenirajo in delijo fotografije takoj.
+            </p>
+          </div>
+
+          {/* 4-column template grid */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
+            {[
+              { name: 'Klasična',        bg: 'photo-1490750967868-88df5691cc27', headline: 'Capture the Love ♥',   sub: 'Skeniraj in deli',     rotate: -3, dark: false },
+              { name: 'Botanična',       bg: 'photo-1523438885200-e635ba2c371e', headline: 'Deli naše spomine',    sub: 'Share the memories',  rotate:  2, dark: false },
+              { name: 'Elegantna',       bg: 'photo-1519225421980-716433b74c7b', headline: 'Thank You',            sub: 'Za skupne spomine',   rotate: -1, dark: false },
+              { name: 'Cvetlična',       bg: 'photo-1474862520816-c809f9895cd5', headline: 'Scan & Share',         sub: 'Brez aplikacije',     rotate:  2, dark: false },
+              { name: 'Rustikalna',      bg: 'photo-1501286353178-1ec881214838', headline: 'Zberi spomine',        sub: 'Skeniraj QR kodo',    rotate: -2, dark: false },
+              { name: 'Moderna',         bg: 'photo-1537633552985-df8429e8048b', headline: 'Our Memories',         sub: 'Scan to share',       rotate:  1, dark: true  },
+              { name: 'Minimalistična',  bg: 'photo-1596436889106-be35e843f974', headline: 'Vaš dan',              sub: 'Dodaj fotografijo',   rotate: -2, dark: false },
+              { name: 'Skandinavska',    bg: 'photo-1529634806980-85c3dd6d34ac', headline: 'Share the Love',       sub: 'Scan the QR code',    rotate:  2, dark: true  },
+            ].map((t) => (
+              <div key={t.name} className="group relative rounded-2xl overflow-hidden cursor-pointer" style={{ boxShadow: '0 4px 20px rgba(0,0,0,0.12)' }}>
+                {/* Background photo */}
+                <div className="relative" style={{ height: 300 }}>
+                  <img
+                    src={`https://images.unsplash.com/${t.bg}?w=400&h=500&fit=crop&q=80`}
+                    alt={t.name}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                  {/* Slight overlay */}
+                  <div className="absolute inset-0" style={{ background: 'rgba(0,0,0,0.18)' }} />
+
+                  {/* Card overlay — the template preview */}
+                  <div
+                    className="absolute inset-0 flex items-center justify-center"
+                  >
+                    <div
+                      className={`${t.dark ? 'bg-[#2C2825] text-white' : 'bg-white/97 text-[#2C2825]'} rounded-xl p-4 shadow-2xl text-center`}
+                      style={{ width: 130, transform: `rotate(${t.rotate}deg)` }}
+                    >
+                      <p className={`font-serif text-[11px] font-bold mb-0.5 leading-tight ${t.dark ? 'text-white' : 'text-[#2C2825]'}`}>
+                        {t.headline}
+                      </p>
+                      <p className={`text-[8px] mb-2.5 ${t.dark ? 'text-white/60' : 'text-gray-400'}`}>{t.sub}</p>
+                      {/* Tiny QR pattern */}
+                      <div className="flex justify-center mb-2" style={{ transform: 'scale(0.48)', transformOrigin: 'center', height: 33, overflow: 'hidden' }}>
+                        <QRPattern />
+                      </div>
+                      <p className={`font-serif text-[8px] italic ${t.dark ? 'text-[#f9a8c0]' : 'text-[#C4738A]'}`}>Ana & Marko</p>
+                      {t.dark ? null : <div className="w-8 h-px bg-gray-200 mx-auto mt-1.5" />}
+                      <p className={`text-[7px] mt-1 ${t.dark ? 'text-white/40' : 'text-gray-300'}`}>14. 06. 2025</p>
+                    </div>
+                  </div>
+
+                  {/* Hover: CTA overlay */}
+                  <div className="absolute inset-0 bg-[#C4738A]/80 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center gap-3">
+                    <p className="text-white font-bold text-sm">{t.name}</p>
+                    <Link
+                      href="/dashboard/new"
+                      className="bg-white font-bold text-xs px-5 py-2.5 rounded-full transition-transform hover:scale-105"
+                      style={{ color: '#C4738A' }}
+                    >
+                      Uporabi predlogo →
+                    </Link>
+                  </div>
+                </div>
+
+                {/* Name label */}
+                <div className="px-3 py-2.5 bg-white flex items-center justify-between">
+                  <span className="text-xs font-semibold text-[#2C2825]">{t.name}</span>
+                  <span className="text-[10px] text-[#C4738A] font-medium">PDF ↓</span>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="text-center mt-10">
+            <p className="text-sm text-gray-400 mb-5">Vsaka predloga vključuje vaše ime, datum in personalizirano QR kodo</p>
+            <Link
+              href="/dashboard/new"
+              className="inline-flex items-center gap-2.5 px-8 py-4 rounded-2xl font-bold text-sm transition-all duration-200 border-2"
+              style={{ borderColor: '#C4738A', color: '#C4738A' }}
+            >
+              Ustvari galerijo in prenesi predloge →
+            </Link>
           </div>
         </div>
       </section>
@@ -258,7 +372,7 @@ export default function HomePage() {
           {/* Step titles + descriptions */}
           <div className="grid md:grid-cols-3 gap-10 text-center mb-12">
             {[
-              { title: "Natisnite QR kodo",   desc: "QR kodo natisnite in postavite na mize, pri vhodu ali kamorkoli na poročnem dnevu." },
+              { title: "Ustvari galerijo in natisni predlogo",   desc: "V 2 minutah ustvarite galerijo, izberite predlogo in jo natisnite. Postavite na mize ali ob vhod." },
               { title: "Gosti slikajo in delijo", desc: "Gosti skenirajo QR kodo in takoj začnejo dodajati fotografije — brez prijave." },
               { title: "Vse na enem mestu",   desc: "Vse fotografije se zbirajo v vaši zasebni galeriji, ki jo po poroki prenesete v 1 kliku." },
             ].map((s, i) => (
@@ -405,7 +519,7 @@ export default function HomePage() {
 
           <div className="text-center mt-14">
             <Link
-              href="/dashboard"
+              href="/dashboard/new"
               className="inline-flex items-center gap-2.5 px-9 py-4 text-white font-bold rounded-full transition-all duration-200"
               style={{ background: '#C4738A', boxShadow: '0 6px 20px rgba(196,115,138,0.35)' }}
             >
@@ -636,37 +750,143 @@ export default function HomePage() {
       {/* ── Final CTA ───────────────────────────────────────────────────────── */}
       <section className="py-28 bg-white text-center px-6">
         <h2 className="font-extrabold text-[#2C2825] mb-4" style={{ fontSize: 'clamp(2rem, 5vw, 3.2rem)' }}>
-          Začnite zbirati spomine<br />
-          <span style={{ color: '#C4738A' }}>danes.</span>
+          Poroka, rojstni dan, obletnica —<br />
+          <span style={{ color: '#C4738A' }}>zberi vse spomine.</span>
         </h2>
-        <p className="text-gray-400 text-lg mb-10 max-w-md mx-auto">Brezplačno, brez kreditne kartice. Pripravljeno v 2 minutah.</p>
+        <p className="text-gray-400 text-lg mb-10 max-w-md mx-auto">Brezplačno, brez kreditne kartice. Galerija pripravljena v 2 minutah.</p>
         <Link
-          href="/dashboard"
+          href="/dashboard/new"
           className="inline-flex items-center gap-2.5 px-10 py-5 text-white font-bold text-lg rounded-full transition-all duration-200 shadow-2xl"
           style={{ background: '#C4738A', boxShadow: '0 12px 32px rgba(196,115,138,0.35)' }}
         >
-          Ustvari svojo galerijo zdaj
+          Ustvari galerijo zdaj
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
           </svg>
         </Link>
-        <p className="mt-5 text-sm text-gray-300">Varno · Zasebno · Made with ♥ in Slovenia</p>
+        <p className="mt-5 text-sm text-gray-300">Varno · Zasebno · GDPR skladno</p>
       </section>
 
       {/* ── Footer ──────────────────────────────────────────────────────────── */}
-      <footer className="border-t border-gray-100 py-8">
-        <div className="max-w-6xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <span className="font-extrabold text-sm text-[#2C2825]">WeddingAlbum</span>
-            <span className="text-[#C4738A] font-black text-base leading-none">.</span>
-            <span className="text-gray-300 mx-1">·</span>
-            <span className="text-xs text-gray-400">del <a href="https://wedflow.app" className="hover:underline" style={{ color: '#C4738A' }}>WedFlow</a></span>
+      <footer className="bg-[#2C2825] text-white pt-16 pb-8">
+        <div className="max-w-6xl mx-auto px-6">
+
+          {/* Top grid */}
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-10 pb-12 border-b border-white/10">
+
+            {/* Brand */}
+            <div className="col-span-2 md:col-span-4 lg:col-span-1">
+              <div className="flex items-center gap-1 mb-3">
+                <svg className="w-4 h-4" style={{ color: '#C4738A' }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M12 21C12 21 3 13.5 3 8a5 5 0 0 1 9-3 5 5 0 0 1 9 3c0 5.5-9 13-9 13z" />
+                </svg>
+                <span className="font-serif italic text-lg font-semibold">WeddingAlbum</span>
+                <span className="font-black text-xl leading-none" style={{ color: '#C4738A' }}>.</span>
+              </div>
+              <p className="text-gray-400 text-xs leading-relaxed mb-5">
+                Poročna galerija s QR kodo — brez aplikacije. Gostje fotografirajo, vi zbirate spomine.
+              </p>
+              {/* Social */}
+              <div className="flex items-center gap-3">
+                <a href="https://www.instagram.com/wedflow.app" aria-label="Instagram" className="w-8 h-8 rounded-full flex items-center justify-center bg-white/5 hover:bg-white/10 transition-colors">
+                  <svg className="w-4 h-4 text-gray-300" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/>
+                  </svg>
+                </a>
+                <a href="https://www.facebook.com/wedflow.app" aria-label="Facebook" className="w-8 h-8 rounded-full flex items-center justify-center bg-white/5 hover:bg-white/10 transition-colors">
+                  <svg className="w-4 h-4 text-gray-300" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                  </svg>
+                </a>
+                <a href="https://www.pinterest.com/wedflow" aria-label="Pinterest" className="w-8 h-8 rounded-full flex items-center justify-center bg-white/5 hover:bg-white/10 transition-colors">
+                  <svg className="w-4 h-4 text-gray-300" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 0C5.373 0 0 5.373 0 12c0 5.084 3.163 9.426 7.627 11.174-.105-.949-.2-2.405.042-3.441.218-.937 1.407-5.965 1.407-5.965s-.359-.719-.359-1.782c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.568-.994 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738a.36.36 0 01.083.345l-.333 1.36c-.053.22-.174.267-.402.161-1.499-.698-2.436-2.889-2.436-4.649 0-3.785 2.75-7.262 7.929-7.262 4.163 0 7.398 2.967 7.398 6.931 0 4.136-2.607 7.464-6.227 7.464-1.216 0-2.359-.632-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0z"/>
+                  </svg>
+                </a>
+              </div>
+            </div>
+
+            {/* Produkt */}
+            <div>
+              <h3 className="text-xs font-bold uppercase tracking-widest text-gray-500 mb-4">Produkt</h3>
+              <ul className="space-y-2.5 text-sm text-gray-400">
+                <li><a href="#how" className="hover:text-white transition-colors">Kako deluje</a></li>
+                <li><a href="#features" className="hover:text-white transition-colors">Funkcionalnosti</a></li>
+                <li><a href="#pricing" className="hover:text-white transition-colors">Cenik</a></li>
+                <li><a href="#faq" className="hover:text-white transition-colors">Pogosta vprašanja</a></li>
+                <li><Link href="/dashboard/new" className="hover:text-white transition-colors">Ustvari album</Link></li>
+                <li><Link href="/dashboard" className="hover:text-white transition-colors">Prijava</Link></li>
+              </ul>
+            </div>
+
+            {/* Jeziki / Trgi */}
+            <div>
+              <h3 className="text-xs font-bold uppercase tracking-widest text-gray-500 mb-4">Jeziki</h3>
+              <ul className="space-y-2.5 text-sm text-gray-400">
+                <li><Link href="/sl" className="hover:text-white transition-colors">🇸🇮 Slovenija</Link></li>
+                <li><Link href="/hr" className="hover:text-white transition-colors">🇭🇷 Hrvatska</Link></li>
+                <li><Link href="/sr" className="hover:text-white transition-colors">🇷🇸 Srbija</Link></li>
+                <li><Link href="/de" className="hover:text-white transition-colors">🇩🇪 Deutschland</Link></li>
+                <li><Link href="/es" className="hover:text-white transition-colors">🇪🇸 España</Link></li>
+                <li><Link href="/en" className="hover:text-white transition-colors">🇬🇧 English</Link></li>
+              </ul>
+            </div>
+
+            {/* Vodniki & SEO */}
+            <div>
+              <h3 className="text-xs font-bold uppercase tracking-widest text-gray-500 mb-4">Vodniki</h3>
+              <ul className="space-y-2.5 text-sm text-gray-400">
+                <li><Link href="/sl/qr-koda-poroka" className="hover:text-white transition-colors">QR koda za poroko</Link></li>
+                <li><Link href="/hr/qr-kod-vjencanje" className="hover:text-white transition-colors">QR kod za vjenčanje</Link></li>
+                <li><Link href="/en/wedding-photo-sharing" className="hover:text-white transition-colors">Wedding photo sharing</Link></li>
+                <li><Link href="/de/hochzeitsfotos-sammeln" className="hover:text-white transition-colors">Hochzeitsfotos sammeln</Link></li>
+                <li><Link href="/es/fotos-boda-qr" className="hover:text-white transition-colors">Fotos boda QR</Link></li>
+                <li><Link href="/en/alternatives" className="hover:text-white transition-colors">App alternatives</Link></li>
+              </ul>
+            </div>
+
+            {/* Pravno */}
+            <div>
+              <h3 className="text-xs font-bold uppercase tracking-widest text-gray-500 mb-4">Pravno</h3>
+              <ul className="space-y-2.5 text-sm text-gray-400">
+                <li><Link href="/privacy" className="hover:text-white transition-colors">Zasebnost</Link></li>
+                <li><Link href="/terms" className="hover:text-white transition-colors">Pogoji uporabe</Link></li>
+                <li><Link href="/cookies" className="hover:text-white transition-colors">Piškotki</Link></li>
+                <li><Link href="/gdpr" className="hover:text-white transition-colors">GDPR</Link></li>
+                <li><a href="mailto:hello@wedflow.app" className="hover:text-white transition-colors">Kontakt</a></li>
+              </ul>
+            </div>
+
           </div>
-          <div className="flex items-center gap-6 text-xs text-gray-400">
-            <Link href="/dashboard" className="hover:text-[#2C2825] transition-colors">Prijava</Link>
-            <a href="mailto:hello@wedflow.app" className="hover:text-[#2C2825] transition-colors">Kontakt</a>
-            <span>© {new Date().getFullYear()} WedFlow</span>
+
+          {/* Bottom bar */}
+          <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <p className="text-xs text-gray-500">
+              © {new Date().getFullYear()} WedFlow d.o.o. · WeddingAlbum je del ekosistema{' '}
+              <a href="https://wedflow.app" className="hover:text-gray-300 transition-colors" style={{ color: '#C4738A' }}>WedFlow</a>
+            </p>
+            <div className="flex items-center gap-4 text-xs text-gray-600">
+              <span className="flex items-center gap-1">
+                <svg className="w-3.5 h-3.5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+                </svg>
+                SSL
+              </span>
+              <span className="flex items-center gap-1">
+                <svg className="w-3.5 h-3.5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                GDPR
+              </span>
+              <span className="flex items-center gap-1">
+                <svg className="w-3.5 h-3.5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                </svg>
+                Brez registracije za goste
+              </span>
+            </div>
           </div>
+
         </div>
       </footer>
 

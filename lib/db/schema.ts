@@ -19,8 +19,11 @@ export const albums = pgTable(
     // Owner (Clerk userId from WedFlow)
     ownerClerkId: text("owner_clerk_id").notNull(),
 
+    // Event type
+    eventType: text("event_type").notNull().default("wedding"), // wedding | birthday | anniversary | party | baptism | graduation | other
+
     // Names and display
-    coupleName: text("couple_name").notNull(), // "Ana & Marko"
+    coupleName: text("couple_name").notNull(), // "Ana & Marko" or event title
     weddingDate: text("wedding_date").notNull(), // ISO date string "2025-06-14"
     location: text("location"),
     coverImageUrl: text("cover_image_url"),
