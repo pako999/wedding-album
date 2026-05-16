@@ -138,7 +138,7 @@ export default function HomePage() {
               },
               {
                 rot: '-2deg', left: '195px', top: '18px', z: 30,
-                src: "https://images.unsplash.com/photo-1511285560929-80b456503681?w=300&h=400&fit=crop&q=75",
+                src: "https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=300&h=400&fit=crop&q=75",
                 alt: "Wedding reception dancing",
               },
             ].map((p, i) => (
@@ -175,12 +175,12 @@ export default function HomePage() {
         {/* Right — hero photo with floating UI */}
         <div className="hidden lg:block relative">
           <div className="relative rounded-3xl overflow-hidden shadow-2xl" style={{ height: 520 }}>
-            {/* Real wedding photo */}
+            {/* Real wedding couple photo */}
             <Image
-              src="https://images.unsplash.com/photo-1519741497674-611481863552?w=900&h=600&fit=crop&q=80"
-              alt="Wedding celebration"
+              src="https://images.unsplash.com/photo-1606800052052-a08af7148866?w=800&h=1100&fit=crop&crop=faces,center&q=85"
+              alt="Wedding couple"
               fill
-              className="object-cover"
+              className="object-cover object-center"
               priority
             />
             {/* Floating notification badge */}
@@ -340,8 +340,8 @@ export default function HomePage() {
                       <div className="flex gap-1.5">
                         {[
                           "photo-1529634806980-85c3dd6d34ac",
-                          "photo-1519741497674-611481863552",
-                          "photo-1511285560929-80b456503681",
+                          "photo-1606800052052-a08af7148866",
+                          "photo-1469371670807-013ccf25f16a",
                           "photo-1465495976277-4387d4b0b4c6",
                         ].map((id) => (
                           <div key={id} className="flex-1 aspect-square rounded-lg overflow-hidden">
@@ -374,14 +374,14 @@ export default function HomePage() {
               <div className="p-3 grid grid-cols-3 gap-1.5">
                 {[
                   "photo-1529634806980-85c3dd6d34ac",
-                  "photo-1519741497674-611481863552",
+                  "photo-1606800052052-a08af7148866",
                   "photo-1537633552985-df8429e8048b",
-                  "photo-1511285560929-80b456503681",
+                  "photo-1469371670807-013ccf25f16a",
                   "photo-1465495976277-4387d4b0b4c6",
                   "photo-1606216794074-735e91aa2c92",
                   "photo-1520854221256-17451cc331bf",
                   "photo-1583939003579-730e3918a45a",
-                  "photo-1544642058-b5943a6fc5b6",
+                  "photo-1515934751635-c81c6bc9a2d8",
                 ].map((id) => (
                   <div key={id} className="aspect-square rounded-lg overflow-hidden">
                     <img
@@ -504,60 +504,103 @@ export default function HomePage() {
         <div className="max-w-5xl mx-auto px-6">
           <h2 className="text-[2.5rem] font-extrabold text-center text-[#2C2825] mb-4">Preprosti paketi</h2>
           <p className="text-center text-gray-400 mb-14">Izberite paket, ki ustreza vaši poroki.</p>
-          <div className="grid md:grid-cols-3 gap-5">
-            {[
-              {
-                name: "Brezplačno", desc: "Za preizkus", price: "0", period: "",
-                features: ["1 album","50 fotografij","6 jezikov","Javna stran albuma"],
-                cta: "Začni brezplačno", highlight: false,
-              },
-              {
-                name: "Pro", desc: "Za poroko", price: "49", period: "/leto",
-                badge: "NAJBOLJ PRILJUBLJENO",
-                features: ["Neomejeni albumi","500 fotografij","QR koda za tisk","ZIP prenos vseh slik","Moderacija fotografij","E-mail obvestila"],
-                cta: "Izberi Pro", highlight: true,
-              },
-              {
-                name: "Premium", desc: "Za tiste, ki želite vse", price: "99", period: "/leto",
-                features: ["2000 fotografij","Lastna domena","Bela oznaka (no branding)","Vse Pro funkcije"],
-                cta: "Izberi Premium", highlight: false,
-              },
-            ].map((plan) => (
-              <div
-                key={plan.name}
-                className={`relative rounded-3xl border p-8 flex flex-col ${plan.highlight ? 'text-white' : 'bg-white border-gray-200'}`}
-                style={plan.highlight ? { background: '#2C2825', borderColor: '#2C2825', transform: 'scale(1.03)', boxShadow: '0 20px 60px rgba(44,40,37,0.25)' } : {}}
-              >
-                {plan.badge && (
-                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 text-white text-[10px] font-bold tracking-widest uppercase px-4 py-1.5 rounded-full" style={{ background: '#C9A96E' }}>
-                    {plan.badge}
-                  </div>
-                )}
-                <p className={`text-xs font-bold uppercase tracking-widest mb-1 ${plan.highlight ? 'text-[#C9A96E]' : 'text-gray-400'}`}>{plan.name}</p>
-                <p className={`text-sm mb-6 ${plan.highlight ? 'text-white/60' : 'text-gray-400'}`}>{plan.desc}</p>
-                <div className="flex items-end gap-1 mb-7">
-                  <span className={`font-extrabold leading-none ${plan.highlight ? 'text-white' : 'text-[#2C2825]'}`} style={{ fontSize: '3rem' }}>{plan.price}€</span>
-                  {plan.period && <span className={`text-sm mb-1.5 ${plan.highlight ? 'text-white/50' : 'text-gray-400'}`}>{plan.period}</span>}
-                </div>
-                <ul className="space-y-3 flex-1 mb-7">
-                  {plan.features.map((f) => (
-                    <li key={f} className="flex items-center gap-2.5">
-                      <svg className="w-4 h-4 shrink-0 text-[#C9A96E]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                      </svg>
-                      <span className={`text-sm ${plan.highlight ? 'text-white/80' : 'text-gray-600'}`}>{f}</span>
-                    </li>
-                  ))}
-                </ul>
-                <Link
-                  href="/dashboard"
-                  className="block text-center py-3.5 rounded-2xl font-bold text-sm transition-colors"
-                  style={plan.highlight ? { background: '#C9A96E', color: '#fff' } : { border: '1.5px solid #e5e7eb', color: '#2C2825' }}
-                >
-                  {plan.cta}
-                </Link>
+
+          <div className="grid md:grid-cols-3 gap-6 items-start">
+
+            {/* BASIC */}
+            <div className="bg-white border border-gray-200 rounded-3xl p-8 flex flex-col">
+              <p className="font-extrabold text-lg text-[#2C2825] mb-1">Basic</p>
+              <p className="text-sm text-gray-400 mb-6">Za manjše dogodke</p>
+              <div className="flex items-end gap-2 mb-7">
+                <span className="font-extrabold text-[3rem] leading-none text-[#2C2825]">39€</span>
+                <span className="text-gray-300 line-through text-lg mb-1.5">55€</span>
               </div>
-            ))}
+              <ul className="space-y-3 flex-1 mb-8">
+                {["Unikatna QR koda","Do 50 gostov","Do 200 fotografij","Dostop do galerije 1 mesec","Prenos vseh slik (ZIP)"].map(f => (
+                  <li key={f} className="flex items-center gap-2.5">
+                    <svg className="w-4 h-4 shrink-0 text-[#C9A96E]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+                    <span className="text-sm text-gray-600">{f}</span>
+                  </li>
+                ))}
+              </ul>
+              <Link href="/dashboard" className="block text-center py-3.5 rounded-2xl font-bold text-sm text-[#2C2825] transition-colors hover:bg-gray-50" style={{ border: '1.5px solid #e5e7eb' }}>
+                Izberi Basic
+              </Link>
+            </div>
+
+            {/* PLUS — highlighted */}
+            <div className="relative bg-white rounded-3xl p-8 flex flex-col" style={{ border: '2px solid #C9A96E', boxShadow: '0 8px 40px rgba(201,169,110,0.2)', transform: 'translateY(-8px)' }}>
+              <div className="absolute -top-4 left-1/2 -translate-x-1/2 text-white text-[10px] font-bold tracking-widest uppercase px-5 py-1.5 rounded-full" style={{ background: '#C9A96E' }}>
+                NAJBOLJ PRILJUBLJENO
+              </div>
+              <p className="font-extrabold text-lg text-[#2C2825] mb-1">Plus</p>
+              <p className="text-sm text-gray-400 mb-6">Za večje dogodke in poroke</p>
+              <div className="flex items-end gap-2 mb-7">
+                <span className="font-extrabold text-[3rem] leading-none" style={{ color: '#C9A96E' }}>49€</span>
+                <span className="text-gray-300 line-through text-lg mb-1.5">69€</span>
+              </div>
+              <ul className="space-y-3 flex-1 mb-8">
+                {[
+                  "Unikatna QR koda",
+                  "Neomejeno število gostov",
+                  "Neomejeno fotografij",
+                  "Dostop do galerije 1 leto",
+                  "Prenos vseh slik (ZIP)",
+                  "Live galerija (projekcija)",
+                  "Personalizirana stran z imeni",
+                  "E-mail obvestila za par",
+                ].map(f => (
+                  <li key={f} className="flex items-center gap-2.5">
+                    <svg className="w-4 h-4 shrink-0 text-[#C9A96E]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+                    <span className="text-sm text-gray-600">{f}</span>
+                  </li>
+                ))}
+              </ul>
+              <Link href="/dashboard" className="block text-center py-3.5 rounded-2xl font-bold text-sm text-white transition-colors" style={{ background: '#C9A96E' }}>
+                Izberi Plus
+              </Link>
+            </div>
+
+            {/* PREMIUM */}
+            <div className="bg-white border border-gray-200 rounded-3xl p-8 flex flex-col">
+              <p className="font-extrabold text-lg text-[#2C2825] mb-1">Premium</p>
+              <p className="text-sm text-gray-400 mb-6">Za tiste, ki želite vse</p>
+              <div className="flex items-end gap-2 mb-7">
+                <span className="font-extrabold text-[3rem] leading-none text-[#2C2825]">79€</span>
+                <span className="text-gray-300 line-through text-lg mb-1.5">109€</span>
+              </div>
+              <ul className="space-y-3 flex-1 mb-8">
+                {[
+                  "Unikatna QR koda",
+                  "Neomejeno število gostov",
+                  "Neomejeno fotografij",
+                  "Do 100 videoposnetkov",
+                  "Dostop do galerije 2 leti",
+                  "Prenos vseh slik (ZIP)",
+                  "Live galerija (projekcija)",
+                  "Personalizirana stran z imeni",
+                  "Lastna domena (foto.vase-ime.si)",
+                  "Premium design predloge",
+                  "Prioritetna podpora",
+                ].map(f => (
+                  <li key={f} className="flex items-center gap-2.5">
+                    <svg className="w-4 h-4 shrink-0 text-[#C9A96E]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+                    <span className="text-sm text-gray-600">{f}</span>
+                  </li>
+                ))}
+              </ul>
+              <Link href="/dashboard" className="block text-center py-3.5 rounded-2xl font-bold text-sm text-[#2C2825] transition-colors hover:bg-gray-50" style={{ border: '1.5px solid #e5e7eb' }}>
+                Izberi Premium
+              </Link>
+            </div>
+          </div>
+
+          {/* Guarantee badge */}
+          <div className="flex items-center justify-center gap-2 mt-10 text-sm text-gray-400">
+            <svg className="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.8}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+            </svg>
+            30-dnevna garancija vračila denarja – brez vprašanj.
           </div>
         </div>
       </section>
