@@ -9,19 +9,49 @@ import { DashboardNav } from "@/components/dashboard/DashboardNav";
 export const dynamic = "force-dynamic";
 
 export default async function DashboardPage() {
-  const { userId } = await auth();
+  // Graceful fallback if Clerk is not yet configured
+  let userId: string | null = null;
+  try {
+    const session = await auth();
+    userId = session.userId;
+  } catch {
+    redirect("/sign-in");
+  }
   if (!userId) redirect("/sign-in");
 
-  const userAlbums = await db.query.albums.findMany({
-    where: eq(albums.ownerClerkId, userId),
-    orderBy: desc(albums.createdAt),
-  });
+  // Graceful fallback if DB is not yet configured
+  let userAlbums: (typeof albums.$inferSelect)[] = [];
+  let dbError = false;
+  try {
+    userAlbums = await db.query.albums.findMany({
+      where: eq(albums.ownerClerkId, userId),
+      orderBy: desc(albums.createdAt),
+    });
+  } catch (err) {
+    console.error("[dashboard] DB error:", err);
+    dbError = true;
+  }
 
   return (
     <div className="min-h-screen bg-[#FAF7F2]">
       <DashboardNav />
 
       <main className="max-w-5xl mx-auto px-4 sm:px-6 py-10">
+
+        {/* DB not configured banner */}
+        {dbError && (
+          <div className="mb-6 bg-amber-50 border border-amber-200 rounded-2xl px-5 py-4 flex items-start gap-3">
+            <span className="text-amber-500 text-lg shrink-0">⚠️</span>
+            <div>
+              <p className="font-semibold text-amber-800 text-sm">Baza podatkov ni nastavljena</p>
+              <p className="text-amber-700 text-xs mt-0.5">
+                V Vercel nastavitvah dodajte <code className="bg-amber-100 px-1 rounded">DATABASE_URL</code> in zaženite{" "}
+                <code className="bg-amber-100 px-1 rounded">npx drizzle-kit push</code>, da ustvarite tabele.
+              </p>
+            </div>
+          </div>
+        )}
+
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
