@@ -2,13 +2,13 @@ import { redirect } from "next/navigation";
 import { auth } from "@clerk/nextjs/server";
 
 export default async function HomePage() {
-  const { userId } = await auth();
-
-  if (userId) {
-    redirect("/dashboard");
+  try {
+    const { userId } = await auth();
+    if (userId) redirect("/dashboard");
+  } catch {
+    // Clerk not configured yet — show splash anyway
   }
 
-  // Public landing — show a minimal splash
   return (
     <div className="min-h-screen bg-[#FAF7F2] flex items-center justify-center p-6">
       <div className="text-center max-w-md">

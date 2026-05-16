@@ -12,26 +12,27 @@ const APP_HOSTNAME = process.env.NEXT_PUBLIC_APP_URL
   ? new URL(process.env.NEXT_PUBLIC_APP_URL).hostname
   : "photos.wedflow.app";
 
+function isOwnDomain(hostname: string) {
+  const bare = hostname.split(":")[0];
+  return (
+    bare === APP_HOSTNAME ||
+    bare === `www.${APP_HOSTNAME}` ||
+    bare.endsWith(".vercel.app") ||   // all preview URLs
+    bare.endsWith(".localhost") ||
+    bare === "localhost"
+  );
+}
+
 export default clerkMiddleware(async (auth, req) => {
   const hostname = req.headers.get("host") ?? "";
   const pathname = req.nextUrl.pathname;
 
   // ── Custom domain routing ──────────────────────────────────────────────────
-  // If the request comes from a domain that is NOT our main app domain
-  // (e.g. "foto.ana-marko.si"), look it up and proxy to /[slug] internally.
-  if (
-    hostname !== APP_HOSTNAME &&
-    hostname !== `www.${APP_HOSTNAME}` &&
-    !hostname.startsWith("localhost") &&
-    !isInternalApi(req)
-  ) {
-    // Strip port for comparison (dev)
+  // Only fire for requests that come from a *custom* domain (premium feature)
+  if (!isOwnDomain(hostname) && !isInternalApi(req)) {
     const bareHost = hostname.split(":")[0];
 
-    // Only rewrite root paths — skip assets, API
     if (!pathname.startsWith("/api") && !pathname.startsWith("/_next")) {
-      // We can't query the DB here in middleware; instead we use a special
-      // internal resolve route that maps domain → slug and rewrites.
       const url = req.nextUrl.clone();
       url.pathname = `/api/resolve-domain${pathname}`;
       url.searchParams.set("domain", bareHost);
