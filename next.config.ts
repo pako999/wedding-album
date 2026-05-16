@@ -10,7 +10,12 @@ const nextConfig: NextConfig = {
   },
   experimental: {
     serverActions: {
-      allowedOrigins: ["photos.wedflow.app", "localhost:3001"],
+      allowedOrigins: [
+        "wedding-album-lilac.vercel.app",
+        "photos.wedflow.app",
+        "localhost:3000",
+        "localhost:3001",
+      ],
     },
   },
 };

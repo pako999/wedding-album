@@ -47,10 +47,12 @@ export function CreateEventWizard() {
     startTransition(async () => {
       try {
         await createAlbum(fd);
-      } catch (err) {
-        // redirect() throws internally — Next.js handles it; other errors show
-        const msg = err instanceof Error ? err.message : "Napaka pri ustvarjanju.";
-        if (!msg.includes("NEXT_REDIRECT")) setError(msg);
+      } catch (err: unknown) {
+        // redirect() throws NEXT_REDIRECT — Next.js handles navigation, ignore it
+        const msg = err instanceof Error ? err.message : String(err);
+        if (msg.includes("NEXT_REDIRECT") || msg.includes("redirect")) return;
+        setError("Napaka pri ustvarjanju galerije. Preverite povezavo in poskusite znova.");
+        console.error("[createAlbum]", err);
       }
     });
   }
