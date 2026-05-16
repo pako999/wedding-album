@@ -82,149 +82,186 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-white text-[#2C2825] font-sans">
 
+      {/* ── Announcement bar ─────────────────────────────────────────────────── */}
+      <div className="text-white text-center text-xs font-semibold py-2.5 px-4" style={{ background: '#C4738A' }}>
+        Ustvarite galerijo danes — <strong>brezplačno za vedno!</strong> 🎉{' '}
+        <Link href="/dashboard/new" className="underline font-bold ml-2">Začni zdaj →</Link>
+      </div>
+
       {/* ── Navbar ──────────────────────────────────────────────────────────── */}
-      <header className="absolute top-0 left-0 right-0 z-40">
-        <nav className="max-w-7xl mx-auto px-8 h-18 flex items-center justify-between" style={{ height: 72 }}>
+      <header className="sticky top-0 z-40 bg-white border-b border-gray-100">
+        <nav className="max-w-7xl mx-auto px-8 h-16 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-0.5">
-            <span className="font-serif italic text-xl font-bold text-white drop-shadow">WeddingAlbum</span>
-            <span className="font-black text-2xl leading-none text-white drop-shadow" style={{ color: '#f9a8c0' }}>.</span>
+            <span className="font-serif italic text-xl font-bold text-[#2C2825]">WeddingAlbum</span>
+            <span className="font-black text-2xl leading-none" style={{ color: '#C4738A' }}>.</span>
           </Link>
-          <div className="hidden md:flex items-center gap-8 text-sm font-medium text-white/80">
-            <a href="#how" className="hover:text-white transition-colors">Kako deluje</a>
-            <a href="#templates" className="hover:text-white transition-colors">Predloge</a>
-            <a href="#pricing" className="hover:text-white transition-colors">Cenik</a>
-            <a href="#faq" className="hover:text-white transition-colors">FAQ</a>
+          <div className="hidden md:flex items-center gap-8 text-sm font-medium text-gray-500">
+            <a href="#how" className="hover:text-[#2C2825] transition-colors">Kako deluje</a>
+            <a href="#templates" className="hover:text-[#2C2825] transition-colors">Predloge</a>
+            <a href="#pricing" className="hover:text-[#2C2825] transition-colors">Cenik</a>
+            <a href="#faq" className="hover:text-[#2C2825] transition-colors">FAQ</a>
           </div>
-          <div className="flex items-center gap-3">
-            <Link href="/dashboard" className="text-sm font-medium text-white/80 hover:text-white transition-colors hidden sm:block">Prijava</Link>
-            <Link href="/dashboard/new" className="px-5 py-2.5 rounded-full text-sm font-bold transition-all duration-200 text-white" style={{ background: '#C4738A', boxShadow: '0 4px 16px rgba(196,115,138,0.5)' }}>
+          <div className="flex items-center gap-4">
+            <Link href="/dashboard" className="hidden sm:block text-sm font-medium text-gray-500 hover:text-[#2C2825] transition-colors">Prijava</Link>
+            <Link href="/dashboard/new" className="px-5 py-2.5 rounded-full text-sm font-bold border-2 border-[#2C2825] text-[#2C2825] hover:bg-[#2C2825] hover:text-white transition-all duration-200">
               Začni brezplačno
             </Link>
           </div>
         </nav>
       </header>
 
-      {/* ── Hero ─── full viewport split */}
-      <section className="relative flex" style={{ height: '100vh', minHeight: 680 }}>
+      {/* ── Hero ────────────────────────────────────────────────────────────── */}
+      <section style={{ background: '#F2EDE7' }}>
+        <div className="max-w-7xl mx-auto px-8 py-16 xl:py-24">
+          <div className="grid lg:grid-cols-2 gap-12 xl:gap-20 items-center">
 
-        {/* LEFT 60% — photo collage panel */}
-        <div className="relative overflow-hidden" style={{ width: '60%' }}>
-          {/* Main background photo */}
-          <img
-            src="https://images.unsplash.com/photo-1606800052052-a08af7148866?w=1400&h=1200&fit=crop&crop=faces,center&q=90"
-            alt="Wedding memories"
-            className="absolute inset-0 w-full h-full object-cover"
-          />
-          {/* Dark gradient overlay */}
-          <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.15) 40%, rgba(0,0,0,0.55) 100%)' }} />
-
-          {/* TOP: Horizontal photo strip (wedtrove style) */}
-          <div className="absolute top-0 left-0 right-0 flex gap-1.5 p-3 pt-20">
-            {[
-              'photo-1529634806980-85c3dd6d34ac',
-              'photo-1537633552985-df8429e8048b',
-              'photo-1469371670807-013ccf25f16a',
-              'photo-1558636508-e0969431e51e',
-              'photo-1465495976277-4387d4b0b4c6',
-            ].map((id) => (
-              <div key={id} className="flex-1 rounded-xl overflow-hidden shadow-lg border-2 border-white/30" style={{ height: 90 }}>
-                <img src={`https://images.unsplash.com/${id}?w=220&h=140&fit=crop&q=70`} alt="" className="w-full h-full object-cover" />
-              </div>
-            ))}
-          </div>
-
-          {/* BOTTOM LEFT: QR card mockup (like the wedtrove sign photo) */}
-          <div className="absolute bottom-10 left-10 bg-white rounded-3xl shadow-2xl p-5 w-52">
-            <p className="font-serif text-center text-sm font-light text-[#2C2825] mb-0.5">Zberi spomine</p>
-            <p className="text-center text-[10px] text-gray-400 mb-3">Skeniraj QR kodo in dodaj foto</p>
-            <div className="flex justify-center mb-3">
-              <QRPattern />
-            </div>
-            <div className="border-t border-gray-100 pt-3 text-center">
-              <p className="font-serif text-sm italic text-[#C4738A]">Ana & Marko</p>
-              <p className="text-[10px] text-gray-400">14. junij 2025</p>
-            </div>
-          </div>
-
-          {/* BOTTOM RIGHT: photo count badge */}
-          <div className="absolute bottom-10 right-6 bg-white/95 backdrop-blur rounded-2xl shadow-lg px-4 py-3 flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0" style={{ background: 'rgba(196,115,138,0.15)' }}>
-              <svg className="w-4 h-4" style={{ color: '#C4738A' }} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5z" />
-              </svg>
-            </div>
+            {/* ── LEFT: Text content ─────────────────────────────────────── */}
             <div>
-              <p className="text-xs font-bold text-[#2C2825]">+183 novih fotografij</p>
-              <p className="text-[10px] text-gray-400">danes · v živo</p>
-            </div>
-          </div>
-        </div>
 
-        {/* RIGHT 40% — white form panel */}
-        <div className="bg-white flex flex-col items-center justify-center px-10 xl:px-16" style={{ width: '40%' }}>
-          <div className="w-full max-w-sm">
+              {/* Avatar stack + social proof */}
+              <div className="flex items-center gap-3 mb-7">
+                <div className="flex -space-x-2.5">
+                  {['#C4738A','#9B5E74','#E8A4B4','#D4899A','#7A4A5E'].map((bg, i) => (
+                    <div key={i} className="w-9 h-9 rounded-full border-[2.5px] flex items-center justify-center text-[11px] font-bold text-white shrink-0" style={{ background: bg, borderColor: '#F2EDE7' }}>
+                      {['T','A','S','D','M'][i]}
+                    </div>
+                  ))}
+                </div>
+                <p className="text-sm text-gray-600">Zaupalo nam <span className="font-bold text-[#2C2825]">500+</span> parov &amp; organizatorjev</p>
+              </div>
 
-            {/* Logo mark */}
-            <div className="flex items-center gap-1 mb-10">
-              <svg className="w-5 h-5" style={{ color: '#C4738A' }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
-                <path d="M12 21C12 21 3 13.5 3 8a5 5 0 0 1 9-3 5 5 0 0 1 9 3c0 5.5-9 13-9 13z" />
-              </svg>
-              <span className="font-serif italic text-xl font-bold text-[#2C2825]">WeddingAlbum</span>
-              <span className="font-black text-2xl leading-none" style={{ color: '#C4738A' }}>.</span>
-            </div>
+              {/* Small eyebrow label */}
+              <p className="text-xs font-bold uppercase tracking-[0.18em] text-gray-400 mb-5">
+                QR koda za poroke · rojstne dneve · obletnice
+              </p>
 
-            {/* Headline */}
-            <h1 className="font-extrabold text-[#2C2825] leading-tight mb-3" style={{ fontSize: 'clamp(1.8rem, 3vw, 2.6rem)' }}>
-              Zberi fotografije<br />vseh gostov
-            </h1>
-            <p className="text-gray-500 text-sm leading-relaxed mb-7">
-              QR koda za poroko, rojstni dan, obletnico in vsak poseben trenutek. Gostje delijo — brez aplikacije.
-            </p>
+              {/* Giant headline */}
+              <h1 className="font-extrabold leading-[1.04] tracking-tight text-[#1A1410] mb-8" style={{ fontSize: 'clamp(2.8rem, 5.5vw, 5.2rem)' }}>
+                Zberi vse<br />
+                <span style={{ color: '#C4738A' }}>spomine</span><br />
+                z eno QR kodo
+              </h1>
 
-            {/* Event type pills */}
-            <div className="flex flex-wrap gap-1.5 mb-8">
-              {['💍 Poroka', '🎂 Rojstni dan', '💑 Obletnica', '🎉 Zabava', '👶 Krst', '🎓 Diploma'].map((t) => (
-                <span key={t} className="px-3 py-1 rounded-full text-xs font-medium text-gray-600 border border-gray-100 bg-gray-50">{t}</span>
-              ))}
-            </div>
+              {/* Subtitle */}
+              <p className="text-lg text-gray-500 leading-relaxed mb-10 max-w-[500px]">
+                Gostje enostavno delijo fotografije polne kakovosti v vaš personaliziran album.
+                Izberite predlogo za tisk, ki ustreza vašemu dogodku.
+              </p>
 
-            {/* Get started form */}
-            <div className="space-y-3 mb-6">
-              <input
-                type="email"
-                placeholder="Vaš email naslov"
-                className="w-full px-4 py-3.5 rounded-2xl border border-gray-200 text-sm text-[#2C2825] outline-none transition-colors text-center"
-                style={{ background: '#fafafa' }}
-                readOnly
-              />
+              {/* 3-step mini icons — wedtrove style */}
+              <div className="flex items-start gap-10 mb-12">
+                {[
+                  {
+                    label: 'Gostje slikajo',
+                    icon: (
+                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.8}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0zM18.75 10.5h.008v.008h-.008V10.5z" />
+                      </svg>
+                    ),
+                  },
+                  {
+                    label: 'Skenirajo QR',
+                    icon: (
+                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.8}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 013.75 9.375v-4.5zM3.75 14.625c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5a1.125 1.125 0 01-1.125-1.125v-4.5zM13.5 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 0113.5 9.375v-4.5z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 6.75h.75v.75h-.75v-.75zM6.75 16.5h.75v.75h-.75v-.75zM16.5 6.75h.75v.75h-.75v-.75zM13.5 13.5h.75v.75h-.75v-.75zM13.5 19.5h.75v.75h-.75v-.75zM19.5 13.5h.75v.75h-.75v-.75zM19.5 19.5h.75v.75h-.75v-.75zM16.5 16.5h.75v.75h-.75v-.75z" />
+                      </svg>
+                    ),
+                  },
+                  {
+                    label: 'Naložijo foto',
+                    icon: (
+                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.8}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
+                      </svg>
+                    ),
+                  },
+                ].map(({ label, icon }) => (
+                  <div key={label} className="flex flex-col items-center gap-2.5">
+                    <div className="w-14 h-14 rounded-2xl flex items-center justify-center" style={{ background: 'rgba(196,115,138,0.12)', color: '#C4738A' }}>
+                      {icon}
+                    </div>
+                    <span className="text-xs font-semibold text-gray-500 text-center leading-tight">{label}</span>
+                  </div>
+                ))}
+              </div>
+
+              {/* Large pill CTA — wedtrove style */}
               <Link
                 href="/dashboard/new"
-                className="w-full flex items-center justify-center gap-2 py-4 rounded-2xl text-white font-bold text-sm transition-all duration-200"
-                style={{ background: '#C4738A', boxShadow: '0 8px 24px rgba(196,115,138,0.38)' }}
+                className="inline-flex items-center gap-3 px-10 py-5 rounded-full text-white font-bold text-lg transition-all duration-200 hover:scale-[1.02]"
+                style={{ background: '#C4738A', boxShadow: '0 14px 40px rgba(196,115,138,0.42)' }}
               >
-                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 21.593c-5.63-5.539-11-10.297-11-14.402 0-3.791 3.068-5.191 5.281-5.191 1.312 0 4.151.501 5.719 4.457 1.59-3.968 4.464-4.447 5.726-4.447 2.54 0 5.274 1.621 5.274 5.181 0 4.069-5.136 8.625-11 14.402z"/></svg>
-                Začni brezplačno
+                Začni brezplačno zdaj
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                </svg>
               </Link>
+              <p className="mt-4 text-sm text-gray-400">Brez kreditne kartice · Pripravljeno v 2 minutah</p>
             </div>
 
-            <p className="text-center text-xs text-gray-400 mb-8">
-              Že imate račun?{' '}
-              <Link href="/dashboard" className="font-semibold hover:underline" style={{ color: '#C4738A' }}>
-                Prijava
-              </Link>
-            </p>
+            {/* ── RIGHT: Floating overlapping image collage ──────────────── */}
+            <div className="hidden lg:block relative select-none" style={{ height: 600 }}>
 
-            {/* Trust badges */}
-            <div className="flex items-center justify-center gap-5 text-xs text-gray-400">
-              <span className="flex items-center gap-1">
-                <svg className="w-3.5 h-3.5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
-                </svg>
-                SSL
-              </span>
-              <span>500+ galerij</span>
-              <span>Brezplačno</span>
-              <span>GDPR</span>
+              {/* Photo 1 — wedding dancing, top-left, tilted left */}
+              <div className="absolute rounded-2xl overflow-hidden shadow-2xl" style={{ top: 0, left: 0, width: 310, height: 370, transform: 'rotate(-4deg)', zIndex: 10 }}>
+                <img
+                  src="https://images.unsplash.com/photo-1529634806980-85c3dd6d34ac?w=620&h=740&fit=crop&q=85"
+                  alt="Wedding dancing"
+                  className="w-full h-full object-cover"
+                />
+                {/* Badge */}
+                <div className="absolute bottom-4 left-4 bg-white rounded-2xl shadow-lg px-4 py-2.5 flex items-center gap-2">
+                  <svg className="w-3.5 h-3.5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <p className="text-xs font-bold text-[#2C2825]">Polna kakovost</p>
+                </div>
+              </div>
+
+              {/* QR Card template — center, overlapping both photos */}
+              <div className="absolute bg-white rounded-2xl shadow-2xl p-5 text-center" style={{ top: 130, left: 200, width: 185, zIndex: 30, transform: 'rotate(3deg)', border: '1px solid rgba(196,115,138,0.15)' }}>
+                <p className="font-serif text-sm font-bold text-[#2C2825] mb-0.5 leading-tight">Capture the love ♥</p>
+                <p className="text-[9px] text-gray-400 mb-3">Skeniraj in deli fotografije</p>
+                <div className="flex justify-center mb-3" style={{ transform: 'scale(0.62)', transformOrigin: 'center top', height: 42, overflow: 'hidden' }}>
+                  <QRPattern />
+                </div>
+                <div className="border-t border-gray-100 pt-2.5 mt-1">
+                  <p className="font-serif text-[11px] italic text-[#C4738A]">Ana &amp; Marko</p>
+                  <p className="text-[8px] text-gray-300 mt-0.5">14. junij 2025</p>
+                </div>
+              </div>
+
+              {/* Photo 2 — celebration/party, bottom-right, tilted right */}
+              <div className="absolute rounded-2xl overflow-hidden shadow-2xl" style={{ bottom: 0, right: 0, width: 295, height: 320, transform: 'rotate(3deg)', zIndex: 20 }}>
+                <img
+                  src="https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=590&h=640&fit=crop&q=85"
+                  alt="Event celebration"
+                  className="w-full h-full object-cover"
+                />
+                {/* Badge */}
+                <div className="absolute top-4 right-4 bg-white rounded-2xl shadow-lg px-4 py-2.5 flex items-center gap-2">
+                  <svg className="w-3.5 h-3.5" style={{ color: '#C4738A' }} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 8.25h3m-3 3h3m-3 3h3" />
+                  </svg>
+                  <p className="text-xs font-bold text-[#2C2825]">Brez aplikacije</p>
+                </div>
+              </div>
+
+              {/* Small floating photo count badge — top right */}
+              <div className="absolute bg-white rounded-2xl shadow-xl px-4 py-3 flex items-center gap-3" style={{ top: 20, right: 20, zIndex: 40 }}>
+                <div className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0" style={{ background: 'rgba(196,115,138,0.12)' }}>
+                  <svg className="w-4 h-4" style={{ color: '#C4738A' }} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5z" />
+                  </svg>
+                </div>
+                <div>
+                  <p className="text-xs font-bold text-[#2C2825]">+183 fotografij</p>
+                  <p className="text-[10px] text-gray-400">v živo · danes</p>
+                </div>
+              </div>
+
             </div>
           </div>
         </div>
