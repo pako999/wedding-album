@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 // ── SVG Feature Icons ─────────────────────────────────────────────────────────
 function IconQR() {
@@ -125,22 +126,29 @@ export default function HomePage() {
           {/* Stacked photo fan */}
           <div className="relative h-52 mb-10 select-none pointer-events-none">
             {[
-              { rot: '-6deg', left: '0px',   top: '14px', z: 10, bg: 'from-rose-200 via-pink-100 to-rose-300' },
-              { rot:  '3deg', left: '100px',  top:  '0px', z: 20, bg: 'from-amber-100 via-orange-50 to-amber-200' },
-              { rot: '-2deg', left: '195px', top: '18px', z: 30, bg: 'from-stone-200 via-neutral-100 to-stone-300' },
+              {
+                rot: '-6deg', left: '0px', top: '14px', z: 10,
+                src: "https://images.unsplash.com/photo-1529634806980-85c3dd6d34ac?w=300&h=400&fit=crop&q=75",
+                alt: "Wedding guests celebrating",
+              },
+              {
+                rot:  '3deg', left: '100px', top: '0px', z: 20,
+                src: "https://images.unsplash.com/photo-1537633552985-df8429e8048b?w=300&h=400&fit=crop&q=75",
+                alt: "Wedding couple",
+              },
+              {
+                rot: '-2deg', left: '195px', top: '18px', z: 30,
+                src: "https://images.unsplash.com/photo-1511285560929-80b456503681?w=300&h=400&fit=crop&q=75",
+                alt: "Wedding reception dancing",
+              },
             ].map((p, i) => (
               <div
                 key={i}
-                className={`absolute w-[148px] h-[188px] rounded-2xl shadow-xl border-[3px] border-white overflow-hidden bg-gradient-to-br ${p.bg}`}
+                className="absolute w-[148px] h-[188px] rounded-2xl shadow-xl border-[3px] border-white overflow-hidden"
                 style={{ transform: `rotate(${p.rot})`, left: p.left, top: p.top, zIndex: p.z }}
               >
-                {/* Simulated photo content */}
-                <div className="absolute bottom-0 inset-x-0 h-16 bg-gradient-to-t from-black/20 to-transparent" />
-                <div className="absolute top-3 left-3 right-3 flex flex-col gap-1.5 opacity-30">
-                  {[40, 60, 45].map((w, j) => (
-                    <div key={j} className="h-1 rounded-full bg-white" style={{ width: `${w}%` }} />
-                  ))}
-                </div>
+                <img src={p.src} alt={p.alt} className="w-full h-full object-cover" />
+                <div className="absolute bottom-0 inset-x-0 h-10 bg-gradient-to-t from-black/20 to-transparent" />
               </div>
             ))}
           </div>
@@ -167,18 +175,14 @@ export default function HomePage() {
         {/* Right — hero photo with floating UI */}
         <div className="hidden lg:block relative">
           <div className="relative rounded-3xl overflow-hidden shadow-2xl" style={{ height: 520 }}>
-            {/* Simulated warm wedding photo background */}
-            <div className="absolute inset-0" style={{
-              background: 'linear-gradient(140deg, #D4B896 0%, #C09070 30%, #A07050 55%, #C4A882 80%, #D8C4A8 100%)'
-            }}>
-              <div className="absolute inset-0 opacity-40" style={{
-                backgroundImage: 'radial-gradient(ellipse at 40% 70%, rgba(255,255,255,0.15) 0%, transparent 60%), radial-gradient(ellipse at 70% 20%, rgba(255,255,255,0.1) 0%, transparent 50%)'
-              }} />
-              {/* Decorative bokeh circles */}
-              {[[20,30,60],[70,60,40],[50,80,30],[80,15,50]].map(([x,y,s],i) => (
-                <div key={i} className="absolute rounded-full bg-white/10 blur-xl" style={{left:`${x}%`,top:`${y}%`,width:s,height:s}} />
-              ))}
-            </div>
+            {/* Real wedding photo */}
+            <Image
+              src="https://images.unsplash.com/photo-1519741497674-611481863552?w=900&h=600&fit=crop&q=80"
+              alt="Wedding celebration"
+              fill
+              className="object-cover"
+              priority
+            />
             {/* Floating notification badge */}
             <div className="absolute top-5 right-5 bg-white/96 backdrop-blur rounded-2xl shadow-xl px-4 py-3 flex items-center gap-3 border border-white">
               <span className="text-2xl">🥂</span>
@@ -334,8 +338,15 @@ export default function HomePage() {
                         <span className="text-[10px]" style={{ color: '#C9A96E' }}>V živo</span>
                       </div>
                       <div className="flex gap-1.5">
-                        {['from-rose-300 to-pink-400','from-amber-200 to-orange-300','from-stone-300 to-neutral-400','from-sky-200 to-blue-300'].map((g,i) => (
-                          <div key={i} className={`flex-1 aspect-square rounded-lg bg-gradient-to-br ${g}`} />
+                        {[
+                          "photo-1529634806980-85c3dd6d34ac",
+                          "photo-1519741497674-611481863552",
+                          "photo-1511285560929-80b456503681",
+                          "photo-1465495976277-4387d4b0b4c6",
+                        ].map((id) => (
+                          <div key={id} className="flex-1 aspect-square rounded-lg overflow-hidden">
+                            <img src={`https://images.unsplash.com/${id}?w=80&h=80&fit=crop&q=60`} alt="" className="w-full h-full object-cover" />
+                          </div>
                         ))}
                       </div>
                     </div>
@@ -359,20 +370,26 @@ export default function HomePage() {
                   Prenesi vse
                 </button>
               </div>
-              {/* Photo grid */}
+              {/* Photo grid — real wedding thumbnails */}
               <div className="p-3 grid grid-cols-3 gap-1.5">
                 {[
-                  'from-rose-200 to-pink-300',
-                  'from-amber-100 to-orange-200',
-                  'from-stone-200 to-neutral-300',
-                  'from-pink-100 to-rose-200',
-                  'from-orange-100 to-amber-200',
-                  'from-neutral-200 to-stone-300',
-                  'from-red-100 to-rose-300',
-                  'from-yellow-100 to-orange-200',
-                  'from-gray-100 to-stone-200',
-                ].map((g, i) => (
-                  <div key={i} className={`aspect-square rounded-lg bg-gradient-to-br ${g}`} />
+                  "photo-1529634806980-85c3dd6d34ac",
+                  "photo-1519741497674-611481863552",
+                  "photo-1537633552985-df8429e8048b",
+                  "photo-1511285560929-80b456503681",
+                  "photo-1465495976277-4387d4b0b4c6",
+                  "photo-1606216794074-735e91aa2c92",
+                  "photo-1520854221256-17451cc331bf",
+                  "photo-1583939003579-730e3918a45a",
+                  "photo-1544642058-b5943a6fc5b6",
+                ].map((id) => (
+                  <div key={id} className="aspect-square rounded-lg overflow-hidden">
+                    <img
+                      src={`https://images.unsplash.com/${id}?w=120&h=120&fit=crop&q=70`}
+                      alt="Wedding photo"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
                 ))}
               </div>
               <div className="px-4 pb-4 pt-1">
