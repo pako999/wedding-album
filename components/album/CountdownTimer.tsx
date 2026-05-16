@@ -1,42 +1,42 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import type { Translations } from "@/lib/i18n/translations";
 
 interface Props {
   targetDate: string; // ISO date "2025-06-14"
+  translations: Translations;
 }
 
-export function CountdownTimer({ targetDate }: Props) {
-  const [timeLeft, setTimeLeft] = useState<null | { days: number; label: string }>(null);
+export function CountdownTimer({ targetDate, translations: t }: Props) {
+  const [label, setLabel] = useState<string | null>(null);
 
   useEffect(() => {
     const target = new Date(targetDate);
-    target.setHours(12, 0, 0, 0); // noon on wedding day
+    target.setHours(12, 0, 0, 0);
 
     const update = () => {
       const now = new Date();
       const diff = target.getTime() - now.getTime();
+      const days = Math.abs(Math.round(diff / (1000 * 60 * 60 * 24)));
 
-      if (diff <= 0) {
-        // Wedding happened
-        const daysSince = Math.abs(Math.floor(diff / (1000 * 60 * 60 * 24)));
-        setTimeLeft({ days: daysSince, label: `${daysSince} dni nazaj` });
+      if (Math.abs(diff) < 1000 * 60 * 60 * 12) {
+        setLabel(t.today);
+      } else if (diff > 0) {
+        setLabel(t.daysUntil(days));
       } else {
-        const days = Math.ceil(diff / (1000 * 60 * 60 * 24));
-        setTimeLeft({ days, label: `Še ${days} dni` });
+        setLabel(t.daysSince(days));
       }
     };
 
     update();
     const interval = setInterval(update, 60_000);
     return () => clearInterval(interval);
-  }, [targetDate]);
+  }, [targetDate, t]);
 
-  if (!timeLeft) return null;
+  if (!label) return null;
 
   return (
-    <span className="font-sans text-xs text-[#C9A96E] font-medium">
-      {timeLeft.label}
-    </span>
+    <span className="font-sans text-xs text-[#C9A96E] font-medium">{label}</span>
   );
 }

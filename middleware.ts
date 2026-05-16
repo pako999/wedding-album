@@ -1,17 +1,45 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 
-// Routes that require the owner to be signed in
 const isProtectedRoute = createRouteMatcher(["/dashboard(.*)"]);
-
-// API routes protected by internal API key (WedFlow→Album integration)
 const isInternalApi = createRouteMatcher([
   "/api/integrations(.*)",
   "/api/webhooks(.*)",
 ]);
 
+const APP_HOSTNAME = process.env.NEXT_PUBLIC_APP_URL
+  ? new URL(process.env.NEXT_PUBLIC_APP_URL).hostname
+  : "photos.wedflow.app";
+
 export default clerkMiddleware(async (auth, req) => {
-  // Internal API: validate WEDFLOW_API_KEY header
+  const hostname = req.headers.get("host") ?? "";
+  const pathname = req.nextUrl.pathname;
+
+  // ── Custom domain routing ──────────────────────────────────────────────────
+  // If the request comes from a domain that is NOT our main app domain
+  // (e.g. "foto.ana-marko.si"), look it up and proxy to /[slug] internally.
+  if (
+    hostname !== APP_HOSTNAME &&
+    hostname !== `www.${APP_HOSTNAME}` &&
+    !hostname.startsWith("localhost") &&
+    !isInternalApi(req)
+  ) {
+    // Strip port for comparison (dev)
+    const bareHost = hostname.split(":")[0];
+
+    // Only rewrite root paths — skip assets, API
+    if (!pathname.startsWith("/api") && !pathname.startsWith("/_next")) {
+      // We can't query the DB here in middleware; instead we use a special
+      // internal resolve route that maps domain → slug and rewrites.
+      const url = req.nextUrl.clone();
+      url.pathname = `/api/resolve-domain${pathname}`;
+      url.searchParams.set("domain", bareHost);
+      return NextResponse.rewrite(url);
+    }
+  }
+
+  // ── Internal API key check ─────────────────────────────────────────────────
   if (isInternalApi(req)) {
     const key = req.headers.get("x-api-key");
     if (key !== process.env.WEDFLOW_API_KEY) {
@@ -20,7 +48,7 @@ export default clerkMiddleware(async (auth, req) => {
     return NextResponse.next();
   }
 
-  // Dashboard: require Clerk auth
+  // ── Dashboard requires Clerk auth ──────────────────────────────────────────
   if (isProtectedRoute(req)) {
     await auth.protect();
   }

@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from "react";
 import { useDropzone } from "react-dropzone";
+import { translations, type Lang } from "@/lib/i18n/translations";
 
 interface Props {
   albumSlug: string;
@@ -9,6 +10,7 @@ interface Props {
   uploaderName: string;
   maxPhotos: number;
   currentCount: number;
+  lang: Lang;
   onClose: () => void;
   onSuccess: () => void;
 }
@@ -21,7 +23,7 @@ interface UploadFile {
   error?: string;
 }
 
-const MAX_FILE_SIZE = 20 * 1024 * 1024; // 20 MB
+const MAX_FILE_SIZE = 20 * 1024 * 1024;
 const ACCEPTED_TYPES = { "image/jpeg": [], "image/png": [], "image/webp": [], "image/heic": [] };
 
 export function UploadModal({
@@ -30,9 +32,11 @@ export function UploadModal({
   uploaderName,
   maxPhotos,
   currentCount,
+  lang,
   onClose,
   onSuccess,
 }: Props) {
+  const t = translations[lang];
   const [files, setFiles] = useState<UploadFile[]>([]);
   const [uploading, setUploading] = useState(false);
   const [allDone, setAllDone] = useState(false);
@@ -92,13 +96,13 @@ export function UploadModal({
         });
 
         if (!res.ok) {
-          const err = await res.json().catch(() => ({ error: "Napaka" }));
-          updated[i] = { ...updated[i], status: "error", error: err.error ?? "Napaka", progress: 0 };
+          const err = await res.json().catch(() => ({ error: t.fileNetworkError }));
+          updated[i] = { ...updated[i], status: "error", error: err.error ?? t.fileNetworkError, progress: 0 };
         } else {
           updated[i] = { ...updated[i], status: "done", progress: 100 };
         }
       } catch {
-        updated[i] = { ...updated[i], status: "error", error: "Omrežna napaka", progress: 0 };
+        updated[i] = { ...updated[i], status: "error", error: t.fileNetworkError, progress: 0 };
       }
 
       setFiles([...updated]);
@@ -123,7 +127,7 @@ export function UploadModal({
       <div className="relative w-full sm:max-w-lg bg-[#FAF7F2] rounded-t-2xl sm:rounded-2xl shadow-2xl max-h-[90vh] flex flex-col">
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-[#C9A96E]/20">
-          <h2 className="font-serif text-xl font-light text-[#2C2825]">Naloži fotografije</h2>
+          <h2 className="font-serif text-xl font-light text-[#2C2825]">{t.uploadModalTitle}</h2>
           <button
             onClick={onClose}
             disabled={uploading}
@@ -143,15 +147,13 @@ export function UploadModal({
                   <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                 </svg>
               </div>
-              <p className="font-serif text-xl font-light text-[#2C2825] mb-1">
-                {successCount} {successCount === 1 ? "fotografija naložena" : "fotografij naloženih"}
-              </p>
-              <p className="font-sans text-sm text-[#2C2825]/60 mb-6">Hvala za vaše spomine!</p>
+              <p className="font-serif text-xl font-light text-[#2C2825] mb-1">{t.successTitle(successCount)}</p>
+              <p className="font-sans text-sm text-[#2C2825]/60 mb-6">{t.successDesc}</p>
               <button
                 onClick={onSuccess}
                 className="px-6 py-2.5 bg-[#2C2825] text-[#FAF7F2] font-sans text-sm rounded-xl hover:bg-[#C9A96E] transition-colors"
               >
-                Zapri
+                {t.close}
               </button>
             </div>
           ) : (
@@ -173,10 +175,10 @@ export function UploadModal({
                     </svg>
                   </div>
                   <p className="font-sans text-sm text-[#2C2825]/70">
-                    {isDragActive ? "Spusti fotografije sem" : "Povleci ali klikni za izbiro"}
+                    {isDragActive ? t.dropzoneActive : t.dropzone}
                   </p>
                   <p className="font-sans text-xs text-[#2C2825]/40 mt-1">
-                    JPG, PNG, WEBP · max 20 MB · še {remaining - files.length} možnih
+                    {t.dropzoneHint(remaining - files.length)}
                   </p>
                 </div>
               )}
@@ -209,7 +211,7 @@ export function UploadModal({
                               <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                               </svg>
-                              Naloženo
+                              {t.fileUploaded}
                             </p>
                           )}
                           {f.status === "error" && (
@@ -218,10 +220,7 @@ export function UploadModal({
                         </div>
                       </div>
                       {f.status === "idle" && (
-                        <button
-                          onClick={() => removeFile(i)}
-                          className="p-1 rounded-lg hover:bg-red-50 transition-colors"
-                        >
+                        <button onClick={() => removeFile(i)} className="p-1 rounded-lg hover:bg-red-50 transition-colors">
                           <svg className="w-4 h-4 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                             <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                           </svg>
@@ -235,7 +234,6 @@ export function UploadModal({
           )}
         </div>
 
-        {/* Footer actions */}
         {!allDone && (
           <div className="px-6 py-4 border-t border-[#C9A96E]/20 flex items-center justify-between gap-3">
             <button
@@ -243,7 +241,7 @@ export function UploadModal({
               disabled={uploading}
               className="font-sans text-sm text-[#2C2825]/60 hover:text-[#2C2825] transition-colors disabled:opacity-40"
             >
-              Prekliči
+              {t.cancel}
             </button>
             <button
               onClick={uploadAll}
@@ -255,10 +253,10 @@ export function UploadModal({
                   <svg className="w-4 h-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                   </svg>
-                  Nalaganje…
+                  {t.uploading}
                 </>
               ) : (
-                `Naloži ${files.length > 0 ? `(${files.length})` : ""}`
+                t.uploadBtn(files.length)
               )}
             </button>
           </div>
