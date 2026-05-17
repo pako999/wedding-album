@@ -10,6 +10,42 @@ export const maxDuration = 300; // 5 min for large albums
 
 const MAX_VIDEO_BYTES = 200 * 1024 * 1024; // 200 MB
 
+const STORAGE_ZONE = () => process.env.BUNNY_STORAGE_ZONE ?? "frank1";
+const STORAGE_API_KEY = () => process.env.BUNNY_STORAGE_API_KEY ?? "";
+
+/**
+ * Converts a stored blobUrl back to a Bunny Storage direct URL.
+ * Fetching from storage.bunnycdn.com with the API key always works,
+ * even if the CDN Pull Zone is misconfigured.
+ *
+ * blobUrl forms:
+ *   • CDN URL  → "https://frfr1.b-cdn.net/albums/slug/file.jpg"
+ *   • Proxy URL → "/api/img?key=albums%2Fslug%2Ffile.jpg"  (shouldn't be stored, but handle it)
+ */
+function storageUrlFromBlobUrl(blobUrl: string): string {
+  let key: string | null = null;
+
+  if (blobUrl.includes(".b-cdn.net")) {
+    try {
+      const u = new URL(blobUrl);
+      key = u.pathname.replace(/^\//, "");
+    } catch { /* fall through */ }
+  } else if (blobUrl.includes("/api/img")) {
+    try {
+      const u = new URL(blobUrl, "http://localhost");
+      key = u.searchParams.get("key");
+    } catch { /* fall through */ }
+  } else if (blobUrl.startsWith("albums/")) {
+    key = blobUrl.split("?")[0];
+  }
+
+  if (key) {
+    return `https://storage.bunnycdn.com/${STORAGE_ZONE()}/${key}`;
+  }
+  // Unknown URL format — try as-is (may work if it's a public URL)
+  return blobUrl.split("?")[0];
+}
+
 export async function GET(
   req: NextRequest,
   { params }: { params: Promise<{ slug: string }> }
@@ -52,12 +88,15 @@ export async function GET(
         continue;
       }
 
-      // Strip optimization params to get the original file
-      const rawUrl = photo.blobUrl.split("?")[0];
+      // Resolve to direct Bunny Storage URL (bypasses broken CDN Pull Zone)
+      const rawUrl = storageUrlFromBlobUrl(photo.blobUrl);
+      const storageHeaders: Record<string, string> = rawUrl.includes("storage.bunnycdn.com")
+        ? { AccessKey: STORAGE_API_KEY() }
+        : {};
 
       // HEAD check: skip videos larger than 200 MB
       try {
-        const head = await fetch(rawUrl, { method: "HEAD" });
+        const head = await fetch(rawUrl, { method: "HEAD", headers: storageHeaders });
         const contentLength = head.headers.get("content-length");
         if (contentLength && Number(contentLength) > MAX_VIDEO_BYTES) {
           console.warn(`[download] Skipping large video (${contentLength} bytes): ${rawUrl}`);
@@ -68,7 +107,7 @@ export async function GET(
       }
 
       try {
-        const res = await fetch(rawUrl);
+        const res = await fetch(rawUrl, { headers: storageHeaders });
         if (!res.ok) continue;
         const buf = await res.arrayBuffer();
         const ext = photo.mimeType?.split("/")[1] ?? "mp4";
@@ -79,11 +118,14 @@ export async function GET(
         // Skip failed downloads
       }
     } else {
-      // Strip optimization params to get the full-quality original
-      const rawUrl = photo.blobUrl.split("?")[0];
+      // Resolve to direct Bunny Storage URL (bypasses broken CDN Pull Zone)
+      const rawUrl = storageUrlFromBlobUrl(photo.blobUrl);
+      const storageHeaders: Record<string, string> = rawUrl.includes("storage.bunnycdn.com")
+        ? { AccessKey: STORAGE_API_KEY() }
+        : {};
 
       try {
-        const res = await fetch(rawUrl);
+        const res = await fetch(rawUrl, { headers: storageHeaders });
         if (!res.ok) continue;
         const buf = await res.arrayBuffer();
         const ext = photo.mimeType?.split("/")[1] ?? "jpg";

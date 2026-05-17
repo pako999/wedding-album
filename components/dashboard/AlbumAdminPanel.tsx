@@ -6,6 +6,7 @@ import Link from "next/link";
 import { SignOutButton } from "@clerk/nextjs";
 import type { Album, Photo } from "@/lib/db/schema";
 import { GuestcamLogo } from "@/components/GuestcamLogo";
+import { bunnyDisplayUrl } from "@/lib/storage/bunny";
 
 type Tab = "overview" | "gallery" | "qr" | "settings" | "pending";
 
@@ -512,7 +513,7 @@ function OverviewTab({
               {last4.map((photo) => (
                 <img
                   key={photo.id}
-                  src={photo.thumbnailUrl ?? photo.blobUrl}
+                  src={bunnyDisplayUrl(photo.thumbnailUrl ?? photo.blobUrl)}
                   alt={photo.caption ?? ""}
                   className="w-full h-28 object-cover rounded-xl bg-gray-100"
                   loading="lazy"
@@ -574,7 +575,7 @@ function GalleryTab({
                 className="group relative bg-white border border-gray-100 rounded-xl overflow-hidden"
               >
                 <img
-                  src={photo.thumbnailUrl ?? photo.blobUrl}
+                  src={bunnyDisplayUrl(photo.thumbnailUrl ?? photo.blobUrl)}
                   alt={photo.caption ?? ""}
                   className="w-full h-40 object-cover bg-gray-100"
                   loading="lazy"

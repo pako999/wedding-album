@@ -33,36 +33,75 @@ export function isBunnyStorageConfigured(): boolean {
 // ── URL helpers for display vs. download ──────────────────────────────────────
 
 /**
- * Returns a Bunny CDN URL with image-optimization query params for display.
+ * Extracts the Bunny Storage object key from a stored blobUrl.
  *
- * Bunny Optimizer (enable in pull-zone dashboard → Optimizer tab) processes
- * `?width=N&quality=Q` server-side.  When Optimizer is OFF the params are
- * silently ignored and the original file is served — so this is always safe.
+ * Handles three forms:
+ *   • CDN URL  → "https://frfr1.b-cdn.net/albums/slug/file.jpg"  → "albums/slug/file.jpg"
+ *   • Proxy URL → "/api/img?key=albums%2Fslug%2Ffile.jpg"         → "albums/slug/file.jpg"
+ *   • Raw key   → "albums/slug/file.jpg"                          → "albums/slug/file.jpg"
  *
- * Suggested widths:
- *   800  → mobile grid thumbnails (fast, sharp on phones)
- *  2400  → lightbox / fullscreen (high-res, still smaller than 20 MP originals)
+ * Returns null for URLs that don't belong to Bunny Storage.
  */
-export function bunnyDisplayUrl(
-  url: string | null | undefined,
-  width = 800,
-  quality = 82,
-): string {
-  if (!url) return "";
-  // Only add params for Bunny CDN URLs; leave other hosts (e.g. Vercel Blob) unchanged
-  if (!url.includes(".b-cdn.net")) return url;
-  // Already has query params → don't double-add
-  if (url.includes("?")) return url;
-  return `${url}?width=${width}&quality=${quality}`;
+function extractBunnyKey(url: string): string | null {
+  try {
+    // Already a proxy URL — extract key param
+    if (url.includes("/api/img")) {
+      const u = new URL(url, "http://localhost");
+      return u.searchParams.get("key");
+    }
+    // Bunny CDN URL
+    if (url.includes(".b-cdn.net")) {
+      const u = new URL(url);
+      // pathname is "/albums/…" — remove leading slash
+      return u.pathname.replace(/^\//, "");
+    }
+    // Looks like a bare storage key already (starts with "albums/")
+    if (url.startsWith("albums/")) {
+      return url.split("?")[0];
+    }
+    return null;
+  } catch {
+    return null;
+  }
 }
 
 /**
- * Strips Bunny optimization query params to get the original full-quality URL.
+ * Returns a proxy URL that fetches the image through /api/img.
+ *
+ * The proxy pulls the file directly from Bunny Storage using the API key,
+ * bypassing the CDN Pull Zone entirely.  Vercel's CDN + browser both cache
+ * the response (Cache-Control: immutable) so per-request cost is minimal.
+ *
+ * The `width` / `quality` params are accepted for API compatibility but are
+ * no-ops until server-side resizing is wired up — the full-quality file is
+ * always returned.
+ *
+ * Non-Bunny URLs (e.g. Vercel Blob) are returned unchanged.
+ */
+export function bunnyDisplayUrl(
+  url: string | null | undefined,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  _width = 800,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  _quality = 82,
+): string {
+  if (!url) return "";
+  const key = extractBunnyKey(url);
+  if (!key) return url; // Non-Bunny URL — return as-is
+  return `/api/img?key=${encodeURIComponent(key)}`;
+}
+
+/**
+ * Returns a proxy URL for the original full-quality file.
  * Use this for ZIP downloads, Google Drive exports, and any server-side fetch.
+ *
+ * Non-Bunny URLs are returned with query params stripped.
  */
 export function bunnyOriginalUrl(url: string | null | undefined): string {
   if (!url) return "";
-  return url.split("?")[0];
+  const key = extractBunnyKey(url);
+  if (!key) return url.split("?")[0]; // Non-Bunny URL — strip params and return
+  return `/api/img?key=${encodeURIComponent(key)}`;
 }
 
 export function isBunnyStreamConfigured(): boolean {
