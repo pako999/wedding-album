@@ -81,6 +81,7 @@ export async function GET(
       photoUrl: c.photoUrl,
       status: c.status,
       videoUrl: c.videoUrl,
+      errorMessage: c.errorMessage,
       sortOrder: c.sortOrder,
     })),
   });

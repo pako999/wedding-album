@@ -19,6 +19,7 @@ interface ClipItem {
   photoUrl: string;
   status: "queued" | "processing" | "done" | "failed";
   videoUrl: string | null;
+  errorMessage: string | null;
   sortOrder: number;
 }
 
@@ -39,6 +40,8 @@ export function FilmStudio({ album }: { album: Album }) {
   const [clips, setClips] = useState<ClipItem[]>([]);
   const [starting, setStarting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [testing, setTesting] = useState(false);
+  const [testResult, setTestResult] = useState<string | null>(null);
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   // ── Poll status ─────────────────────────────────────────────────────────────
@@ -77,6 +80,26 @@ export function FilmStudio({ album }: { album: Album }) {
     }
     return () => { if (pollRef.current) clearInterval(pollRef.current); };
   }, [generation?.status, fetchStatus]);
+
+  // ── Test connection ─────────────────────────────────────────────────────────
+  const testConnection = async () => {
+    setTesting(true);
+    setTestResult(null);
+    try {
+      const res = await fetch(`/api/albums/${album.slug}/film/test`);
+      const data = await res.json() as { ok: boolean; httpStatus?: number; klingResponse?: unknown; error?: string; detail?: string };
+      if (data.ok) {
+        setTestResult(`✅ Kling API OK (HTTP ${data.httpStatus})`);
+      } else {
+        const detail = data.detail ?? JSON.stringify(data.klingResponse ?? data.error ?? "Unknown error");
+        setTestResult(`❌ ${detail}`);
+      }
+    } catch (e) {
+      setTestResult(`❌ Network error: ${String(e)}`);
+    } finally {
+      setTesting(false);
+    }
+  };
 
   // ── Start generation ────────────────────────────────────────────────────────
   const startGeneration = async () => {
@@ -220,17 +243,31 @@ export function FilmStudio({ album }: { album: Album }) {
               </div>
             ) : (
               /* Failed */
-              <div className="flex items-center gap-3 flex-wrap">
-                <div className="flex items-center gap-2 text-sm font-semibold text-red-700 bg-red-50 px-3 py-2 rounded-xl">
-                  ⚠️ Generiranje ni uspelo
+              <div className="space-y-2">
+                <div className="flex items-center gap-3 flex-wrap">
+                  <div className="flex items-center gap-2 text-sm font-semibold text-red-700 bg-red-50 px-3 py-2 rounded-xl">
+                    ⚠️ Generiranje ni uspelo
+                  </div>
+                  <button onClick={startGeneration} disabled={starting}
+                    className="text-xs text-gray-400 hover:text-gray-600 underline transition-colors">
+                    Poskusi znova
+                  </button>
+                  <button onClick={testConnection} disabled={testing}
+                    className="text-xs text-violet-500 hover:text-violet-700 underline transition-colors">
+                    {testing ? "Testiram…" : "Testiraj API povezavo"}
+                  </button>
                 </div>
-                <button
-                  onClick={startGeneration}
-                  disabled={starting}
-                  className="text-xs text-gray-400 hover:text-gray-600 underline transition-colors"
-                >
-                  Poskusi znova
-                </button>
+                {/* Show first clip error so we know what went wrong */}
+                {clips.find(c => c.errorMessage) && (
+                  <p className="text-xs text-red-600 bg-red-50 px-3 py-2 rounded-lg font-mono break-all">
+                    {clips.find(c => c.errorMessage)?.errorMessage}
+                  </p>
+                )}
+                {testResult && (
+                  <p className={`text-xs px-3 py-2 rounded-lg font-mono break-all ${testResult.startsWith("✅") ? "bg-green-50 text-green-700" : "bg-red-50 text-red-700"}`}>
+                    {testResult}
+                  </p>
+                )}
               </div>
             )}
 
@@ -275,7 +312,7 @@ export function FilmStudio({ album }: { album: Album }) {
         {[
           { icon: "⚡", title: "Kling AI v1.6", body: "State-of-the-art model za image-to-video generiranje." },
           { icon: "⏱️", title: "5 sek / posnetek", body: "Vsak posnetek je 5 sekund, 16:9, do 1080p." },
-          { icon: "🎞️", title: "~2–4 min čakanja", body: "fal.ai GPU oblak procesira posnetke vzporedno." },
+          { icon: "🎞️", title: "~2–4 min čakanja", body: "Kling AI oblak procesira posnetke vzporedno." },
         ].map(card => (
           <div key={card.title} className="bg-gray-50 rounded-xl p-4 border border-gray-100">
             <div className="text-2xl mb-2">{card.icon}</div>
