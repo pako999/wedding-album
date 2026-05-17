@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Lightbox from "yet-another-react-lightbox";
@@ -26,6 +26,13 @@ interface Props {
 }
 
 type FilterTab = "all" | "photos" | "videos";
+
+interface CommentItem {
+  id: string;
+  uploaderName: string;
+  body: string;
+  createdAt: string;
+}
 
 function eventIcon(eventType: string): string {
   switch (eventType) {
@@ -109,12 +116,106 @@ export function AlbumGuestView({ album, photos, passwordRequired, passwordCorrec
   const [slideshowOpen, setSlideshowOpen]     = useState(false);
   const [slideshowIdx, setSlideshowIdx]       = useState(0);
   const [projectionOpen, setProjectionOpen]   = useState(false);
+
+  // ── Reactions ─────────────────────────────────────────────────────────────
+  const [likeCounts, setLikeCounts]             = useState<Record<string, number>>({});
+  const [myLikes, setMyLikes]                   = useState<Set<string>>(new Set());
+  const [commentMap, setCommentMap]             = useState<Record<string, CommentItem[]>>({});
+  const [openCommentsPhoto, setOpenCommentsPhoto] = useState<string | null>(null); // photoId
+  const [commentInput, setCommentInput]         = useState("");
+  const [commentPosting, setCommentPosting]     = useState(false);
+
   const nameInputRef  = useRef<HTMLInputElement>(null);
   const cameraFilesRef = useRef<FileList | null>(null);
 
   const t       = translations[lang];
   const evtIcon = eventIcon(album.eventType ?? "other");
   const albumFull = album.plan === "free" && photos.length >= (album.maxPhotos ?? 20);
+
+  // ── Load reactions + restore myLikes from localStorage ────────────────────
+  useEffect(() => {
+    // Restore persisted likes for this album
+    try {
+      const stored = localStorage.getItem(`likes-${album.slug}`);
+      if (stored) setMyLikes(new Set(JSON.parse(stored) as string[]));
+    } catch { /* ignore */ }
+
+    fetch(`/api/albums/${album.slug}/reactions`)
+      .then(r => r.json())
+      .then((data: { likes: Record<string, number>; comments: Record<string, CommentItem[]> }) => {
+        setLikeCounts(data.likes ?? {});
+        setCommentMap(data.comments ?? {});
+      })
+      .catch(() => { /* non-fatal */ });
+  }, [album.slug]);
+
+  // ── Like toggle ───────────────────────────────────────────────────────────
+  const toggleLike = useCallback((photoId: string) => {
+    if (!uploaderName.trim()) return; // need a name first
+    const alreadyLiked = myLikes.has(photoId);
+    const action = alreadyLiked ? "unlike" : "like";
+
+    // Optimistic update
+    setMyLikes(prev => {
+      const next = new Set(prev);
+      alreadyLiked ? next.delete(photoId) : next.add(photoId);
+      try { localStorage.setItem(`likes-${album.slug}`, JSON.stringify(Array.from(next))); } catch { /* ignore */ }
+      return next;
+    });
+    setLikeCounts(prev => ({
+      ...prev,
+      [photoId]: Math.max(0, (prev[photoId] ?? 0) + (alreadyLiked ? -1 : 1)),
+    }));
+
+    // Sync to server (fire-and-forget; reconcile on failure)
+    fetch(`/api/albums/${album.slug}/photos/${photoId}/like`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ uploaderName: uploaderName.trim(), action }),
+    })
+      .then(r => r.json())
+      .then((d: { count: number }) => {
+        setLikeCounts(prev => ({ ...prev, [photoId]: d.count }));
+      })
+      .catch(() => {
+        // Roll back optimistic update on error
+        setMyLikes(prev => {
+          const next = new Set(prev);
+          alreadyLiked ? next.add(photoId) : next.delete(photoId);
+          return next;
+        });
+        setLikeCounts(prev => ({
+          ...prev,
+          [photoId]: Math.max(0, (prev[photoId] ?? 0) + (alreadyLiked ? 1 : -1)),
+        }));
+      });
+  }, [uploaderName, myLikes, album.slug]);
+
+  // ── Post comment ─────────────────────────────────────────────────────────
+  const postComment = useCallback(async () => {
+    if (!openCommentsPhoto || !commentInput.trim() || !uploaderName.trim()) return;
+    setCommentPosting(true);
+    try {
+      const res = await fetch(
+        `/api/albums/${album.slug}/photos/${openCommentsPhoto}/comments`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ uploaderName: uploaderName.trim(), body: commentInput.trim() }),
+        }
+      );
+      if (res.ok) {
+        const newComment: CommentItem = await res.json();
+        setCommentMap(prev => ({
+          ...prev,
+          [openCommentsPhoto]: [...(prev[openCommentsPhoto] ?? []), newComment],
+        }));
+        setCommentInput("");
+      }
+    } finally {
+      setCommentPosting(false);
+    }
+  }, [openCommentsPhoto, commentInput, uploaderName, album.slug]);
 
   // ── Uploader list (sorted by upload count desc) ───────────────────────────
   const uploaders: string[] = (() => {
@@ -621,10 +722,10 @@ export function AlbumGuestView({ album, photos, passwordRequired, passwordCorrec
                         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-300" />
                       </div>
 
-                      {/* Uploader + time — below image, not on it */}
+                      {/* Uploader + time + reactions — below image */}
                       <div className="flex items-center gap-1.5 px-1 pt-1.5 pb-0.5">
                         {photo.uploaderName && <AvatarBubble name={photo.uploaderName} size={5} />}
-                        <div className="min-w-0">
+                        <div className="min-w-0 flex-1">
                           {photo.uploaderName && (
                             <p className="text-[11px] font-semibold leading-tight truncate" style={{ color: BRAND.dark }}>
                               {photo.uploaderName}
@@ -634,6 +735,36 @@ export function AlbumGuestView({ album, photos, passwordRequired, passwordCorrec
                             {formatUploadTime(photo.uploadedAt)}
                           </p>
                         </div>
+                        {/* Like button */}
+                        <button
+                          onClick={(e) => { e.stopPropagation(); toggleLike(photo.id); }}
+                          title={myLikes.has(photo.id) ? "Odstrani všeček" : "Všečkaj"}
+                          className="flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[11px] font-semibold transition-all shrink-0"
+                          style={myLikes.has(photo.id)
+                            ? { background: "#FEF2F4", color: BRAND.accent }
+                            : { background: "transparent", color: BRAND.muted }}
+                        >
+                          <svg className="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill={myLikes.has(photo.id) ? BRAND.accent : "none"} stroke={myLikes.has(photo.id) ? BRAND.accent : "currentColor"} strokeWidth={2}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+                          </svg>
+                          {(likeCounts[photo.id] ?? 0) > 0 && (
+                            <span>{likeCounts[photo.id]}</span>
+                          )}
+                        </button>
+                        {/* Comment button */}
+                        <button
+                          onClick={(e) => { e.stopPropagation(); setOpenCommentsPhoto(photo.id); setCommentInput(""); }}
+                          title="Komentarji"
+                          className="flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[11px] font-semibold transition-all shrink-0"
+                          style={{ background: "transparent", color: BRAND.muted }}
+                        >
+                          <svg className="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z" />
+                          </svg>
+                          {(commentMap[photo.id]?.length ?? 0) > 0 && (
+                            <span>{commentMap[photo.id].length}</span>
+                          )}
+                        </button>
                       </div>
                     </div>
                   ))}
@@ -672,6 +803,108 @@ export function AlbumGuestView({ album, photos, passwordRequired, passwordCorrec
           Guestcam · <a href="https://guestcam.si" className="hover:underline">guestcam.si</a>
         </p>
       </footer>
+
+      {/* ── Comments panel ───────────────────────────────────────────────── */}
+      {openCommentsPhoto && (() => {
+        const photo = photos.find(p => p.id === openCommentsPhoto);
+        const comments = commentMap[openCommentsPhoto] ?? [];
+        return (
+          <div className="fixed inset-0 z-40 flex items-end sm:items-center justify-center" onClick={() => setOpenCommentsPhoto(null)}>
+            {/* Backdrop */}
+            <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" />
+            {/* Panel */}
+            <div
+              className="relative w-full sm:w-[440px] max-h-[82vh] sm:max-h-[70vh] bg-white sm:rounded-2xl rounded-t-2xl flex flex-col overflow-hidden shadow-2xl"
+              onClick={e => e.stopPropagation()}
+            >
+              {/* Header */}
+              <div className="flex items-center justify-between px-5 py-4 border-b shrink-0" style={{ borderColor: BRAND.border }}>
+                <div className="flex items-center gap-2">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2} style={{ color: BRAND.accent }}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z" />
+                  </svg>
+                  <span className="font-semibold text-sm" style={{ color: BRAND.dark }}>
+                    Komentarji
+                    {comments.length > 0 && (
+                      <span className="ml-1.5 text-xs font-normal" style={{ color: BRAND.muted }}>· {comments.length}</span>
+                    )}
+                  </span>
+                </div>
+                {photo?.uploaderName && (
+                  <span className="text-xs" style={{ color: BRAND.muted }}>
+                    Foto: <span className="font-medium">{photo.uploaderName}</span>
+                  </span>
+                )}
+                <button onClick={() => setOpenCommentsPhoto(null)}
+                  className="w-7 h-7 rounded-full flex items-center justify-center transition-all hover:bg-gray-100" style={{ color: BRAND.muted }}>
+                  ✕
+                </button>
+              </div>
+
+              {/* Comment list */}
+              <div className="flex-1 overflow-y-auto px-5 py-4 space-y-4">
+                {comments.length === 0 ? (
+                  <div className="text-center py-10">
+                    <div className="text-4xl mb-3 opacity-20">💬</div>
+                    <p className="text-sm" style={{ color: BRAND.muted }}>Bodi prvi, ki komentira!</p>
+                  </div>
+                ) : comments.map(c => (
+                  <div key={c.id} className="flex items-start gap-2.5">
+                    <AvatarBubble name={c.uploaderName} size={7} />
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-baseline gap-1.5">
+                        <span className="text-xs font-semibold" style={{ color: BRAND.dark }}>{c.uploaderName}</span>
+                        <span className="text-[10px]" style={{ color: BRAND.muted }}>{formatUploadTime(c.createdAt)}</span>
+                      </div>
+                      <p className="text-sm leading-snug mt-0.5" style={{ color: BRAND.dark }}>{c.body}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Add comment input */}
+              <div className="border-t px-4 py-3 shrink-0" style={{ borderColor: BRAND.border }}>
+                {!nameConfirmed ? (
+                  <p className="text-xs text-center py-1" style={{ color: BRAND.muted }}>
+                    Vnesi svoje ime zgoraj, da komentiraš.
+                  </p>
+                ) : (
+                  <div className="flex items-center gap-2">
+                    <AvatarBubble name={uploaderName} size={7} />
+                    <input
+                      type="text"
+                      value={commentInput}
+                      onChange={e => setCommentInput(e.target.value)}
+                      onKeyDown={e => e.key === "Enter" && !e.shiftKey && postComment()}
+                      placeholder="Dodaj komentar…"
+                      maxLength={500}
+                      className="flex-1 px-3 py-2 border rounded-xl text-sm outline-none transition-all"
+                      style={{ borderColor: BRAND.border }}
+                    />
+                    <button
+                      onClick={postComment}
+                      disabled={!commentInput.trim() || commentPosting}
+                      className="w-9 h-9 rounded-full flex items-center justify-center text-white transition-all disabled:opacity-30 shrink-0"
+                      style={{ background: BRAND.accent }}
+                    >
+                      {commentPosting ? (
+                        <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
+                        </svg>
+                      ) : (
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
+                        </svg>
+                      )}
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        );
+      })()}
 
       {/* ── Slideshow ────────────────────────────────────────────────────── */}
       {slideshowOpen && (

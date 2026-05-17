@@ -6,6 +6,7 @@ import {
   timestamp,
   varchar,
   index,
+  unique,
 } from "drizzle-orm/pg-core";
 
 // ─── Albums ──────────────────────────────────────────────────────────────────
@@ -140,6 +141,49 @@ export const guests = pgTable(
   (t) => [index("guests_album_idx").on(t.albumId)]
 );
 
+// ─── Photo Likes ─────────────────────────────────────────────────────────────
+
+export const photoLikes = pgTable(
+  "photo_likes",
+  {
+    id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+    photoId: text("photo_id")
+      .notNull()
+      .references(() => photos.id, { onDelete: "cascade" }),
+    albumId: text("album_id")
+      .notNull()
+      .references(() => albums.id, { onDelete: "cascade" }),
+    uploaderName: text("uploader_name").notNull(),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+  },
+  (t) => [
+    index("photo_likes_photo_idx").on(t.photoId),
+    unique("photo_likes_unique").on(t.photoId, t.uploaderName),
+  ]
+);
+
+// ─── Photo Comments ──────────────────────────────────────────────────────────
+
+export const photoComments = pgTable(
+  "photo_comments",
+  {
+    id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+    photoId: text("photo_id")
+      .notNull()
+      .references(() => photos.id, { onDelete: "cascade" }),
+    albumId: text("album_id")
+      .notNull()
+      .references(() => albums.id, { onDelete: "cascade" }),
+    uploaderName: text("uploader_name").notNull(),
+    body: text("body").notNull(),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+  },
+  (t) => [
+    index("photo_comments_photo_idx").on(t.photoId),
+    index("photo_comments_album_idx").on(t.albumId),
+  ]
+);
+
 // ─── Types ───────────────────────────────────────────────────────────────────
 
 export type Album = typeof albums.$inferSelect;
@@ -148,3 +192,5 @@ export type Photo = typeof photos.$inferSelect;
 export type NewPhoto = typeof photos.$inferInsert;
 export type Guest = typeof guests.$inferSelect;
 export type NewGuest = typeof guests.$inferInsert;
+export type PhotoLike = typeof photoLikes.$inferSelect;
+export type PhotoComment = typeof photoComments.$inferSelect;

@@ -86,6 +86,33 @@ export async function runMigrations() {
       )
     `;
 
+    // ── Likes ─────────────────────────────────────────────────────────────────
+    await sql`
+      CREATE TABLE IF NOT EXISTS photo_likes (
+        id            TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
+        photo_id      TEXT NOT NULL REFERENCES photos(id) ON DELETE CASCADE,
+        album_id      TEXT NOT NULL REFERENCES albums(id) ON DELETE CASCADE,
+        uploader_name TEXT NOT NULL,
+        created_at    TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        CONSTRAINT photo_likes_unique UNIQUE (photo_id, uploader_name)
+      )
+    `;
+    await sql`CREATE INDEX IF NOT EXISTS photo_likes_photo_idx ON photo_likes (photo_id)`;
+
+    // ── Comments ──────────────────────────────────────────────────────────────
+    await sql`
+      CREATE TABLE IF NOT EXISTS photo_comments (
+        id            TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
+        photo_id      TEXT NOT NULL REFERENCES photos(id) ON DELETE CASCADE,
+        album_id      TEXT NOT NULL REFERENCES albums(id) ON DELETE CASCADE,
+        uploader_name TEXT NOT NULL,
+        body          TEXT NOT NULL,
+        created_at    TIMESTAMPTZ NOT NULL DEFAULT NOW()
+      )
+    `;
+    await sql`CREATE INDEX IF NOT EXISTS photo_comments_photo_idx ON photo_comments (photo_id)`;
+    await sql`CREATE INDEX IF NOT EXISTS photo_comments_album_idx ON photo_comments (album_id)`;
+
     console.log("[migrations] ✓ DB schema up to date");
   } catch (err) {
     console.error("[migrations] Migration error:", err);
