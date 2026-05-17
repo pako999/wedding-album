@@ -118,13 +118,16 @@ export function AlbumGuestView({
     );
   }
 
-  const lightboxSlides = photos.map((p) => ({
-    src: p.blobUrl,
-    width: p.width ?? 1200,
-    height: p.height ?? 800,
-    download: { url: p.blobUrl, filename: p.originalFilename ?? "photo.jpg" },
-    description: p.caption ?? undefined,
-  }));
+  // Lightbox only for photos (not videos)
+  const lightboxSlides = photos
+    .filter((p) => !p.mimeType?.startsWith("video/"))
+    .map((p) => ({
+      src: p.blobUrl,
+      width: p.width ?? 1200,
+      height: p.height ?? 800,
+      download: { url: p.blobUrl, filename: p.originalFilename ?? "photo.jpg" },
+      description: p.caption ?? undefined,
+    }));
 
   return (
     <div className="min-h-screen bg-[#FAF7F2]">
@@ -236,29 +239,66 @@ export function AlbumGuestView({
           </div>
         ) : (
           <div className="masonry-grid">
-            {photos.map((photo, index) => (
-              <div
-                key={photo.id}
-                className="masonry-item group cursor-pointer rounded-xl overflow-hidden bg-[#C9A96E]/5"
-                onClick={() => setLightboxIndex(index)}
-              >
-                <div className="relative">
-                  <img
-                    src={photo.thumbnailUrl ?? photo.blobUrl}
-                    alt={photo.caption ?? ""}
-                    className="w-full h-auto block transition-transform duration-500 group-hover:scale-[1.02]"
-                    loading="lazy"
-                  />
-                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300 flex items-end">
-                    {photo.caption && (
-                      <p className="font-sans text-xs text-white p-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 leading-snug line-clamp-2">
-                        {photo.caption}
-                      </p>
-                    )}
-                  </div>
+            {photos.map((photo, index) => {
+              const isVideo = photo.mimeType?.startsWith("video/") ?? false;
+              // Only image photos go into the lightbox
+              const lightboxIdx = photos
+                .slice(0, index + 1)
+                .filter((p) => !p.mimeType?.startsWith("video/")).length - 1;
+
+              return (
+                <div
+                  key={photo.id}
+                  className="masonry-item group rounded-xl overflow-hidden bg-[#C9A96E]/5"
+                >
+                  {isVideo ? (
+                    /* ── Video tile ── */
+                    <div className="relative bg-black rounded-xl overflow-hidden">
+                      <video
+                        src={photo.blobUrl}
+                        controls
+                        playsInline
+                        preload="metadata"
+                        className="w-full h-auto block max-h-96 object-contain"
+                        style={{ background: "#1a1a1a" }}
+                      />
+                      {/* Video badge */}
+                      <div className="absolute top-2 left-2 flex items-center gap-1 bg-black/60 rounded-full px-2 py-1 pointer-events-none">
+                        <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M8 5v14l11-7z" />
+                        </svg>
+                        <span className="text-white text-[10px] font-medium">Video</span>
+                      </div>
+                      {photo.uploaderName && (
+                        <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/60 to-transparent px-3 py-2 pointer-events-none">
+                          <p className="text-white text-xs truncate">{photo.uploaderName}</p>
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    /* ── Photo tile ── */
+                    <div
+                      className="relative cursor-pointer"
+                      onClick={() => setLightboxIndex(lightboxIdx)}
+                    >
+                      <img
+                        src={photo.thumbnailUrl ?? photo.blobUrl}
+                        alt={photo.caption ?? ""}
+                        className="w-full h-auto block transition-transform duration-500 group-hover:scale-[1.02]"
+                        loading="lazy"
+                      />
+                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300 flex items-end">
+                        {photo.caption && (
+                          <p className="font-sans text-xs text-white p-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 leading-snug line-clamp-2">
+                            {photo.caption}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  )}
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </main>

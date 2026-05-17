@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useCallback } from "react";
-import { useDropzone } from "react-dropzone";
+import { useState, useCallback, useRef } from "react";
+import { upload } from "@vercel/blob/client";
 import { translations, type Lang } from "@/lib/i18n/translations";
 
 interface Props {
@@ -16,15 +16,25 @@ interface Props {
 }
 
 interface UploadFile {
+  id: string;
   file: File;
-  preview: string;
+  preview: string | null;  // null for videos before thumbnail generation
   status: "idle" | "uploading" | "done" | "error";
   progress: number;
   error?: string;
+  isVideo: boolean;
 }
 
-const MAX_FILE_SIZE = 20 * 1024 * 1024;
-const ACCEPTED_TYPES = { "image/jpeg": [], "image/png": [], "image/webp": [], "image/heic": [] };
+const ACCEPTED_IMAGES = ["image/jpeg", "image/jpg", "image/png", "image/webp", "image/heic", "image/heif", "image/gif"];
+const ACCEPTED_VIDEOS = ["video/mp4", "video/quicktime", "video/mov", "video/webm", "video/mpeg", "video/3gpp", "video/avi"];
+const ALL_ACCEPTED = [...ACCEPTED_IMAGES, ...ACCEPTED_VIDEOS];
+
+const MAX_IMAGE_MB = 50;
+const MAX_VIDEO_MB = 500;
+
+function formatMB(bytes: number) {
+  return (bytes / 1024 / 1024).toFixed(1) + " MB";
+}
 
 export function UploadModal({
   albumSlug,
@@ -40,37 +50,47 @@ export function UploadModal({
   const [files, setFiles] = useState<UploadFile[]>([]);
   const [uploading, setUploading] = useState(false);
   const [allDone, setAllDone] = useState(false);
+  const [dragOver, setDragOver] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const remaining = maxPhotos - currentCount;
+  const remaining = Math.max(0, maxPhotos - currentCount);
 
-  const onDrop = useCallback(
-    (accepted: File[]) => {
-      const canAdd = Math.min(accepted.length, remaining - files.length);
-      const newFiles: UploadFile[] = accepted.slice(0, canAdd).map((f) => ({
+  const addFiles = useCallback((rawFiles: FileList | File[]) => {
+    const arr = Array.from(rawFiles);
+    const toAdd: UploadFile[] = [];
+
+    for (const f of arr) {
+      if (files.length + toAdd.length >= remaining) break;
+      if (!ALL_ACCEPTED.includes(f.type)) continue;
+
+      const isVideo = ACCEPTED_VIDEOS.includes(f.type);
+      const maxBytes = isVideo ? MAX_VIDEO_MB * 1024 * 1024 : MAX_IMAGE_MB * 1024 * 1024;
+      if (f.size > maxBytes) continue;
+
+      toAdd.push({
+        id: crypto.randomUUID(),
         file: f,
-        preview: URL.createObjectURL(f),
+        preview: isVideo ? null : URL.createObjectURL(f),
         status: "idle",
         progress: 0,
-      }));
-      setFiles((prev) => [...prev, ...newFiles]);
-    },
-    [files.length, remaining]
-  );
+        isVideo,
+      });
+    }
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    onDrop,
-    accept: ACCEPTED_TYPES,
-    maxSize: MAX_FILE_SIZE,
-    multiple: true,
-    disabled: uploading || files.length >= remaining,
-  });
+    setFiles((prev) => [...prev, ...toAdd]);
+  }, [files.length, remaining]);
 
-  const removeFile = (idx: number) => {
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setDragOver(false);
+    addFiles(e.dataTransfer.files);
+  };
+
+  const removeFile = (id: string) => {
     setFiles((prev) => {
-      const next = [...prev];
-      URL.revokeObjectURL(next[idx].preview);
-      next.splice(idx, 1);
-      return next;
+      const f = prev.find((x) => x.id === id);
+      if (f?.preview) URL.revokeObjectURL(f.preview);
+      return prev.filter((x) => x.id !== id);
     });
   };
 
@@ -82,35 +102,56 @@ export function UploadModal({
 
     for (let i = 0; i < updated.length; i++) {
       if (updated[i].status === "done") continue;
-      updated[i] = { ...updated[i], status: "uploading", progress: 10 };
+
+      updated[i] = { ...updated[i], status: "uploading", progress: 5 };
       setFiles([...updated]);
 
       try {
-        const formData = new FormData();
-        formData.append("file", updated[i].file);
-        formData.append("uploaderName", uploaderName);
+        const f = updated[i].file;
+        const ext = f.name.split(".").pop() ?? "bin";
+        const blobPath = `albums/${albumId}/${crypto.randomUUID()}.${ext}`;
 
-        const res = await fetch(`/api/albums/${albumSlug}/upload`, {
-          method: "POST",
-          body: formData,
+        // Upload directly from browser → Vercel Blob (no body-size limit)
+        const blob = await upload(blobPath, f, {
+          access: "public",
+          handleUploadUrl: `/api/albums/${albumSlug}/upload`,
+          clientPayload: JSON.stringify({ uploaderName }),
+          multipart: true,           // chunked upload for large videos
+          onUploadProgress: ({ percentage }) => {
+            updated[i] = { ...updated[i], progress: Math.round(percentage * 0.9) };
+            setFiles([...updated]);
+          },
         });
 
-        if (!res.ok) {
-          const err = await res.json().catch(() => ({ error: t.fileNetworkError }));
-          updated[i] = { ...updated[i], status: "error", error: err.error ?? t.fileNetworkError, progress: 0 };
-        } else {
-          updated[i] = { ...updated[i], status: "done", progress: 100 };
+        // Client calls save-upload so record is in DB immediately (webhook is backup)
+        const saveRes = await fetch(`/api/albums/${albumSlug}/save-upload`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            blobUrl: blob.url,
+            mimeType: f.type,
+            originalFilename: f.name,
+            sizeBytes: f.size,
+            uploaderName,
+          }),
+        });
+
+        if (!saveRes.ok) {
+          const err = await saveRes.json().catch(() => ({}));
+          throw new Error(err.error ?? "Save failed");
         }
-      } catch {
-        updated[i] = { ...updated[i], status: "error", error: t.fileNetworkError, progress: 0 };
+
+        updated[i] = { ...updated[i], status: "done", progress: 100 };
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : "Upload failed";
+        updated[i] = { ...updated[i], status: "error", error: msg, progress: 0 };
       }
 
       setFiles([...updated]);
     }
 
     setUploading(false);
-    const anyDone = updated.some((f) => f.status === "done");
-    if (anyDone) setAllDone(true);
+    if (updated.some((f) => f.status === "done")) setAllDone(true);
   };
 
   const successCount = files.filter((f) => f.status === "done").length;
@@ -124,10 +165,13 @@ export function UploadModal({
       />
 
       {/* Modal */}
-      <div className="relative w-full sm:max-w-lg bg-[#FAF7F2] rounded-t-2xl sm:rounded-2xl shadow-2xl max-h-[90vh] flex flex-col">
+      <div className="relative w-full sm:max-w-lg bg-[#FAF7F2] rounded-t-3xl sm:rounded-3xl shadow-2xl max-h-[92vh] flex flex-col overflow-hidden">
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-[#C9A96E]/20">
-          <h2 className="font-serif text-xl font-light text-[#2C2825]">{t.uploadModalTitle}</h2>
+        <div className="flex items-center justify-between px-6 py-4 border-b border-[#C9A96E]/20 shrink-0">
+          <div>
+            <h2 className="font-serif text-xl font-light text-[#2C2825]">{t.uploadModalTitle}</h2>
+            <p className="text-xs text-[#2C2825]/40 mt-0.5">Fotografije · Videi · Do {MAX_VIDEO_MB} MB</p>
+          </div>
           <button
             onClick={onClose}
             disabled={uploading}
@@ -139,8 +183,9 @@ export function UploadModal({
           </button>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-6 space-y-5">
+        <div className="flex-1 overflow-y-auto p-6 space-y-4">
           {allDone ? (
+            /* Success state */
             <div className="text-center py-8">
               <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-4">
                 <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
@@ -158,27 +203,37 @@ export function UploadModal({
             </div>
           ) : (
             <>
-              {/* Dropzone */}
+              {/* Drop zone */}
               {files.length < remaining && (
                 <div
-                  {...getRootProps()}
-                  className={`border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-colors ${
-                    isDragActive
-                      ? "border-[#C9A96E] bg-[#C9A96E]/5"
+                  onDrop={handleDrop}
+                  onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
+                  onDragLeave={() => setDragOver(false)}
+                  onClick={() => fileInputRef.current?.click()}
+                  className={`border-2 border-dashed rounded-2xl p-8 text-center cursor-pointer transition-all select-none ${
+                    dragOver
+                      ? "border-[#C9A96E] bg-[#C9A96E]/8 scale-[1.01]"
                       : "border-[#C9A96E]/30 hover:border-[#C9A96E]/60 hover:bg-[#C9A96E]/5"
                   }`}
                 >
-                  <input {...getInputProps()} />
-                  <div className="w-10 h-10 rounded-full bg-[#C9A96E]/10 flex items-center justify-center mx-auto mb-3">
-                    <svg className="w-5 h-5 text-[#C9A96E]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 16v-8m0 0-3 3m3-3 3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.338-2.32 5.75 5.75 0 011.987 9.095H6.75z" />
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    multiple
+                    accept={ALL_ACCEPTED.join(",")}
+                    className="hidden"
+                    onChange={(e) => e.target.files && addFiles(e.target.files)}
+                  />
+                  <div className="w-12 h-12 rounded-full bg-[#C9A96E]/10 flex items-center justify-center mx-auto mb-3">
+                    <svg className="w-6 h-6 text-[#C9A96E]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
                     </svg>
                   </div>
-                  <p className="font-sans text-sm text-[#2C2825]/70">
-                    {isDragActive ? t.dropzoneActive : t.dropzone}
+                  <p className="font-sans text-sm font-semibold text-[#2C2825]/80 mb-1">
+                    {dragOver ? "Spusti datoteke" : "Izberi ali povleci datoteke"}
                   </p>
-                  <p className="font-sans text-xs text-[#2C2825]/40 mt-1">
-                    {t.dropzoneHint(remaining - files.length)}
+                  <p className="font-sans text-xs text-[#2C2825]/40">
+                    Fotografije (JPEG, PNG, HEIC) · Videi (MP4, MOV) · Do {remaining} datotek
                   </p>
                 </div>
               )}
@@ -186,24 +241,37 @@ export function UploadModal({
               {/* File list */}
               {files.length > 0 && (
                 <div className="space-y-2">
-                  {files.map((f, i) => (
-                    <div key={i} className="flex items-center gap-3 p-3 bg-white rounded-xl border border-[#C9A96E]/15">
-                      <img
-                        src={f.preview}
-                        alt=""
-                        className="w-12 h-12 object-cover rounded-lg shrink-0"
-                      />
+                  {files.map((f) => (
+                    <div key={f.id} className="flex items-center gap-3 p-3 bg-white rounded-2xl border border-[#C9A96E]/15">
+                      {/* Thumb */}
+                      <div className="w-12 h-12 rounded-xl overflow-hidden shrink-0 bg-[#C9A96E]/10 flex items-center justify-center">
+                        {f.isVideo ? (
+                          <svg className="w-6 h-6 text-[#C9A96E]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M15.91 11.672a.375.375 0 010 .656l-5.603 3.113a.375.375 0 01-.557-.328V8.887c0-.286.307-.466.557-.327l5.603 3.112z" />
+                          </svg>
+                        ) : f.preview ? (
+                          <img src={f.preview} alt="" className="w-full h-full object-cover" />
+                        ) : null}
+                      </div>
+
                       <div className="flex-1 min-w-0">
-                        <p className="font-sans text-sm text-[#2C2825] truncate">{f.file.name}</p>
+                        <p className="font-sans text-sm text-[#2C2825] truncate font-medium">{f.file.name}</p>
                         <div className="flex items-center gap-2 mt-1">
                           {f.status === "idle" && (
                             <p className="font-sans text-xs text-[#2C2825]/40">
-                              {(f.file.size / 1024 / 1024).toFixed(1)} MB
+                              {f.isVideo ? "📹" : "📷"} {formatMB(f.file.size)}
                             </p>
                           )}
                           {f.status === "uploading" && (
-                            <div className="flex-1 h-1.5 bg-[#C9A96E]/20 rounded-full overflow-hidden">
-                              <div className="h-full bg-[#C9A96E] rounded-full animate-pulse w-1/2" />
+                            <div className="flex items-center gap-2 flex-1">
+                              <div className="flex-1 h-1.5 bg-[#C9A96E]/15 rounded-full overflow-hidden">
+                                <div
+                                  className="h-full bg-[#C9A96E] rounded-full transition-all duration-300"
+                                  style={{ width: `${f.progress}%` }}
+                                />
+                              </div>
+                              <span className="text-xs text-[#C9A96E] font-medium shrink-0">{f.progress}%</span>
                             </div>
                           )}
                           {f.status === "done" && (
@@ -211,16 +279,17 @@ export function UploadModal({
                               <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                               </svg>
-                              {t.fileUploaded}
+                              Naloženo
                             </p>
                           )}
                           {f.status === "error" && (
-                            <p className="font-sans text-xs text-red-500">{f.error}</p>
+                            <p className="font-sans text-xs text-red-500 truncate">{f.error}</p>
                           )}
                         </div>
                       </div>
+
                       {f.status === "idle" && (
-                        <button onClick={() => removeFile(i)} className="p-1 rounded-lg hover:bg-red-50 transition-colors">
+                        <button onClick={() => removeFile(f.id)} className="p-1.5 rounded-lg hover:bg-red-50 transition-colors shrink-0">
                           <svg className="w-4 h-4 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                             <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                           </svg>
@@ -234,8 +303,9 @@ export function UploadModal({
           )}
         </div>
 
+        {/* Footer */}
         {!allDone && (
-          <div className="px-6 py-4 border-t border-[#C9A96E]/20 flex items-center justify-between gap-3">
+          <div className="px-6 py-4 border-t border-[#C9A96E]/20 flex items-center justify-between gap-3 shrink-0">
             <button
               onClick={onClose}
               disabled={uploading}
@@ -246,17 +316,24 @@ export function UploadModal({
             <button
               onClick={uploadAll}
               disabled={files.length === 0 || uploading}
-              className="px-6 py-2.5 bg-[#2C2825] text-[#FAF7F2] font-sans text-sm font-medium rounded-xl hover:bg-[#C9A96E] transition-colors disabled:opacity-40 flex items-center gap-2"
+              className="px-6 py-2.5 rounded-2xl text-white font-sans text-sm font-semibold transition-all disabled:opacity-40 flex items-center gap-2"
+              style={{ background: "#C9A96E", boxShadow: files.length > 0 && !uploading ? "0 4px 14px rgba(201,169,110,0.4)" : "none" }}
             >
               {uploading ? (
                 <>
-                  <svg className="w-4 h-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                  <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                   </svg>
-                  {t.uploading}
+                  Nalagam...
                 </>
               ) : (
-                t.uploadBtn(files.length)
+                <>
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
+                  </svg>
+                  Naloži {files.length > 0 ? `(${files.length})` : ""}
+                </>
               )}
             </button>
           </div>

@@ -1,15 +1,24 @@
+import { handleUpload, type HandleUploadBody } from "@vercel/blob/client";
 import { NextRequest, NextResponse } from "next/server";
-import { put } from "@vercel/blob";
 import { db } from "@/lib/db";
 import { albums, photos } from "@/lib/db/schema";
 import { eq, sql } from "drizzle-orm";
-import { sendNewPhotoNotification } from "@/lib/email/notifications";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
 
-const MAX_SIZE = 20 * 1024 * 1024; // 20 MB
-const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp", "image/heic", "image/heif"];
+const ALLOWED_IMAGES = [
+  "image/jpeg", "image/jpg", "image/png", "image/webp",
+  "image/heic", "image/heif", "image/gif",
+];
+const ALLOWED_VIDEOS = [
+  "video/mp4", "video/quicktime", "video/mov", "video/mpeg",
+  "video/webm", "video/ogg", "video/avi", "video/3gpp",
+];
+const ALLOWED_TYPES = [...ALLOWED_IMAGES, ...ALLOWED_VIDEOS];
+
+const MAX_IMAGE_SIZE = 50 * 1024 * 1024;   //  50 MB
+const MAX_VIDEO_SIZE = 500 * 1024 * 1024;  // 500 MB
 
 export async function POST(
   req: NextRequest,
@@ -17,85 +26,89 @@ export async function POST(
 ) {
   const { slug } = await params;
 
-  // Find album
-  const album = await db.query.albums.findFirst({
-    where: eq(albums.slug, slug),
-  });
+  // Look up album once
+  let album: typeof albums.$inferSelect | null = null;
+  try {
+    album = await db.query.albums.findFirst({ where: eq(albums.slug, slug) }) ?? null;
+  } catch { /* DB might not be ready */ }
 
   if (!album || !album.isPublished) {
     return NextResponse.json({ error: "Album not found" }, { status: 404 });
   }
 
-  const formData = await req.formData();
-  const file = formData.get("file") as File | null;
-  const uploaderName = (formData.get("uploaderName") as string) || "Gost";
-
-  if (!file) {
-    return NextResponse.json({ error: "No file provided" }, { status: 400 });
-  }
-
-  if (!ALLOWED_TYPES.includes(file.type)) {
-    return NextResponse.json({ error: "Unsupported file type" }, { status: 400 });
-  }
-
-  if (file.size > MAX_SIZE) {
-    return NextResponse.json({ error: "File too large (max 20 MB)" }, { status: 400 });
-  }
-
-  // Check photo limit
   if (album.photoCount >= album.maxPhotos) {
-    return NextResponse.json({ error: "Album photo limit reached" }, { status: 403 });
+    return NextResponse.json({ error: "Photo limit reached" }, { status: 403 });
   }
 
-  // Upload to Vercel Blob
-  const ext = file.name.split(".").pop() ?? "jpg";
-  const blobName = `albums/${album.id}/${crypto.randomUUID()}.${ext}`;
+  // ── Vercel Blob client-upload handshake ─────────────────────────────────────
+  const body = (await req.json()) as HandleUploadBody;
 
-  const blob = await put(blobName, file, {
-    access: "public",
-    contentType: file.type,
-  });
+  try {
+    const jsonResponse = await handleUpload({
+      body,
+      request: req,
 
-  // Determine photo status based on moderation setting
-  const status = album.moderationEnabled ? "pending" : "published";
+      onBeforeGenerateToken: async (_pathname, clientPayload) => {
+        const { uploaderName } = JSON.parse(clientPayload ?? "{}");
+        return {
+          allowedContentTypes: ALLOWED_TYPES,
+          maximumSizeInBytes: MAX_VIDEO_SIZE,
+          // Embed metadata so onUploadCompleted can save the record
+          tokenPayload: JSON.stringify({
+            albumId: album!.id,
+            albumSlug: slug,
+            uploaderName: uploaderName ?? "Gost",
+            moderationEnabled: album!.moderationEnabled,
+            notifyEmail: album!.notifyEmail,
+            coupleName: album!.coupleName,
+          }),
+        };
+      },
 
-  // Insert photo record
-  const [photo] = await db
-    .insert(photos)
-    .values({
-      albumId: album.id,
-      uploaderName,
-      blobUrl: blob.url,
-      sizeBytes: file.size,
-      mimeType: file.type,
-      originalFilename: file.name,
-      status,
-    })
-    .returning();
+      onUploadCompleted: async ({ blob, tokenPayload }) => {
+        // Called by Vercel Blob infrastructure after upload is committed.
+        // This runs reliably in production; clients also call /save-upload as backup.
+        try {
+          const {
+            albumId, uploaderName, moderationEnabled, notifyEmail, coupleName,
+          } = JSON.parse(tokenPayload ?? "{}");
 
-  // Update album counts
-  if (status === "published") {
-    await db
-      .update(albums)
-      .set({ photoCount: sql`${albums.photoCount} + 1`, updatedAt: new Date() })
-      .where(eq(albums.id, album.id));
-  } else {
-    await db
-      .update(albums)
-      .set({ pendingCount: sql`${albums.pendingCount} + 1`, updatedAt: new Date() })
-      .where(eq(albums.id, album.id));
+          const isVideo = blob.contentType.startsWith("video/");
+          const status = moderationEnabled ? "pending" : "published";
+
+          const existing = await db.query.photos.findFirst({
+            where: eq(photos.blobUrl, blob.url),
+          });
+          if (existing) return; // already saved by client
+
+          await db.insert(photos).values({
+            albumId,
+            uploaderName,
+            blobUrl: blob.url,
+            mimeType: blob.contentType,
+            originalFilename: blob.pathname.split("/").pop() ?? undefined,
+            status,
+          });
+
+          const field = status === "published" ? albums.photoCount : albums.pendingCount;
+          await db.update(albums)
+            .set({ [field.name]: sql`${field} + 1`, updatedAt: new Date() })
+            .where(eq(albums.id, albumId));
+
+          if (notifyEmail && !isVideo) {
+            const { sendNewPhotoNotification } = await import("@/lib/email/notifications");
+            sendNewPhotoNotification({
+              to: notifyEmail, coupleName, uploaderName, albumSlug: slug, photoCount: 0,
+            }).catch(console.error);
+          }
+        } catch (err) {
+          console.error("[upload/onUploadCompleted]", err);
+        }
+      },
+    });
+
+    return NextResponse.json(jsonResponse);
+  } catch (err) {
+    return NextResponse.json({ error: String(err) }, { status: 400 });
   }
-
-  // Send email notification to owner (fire and forget)
-  if (album.notifyEmail) {
-    sendNewPhotoNotification({
-      to: album.notifyEmail,
-      coupleName: album.coupleName,
-      uploaderName,
-      albumSlug: album.slug,
-      photoCount: album.photoCount + 1,
-    }).catch(console.error);
-  }
-
-  return NextResponse.json({ success: true, photoId: photo.id, status });
 }
