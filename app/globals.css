@@ -48,6 +48,12 @@ body {
 .masonry-item {
   break-inside: avoid;
   margin-bottom: 8px;
+  min-height: 140px;
+}
+
+.masonry-item img {
+  display: block;
+  width: 100%;
 }
 
 @media (min-width: 640px) {

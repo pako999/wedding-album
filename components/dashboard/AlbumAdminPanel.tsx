@@ -36,7 +36,7 @@ function NewAlbumSuccess({ album }: { album: Album }) {
         </div>
 
         {/* Title */}
-        <h1 className="font-serif text-[28px] font-bold text-[#1a1a2e] mb-6 leading-snug">
+        <h1 className="font-sans text-[28px] font-bold text-gray-900 mb-6 leading-snug">
           Vaša galerija je ustvarjena! 🎉
         </h1>
 
@@ -184,8 +184,8 @@ export function AlbumAdminPanel({ album, photos, pendingCount, activeTab, isNew,
 
         {/* Gallery info */}
         <div className="px-5 pb-4">
-          <p className="text-[10px] font-semibold uppercase tracking-widest text-gray-400 mb-2">Tvoja galerija</p>
-          <p className="font-bold text-sm text-[#111] leading-tight truncate">{album.coupleName}</p>
+          <p className="text-[11px] font-semibold uppercase tracking-wider text-gray-400 mb-2">Tvoja galerija</p>
+          <p className="font-bold text-sm text-gray-900 leading-tight truncate">{album.coupleName}</p>
           <p className="text-xs text-gray-400 mt-0.5">{album.weddingDate}</p>
           <span className={`inline-block mt-2 px-2 py-0.5 rounded-full text-[11px] font-semibold ${planBadgeClass}`}>
             {planLabel}
@@ -211,12 +211,11 @@ export function AlbumAdminPanel({ album, photos, pendingCount, activeTab, isNew,
               <button
                 key={item.id}
                 onClick={() => navigateTab(item.id)}
-                className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors text-left ${
+                className={`w-full flex items-center gap-2.5 px-4 py-2.5 rounded-lg mx-0 text-sm font-medium transition-colors text-left ${
                   isActive
-                    ? "text-white"
-                    : "text-gray-500 hover:bg-gray-100 hover:text-gray-800"
+                    ? "border-l-2 border-indigo-500 bg-indigo-50 text-indigo-700"
+                    : "text-gray-600 hover:bg-gray-50 hover:text-gray-800"
                 }`}
-                style={isActive ? { background: "#1a1a2e" } : {}}
               >
                 <span className="text-base leading-none">{item.icon}</span>
                 {item.label}
@@ -226,12 +225,11 @@ export function AlbumAdminPanel({ album, photos, pendingCount, activeTab, isNew,
           {pendingCount > 0 && (
             <button
               onClick={() => navigateTab("pending")}
-              className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors text-left ${
+              className={`w-full flex items-center gap-2.5 px-4 py-2.5 rounded-lg text-sm font-medium transition-colors text-left ${
                 activeTab === "pending"
-                  ? "text-white"
-                  : "text-gray-500 hover:bg-gray-100 hover:text-gray-800"
+                  ? "border-l-2 border-indigo-500 bg-indigo-50 text-indigo-700"
+                  : "text-gray-600 hover:bg-gray-50 hover:text-gray-800"
               }`}
-              style={activeTab === "pending" ? { background: "#1a1a2e" } : {}}
             >
               <span className="text-base leading-none">⏳</span>
               V čakanju
@@ -245,7 +243,7 @@ export function AlbumAdminPanel({ album, photos, pendingCount, activeTab, isNew,
         {/* Sign out */}
         <div className="px-4 pb-5 pt-2">
           <SignOutButton>
-            <button className="w-full flex items-center gap-2 px-3 py-2 text-sm text-rose-500 rounded-lg hover:bg-rose-50 transition-colors font-medium">
+            <button className="w-full flex items-center gap-2 px-3 py-2 text-xs text-gray-400 rounded-lg hover:text-red-500 transition-colors">
               <span>→</span> Odjava
             </button>
           </SignOutButton>
@@ -295,7 +293,7 @@ export function AlbumAdminPanel({ album, photos, pendingCount, activeTab, isNew,
               {activeTab === "settings"  && "Nastavitve"}
               {activeTab === "pending"   && "Čakajoče fotografije"}
             </h1>
-            <p className="text-sm text-gray-400 mt-0.5">Upravljaj svoje poročne spomine.</p>
+            <p className="text-sm text-gray-400 mt-0.5">Upravljaj svojo galerijo.</p>
           </div>
           <div className="flex items-center gap-2 flex-shrink-0">
             <a
@@ -446,14 +444,15 @@ function OverviewTab({
         ].map((card) => (
           <div
             key={card.label}
-            className="bg-white rounded-xl border p-5 shadow-sm"
-            style={{ borderColor: "#e5e7eb" }}
+            className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm flex items-start justify-between gap-3"
           >
-            <div className="w-9 h-9 rounded-lg flex items-center justify-center text-blue-600 bg-blue-50 mb-3">
+            <div>
+              <p className="text-3xl font-bold text-gray-900">{card.value}</p>
+              <p className="text-xs font-medium uppercase tracking-wide text-gray-400 mt-1">{card.label}</p>
+            </div>
+            <div className="w-9 h-9 rounded-lg flex items-center justify-center text-indigo-500 bg-indigo-50 shrink-0">
               {card.icon}
             </div>
-            <p className="text-2xl font-bold text-gray-900">{card.value}</p>
-            <p className="text-xs text-gray-400 mt-1">{card.label}</p>
           </div>
         ))}
       </div>
@@ -461,7 +460,7 @@ function OverviewTab({
       {/* 2-col grid */}
       <div className="grid grid-cols-2 gap-6">
         {/* QR Card */}
-        <div className="bg-white rounded-xl border p-5 flex flex-col gap-4" style={{ borderColor: "#e5e7eb" }}>
+        <div className="bg-white rounded-2xl border border-gray-100 p-5 flex flex-col gap-4">
           <div>
             <h3 className="font-semibold text-gray-900 text-sm">Tvoja QR koda</h3>
             <p className="text-xs text-gray-400 mt-0.5">Natisni to kodo in jo postavi na mize.</p>
@@ -470,7 +469,7 @@ function OverviewTab({
             href={albumUrl}
             target="_blank"
             rel="noreferrer"
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs text-blue-600 border border-blue-200 rounded-lg hover:bg-blue-50 transition-colors self-start"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs text-indigo-600 border border-indigo-200 rounded-lg hover:bg-indigo-50 transition-colors self-start"
           >
             Skeniraj to QR kodo in preizkusi, kako deluje
           </a>
@@ -501,10 +500,10 @@ function OverviewTab({
         </div>
 
         {/* Recent photos card */}
-        <div className="bg-white rounded-xl border p-5 flex flex-col gap-3" style={{ borderColor: "#e5e7eb" }}>
+        <div className="bg-white rounded-2xl border border-gray-100 p-5 flex flex-col gap-3">
           <div className="flex items-center justify-between">
             <h3 className="font-semibold text-gray-900 text-sm">Zadnje naloženo</h3>
-            <Link href={`/dashboard/${album.slug}?tab=gallery`} className="text-xs text-blue-600 hover:underline">
+            <Link href={`/dashboard/${album.slug}?tab=gallery`} className="text-xs text-indigo-600 hover:underline">
               Poglej vse
             </Link>
           </div>
@@ -515,7 +514,7 @@ function OverviewTab({
                   key={photo.id}
                   src={photo.thumbnailUrl ?? photo.blobUrl}
                   alt={photo.caption ?? ""}
-                  className="w-full h-28 object-cover rounded-lg bg-gray-100"
+                  className="w-full h-28 object-cover rounded-xl bg-gray-100"
                   loading="lazy"
                   onError={(e) => {
                     const t = e.currentTarget;
@@ -563,7 +562,7 @@ function GalleryTab({
       </div>
 
       {photos.length === 0 ? (
-        <div className="flex items-center justify-center h-48 text-gray-400 text-sm bg-white rounded-xl border" style={{ borderColor: "#e5e7eb" }}>
+        <div className="flex items-center justify-center h-48 text-gray-400 text-sm bg-white rounded-2xl border border-gray-100">
           Ni fotografij v tej kategoriji.
         </div>
       ) : (
@@ -572,13 +571,12 @@ function GalleryTab({
             {photos.map((photo) => (
               <div
                 key={photo.id}
-                className="group relative bg-white border rounded-xl overflow-hidden"
-                style={{ borderColor: "#e5e7eb" }}
+                className="group relative bg-white border border-gray-100 rounded-xl overflow-hidden"
               >
                 <img
                   src={photo.thumbnailUrl ?? photo.blobUrl}
                   alt={photo.caption ?? ""}
-                  className="w-full h-36 object-cover bg-gray-100"
+                  className="w-full h-40 object-cover bg-gray-100"
                   loading="lazy"
                   onError={(e) => {
                     const t = e.currentTarget;
@@ -587,8 +585,8 @@ function GalleryTab({
                     t.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 24 24' fill='none' stroke='%23d1d5db' stroke-width='1.5'%3E%3Crect x='2' y='7' width='20' height='14' rx='3'/%3E%3Ccircle cx='12' cy='14' r='3'/%3E%3Cpath d='M8 7V5a2 2 0 0 1 4 0v2'/%3E%3C/svg%3E";
                   }}
                 />
-                <div className="p-2">
-                  <p className="text-xs text-gray-400 truncate">{photo.uploaderName ?? "Gost"}</p>
+                <div className="px-2 py-1.5">
+                  <p className="text-xs text-gray-500 truncate">{photo.uploaderName ?? "Gost"}</p>
                 </div>
                 {/* Actions overlay */}
                 <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100">
@@ -667,7 +665,7 @@ function QrTab({
 
   return (
     <div className="max-w-lg">
-      <div className="bg-white rounded-xl border p-6 flex flex-col items-center gap-5" style={{ borderColor: "#e5e7eb" }}>
+      <div className="bg-white rounded-2xl border border-gray-100 p-6 flex flex-col items-center gap-5">
         <img
           src={qrUrl}
           alt="QR koda"
@@ -756,19 +754,19 @@ function AlbumSettingsForm({ album }: { album: Album }) {
   };
 
   const inputClass =
-    "w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm text-gray-800 bg-white outline-none focus:border-indigo-400 transition-colors";
+    "w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm text-gray-800 bg-white outline-none focus:border-indigo-400 transition-colors";
 
   return (
-    <div className="bg-white rounded-xl border p-6 space-y-5" style={{ borderColor: "#e5e7eb" }}>
+    <div className="bg-white rounded-2xl border border-gray-100 p-6 space-y-5">
       <h3 className="font-semibold text-gray-900">Nastavitve galerije</h3>
 
       <div>
-        <label className="block text-xs text-gray-500 mb-1.5">Ime galerije</label>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Ime galerije</label>
         <input value={coupleName} onChange={(e) => setCoupleName(e.target.value)} className={inputClass} />
       </div>
 
       <div>
-        <label className="block text-xs text-gray-500 mb-1.5">Datum</label>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Datum</label>
         <input
           type="date"
           value={weddingDate}
@@ -778,7 +776,7 @@ function AlbumSettingsForm({ album }: { album: Album }) {
       </div>
 
       <div>
-        <label className="block text-xs text-gray-500 mb-1.5">Lokacija</label>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Lokacija</label>
         <input
           value={location}
           onChange={(e) => setLocation(e.target.value)}
@@ -788,18 +786,18 @@ function AlbumSettingsForm({ album }: { album: Album }) {
       </div>
 
       <div>
-        <label className="block text-xs text-gray-500 mb-1.5">Pozdravno sporočilo za goste</label>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Pozdravno sporočilo za goste</label>
         <textarea
           value={notifyEmail}
           onChange={(e) => setNotifyEmail(e.target.value)}
           rows={3}
-          placeholder="Dobrodošli na naši poroki! Naložite svoje fotografije in delite spomine z nami."
+          placeholder="Dobrodošli! Naložite svoje fotografije in delite spomine."
           className={`${inputClass} resize-none`}
         />
       </div>
 
       <div>
-        <label className="block text-xs text-gray-500 mb-1.5">Geslo (neobvezno)</label>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Geslo (neobvezno)</label>
         <input
           value={password}
           onChange={(e) => setPassword(e.target.value)}
@@ -839,8 +837,7 @@ function AlbumSettingsForm({ album }: { album: Album }) {
       <button
         onClick={save}
         disabled={saving}
-        className="w-full py-3 rounded-xl text-white text-sm font-semibold disabled:opacity-50 transition-opacity hover:opacity-90"
-        style={{ background: "#1a1a2e" }}
+        className="w-full py-3 rounded-xl text-white text-sm font-semibold disabled:opacity-50 transition-colors bg-indigo-600 hover:bg-indigo-700"
       >
         {saving ? "Shranjevanje…" : saved ? "✓ Shranjeno" : "Shrani spremembe"}
       </button>
