@@ -315,7 +315,11 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
                 </svg>
               </div>
               <p className="font-serif text-xl font-light text-[#2C2825] mb-1">{t.successTitle(success)}</p>
-              <p className="font-sans text-sm text-[#2C2825]/60 mb-6">{t.successDesc}</p>
+              <p className="font-sans text-sm text-[#2C2825]/60 mb-3">{t.successDesc}</p>
+              {/* Approval note */}
+              <p className="font-sans text-xs text-[#2C2825]/45 bg-[#FAF7F2] border border-[#C9A96E]/20 rounded-xl px-4 py-2.5 mb-6 leading-relaxed">
+                {t.approvalNote}
+              </p>
               <button onClick={onSuccess} className="px-6 py-2.5 bg-[#2C2825] text-[#FAF7F2] font-sans text-sm rounded-xl hover:bg-[#C9A96E] transition-colors">
                 {t.close}
               </button>

@@ -54,6 +54,7 @@ export interface Translations {
   cancel: string;               // "Cancel"
   successTitle: (n: number) => string; // "3 photos uploaded"
   successDesc: string;          // "Thank you for your memories!"
+  approvalNote: string;         // "Photos will be visible in the gallery once the host approves them."
   close: string;                // "Close"
   fileUploaded: string;         // "Uploaded"
   fileNetworkError: string;     // "Network error"
@@ -95,6 +96,7 @@ const sl: Translations = {
   cancel: "Prekliči",
   successTitle: (n) => `${n} ${n === 1 ? "fotografija naložena" : "fotografij naloženih"}`,
   successDesc: "Hvala za vaše spomine!",
+  approvalNote: "📸 Vaše fotografije bodo vidne v galeriji, takoj ko jih potrdi gostitelj.",
   close: "Zapri",
   fileUploaded: "Naloženo",
   fileNetworkError: "Omrežna napaka",
@@ -130,6 +132,7 @@ const hr: Translations = {
   cancel: "Odustani",
   successTitle: (n) => `${n} ${n === 1 ? "fotografija učitana" : "fotografija učitano"}`,
   successDesc: "Hvala na uspomenama!",
+  approvalNote: "📸 Vaše fotografije bit će vidljive u galeriji čim ih potvrdi domaćin.",
   close: "Zatvori",
   fileUploaded: "Učitano",
   fileNetworkError: "Mrežna greška",
@@ -165,6 +168,7 @@ const sr: Translations = {
   cancel: "Otkaži",
   successTitle: (n) => `${n} ${n === 1 ? "fotografija otpremljena" : "fotografija otpremljeno"}`,
   successDesc: "Hvala na uspomenama!",
+  approvalNote: "📸 Vaše fotografije biće vidljive u galeriji čim ih potvrdi domaćin.",
   close: "Zatvori",
   fileUploaded: "Otpremljeno",
   fileNetworkError: "Mrežna greška",
@@ -200,6 +204,7 @@ const en: Translations = {
   cancel: "Cancel",
   successTitle: (n) => `${n} ${n === 1 ? "photo uploaded" : "photos uploaded"}`,
   successDesc: "Thank you for your memories!",
+  approvalNote: "📸 Your photos will appear in the gallery as soon as the host approves them.",
   close: "Close",
   fileUploaded: "Uploaded",
   fileNetworkError: "Network error",
@@ -235,6 +240,7 @@ const de: Translations = {
   cancel: "Abbrechen",
   successTitle: (n) => `${n} ${n === 1 ? "Foto hochgeladen" : "Fotos hochgeladen"}`,
   successDesc: "Vielen Dank für Ihre Erinnerungen!",
+  approvalNote: "📸 Ihre Fotos erscheinen in der Galerie, sobald der Gastgeber sie bestätigt.",
   close: "Schließen",
   fileUploaded: "Hochgeladen",
   fileNetworkError: "Netzwerkfehler",
@@ -270,6 +276,7 @@ const es: Translations = {
   cancel: "Cancelar",
   successTitle: (n) => `${n} ${n === 1 ? "foto subida" : "fotos subidas"}`,
   successDesc: "¡Gracias por tus recuerdos!",
+  approvalNote: "📸 Tus fotos aparecerán en la galería en cuanto el anfitrión las apruebe.",
   close: "Cerrar",
   fileUploaded: "Subido",
   fileNetworkError: "Error de red",

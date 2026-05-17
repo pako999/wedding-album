@@ -476,8 +476,14 @@ function OverviewTab({
                   key={photo.id}
                   src={photo.thumbnailUrl ?? photo.blobUrl}
                   alt={photo.caption ?? ""}
-                  className="w-full h-28 object-cover rounded-lg"
+                  className="w-full h-28 object-cover rounded-lg bg-gray-100"
                   loading="lazy"
+                  onError={(e) => {
+                    const t = e.currentTarget;
+                    t.onerror = null;
+                    t.style.objectFit = "none";
+                    t.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 24 24' fill='none' stroke='%23d1d5db' stroke-width='1.5'%3E%3Crect x='2' y='7' width='20' height='14' rx='3'/%3E%3Ccircle cx='12' cy='14' r='3'/%3E%3Cpath d='M8 7V5a2 2 0 0 1 4 0v2'/%3E%3C/svg%3E";
+                  }}
                 />
               ))}
             </div>
@@ -533,8 +539,14 @@ function GalleryTab({
                 <img
                   src={photo.thumbnailUrl ?? photo.blobUrl}
                   alt={photo.caption ?? ""}
-                  className="w-full h-36 object-cover"
+                  className="w-full h-36 object-cover bg-gray-100"
                   loading="lazy"
+                  onError={(e) => {
+                    const t = e.currentTarget;
+                    t.onerror = null;
+                    t.style.objectFit = "none";
+                    t.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 24 24' fill='none' stroke='%23d1d5db' stroke-width='1.5'%3E%3Crect x='2' y='7' width='20' height='14' rx='3'/%3E%3Ccircle cx='12' cy='14' r='3'/%3E%3Cpath d='M8 7V5a2 2 0 0 1 4 0v2'/%3E%3C/svg%3E";
+                  }}
                 />
                 <div className="p-2">
                   <p className="text-xs text-gray-400 truncate">{photo.uploaderName ?? "Gost"}</p>

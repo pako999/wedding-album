@@ -1,20 +1,30 @@
 /**
  * PUT /api/albums/:slug/bunny-upload?key=<storage-key>
  *
- * Edge streaming proxy: pipes the raw request body directly to Bunny Storage.
- * Running as Edge runtime means Vercel does NOT buffer the request body,
- * so files of any size (phone RAW photos, 15–30 MB) pass through without hitting
- * the 4.5 MB serverless function body limit.
+ * Edge proxy — buffers the request body as an ArrayBuffer, then PUTs it to
+ * Bunny Storage in a single reliable request.
+ *
+ * Why buffer instead of stream?
+ * Passing a ReadableStream from one fetch() to another inside an Edge function
+ * can silently produce 0-byte uploads (the stream is considered "already used"
+ * by the V8 runtime). Buffering with req.arrayBuffer() is the reliable
+ * alternative; Vercel Edge allows up to ~50 MB in memory per invocation which
+ * covers any phone photo.
  *
  * The `key` query param is returned by /upload-url as { type: "bunny-storage", key }.
  * Returns: { publicUrl: string }
  */
 
 import { NextRequest, NextResponse } from "next/server";
-import { isBunnyStorageConfigured, uploadToBunnyStorage } from "@/lib/storage/bunny";
+import { isBunnyStorageConfigured } from "@/lib/storage/bunny";
 
 export const runtime = "edge";
 export const dynamic = "force-dynamic";
+
+const storageApiKey = () => process.env.BUNNY_STORAGE_API_KEY ?? "";
+const storageZone   = () => process.env.BUNNY_STORAGE_ZONE ?? "frank1";
+const cdnUrl        = () =>
+  process.env.BUNNY_CDN_URL ?? `https://${storageZone()}.b-cdn.net`;
 
 export async function PUT(
   req: NextRequest,
@@ -33,11 +43,38 @@ export async function PUT(
     return NextResponse.json({ error: "No body" }, { status: 400 });
   }
 
-  const contentType =
-    req.headers.get("content-type") ?? "application/octet-stream";
+  const contentType = req.headers.get("content-type") ?? "application/octet-stream";
 
   try {
-    const publicUrl = await uploadToBunnyStorage(req.body, key, contentType);
+    // Buffer entire body — avoids the ReadableStream double-consume bug in Edge
+    const buffer = await req.arrayBuffer();
+
+    if (buffer.byteLength === 0) {
+      return NextResponse.json({ error: "Empty file body" }, { status: 400 });
+    }
+
+    const endpoint = `https://storage.bunnycdn.com/${storageZone()}/${key}`;
+
+    const bunnyRes = await fetch(endpoint, {
+      method: "PUT",
+      headers: {
+        AccessKey: storageApiKey(),
+        "Content-Type": contentType,
+        "Content-Length": String(buffer.byteLength),
+      },
+      body: buffer,
+    });
+
+    if (!bunnyRes.ok) {
+      const msg = await bunnyRes.text().catch(() => bunnyRes.statusText);
+      console.error(`[bunny-upload] Bunny error ${bunnyRes.status}:`, msg);
+      return NextResponse.json(
+        { error: `Storage error (${bunnyRes.status}): ${msg}` },
+        { status: 502 },
+      );
+    }
+
+    const publicUrl = `${cdnUrl()}/${key}`;
     return NextResponse.json({ publicUrl });
   } catch (err) {
     console.error("[bunny-upload]", err);
