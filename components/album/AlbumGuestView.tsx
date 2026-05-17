@@ -36,6 +36,99 @@ function eventIcon(eventType: string): string {
   }
 }
 
+// Per-event-type visual theme
+interface EventTheme {
+  /** CSS gradient string for the 3-px top strip */
+  gradient: string;
+  /** Primary accent hex — buttons, active states, avatar bg */
+  accent: string;
+  /** Slightly darker shade for hover */
+  accentHover: string;
+  /** Very light tint for page background */
+  pageBg: string;
+  /** Live indicator dot color */
+  liveColor: string;
+  /** Border focus color for the name input (Tailwind class) */
+  inputFocus: string;
+  /** Welcome greeting in the name card */
+  greeting: string;
+}
+
+function getEventTheme(eventType: string): EventTheme {
+  switch (eventType) {
+    case "wedding":
+      return {
+        gradient:    "linear-gradient(90deg, #C9A96E, #C4738A)",
+        accent:      "#C9A96E",
+        accentHover: "#b8874a",
+        pageBg:      "#FFFBF7",
+        liveColor:   "#C9A96E",
+        inputFocus:  "focus:border-[#C9A96E]",
+        greeting:    "Dobrodošli! 💍",
+      };
+    case "birthday":
+      return {
+        gradient:    "linear-gradient(90deg, #7C3AED, #F59E0B)",
+        accent:      "#7C3AED",
+        accentHover: "#6D28D9",
+        pageBg:      "#FAFAFF",
+        liveColor:   "#7C3AED",
+        inputFocus:  "focus:border-[#7C3AED]",
+        greeting:    "Dobrodošli! 🎂",
+      };
+    case "anniversary":
+      return {
+        gradient:    "linear-gradient(90deg, #1E3A5F, #D4A574)",
+        accent:      "#D4A574",
+        accentHover: "#b8874a",
+        pageBg:      "#F8F5EF",
+        liveColor:   "#D4A574",
+        inputFocus:  "focus:border-[#D4A574]",
+        greeting:    "Dobrodošli! 🥂",
+      };
+    case "party":
+      return {
+        gradient:    "linear-gradient(90deg, #EC4899, #8B5CF6)",
+        accent:      "#EC4899",
+        accentHover: "#DB2777",
+        pageBg:      "#FFF5F9",
+        liveColor:   "#EC4899",
+        inputFocus:  "focus:border-[#EC4899]",
+        greeting:    "Dobrodošli! 🎉",
+      };
+    case "baptism":
+      return {
+        gradient:    "linear-gradient(90deg, #0EA5E9, #38BDF8)",
+        accent:      "#0EA5E9",
+        accentHover: "#0284C7",
+        pageBg:      "#F0F9FF",
+        liveColor:   "#0EA5E9",
+        inputFocus:  "focus:border-[#0EA5E9]",
+        greeting:    "Dobrodošli! 🕊️",
+      };
+    case "graduation":
+      return {
+        gradient:    "linear-gradient(90deg, #1E40AF, #F59E0B)",
+        accent:      "#1E40AF",
+        accentHover: "#1E3A8A",
+        pageBg:      "#EFF6FF",
+        liveColor:   "#1E40AF",
+        inputFocus:  "focus:border-[#1E40AF]",
+        greeting:    "Dobrodošli! 🎓",
+      };
+    default:
+      return {
+        gradient:    "linear-gradient(90deg, #6366F1, #8B5CF6)",
+        accent:      "#6366F1",
+        accentHover: "#4F46E5",
+        pageBg:      "#F5F5FF",
+        liveColor:   "#6366F1",
+        inputFocus:  "focus:border-indigo-500",
+        greeting:    "Dobrodošli! 👋",
+      };
+  }
+}
+
 // SVG placeholder for broken images
 const BROKEN_IMG_SRC =
   "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='1.5'%3E%3Crect x='2' y='7' width='20' height='14' rx='3'/%3E%3Ccircle cx='12' cy='14' r='3'/%3E%3Cpath d='M8 7V5a2 2 0 0 1 4 0v2'/%3E%3C/svg%3E";
@@ -63,6 +156,7 @@ export function AlbumGuestView({
   const cameraFilesRef = useRef<FileList | null>(null);
 
   const t = translations[lang];
+  const theme = getEventTheme(album.eventType ?? "other");
 
   const switchLang = (l: Lang) => {
     setLang(l);
@@ -87,9 +181,10 @@ export function AlbumGuestView({
           title={l.native}
           className={`flex items-center gap-1 px-2 py-1 rounded-lg font-sans text-xs transition-all ${
             lang === l.code
-              ? "bg-indigo-500 text-white"
+              ? "text-white"
               : "text-gray-400 hover:text-gray-700 hover:bg-gray-100"
           }`}
+          style={lang === l.code ? { background: theme.accent } : {}}
         >
           <span>{l.flag}</span>
         </button>
@@ -100,44 +195,50 @@ export function AlbumGuestView({
   // ── Password gate ─────────────────────────────────────────────────────────────
   if (passwordRequired && !passwordCorrect) {
     return (
-      <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-6 gap-6">
+      <div className="min-h-screen flex flex-col items-center justify-center p-6 gap-6" style={{ background: theme.pageBg }}>
         <div className="w-full max-w-sm text-center">
           <div className="mb-8">
-            <p className="font-sans text-sm font-medium text-gray-400 mb-2">{t.albumTitle}</p>
+            <div className="text-4xl mb-3">{eventIcon(album.eventType ?? "other")}</div>
             <h1 className="font-sans text-3xl font-bold text-gray-900">{album.coupleName}</h1>
             <p className="font-sans text-sm text-gray-400 mt-1">{album.weddingDate}</p>
           </div>
-          <div className="border border-gray-100 bg-white rounded-2xl p-8 shadow-sm">
-            <div className="w-12 h-12 rounded-full bg-indigo-50 flex items-center justify-center mx-auto mb-4">
-              <svg className="w-6 h-6 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
-              </svg>
+          <div className="border border-gray-100 bg-white rounded-2xl overflow-hidden shadow-sm">
+            <div className="h-[3px] w-full" style={{ background: theme.gradient }} />
+            <div className="p-8">
+              <div className="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4" style={{ background: theme.accent + "18" }}>
+                <svg className="w-6 h-6" style={{ color: theme.accent }} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+                </svg>
+              </div>
+              <p className="font-sans text-sm text-gray-500 mb-5">{t.passwordProtected}</p>
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  if (pwInput) {
+                    const url = new URL(window.location.href);
+                    url.searchParams.set("pw", pwInput);
+                    url.searchParams.set("lang", lang);
+                    router.push(url.pathname + url.search);
+                  }
+                }}
+                className="space-y-3"
+              >
+                <input
+                  type="password"
+                  value={pwInput}
+                  onChange={(e) => { setPwInput(e.target.value); setPwError(false); }}
+                  placeholder={t.passwordPlaceholder}
+                  className={`w-full px-4 py-3 border-2 border-gray-200 rounded-xl bg-gray-50 font-sans text-sm text-gray-900 placeholder:text-gray-300 outline-none ${theme.inputFocus} focus:bg-white transition-colors`}
+                />
+                {pwError && <p className="font-sans text-xs text-red-500">{t.wrongPassword}</p>}
+                <button type="submit" className="w-full py-3 text-white font-sans text-sm font-semibold rounded-xl transition-colors" style={{ background: theme.accent }}
+                  onMouseOver={e => (e.currentTarget.style.background = theme.accentHover)}
+                  onMouseOut={e => (e.currentTarget.style.background = theme.accent)}
+                >
+                  {t.openAlbum}
+                </button>
+              </form>
             </div>
-            <p className="font-sans text-sm text-gray-500 mb-5">{t.passwordProtected}</p>
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                if (pwInput) {
-                  const url = new URL(window.location.href);
-                  url.searchParams.set("pw", pwInput);
-                  url.searchParams.set("lang", lang);
-                  router.push(url.pathname + url.search);
-                }
-              }}
-              className="space-y-3"
-            >
-              <input
-                type="password"
-                value={pwInput}
-                onChange={(e) => { setPwInput(e.target.value); setPwError(false); }}
-                placeholder={t.passwordPlaceholder}
-                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl bg-gray-50 font-sans text-sm text-gray-900 placeholder:text-gray-300 outline-none focus:border-indigo-500 focus:bg-white transition-colors"
-              />
-              {pwError && <p className="font-sans text-xs text-red-500">{t.wrongPassword}</p>}
-              <button type="submit" className="w-full py-3 bg-indigo-600 text-white font-sans text-sm font-semibold rounded-xl hover:bg-indigo-700 transition-colors">
-                {t.openAlbum}
-              </button>
-            </form>
           </div>
         </div>
       </div>
@@ -158,7 +259,7 @@ export function AlbumGuestView({
   const evtIcon = eventIcon(album.eventType ?? "other");
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen" style={{ background: theme.pageBg }}>
 
       {/* ── Minimal top bar ──────────────────────────────────────────────────── */}
       <div className="sticky top-0 z-20 bg-white/90 backdrop-blur border-b border-gray-100">
@@ -175,8 +276,8 @@ export function AlbumGuestView({
 
         {/* ── Album header card ──────────────────────────────────────────────── */}
         <div className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100">
-          {/* Indigo-to-purple gradient top strip */}
-          <div className="h-[3px] w-full" style={{ background: "linear-gradient(90deg, #6366F1, #8B5CF6)" }} />
+          {/* Event-themed gradient top strip */}
+          <div className="h-[3px] w-full" style={{ background: theme.gradient }} />
 
           {album.coverImageUrl ? (
             <div className="relative h-48">
@@ -209,11 +310,10 @@ export function AlbumGuestView({
         {/* ── NAME STEP — big card, can't be missed ─────────────────────────── */}
         {!nameConfirmed ? (
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-            {/* Indigo top strip */}
-            <div className="h-[3px] w-full" style={{ background: "linear-gradient(90deg, #6366F1, #8B5CF6)" }} />
+            <div className="h-[3px] w-full" style={{ background: theme.gradient }} />
 
             <div className="px-6 py-7">
-              <h2 className="font-bold text-xl text-gray-900 mb-1">Dobrodošli! 👋</h2>
+              <h2 className="font-bold text-xl text-gray-900 mb-1">{theme.greeting}</h2>
               <p className="text-sm text-gray-500 mb-5">Vnesite ime preden naložite fotografije</p>
 
               <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
@@ -227,13 +327,16 @@ export function AlbumGuestView({
                 onKeyDown={(e) => e.key === "Enter" && confirmName()}
                 placeholder="npr. Ana Novak"
                 autoComplete="given-name"
-                className="w-full px-4 py-3.5 border-2 border-gray-200 rounded-xl bg-gray-50 font-sans text-base text-gray-900 placeholder:text-gray-300 outline-none focus:border-indigo-500 focus:bg-white transition-all mb-4"
+                className={`w-full px-4 py-3.5 border-2 border-gray-200 rounded-xl bg-gray-50 font-sans text-base text-gray-900 placeholder:text-gray-300 outline-none ${theme.inputFocus} focus:bg-white transition-all mb-4`}
               />
 
               <button
                 onClick={confirmName}
                 disabled={!uploaderName.trim()}
-                className="w-full py-3.5 rounded-xl font-bold text-base text-white transition-all disabled:opacity-30 disabled:cursor-not-allowed active:scale-[0.98] bg-indigo-600 hover:bg-indigo-700"
+                className="w-full py-3.5 rounded-xl font-bold text-base text-white transition-all disabled:opacity-30 disabled:cursor-not-allowed active:scale-[0.98]"
+                style={{ background: theme.accent }}
+                onMouseOver={e => { if (uploaderName.trim()) e.currentTarget.style.background = theme.accentHover; }}
+                onMouseOut={e => { e.currentTarget.style.background = theme.accent; }}
               >
                 Začni deliti spomine →
               </button>
@@ -246,12 +349,12 @@ export function AlbumGuestView({
         ) : (
           /* ── UPLOAD BUTTONS — shown after name ─────────────────────────────── */
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-            <div className="h-[3px] w-full" style={{ background: "linear-gradient(90deg, #6366F1, #8B5CF6)" }} />
+            <div className="h-[3px] w-full" style={{ background: theme.gradient }} />
             <div className="px-5 py-5">
               {/* Greeting */}
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
-                  <div className="w-7 h-7 rounded-full bg-indigo-600 flex items-center justify-center text-white text-xs font-bold shrink-0">
+                  <div className="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0" style={{ background: theme.accent }}>
                     {uploaderName.charAt(0).toUpperCase()}
                   </div>
                   <p className="font-bold text-sm text-gray-900">Zdravo, {uploaderName}! 😊</p>
@@ -315,8 +418,8 @@ export function AlbumGuestView({
               ZADNJI SPOMINI
             </span>
             <div className="flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
-              <span className="text-xs text-green-500 font-medium">V živo 🟢</span>
+              <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: theme.liveColor }} />
+              <span className="text-xs font-medium" style={{ color: theme.liveColor }}>V živo</span>
             </div>
             <div className="flex-1 h-px bg-gray-200" />
           </div>
