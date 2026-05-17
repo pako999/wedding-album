@@ -83,6 +83,14 @@ async function main() {
   await sql`ALTER TABLE albums ADD COLUMN IF NOT EXISTS event_type TEXT NOT NULL DEFAULT 'wedding'`;
   console.log("✅ event_type column ready");
 
+  await sql`ALTER TABLE albums ADD COLUMN IF NOT EXISTS stripe_session_id TEXT`;
+  console.log("✅ stripe_session_id column ready");
+
+  await sql`ALTER TABLE photos ADD COLUMN IF NOT EXISTS blur_hash TEXT`;
+  await sql`ALTER TABLE photos ADD COLUMN IF NOT EXISTS cf_stream_video_id TEXT`;
+  await sql`ALTER TABLE photos ADD COLUMN IF NOT EXISTS uploaded_at TIMESTAMPTZ NOT NULL DEFAULT now()`;
+  console.log("✅ photos extra columns ready");
+
   // Index for fast album lookups
   await sql`CREATE INDEX IF NOT EXISTS albums_owner_idx ON albums(owner_clerk_id)`;
   await sql`CREATE INDEX IF NOT EXISTS photos_album_idx ON photos(album_id)`;
