@@ -310,13 +310,13 @@ export default function HomePage() {
           {/* 4-column template grid */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
             {[
-              { name: 'Klasična',        bg: 'photo-1490750967868-88df5691cc27', headline: 'Capture the Love ♥',   sub: 'Skeniraj in deli',     rotate: -3, dark: false },
+              { name: 'Klasična',        bg: 'photo-1537633552985-df8429e8048b', headline: 'Capture the Love ♥',   sub: 'Skeniraj in deli',    rotate: -3, dark: false },
               { name: 'Botanična',       bg: 'photo-1523438885200-e635ba2c371e', headline: 'Deli naše spomine',    sub: 'Share the memories',  rotate:  2, dark: false },
-              { name: 'Elegantna',       bg: 'photo-1519225421980-716433b74c7b', headline: 'Thank You',            sub: 'Za skupne spomine',   rotate: -1, dark: false },
-              { name: 'Cvetlična',       bg: 'photo-1474862520816-c809f9895cd5', headline: 'Scan & Share',         sub: 'Brez aplikacije',     rotate:  2, dark: false },
+              { name: 'Elegantna',       bg: 'photo-1606800052052-a08af7148866', headline: 'Thank You',            sub: 'Za skupne spomine',   rotate: -1, dark: false },
+              { name: 'Cvetlična',       bg: 'photo-1515934751635-c81c6bc9a2d8', headline: 'Scan & Share',         sub: 'Brez aplikacije',     rotate:  2, dark: false },
               { name: 'Rustikalna',      bg: 'photo-1501286353178-1ec881214838', headline: 'Zberi spomine',        sub: 'Skeniraj QR kodo',    rotate: -2, dark: false },
-              { name: 'Moderna',         bg: 'photo-1537633552985-df8429e8048b', headline: 'Our Memories',         sub: 'Scan to share',       rotate:  1, dark: true  },
-              { name: 'Minimalistična',  bg: 'photo-1596436889106-be35e843f974', headline: 'Vaš dan',              sub: 'Dodaj fotografijo',   rotate: -2, dark: false },
+              { name: 'Moderna',         bg: 'photo-1520854221256-17451cc331bf', headline: 'Our Memories',         sub: 'Scan to share',       rotate:  1, dark: true  },
+              { name: 'Minimalistična',  bg: 'photo-1465495976277-4387d4b0b4c6', headline: 'Vaš dan',              sub: 'Dodaj fotografijo',   rotate: -2, dark: false },
               { name: 'Skandinavska',    bg: 'photo-1529634806980-85c3dd6d34ac', headline: 'Share the Love',       sub: 'Scan the QR code',    rotate:  2, dark: true  },
             ].map((t) => (
               <div key={t.name} className="group relative rounded-2xl overflow-hidden cursor-pointer" style={{ boxShadow: '0 4px 20px rgba(0,0,0,0.12)' }}>
@@ -388,177 +388,122 @@ export default function HomePage() {
       </section>
 
       {/* ── How it works ────────────────────────────────────────────────────── */}
-      <section id="how" className="py-24 bg-white">
-        <div className="max-w-6xl mx-auto px-6">
-          <h2 className="text-[2.5rem] font-extrabold text-center text-[#2C2825] mb-20">Kako deluje?</h2>
+      <section id="how" style={{ background: '#3D0A22' }} className="py-24 relative overflow-hidden">
+        {/* Subtle petal decorations */}
+        <div className="absolute top-10 left-10 w-32 h-32 rounded-full opacity-10" style={{ background: 'radial-gradient(circle, #C4738A, transparent)' }} />
+        <div className="absolute bottom-20 right-16 w-48 h-48 rounded-full opacity-10" style={{ background: 'radial-gradient(circle, #C4738A, transparent)' }} />
 
-          {/* Numbers row with connecting line */}
-          <div className="relative hidden md:grid grid-cols-3 mb-8">
-            {/* Connecting line */}
-            <div className="absolute top-6 bg-gray-200" style={{ left: 'calc(16.67% + 24px)', right: 'calc(16.67% + 24px)', height: 1 }} />
-            {["1","2","3"].map((n) => (
-              <div key={n} className="flex justify-center">
-                <div
-                  className="relative z-10 w-12 h-12 rounded-full text-white font-extrabold text-lg flex items-center justify-center shadow-lg"
-                  style={{ background: '#C4738A', boxShadow: '0 4px 16px rgba(196,115,138,0.4)' }}
-                >{n}</div>
+        <div className="max-w-6xl mx-auto px-6 relative z-10">
+          {/* Section label */}
+          <p className="text-center text-xs font-bold uppercase tracking-[0.25em] mb-4" style={{ color: '#C9A96E' }}>
+            Kako deluje
+          </p>
+
+          {/* Heading */}
+          <h2 className="text-center font-extrabold text-white mb-5 leading-tight" style={{ fontSize: 'clamp(2rem, 4vw, 3rem)' }}>
+            Preprosto, brezhibno<br />in brez stresa
+          </h2>
+          <p className="text-center max-w-xl mx-auto leading-relaxed mb-16" style={{ color: 'rgba(255,255,255,0.55)', fontSize: '1.05rem' }}>
+            V le nekaj klikih ustvarite zasebno galerijo za vse fotografije in videe z vašega posebnega dne — vsak trenutek shranjen za vedno.
+          </p>
+
+          {/* 3 large cards */}
+          <div className="grid md:grid-cols-3 gap-6">
+
+            {/* Card 1 — Sign Up */}
+            <div className="rounded-3xl overflow-hidden flex flex-col" style={{ background: '#1C0A14' }}>
+              {/* Photo area */}
+              <div className="relative overflow-hidden" style={{ height: 280 }}>
+                <img
+                  src="https://images.unsplash.com/photo-1606216794074-735e91aa2c92?w=600&h=560&fit=crop&q=80"
+                  alt="Ustvari galerijo"
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, transparent 40%, rgba(28,10,20,0.95) 100%)' }} />
+                {/* Icon badge */}
+                <div className="absolute top-4 left-4 w-11 h-11 rounded-2xl bg-white flex items-center justify-center shadow-lg">
+                  <svg className="w-5 h-5" style={{ color: '#3D0A22' }} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
+                  </svg>
+                </div>
+                {/* Step label over photo */}
+                <div className="absolute bottom-4 left-5">
+                  <p className="text-xs font-bold uppercase tracking-widest mb-1" style={{ color: '#C9A96E' }}>KORAK 01</p>
+                </div>
               </div>
-            ))}
-          </div>
-
-          {/* Step titles + descriptions */}
-          <div className="grid md:grid-cols-3 gap-10 text-center mb-12">
-            {[
-              { title: "Ustvari galerijo in natisni predlogo",   desc: "V 2 minutah ustvarite galerijo, izberite predlogo in jo natisnite. Postavite na mize ali ob vhod." },
-              { title: "Gosti slikajo in delijo", desc: "Gosti skenirajo QR kodo in takoj začnejo dodajati fotografije — brez prijave." },
-              { title: "Vse na enem mestu",   desc: "Vse fotografije se zbirajo v vaši zasebni galeriji, ki jo po poroki prenesete v 1 kliku." },
-            ].map((s, i) => (
-              <div key={i} className="flex flex-col items-center gap-4">
-                {/* Mobile: show number */}
-                <div className="md:hidden w-12 h-12 rounded-full text-white font-extrabold text-lg flex items-center justify-center" style={{ background: '#C4738A' }}>
-                  {i + 1}
-                </div>
-                <div>
-                  <h3 className="font-bold text-[#2C2825] text-xl mb-2">{s.title}</h3>
-                  <p className="text-gray-400 text-sm leading-relaxed max-w-[260px] mx-auto">{s.desc}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* Step visuals */}
-          <div className="grid md:grid-cols-3 gap-8 items-start">
-
-            {/* Step 1 — QR table scene */}
-            <div className="rounded-2xl overflow-hidden shadow-md border border-gray-100" style={{ background: '#F5EFE8' }}>
-              <div className="relative h-64 overflow-hidden" style={{ background: 'linear-gradient(135deg, #D4C4B0 0%, #C0A882 40%, #A89070 100%)' }}>
-                {/* Table surface */}
-                <div className="absolute inset-x-0 bottom-0 h-20" style={{ background: 'linear-gradient(0deg, #8B6B4A 0%, transparent 100%)' }} />
-                {/* Candle lights */}
-                {[[20, 60], [75, 55]].map(([x, y], i) => (
-                  <div key={i} className="absolute" style={{ left: `${x}%`, top: `${y}%` }}>
-                    <div className="w-2 h-8 rounded-full mx-auto" style={{ background: '#F5F0E8' }} />
-                    <div className="w-3 h-3 rounded-full -mt-1 mx-auto opacity-90" style={{ background: '#FFC040', filter: 'blur(2px)' }} />
-                  </div>
-                ))}
-                {/* QR stand card */}
-                <div className="absolute left-1/2 bottom-8 -translate-x-1/2 bg-white rounded-xl shadow-xl p-3 w-28">
-                  <div className="flex items-center justify-center mb-1.5">
-                    <QRPattern />
-                  </div>
-                  <p className="text-center text-[9px] font-bold text-[#2C2825] uppercase tracking-wider">Skeniraj me</p>
-                  <div className="mt-1 w-4 h-4 border-b-2 border-gray-300 mx-auto" style={{ borderRadius: '0 0 2px 2px' }} />
-                </div>
+              {/* Text below */}
+              <div className="p-6 flex-1">
+                <h3 className="text-white font-extrabold text-2xl mb-3 leading-tight">Ustvari galerijo</h3>
+                <p style={{ color: 'rgba(255,255,255,0.55)', lineHeight: 1.65 }} className="text-sm">
+                  V 2 minutah ustvarite personalizirano galerijo, izberite predlogo za tisk in jo natisnite. Postavite kartice na mize ali ob vhod.
+                </p>
               </div>
             </div>
 
-            {/* Step 2 — Phone mockup */}
-            <div className="flex justify-center">
-              <div className="relative" style={{ width: 220 }}>
-                {/* Phone body */}
-                <div className="rounded-[40px] p-2.5 shadow-2xl" style={{ background: '#1C1917' }}>
-                  {/* Screen */}
-                  <div className="rounded-[30px] overflow-hidden" style={{ background: '#111827' }}>
-                    {/* Notch bar */}
-                    <div className="flex items-center justify-center py-2.5 px-4" style={{ background: '#1C1917' }}>
-                      <div className="w-20 h-4 rounded-full" style={{ background: '#0A0A0A' }} />
-                    </div>
-                    {/* App header */}
-                    <div className="px-4 py-3 text-center" style={{ background: '#2C2825' }}>
-                      <p className="text-white font-semibold text-sm tracking-wide">ana &amp; marko</p>
-                      <p className="text-[10px] mt-0.5" style={{ color: '#C4738A' }}>Hvala, ker deliš spomine z nama.</p>
-                    </div>
-                    {/* Buttons */}
-                    <div className="p-4 space-y-3" style={{ background: '#1a1a2e' }}>
-                      <button className="w-full py-4 rounded-2xl flex flex-col items-center gap-1.5" style={{ background: '#2C2825' }}>
-                        <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.8}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z" />
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0zM18.75 10.5h.008v.008h-.008V10.5z" />
-                        </svg>
-                        <span className="text-white font-bold text-sm">Slikaj zdaj</span>
-                      </button>
-                      <button className="w-full py-3 rounded-2xl flex flex-col items-center gap-1" style={{ background: '#252535' }}>
-                        <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.8}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
-                        </svg>
-                        <span className="text-gray-400 text-xs">Naloži iz galerije</span>
-                      </button>
-                    </div>
-                    {/* Recent photos strip */}
-                    <div className="px-3 pb-3 pt-1" style={{ background: '#1a1a2e' }}>
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="text-[10px] text-gray-500 font-medium">Zadnji spomini</span>
-                        <span className="text-[10px]" style={{ color: '#C4738A' }}>V živo</span>
-                      </div>
-                      <div className="flex gap-1.5">
-                        {[
-                          "photo-1529634806980-85c3dd6d34ac",
-                          "photo-1606800052052-a08af7148866",
-                          "photo-1469371670807-013ccf25f16a",
-                          "photo-1465495976277-4387d4b0b4c6",
-                        ].map((id) => (
-                          <div key={id} className="flex-1 aspect-square rounded-lg overflow-hidden">
-                            <img src={`https://images.unsplash.com/${id}?w=80&h=80&fit=crop&q=60`} alt="" className="w-full h-full object-cover" />
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
+            {/* Card 2 — Share QR */}
+            <div className="rounded-3xl overflow-hidden flex flex-col" style={{ background: '#1C0A14' }}>
+              <div className="relative overflow-hidden" style={{ height: 280 }}>
+                <img
+                  src="https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=600&h=560&fit=crop&q=80"
+                  alt="Deli QR kodo"
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, transparent 40%, rgba(28,10,20,0.95) 100%)' }} />
+                {/* Icon badge */}
+                <div className="absolute top-4 left-4 w-11 h-11 rounded-2xl bg-white flex items-center justify-center shadow-lg">
+                  <svg className="w-5 h-5" style={{ color: '#3D0A22' }} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                    <rect x="3" y="3" width="7" height="7" rx="1" /><rect x="14" y="3" width="7" height="7" rx="1" />
+                    <rect x="3" y="14" width="7" height="7" rx="1" />
+                    <path d="M14 14h3v3M17 14v3h3M14 17h3" />
+                  </svg>
                 </div>
-                {/* Side buttons */}
-                <div className="absolute right-0 top-20 w-1 h-8 rounded-l-sm" style={{ background: '#111', right: -2 }} />
-                <div className="absolute left-0 top-16 w-1 h-6 rounded-r-sm" style={{ background: '#111', left: -2 }} />
-                <div className="absolute left-0 top-24 w-1 h-6 rounded-r-sm" style={{ background: '#111', left: -2 }} />
+                <div className="absolute bottom-4 left-5">
+                  <p className="text-xs font-bold uppercase tracking-widest mb-1" style={{ color: '#C9A96E' }}>KORAK 02</p>
+                </div>
+              </div>
+              <div className="p-6 flex-1">
+                <h3 className="text-white font-extrabold text-2xl mb-3 leading-tight">Gosti skenirajo QR</h3>
+                <p style={{ color: 'rgba(255,255,255,0.55)', lineHeight: 1.65 }} className="text-sm">
+                  Gosti enostavno skenirajo QR kodo s telefona in takoj začnejo nalagati fotografije ter videe v polni kakovosti — brez aplikacije, brez prijave.
+                </p>
               </div>
             </div>
 
-            {/* Step 3 — Gallery card */}
-            <div className="bg-white rounded-2xl shadow-md border border-gray-100 overflow-hidden">
-              <div className="px-4 py-3 flex items-center justify-between border-b border-gray-100">
-                <div>
-                  <p className="font-bold text-sm text-[#2C2825]">Vsa zbirka</p>
-                  <p className="text-xs mt-0.5" style={{ color: '#C4738A' }}>182 fotografij · 24 videov</p>
+            {/* Card 3 — Enjoy */}
+            <div className="rounded-3xl overflow-hidden flex flex-col" style={{ background: '#1C0A14' }}>
+              <div className="relative overflow-hidden" style={{ height: 280 }}>
+                <img
+                  src="https://images.unsplash.com/photo-1529634806980-85c3dd6d34ac?w=600&h=560&fit=crop&q=80"
+                  alt="Uživaj v fotografijah"
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, transparent 40%, rgba(28,10,20,0.95) 100%)' }} />
+                {/* Icon badge */}
+                <div className="absolute top-4 left-4 w-11 h-11 rounded-2xl bg-white flex items-center justify-center shadow-lg">
+                  <svg className="w-5 h-5" style={{ color: '#3D0A22' }} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5z" />
+                  </svg>
                 </div>
-                <button className="text-xs text-white px-3 py-1.5 rounded-lg font-bold" style={{ background: '#C4738A' }}>
-                  Prenesi vse
-                </button>
-              </div>
-              {/* Photo grid — real wedding thumbnails */}
-              <div className="p-3 grid grid-cols-3 gap-1.5">
-                {[
-                  "photo-1529634806980-85c3dd6d34ac",
-                  "photo-1606800052052-a08af7148866",
-                  "photo-1537633552985-df8429e8048b",
-                  "photo-1469371670807-013ccf25f16a",
-                  "photo-1465495976277-4387d4b0b4c6",
-                  "photo-1606216794074-735e91aa2c92",
-                  "photo-1520854221256-17451cc331bf",
-                  "photo-1583939003579-730e3918a45a",
-                  "photo-1515934751635-c81c6bc9a2d8",
-                ].map((id) => (
-                  <div key={id} className="aspect-square rounded-lg overflow-hidden">
-                    <img
-                      src={`https://images.unsplash.com/${id}?w=120&h=120&fit=crop&q=70`}
-                      alt="Wedding photo"
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                ))}
-              </div>
-              <div className="px-4 pb-4 pt-1">
-                <div className="flex items-center justify-between text-xs text-gray-400">
-                  <span>Vseh 182 slik naloženih</span>
-                  <span className="text-emerald-500 font-medium">✓ Shranjeno</span>
+                <div className="absolute bottom-4 left-5">
+                  <p className="text-xs font-bold uppercase tracking-widest mb-1" style={{ color: '#C9A96E' }}>KORAK 03</p>
                 </div>
+              </div>
+              <div className="p-6 flex-1">
+                <h3 className="text-white font-extrabold text-2xl mb-3 leading-tight">Uživaj v spominih</h3>
+                <p style={{ color: 'rgba(255,255,255,0.55)', lineHeight: 1.65 }} className="text-sm">
+                  Sproti gledate, kako gostje nalagajo fotografije v živo. Po poroki prenesite vse z enim klikom — brez izgube kakovosti.
+                </p>
               </div>
             </div>
+
           </div>
 
-          <div className="text-center mt-14">
+          {/* CTA */}
+          <div className="text-center mt-12">
             <Link
               href="/dashboard/new"
-              className="inline-flex items-center gap-2.5 px-9 py-4 text-white font-bold rounded-full transition-all duration-200"
-              style={{ background: '#C4738A', boxShadow: '0 6px 20px rgba(196,115,138,0.35)' }}
+              className="inline-flex items-center gap-2.5 px-9 py-4 text-white font-bold rounded-full transition-all duration-200 hover:scale-105"
+              style={{ background: '#C4738A', boxShadow: '0 6px 24px rgba(196,115,138,0.45)' }}
             >
               Ustvari svojo galerijo zdaj →
             </Link>
