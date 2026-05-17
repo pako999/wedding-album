@@ -286,20 +286,21 @@ export function AlbumGuestView({ album, photos, passwordRequired, passwordCorrec
             {/* Type filter pills */}
             <div className="flex items-center gap-1 bg-gray-100 rounded-xl p-1 shrink-0">
               {([
-                { id: "all",    label: "Vse",         count: photos.length },
-                { id: "photos", label: "Fotografije",  count: photoCount },
-                { id: "videos", label: "Videi",        count: videoCount },
-              ] as { id: FilterTab; label: string; count: number }[]).map(tab => (
+                { id: "all",    label: "Vse",    labelMd: "Vse",          count: photos.length },
+                { id: "photos", label: "Foto",   labelMd: "Fotografije",  count: photoCount },
+                { id: "videos", label: "Video",  labelMd: "Videi",        count: videoCount },
+              ] as { id: FilterTab; label: string; labelMd: string; count: number }[]).map(tab => (
                 <button
                   key={tab.id}
                   onClick={() => setFilter(tab.id)}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-all"
+                  className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg text-sm font-medium transition-all"
                   style={filter === tab.id
                     ? { background: "white", color: BRAND.dark, boxShadow: "0 1px 3px rgba(0,0,0,0.1)" }
                     : { color: BRAND.muted }
                   }
                 >
-                  {tab.label}
+                  <span className="sm:hidden">{tab.label}</span>
+                  <span className="hidden sm:inline">{tab.labelMd}</span>
                   {tab.count > 0 && (
                     <span className="text-xs px-1.5 py-0.5 rounded-full"
                       style={filter === tab.id
@@ -344,27 +345,41 @@ export function AlbumGuestView({ album, photos, passwordRequired, passwordCorrec
             {!albumFull && (
               <div className="flex items-center gap-2 shrink-0">
                 {!nameConfirmed ? (
-                  <div className="flex items-center gap-2">
-                    <input
-                      ref={nameInputRef}
-                      type="text"
-                      value={uploaderName}
-                      onChange={(e) => setUploaderName(e.target.value)}
-                      onKeyDown={(e) => e.key === "Enter" && confirmName()}
-                      placeholder="Vaše ime"
-                      autoComplete="given-name"
-                      className="w-36 sm:w-44 px-3 py-1.5 border rounded-xl text-sm outline-none transition-all"
-                      style={{ borderColor: BRAND.border }}
-                    />
+                  <>
+                    {/* Desktop: name input inline in toolbar */}
+                    <div className="hidden sm:flex items-center gap-2">
+                      <input
+                        ref={nameInputRef}
+                        type="text"
+                        value={uploaderName}
+                        onChange={(e) => setUploaderName(e.target.value)}
+                        onKeyDown={(e) => e.key === "Enter" && confirmName()}
+                        placeholder="Vaše ime"
+                        autoComplete="given-name"
+                        className="w-36 sm:w-44 px-3 py-1.5 border rounded-xl text-sm outline-none transition-all"
+                        style={{ borderColor: BRAND.border }}
+                      />
+                      <button
+                        onClick={confirmName}
+                        disabled={!uploaderName.trim()}
+                        className="px-4 py-1.5 rounded-xl text-sm font-semibold text-white transition-all disabled:opacity-30 hover:opacity-90"
+                        style={{ background: BRAND.dark }}
+                      >
+                        Naprej →
+                      </button>
+                    </div>
+                    {/* Mobile: pill that scrolls down to the big CTA */}
                     <button
-                      onClick={confirmName}
-                      disabled={!uploaderName.trim()}
-                      className="px-4 py-1.5 rounded-xl text-sm font-semibold text-white transition-all disabled:opacity-30 hover:opacity-90"
-                      style={{ background: BRAND.dark }}
+                      onClick={() => document.getElementById("upload-cta")?.scrollIntoView({ behavior: "smooth" })}
+                      className="sm:hidden flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-semibold text-white transition-all"
+                      style={{ background: BRAND.accent }}
                     >
-                      Naprej →
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                      </svg>
+                      Naloži
                     </button>
-                  </div>
+                  </>
                 ) : (
                   <div className="flex items-center gap-2">
                     <div className="hidden sm:flex items-center gap-1.5">
@@ -474,16 +489,83 @@ export function AlbumGuestView({ album, photos, passwordRequired, passwordCorrec
 
         {/* Empty state */}
         {filteredPhotos.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-28 text-center">
-            <div className="text-5xl mb-4 opacity-20">{filter === "videos" ? "🎥" : "📷"}</div>
-            <p className="text-sm font-medium" style={{ color: BRAND.muted }}>
-              {personFilter
-                ? `${personFilter} nima ${filter === "videos" ? "videoposnetkov" : "fotografij"}`
-                : filter === "videos" ? "Ni videoposnetkov"
-                : filter === "photos" ? "Ni fotografij"
-                : t.noPhotosDesc}
-            </p>
-          </div>
+          personFilter || filter !== "all" ? (
+            /* Filtered empty — simple message */
+            <div className="flex flex-col items-center justify-center py-28 text-center">
+              <div className="text-5xl mb-4 opacity-20">{filter === "videos" ? "🎥" : "📷"}</div>
+              <p className="text-sm font-medium" style={{ color: BRAND.muted }}>
+                {personFilter
+                  ? `${personFilter} nima ${filter === "videos" ? "videoposnetkov" : "fotografij"}`
+                  : filter === "videos" ? "Ni videoposnetkov"
+                  : "Ni fotografij"}
+              </p>
+            </div>
+          ) : !albumFull ? (
+            /* Album is empty — big upload CTA */
+            <div id="upload-cta" className="flex flex-col items-center justify-center py-16 sm:py-24 px-4 text-center">
+              <div className="w-24 h-24 rounded-3xl flex items-center justify-center mb-6 text-4xl"
+                style={{ background: BRAND.accentLight }}>
+                📷
+              </div>
+              <h2 className="text-xl font-bold mb-2" style={{ color: BRAND.dark }}>
+                Bodi prvi, ki deli fotografijo!
+              </h2>
+              <p className="text-sm mb-8 max-w-xs" style={{ color: BRAND.muted }}>
+                {t.noPhotosDesc}
+              </p>
+              {!nameConfirmed ? (
+                <div className="flex flex-col sm:flex-row items-center gap-3 w-full max-w-xs">
+                  <input
+                    type="text"
+                    value={uploaderName}
+                    onChange={(e) => setUploaderName(e.target.value)}
+                    onKeyDown={(e) => e.key === "Enter" && confirmName()}
+                    placeholder="Vaše ime"
+                    autoComplete="given-name"
+                    className="w-full px-4 py-3 border rounded-2xl text-sm outline-none transition-all text-center"
+                    style={{ borderColor: BRAND.border }}
+                  />
+                  <button
+                    onClick={confirmName}
+                    disabled={!uploaderName.trim()}
+                    className="w-full sm:w-auto px-6 py-3 rounded-2xl text-sm font-semibold text-white transition-all disabled:opacity-30 hover:opacity-90 shrink-0"
+                    style={{ background: BRAND.dark }}
+                  >
+                    Naprej →
+                  </button>
+                </div>
+              ) : (
+                <div className="flex flex-col sm:flex-row items-center gap-3">
+                  <label className="flex items-center gap-2 px-5 py-3 rounded-2xl text-sm font-semibold text-white cursor-pointer transition-all hover:opacity-90 relative"
+                    style={{ background: BRAND.accent }}>
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0z" />
+                    </svg>
+                    Fotografiraj
+                    <input type="file" accept="image/*,video/*" capture="environment" multiple className="absolute inset-0 opacity-0 cursor-pointer"
+                      onChange={(e) => { if (e.target.files?.length) { cameraFilesRef.current = e.target.files; setUploadOpen(true); } }} />
+                  </label>
+                  <button
+                    onClick={() => setUploadOpen(true)}
+                    className="flex items-center gap-2 px-5 py-3 rounded-2xl border text-sm font-semibold transition-all hover:bg-gray-50"
+                    style={{ borderColor: BRAND.border, color: BRAND.dark }}
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
+                    </svg>
+                    Naloži iz galerije
+                  </button>
+                </div>
+              )}
+            </div>
+          ) : (
+            /* Album full */
+            <div className="flex flex-col items-center justify-center py-28 text-center">
+              <div className="text-5xl mb-4">🔒</div>
+              <p className="text-sm font-medium" style={{ color: BRAND.muted }}>{t.noPhotosDesc}</p>
+            </div>
+          )
         ) : (
           <>
             {/* ── Videos section (in "all" view) ──────────────────────────── */}
@@ -561,6 +643,28 @@ export function AlbumGuestView({ album, photos, passwordRequired, passwordCorrec
           </>
         )}
       </div>
+
+      {/* ── Mobile floating upload FAB ────────────────────────────────────── */}
+      {!albumFull && nameConfirmed && photos.length > 0 && (
+        <div className="sm:hidden fixed bottom-5 right-5 z-30 flex flex-col items-end gap-2">
+          <label className="relative w-14 h-14 rounded-full flex items-center justify-center text-white shadow-lg cursor-pointer transition-all active:scale-95"
+            style={{ background: BRAND.accent, boxShadow: `0 4px 20px ${BRAND.accent}60` }}>
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z" />
+              <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0z" />
+            </svg>
+            <input type="file" accept="image/*,video/*" capture="environment" multiple className="absolute inset-0 opacity-0 cursor-pointer"
+              onChange={(e) => { if (e.target.files?.length) { cameraFilesRef.current = e.target.files; setUploadOpen(true); } }} />
+          </label>
+          <button onClick={() => setUploadOpen(true)}
+            className="w-14 h-14 rounded-full flex items-center justify-center text-white shadow-lg transition-all active:scale-95"
+            style={{ background: BRAND.dark }}>
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021.75 18V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
+            </svg>
+          </button>
+        </div>
+      )}
 
       {/* ── Footer ────────────────────────────────────────────────────────── */}
       <footer className="border-t mt-8 py-6 text-center" style={{ borderColor: BRAND.border }}>
