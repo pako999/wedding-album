@@ -12,6 +12,7 @@ interface Props {
   lang: Lang;
   onClose: () => void;
   onSuccess: () => void;
+  onNameChange?: (name: string) => void;
 }
 
 interface UploadFile {
@@ -217,7 +218,7 @@ async function saveUpload(slug: string, body: object) {
 
 // ── Component ─────────────────────────────────────────────────────────────────
 
-export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, currentCount, lang, onClose, onSuccess }: Props) {
+export function UploadModal({ albumSlug, albumId, uploaderName: initialName, maxPhotos, currentCount, lang, onClose, onSuccess, onNameChange }: Props) {
   const t = translations[lang];
   const [files, setFiles] = useState<UploadFile[]>([]);
   const [uploading, setUploading] = useState(false);
@@ -225,6 +226,60 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
   const [dragOver, setDragOver] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const remaining = Math.max(0, maxPhotos - currentCount);
+
+  // ── Name step ──────────────────────────────────────────────────────────────
+  const [localName, setLocalName] = useState(initialName);
+  const [nameConfirmed, setNameConfirmed] = useState(!!initialName.trim());
+  const uploaderName = localName;
+
+  if (!nameConfirmed) {
+    return (
+      <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-6">
+        <div className="absolute inset-0 bg-[#2C2825]/70 backdrop-blur-sm" onClick={onClose} />
+        <div className="relative w-full sm:max-w-sm bg-[#FAF7F2] rounded-t-3xl sm:rounded-3xl shadow-2xl overflow-hidden">
+          <div className="px-6 pt-8 pb-6 text-center">
+            <div className="w-14 h-14 rounded-full bg-[#C4738A]/10 flex items-center justify-center mx-auto mb-4">
+              <svg className="w-7 h-7 text-[#C4738A]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.8}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+              </svg>
+            </div>
+            <h2 className="font-serif text-xl font-light text-[#2C2825] mb-1">Kako vam je ime?</h2>
+            <p className="font-sans text-sm text-[#2C2825]/50 mb-6">Vaše ime bo prikazano ob fotografijah.</p>
+            <input
+              type="text"
+              value={localName}
+              onChange={(e) => setLocalName(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && localName.trim()) {
+                  onNameChange?.(localName.trim());
+                  setNameConfirmed(true);
+                }
+              }}
+              placeholder={t.namePlaceholder}
+              autoFocus
+              className="w-full px-4 py-3 border border-[#C9A96E]/30 rounded-xl bg-white font-sans text-base text-[#2C2825] placeholder:text-[#2C2825]/30 outline-none focus:border-[#C9A96E] transition-colors mb-4"
+            />
+            <button
+              onClick={() => {
+                if (localName.trim()) {
+                  onNameChange?.(localName.trim());
+                  setNameConfirmed(true);
+                }
+              }}
+              disabled={!localName.trim()}
+              className="w-full py-3 rounded-xl text-white font-semibold text-sm transition-all disabled:opacity-40"
+              style={{ background: "#C9A96E" }}
+            >
+              Naprej →
+            </button>
+            <button onClick={onClose} className="mt-3 text-sm text-[#2C2825]/40 hover:text-[#2C2825] transition-colors">
+              {t.cancel}
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   const addFiles = useCallback((raw: FileList | File[]) => {
     const toAdd: UploadFile[] = [];
