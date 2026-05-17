@@ -19,7 +19,7 @@ export async function PATCH(
   }
 
   const body = await req.json();
-  const { coupleName, location, notifyEmail, password, moderationEnabled, isPublished } = body;
+  const { coupleName, location, notifyEmail, password, moderationEnabled, isPublished, coverImageUrl } = body;
 
   await db
     .update(albums)
@@ -30,6 +30,7 @@ export async function PATCH(
       password: password !== undefined ? (password || null) : album.password,
       moderationEnabled: moderationEnabled !== undefined ? moderationEnabled : album.moderationEnabled,
       isPublished: isPublished !== undefined ? isPublished : album.isPublished,
+      coverImageUrl: coverImageUrl !== undefined ? (coverImageUrl || null) : album.coverImageUrl,
       updatedAt: new Date(),
     })
     .where(eq(albums.id, album.id));

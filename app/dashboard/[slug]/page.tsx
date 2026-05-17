@@ -2,7 +2,7 @@ import { auth } from "@clerk/nextjs/server";
 import { notFound, redirect } from "next/navigation";
 import { db } from "@/lib/db";
 import { albums, photos } from "@/lib/db/schema";
-import { eq, and } from "drizzle-orm";
+import { eq, and, countDistinct } from "drizzle-orm";
 import { AlbumAdminPanel } from "@/components/dashboard/AlbumAdminPanel";
 
 export const dynamic = "force-dynamic";
@@ -31,6 +31,7 @@ export default async function AlbumAdminPage({ params, searchParams }: Props) {
   let album: (typeof albums.$inferSelect) | null = null;
   let albumPhotos: (typeof photos.$inferSelect)[] = [];
   let pendingCount = 0;
+  let guestCount = 0;
 
   try {
     album = await db.query.albums.findFirst({
@@ -52,6 +53,12 @@ export default async function AlbumAdminPage({ params, searchParams }: Props) {
         where: and(eq(photos.albumId, album.id), eq(photos.status, "pending")),
       });
       pendingCount = allPending.length;
+
+      const [{ count }] = await db
+        .select({ count: countDistinct(photos.uploaderName) })
+        .from(photos)
+        .where(and(eq(photos.albumId, album.id), eq(photos.status, "published")));
+      guestCount = count ?? 0;
     }
   } catch (err) {
     console.error("[album page] DB error:", err);
@@ -80,6 +87,7 @@ export default async function AlbumAdminPage({ params, searchParams }: Props) {
       album={album}
       photos={albumPhotos}
       pendingCount={pendingCount}
+      guestCount={guestCount}
       activeTab={tab as "overview" | "gallery" | "qr" | "settings" | "pending" | "film"}
       isNew={isNew}
       isUpgraded={isUpgraded}

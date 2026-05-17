@@ -16,6 +16,7 @@ interface Props {
   album: Album;
   photos: Photo[];
   pendingCount: number;
+  guestCount: number;
   activeTab: Tab;
   isNew?: boolean;
   isUpgraded?: boolean;
@@ -89,7 +90,7 @@ function NewAlbumSuccess({ album }: { album: Album }) {
 
 // ─── Main Panel ───────────────────────────────────────────────────────────────
 
-export function AlbumAdminPanel({ album, photos, pendingCount, activeTab, isNew, isUpgraded }: Props) {
+export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activeTab, isNew, isUpgraded }: Props) {
   const router = useRouter();
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://guestcam.si";
   const albumUrl = `${appUrl}/${album.slug}`;
@@ -141,6 +142,15 @@ export function AlbumAdminPanel({ album, photos, pendingCount, activeTab, isNew,
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
+  };
+
+  const setCoverPhoto = async (blobUrl: string) => {
+    await fetch(`/api/albums/${album.slug}/settings`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ coverImageUrl: blobUrl }),
+    });
+    router.refresh();
   };
 
   const planLabel =
@@ -387,6 +397,7 @@ export function AlbumAdminPanel({ album, photos, pendingCount, activeTab, isNew,
               photos={photos}
               albumUrl={albumUrl}
               lastUploadDate={lastUploadDate}
+              guestCount={guestCount}
             />
           )}
 
@@ -399,6 +410,7 @@ export function AlbumAdminPanel({ album, photos, pendingCount, activeTab, isNew,
               approvePhoto={approvePhoto}
               rejectPhoto={rejectPhoto}
               deletePhoto={deletePhoto}
+              setCoverPhoto={setCoverPhoto}
             />
           )}
 
@@ -431,11 +443,13 @@ function OverviewTab({
   photos,
   albumUrl,
   lastUploadDate,
+  guestCount,
 }: {
   album: Album;
   photos: Photo[];
   albumUrl: string;
   lastUploadDate: string;
+  guestCount: number;
 }) {
   const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(albumUrl)}&bgcolor=ffffff&color=1a1a2e&qzone=2&format=png`;
   const last4 = photos.slice(0, 4);
@@ -497,7 +511,7 @@ function OverviewTab({
               </svg>
             ),
             label: "Gostje",
-            value: 0,
+            value: guestCount,
           },
           {
             icon: (
@@ -612,6 +626,7 @@ function GalleryTab({
   approvePhoto,
   rejectPhoto,
   deletePhoto,
+  setCoverPhoto,
 }: {
   album: Album;
   photos: Photo[];
@@ -619,6 +634,7 @@ function GalleryTab({
   approvePhoto: (id: string) => void;
   rejectPhoto: (id: string) => void;
   deletePhoto: (id: string) => void;
+  setCoverPhoto: (blobUrl: string) => void;
 }) {
   return (
     <div>
@@ -678,6 +694,17 @@ function GalleryTab({
                         </svg>
                       </button>
                     </>
+                  )}
+                  {activeTab === "gallery" && !photo.mimeType?.startsWith("video/") && (
+                    <button
+                      onClick={() => setCoverPhoto(photo.thumbnailUrl ?? photo.blobUrl)}
+                      title="Nastavi kot naslovnico"
+                      className="w-9 h-9 rounded-full bg-white/90 text-gray-800 flex items-center justify-center hover:bg-white transition-colors"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5z" />
+                      </svg>
+                    </button>
                   )}
                   {activeTab === "gallery" && (
                     <button
