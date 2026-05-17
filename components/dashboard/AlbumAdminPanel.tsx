@@ -720,10 +720,113 @@ function QrTab({
 
 // ─── Settings Form ────────────────────────────────────────────────────────────
 
+function DeleteAlbumModal({
+  album,
+  onClose,
+}: {
+  album: Album;
+  onClose: () => void;
+}) {
+  const router = useRouter();
+  const [confirmText, setConfirmText] = useState("");
+  const [deleting, setDeleting] = useState(false);
+  const [error, setError] = useState("");
+
+  const slug = album.slug;
+  const ready = confirmText === slug;
+
+  const handleDelete = async () => {
+    if (!ready) return;
+    setDeleting(true);
+    setError("");
+    try {
+      const res = await fetch(`/api/albums/${slug}/delete`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ confirm: slug }),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error ?? "Brisanje ni uspelo");
+      }
+      router.push("/dashboard");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Napaka");
+      setDeleting(false);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: "rgba(0,0,0,0.55)" }}>
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 space-y-5">
+        {/* Header */}
+        <div className="flex items-start gap-3">
+          <div className="flex-shrink-0 w-10 h-10 rounded-full bg-red-100 flex items-center justify-center">
+            <svg className="w-5 h-5 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+            </svg>
+          </div>
+          <div>
+            <h2 className="font-semibold text-gray-900 text-base">Izbriši galerijo</h2>
+            <p className="text-sm text-gray-500 mt-0.5">To dejanje je <strong>nepovratno</strong>. Vse fotografije, videi in podatki bodo trajno izbrisani.</p>
+          </div>
+        </div>
+
+        {/* Confirmation input */}
+        <div className="bg-red-50 border border-red-200 rounded-xl p-4 space-y-3">
+          <p className="text-sm text-red-700">
+            Za potrditev vpiši ime galerije:
+            <span className="ml-1 font-mono font-bold text-red-800 select-all">{slug}</span>
+          </p>
+          <input
+            type="text"
+            value={confirmText}
+            onChange={(e) => setConfirmText(e.target.value)}
+            placeholder={slug}
+            autoFocus
+            className="w-full px-3 py-2.5 border rounded-xl text-sm bg-white outline-none transition-colors font-mono"
+            style={{ borderColor: confirmText && !ready ? "#f87171" : ready ? "#22c55e" : "#e5e7eb" }}
+          />
+          {confirmText && !ready && (
+            <p className="text-xs text-red-600">Besedilo se ne ujema</p>
+          )}
+          {ready && (
+            <p className="text-xs text-green-600 font-medium">✓ Potrditev pravilna</p>
+          )}
+        </div>
+
+        {error && (
+          <p className="text-sm text-red-600 bg-red-50 rounded-xl px-4 py-2">{error}</p>
+        )}
+
+        {/* Actions */}
+        <div className="flex gap-3 pt-1">
+          <button
+            onClick={onClose}
+            disabled={deleting}
+            className="flex-1 py-2.5 rounded-xl border border-gray-200 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors disabled:opacity-50"
+          >
+            Prekliči
+          </button>
+          <button
+            onClick={handleDelete}
+            disabled={!ready || deleting}
+            className="flex-1 py-2.5 rounded-xl text-sm font-semibold text-white transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+            style={{ background: ready ? "#dc2626" : "#fca5a5" }}
+          >
+            {deleting ? "Brišem…" : "Izbriši galerijo"}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function AlbumSettingsForm({ album }: { album: Album }) {
   const router = useRouter();
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const [coupleName, setCoupleName]           = useState(album.coupleName);
   const [weddingDate, setWeddingDate]         = useState(album.weddingDate);
@@ -842,6 +945,30 @@ function AlbumSettingsForm({ album }: { album: Album }) {
       >
         {saving ? "Shranjevanje…" : saved ? "✓ Shranjeno" : "Shrani spremembe"}
       </button>
+
+      {/* ── Danger Zone ─────────────────────────────────────────────────── */}
+      <div className="border border-red-200 rounded-2xl p-5 space-y-3 mt-2" style={{ background: "#fff5f5" }}>
+        <div>
+          <h4 className="font-semibold text-red-700 text-sm">Nevarno območje</h4>
+          <p className="text-xs text-red-500 mt-0.5">Spodnja dejanja so nepovratna. Nadaljuj previdno.</p>
+        </div>
+        <div className="flex items-center justify-between gap-4 bg-white border border-red-100 rounded-xl px-4 py-3">
+          <div>
+            <p className="text-sm font-medium text-gray-800">Izbriši galerijo</p>
+            <p className="text-xs text-gray-500 mt-0.5">Trajno izbriše galerijo in vse fotografije.</p>
+          </div>
+          <button
+            onClick={() => setShowDeleteModal(true)}
+            className="flex-shrink-0 px-4 py-2 rounded-xl border border-red-300 text-red-600 text-sm font-medium hover:bg-red-50 transition-colors"
+          >
+            Izbriši
+          </button>
+        </div>
+      </div>
+
+      {showDeleteModal && (
+        <DeleteAlbumModal album={album} onClose={() => setShowDeleteModal(false)} />
+      )}
     </div>
   );
 }
