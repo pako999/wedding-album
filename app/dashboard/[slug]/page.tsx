@@ -13,41 +13,72 @@ interface Props {
 }
 
 export default async function AlbumAdminPage({ params, searchParams }: Props) {
-  const { userId } = await auth();
+  // Auth — must NOT redirect inside try block
+  let userId: string | null = null;
+  try {
+    const session = await auth();
+    userId = session.userId;
+  } catch {
+    // Clerk error — treat as unauthenticated
+  }
   if (!userId) redirect("/sign-in");
 
   const { slug } = await params;
   const { tab = "published" } = await searchParams;
 
-  const album = await db.query.albums.findFirst({
-    where: eq(albums.slug, slug),
-  });
+  let album: (typeof albums.$inferSelect) | null = null;
+  let albumPhotos: (typeof photos.$inferSelect)[] = [];
+  let pendingCount = 0;
+
+  try {
+    album = await db.query.albums.findFirst({
+      where: eq(albums.slug, slug),
+    }) ?? null;
+
+    if (album && album.ownerClerkId === userId) {
+      const status =
+        tab === "pending"  ? "pending"  :
+        tab === "rejected" ? "rejected" :
+        "published";
+
+      albumPhotos = await db.query.photos.findMany({
+        where: and(eq(photos.albumId, album.id), eq(photos.status, status)),
+        orderBy: (p, { desc }) => [desc(p.uploadedAt)],
+      });
+
+      const allPending = await db.query.photos.findMany({
+        where: and(eq(photos.albumId, album.id), eq(photos.status, "pending")),
+      });
+      pendingCount = allPending.length;
+    }
+  } catch (err) {
+    console.error("[album page] DB error:", err);
+    // Return a helpful error page instead of crashing
+    return (
+      <div className="min-h-screen flex items-center justify-center" style={{ background: "#FDF4F5" }}>
+        <div className="bg-white rounded-2xl border border-amber-200 p-8 max-w-md text-center shadow">
+          <div className="text-4xl mb-4">⚠️</div>
+          <h1 className="font-serif text-2xl text-[#2C2825] mb-2">Napaka pri nalaganju</h1>
+          <p className="text-sm text-gray-500 mb-4">
+            Prišlo je do napake z bazo podatkov. Poskusite znova čez trenutek.
+          </p>
+          <a href="/dashboard" className="inline-block px-6 py-3 rounded-xl text-white text-sm font-semibold" style={{ background: "#C4738A" }}>
+            Nazaj na galerije
+          </a>
+        </div>
+      </div>
+    );
+  }
 
   if (!album || album.ownerClerkId !== userId) {
     notFound();
   }
 
-  // Fetch photos based on active tab
-  const status =
-    tab === "pending" ? "pending" :
-    tab === "rejected" ? "rejected" :
-    "published";
-
-  const albumPhotos = await db.query.photos.findMany({
-    where: and(eq(photos.albumId, album.id), eq(photos.status, status)),
-    orderBy: (p, { desc }) => [desc(p.uploadedAt)],
-  });
-
-  // All pending count for badge
-  const allPending = await db.query.photos.findMany({
-    where: and(eq(photos.albumId, album.id), eq(photos.status, "pending")),
-  });
-
   return (
     <AlbumAdminPanel
       album={album}
       photos={albumPhotos}
-      pendingCount={allPending.length}
+      pendingCount={pendingCount}
       activeTab={tab as "published" | "pending" | "rejected" | "settings" | "share" | "stats"}
     />
   );
