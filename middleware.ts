@@ -8,9 +8,17 @@ const isInternalApi = createRouteMatcher([
   "/api/webhooks(.*)",
 ]);
 
-const APP_HOSTNAME = process.env.NEXT_PUBLIC_APP_URL
-  ? new URL(process.env.NEXT_PUBLIC_APP_URL).hostname
-  : "guestcam.si";
+function parseHostname(url: string | undefined): string {
+  if (!url) return "guestcam.si";
+  try {
+    const raw = url.startsWith("http") ? url : `https://${url}`;
+    return new URL(raw).hostname;
+  } catch {
+    return "guestcam.si";
+  }
+}
+
+const APP_HOSTNAME = parseHostname(process.env.NEXT_PUBLIC_APP_URL);
 
 function isOwnDomain(hostname: string) {
   const bare = hostname.split(":")[0];
