@@ -4,7 +4,6 @@ import { db } from "@/lib/db";
 import { albums, photos, filmGenerations, filmClips } from "@/lib/db/schema";
 import { eq, and } from "drizzle-orm";
 import { submitKlingJob } from "@/lib/film/kling";
-import { bunnyDisplayUrl } from "@/lib/storage/bunny";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -61,7 +60,7 @@ export async function POST(
     generationId: generation.id,
     albumId: album.id,
     photoId: p.id,
-    photoUrl: bunnyDisplayUrl(p.blobUrl, 1920, 92), // high-res for AI
+    photoUrl: p.blobUrl, // raw CDN URL — Kling image_url requires a clean URL without query params
     sortOrder: i,
     status: "queued" as const,
   }));
