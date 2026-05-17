@@ -236,13 +236,10 @@ function TableCard({
 
   if (isPreview) return card;
 
+  // In print mode the parent grid cell is exactly 105mm × 148.5mm.
+  // Fill it completely — no fixed width/height here.
   return (
-    <div style={{
-      width: "100mm",
-      minHeight: "148mm",
-      display: "flex",
-      alignItems: "stretch",
-    }}>
+    <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "stretch" }}>
       {card}
     </div>
   );
@@ -384,23 +381,40 @@ export function PrintPageClient({ slug, coupleName, weddingDate, location, qrUrl
         </div>
       </main>
 
-      {/* PRINT OUTPUT — shown only when printing */}
+      {/* PRINT OUTPUT — exactly one A4 page, 4 × A6 cards */}
       <div className="print-only">
         <div
           style={{
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-            gridTemplateRows: "1fr 1fr",
-            gap: 0,
             width: "210mm",
             height: "297mm",
-            padding: "8mm",
+            display: "grid",
+            /* Two A6 columns: 105mm each */
+            gridTemplateColumns: "105mm 105mm",
+            /* Two A6 rows: 148.5mm each */
+            gridTemplateRows: "148.5mm 148.5mm",
+            gap: 0,
+            padding: 0,
+            margin: 0,
             boxSizing: "border-box",
+            overflow: "hidden",
             pageBreakInside: "avoid",
+            breakInside: "avoid",
           }}
         >
           {[0, 1, 2, 3].map((i) => (
-            <div key={i} style={{ display: "flex", alignItems: "stretch", padding: "4mm", boxSizing: "border-box" }}>
+            <div
+              key={i}
+              style={{
+                width: "105mm",
+                height: "148.5mm",
+                boxSizing: "border-box",
+                overflow: "hidden",
+                position: "relative",
+                /* Dashed cut guides */
+                borderRight:  i % 2 === 0 ? "1px dashed rgba(0,0,0,0.18)" : "none",
+                borderBottom: i < 2       ? "1px dashed rgba(0,0,0,0.18)" : "none",
+              }}
+            >
               <TableCard
                 template={selected}
                 coupleName={coupleName}
@@ -420,10 +434,24 @@ export function PrintPageClient({ slug, coupleName, weddingDate, location, qrUrl
           .print-only { display: none !important; }
         }
         @media print {
-          .no-print { display: none !important; }
+          .no-print  { display: none !important; }
           .print-only { display: block !important; }
-          body { margin: 0; padding: 0; background: white !important; }
-          @page { size: A4 portrait; margin: 0; }
+
+          /* Reset every possible source of extra space */
+          html, body {
+            margin: 0 !important;
+            padding: 0 !important;
+            width: 210mm !important;
+            height: 297mm !important;
+            background: white !important;
+            overflow: hidden !important;
+          }
+
+          /* Exact A4, zero browser margins */
+          @page {
+            size: 210mm 297mm;
+            margin: 0mm;
+          }
         }
       `}</style>
     </div>
