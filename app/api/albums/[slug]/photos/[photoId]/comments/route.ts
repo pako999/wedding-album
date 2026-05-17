@@ -15,16 +15,39 @@ export async function POST(
   { params }: { params: Promise<{ slug: string; photoId: string }> }
 ) {
   const { slug, photoId } = await params;
-  const { uploaderName, body } = await req.json() as {
+  const payload = await req.json() as {
     uploaderName: string;
     body: string;
+    turnstileToken?: string;
   };
+  const { uploaderName, body, turnstileToken } = payload;
 
   if (!uploaderName?.trim()) {
     return NextResponse.json({ error: "uploaderName required" }, { status: 400 });
   }
   if (!body?.trim() || body.trim().length > 500) {
     return NextResponse.json({ error: "body required (max 500 chars)" }, { status: 400 });
+  }
+
+  // Cloudflare Turnstile verification (optional — only enforced when secret key is set)
+  const cfSecret = process.env.CF_TURNSTILE_SECRET_KEY;
+  if (cfSecret) {
+    if (!turnstileToken) {
+      return NextResponse.json({ error: "Verification required" }, { status: 403 });
+    }
+    try {
+      const verifyRes = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ secret: cfSecret, response: turnstileToken }),
+      });
+      const verifyData = await verifyRes.json() as { success: boolean };
+      if (!verifyData.success) {
+        return NextResponse.json({ error: "Bot verification failed" }, { status: 403 });
+      }
+    } catch {
+      return NextResponse.json({ error: "Verification error" }, { status: 500 });
+    }
   }
 
   const album = await db.query.albums

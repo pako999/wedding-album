@@ -116,6 +116,9 @@ export function AlbumGuestView({ album, photos, passwordRequired, passwordCorrec
   const [slideshowOpen, setSlideshowOpen]     = useState(false);
   const [slideshowIdx, setSlideshowIdx]       = useState(0);
   const [projectionOpen, setProjectionOpen]   = useState(false);
+  const [filmClips, setFilmClips]             = useState<{ videoUrl: string; sortOrder: number }[]>([]);
+  const [filmPlayerOpen, setFilmPlayerOpen]   = useState(false);
+  const [filmClipIdx, setFilmClipIdx]         = useState(0);
 
   // ── Reactions ─────────────────────────────────────────────────────────────
   const [likeCounts, setLikeCounts]             = useState<Record<string, number>>({});
@@ -124,9 +127,11 @@ export function AlbumGuestView({ album, photos, passwordRequired, passwordCorrec
   const [openCommentsPhoto, setOpenCommentsPhoto] = useState<string | null>(null); // photoId
   const [commentInput, setCommentInput]         = useState("");
   const [commentPosting, setCommentPosting]     = useState(false);
+  const [turnstileToken, setTurnstileToken]     = useState<string | null>(null);
 
   const nameInputRef  = useRef<HTMLInputElement>(null);
   const cameraFilesRef = useRef<FileList | null>(null);
+  const turnstileContainerRef = useRef<HTMLDivElement>(null);
 
   const t       = translations[lang];
   const evtIcon = eventIcon(album.eventType ?? "other");
@@ -148,6 +153,67 @@ export function AlbumGuestView({ album, photos, passwordRequired, passwordCorrec
       })
       .catch(() => { /* non-fatal */ });
   }, [album.slug]);
+
+  // ── Load completed film clips ─────────────────────────────────────────────
+  useEffect(() => {
+    fetch(`/api/albums/${album.slug}/film/status`)
+      .then(r => r.ok ? r.json() : null)
+      .then((data: { generation: { status: string } | null; clips: { status: string; videoUrl: string | null; sortOrder: number }[] } | null) => {
+        if (data?.generation?.status === "complete") {
+          const done = data.clips
+            .filter(c => c.status === "done" && c.videoUrl)
+            .sort((a, b) => a.sortOrder - b.sortOrder)
+            .map(c => ({ videoUrl: c.videoUrl!, sortOrder: c.sortOrder }));
+          setFilmClips(done);
+        }
+      })
+      .catch(() => { /* non-fatal */ });
+  }, [album.slug]);
+
+  // ── Cloudflare Turnstile ──────────────────────────────────────────────────
+  useEffect(() => {
+    const siteKey = process.env.NEXT_PUBLIC_CF_TURNSTILE_SITE_KEY;
+    if (!siteKey || !openCommentsPhoto || !nameConfirmed || !turnstileContainerRef.current) return;
+
+    const container = turnstileContainerRef.current;
+    setTurnstileToken(null);
+
+    const render = () => {
+      if (!container || !(window as { turnstile?: { render: (el: HTMLElement, opts: object) => void } }).turnstile) return;
+      (window as { turnstile?: { render: (el: HTMLElement, opts: object) => void } }).turnstile!.render(container, {
+        sitekey: siteKey,
+        callback: (token: string) => setTurnstileToken(token),
+        "expired-callback": () => setTurnstileToken(null),
+        "error-callback": () => setTurnstileToken(null),
+        size: "invisible",
+        appearance: "interaction-only",
+      });
+    };
+
+    // If script already loaded, render immediately
+    if ((window as { turnstile?: unknown }).turnstile) {
+      render();
+    } else {
+      // Load script once
+      if (!document.getElementById("cf-turnstile-script")) {
+        const script = document.createElement("script");
+        script.id = "cf-turnstile-script";
+        script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";
+        script.async = true;
+        script.onload = render;
+        document.head.appendChild(script);
+      } else {
+        // Script loading, wait
+        const check = setInterval(() => {
+          if ((window as { turnstile?: unknown }).turnstile) {
+            clearInterval(check);
+            render();
+          }
+        }, 100);
+        return () => clearInterval(check);
+      }
+    }
+  }, [openCommentsPhoto, nameConfirmed]);
 
   // ── Like toggle ───────────────────────────────────────────────────────────
   const toggleLike = useCallback((photoId: string) => {
@@ -201,7 +267,7 @@ export function AlbumGuestView({ album, photos, passwordRequired, passwordCorrec
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ uploaderName: uploaderName.trim(), body: commentInput.trim() }),
+          body: JSON.stringify({ uploaderName: uploaderName.trim(), body: commentInput.trim(), turnstileToken: turnstileToken ?? undefined }),
         }
       );
       if (res.ok) {
@@ -439,6 +505,17 @@ export function AlbumGuestView({ album, photos, passwordRequired, passwordCorrec
                   </svg>
                   <span className="hidden lg:inline">Foto zid</span>
                 </button>
+                {filmClips.length > 0 && (
+                  <button
+                    onClick={() => { setFilmClipIdx(0); setFilmPlayerOpen(true); }}
+                    title="Highlights film"
+                    className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-sm font-medium transition-all hover:bg-gray-100"
+                    style={{ color: BRAND.muted }}
+                  >
+                    <span>🎬</span>
+                    <span className="hidden lg:inline">Film</span>
+                  </button>
+                )}
               </div>
             )}
 
@@ -865,9 +942,32 @@ export function AlbumGuestView({ album, photos, passwordRequired, passwordCorrec
               {/* Add comment input */}
               <div className="border-t px-4 py-3 shrink-0" style={{ borderColor: BRAND.border }}>
                 {!nameConfirmed ? (
-                  <p className="text-xs text-center py-1" style={{ color: BRAND.muted }}>
-                    Vnesi svoje ime zgoraj, da komentiraš.
-                  </p>
+                  <div className="space-y-2 py-1">
+                    <p className="text-xs text-center font-medium" style={{ color: BRAND.muted }}>
+                      Vnesi ime za komentar:
+                    </p>
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="text"
+                        value={uploaderName}
+                        onChange={e => setUploaderName(e.target.value)}
+                        onKeyDown={e => e.key === "Enter" && confirmName()}
+                        placeholder="Vaše ime"
+                        autoComplete="given-name"
+                        autoFocus
+                        className="flex-1 px-3 py-2 border rounded-xl text-sm outline-none transition-all"
+                        style={{ borderColor: BRAND.border }}
+                      />
+                      <button
+                        onClick={confirmName}
+                        disabled={!uploaderName.trim()}
+                        className="px-4 py-2 rounded-xl text-sm font-semibold text-white transition-all disabled:opacity-30 shrink-0 hover:opacity-90"
+                        style={{ background: BRAND.accent }}
+                      >
+                        OK
+                      </button>
+                    </div>
+                  </div>
                 ) : (
                   <div className="flex items-center gap-2">
                     <AvatarBubble name={uploaderName} size={7} />
@@ -881,6 +981,7 @@ export function AlbumGuestView({ album, photos, passwordRequired, passwordCorrec
                       className="flex-1 px-3 py-2 border rounded-xl text-sm outline-none transition-all"
                       style={{ borderColor: BRAND.border }}
                     />
+                    <div ref={turnstileContainerRef} className="hidden" />
                     <button
                       onClick={postComment}
                       disabled={!commentInput.trim() || commentPosting}
@@ -951,6 +1052,15 @@ export function AlbumGuestView({ album, photos, passwordRequired, passwordCorrec
           onSuccess={() => { cameraFilesRef.current = null; setUploadOpen(false); router.refresh(); }}
         />
       )}
+
+      {/* ── Film player ─────────────────────────────────────────────────── */}
+      {filmPlayerOpen && filmClips.length > 0 && (
+        <FilmPlayer
+          clips={filmClips}
+          initialIndex={filmClipIdx}
+          onClose={() => setFilmPlayerOpen(false)}
+        />
+      )}
     </div>
   );
 }
@@ -982,6 +1092,113 @@ function VideoCard({ photo }: { photo: Photo }) {
           )}
           <p className="text-[10px] text-gray-400">{formatUploadTime(photo.uploadedAt)}</p>
         </div>
+      </div>
+    </div>
+  );
+}
+
+// ── Film Player ──────────────────────────────────────────────────────────────
+interface FilmClip { videoUrl: string; sortOrder: number }
+
+function FilmPlayer({ clips, initialIndex, onClose }: {
+  clips: FilmClip[];
+  initialIndex: number;
+  onClose: () => void;
+}) {
+  const [idx, setIdx] = useState(initialIndex);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const clip = clips[idx];
+
+  const prev = () => setIdx(i => Math.max(0, i - 1));
+  const next = useCallback(() => {
+    setIdx(i => {
+      if (i + 1 < clips.length) return i + 1;
+      return i; // stay on last
+    });
+  }, [clips.length]);
+
+  // Auto-advance when video ends
+  useEffect(() => {
+    const v = videoRef.current;
+    if (!v) return;
+    v.play().catch(() => {});
+    const onEnded = () => next();
+    v.addEventListener("ended", onEnded);
+    return () => v.removeEventListener("ended", onEnded);
+  }, [idx, next]);
+
+  // Keyboard navigation
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+      if (e.key === "ArrowRight") next();
+      if (e.key === "ArrowLeft") prev();
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [next, onClose]);
+
+  return (
+    <div className="fixed inset-0 z-50 bg-black flex flex-col">
+      {/* Top bar */}
+      <div className="flex items-center justify-between px-5 py-4 shrink-0" style={{ background: "rgba(0,0,0,0.6)" }}>
+        <div className="flex items-center gap-3">
+          <span className="text-white font-bold text-sm">🎬 Highlights film</span>
+          <span className="text-white/50 text-xs">{idx + 1} / {clips.length}</span>
+        </div>
+        <button
+          onClick={onClose}
+          className="w-9 h-9 rounded-full flex items-center justify-center text-white/80 hover:text-white hover:bg-white/10 transition-all"
+        >
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      {/* Video */}
+      <div className="flex-1 flex items-center justify-center relative overflow-hidden">
+        <video
+          ref={videoRef}
+          key={clip.videoUrl}
+          src={clip.videoUrl}
+          className="max-w-full max-h-full object-contain"
+          playsInline
+          autoPlay
+        />
+
+        {/* Prev / Next overlays */}
+        {idx > 0 && (
+          <button
+            onClick={prev}
+            className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-all"
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+        )}
+        {idx < clips.length - 1 && (
+          <button
+            onClick={next}
+            className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-all"
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+        )}
+      </div>
+
+      {/* Progress dots */}
+      <div className="flex items-center justify-center gap-1 py-4 shrink-0" style={{ background: "rgba(0,0,0,0.6)" }}>
+        {clips.map((_, i) => (
+          <button
+            key={i}
+            onClick={() => setIdx(i)}
+            className={`rounded-full transition-all ${i === idx ? "w-6 h-2 bg-white" : "w-2 h-2 bg-white/30 hover:bg-white/60"}`}
+          />
+        ))}
       </div>
     </div>
   );

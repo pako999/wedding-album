@@ -13,6 +13,13 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import type { Album } from "@/lib/db/schema";
 
+interface PhotoItem {
+  id: string;
+  blobUrl: string;
+  thumbnailUrl: string | null;
+  uploaderName: string | null;
+}
+
 interface ClipItem {
   id: string;
   photoId: string;
@@ -53,10 +60,15 @@ export function FilmStudio({ album }: { album: Album }) {
   const [upgrading, setUpgrading] = useState<string | null>(null);
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
+  const [allPhotos, setAllPhotos]           = useState<PhotoItem[]>([]);
+  const [selectedIds, setSelectedIds]       = useState<Set<string>>(new Set());
+  const [photosLoading, setPhotosLoading]   = useState(false);
+  const [pickerOpen, setPickerOpen]         = useState(false);
+
   const filmTier = (album.filmTier ?? "free") as "free" | "pro" | "premium";
   const tierLimit = TIER_LIMITS[filmTier];
   const totalPhotos = album.photoCount ?? 0;
-  const photosToGenerate = Math.min(totalPhotos, tierLimit);
+  const photosToGenerate = selectedIds.size > 0 ? selectedIds.size : Math.min(totalPhotos, tierLimit);
 
   // ── Poll status ─────────────────────────────────────────────────────────────
   const fetchStatus = useCallback(async () => {
@@ -79,6 +91,21 @@ export function FilmStudio({ album }: { album: Album }) {
   useEffect(() => {
     fetchStatus();
   }, [fetchStatus]);
+
+  useEffect(() => {
+    setPhotosLoading(true);
+    fetch(`/api/albums/${album.slug}/photos`)
+      .then(r => r.json())
+      .then((d: { photos?: PhotoItem[] }) => {
+        const list = d.photos ?? [];
+        setAllPhotos(list);
+        // Default: select first min(20, tierLimit) photos
+        const defaultCount = Math.min(20, tierLimit);
+        setSelectedIds(new Set(list.slice(0, defaultCount).map(p => p.id)));
+      })
+      .catch(() => { /* non-fatal */ })
+      .finally(() => setPhotosLoading(false));
+  }, [album.slug, tierLimit]);
 
   useEffect(() => {
     if (!generation) return;
@@ -133,6 +160,19 @@ export function FilmStudio({ album }: { album: Album }) {
     }
   };
 
+  // ── Toggle photo selection ──────────────────────────────────────────────────
+  const togglePhoto = (id: string) => {
+    setSelectedIds(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) {
+        next.delete(id);
+      } else if (next.size < tierLimit) {
+        next.add(id);
+      }
+      return next;
+    });
+  };
+
   // ── Start generation ────────────────────────────────────────────────────────
   const startGeneration = async () => {
     setStarting(true);
@@ -140,6 +180,10 @@ export function FilmStudio({ album }: { album: Album }) {
     try {
       const res = await fetch(`/api/albums/${album.slug}/film/generate`, {
         method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          photoIds: selectedIds.size > 0 ? Array.from(selectedIds) : undefined,
+        }),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -331,6 +375,98 @@ export function FilmStudio({ album }: { album: Album }) {
           </div>
         </div>
       </div>
+
+      {/* ── Photo picker ─────────────────────────────────────────────────── */}
+      {allPhotos.length > 0 && (
+        <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
+          <button
+            onClick={() => setPickerOpen(v => !v)}
+            className="w-full flex items-center justify-between px-6 py-4 text-left"
+          >
+            <div>
+              <h3 className="text-sm font-bold text-gray-900 flex items-center gap-2">
+                🎞️ Izberi fotografije za film
+                <span className="text-xs font-normal text-gray-400">
+                  {selectedIds.size} / {Math.min(20, tierLimit)} priporočenih
+                </span>
+              </h3>
+              <p className="text-xs text-gray-400 mt-0.5">
+                Priporočamo 20 najboljših — to naredi ~100s highlight film.
+              </p>
+            </div>
+            <svg
+              className={`w-5 h-5 text-gray-400 transition-transform ${pickerOpen ? "rotate-180" : ""}`}
+              fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+
+          {pickerOpen && (
+            <div className="border-t border-gray-100 p-4">
+              {/* Quick select buttons */}
+              <div className="flex items-center gap-2 mb-3 flex-wrap">
+                <span className="text-xs text-gray-500">Hitro izberi:</span>
+                {[10, 20, 30].filter(n => n <= Math.min(allPhotos.length, tierLimit)).map(n => (
+                  <button
+                    key={n}
+                    onClick={() => setSelectedIds(new Set(allPhotos.slice(0, n).map(p => p.id)))}
+                    className="text-xs px-2.5 py-1 rounded-full border border-gray-200 hover:border-violet-300 hover:text-violet-700 transition-all"
+                  >
+                    Prvih {n}
+                  </button>
+                ))}
+                <button
+                  onClick={() => setSelectedIds(new Set())}
+                  className="text-xs px-2.5 py-1 rounded-full border border-gray-200 hover:border-red-300 hover:text-red-600 transition-all"
+                >
+                  Počisti
+                </button>
+                {selectedIds.size >= tierLimit && (
+                  <span className="text-xs text-amber-600 font-medium ml-auto">
+                    Dosežena meja {tierLimit} za tvoj nivo
+                  </span>
+                )}
+              </div>
+
+              {/* Photo grid */}
+              {photosLoading && <p className="text-xs text-gray-400 py-2">Nalagam fotografije…</p>}
+              <div className="grid grid-cols-4 sm:grid-cols-6 lg:grid-cols-8 gap-1.5 max-h-72 overflow-y-auto" style={{ scrollbarWidth: "thin" }}>
+                {allPhotos.map(photo => {
+                  const sel = selectedIds.has(photo.id);
+                  const atLimit = !sel && selectedIds.size >= tierLimit;
+                  return (
+                    <button
+                      key={photo.id}
+                      onClick={() => togglePhoto(photo.id)}
+                      disabled={atLimit}
+                      title={photo.uploaderName ?? ""}
+                      className={`relative aspect-square rounded-lg overflow-hidden transition-all ${
+                        sel ? "ring-2 ring-violet-500 ring-offset-1" : atLimit ? "opacity-40" : "opacity-70 hover:opacity-100"
+                      }`}
+                    >
+                      <img
+                        src={photo.thumbnailUrl ?? photo.blobUrl}
+                        alt=""
+                        className="w-full h-full object-cover"
+                      />
+                      {sel && (
+                        <div className="absolute inset-0 bg-violet-600/20 flex items-center justify-center">
+                          <div className="w-5 h-5 rounded-full bg-violet-600 flex items-center justify-center">
+                            <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={3}>
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                            </svg>
+                          </div>
+                        </div>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* ── Upgrade card (only shown when not on premium) ─────────────────── */}
       {filmTier !== "premium" && (

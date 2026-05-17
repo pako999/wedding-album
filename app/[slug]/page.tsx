@@ -23,6 +23,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: `${album.coupleName} — Guestcam`,
     description: `Wedding album for ${album.coupleName}, ${album.weddingDate}`,
+    robots: { index: false, follow: false },
     openGraph: {
       title: `${album.coupleName} — Guestcam`,
       images: album.coverImageUrl ? [album.coverImageUrl] : [],

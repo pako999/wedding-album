@@ -41,14 +41,23 @@ export async function POST(
   });
   const imagePhotos = albumPhotos.filter(p => !p.mimeType?.startsWith("video/"));
 
+  if (imagePhotos.length === 0) {
+    return NextResponse.json({ error: "No photos to generate from" }, { status: 400 });
+  }
+
+  // Optional: caller can specify exact photo IDs (from the FilmStudio picker)
+  const body = await req.json().catch(() => ({})) as { photoIds?: string[] };
+  const requestedPhotoIds = Array.isArray(body?.photoIds) && body.photoIds.length > 0
+    ? body.photoIds
+    : null;
+
   // Enforce tier photo limit
   const TIER_LIMITS: Record<string, number> = { free: 48, pro: 100, premium: 300 };
   const tierLimit = TIER_LIMITS[album.filmTier ?? "free"] ?? 48;
-  const limitedPhotos = imagePhotos.slice(0, tierLimit);
 
-  if (limitedPhotos.length === 0) {
-    return NextResponse.json({ error: "No photos to generate from" }, { status: 400 });
-  }
+  let limitedPhotos = requestedPhotoIds
+    ? imagePhotos.filter(p => requestedPhotoIds.includes(p.id)).slice(0, tierLimit)
+    : imagePhotos.slice(0, tierLimit);
 
   // Create generation record
   const [generation] = await db
