@@ -30,6 +30,41 @@ export function isBunnyStorageConfigured(): boolean {
   return !!(process.env.BUNNY_STORAGE_API_KEY && process.env.BUNNY_STORAGE_ZONE);
 }
 
+// ── URL helpers for display vs. download ──────────────────────────────────────
+
+/**
+ * Returns a Bunny CDN URL with image-optimization query params for display.
+ *
+ * Bunny Optimizer (enable in pull-zone dashboard → Optimizer tab) processes
+ * `?width=N&quality=Q` server-side.  When Optimizer is OFF the params are
+ * silently ignored and the original file is served — so this is always safe.
+ *
+ * Suggested widths:
+ *   800  → mobile grid thumbnails (fast, sharp on phones)
+ *  2400  → lightbox / fullscreen (high-res, still smaller than 20 MP originals)
+ */
+export function bunnyDisplayUrl(
+  url: string | null | undefined,
+  width = 800,
+  quality = 82,
+): string {
+  if (!url) return "";
+  // Only add params for Bunny CDN URLs; leave other hosts (e.g. Vercel Blob) unchanged
+  if (!url.includes(".b-cdn.net")) return url;
+  // Already has query params → don't double-add
+  if (url.includes("?")) return url;
+  return `${url}?width=${width}&quality=${quality}`;
+}
+
+/**
+ * Strips Bunny optimization query params to get the original full-quality URL.
+ * Use this for ZIP downloads, Google Drive exports, and any server-side fetch.
+ */
+export function bunnyOriginalUrl(url: string | null | undefined): string {
+  if (!url) return "";
+  return url.split("?")[0];
+}
+
 export function isBunnyStreamConfigured(): boolean {
   return !!(process.env.BUNNY_STREAM_API_KEY && process.env.BUNNY_STREAM_LIBRARY_ID);
 }

@@ -90,6 +90,7 @@ export function AlbumAdminPanel({ album, photos, pendingCount, activeTab, isNew,
   const router = useRouter();
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://guestcam.si";
   const albumUrl = `${appUrl}/${album.slug}`;
+  const [showDriveModal, setShowDriveModal] = useState(false);
 
   // Show success screen if just created
   if (isNew) {
@@ -311,6 +312,44 @@ export function AlbumAdminPanel({ album, photos, pendingCount, activeTab, isNew,
             >
               ⬇ Prenesi vse (ZIP)
             </a>
+            <div className="relative">
+              <button
+                onClick={() => setShowDriveModal((v) => !v)}
+                className="flex items-center gap-1.5 px-3 py-2 text-sm text-gray-600 border border-gray-200 rounded-lg hover:border-gray-300 transition-colors bg-white"
+              >
+                📤 Google Drive
+              </button>
+              {showDriveModal && (
+                <div
+                  className="absolute right-0 top-full mt-2 z-50 w-72 bg-white border border-gray-200 rounded-xl shadow-lg p-5"
+                >
+                  <p className="text-sm font-semibold text-gray-800 mb-3">
+                    Za shranjevanje v Google Drive:
+                  </p>
+                  <ol className="space-y-1.5 text-sm text-gray-700 list-decimal list-inside mb-4">
+                    <li>Prenesite ZIP datoteko</li>
+                    <li>Odprite drive.google.com</li>
+                    <li>Povlecite ZIP datoteko v Drive</li>
+                  </ol>
+                  <div className="flex items-center gap-2">
+                    <a
+                      href={`/api/albums/${album.slug}/download`}
+                      className="flex-1 py-2 text-center text-sm font-semibold text-white rounded-lg transition-opacity hover:opacity-90"
+                      style={{ background: "#1a1a2e" }}
+                      onClick={() => setShowDriveModal(false)}
+                    >
+                      Prenesi ZIP →
+                    </a>
+                    <button
+                      onClick={() => setShowDriveModal(false)}
+                      className="px-3 py-2 text-sm text-gray-500 border border-gray-200 rounded-lg hover:border-gray-300 transition-colors bg-white"
+                    >
+                      Zapri
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </div>
 

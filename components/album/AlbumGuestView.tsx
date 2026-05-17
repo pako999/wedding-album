@@ -11,6 +11,7 @@ import "yet-another-react-lightbox/plugins/counter.css";
 import { UploadModal } from "./UploadModal";
 import { CountdownTimer } from "./CountdownTimer";
 import { translations, LANGS, type Lang } from "@/lib/i18n/translations";
+import { bunnyDisplayUrl, bunnyOriginalUrl } from "@/lib/storage/bunny";
 import type { Album, Photo } from "@/lib/db/schema";
 
 interface Props {
@@ -125,13 +126,15 @@ export function AlbumGuestView({
   }
 
   // Lightbox only for photos
+  // src → optimized 2400px for fullscreen display (fast, sharp on retina)
+  // download.url → original full-quality file (no Bunny params)
   const lightboxSlides = photos
     .filter((p) => !p.mimeType?.startsWith("video/"))
     .map((p) => ({
-      src: p.blobUrl,
-      width: p.width ?? 1200,
-      height: p.height ?? 800,
-      download: { url: p.blobUrl, filename: p.originalFilename ?? "photo.jpg" },
+      src: bunnyDisplayUrl(p.blobUrl, 2400, 90),
+      width: p.width ?? 2400,
+      height: p.height ?? 1600,
+      download: { url: bunnyOriginalUrl(p.blobUrl), filename: p.originalFilename ?? "photo.jpg" },
       description: p.caption ?? undefined,
     }));
 
@@ -361,7 +364,7 @@ export function AlbumGuestView({
                   ) : (
                     <div className="relative cursor-pointer" onClick={() => setLightboxIndex(lightboxIdx)}>
                       <img
-                        src={photo.thumbnailUrl ?? photo.blobUrl}
+                        src={bunnyDisplayUrl(photo.thumbnailUrl ?? photo.blobUrl, 800, 82)}
                         alt={photo.caption ?? ""}
                         className="w-full h-auto block transition-transform duration-500 group-hover:scale-[1.02]"
                         loading="lazy"
