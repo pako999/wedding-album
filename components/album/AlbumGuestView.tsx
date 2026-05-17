@@ -10,6 +10,8 @@ import Counter from "yet-another-react-lightbox/plugins/counter";
 import "yet-another-react-lightbox/plugins/counter.css";
 import { UploadModal } from "./UploadModal";
 import { CountdownTimer } from "./CountdownTimer";
+import { Slideshow } from "./Slideshow";
+import { ProjectionWall } from "./ProjectionWall";
 import { translations, LANGS, type Lang } from "@/lib/i18n/translations";
 import { bunnyDisplayUrl, bunnyOriginalUrl } from "@/lib/storage/bunny";
 import type { Album, Photo } from "@/lib/db/schema";
@@ -104,6 +106,9 @@ export function AlbumGuestView({ album, photos, passwordRequired, passwordCorrec
   const [nameConfirmed, setNameConfirmed] = useState(false);
   const [filter, setFilter]             = useState<FilterTab>("all");
   const [personFilter, setPersonFilter] = useState<string | null>(null);
+  const [slideshowOpen, setSlideshowOpen]     = useState(false);
+  const [slideshowIdx, setSlideshowIdx]       = useState(0);
+  const [projectionOpen, setProjectionOpen]   = useState(false);
   const nameInputRef  = useRef<HTMLInputElement>(null);
   const cameraFilesRef = useRef<FileList | null>(null);
 
@@ -306,6 +311,34 @@ export function AlbumGuestView({ album, photos, passwordRequired, passwordCorrec
                 </button>
               ))}
             </div>
+
+            {/* Presentation buttons */}
+            {photoCount > 0 && (
+              <div className="hidden sm:flex items-center gap-1 shrink-0">
+                <button
+                  onClick={() => { setSlideshowIdx(0); setSlideshowOpen(true); }}
+                  title="Diaprojekcija"
+                  className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-sm font-medium transition-all hover:bg-gray-100"
+                  style={{ color: BRAND.muted }}
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 010 1.972l-11.54 6.347a1.125 1.125 0 01-1.667-.986V5.653z" />
+                  </svg>
+                  <span className="hidden lg:inline">Diapozitivi</span>
+                </button>
+                <button
+                  onClick={() => setProjectionOpen(true)}
+                  title="Foto zid (projekcija)"
+                  className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-sm font-medium transition-all hover:bg-gray-100"
+                  style={{ color: BRAND.muted }}
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 20.25h12m-7.5-3v3m3-3v3m-10.125-3h17.25c.621 0 1.125-.504 1.125-1.125V4.875c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125z" />
+                  </svg>
+                  <span className="hidden lg:inline">Foto zid</span>
+                </button>
+              </div>
+            )}
 
             {/* Upload section */}
             {!albumFull && (
@@ -535,6 +568,24 @@ export function AlbumGuestView({ album, photos, passwordRequired, passwordCorrec
           Guestcam · <a href="https://guestcam.si" className="hover:underline">guestcam.si</a>
         </p>
       </footer>
+
+      {/* ── Slideshow ────────────────────────────────────────────────────── */}
+      {slideshowOpen && (
+        <Slideshow
+          photos={photos}
+          startIndex={slideshowIdx}
+          onClose={() => setSlideshowOpen(false)}
+        />
+      )}
+
+      {/* ── Projection wall ──────────────────────────────────────────────── */}
+      {projectionOpen && (
+        <ProjectionWall
+          album={album}
+          photos={photos}
+          onClose={() => setProjectionOpen(false)}
+        />
+      )}
 
       {/* ── Lightbox ─────────────────────────────────────────────────────── */}
       {lightboxSlides.length > 0 && (
