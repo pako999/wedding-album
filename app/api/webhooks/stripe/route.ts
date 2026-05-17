@@ -6,9 +6,12 @@ import { eq } from "drizzle-orm";
 
 export const dynamic = "force-dynamic";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
-
 export async function POST(req: NextRequest) {
+  const stripeKey = process.env.STRIPE_SECRET_KEY;
+  if (!stripeKey) {
+    return NextResponse.json({ error: "Payments not configured" }, { status: 503 });
+  }
+  const stripe = new Stripe(stripeKey);
   const body = await req.text();
   const signature = req.headers.get("stripe-signature");
 

@@ -5,8 +5,6 @@ import { db } from "@/lib/db";
 import { albums } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
-
 const APP_URL =
   process.env.NEXT_PUBLIC_APP_URL ?? "https://guestcam.si";
 
@@ -19,6 +17,12 @@ const PLAN_CONFIG: Record<string, { name: string; amount: number }> = {
 type PlanId = "basic" | "plus" | "premium";
 
 export async function POST(req: NextRequest) {
+  const stripeKey = process.env.STRIPE_SECRET_KEY;
+  if (!stripeKey) {
+    return NextResponse.json({ error: "Payments not configured" }, { status: 503 });
+  }
+  const stripe = new Stripe(stripeKey);
+
   // Auth — verify the caller is logged in
   let userId: string | null = null;
   try {
