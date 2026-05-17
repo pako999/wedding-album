@@ -91,7 +91,24 @@ export function AlbumAdminPanel({ album, photos, pendingCount, activeTab, isNew,
   const router = useRouter();
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://guestcam.si";
   const albumUrl = `${appUrl}/${album.slug}`;
-  const [showDriveModal, setShowDriveModal] = useState(false);
+  const [driveClicked, setDriveClicked] = useState(false);
+
+  const handleGoogleDrive = () => {
+    // 1. Trigger ZIP download via hidden anchor
+    const a = document.createElement("a");
+    a.href = `/api/albums/${album.slug}/download`;
+    a.download = `guestcam-${album.slug}.zip`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+
+    // 2. Open Google Drive upload page in a new tab
+    window.open("https://drive.google.com/drive/my-drive", "_blank", "noopener,noreferrer");
+
+    // 3. Show brief confirmation state
+    setDriveClicked(true);
+    setTimeout(() => setDriveClicked(false), 4000);
+  };
 
   // Show success screen if just created
   if (isNew) {
@@ -311,44 +328,37 @@ export function AlbumAdminPanel({ album, photos, pendingCount, activeTab, isNew,
             >
               ⬇ Prenesi vse (ZIP)
             </a>
-            <div className="relative">
-              <button
-                onClick={() => setShowDriveModal((v) => !v)}
-                className="flex items-center gap-1.5 px-3 py-2 text-sm text-gray-600 border border-gray-200 rounded-lg hover:border-gray-300 transition-colors bg-white"
-              >
-                📤 Google Drive
-              </button>
-              {showDriveModal && (
-                <div
-                  className="absolute right-0 top-full mt-2 z-50 w-72 bg-white border border-gray-200 rounded-xl shadow-lg p-5"
-                >
-                  <p className="text-sm font-semibold text-gray-800 mb-3">
-                    Za shranjevanje v Google Drive:
-                  </p>
-                  <ol className="space-y-1.5 text-sm text-gray-700 list-decimal list-inside mb-4">
-                    <li>Prenesite ZIP datoteko</li>
-                    <li>Odprite drive.google.com</li>
-                    <li>Povlecite ZIP datoteko v Drive</li>
-                  </ol>
-                  <div className="flex items-center gap-2">
-                    <a
-                      href={`/api/albums/${album.slug}/download`}
-                      className="flex-1 py-2 text-center text-sm font-semibold text-white rounded-lg transition-opacity hover:opacity-90"
-                      style={{ background: "#1a1a2e" }}
-                      onClick={() => setShowDriveModal(false)}
-                    >
-                      Prenesi ZIP →
-                    </a>
-                    <button
-                      onClick={() => setShowDriveModal(false)}
-                      className="px-3 py-2 text-sm text-gray-500 border border-gray-200 rounded-lg hover:border-gray-300 transition-colors bg-white"
-                    >
-                      Zapri
-                    </button>
-                  </div>
-                </div>
+            <button
+              onClick={handleGoogleDrive}
+              disabled={driveClicked}
+              title="Prenese ZIP in odpre Google Drive v novem oknu"
+              className="flex items-center gap-1.5 px-3 py-2 text-sm border rounded-lg transition-all"
+              style={driveClicked
+                ? { background: "#e8f5e9", borderColor: "#81c784", color: "#2e7d32" }
+                : { background: "white", borderColor: "#e5e7eb", color: "#4b5563" }
+              }
+            >
+              {driveClicked ? (
+                <>
+                  <svg className="w-3.5 h-3.5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                  Drive odprt · ZIP se prenaša
+                </>
+              ) : (
+                <>
+                  <svg className="w-3.5 h-3.5" viewBox="0 0 87.3 78" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M6.6 66.85l3.85 6.65c.8 1.4 1.95 2.5 3.3 3.3L27.5 53H0c0 1.55.4 3.1 1.2 4.5z" fill="#0066DA"/>
+                    <path d="M43.65 25L29.9 1.2C28.55 2 27.4 3.1 26.6 4.5L1.2 48.5C.4 49.9 0 51.45 0 53h27.5z" fill="#00AC47"/>
+                    <path d="M73.55 76.8c1.35-.8 2.5-1.9 3.3-3.3l1.6-2.75L86.1 57.5c.8-1.4 1.2-2.95 1.2-4.5H59.8L73.55 76.8z" fill="#EA4335"/>
+                    <path d="M43.65 25L57.4 1.2C56.05.4 54.5 0 52.9 0H34.4c-1.6 0-3.1.45-4.5 1.2z" fill="#00832D"/>
+                    <path d="M59.8 53H27.5L13.75 76.8c1.35.8 2.9 1.2 4.5 1.2h50.8c1.6 0 3.1-.45 4.5-1.2z" fill="#2684FC"/>
+                    <path d="M73.4 26.5l-12.7-22c-.8-1.4-1.95-2.5-3.3-3.3L43.65 25 59.8 53h26.45c0-1.55-.4-3.1-1.2-4.5z" fill="#FFBA00"/>
+                  </svg>
+                  Google Drive
+                </>
               )}
-            </div>
+            </button>
           </div>
         </div>
 
