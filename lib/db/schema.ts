@@ -141,6 +141,59 @@ export const guests = pgTable(
   (t) => [index("guests_album_idx").on(t.albumId)]
 );
 
+// ─── Film Generations ────────────────────────────────────────────────────────
+
+export const filmGenerations = pgTable(
+  "film_generations",
+  {
+    id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+    albumId: text("album_id")
+      .notNull()
+      .references(() => albums.id, { onDelete: "cascade" }),
+    status: text("status", { enum: ["queued", "processing", "complete", "failed"] })
+      .notNull()
+      .default("queued"),
+    clipsTotal:  integer("clips_total").notNull().default(0),
+    clipsDone:   integer("clips_done").notNull().default(0),
+    clipsFailed: integer("clips_failed").notNull().default(0),
+    createdAt:   timestamp("created_at").notNull().defaultNow(),
+    completedAt: timestamp("completed_at"),
+  },
+  (t) => [index("film_gen_album_idx").on(t.albumId)]
+);
+
+// ─── Film Clips ───────────────────────────────────────────────────────────────
+
+export const filmClips = pgTable(
+  "film_clips",
+  {
+    id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+    generationId: text("generation_id")
+      .notNull()
+      .references(() => filmGenerations.id, { onDelete: "cascade" }),
+    albumId: text("album_id")
+      .notNull()
+      .references(() => albums.id, { onDelete: "cascade" }),
+    photoId: text("photo_id")
+      .notNull()
+      .references(() => photos.id, { onDelete: "cascade" }),
+    photoUrl:     text("photo_url").notNull(),
+    falRequestId: text("fal_request_id"),
+    status: text("status", { enum: ["queued", "processing", "done", "failed"] })
+      .notNull()
+      .default("queued"),
+    videoUrl:     text("video_url"),
+    errorMessage: text("error_message"),
+    sortOrder:    integer("sort_order").notNull().default(0),
+    createdAt:    timestamp("created_at").notNull().defaultNow(),
+    completedAt:  timestamp("completed_at"),
+  },
+  (t) => [
+    index("film_clips_gen_idx").on(t.generationId),
+    index("film_clips_fal_idx").on(t.falRequestId),
+  ]
+);
+
 // ─── Photo Likes ─────────────────────────────────────────────────────────────
 
 export const photoLikes = pgTable(
@@ -192,5 +245,7 @@ export type Photo = typeof photos.$inferSelect;
 export type NewPhoto = typeof photos.$inferInsert;
 export type Guest = typeof guests.$inferSelect;
 export type NewGuest = typeof guests.$inferInsert;
-export type PhotoLike = typeof photoLikes.$inferSelect;
+export type PhotoLike    = typeof photoLikes.$inferSelect;
 export type PhotoComment = typeof photoComments.$inferSelect;
+export type FilmGeneration = typeof filmGenerations.$inferSelect;
+export type FilmClip       = typeof filmClips.$inferSelect;

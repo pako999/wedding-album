@@ -80,7 +80,7 @@ export default async function AlbumAdminPage({ params, searchParams }: Props) {
       album={album}
       photos={albumPhotos}
       pendingCount={pendingCount}
-      activeTab={tab as "overview" | "gallery" | "qr" | "settings" | "pending"}
+      activeTab={tab as "overview" | "gallery" | "qr" | "settings" | "pending" | "film"}
       isNew={isNew}
       isUpgraded={isUpgraded}
     />

@@ -8,8 +8,9 @@ import type { Album, Photo } from "@/lib/db/schema";
 import { GuestcamLogo } from "@/components/GuestcamLogo";
 import { bunnyDisplayUrl } from "@/lib/storage/bunny";
 import { ZipDownloader } from "@/components/dashboard/ZipDownloader";
+import { FilmStudio } from "@/components/dashboard/FilmStudio";
 
-type Tab = "overview" | "gallery" | "qr" | "settings" | "pending";
+type Tab = "overview" | "gallery" | "qr" | "settings" | "pending" | "film";
 
 interface Props {
   album: Album;
@@ -166,6 +167,7 @@ export function AlbumAdminPanel({ album, photos, pendingCount, activeTab, isNew,
   const navItems: { id: Tab; label: string; icon: string }[] = [
     { id: "overview",  label: "Pregled",    icon: "🕐" },
     { id: "gallery",   label: "Galerija",   icon: "🖼" },
+    { id: "film",      label: "Film Studio", icon: "🎬" },
     { id: "qr",        label: "QR koda",    icon: "📱" },
     { id: "settings",  label: "Nastavitve", icon: "⚙️" },
   ];
@@ -321,6 +323,7 @@ export function AlbumAdminPanel({ album, photos, pendingCount, activeTab, isNew,
             <h1 className="text-xl font-bold text-gray-900">
               {activeTab === "overview"  && "Pregled galerije"}
               {activeTab === "gallery"   && "Galerija"}
+              {activeTab === "film"      && "🎬 Film Studio"}
               {activeTab === "qr"        && "QR koda"}
               {activeTab === "settings"  && "Nastavitve"}
               {activeTab === "pending"   && "Čakajoče fotografije"}
@@ -397,6 +400,11 @@ export function AlbumAdminPanel({ album, photos, pendingCount, activeTab, isNew,
               rejectPhoto={rejectPhoto}
               deletePhoto={deletePhoto}
             />
+          )}
+
+          {/* FILM STUDIO */}
+          {activeTab === "film" && (
+            <FilmStudio album={album} />
           )}
 
           {/* QR */}

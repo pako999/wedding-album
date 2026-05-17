@@ -113,6 +113,41 @@ export async function runMigrations() {
     await sql`CREATE INDEX IF NOT EXISTS photo_comments_photo_idx ON photo_comments (photo_id)`;
     await sql`CREATE INDEX IF NOT EXISTS photo_comments_album_idx ON photo_comments (album_id)`;
 
+    // ── Film generations ──────────────────────────────────────────────────────
+    await sql`
+      CREATE TABLE IF NOT EXISTS film_generations (
+        id            TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
+        album_id      TEXT NOT NULL REFERENCES albums(id) ON DELETE CASCADE,
+        status        TEXT NOT NULL DEFAULT 'queued',
+        clips_total   INTEGER NOT NULL DEFAULT 0,
+        clips_done    INTEGER NOT NULL DEFAULT 0,
+        clips_failed  INTEGER NOT NULL DEFAULT 0,
+        created_at    TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        completed_at  TIMESTAMPTZ
+      )
+    `;
+    await sql`CREATE INDEX IF NOT EXISTS film_gen_album_idx ON film_generations (album_id)`;
+
+    // ── Film clips ────────────────────────────────────────────────────────────
+    await sql`
+      CREATE TABLE IF NOT EXISTS film_clips (
+        id              TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
+        generation_id   TEXT NOT NULL REFERENCES film_generations(id) ON DELETE CASCADE,
+        album_id        TEXT NOT NULL REFERENCES albums(id) ON DELETE CASCADE,
+        photo_id        TEXT NOT NULL REFERENCES photos(id) ON DELETE CASCADE,
+        photo_url       TEXT NOT NULL,
+        fal_request_id  TEXT,
+        status          TEXT NOT NULL DEFAULT 'queued',
+        video_url       TEXT,
+        error_message   TEXT,
+        sort_order      INTEGER NOT NULL DEFAULT 0,
+        created_at      TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        completed_at    TIMESTAMPTZ
+      )
+    `;
+    await sql`CREATE INDEX IF NOT EXISTS film_clips_gen_idx ON film_clips (generation_id)`;
+    await sql`CREATE INDEX IF NOT EXISTS film_clips_fal_idx ON film_clips (fal_request_id)`;
+
     console.log("[migrations] ✓ DB schema up to date");
   } catch (err) {
     console.error("[migrations] Migration error:", err);
