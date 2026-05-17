@@ -283,23 +283,46 @@ export function AlbumAdminPanel({ album, photos, pendingCount, activeTab, isNew,
         )}
 
         {/* Upgrade banner (free plan only) */}
-        {album.plan === "free" && (
-          <div
-            className="flex items-center justify-between px-6 py-3 gap-4"
-            style={{ background: "#EEF2FF" }}
-          >
-            <p className="text-sm text-indigo-700 font-medium">
-              Brezplačni paket (omejeno na 10 slik in 2 videa)
-            </p>
-            <Link
-              href={`/dashboard/${album.slug}/upgrade`}
-              className="flex-shrink-0 px-4 py-1.5 rounded-lg text-white text-sm font-semibold transition-opacity hover:opacity-90"
-              style={{ background: "#4F46E5" }}
+        {album.plan === "free" && (() => {
+          const used = album.photoCount ?? 0;
+          const max  = album.maxPhotos ?? 10;
+          const pct  = Math.min(100, Math.round((used / max) * 100));
+          const atLimit = used >= max;
+          return (
+            <div
+              className="flex items-center justify-between px-6 py-2.5 gap-4"
+              style={{ background: atLimit ? "#FEF2F2" : "#EEF2FF" }}
             >
-              Odkleni galerijo →
-            </Link>
-          </div>
-        )}
+              <div className="flex items-center gap-3 min-w-0">
+                <div className="flex items-center gap-2 shrink-0">
+                  <span className="text-sm font-bold" style={{ color: atLimit ? "#DC2626" : "#4F46E5" }}>
+                    {used} / {max}
+                  </span>
+                  <span className="text-xs" style={{ color: atLimit ? "#DC2626" : "#6366F1" }}>slik</span>
+                </div>
+                <div className="w-28 h-1.5 rounded-full bg-gray-200 hidden sm:block">
+                  <div
+                    className="h-full rounded-full transition-all"
+                    style={{
+                      width: `${pct}%`,
+                      background: atLimit ? "#DC2626" : pct > 70 ? "#F59E0B" : "#6366F1",
+                    }}
+                  />
+                </div>
+                <span className="text-xs hidden md:block" style={{ color: atLimit ? "#DC2626" : "#6366F1" }}>
+                  {atLimit ? "⚠️ Dosežena meja — gostje ne morejo več nalagati!" : "Brezplačni paket"}
+                </span>
+              </div>
+              <Link
+                href={`/dashboard/${album.slug}/upgrade`}
+                className="flex-shrink-0 px-4 py-1.5 rounded-lg text-white text-xs font-bold transition-opacity hover:opacity-90 whitespace-nowrap"
+                style={{ background: atLimit ? "#DC2626" : "#4F46E5" }}
+              >
+                {atLimit ? "Odkleni takoj →" : "Odkleni galerijo →"}
+              </Link>
+            </div>
+          );
+        })()}
 
         {/* Page header */}
         <div className="flex items-start justify-between px-8 pt-7 pb-4 gap-4">
@@ -419,9 +442,45 @@ function OverviewTab({
 }) {
   const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(albumUrl)}&bgcolor=ffffff&color=1a1a2e&qzone=2&format=png`;
   const last4 = photos.slice(0, 4);
+  const usedPct = album.plan === "free" ? Math.min(100, Math.round(((album.photoCount ?? 0) / (album.maxPhotos ?? 10)) * 100)) : 0;
 
   return (
     <div className="space-y-6">
+      {/* Upgrade nudge card — free plan only */}
+      {album.plan === "free" && (
+        <div className="bg-gradient-to-r from-indigo-50 to-purple-50 border border-indigo-100 rounded-2xl p-5 flex flex-col sm:flex-row sm:items-center gap-4">
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 mb-1">
+              <span className="text-sm font-bold text-indigo-800">📦 Brezplačni paket</span>
+              <span className="text-xs bg-indigo-100 text-indigo-600 px-2 py-0.5 rounded-full font-medium">
+                {album.photoCount ?? 0} / {album.maxPhotos ?? 10} slik
+              </span>
+            </div>
+            <div className="w-full h-2 bg-indigo-100 rounded-full mb-2">
+              <div
+                className="h-full rounded-full transition-all"
+                style={{
+                  width: `${usedPct}%`,
+                  background: usedPct >= 100 ? "#DC2626" : usedPct > 70 ? "#F59E0B" : "#6366F1",
+                }}
+              />
+            </div>
+            <p className="text-xs text-indigo-600">
+              {usedPct >= 100
+                ? "⚠️ Meja dosežena — nadgradi za neomejeno nalaganje"
+                : `Nadgradi za neomejene fotografije, videe in dostop 1 leto`}
+            </p>
+          </div>
+          <Link
+            href={`/dashboard/${album.slug}/upgrade`}
+            className="flex-shrink-0 px-5 py-2.5 rounded-xl text-white text-sm font-bold transition-all hover:opacity-90 shadow-sm"
+            style={{ background: "linear-gradient(135deg, #6366F1, #8B5CF6)" }}
+          >
+            Poglej pakete →
+          </Link>
+        </div>
+      )}
+
       {/* Stat cards */}
       <div className="grid grid-cols-3 gap-4">
         {[

@@ -70,12 +70,81 @@ const PLANS: Plan[] = [
   },
 ];
 
+interface EventCopy {
+  emoji: string;
+  title: string;
+  testimonialText: string;
+  testimonialName: string;
+  testimonialSub: string;
+  socialProof: string;
+}
+
+function getEventCopy(eventType: string): EventCopy {
+  switch (eventType) {
+    case "birthday":
+      return {
+        emoji: "🎂",
+        title: "Odklenite vse zmogljivosti",
+        testimonialText: "Guestcam je bil hit na mojem rojstnem dnevu! Vsi so delili fotografije in video v živo.",
+        testimonialName: "Janko",
+        testimonialSub: "50. rojstni dan 2026",
+        socialProof: "500+ galerij je bilo že ustvarjenih letos 🎂",
+      };
+    case "anniversary":
+      return {
+        emoji: "🥂",
+        title: "Odklenite vse zmogljivosti",
+        testimonialText: "Popoln način za zbiranje spominov ob naši obletnici. Vse fotografije na enem mestu!",
+        testimonialName: "Maja & Peter",
+        testimonialSub: "25. obletnica 2025",
+        socialProof: "500+ galerij je bilo že ustvarjenih letos 🥂",
+      };
+    case "party":
+      return {
+        emoji: "🎉",
+        title: "Odklenite vse zmogljivosti",
+        testimonialText: "Fantastičen način za zbiranje foto-spominov s zabave. Vsi gostje so navdušeni!",
+        testimonialName: "Nina",
+        testimonialSub: "Maturantska zabava 2025",
+        socialProof: "500+ galerij je bilo že ustvarjenih letos 🎉",
+      };
+    case "graduation":
+      return {
+        emoji: "🎓",
+        title: "Odklenite vse zmogljivosti",
+        testimonialText: "Vsi sošolci so naložili fotografije z mature. Neprecenljiv spomin za vse!",
+        testimonialName: "Razred 2025",
+        testimonialSub: "Matura 2025",
+        socialProof: "500+ galerij je bilo že ustvarjenih letos 🎓",
+      };
+    case "baptism":
+      return {
+        emoji: "🕊️",
+        title: "Odklenite vse zmogljivosti",
+        testimonialText: "Lepa galerija za krst naše hčerke. Vsi sorodniki so delili fotografije!",
+        testimonialName: "Ana & Luka",
+        testimonialSub: "Krst 2025",
+        socialProof: "500+ galerij je bilo že ustvarjenih letos 🕊️",
+      };
+    default: // wedding
+      return {
+        emoji: "💍",
+        title: "Odklenite vse zmogljivosti",
+        testimonialText: "Guestcam je bila najboljša odločitev za naše goste. Vse fotografije na enem mestu, brez aplikacij!",
+        testimonialName: "Ana & Marko",
+        testimonialSub: "Poročena 2025",
+        socialProof: "500+ porok je že zbralo spomine z Guestcam 💍",
+      };
+  }
+}
+
 interface Props {
   album: Album;
 }
 
 export function UpgradePage({ album }: Props) {
   const router = useRouter();
+  const copy = getEventCopy(album.eventType ?? "wedding");
   const [selectedPlan, setSelectedPlan] = useState<PlanId>("premium");
   const [expandedPlan, setExpandedPlan] = useState<PlanId>("premium");
   const [discountCode, setDiscountCode] = useState("");
@@ -114,7 +183,9 @@ export function UpgradePage({ album }: Props) {
 
         {/* Title */}
         <div className="text-center mb-7">
-          <h1 className="text-2xl font-bold text-gray-900 mb-1">Izbira paketa in plačilo</h1>
+          <div className="text-4xl mb-2">{copy.emoji}</div>
+          <h1 className="text-2xl font-bold text-gray-900 mb-1">{copy.title}</h1>
+          <p className="text-sm text-gray-500 font-medium">{album.coupleName}</p>
           <p className="text-sm text-gray-400">Izberite paket in zaključite nakup.</p>
         </div>
 
@@ -182,7 +253,7 @@ export function UpgradePage({ album }: Props) {
 
         {/* Social proof */}
         <div className="bg-purple-50 rounded-xl p-3 text-center mb-5">
-          <p className="text-sm font-semibold text-purple-700">200+ GALERIJ je bilo že ustvarjenih letos 💜</p>
+          <p className="text-sm font-semibold text-purple-700">{copy.socialProof}</p>
         </div>
 
         {/* Trust cards */}
@@ -206,10 +277,10 @@ export function UpgradePage({ album }: Props) {
         {/* Testimonial */}
         <div className="bg-white rounded-xl border p-5 mb-5" style={{ borderColor: "#e5e7eb" }}>
           <p className="text-sm text-gray-600 italic mb-3">
-            "Guestcam je bila najboljša odločitev za naše gostje. Vse fotografije na enem mestu, brez aplikacij!"
+            &ldquo;{copy.testimonialText}&rdquo;
           </p>
-          <p className="text-xs font-semibold text-gray-800">Ana & Luka</p>
-          <p className="text-xs text-gray-400">Poročena 2025</p>
+          <p className="text-xs font-semibold text-gray-800">{copy.testimonialName}</p>
+          <p className="text-xs text-gray-400">{copy.testimonialSub}</p>
         </div>
 
         {/* Add-on upsell */}

@@ -307,8 +307,26 @@ export function AlbumGuestView({
           </div>
         </div>
 
-        {/* ── NAME STEP — big card, can't be missed ─────────────────────────── */}
-        {!nameConfirmed ? (
+        {/* ── ALBUM FULL NOTICE (free plan at limit) ───────────────────────── */}
+        {album.plan === "free" && photos.length >= (album.maxPhotos ?? 10) && (
+          <div className="bg-white rounded-2xl shadow-sm border overflow-hidden" style={{ borderColor: "#FCA5A5" }}>
+            <div className="h-[3px] w-full" style={{ background: "linear-gradient(90deg, #F87171, #EF4444)" }} />
+            <div className="px-5 py-5 text-center">
+              <div className="text-3xl mb-2">🔒</div>
+              <h3 className="font-bold text-gray-900 mb-1">Galerija je zasedena</h3>
+              <p className="text-sm text-gray-500 mb-1">
+                Dosežena je brezplačna meja <strong>{album.maxPhotos ?? 10} fotografij</strong>.
+              </p>
+              <p className="text-xs text-gray-400">
+                Lastnik albuma mora nadgraditi paket, da gostje lahko še naprej dodajajo fotografije.
+              </p>
+            </div>
+          </div>
+        )}
+
+        {/* ── NAME STEP + UPLOAD BUTTONS — hidden when album is full ──────────── */}
+        {(album.plan !== "free" || photos.length < (album.maxPhotos ?? 10)) && (
+          !nameConfirmed ? (
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
             <div className="h-[3px] w-full" style={{ background: theme.gradient }} />
 
@@ -408,6 +426,7 @@ export function AlbumGuestView({
               </p>
             </div>
           </div>
+        )
         )}
 
         {/* ── Recent photos label ────────────────────────────────────────────── */}
