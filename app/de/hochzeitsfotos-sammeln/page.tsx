@@ -2,9 +2,9 @@ import Link from "next/link";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Hochzeitsfotos sammeln mit QR-Code — Vollständiger Leitfaden 2025 | WeddingAlbum",
+  title: "Hochzeitsfotos sammeln mit QR-Code — Vollständiger Leitfaden 2025 | Guestcam",
   description:
-    "Wie Sie alle Hochzeitsfotos Ihrer Gäste mit einer einzigen QR-Code-App sammeln. Keine App-Downloads, volle Qualität, sofortiger Upload. WeddingAlbum erklärt.",
+    "Wie Sie alle Hochzeitsfotos Ihrer Gäste mit einer einzigen QR-Code-App sammeln. Keine App-Downloads, volle Qualität, sofortiger Upload. Guestcam erklärt.",
   openGraph: {
     title: "Hochzeitsfotos sammeln mit QR-Code — Leitfaden 2025",
     description:
@@ -12,7 +12,7 @@ export const metadata: Metadata = {
     type: "article",
   },
   alternates: {
-    canonical: "https://weddingalbum.si/de/hochzeitsfotos-sammeln",
+    canonical: "https://guestcam.me/de/hochzeitsfotos-sammeln",
   },
 };
 
@@ -22,7 +22,7 @@ function SiteHeader() {
       <nav className="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-0.5">
           <span className="font-serif italic text-xl font-bold text-[#2C2825]">
-            WeddingAlbum
+            Guestcam
           </span>
           <span className="font-black text-2xl leading-none text-[#C4738A]">.</span>
         </Link>
@@ -54,7 +54,7 @@ function SiteFooter() {
           <Link href="/terms" className="hover:text-white transition-colors">
             AGB
           </Link>
-          <a href="mailto:hello@wedflow.app" className="hover:text-white transition-colors">
+          <a href="mailto:hello@guestcam.me" className="hover:text-white transition-colors">
             Kontakt
           </a>
         </div>
@@ -170,7 +170,7 @@ export default function HochzeitsfotosSammelnPage() {
             Die Lösung: Hochzeitsfotos per QR-Code sammeln
           </h2>
           <p className="text-gray-600 leading-relaxed mb-6">
-            WeddingAlbum beseitigt jeden Reibungspunkt. So erlebt es ein Gast:
+            Guestcam beseitigt jeden Reibungspunkt. So erlebt es ein Gast:
           </p>
           <div className="space-y-4">
             {[
@@ -196,7 +196,7 @@ export default function HochzeitsfotosSammelnPage() {
         {/* Section 3 */}
         <section className="mb-10">
           <h2 className="font-serif text-2xl font-bold text-[#2C2825] mb-4">
-            Warum WeddingAlbum die beste Wahl ist
+            Warum Guestcam die beste Wahl ist
           </h2>
           <div className="grid sm:grid-cols-2 gap-4">
             {[
@@ -219,13 +219,13 @@ export default function HochzeitsfotosSammelnPage() {
         {/* Section 4 — Step by step setup */}
         <section className="mb-10">
           <h2 className="font-serif text-2xl font-bold text-[#2C2825] mb-4">
-            So richten Sie WeddingAlbum in 5 Schritten ein
+            So richten Sie Guestcam in 5 Schritten ein
           </h2>
           <div className="space-y-4">
             {[
-              { step: "01", title: "Kostenloses Konto erstellen", desc: "Besuchen Sie WeddingAlbum.si und klicken Sie auf Galerie kostenlos erstellen. E-Mail-Adresse und Passwort eingeben — dauert weniger als eine Minute." },
+              { step: "01", title: "Kostenloses Konto erstellen", desc: "Besuchen Sie Guestcam.si und klicken Sie auf Galerie kostenlos erstellen. E-Mail-Adresse und Passwort eingeben — dauert weniger als eine Minute." },
               { step: "02", title: "Galerie einrichten", desc: "Geben Sie die Namen des Paares, das Hochzeitsdatum und den Ort ein. Wählen Sie ein Hintergrundbild, eine Farbe und die Sprache der Galerie." },
-              { step: "03", title: "Kartenvorlage auswählen", desc: "WeddingAlbum bietet 8 elegante Vorlagen für QR-Karten — von klassisch bis skandinavisch. Jede Vorlage wird automatisch mit Ihren Namen und dem Datum personalisiert." },
+              { step: "03", title: "Kartenvorlage auswählen", desc: "Guestcam bietet 8 elegante Vorlagen für QR-Karten — von klassisch bis skandinavisch. Jede Vorlage wird automatisch mit Ihren Namen und dem Datum personalisiert." },
               { step: "04", title: "Herunterladen und drucken", desc: "Die Vorlage wird als hochauflösende PDF-Datei heruntergeladen. Senden Sie sie an eine lokale Druckerei oder drucken Sie sie selbst aus. Empfohlen: Karton 300 g/m² für das beste Ergebnis." },
               { step: "05", title: "Karten auf der Hochzeit platzieren", desc: "Karten auf Tische verteilen, am Bartresen aufstellen oder als Beilage zu den Einladungen. Mindestens eine Karte pro Tisch wird empfohlen." },
             ].map(({ step, title, desc }) => (
@@ -275,7 +275,7 @@ export default function HochzeitsfotosSammelnPage() {
           </h2>
           <div className="space-y-3">
             {[
-              { q: "Ist WeddingAlbum wirklich kostenlos?", a: "Ja, der Grundplan ist für immer kostenlos — Sie erhalten einen einzigartigen QR-Code und eine Galerie für bis zu 50 Gäste und 200 Fotos. Kostenpflichtige Pläne bieten unbegrenzte Gäste, unbegrenzte Fotos und zusätzliche Funktionen." },
+              { q: "Ist Guestcam wirklich kostenlos?", a: "Ja, der Grundplan ist für immer kostenlos — Sie erhalten einen einzigartigen QR-Code und eine Galerie für bis zu 50 Gäste und 200 Fotos. Kostenpflichtige Pläne bieten unbegrenzte Gäste, unbegrenzte Fotos und zusätzliche Funktionen." },
               { q: "Müssen Gäste eine App herunterladen?", a: "Nein. Die Galerie öffnet sich direkt im mobilen Browser. Keine Installation, kein Konto, kein Passwort." },
               { q: "In welcher Qualität werden Fotos gespeichert?", a: "In voller Originalauflösung. Wir komprimieren oder verkleinern Gastfotos niemals. Jede Datei wird exakt so gespeichert, wie sie hochgeladen wurde." },
               { q: "Wie lange bleiben die Fotos gespeichert?", a: "Abhängig vom gewählten Paket — 1 Monat (Basic), 1 Jahr (Plus) oder 2 Jahre (Premium). Sie können alle Fotos jederzeit als ZIP-Archiv herunterladen." },

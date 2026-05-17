@@ -11,8 +11,9 @@ const nextConfig: NextConfig = {
   experimental: {
     serverActions: {
       allowedOrigins: [
-        "wedding-album-lilac.vercel.app",
-        "photos.wedflow.app",
+        "guestcam.si",
+        "guestcam.me",
+        "guestcam-*.vercel.app",
         "localhost:3000",
         "localhost:3001",
       ],

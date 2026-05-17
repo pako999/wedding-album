@@ -2,9 +2,9 @@ import Link from "next/link";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Best Wedding Photo Sharing App Alternatives 2025 | WeddingAlbum",
+  title: "Best Wedding Photo Sharing App Alternatives 2025 | Guestcam",
   description:
-    "Compare the best wedding photo sharing apps: WeddingAlbum vs Google Photos vs WhatsApp vs Dropbox vs HoneyCam and more. Find out which one is right for your wedding.",
+    "Compare the best wedding photo sharing apps: Guestcam vs Google Photos vs WhatsApp vs Dropbox vs HoneyCam and more. Find out which one is right for your wedding.",
   openGraph: {
     title: "Best Wedding Photo Sharing App Alternatives 2025",
     description:
@@ -12,7 +12,7 @@ export const metadata: Metadata = {
     type: "article",
   },
   alternates: {
-    canonical: "https://weddingalbum.si/en/alternatives",
+    canonical: "https://guestcam.me/en/alternatives",
   },
 };
 
@@ -22,7 +22,7 @@ function SiteHeader() {
       <nav className="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-0.5">
           <span className="font-serif italic text-xl font-bold text-[#2C2825]">
-            WeddingAlbum
+            Guestcam
           </span>
           <span className="font-black text-2xl leading-none text-[#C4738A]">.</span>
         </Link>
@@ -54,7 +54,7 @@ function SiteFooter() {
           <Link href="/terms" className="hover:text-white transition-colors">
             Terms
           </Link>
-          <a href="mailto:hello@wedflow.app" className="hover:text-white transition-colors">
+          <a href="mailto:hello@guestcam.me" className="hover:text-white transition-colors">
             Contact
           </a>
         </div>
@@ -171,7 +171,7 @@ export default function AlternativesPage() {
               <thead>
                 <tr style={{ background: "#2C2825" }}>
                   <th className="p-4 text-white font-semibold">Feature</th>
-                  <th className="p-4 text-center" style={{ color: "#C4738A", fontWeight: 700 }}>WeddingAlbum</th>
+                  <th className="p-4 text-center" style={{ color: "#C4738A", fontWeight: 700 }}>Guestcam</th>
                   <th className="p-4 text-center text-gray-300 font-medium">Google Photos</th>
                   <th className="p-4 text-center text-gray-300 font-medium">WhatsApp</th>
                   <th className="p-4 text-center text-gray-300 font-medium">Dropbox</th>
@@ -259,14 +259,14 @@ export default function AlternativesPage() {
             Detailed breakdown of each option
           </h2>
 
-          {/* WeddingAlbum */}
+          {/* Guestcam */}
           <div className="bg-white rounded-3xl border-2 p-7 shadow-sm" style={{ borderColor: "#C4738A" }}>
             <div className="flex items-start justify-between gap-4 mb-4">
               <div>
                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold mb-2" style={{ background: "rgba(196,115,138,0.1)", color: "#C4738A" }}>
                   Our pick
                 </div>
-                <h3 className="font-serif text-2xl font-bold text-[#2C2825]">WeddingAlbum</h3>
+                <h3 className="font-serif text-2xl font-bold text-[#2C2825]">Guestcam</h3>
                 <p className="text-sm text-gray-500">Purpose-built wedding photo sharing with QR code</p>
               </div>
               <div className="text-right shrink-0">
@@ -275,7 +275,7 @@ export default function AlternativesPage() {
               </div>
             </div>
             <p className="text-gray-600 leading-relaxed mb-5">
-              WeddingAlbum is the only solution on this list that was designed
+              Guestcam is the only solution on this list that was designed
               specifically for weddings and similar events. The entire flow —
               from creating the gallery to downloading all photos — is built
               around real wedding scenarios.
@@ -560,11 +560,11 @@ export default function AlternativesPage() {
             ))}
           </div>
           <p className="text-gray-600 leading-relaxed">
-            WeddingAlbum was built from day one to solve these exact problems. No
+            Guestcam was built from day one to solve these exact problems. No
             app download. No login for guests. Full quality. QR code on the table.
             One-click ZIP download after. If you want every guest to be able to
             contribute — from the tech-savvy nephew to grandma with her old
-            Android — WeddingAlbum is the right tool for the job.
+            Android — Guestcam is the right tool for the job.
           </p>
         </section>
 

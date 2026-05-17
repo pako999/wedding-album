@@ -10,7 +10,7 @@ const isInternalApi = createRouteMatcher([
 
 const APP_HOSTNAME = process.env.NEXT_PUBLIC_APP_URL
   ? new URL(process.env.NEXT_PUBLIC_APP_URL).hostname
-  : "photos.wedflow.app";
+  : "guestcam.si";
 
 function isOwnDomain(hostname: string) {
   const bare = hostname.split(":")[0];

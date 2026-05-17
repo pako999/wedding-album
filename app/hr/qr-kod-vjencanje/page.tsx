@@ -2,9 +2,9 @@ import Link from "next/link";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "QR kod za vjenčanje — Potpuni vodič 2025 | WeddingAlbum",
+  title: "QR kod za vjenčanje — Potpuni vodič 2025 | Guestcam",
   description:
-    "Sve što trebate znati o QR kodu za vjenčanje. Kako funkcionira, zašto vam treba i kako ga postaviti za 2 minute s WeddingAlbum.",
+    "Sve što trebate znati o QR kodu za vjenčanje. Kako funkcionira, zašto vam treba i kako ga postaviti za 2 minute s Guestcam.",
   openGraph: {
     title: "QR kod za vjenčanje — Potpuni vodič 2025",
     description:
@@ -12,7 +12,7 @@ export const metadata: Metadata = {
     type: "article",
   },
   alternates: {
-    canonical: "https://weddingalbum.si/hr/qr-kod-vjencanje",
+    canonical: "https://guestcam.si/hr/qr-kod-vjencanje",
   },
 };
 
@@ -22,7 +22,7 @@ function SiteHeader() {
       <nav className="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-0.5">
           <span className="font-serif italic text-xl font-bold text-[#2C2825]">
-            WeddingAlbum
+            Guestcam
           </span>
           <span className="font-black text-2xl leading-none text-[#C4738A]">.</span>
         </Link>
@@ -55,7 +55,7 @@ function SiteFooter() {
             Uvjeti
           </Link>
           <a
-            href="mailto:hello@wedflow.app"
+            href="mailto:hello@guestcam.si"
             className="hover:text-white transition-colors"
           >
             Kontakt
@@ -239,13 +239,13 @@ export default function QrKodVjencanjePage() {
         {/* Section 4 */}
         <section className="mb-10">
           <h2 className="font-serif text-2xl font-bold text-[#2C2825] mb-4">
-            Kako postaviti QR kod za vjenčanje s WeddingAlbum — korak po korak
+            Kako postaviti QR kod za vjenčanje s Guestcam — korak po korak
           </h2>
           <div className="space-y-4">
             {[
-              { step: "01", title: "Kreirajte besplatni račun", desc: "Posjetite WeddingAlbum.si i kliknite »Kreiraj galeriju besplatno«. Unesite e-mail adresu i lozinku — postupak traje manje od minute." },
+              { step: "01", title: "Kreirajte besplatni račun", desc: "Posjetite Guestcam.si i kliknite »Kreiraj galeriju besplatno«. Unesite e-mail adresu i lozinku — postupak traje manje od minute." },
               { step: "02", title: "Postavite galeriju", desc: "Unesite ime para (npr. »Ana i Marko«), datum vjenčanja i lokaciju. Odaberete pozadinsku fotografiju, boju teme i jezik galerije." },
-              { step: "03", title: "Odaberite predložak za tisak", desc: "WeddingAlbum nudi 8 elegantnih predložaka za QR kartice — od klasičnih do botaničkih i skandinavskih. Svaki predložak se automatski prilagođava s vašim imenom i datumom." },
+              { step: "03", title: "Odaberite predložak za tisak", desc: "Guestcam nudi 8 elegantnih predložaka za QR kartice — od klasičnih do botaničkih i skandinavskih. Svaki predložak se automatski prilagođava s vašim imenom i datumom." },
               { step: "04", title: "Preuzmite i isprintajte", desc: "Predložak preuzimate kao PDF visoke rezolucije. Pošaljite ga u lokalnu tiskaru ili isprintajte sami. Preporučujemo karton 300 g/m² za najbolji izgled." },
               { step: "05", title: "Postavite kartice na vjenčanje", desc: "Kartice rasporedite po stolovima, postavite na stalke kraj bara, priložite pozivnicama ili okačite na plakate. Preporučujemo najmanje jednu karticu po stolu." },
               { step: "06", title: "Gosti skeniraju i uploadaju", desc: "Gosti telefonom skeniraju QR kod i odmah vide obrazac za upload fotografija. Nema aplikacije, nema prijave — samo skeniranje i upload." },
@@ -297,9 +297,9 @@ export default function QrKodVjencanjePage() {
           </h2>
           <div className="space-y-3">
             {[
-              { q: "Je li QR kod za vjenčanje stvarno besplatan?", a: "S WeddingAlbumom je kreiranje galerije i QR koda besplatno zauvijek (do određenih ograničenja). Za veća vjenčanja dostupni su plaćeni paketi s neograničenim fotografijama." },
+              { q: "Je li QR kod za vjenčanje stvarno besplatan?", a: "S Guestcamom je kreiranje galerije i QR koda besplatno zauvijek (do određenih ograničenja). Za veća vjenčanja dostupni su plaćeni paketi s neograničenim fotografijama." },
               { q: "Moraju li gosti preuzeti aplikaciju?", a: "Apsolutno ne. Gosti otvaraju galeriju izravno u pregledniku telefona — nije potrebna nikakva aplikacija ni registracija." },
-              { q: "U kojoj kvaliteti se pohranjuju fotografije?", a: "U punoj originalnoj rezoluciji. WeddingAlbum fotografije ne komprimira ni smanjuje. Dobit ćete točno ono što je gost snimio." },
+              { q: "U kojoj kvaliteti se pohranjuju fotografije?", a: "U punoj originalnoj rezoluciji. Guestcam fotografije ne komprimira ni smanjuje. Dobit ćete točno ono što je gost snimio." },
               { q: "Što se događa s fotografijama nakon vjenčanja?", a: "Galerija ostaje aktivna koliko traje vaš paket. Bilo kada preuzimate sve fotografije kao ZIP arhiv." },
               { q: "Je li album privatan?", a: "Da. Album je dostupan samo s vašim QR kodom ili direktnim linkom. Nikakva tražilica neće ga indeksirati." },
             ].map(({ q, a }) => (

@@ -2,13 +2,13 @@ import Link from "next/link";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Politika piškotkov | WeddingAlbum",
+  title: "Politika piškotkov | Guestcam",
   description:
-    "Politika piškotkov storitve WeddingAlbum. Izveste, katere piškotke uporabljamo in zakaj.",
+    "Politika piškotkov storitve Guestcam. Izveste, katere piškotke uporabljamo in zakaj.",
   openGraph: {
-    title: "Politika piškotkov | WeddingAlbum",
+    title: "Politika piškotkov | Guestcam",
     description:
-      "WeddingAlbum ne uporablja oglaševalskih piškotkov. Preberite, katere piškotke potrebujemo in zakaj.",
+      "Guestcam ne uporablja oglaševalskih piškotkov. Preberite, katere piškotke potrebujemo in zakaj.",
     type: "website",
   },
 };
@@ -19,7 +19,7 @@ function SiteHeader() {
       <nav className="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-0.5">
           <span className="font-serif italic text-xl font-bold text-[#2C2825]">
-            WeddingAlbum
+            Guestcam
           </span>
           <span className="font-black text-2xl leading-none text-[#C4738A]">.</span>
         </Link>
@@ -58,7 +58,7 @@ function SiteFooter() {
             GDPR
           </Link>
           <a
-            href="mailto:hello@wedflow.app"
+            href="mailto:hello@guestcam.si"
             className="hover:text-white transition-colors"
           >
             Kontakt
@@ -162,7 +162,7 @@ export default function CookiesPage() {
               />
             </svg>
             <p className="text-sm text-gray-700 leading-relaxed">
-              <strong>WeddingAlbum ne uporablja oglaševalskih ali sledilnih
+              <strong>Guestcam ne uporablja oglaševalskih ali sledilnih
               piškotkov.</strong> Nalagamo samo piškotke, ki so nujni za
               delovanje storitve in avtentikacijo. Ne delimo vaših podatkov z
               oglaševalci.
@@ -182,7 +182,7 @@ export default function CookiesPage() {
           <Section title="2. Piškotki, ki jih uporabljamo">
             <p className="text-gray-600 mb-4">
               Spodnja tabela prikazuje vse piškotke, ki jih nastavi spletno
-              mesto WeddingAlbum:
+              mesto Guestcam:
             </p>
             <div className="overflow-x-auto rounded-xl border border-gray-200">
               <table className="w-full text-left">
@@ -229,7 +229,7 @@ export default function CookiesPage() {
                   />
                   <CookieRow
                     name="wf_lang"
-                    provider="WeddingAlbum"
+                    provider="Guestcam"
                     purpose="Shrani izbiro jezika galerije, da ob naslednjem obisku prikaže pravi jezik."
                     duration="1 leto"
                     type="Funkcionalen"
@@ -312,10 +312,10 @@ export default function CookiesPage() {
               <p className="text-sm text-gray-600 mt-1">
                 E-pošta:{" "}
                 <a
-                  href="mailto:hello@wedflow.app"
+                  href="mailto:hello@guestcam.si"
                   className="text-[#C4738A] hover:underline"
                 >
-                  hello@wedflow.app
+                  hello@guestcam.si
                 </a>
               </p>
               <p className="text-sm text-gray-600">

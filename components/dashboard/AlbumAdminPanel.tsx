@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { SignOutButton } from "@clerk/nextjs";
 import type { Album, Photo } from "@/lib/db/schema";
+import { GuestcamLogo } from "@/components/GuestcamLogo";
 
 type Tab = "overview" | "gallery" | "qr" | "settings" | "pending";
 
@@ -19,7 +20,7 @@ interface Props {
 // ─── Success Screen ───────────────────────────────────────────────────────────
 
 function NewAlbumSuccess({ album }: { album: Album }) {
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://photos.wedflow.app";
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://guestcam.si";
   const albumUrl = `${appUrl}/${album.slug}`;
   const router = useRouter();
 
@@ -45,7 +46,7 @@ function NewAlbumSuccess({ album }: { album: Album }) {
             {[
               "Preizkusite galerijo",
               "Naložite do 10 slik brezplačno",
-              "Vidite, kako bo WedFlow izgledal na vašem dnevu 😊",
+              "Vidite, kako bo Guestcam izgledal na vašem dnevu 😊",
             ].map((item) => (
               <li key={item} className="flex items-start gap-2.5 text-sm text-gray-700">
                 <span className="mt-0.5 flex-shrink-0 w-5 h-5 flex items-center justify-center rounded bg-green-100">
@@ -86,7 +87,7 @@ function NewAlbumSuccess({ album }: { album: Album }) {
 
 export function AlbumAdminPanel({ album, photos, pendingCount, activeTab, isNew }: Props) {
   const router = useRouter();
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://photos.wedflow.app";
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://guestcam.si";
   const albumUrl = `${appUrl}/${album.slug}`;
 
   // Show success screen if just created
@@ -173,9 +174,7 @@ export function AlbumAdminPanel({ album, photos, pendingCount, activeTab, isNew 
       >
         {/* Logo */}
         <div className="px-5 py-5">
-          <span className="font-bold text-xl text-[#1a1a2e]">
-            WedFlow<span className="text-rose-400">.</span>
-          </span>
+          <GuestcamLogo size="sm" showMark={true} />
         </div>
 
         {/* Gallery info */}

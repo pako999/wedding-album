@@ -16,7 +16,7 @@ export const LANGS: { code: Lang; flag: string; label: string; native: string }[
 export interface Translations {
   // Page meta
   albumTitle: string;           // "Poročni album"
-  by: string;                   // "by WedFlow"
+  by: string;                   // "by Guestcam"
 
   // Password gate
   passwordProtected: string;    // "This album is password protected"
@@ -62,14 +62,14 @@ export interface Translations {
   limitReached: string;         // "Album photo limit reached"
 
   // Footer
-  footerCredit: string;         // "Wedding Album · WedFlow"
+  footerCredit: string;         // "Guestcam"
 }
 
 // ─── All translations ─────────────────────────────────────────────────────────
 
 const sl: Translations = {
   albumTitle: "Poročni album",
-  by: "WedFlow",
+  by: "Guestcam",
   passwordProtected: "Ta album je zaščiten z geslom.",
   passwordPlaceholder: "Geslo",
   openAlbum: "Odpri album",
@@ -99,12 +99,12 @@ const sl: Translations = {
   fileUploaded: "Naloženo",
   fileNetworkError: "Omrežna napaka",
   limitReached: "Omejitev albuma je dosežena.",
-  footerCredit: "Poročni album · WedFlow",
+  footerCredit: "Guestcam",
 };
 
 const hr: Translations = {
   albumTitle: "Vjenčani album",
-  by: "WedFlow",
+  by: "Guestcam",
   passwordProtected: "Ovaj album je zaštićen lozinkom.",
   passwordPlaceholder: "Lozinka",
   openAlbum: "Otvori album",
@@ -134,12 +134,12 @@ const hr: Translations = {
   fileUploaded: "Učitano",
   fileNetworkError: "Mrežna greška",
   limitReached: "Dostignut limit fotografija.",
-  footerCredit: "Vjenčani album · WedFlow",
+  footerCredit: "Guestcam",
 };
 
 const sr: Translations = {
   albumTitle: "Venčani album",
-  by: "WedFlow",
+  by: "Guestcam",
   passwordProtected: "Ovaj album je zaštićen lozinkom.",
   passwordPlaceholder: "Lozinka",
   openAlbum: "Otvori album",
@@ -169,12 +169,12 @@ const sr: Translations = {
   fileUploaded: "Otpremljeno",
   fileNetworkError: "Mrežna greška",
   limitReached: "Dostignut limit fotografija.",
-  footerCredit: "Venčani album · WedFlow",
+  footerCredit: "Guestcam",
 };
 
 const en: Translations = {
   albumTitle: "Wedding Album",
-  by: "WedFlow",
+  by: "Guestcam",
   passwordProtected: "This album is password protected.",
   passwordPlaceholder: "Password",
   openAlbum: "Open album",
@@ -204,12 +204,12 @@ const en: Translations = {
   fileUploaded: "Uploaded",
   fileNetworkError: "Network error",
   limitReached: "Album photo limit reached.",
-  footerCredit: "Wedding Album · WedFlow",
+  footerCredit: "Guestcam",
 };
 
 const de: Translations = {
   albumTitle: "Hochzeitsalbum",
-  by: "WedFlow",
+  by: "Guestcam",
   passwordProtected: "Dieses Album ist passwortgeschützt.",
   passwordPlaceholder: "Passwort",
   openAlbum: "Album öffnen",
@@ -239,12 +239,12 @@ const de: Translations = {
   fileUploaded: "Hochgeladen",
   fileNetworkError: "Netzwerkfehler",
   limitReached: "Foto-Limit des Albums erreicht.",
-  footerCredit: "Hochzeitsalbum · WedFlow",
+  footerCredit: "Guestcam",
 };
 
 const es: Translations = {
   albumTitle: "Álbum de boda",
-  by: "WedFlow",
+  by: "Guestcam",
   passwordProtected: "Este álbum está protegido con contraseña.",
   passwordPlaceholder: "Contraseña",
   openAlbum: "Abrir álbum",
@@ -274,7 +274,7 @@ const es: Translations = {
   fileUploaded: "Subido",
   fileNetworkError: "Error de red",
   limitReached: "Límite de fotos del álbum alcanzado.",
-  footerCredit: "Álbum de boda · WedFlow",
+  footerCredit: "Guestcam",
 };
 
 export const translations: Record<Lang, Translations> = { sl, hr, sr, en, de, es };

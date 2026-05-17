@@ -2,13 +2,13 @@ import Link from "next/link";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Pogoji uporabe | WeddingAlbum",
+  title: "Pogoji uporabe | Guestcam",
   description:
-    "Pogoji uporabe storitve WeddingAlbum — poročna galerija s QR kodo. Preberite naše pogoje pred uporabo storitve.",
+    "Pogoji uporabe storitve Guestcam — poročna galerija s QR kodo. Preberite naše pogoje pred uporabo storitve.",
   openGraph: {
-    title: "Pogoji uporabe | WeddingAlbum",
+    title: "Pogoji uporabe | Guestcam",
     description:
-      "Pogoji, pod katerimi vam WeddingAlbum nudi storitev poročne galerije s QR kodo.",
+      "Pogoji, pod katerimi vam Guestcam nudi storitev poročne galerije s QR kodo.",
     type: "website",
   },
 };
@@ -19,7 +19,7 @@ function SiteHeader() {
       <nav className="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-0.5">
           <span className="font-serif italic text-xl font-bold text-[#2C2825]">
-            WeddingAlbum
+            Guestcam
           </span>
           <span className="font-black text-2xl leading-none text-[#C4738A]">.</span>
         </Link>
@@ -58,7 +58,7 @@ function SiteFooter() {
             GDPR
           </Link>
           <a
-            href="mailto:hello@wedflow.app"
+            href="mailto:hello@guestcam.si"
             className="hover:text-white transition-colors"
           >
             Kontakt
@@ -106,16 +106,16 @@ export default function TermsPage() {
           </div>
 
           <p className="text-base leading-relaxed text-gray-600 mb-8">
-            Dobrodošli v storitvi WeddingAlbum. S tem, ko ustvarite galerijo ali
+            Dobrodošli v storitvi Guestcam. S tem, ko ustvarite galerijo ali
             naložite fotografije, se strinjate s spodnjimi pogoji. Preberite jih
             pozorno. Storitev zagotavlja Sport group d.o.o. (SI72133449,
-            v nadaljevanju &ldquo;WeddingAlbum&rdquo;, &ldquo;mi&rdquo; ali
+            v nadaljevanju &ldquo;Guestcam&rdquo;, &ldquo;mi&rdquo; ali
             &ldquo;naše&rdquo;).
           </p>
 
           <Section title="1. Opis storitve">
             <p className="text-gray-600">
-              WeddingAlbum je spletna platforma, ki organizatorjem porok in
+              Guestcam je spletna platforma, ki organizatorjem porok in
               podobnih prireditev omogoča ustvarjanje zasebnih galerij, kamor
               gostje nalagajo fotografije in videoposnetke prek unikatne QR kode
               — brez obvezne registracije. Storitev vključuje:
@@ -157,7 +157,7 @@ export default function TermsPage() {
                 Vse fotografije in videoposnetke, ki jih naložite, ostanejo vaša
                 last.
               </strong>{" "}
-              WeddingAlbum ne prevzema lastništva nad vsebino, ki jo naložite vi
+              Guestcam ne prevzema lastništva nad vsebino, ki jo naložite vi
               ali vaši gostje.
             </p>
             <p className="text-gray-600 mt-3">
@@ -244,10 +244,10 @@ export default function TermsPage() {
                 Garancija vračila: 30 dni od nakupa, brez vprašanj. Zahtevo
                 pošljite na{" "}
                 <a
-                  href="mailto:hello@wedflow.app"
+                  href="mailto:hello@guestcam.si"
                   className="text-[#C4738A] hover:underline"
                 >
-                  hello@wedflow.app
+                  hello@guestcam.si
                 </a>
                 .
               </li>
@@ -284,7 +284,7 @@ export default function TermsPage() {
 
           <Section title="8. Omejitev odgovornosti">
             <p className="text-gray-600">
-              WeddingAlbum ne odgovarja za:
+              Guestcam ne odgovarja za:
             </p>
             <ul className="list-disc pl-5 mt-3 space-y-1 text-gray-600">
               <li>Posredno ali posledično škodo, ki izhaja iz uporabe storitve.</li>
@@ -294,7 +294,7 @@ export default function TermsPage() {
               </li>
             </ul>
             <p className="text-gray-600 mt-3">
-              Skupna odgovornost WeddingAlbum do posameznega naročnika ne more
+              Skupna odgovornost Guestcam do posameznega naročnika ne more
               preseči zneska, ki ste ga plačali za storitev v zadnjih 12 mesecih.
             </p>
           </Section>
@@ -313,10 +313,10 @@ export default function TermsPage() {
               pristojno sodišče v Republiki Sloveniji. Pred sodnim reševanjem
               sporov poskušamo doseči sporazumno rešitev — kontaktirajte nas na{" "}
               <a
-                href="mailto:hello@wedflow.app"
+                href="mailto:hello@guestcam.si"
                 className="text-[#C4738A] hover:underline"
               >
-                hello@wedflow.app
+                hello@guestcam.si
               </a>
               .
             </p>
@@ -328,10 +328,10 @@ export default function TermsPage() {
               <p className="text-sm text-gray-600 mt-1">
                 E-pošta:{" "}
                 <a
-                  href="mailto:hello@wedflow.app"
+                  href="mailto:hello@guestcam.si"
                   className="text-[#C4738A] hover:underline"
                 >
-                  hello@wedflow.app
+                  hello@guestcam.si
                 </a>
               </p>
               <p className="text-sm text-gray-600">

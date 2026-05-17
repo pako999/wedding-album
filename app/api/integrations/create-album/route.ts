@@ -62,7 +62,7 @@ export async function POST(req: NextRequest) {
     })
     .returning();
 
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://photos.wedflow.app";
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://guestcam.si";
 
   return NextResponse.json({
     albumId: album.id,

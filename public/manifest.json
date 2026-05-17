@@ -1,7 +1,7 @@
 {
-  "name": "Wedding Album",
-  "short_name": "Album",
-  "description": "Share your wedding photos with your guests",
+  "name": "Guestcam",
+  "short_name": "Guestcam",
+  "description": "Share your wedding photos with Guestcam",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#FAF7F2",

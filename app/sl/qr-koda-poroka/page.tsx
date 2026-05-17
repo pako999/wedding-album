@@ -2,9 +2,9 @@ import Link from "next/link";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "QR koda za poroko — Popoln vodnik 2025 | WeddingAlbum",
+  title: "QR koda za poroko — Popoln vodnik 2025 | Guestcam",
   description:
-    "Vse, kar morate vedeti o QR kodi za poroko. Kako deluje, zakaj jo potrebujete in kako jo v 2 minutah nastavite z WeddingAlbum.",
+    "Vse, kar morate vedeti o QR kodi za poroko. Kako deluje, zakaj jo potrebujete in kako jo v 2 minutah nastavite z Guestcam.",
   openGraph: {
     title: "QR koda za poroko — Popoln vodnik 2025",
     description:
@@ -12,7 +12,7 @@ export const metadata: Metadata = {
     type: "article",
   },
   alternates: {
-    canonical: "https://weddingalbum.si/sl/qr-koda-poroka",
+    canonical: "https://guestcam.si/sl/qr-koda-poroka",
   },
 };
 
@@ -22,7 +22,7 @@ function SiteHeader() {
       <nav className="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-0.5">
           <span className="font-serif italic text-xl font-bold text-[#2C2825]">
-            WeddingAlbum
+            Guestcam
           </span>
           <span className="font-black text-2xl leading-none text-[#C4738A]">.</span>
         </Link>
@@ -58,7 +58,7 @@ function SiteFooter() {
             Piškotki
           </Link>
           <a
-            href="mailto:hello@wedflow.app"
+            href="mailto:hello@guestcam.si"
             className="hover:text-white transition-colors"
           >
             Kontakt
@@ -273,17 +273,17 @@ export default function QrKodaPorokaPage() {
         {/* Section 4 — Step by step */}
         <section className="mb-10">
           <h2 className="font-serif text-2xl font-bold text-[#2C2825] mb-4">
-            Kako nastavite QR kodo za poroko z WeddingAlbum — korak za korakom
+            Kako nastavite QR kodo za poroko z Guestcam — korak za korakom
           </h2>
           <p className="text-gray-600 leading-relaxed mb-6">
-            Z WeddingAlbum je postopek hiter in intuitiven. Sledite tem korakom:
+            Z Guestcam je postopek hiter in intuitiven. Sledite tem korakom:
           </p>
           <div className="space-y-4">
             {[
               {
                 step: "01",
                 title: "Ustvarite brezplačen račun",
-                desc: "Obiščite WeddingAlbum.si in kliknite »Ustvari galerijo brezplačno«. Vnesite e-poštni naslov in geslo — postopek traja manj kot minuto.",
+                desc: "Obiščite Guestcam.si in kliknite »Ustvari galerijo brezplačno«. Vnesite e-poštni naslov in geslo — postopek traja manj kot minuto.",
               },
               {
                 step: "02",
@@ -293,7 +293,7 @@ export default function QrKodaPorokaPage() {
               {
                 step: "03",
                 title: "Izberite predlogo za tisk",
-                desc: "WeddingAlbum ponuja 8 elegantnih predlog za QR kartice — od klasičnih do botaničnih in skandinavskih. Vsaka predloga se samodejno prilagodi z vašim imenom in datumom.",
+                desc: "Guestcam ponuja 8 elegantnih predlog za QR kartice — od klasičnih do botaničnih in skandinavskih. Vsaka predloga se samodejno prilagodi z vašim imenom in datumom.",
               },
               {
                 step: "04",
@@ -377,7 +377,7 @@ export default function QrKodaPorokaPage() {
             {[
               {
                 q: "Ali je QR koda za poroko res brezplačna?",
-                a: "Z WeddingAlbum je ustvarjanje galerije in QR kode brezplačno za vedno (do določenih omejitev). Za večje poroke so na voljo plačljivi paketi z neomejenimi fotografijami.",
+                a: "Z Guestcam je ustvarjanje galerije in QR kode brezplačno za vedno (do določenih omejitev). Za večje poroke so na voljo plačljivi paketi z neomejenimi fotografijami.",
               },
               {
                 q: "Ali morajo gostje prenesti aplikacijo?",
@@ -385,7 +385,7 @@ export default function QrKodaPorokaPage() {
               },
               {
                 q: "V kakšni kakovosti se shranjujejo fotografije?",
-                a: "V polni originalni ločljivosti. WeddingAlbum fotografij ne stisne ali zmanjša. Prejeli boste natanko tisto, kar je gost posnel.",
+                a: "V polni originalni ločljivosti. Guestcam fotografij ne stisne ali zmanjša. Prejeli boste natanko tisto, kar je gost posnel.",
               },
               {
                 q: "Kaj se zgodi s fotografijami po poroki?",

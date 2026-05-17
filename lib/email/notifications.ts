@@ -4,8 +4,8 @@ import { Resend } from "resend";
 function getResend() {
   return new Resend(process.env.RESEND_API_KEY ?? "");
 }
-const FROM = process.env.RESEND_FROM ?? "album@wedflow.app";
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://photos.wedflow.app";
+const FROM = process.env.RESEND_FROM ?? "album@guestcam.si";
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://guestcam.si";
 
 interface NewPhotoNotificationParams {
   to: string;
@@ -26,7 +26,7 @@ export async function sendNewPhotoNotification({
   const dashboardUrl = `${APP_URL}/dashboard/${albumSlug}`;
 
   await getResend().emails.send({
-    from: `WedFlow Album <${FROM}>`,
+    from: `Guestcam <${FROM}>`,
     to,
     subject: `Nova fotografija v vašem albumu — ${coupleName}`,
     html: `
@@ -67,7 +67,7 @@ export async function sendNewPhotoNotification({
         <tr>
           <td style="padding:20px 32px;border-top:1px solid rgba(201,169,110,0.2);text-align:center;">
             <p style="margin:0;font-size:11px;color:#2C2825;opacity:0.4;">
-              WedFlow Album · <a href="${APP_URL}" style="color:#C9A96E;text-decoration:none;">photos.wedflow.app</a>
+              Guestcam · <a href="${APP_URL}" style="color:#C9A96E;text-decoration:none;">guestcam.si</a>
             </p>
           </td>
         </tr>

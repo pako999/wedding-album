@@ -2,13 +2,13 @@ import Link from "next/link";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "GDPR — Varstvo osebnih podatkov | WeddingAlbum",
+  title: "GDPR — Varstvo osebnih podatkov | Guestcam",
   description:
-    "Kako WeddingAlbum zagotavlja skladnost z GDPR. Vaše pravice, osnove obdelave podatkov in kako nas kontaktirati.",
+    "Kako Guestcam zagotavlja skladnost z GDPR. Vaše pravice, osnove obdelave podatkov in kako nas kontaktirati.",
   openGraph: {
-    title: "GDPR — Varstvo osebnih podatkov | WeddingAlbum",
+    title: "GDPR — Varstvo osebnih podatkov | Guestcam",
     description:
-      "WeddingAlbum je v celoti skladen z GDPR. Vaši podatki so shranjeni v EU in ste vedno v nadzoru.",
+      "Guestcam je v celoti skladen z GDPR. Vaši podatki so shranjeni v EU in ste vedno v nadzoru.",
     type: "website",
   },
 };
@@ -19,7 +19,7 @@ function SiteHeader() {
       <nav className="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-0.5">
           <span className="font-serif italic text-xl font-bold text-[#2C2825]">
-            WeddingAlbum
+            Guestcam
           </span>
           <span className="font-black text-2xl leading-none text-[#C4738A]">.</span>
         </Link>
@@ -58,7 +58,7 @@ function SiteFooter() {
             GDPR
           </Link>
           <a
-            href="mailto:hello@wedflow.app"
+            href="mailto:hello@guestcam.si"
             className="hover:text-white transition-colors"
           >
             Kontakt
@@ -177,10 +177,10 @@ export default function GdprPage() {
               <p className="text-sm text-gray-600">
                 Kontaktna e-pošta za vprašanja o zasebnosti:{" "}
                 <a
-                  href="mailto:hello@wedflow.app"
+                  href="mailto:hello@guestcam.si"
                   className="text-[#C4738A] hover:underline"
                 >
-                  hello@wedflow.app
+                  hello@guestcam.si
                 </a>
               </p>
             </div>
@@ -365,10 +365,10 @@ export default function GdprPage() {
               <p className="text-sm text-gray-700">
                 <strong>Kako uveljavljate svojo pravico:</strong> Pišite nam na{" "}
                 <a
-                  href="mailto:hello@wedflow.app"
+                  href="mailto:hello@guestcam.si"
                   className="text-[#C4738A] hover:underline"
                 >
-                  hello@wedflow.app
+                  hello@guestcam.si
                 </a>{" "}
                 z zadevo &ldquo;GDPR zahteva&rdquo;. Odgovorimo v 30 dneh. Morda
                 bomo morali preveriti vašo identiteto, preden obdelamo zahtevo.
@@ -439,10 +439,10 @@ export default function GdprPage() {
               <p className="text-sm text-gray-600 mt-1">
                 E-pošta:{" "}
                 <a
-                  href="mailto:hello@wedflow.app"
+                  href="mailto:hello@guestcam.si"
                   className="text-[#C4738A] hover:underline"
                 >
-                  hello@wedflow.app
+                  hello@guestcam.si
                 </a>{" "}
                 (zadeva: &ldquo;GDPR&rdquo;)
               </p>

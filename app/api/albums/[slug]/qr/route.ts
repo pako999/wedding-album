@@ -27,7 +27,7 @@ export async function GET(
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://photos.wedflow.app";
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://guestcam.si";
   const albumUrl = `${appUrl}/${slug}`;
 
   // Generate QR as SVG

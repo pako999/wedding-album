@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import { GuestcamLogo } from "@/components/GuestcamLogo";
 
 // ── SVG Feature Icons ─────────────────────────────────────────────────────────
 function IconQR() {
@@ -91,9 +92,8 @@ export default function HomePage() {
       {/* ── Navbar ──────────────────────────────────────────────────────────── */}
       <header className="sticky top-0 z-40 bg-white border-b border-gray-100">
         <nav className="max-w-7xl mx-auto px-8 h-16 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-0.5">
-            <span className="font-serif italic text-xl font-bold text-[#2C2825]">WeddingAlbum</span>
-            <span className="font-black text-2xl leading-none" style={{ color: '#C4738A' }}>.</span>
+          <Link href="/" className="flex items-center">
+            <GuestcamLogo size="sm" showMark={true} />
           </Link>
           <div className="hidden md:flex items-center gap-8 text-sm font-medium text-gray-500">
             <a href="#how" className="hover:text-[#2C2825] transition-colors">Kako deluje</a>
@@ -539,7 +539,7 @@ export default function HomePage() {
       {/* ── Features ────────────────────────────────────────────────────────── */}
       <section id="features" className="py-24 bg-white">
         <div className="max-w-6xl mx-auto px-6">
-          <h2 className="text-[2.5rem] font-extrabold text-center text-[#2C2825] mb-4">Zakaj izbrati Wedding Album?</h2>
+          <h2 className="text-[2.5rem] font-extrabold text-center text-[#2C2825] mb-4">Zakaj izbrati Guestcam?</h2>
           <p className="text-center text-gray-400 mb-14 max-w-md mx-auto">Vse, kar potrebujete za popoln poročni album.</p>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 text-center">
             {[
@@ -548,7 +548,7 @@ export default function HomePage() {
               { Icon: IconLock,   title: "100% zasebnost",       desc: "Album je samo za vas in vaše goste. Brez javnih povezav, brez oglaševanja." },
               { Icon: IconCamera, title: "Polna kakovost",       desc: "Fotografije so shranjene v originalni ločljivosti. Brez stiskanja, brez izgube kakovosti." },
               { Icon: IconBolt,   title: "Takojšen dostop",      desc: "Med poroko že vidite nove vsebine. Popolno za deljenje z gosti v realnem času." },
-              { Icon: IconQR,     title: "Lastna domena",        desc: "foto.vase-ime.si — album na vaši domeni, brez omembe Wedding Album (Premium)." },
+              { Icon: IconQR,     title: "Lastna domena",        desc: "foto.vase-ime.si — album na vaši domeni, brez omembe Guestcam (Premium)." },
             ].map(({ Icon, title, desc }) => (
               <div key={title} className="flex flex-col items-center">
                 <div
@@ -758,29 +758,25 @@ export default function HomePage() {
 
             {/* Brand */}
             <div className="col-span-2 md:col-span-4 lg:col-span-1">
-              <div className="flex items-center gap-1 mb-3">
-                <svg className="w-4 h-4" style={{ color: '#C4738A' }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M12 21C12 21 3 13.5 3 8a5 5 0 0 1 9-3 5 5 0 0 1 9 3c0 5.5-9 13-9 13z" />
-                </svg>
-                <span className="font-serif italic text-lg font-semibold">WeddingAlbum</span>
-                <span className="font-black text-xl leading-none" style={{ color: '#C4738A' }}>.</span>
+              <div className="mb-3">
+                <GuestcamLogo size="sm" showMark={true} className="opacity-90" />
               </div>
               <p className="text-gray-400 text-xs leading-relaxed mb-5">
                 Poročna galerija s QR kodo — brez aplikacije. Gostje fotografirajo, vi zbirate spomine.
               </p>
               {/* Social */}
               <div className="flex items-center gap-3">
-                <a href="https://www.instagram.com/wedflow.app" aria-label="Instagram" className="w-8 h-8 rounded-full flex items-center justify-center bg-white/5 hover:bg-white/10 transition-colors">
+                <a href="https://www.instagram.com/guestcam.si" aria-label="Instagram" className="w-8 h-8 rounded-full flex items-center justify-center bg-white/5 hover:bg-white/10 transition-colors">
                   <svg className="w-4 h-4 text-gray-300" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/>
                   </svg>
                 </a>
-                <a href="https://www.facebook.com/wedflow.app" aria-label="Facebook" className="w-8 h-8 rounded-full flex items-center justify-center bg-white/5 hover:bg-white/10 transition-colors">
+                <a href="https://www.facebook.com/guestcam.si" aria-label="Facebook" className="w-8 h-8 rounded-full flex items-center justify-center bg-white/5 hover:bg-white/10 transition-colors">
                   <svg className="w-4 h-4 text-gray-300" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
                   </svg>
                 </a>
-                <a href="https://www.pinterest.com/wedflow" aria-label="Pinterest" className="w-8 h-8 rounded-full flex items-center justify-center bg-white/5 hover:bg-white/10 transition-colors">
+                <a href="https://www.pinterest.com/guestcam" aria-label="Pinterest" className="w-8 h-8 rounded-full flex items-center justify-center bg-white/5 hover:bg-white/10 transition-colors">
                   <svg className="w-4 h-4 text-gray-300" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M12 0C5.373 0 0 5.373 0 12c0 5.084 3.163 9.426 7.627 11.174-.105-.949-.2-2.405.042-3.441.218-.937 1.407-5.965 1.407-5.965s-.359-.719-.359-1.782c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.568-.994 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738a.36.36 0 01.083.345l-.333 1.36c-.053.22-.174.267-.402.161-1.499-.698-2.436-2.889-2.436-4.649 0-3.785 2.75-7.262 7.929-7.262 4.163 0 7.398 2.967 7.398 6.931 0 4.136-2.607 7.464-6.227 7.464-1.216 0-2.359-.632-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0z"/>
                   </svg>
@@ -835,7 +831,7 @@ export default function HomePage() {
                 <li><Link href="/terms" className="hover:text-white transition-colors">Pogoji uporabe</Link></li>
                 <li><Link href="/cookies" className="hover:text-white transition-colors">Piškotki</Link></li>
                 <li><Link href="/gdpr" className="hover:text-white transition-colors">GDPR</Link></li>
-                <li><a href="mailto:hello@wedflow.app" className="hover:text-white transition-colors">Kontakt</a></li>
+                <li><a href="mailto:hello@guestcam.si" className="hover:text-white transition-colors">Kontakt</a></li>
               </ul>
             </div>
 
@@ -844,8 +840,7 @@ export default function HomePage() {
           {/* Bottom bar */}
           <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
             <p className="text-xs text-gray-500">
-              © {new Date().getFullYear()} WedFlow d.o.o. · WeddingAlbum je del ekosistema{' '}
-              <a href="https://wedflow.app" className="hover:text-gray-300 transition-colors" style={{ color: '#C4738A' }}>WedFlow</a>
+              © {new Date().getFullYear()} Guestcam · Sport group d.o.o.
             </p>
             <div className="flex items-center gap-4 text-xs text-gray-600">
               <span className="flex items-center gap-1">

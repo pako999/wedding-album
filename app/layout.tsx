@@ -23,13 +23,13 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   title: {
-    default: "Wedding Album | Photos",
-    template: "%s | Wedding Album",
+    default: "Guestcam",
+    template: "%s | Guestcam",
   },
-  description: "Share and collect your wedding memories.",
+  description: "Share and collect your wedding memories with Guestcam.",
   manifest: "/manifest.json",
   openGraph: {
-    siteName: "Wedding Album by WedFlow",
+    siteName: "Guestcam",
     type: "website",
   },
 };

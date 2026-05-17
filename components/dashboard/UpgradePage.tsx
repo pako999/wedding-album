@@ -204,7 +204,7 @@ export function UpgradePage({ album }: Props) {
         {/* Testimonial */}
         <div className="bg-white rounded-xl border p-5 mb-5" style={{ borderColor: "#e5e7eb" }}>
           <p className="text-sm text-gray-600 italic mb-3">
-            "WedFlow je bila najboljša odločitev za naše gostje. Vse fotografije na enem mestu, brez aplikacij!"
+            "Guestcam je bila najboljša odločitev za naše gostje. Vse fotografije na enem mestu, brez aplikacij!"
           </p>
           <p className="text-xs font-semibold text-gray-800">Ana & Luka</p>
           <p className="text-xs text-gray-400">Poročena 2025</p>
@@ -268,7 +268,7 @@ export function UpgradePage({ album }: Props) {
         {/* Payment placeholder */}
         <div className="bg-indigo-50 rounded-xl border border-indigo-100 p-4 mb-5 text-center">
           <p className="text-sm text-indigo-700 font-medium mb-1">Podatki za plačilo</p>
-          <p className="text-xs text-indigo-500">Integracija s Stripe prihaja kmalu. Kontaktirajte nas na <a href="mailto:info@wedflow.app" className="underline">info@wedflow.app</a> za ročno aktivacijo paketa.</p>
+          <p className="text-xs text-indigo-500">Integracija s Stripe prihaja kmalu. Kontaktirajte nas na <a href="mailto:hello@guestcam.si" className="underline">hello@guestcam.si</a> za ročno aktivacijo paketa.</p>
         </div>
 
         {/* CTA */}
@@ -277,7 +277,7 @@ export function UpgradePage({ album }: Props) {
           style={{ background: "#4F46E5" }}
           onClick={() => {
             // TODO: redirect to Stripe checkout
-            alert("Plačilo bo kmalu na voljo. Kontaktirajte nas na info@wedflow.app.");
+            alert("Plačilo bo kmalu na voljo. Kontaktirajte nas na hello@guestcam.si.");
           }}
         >
           Nadgradi na {chosen.name} za {discountApplied ? Math.round(chosen.price * 0.9) : chosen.price}€ →

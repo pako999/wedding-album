@@ -385,7 +385,7 @@ export function AlbumGuestView({
         {/* ── Footer ──────────────────────────────────────────────────────────── */}
         <footer className="text-center py-4 border-t border-gray-100">
           <p className="font-sans text-xs text-gray-400">
-            {t.footerCredit} · <a href="https://wedflow.app" className="hover:text-[#C4738A] transition-colors">wedflow.app</a>
+            {t.footerCredit} · <a href="https://guestcam.si" className="hover:text-[#C4738A] transition-colors">guestcam.si</a>
           </p>
         </footer>
       </div>

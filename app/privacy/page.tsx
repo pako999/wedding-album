@@ -2,13 +2,13 @@ import Link from "next/link";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Politika zasebnosti | WeddingAlbum",
+  title: "Politika zasebnosti | Guestcam",
   description:
-    "Politika zasebnosti storitve WeddingAlbum. Izveste, katere podatke zbiramo, kako jih varujemo in kakšne so vaše pravice po GDPR.",
+    "Politika zasebnosti storitve Guestcam. Izveste, katere podatke zbiramo, kako jih varujemo in kakšne so vaše pravice po GDPR.",
   openGraph: {
-    title: "Politika zasebnosti | WeddingAlbum",
+    title: "Politika zasebnosti | Guestcam",
     description:
-      "Kako varujemo vaše podatke pri uporabi poročne galerije WeddingAlbum.",
+      "Kako varujemo vaše podatke pri uporabi poročne galerije Guestcam.",
     type: "website",
   },
 };
@@ -19,7 +19,7 @@ function SiteHeader() {
       <nav className="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-0.5">
           <span className="font-serif italic text-xl font-bold text-[#2C2825]">
-            WeddingAlbum
+            Guestcam
           </span>
           <span className="font-black text-2xl leading-none text-[#C4738A]">.</span>
         </Link>
@@ -58,7 +58,7 @@ function SiteFooter() {
             GDPR
           </Link>
           <a
-            href="mailto:hello@wedflow.app"
+            href="mailto:hello@guestcam.si"
             className="hover:text-white transition-colors"
           >
             Kontakt
@@ -93,7 +93,7 @@ export default function PrivacyPage() {
             {/* Intro */}
             <p className="text-base leading-relaxed text-gray-600 mb-8">
               Sport group d.o.o. (v nadaljevanju: &ldquo;mi&rdquo;,
-              &ldquo;naše&rdquo;, &ldquo;WeddingAlbum&rdquo;) spoštuje vašo
+              &ldquo;naše&rdquo;, &ldquo;Guestcam&rdquo;) spoštuje vašo
               zasebnost in varuje osebne podatke v skladu z Uredbo (EU)
               2016/679 (GDPR) ter veljavno slovensko zakonodajo. Ta politika
               opisuje, katere podatke zbiramo, kako jih uporabljamo in kakšne so
@@ -108,8 +108,8 @@ export default function PrivacyPage() {
                 Davčna številka: SI72133449
                 <br />
                 E-pošta:{" "}
-                <a href="mailto:hello@wedflow.app" className="text-[#C4738A]">
-                  hello@wedflow.app
+                <a href="mailto:hello@guestcam.si" className="text-[#C4738A]">
+                  hello@guestcam.si
                 </a>
               </p>
             </Section>
@@ -297,8 +297,8 @@ export default function PrivacyPage() {
               </div>
               <p className="text-gray-600 mt-4">
                 Svojo pravico uveljavljate prek e-pošte{" "}
-                <a href="mailto:hello@wedflow.app" className="text-[#C4738A]">
-                  hello@wedflow.app
+                <a href="mailto:hello@guestcam.si" className="text-[#C4738A]">
+                  hello@guestcam.si
                 </a>
                 . Odgovorimo v 30 dneh.
               </p>
@@ -347,10 +347,10 @@ export default function PrivacyPage() {
                 <p className="text-sm text-gray-600 mt-1">
                   E-pošta:{" "}
                   <a
-                    href="mailto:hello@wedflow.app"
+                    href="mailto:hello@guestcam.si"
                     className="text-[#C4738A] hover:underline"
                   >
-                    hello@wedflow.app
+                    hello@guestcam.si
                   </a>
                 </p>
                 <p className="text-sm text-gray-600">
