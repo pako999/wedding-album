@@ -3,7 +3,7 @@ import { db } from "@/lib/db";
 import { albums, photos } from "@/lib/db/schema";
 import { eq, sql } from "drizzle-orm";
 import { sendNewPhotoNotification } from "@/lib/email/notifications";
-import { streamThumbnailUrl, streamIframeUrl } from "@/lib/storage/stream";
+import { bunnyStreamThumbnailUrl, bunnyStreamIframeUrl } from "@/lib/storage/bunny";
 
 export const runtime = "nodejs";
 
@@ -60,11 +60,11 @@ export async function POST(
   const isVideo = mimeType.startsWith("video/");
   const status = album.moderationEnabled ? "pending" : "published";
 
-  // Build the stored URL values
+  // Build the stored URL values (iframe URL saved in blobUrl for stream videos)
   const storedBlobUrl = blobUrl
-    ?? (cfStreamVideoId ? streamIframeUrl(cfStreamVideoId) : "");
+    ?? (cfStreamVideoId ? bunnyStreamIframeUrl(cfStreamVideoId) : "");
   const storedThumbnailUrl = cfStreamVideoId
-    ? streamThumbnailUrl(cfStreamVideoId)
+    ? (bunnyStreamThumbnailUrl(cfStreamVideoId) ?? undefined)
     : undefined;
 
   const [photo] = await db.insert(photos).values({

@@ -255,17 +255,17 @@ export function AlbumGuestView({
                     /* ── Video tile ── */
                     <div className="relative bg-black rounded-xl overflow-hidden">
                       {photo.cfStreamVideoId ? (
-                        /* Cloudflare Stream — iframe player with HLS/adaptive quality */
+                        /* Bunny Stream / CF Stream — iframe URL stored in blobUrl */
                         <div style={{ position: "relative", paddingTop: "56.25%" }}>
                           <iframe
-                            src={`https://iframe.videodelivery.net/${photo.cfStreamVideoId}?controls=true&autoplay=false&loop=false&muted=false&poster=${encodeURIComponent(`https://videodelivery.net/${photo.cfStreamVideoId}/thumbnails/thumbnail.jpg?time=1s&height=400`)}`}
+                            src={photo.blobUrl}
                             style={{ border: "none", position: "absolute", top: 0, left: 0, height: "100%", width: "100%" }}
                             allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
                             allowFullScreen
                           />
                         </div>
                       ) : (
-                        /* Native video (R2 / Vercel Blob) */
+                        /* Native video (Bunny Storage CDN / R2 / Vercel Blob) */
                         <video
                           src={photo.blobUrl}
                           controls

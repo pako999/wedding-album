@@ -1,28 +1,26 @@
 /**
  * POST /api/albums/:slug/upload-url
  *
- * Returns a direct upload URL so the browser can upload straight to
- * Cloudflare R2 (images) or Cloudflare Stream (videos) — no server hop,
- * no body-size limit.
+ * Returns the upload strategy so the browser can upload directly to storage
+ * — no server-side body buffering, no Vercel size limits for large files.
  *
  * Request body: { filename: string; contentType: string; size: number }
  *
- * Response (image):
- *   { type: "r2", presignedUrl: string, publicUrl: string, key: string }
- *
- * Response (video):
- *   { type: "stream", uploadUrl: string, videoId: string }
- *
- * Fallback (neither CF configured):
- *   { type: "vercel-blob" }  — client falls back to @vercel/blob/client
+ * Possible responses:
+ *   { type: "bunny-stream";  uploadUrl, videoId, signature, expiration, libraryId }
+ *   { type: "bunny-storage"; key: string }          ← proxied via /bunny-upload
+ *   { type: "vercel-blob" }                          ← fallback
  */
 
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { albums } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
-import { isR2Configured, createR2PresignedUrl } from "@/lib/storage/r2";
-import { isStreamConfigured, createStreamDirectUpload } from "@/lib/storage/stream";
+import {
+  isBunnyStorageConfigured,
+  isBunnyStreamConfigured,
+  createBunnyStreamUpload,
+} from "@/lib/storage/bunny";
 
 export const runtime = "nodejs";
 
@@ -37,18 +35,20 @@ const ALLOWED_VIDEO_TYPES = new Set([
 
 export async function POST(
   req: NextRequest,
-  { params }: { params: Promise<{ slug: string }> }
+  { params }: { params: Promise<{ slug: string }> },
 ) {
   const { slug } = await params;
   const body = await req.json() as { filename: string; contentType: string; size: number };
-  const { filename, contentType, size } = body;
+  const { filename, contentType } = body;
 
   if (!filename || !contentType) {
     return NextResponse.json({ error: "filename and contentType required" }, { status: 400 });
   }
 
-  // Verify album exists and is published
-  const album = await db.query.albums.findFirst({ where: eq(albums.slug, slug) }).catch(() => null);
+  // Verify album
+  const album = await db.query.albums
+    .findFirst({ where: eq(albums.slug, slug) })
+    .catch(() => null);
   if (!album || !album.isPublished) {
     return NextResponse.json({ error: "Album not found" }, { status: 404 });
   }
@@ -63,30 +63,24 @@ export async function POST(
     return NextResponse.json({ error: "Unsupported file type" }, { status: 400 });
   }
 
-  // ── Video → Cloudflare Stream ─────────────────────────────────────────────
-  if (isVideo && isStreamConfigured()) {
+  // ── Video → Bunny Stream (tus direct upload) ───────────────────────────────
+  if (isVideo && isBunnyStreamConfigured()) {
     try {
-      const { uploadUrl, videoId } = await createStreamDirectUpload();
-      return NextResponse.json({ type: "stream", uploadUrl, videoId });
+      const creds = await createBunnyStreamUpload(filename);
+      return NextResponse.json({ type: "bunny-stream", ...creds });
     } catch (err) {
-      console.error("[upload-url/stream]", err);
-      // Fall through to R2 or Vercel Blob
+      console.error("[upload-url/bunny-stream]", err);
+      // Fall through
     }
   }
 
-  // ── Image (or video fallback) → Cloudflare R2 ────────────────────────────
-  if (isR2Configured()) {
-    try {
-      const ext = filename.split(".").pop()?.toLowerCase() ?? "bin";
-      const key = `albums/${album.id}/${crypto.randomUUID()}.${ext}`;
-      const result = await createR2PresignedUrl({ key, contentType });
-      return NextResponse.json({ type: "r2", ...result });
-    } catch (err) {
-      console.error("[upload-url/r2]", err);
-      // Fall through to Vercel Blob
-    }
+  // ── Image (or video fallback) → Bunny Storage (streaming proxy) ───────────
+  if (isBunnyStorageConfigured()) {
+    const ext = filename.split(".").pop()?.toLowerCase() ?? "bin";
+    const key = `albums/${album.id}/${crypto.randomUUID()}.${ext}`;
+    return NextResponse.json({ type: "bunny-storage", key });
   }
 
-  // ── Fallback → Vercel Blob (existing behaviour) ───────────────────────────
+  // ── Fallback → Vercel Blob ─────────────────────────────────────────────────
   return NextResponse.json({ type: "vercel-blob" });
 }

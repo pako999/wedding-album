@@ -32,7 +32,7 @@ const MAX_VIDEO_MB = 500;
 
 function fmt(bytes: number) { return (bytes / 1024 / 1024).toFixed(1) + " MB"; }
 
-/** Upload a single file using the best available backend. Returns true on success. */
+/** Upload a single file using the best available backend. */
 async function uploadFile(
   file: File,
   albumSlug: string,
@@ -47,12 +47,52 @@ async function uploadFile(
     body: JSON.stringify({ filename: file.name, contentType: file.type, size: file.size }),
   });
   if (!urlRes.ok) throw new Error(await urlRes.text());
-  const urlData = await urlRes.json() as
-    | { type: "r2";          presignedUrl: string; publicUrl: string; key: string }
-    | { type: "stream";      uploadUrl: string; videoId: string }
+
+  type UrlData =
+    | { type: "bunny-stream";  uploadUrl: string; videoId: string; signature: string; expiration: number; libraryId: string }
+    | { type: "bunny-storage"; key: string }
+    | { type: "r2";            presignedUrl: string; publicUrl: string; key: string }
+    | { type: "stream";        uploadUrl: string; videoId: string }
     | { type: "vercel-blob" };
 
-  // ── Cloudflare R2 ─────────────────────────────────────────────────────────
+  const urlData = await urlRes.json() as UrlData;
+
+  // ── Bunny Stream (tus direct upload) ──────────────────────────────────────
+  if (urlData.type === "bunny-stream") {
+    await uploadViaBunnyStream(file, urlData, onProgress);
+    await saveUpload(albumSlug, {
+      cfStreamVideoId: urlData.videoId,
+      mimeType: file.type,
+      originalFilename: file.name,
+      sizeBytes: file.size,
+      uploaderName,
+    });
+    onProgress(100);
+    return;
+  }
+
+  // ── Bunny Storage (streaming proxy via our route handler) ─────────────────
+  if (urlData.type === "bunny-storage") {
+    onProgress(10);
+    const proxyRes = await fetch(
+      `/api/albums/${albumSlug}/bunny-upload?key=${encodeURIComponent(urlData.key)}`,
+      { method: "PUT", body: file, headers: { "Content-Type": file.type } },
+    );
+    if (!proxyRes.ok) throw new Error(`Bunny Storage upload failed: ${proxyRes.status}`);
+    const { publicUrl } = await proxyRes.json() as { publicUrl: string };
+    onProgress(80);
+    await saveUpload(albumSlug, {
+      blobUrl: publicUrl,
+      mimeType: file.type,
+      originalFilename: file.name,
+      sizeBytes: file.size,
+      uploaderName,
+    });
+    onProgress(100);
+    return;
+  }
+
+  // ── Cloudflare R2 (presigned PUT) ─────────────────────────────────────────
   if (urlData.type === "r2") {
     onProgress(10);
     const put = await fetch(urlData.presignedUrl, {
@@ -62,16 +102,27 @@ async function uploadFile(
     });
     if (!put.ok) throw new Error(`R2 upload failed: ${put.status}`);
     onProgress(80);
-
-    await saveUpload(albumSlug, { blobUrl: urlData.publicUrl, mimeType: file.type, originalFilename: file.name, sizeBytes: file.size, uploaderName });
+    await saveUpload(albumSlug, {
+      blobUrl: urlData.publicUrl,
+      mimeType: file.type,
+      originalFilename: file.name,
+      sizeBytes: file.size,
+      uploaderName,
+    });
     onProgress(100);
     return;
   }
 
   // ── Cloudflare Stream (tus) ───────────────────────────────────────────────
   if (urlData.type === "stream") {
-    await uploadViaStream(file, urlData.uploadUrl, onProgress);
-    await saveUpload(albumSlug, { cfStreamVideoId: urlData.videoId, mimeType: file.type, originalFilename: file.name, sizeBytes: file.size, uploaderName });
+    await uploadViaCFStream(file, urlData.uploadUrl, onProgress);
+    await saveUpload(albumSlug, {
+      cfStreamVideoId: urlData.videoId,
+      mimeType: file.type,
+      originalFilename: file.name,
+      sizeBytes: file.size,
+      uploaderName,
+    });
     onProgress(100);
     return;
   }
@@ -88,15 +139,51 @@ async function uploadFile(
       clientPayload: JSON.stringify({ uploaderName }),
       multipart: true,
       onUploadProgress: ({ percentage }) => onProgress(Math.round(percentage * 0.85)),
-    }
+    },
   );
   onProgress(88);
-  await saveUpload(albumSlug, { blobUrl: blob.url, mimeType: file.type, originalFilename: file.name, sizeBytes: file.size, uploaderName });
+  await saveUpload(albumSlug, {
+    blobUrl: blob.url,
+    mimeType: file.type,
+    originalFilename: file.name,
+    sizeBytes: file.size,
+    uploaderName,
+  });
   onProgress(100);
 }
 
-/** tus upload for Cloudflare Stream */
-async function uploadViaStream(
+/** tus upload for Bunny Stream */
+async function uploadViaBunnyStream(
+  file: File,
+  creds: { uploadUrl: string; videoId: string; signature: string; expiration: number; libraryId: string },
+  onProgress: (pct: number) => void,
+): Promise<void> {
+  const { Upload } = await import("tus-js-client");
+
+  return new Promise((resolve, reject) => {
+    const tus = new Upload(file, {
+      endpoint: creds.uploadUrl,
+      chunkSize: 50 * 1024 * 1024, // 50 MB chunks
+      retryDelays: [0, 2000, 5000],
+      headers: {
+        AuthorizationSignature: creds.signature,
+        AuthorizationExpire: String(creds.expiration),
+        VideoId: creds.videoId,
+        LibraryId: String(creds.libraryId),
+      },
+      metadata: { filetype: file.type, title: file.name },
+      onProgress(uploaded, total) {
+        onProgress(Math.round((uploaded / total) * 90));
+      },
+      onSuccess() { resolve(); },
+      onError(err) { reject(err); },
+    });
+    tus.start();
+  });
+}
+
+/** tus upload for Cloudflare Stream (legacy / fallback) */
+async function uploadViaCFStream(
   file: File,
   uploadUrl: string,
   onProgress: (pct: number) => void,
@@ -105,15 +192,15 @@ async function uploadViaStream(
 
   return new Promise((resolve, reject) => {
     const tus = new Upload(file, {
-      uploadUrl,                          // pre-created by CF Stream API
-      chunkSize: 50 * 1024 * 1024,       // 50 MB chunks
+      uploadUrl,
+      chunkSize: 50 * 1024 * 1024,
       retryDelays: [0, 2000, 5000],
       metadata: { name: file.name, filetype: file.type },
       onProgress(uploaded, total) {
         onProgress(Math.round((uploaded / total) * 90));
       },
       onSuccess() { resolve(); },
-      onError(err)  { reject(err); },
+      onError(err) { reject(err); },
     });
     tus.start();
   });
