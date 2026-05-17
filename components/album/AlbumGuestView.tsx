@@ -59,6 +59,8 @@ export function AlbumGuestView({
   const [uploaderName, setUploaderName] = useState("");
   const [nameConfirmed, setNameConfirmed] = useState(false);
   const nameInputRef = useRef<HTMLInputElement>(null);
+  // Files captured by camera before the modal opens
+  const cameraFilesRef = useRef<FileList | null>(null);
 
   const t = translations[lang];
 
@@ -273,12 +275,15 @@ export function AlbumGuestView({
                   <span className="font-bold text-white text-base">Fotografiraj zdaj</span>
                   <input
                     type="file"
-                    accept="image/*"
+                    accept="image/*,video/*"
                     capture="environment"
                     multiple
                     className="absolute inset-0 opacity-0 cursor-pointer"
                     onChange={(e) => {
-                      if (e.target.files?.length) setUploadOpen(true);
+                      if (e.target.files?.length) {
+                        cameraFilesRef.current = e.target.files;
+                        setUploadOpen(true);
+                      }
                     }}
                   />
                 </label>
@@ -423,9 +428,11 @@ export function AlbumGuestView({
           maxPhotos={album.maxPhotos}
           currentCount={album.photoCount}
           lang={lang}
-          onClose={() => setUploadOpen(false)}
+          initialFiles={cameraFilesRef.current}
+          onClose={() => { cameraFilesRef.current = null; setUploadOpen(false); }}
           onNameChange={(name) => setUploaderName(name)}
           onSuccess={() => {
+            cameraFilesRef.current = null;
             setUploadOpen(false);
             router.refresh();
           }}

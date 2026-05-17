@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import { translations, type Lang } from "@/lib/i18n/translations";
 
 interface Props {
@@ -13,6 +13,8 @@ interface Props {
   onClose: () => void;
   onSuccess: () => void;
   onNameChange?: (name: string) => void;
+  /** Files pre-selected before the modal opened (e.g. camera capture). */
+  initialFiles?: FileList | null;
 }
 
 interface UploadFile {
@@ -229,7 +231,7 @@ async function saveUpload(slug: string, body: object) {
 
 // ── Component ─────────────────────────────────────────────────────────────────
 
-export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, currentCount, lang, onClose, onSuccess, onNameChange: _onNameChange }: Props) {
+export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, currentCount, lang, onClose, onSuccess, onNameChange: _onNameChange, initialFiles }: Props) {
   const t = translations[lang];
   const [files, setFiles] = useState<UploadFile[]>([]);
   const [uploading, setUploading] = useState(false);
@@ -250,6 +252,10 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
     }
     setFiles(p => [...p, ...toAdd]);
   }, [files.length, remaining]);
+
+  // Pre-load files captured before the modal opened (camera snap / pre-selected files)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => { if (initialFiles?.length) addFiles(initialFiles); }, []);
 
   const removeFile = (id: string) => setFiles(p => {
     const f = p.find(x => x.id === id);
