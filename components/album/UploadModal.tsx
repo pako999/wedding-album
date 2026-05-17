@@ -74,27 +74,15 @@ async function uploadFile(
     return;
   }
 
-  // ── Bunny Storage (streaming proxy → Edge runtime, no size limit) ──────────
+  // ── Bunny Storage (XHR proxy — real byte-level progress) ────────────────────
   if (urlData.type === "bunny-storage") {
-    onProgress(5);
-
-    const proxyRes = await fetch(
+    const publicUrl = await xhrUpload(
       `/api/albums/${albumSlug}/bunny-upload?key=${encodeURIComponent(urlData.key)}`,
-      {
-        method: "PUT",
-        body: file,
-        headers: {
-          "Content-Type": file.type,
-        },
-      },
+      file,
+      // Scale to 0-90 % so the final save step fills the last 10 %
+      pct => onProgress(Math.round(pct * 0.9)),
     );
-    if (!proxyRes.ok) {
-      const errText = await proxyRes.text().catch(() => proxyRes.statusText);
-      throw new Error(`Upload failed (${proxyRes.status}): ${errText}`);
-    }
-    const { publicUrl, error: uploadErr } = await proxyRes.json() as { publicUrl?: string; error?: string };
-    if (uploadErr || !publicUrl) throw new Error(uploadErr ?? "No URL returned from storage");
-    onProgress(80);
+    onProgress(92);
     await saveUpload(albumSlug, {
       blobUrl: publicUrl,
       mimeType: file.type,
@@ -217,6 +205,50 @@ async function uploadViaCFStream(
       onError(err) { reject(err); },
     });
     tus.start();
+  });
+}
+
+/**
+ * Upload a file via XMLHttpRequest so we get real upload-progress events.
+ * Returns the `publicUrl` from the JSON response.
+ */
+function xhrUpload(
+  url: string,
+  file: File,
+  onProgress: (pct: number) => void,
+): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+
+    xhr.upload.addEventListener("progress", (e) => {
+      if (e.lengthComputable) {
+        onProgress(Math.round((e.loaded / e.total) * 100));
+      }
+    });
+
+    xhr.addEventListener("load", () => {
+      if (xhr.status >= 200 && xhr.status < 300) {
+        try {
+          const data = JSON.parse(xhr.responseText) as { publicUrl?: string; error?: string };
+          if (data.publicUrl) {
+            resolve(data.publicUrl);
+          } else {
+            reject(new Error(data.error ?? "No URL returned from storage"));
+          }
+        } catch {
+          reject(new Error("Invalid response from storage proxy"));
+        }
+      } else {
+        reject(new Error(`Upload failed (${xhr.status}): ${xhr.responseText.slice(0, 200)}`));
+      }
+    });
+
+    xhr.addEventListener("error", () => reject(new Error("Network error during upload")));
+    xhr.addEventListener("abort", () => reject(new Error("Upload cancelled")));
+
+    xhr.open("PUT", url);
+    xhr.setRequestHeader("Content-Type", file.type);
+    xhr.send(file);
   });
 }
 
@@ -390,19 +422,46 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
         </div>
 
         {!allDone && (
-          <div className="px-6 py-4 border-t border-[#C9A96E]/20 flex items-center justify-between gap-3 shrink-0">
-            <button onClick={onClose} disabled={uploading} className="text-sm text-[#2C2825]/60 hover:text-[#2C2825] transition-colors disabled:opacity-40">{t.cancel}</button>
-            <button
-              onClick={uploadAll}
-              disabled={files.length === 0 || uploading}
-              className="px-6 py-2.5 rounded-2xl text-white font-semibold text-sm transition-all disabled:opacity-40 flex items-center gap-2"
-              style={{ background: "#C9A96E", boxShadow: files.length > 0 && !uploading ? "0 4px 14px rgba(201,169,110,0.4)" : "none" }}
-            >
-              {uploading
-                ? <><svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>Nalagam…</>
-                : <><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" /></svg>Naloži {files.length > 0 ? `(${files.length})` : ""}</>
-              }
-            </button>
+          <div className="px-6 py-4 border-t border-[#C9A96E]/20 shrink-0 space-y-3">
+            {/* Overall progress bar — visible only while uploading */}
+            {uploading && (() => {
+              const total = files.length;
+              const done = files.filter(f => f.status === "done").length;
+              const avgPct = total > 0
+                ? Math.round(files.reduce((s, f) => s + f.progress, 0) / total)
+                : 0;
+              return (
+                <div className="space-y-1.5">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-[#2C2825]/50 font-medium">
+                      {done < total ? `Nalagam ${done + 1} / ${total}` : "Shranjujem…"}
+                    </span>
+                    <span className="text-xs font-bold text-[#C9A96E]">{avgPct}%</span>
+                  </div>
+                  <div className="h-2 bg-[#C9A96E]/15 rounded-full overflow-hidden">
+                    <div
+                      className="h-full rounded-full transition-all duration-200"
+                      style={{ width: `${avgPct}%`, background: "linear-gradient(90deg, #C9A96E, #b8874a)" }}
+                    />
+                  </div>
+                </div>
+              );
+            })()}
+
+            <div className="flex items-center justify-between gap-3">
+              <button onClick={onClose} disabled={uploading} className="text-sm text-[#2C2825]/60 hover:text-[#2C2825] transition-colors disabled:opacity-40">{t.cancel}</button>
+              <button
+                onClick={uploadAll}
+                disabled={files.length === 0 || uploading}
+                className="px-6 py-2.5 rounded-2xl text-white font-semibold text-sm transition-all disabled:opacity-40 flex items-center gap-2"
+                style={{ background: "#C9A96E", boxShadow: files.length > 0 && !uploading ? "0 4px 14px rgba(201,169,110,0.4)" : "none" }}
+              >
+                {uploading
+                  ? <><svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>Nalagam…</>
+                  : <><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" /></svg>Naloži {files.length > 0 ? `(${files.length})` : ""}</>
+                }
+              </button>
+            </div>
           </div>
         )}
       </div>
