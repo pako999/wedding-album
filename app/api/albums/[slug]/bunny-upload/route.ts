@@ -1,15 +1,18 @@
 /**
  * PUT /api/albums/:slug/bunny-upload?key=<storage-key>
  *
- * Edge proxy — buffers the request body as an ArrayBuffer, then PUTs it to
+ * Node.js proxy — buffers the request body as an ArrayBuffer, then PUTs it to
  * Bunny Storage in a single reliable request.
  *
- * Why buffer instead of stream?
- * Passing a ReadableStream from one fetch() to another inside an Edge function
- * can silently produce 0-byte uploads (the stream is considered "already used"
- * by the V8 runtime). Buffering with req.arrayBuffer() is the reliable
- * alternative; Vercel Edge allows up to ~50 MB in memory per invocation which
- * covers any phone photo.
+ * Why Node.js (not Edge)?
+ * Vercel Edge functions have a hard 4.5 MB request-body limit, which is smaller
+ * than a typical iPhone photo (5–30 MB). Node.js serverless functions have no
+ * such limit — they're bounded only by memory (1 GB default) and maxDuration.
+ *
+ * Why arrayBuffer() instead of streaming?
+ * Passing a ReadableStream from one fetch() to another can silently produce
+ * 0-byte uploads in some runtimes. req.arrayBuffer() buffers the whole file
+ * and then sends it as a single PUT — reliable for files up to ~500 MB.
  *
  * The `key` query param is returned by /upload-url as { type: "bunny-storage", key }.
  * Returns: { publicUrl: string }
@@ -18,8 +21,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { isBunnyStorageConfigured } from "@/lib/storage/bunny";
 
-export const runtime = "edge";
+// Node.js runtime — no 4.5 MB Edge body-size cap; supports large phone photos
+export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+export const maxDuration = 60; // seconds — enough for a 50 MB photo on a slow connection
 
 const storageApiKey = () => process.env.BUNNY_STORAGE_API_KEY ?? "";
 const storageZone   = () => process.env.BUNNY_STORAGE_ZONE ?? "frank1";
