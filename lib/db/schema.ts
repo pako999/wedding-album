@@ -39,7 +39,11 @@ export const albums = pgTable(
     stripeSessionId: text("stripe_session_id"),
 
     // Limits
-    maxPhotos: integer("max_photos").notNull().default(50),
+    maxPhotos: integer("max_photos").notNull().default(20),
+
+    // Expiry — set at creation (free) or on plan activation (paid)
+    // null = never expires; cron job deletes photos once this date passes
+    expiresAt: timestamp("expires_at"),
 
     // Moderation: if true, photos need approval before appearing
     moderationEnabled: boolean("moderation_enabled").notNull().default(false),

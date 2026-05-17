@@ -41,10 +41,28 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Missing metadata" }, { status: 400 });
     }
 
+    // Per-plan limits and expiry
+    const planConfig: Record<string, { maxPhotos: number; daysAccess: number }> = {
+      basic:   { maxPhotos: 1000,    daysAccess: 90  }, // 3 months
+      plus:    { maxPhotos: 999_999, daysAccess: 365 }, // 1 year
+      premium: { maxPhotos: 999_999, daysAccess: 365 }, // 1 year
+    };
+    const config = planConfig[planId];
+    if (!config) {
+      console.error("[stripe webhook] unknown planId:", planId);
+      return NextResponse.json({ error: "Unknown plan" }, { status: 400 });
+    }
+    const expiresAt = new Date(Date.now() + config.daysAccess * 24 * 60 * 60 * 1000);
+
     try {
       await db
         .update(albums)
-        .set({ plan: planId as "basic" | "plus" | "premium", stripeSessionId: session.id })
+        .set({
+          plan: planId as "basic" | "plus" | "premium",
+          stripeSessionId: session.id,
+          maxPhotos: config.maxPhotos,
+          expiresAt,
+        })
         .where(eq(albums.slug, albumSlug));
     } catch (err) {
       console.error("[stripe webhook] DB update failed:", err);

@@ -11,7 +11,10 @@
 
 import { NextRequest, NextResponse } from "next/server";
 
-export const runtime = "edge";
+// Node.js runtime — Edge has a hard 4 MB response-body cap which breaks
+// large iPhone photos (5–30 MB).  Node.js serverless functions stream the
+// response body without buffering it in memory, so any file size works.
+export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export async function GET(req: NextRequest) {
@@ -43,14 +46,23 @@ export async function GET(req: NextRequest) {
     return new NextResponse(null, { status: res.status });
   }
 
-  const contentType = res.headers.get("Content-Type") ?? "image/jpeg";
+  const contentType    = res.headers.get("Content-Type") ?? "application/octet-stream";
+  const contentLength  = res.headers.get("Content-Length");
 
-  return new NextResponse(res.body, {
-    headers: {
-      "Content-Type": contentType,
-      // Cache aggressively — file content is immutable once uploaded
-      "Cache-Control": "public, max-age=31536000, immutable",
-      "X-Content-Type-Options": "nosniff",
-    },
-  });
+  const headers: Record<string, string> = {
+    "Content-Type":           contentType,
+    // Cache aggressively — file content is immutable once uploaded.
+    // Vercel's CDN serves subsequent requests from cache; Bunny is only
+    // hit once per unique key.
+    "Cache-Control":          "public, max-age=31536000, immutable",
+    "X-Content-Type-Options": "nosniff",
+  };
+
+  // Forward Content-Length so browsers can show download progress and
+  // client-zip can accurately report per-file size.
+  if (contentLength) headers["Content-Length"] = contentLength;
+
+  // res.body is a ReadableStream — Next.js pipes it straight through
+  // to the HTTP response without buffering in memory.
+  return new NextResponse(res.body, { headers });
 }

@@ -603,10 +603,36 @@ export default function HomePage() {
           <h2 className="text-[2.5rem] font-extrabold text-center text-[#2C2825] mb-4">Preprosti paketi</h2>
           <p className="text-center text-gray-400 mb-14">Izberite paket, ki ustreza vaši poroki.</p>
 
-          <div className="grid md:grid-cols-3 gap-6 items-start">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 items-start">
+
+            {/* FREE */}
+            <div className="bg-gray-50 border border-gray-200 rounded-3xl p-7 flex flex-col opacity-80">
+              <p className="font-extrabold text-lg text-gray-400 mb-1">Brezplačno</p>
+              <p className="text-sm text-gray-400 mb-6">Preizkusite brez tveganja</p>
+              <div className="flex items-end gap-2 mb-7">
+                <span className="font-extrabold text-[3rem] leading-none text-gray-400">0€</span>
+              </div>
+              <ul className="space-y-3 flex-1 mb-8">
+                {[
+                  "Unikatna QR koda",
+                  "Do 20 fotografij",
+                  "1 videoposnetek",
+                  "Dostop 30 dni",
+                  "Brez varnostne kopije",
+                ].map(f => (
+                  <li key={f} className="flex items-center gap-2.5">
+                    <svg className="w-4 h-4 shrink-0 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+                    <span className="text-sm text-gray-400">{f}</span>
+                  </li>
+                ))}
+              </ul>
+              <Link href="/dashboard" className="block text-center py-3.5 rounded-2xl font-bold text-sm text-gray-400 transition-colors bg-white hover:bg-gray-100" style={{ border: '1.5px solid #e5e7eb' }}>
+                Začni brezplačno
+              </Link>
+            </div>
 
             {/* BASIC */}
-            <div className="bg-white border border-gray-200 rounded-3xl p-8 flex flex-col">
+            <div className="bg-white border border-gray-200 rounded-3xl p-7 flex flex-col">
               <p className="font-extrabold text-lg text-[#2C2825] mb-1">Basic</p>
               <p className="text-sm text-gray-400 mb-6">Za manjše dogodke</p>
               <div className="flex items-end gap-2 mb-7">
@@ -614,7 +640,13 @@ export default function HomePage() {
                 <span className="text-gray-300 line-through text-lg mb-1.5">55€</span>
               </div>
               <ul className="space-y-3 flex-1 mb-8">
-                {["Unikatna QR koda","Do 50 gostov","Do 200 fotografij","Dostop do galerije 1 mesec","Prenos vseh slik (ZIP)"].map(f => (
+                {[
+                  "Unikatna QR koda",
+                  "Do 1000 fotografij",
+                  "Do 10 videoposnetkov",
+                  "Dostop do galerije 3 mesece",
+                  "Prenos vseh slik (ZIP)",
+                ].map(f => (
                   <li key={f} className="flex items-center gap-2.5">
                     <svg className="w-4 h-4 shrink-0 text-[#C4738A]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
                     <span className="text-sm text-gray-600">{f}</span>
@@ -627,7 +659,7 @@ export default function HomePage() {
             </div>
 
             {/* PLUS — highlighted */}
-            <div className="relative bg-white rounded-3xl p-8 flex flex-col" style={{ border: '2px solid #C4738A', boxShadow: '0 8px 40px rgba(196,115,138,0.2)', transform: 'translateY(-8px)' }}>
+            <div className="relative bg-white rounded-3xl p-7 flex flex-col" style={{ border: '2px solid #C4738A', boxShadow: '0 8px 40px rgba(196,115,138,0.2)', transform: 'translateY(-8px)' }}>
               <div className="absolute -top-4 left-1/2 -translate-x-1/2 text-white text-[10px] font-bold tracking-widest uppercase px-5 py-1.5 rounded-full" style={{ background: '#C4738A' }}>
                 NAJBOLJ PRILJUBLJENO
               </div>
@@ -642,6 +674,7 @@ export default function HomePage() {
                   "Unikatna QR koda",
                   "Neomejeno število gostov",
                   "Neomejeno fotografij",
+                  "Do 100 videoposnetkov",
                   "Dostop do galerije 1 leto",
                   "Prenos vseh slik (ZIP)",
                   "Live galerija (projekcija)",
@@ -660,7 +693,7 @@ export default function HomePage() {
             </div>
 
             {/* PREMIUM */}
-            <div className="bg-white border border-gray-200 rounded-3xl p-8 flex flex-col">
+            <div className="bg-white border border-gray-200 rounded-3xl p-7 flex flex-col">
               <p className="font-extrabold text-lg text-[#2C2825] mb-1">Premium</p>
               <p className="text-sm text-gray-400 mb-6">Za tiste, ki želite vse</p>
               <div className="flex items-end gap-2 mb-7">
@@ -673,7 +706,7 @@ export default function HomePage() {
                   "Neomejeno število gostov",
                   "Neomejeno fotografij",
                   "Do 100 videoposnetkov",
-                  "Dostop do galerije 2 leti",
+                  "Dostop do galerije 1 leto",
                   "Prenos vseh slik (ZIP)",
                   "Live galerija (projekcija)",
                   "Personalizirana stran z imeni",

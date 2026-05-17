@@ -197,6 +197,37 @@ export async function createBunnyStreamUpload(title: string): Promise<BunnyStrea
   };
 }
 
+// ── Storage: delete a file ────────────────────────────────────────────────────
+
+/**
+ * Delete a file from Bunny Storage by its blobUrl (CDN URL, proxy URL, or raw key).
+ * Returns true if deleted (or already gone), false if Bunny isn't configured.
+ */
+export async function deleteBunnyFile(blobUrl: string): Promise<boolean> {
+  if (!isBunnyStorageConfigured()) return false;
+  const key = extractBunnyKey(blobUrl);
+  if (!key) return false;
+  const endpoint = `https://storage.bunnycdn.com/${storageZone()}/${key}`;
+  const res = await fetch(endpoint, {
+    method: "DELETE",
+    headers: { AccessKey: storageApiKey() },
+  });
+  return res.ok || res.status === 404;
+}
+
+/**
+ * Delete a video from Bunny Stream by its videoId.
+ */
+export async function deleteBunnyStreamVideo(videoId: string): Promise<boolean> {
+  if (!isBunnyStreamConfigured()) return false;
+  const libraryId = streamLibrary();
+  const res = await fetch(
+    `https://video.bunnycdn.com/library/${libraryId}/videos/${videoId}`,
+    { method: "DELETE", headers: { AccessKey: streamApiKey() } },
+  );
+  return res.ok || res.status === 404;
+}
+
 // ── Stream: URL helpers ───────────────────────────────────────────────────────
 
 export function bunnyStreamThumbnailUrl(videoId: string): string | undefined {

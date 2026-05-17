@@ -14,8 +14,8 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import { albums } from "@/lib/db/schema";
-import { eq } from "drizzle-orm";
+import { albums, photos } from "@/lib/db/schema";
+import { eq, and, like, sql } from "drizzle-orm";
 import {
   isBunnyStorageConfigured,
   isBunnyStreamConfigured,
@@ -61,6 +61,21 @@ export async function POST(
 
   if (!isVideo && !isImage) {
     return NextResponse.json({ error: "Unsupported file type" }, { status: 400 });
+  }
+
+  // Free plan: max 1 video
+  if (isVideo && album.plan === "free") {
+    const videoCountResult = await db
+      .select({ count: sql<number>`count(*)` })
+      .from(photos)
+      .where(and(eq(photos.albumId, album.id), like(photos.mimeType, "video/%")));
+    const videoCount = Number(videoCountResult[0]?.count ?? 0);
+    if (videoCount >= 1) {
+      return NextResponse.json(
+        { error: "Free plan allows only 1 video. Upgrade to upload more." },
+        { status: 403 },
+      );
+    }
   }
 
   // ── Video → Bunny Stream (tus direct upload) ───────────────────────────────

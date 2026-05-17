@@ -39,6 +39,8 @@ export async function createAlbum(formData: FormData) {
   const suffix = Math.random().toString(36).slice(2, 6);
   const slug   = `${slugify(coupleName)}-${suffix}`;
 
+  const freeExpiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // 30 days
+
   await db.insert(albums).values({
     slug,
     ownerClerkId:      userId,
@@ -49,8 +51,9 @@ export async function createAlbum(formData: FormData) {
     password,
     isPublished:       true,
     plan:              "free",
-    maxPhotos:         200,
+    maxPhotos:         20,
     moderationEnabled: false,
+    expiresAt:         freeExpiresAt,
   });
 
   redirect(`/dashboard/${slug}?new=1`);

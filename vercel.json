@@ -1,0 +1,8 @@
+{
+  "crons": [
+    {
+      "path": "/api/cron/expire-albums",
+      "schedule": "0 3 * * *"
+    }
+  ]
+}

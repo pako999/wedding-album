@@ -1,0 +1,181 @@
+"use client";
+
+/**
+ * ZipDownloader
+ *
+ * Fetches all album photos/videos directly from the CDN in the browser,
+ * streams them into a ZIP using client-zip, then triggers the download.
+ *
+ * Why client-side?
+ *  • No server memory limit — Vercel functions cap at 1 GB
+ *  • No 5-minute timeout — the browser can take as long as needed
+ *  • Files are fetched in parallel from the CDN
+ *  • Works for albums of any size (limited only by the user's browser + disk)
+ *
+ * For browsers that support the File System Access API (Chrome, Edge),
+ * the ZIP streams directly to disk — zero RAM overhead.
+ * Other browsers (Firefox, Safari) receive the ZIP as a blob, which is
+ * buffered in memory first — fine for typical album sizes (< 4 GB).
+ */
+
+import { useState } from "react";
+import { downloadZip } from "client-zip";
+
+interface Props {
+  albumSlug: string;
+  className?: string;
+  children?: React.ReactNode;
+}
+
+type Phase = "idle" | "fetching-list" | "downloading" | "done" | "error";
+
+export function ZipDownloader({ albumSlug, className, children }: Props) {
+  const [phase, setPhase] = useState<Phase>("idle");
+  const [progress, setProgress] = useState(0); // 0-100
+  const [total, setTotal]       = useState(0);
+  const [done, setDone]         = useState(0);
+  const [errorMsg, setErrorMsg] = useState("");
+
+  async function startDownload() {
+    if (phase !== "idle" && phase !== "error") return;
+    setPhase("fetching-list");
+    setProgress(0);
+    setDone(0);
+    setErrorMsg("");
+
+    try {
+      // 1. Fetch the list of file URLs from the server (lightweight JSON)
+      const listRes = await fetch(`/api/albums/${albumSlug}/download-urls`);
+      if (!listRes.ok) throw new Error("Could not load file list");
+      const { files, slug } = await listRes.json() as {
+        files: { name: string; url: string }[];
+        slug: string;
+      };
+
+      if (files.length === 0) {
+        throw new Error("Album has no downloadable files");
+      }
+
+      setTotal(files.length);
+      setPhase("downloading");
+
+      // 2. Build an async iterable that fetches each file and reports progress.
+      // Use a plain local counter so progress updates are pure (no state setter
+      // called inside another state setter's functional updater).
+      let localDone = 0;
+      const total = files.length;
+
+      async function* fileIterator() {
+        for (const file of files) {
+          const res = await fetch(file.url);
+          localDone++;
+          if (!res.ok) {
+            // Skip failed files silently — count them in progress anyway
+            setDone(localDone);
+            setProgress(Math.round((localDone / total) * 100));
+            continue;
+          }
+          yield { name: file.name, input: res };
+          setDone(localDone);
+          setProgress(Math.round((localDone / total) * 100));
+        }
+      }
+
+      const zipResponse = downloadZip(fileIterator());
+      const filename = `guestcam-${slug}.zip`;
+
+      // 3a. Modern browsers — stream directly to disk (no RAM overhead)
+      if ("showSaveFilePicker" in window) {
+        try {
+          const handle = await (window as Window & {
+            showSaveFilePicker: (opts: object) => Promise<FileSystemFileHandle>;
+          }).showSaveFilePicker({ suggestedName: filename, types: [{ description: "ZIP archive", accept: { "application/zip": [".zip"] } }] });
+          const writable = await handle.createWritable();
+          await zipResponse.body!.pipeTo(writable);
+          setPhase("done");
+          return;
+        } catch (err: unknown) {
+          // User cancelled the save dialog — fall through to blob method
+          if (err instanceof Error && err.name === "AbortError") {
+            setPhase("idle");
+            return;
+          }
+          // Any other error — fall through to blob fallback
+        }
+      }
+
+      // 3b. Fallback — buffer as Blob, then trigger <a download>
+      const blob = await zipResponse.blob();
+      const url  = URL.createObjectURL(blob);
+      const a    = document.createElement("a");
+      a.href     = url;
+      a.download = filename;
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(url), 60_000);
+
+      setPhase("done");
+      setTimeout(() => setPhase("idle"), 4000);
+    } catch (err) {
+      console.error("[ZipDownloader]", err);
+      setErrorMsg(err instanceof Error ? err.message : "Download failed");
+      setPhase("error");
+    }
+  }
+
+  // ── Render ─────────────────────────────────────────────────────────────────
+
+  if (phase === "fetching-list") {
+    return (
+      <button disabled className={className}>
+        <svg className="w-4 h-4 animate-spin mr-1.5 inline" fill="none" viewBox="0 0 24 24">
+          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+        </svg>
+        Pripravljam seznam…
+      </button>
+    );
+  }
+
+  if (phase === "downloading") {
+    return (
+      <div className="flex flex-col gap-1 w-full">
+        <button disabled className={className}>
+          <svg className="w-4 h-4 animate-spin mr-1.5 inline" fill="none" viewBox="0 0 24 24">
+            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+          </svg>
+          Prenašam {done} / {total} ({progress}%)
+        </button>
+        <div className="h-1.5 w-full bg-gray-200 rounded-full overflow-hidden">
+          <div
+            className="h-full bg-indigo-500 rounded-full transition-all duration-300"
+            style={{ width: `${progress}%` }}
+          />
+        </div>
+        <p className="text-[10px] text-amber-600 text-center">Ne zaprite okna med prenašanjem</p>
+      </div>
+    );
+  }
+
+  if (phase === "done") {
+    return (
+      <button disabled className={className}>
+        ✓ Prenos končan
+      </button>
+    );
+  }
+
+  if (phase === "error") {
+    return (
+      <button onClick={startDownload} className={className} title={errorMsg}>
+        ⚠ Napaka — kliknite za ponoven poskus
+      </button>
+    );
+  }
+
+  return (
+    <button onClick={startDownload} className={className}>
+      {children ?? "⬇ Prenesi vse (ZIP)"}
+    </button>
+  );
+}

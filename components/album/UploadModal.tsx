@@ -49,7 +49,12 @@ async function uploadFile(
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ filename: file.name, contentType: file.type, size: file.size }),
   });
-  if (!urlRes.ok) throw new Error(await urlRes.text());
+  if (!urlRes.ok) {
+    const errBody = await urlRes.text().catch(() => "");
+    let errMsg = errBody;
+    try { errMsg = (JSON.parse(errBody) as { error?: string }).error ?? errBody; } catch { /* raw text */ }
+    throw new Error(errMsg);
+  }
 
   type UrlData =
     | { type: "bunny-stream";  uploadUrl: string; videoId: string; signature: string; expiration: number; libraryId: string }
@@ -211,7 +216,14 @@ async function uploadViaCFStream(
 /**
  * Upload a file via XMLHttpRequest so we get real upload-progress events.
  * Returns the `publicUrl` from the JSON response.
+ *
+ * Stall detection: if no upload progress is reported for STALL_MS milliseconds
+ * (e.g. because the phone was locked or backgrounded), the XHR is aborted and
+ * the promise rejects with a retriable error.  The component's visibility-change
+ * handler will then automatically retry failed files when the user returns.
  */
+const STALL_MS = 25_000; // 25 s — typical iOS background grace period is ~30 s
+
 function xhrUpload(
   url: string,
   file: File,
@@ -220,13 +232,26 @@ function xhrUpload(
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
 
+    // Stall timer — reset on every progress tick; fires if transfer freezes
+    let stallTimer: ReturnType<typeof setTimeout> | null = null;
+    const resetStall = () => {
+      if (stallTimer) clearTimeout(stallTimer);
+      stallTimer = setTimeout(() => {
+        xhr.abort();
+        reject(new Error("STALL")); // special code so caller can retry silently
+      }, STALL_MS);
+    };
+    const clearStall = () => { if (stallTimer) clearTimeout(stallTimer); stallTimer = null; };
+
     xhr.upload.addEventListener("progress", (e) => {
+      resetStall(); // any progress resets the stall clock
       if (e.lengthComputable) {
         onProgress(Math.round((e.loaded / e.total) * 100));
       }
     });
 
     xhr.addEventListener("load", () => {
+      clearStall();
       if (xhr.status >= 200 && xhr.status < 300) {
         try {
           const data = JSON.parse(xhr.responseText) as { publicUrl?: string; error?: string };
@@ -243,11 +268,12 @@ function xhrUpload(
       }
     });
 
-    xhr.addEventListener("error", () => reject(new Error("Network error during upload")));
-    xhr.addEventListener("abort", () => reject(new Error("Upload cancelled")));
+    xhr.addEventListener("error", () => { clearStall(); reject(new Error("Network error during upload")); });
+    xhr.addEventListener("abort", () => { clearStall(); reject(new Error("STALL")); });
 
     xhr.open("PUT", url);
     xhr.setRequestHeader("Content-Type", file.type);
+    resetStall(); // start the stall clock immediately on send
     xhr.send(file);
   });
 }
@@ -272,6 +298,12 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
   const inputRef = useRef<HTMLInputElement>(null);
   const remaining = Math.max(0, maxPhotos - currentCount);
 
+  // Keep a ref so async callbacks always see latest values
+  const uploadingRef = useRef(false);
+  const filesRef     = useRef(files);
+  useEffect(() => { uploadingRef.current = uploading; }, [uploading]);
+  useEffect(() => { filesRef.current = files; }, [files]);
+
   const addFiles = useCallback((raw: FileList | File[]) => {
     const toAdd: UploadFile[] = [];
     for (const f of Array.from(raw)) {
@@ -288,6 +320,58 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
   // Pre-load files captured before the modal opened (camera snap / pre-selected files)
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => { if (initialFiles?.length) addFiles(initialFiles); }, []);
+
+  // Block accidental tab/window close while uploading
+  useEffect(() => {
+    if (!uploading) return;
+    const handler = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+      e.returnValue = "";
+    };
+    window.addEventListener("beforeunload", handler);
+    return () => window.removeEventListener("beforeunload", handler);
+  }, [uploading]);
+
+  // ── Wake Lock — keep screen on while uploading ────────────────────────────
+  // Prevents the phone from auto-locking during an upload session.
+  // Supported on Chrome/Edge/Android; silently ignored on iOS Safari.
+  const wakeLockRef = useRef<WakeLockSentinel | null>(null);
+  useEffect(() => {
+    if (!uploading) {
+      wakeLockRef.current?.release().catch(() => {});
+      wakeLockRef.current = null;
+      return;
+    }
+    if ("wakeLock" in navigator) {
+      (navigator as Navigator & { wakeLock: { request(t: string): Promise<WakeLockSentinel> } })
+        .wakeLock.request("screen")
+        .then((lock) => { wakeLockRef.current = lock; })
+        .catch(() => {}); // silently ignore — not critical
+    }
+  }, [uploading]);
+
+  // ── Visibility-change auto-retry ─────────────────────────────────────────
+  // When the user switches back to the browser (after phone lock or app switch),
+  // any uploads that stalled get an "error" status (from the 25 s stall timeout).
+  // This handler resets those error files and restarts the upload automatically.
+  const retryRef = useRef<(() => void) | null>(null);
+  useEffect(() => {
+    const handler = () => {
+      if (document.hidden) return;
+      // Only act if we're not already uploading (stall timeout already fired)
+      if (uploadingRef.current) return;
+      const stalled = filesRef.current.filter(f => f.status === "error");
+      if (stalled.length === 0) return;
+      // Reset stalled files to idle so uploadAll() will retry them
+      setFiles(prev =>
+        prev.map(f => f.status === "error" ? { ...f, status: "idle", progress: 0, error: undefined } : f),
+      );
+      // Trigger retry via ref (avoids stale closure)
+      retryRef.current?.();
+    };
+    document.addEventListener("visibilitychange", handler);
+    return () => document.removeEventListener("visibilitychange", handler);
+  }, []);
 
   const removeFile = (id: string) => setFiles(p => {
     const f = p.find(x => x.id === id);
@@ -312,13 +396,24 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
         );
         updateFile(f.id, { status: "done", progress: 100 });
       } catch (err) {
-        updateFile(f.id, { status: "error", error: err instanceof Error ? err.message : "Napaka", progress: 0 });
+        const msg = err instanceof Error ? err.message : "Napaka";
+        // STALL = phone was locked/backgrounded — don't show red error text,
+        // visibility-change handler will auto-retry when user returns
+        const isStall = msg === "STALL";
+        updateFile(f.id, {
+          status: "error",
+          error: isStall ? undefined : msg,
+          progress: 0,
+        });
       }
     }
 
     setUploading(false);
-    setAllDone(files.some(f => f.status !== "error"));
+    setAllDone(filesRef.current.some(f => f.status === "done"));
   };
+
+  // Keep retry ref up to date so the visibility handler can call latest uploadAll
+  useEffect(() => { retryRef.current = uploadAll; });
 
   const success = files.filter(f => f.status === "done").length;
 
@@ -431,7 +526,7 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
                 ? Math.round(files.reduce((s, f) => s + f.progress, 0) / total)
                 : 0;
               return (
-                <div className="space-y-1.5">
+                <div className="space-y-2">
                   <div className="flex items-center justify-between">
                     <span className="text-xs text-[#2C2825]/50 font-medium">
                       {done < total ? `Nalagam ${done + 1} / ${total}` : "Shranjujem…"}
@@ -443,6 +538,13 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
                       className="h-full rounded-full transition-all duration-200"
                       style={{ width: `${avgPct}%`, background: "linear-gradient(90deg, #C9A96E, #b8874a)" }}
                     />
+                  </div>
+                  {/* Keep-screen-on warning */}
+                  <div className="flex items-center gap-1.5 text-[10px] text-amber-600 bg-amber-50 rounded-lg px-2.5 py-1.5">
+                    <svg className="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+                    </svg>
+                    <span>Ne zaprite okna in ne zamenjajte aplikacije med nalaganjem</span>
                   </div>
                 </div>
               );

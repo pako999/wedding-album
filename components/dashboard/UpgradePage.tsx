@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import type { Album } from "@/lib/db/schema";
 
-type PlanId = "basic" | "plus" | "premium";
+type PlanId = "free" | "basic" | "plus" | "premium";
 
 interface Plan {
   id: PlanId;
@@ -15,6 +15,14 @@ interface Plan {
   features: string[];
 }
 
+const FREE_FEATURES = [
+  "QR koda za mizo",
+  "Do 20 fotografij",
+  "1 videoposnetek",
+  "Dostop 30 dni",
+  "Brez varnostne kopije",
+];
+
 const PLANS: Plan[] = [
   {
     id: "basic",
@@ -24,10 +32,10 @@ const PLANS: Plan[] = [
     tagline: "Osnovne funkcionalnosti",
     features: [
       "QR koda za mizo",
-      "Do 500 fotografij",
-      "Do 20 videoposnetkov",
+      "Do 1000 fotografij",
+      "Do 10 videoposnetkov",
       "Prenos vseh slik (ZIP)",
-      "Dostop 1 leto",
+      "Dostop 3 mesece",
     ],
   },
   {
@@ -39,7 +47,7 @@ const PLANS: Plan[] = [
     features: [
       "QR koda za mizo",
       "Do 500 fotografij",
-      "Do 20 videoposnetkov",
+      "Do 100 videoposnetkov",
       "Prenos vseh slik (ZIP)",
       "Dostop 1 leto",
       "Live galerija",
@@ -55,16 +63,13 @@ const PLANS: Plan[] = [
     tagline: "Vse + premium podpora",
     features: [
       "QR koda za mizo",
-      "Do 500 fotografij",
-      "Do 20 videoposnetkov",
+      "Neomejeno fotografij",
+      "Do 100 videoposnetkov",
       "Prenos vseh slik (ZIP)",
       "Dostop 1 leto",
       "Live galerija",
       "Personalizirana stran",
       "Premium predloge",
-      "Neomejeno fotografij",
-      "Do 100 videoposnetkov",
-      "Dostop 2 leti",
       "Prioritetna podpora",
     ],
   },
@@ -189,7 +194,37 @@ export function UpgradePage({ album }: Props) {
           <p className="text-sm text-gray-400">Izberite paket in zaključite nakup.</p>
         </div>
 
-        {/* Plan cards */}
+        {/* Free plan display (current / comparison) */}
+        <div className="bg-white rounded-xl border-2 border-gray-200 mb-3 opacity-70">
+          <div className="flex items-center gap-3 p-4">
+            {/* Inactive radio */}
+            <div className="w-5 h-5 rounded-full border-2 border-gray-300 flex-shrink-0" />
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2">
+                <span className="font-bold text-sm text-gray-500">BREZPLAČNO</span>
+                <span className="text-xs text-gray-400">Vaš trenutni paket</span>
+              </div>
+            </div>
+            <div className="text-right flex-shrink-0">
+              <span className="font-bold text-gray-400">0€</span>
+            </div>
+          </div>
+          {/* Features */}
+          <div className="px-4 pb-4 pt-0">
+            <div className="border-t border-gray-100 pt-3 space-y-2">
+              {FREE_FEATURES.map((feature) => (
+                <div key={feature} className="flex items-center gap-2 text-sm text-gray-400">
+                  <svg className="w-4 h-4 text-gray-300 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                  {feature}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Paid plan cards */}
         <div className="space-y-3 mb-6">
           {PLANS.map((plan) => {
             const isSelected = selectedPlan === plan.id;

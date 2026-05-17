@@ -7,6 +7,7 @@ import { SignOutButton } from "@clerk/nextjs";
 import type { Album, Photo } from "@/lib/db/schema";
 import { GuestcamLogo } from "@/components/GuestcamLogo";
 import { bunnyDisplayUrl } from "@/lib/storage/bunny";
+import { ZipDownloader } from "@/components/dashboard/ZipDownloader";
 
 type Tab = "overview" | "gallery" | "qr" | "settings" | "pending";
 
@@ -47,7 +48,7 @@ function NewAlbumSuccess({ album }: { album: Album }) {
           <ul className="space-y-2">
             {[
               "Preizkusite galerijo",
-              "Naložite do 10 slik brezplačno",
+              "Naložite do 20 slik brezplačno",
               "Vidite, kako bo Guestcam izgledal na vašem dnevu 😊",
             ].map((item) => (
               <li key={item} className="flex items-start gap-2.5 text-sm text-gray-700">
@@ -94,18 +95,8 @@ export function AlbumAdminPanel({ album, photos, pendingCount, activeTab, isNew,
   const [driveClicked, setDriveClicked] = useState(false);
 
   const handleGoogleDrive = () => {
-    // 1. Trigger ZIP download via hidden anchor
-    const a = document.createElement("a");
-    a.href = `/api/albums/${album.slug}/download`;
-    a.download = `guestcam-${album.slug}.zip`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-
-    // 2. Open Google Drive upload page in a new tab
+    // Open Google Drive in a new tab — user downloads ZIP separately via ZipDownloader
     window.open("https://drive.google.com/drive/my-drive", "_blank", "noopener,noreferrer");
-
-    // 3. Show brief confirmation state
     setDriveClicked(true);
     setTimeout(() => setDriveClicked(false), 4000);
   };
@@ -285,7 +276,7 @@ export function AlbumAdminPanel({ album, photos, pendingCount, activeTab, isNew,
         {/* Upgrade banner (free plan only) */}
         {album.plan === "free" && (() => {
           const used = album.photoCount ?? 0;
-          const max  = album.maxPhotos ?? 10;
+          const max  = album.maxPhotos ?? 20;
           const pct  = Math.min(100, Math.round((used / max) * 100));
           const atLimit = used >= max;
           return (
@@ -345,12 +336,10 @@ export function AlbumAdminPanel({ album, photos, pendingCount, activeTab, isNew,
             >
               🔗 Poglej kot gost
             </a>
-            <a
-              href={`/api/albums/${album.slug}/download`}
+            <ZipDownloader
+              albumSlug={album.slug}
               className="flex items-center gap-1.5 px-3 py-2 text-sm text-gray-600 border border-gray-200 rounded-lg hover:border-gray-300 transition-colors bg-white"
-            >
-              ⬇ Prenesi vse (ZIP)
-            </a>
+            />
             <button
               onClick={handleGoogleDrive}
               disabled={driveClicked}
@@ -442,7 +431,7 @@ function OverviewTab({
 }) {
   const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(albumUrl)}&bgcolor=ffffff&color=1a1a2e&qzone=2&format=png`;
   const last4 = photos.slice(0, 4);
-  const usedPct = album.plan === "free" ? Math.min(100, Math.round(((album.photoCount ?? 0) / (album.maxPhotos ?? 10)) * 100)) : 0;
+  const usedPct = album.plan === "free" ? Math.min(100, Math.round(((album.photoCount ?? 0) / (album.maxPhotos ?? 20)) * 100)) : 0;
 
   return (
     <div className="space-y-6">
@@ -453,7 +442,7 @@ function OverviewTab({
             <div className="flex items-center gap-2 mb-1">
               <span className="text-sm font-bold text-indigo-800">📦 Brezplačni paket</span>
               <span className="text-xs bg-indigo-100 text-indigo-600 px-2 py-0.5 rounded-full font-medium">
-                {album.photoCount ?? 0} / {album.maxPhotos ?? 10} slik
+                {album.photoCount ?? 0} / {album.maxPhotos ?? 20} slik
               </span>
             </div>
             <div className="w-full h-2 bg-indigo-100 rounded-full mb-2">
