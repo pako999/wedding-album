@@ -74,10 +74,13 @@ export const photos = pgTable(
     guestId: text("guest_id"),
     uploaderName: text("uploader_name"), // display name they entered
 
-    // Blob storage
+    // Blob storage (R2 or Vercel Blob)
     blobUrl: text("blob_url").notNull(),
-    thumbnailUrl: text("thumbnail_url"), // generated small version
+    thumbnailUrl: text("thumbnail_url"), // generated small version or CF Stream thumbnail
     blurHash: text("blur_hash"), // for placeholder
+
+    // Cloudflare Stream video ID (set for videos uploaded via Stream)
+    cfStreamVideoId: text("cf_stream_video_id"),
 
     // Metadata
     width: integer("width"),

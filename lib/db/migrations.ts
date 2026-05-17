@@ -49,24 +49,28 @@ export async function runMigrations() {
     // Create photos table if not exists
     await sql`
       CREATE TABLE IF NOT EXISTS photos (
-        id                TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
-        album_id          TEXT NOT NULL REFERENCES albums(id) ON DELETE CASCADE,
-        guest_id          TEXT,
-        uploader_name     TEXT,
-        blob_url          TEXT NOT NULL,
-        thumbnail_url     TEXT,
-        blur_hash         TEXT,
-        width             INTEGER,
-        height            INTEGER,
-        size_bytes        INTEGER,
-        mime_type         TEXT,
-        original_filename TEXT,
-        status            TEXT NOT NULL DEFAULT 'published',
-        caption           TEXT,
-        sort_order        INTEGER NOT NULL DEFAULT 0,
-        uploaded_at       TIMESTAMPTZ NOT NULL DEFAULT NOW()
+        id                  TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
+        album_id            TEXT NOT NULL REFERENCES albums(id) ON DELETE CASCADE,
+        guest_id            TEXT,
+        uploader_name       TEXT,
+        blob_url            TEXT NOT NULL,
+        thumbnail_url       TEXT,
+        blur_hash           TEXT,
+        cf_stream_video_id  TEXT,
+        width               INTEGER,
+        height              INTEGER,
+        size_bytes          INTEGER,
+        mime_type           TEXT,
+        original_filename   TEXT,
+        status              TEXT NOT NULL DEFAULT 'published',
+        caption             TEXT,
+        sort_order          INTEGER NOT NULL DEFAULT 0,
+        uploaded_at         TIMESTAMPTZ NOT NULL DEFAULT NOW()
       )
     `;
+
+    // Add cf_stream_video_id to existing photos tables
+    await sql`ALTER TABLE photos ADD COLUMN IF NOT EXISTS cf_stream_video_id TEXT`;
 
     // Create guests table if not exists
     await sql`

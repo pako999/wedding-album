@@ -254,23 +254,36 @@ export function AlbumGuestView({
                   {isVideo ? (
                     /* ── Video tile ── */
                     <div className="relative bg-black rounded-xl overflow-hidden">
-                      <video
-                        src={photo.blobUrl}
-                        controls
-                        playsInline
-                        preload="metadata"
-                        className="w-full h-auto block max-h-96 object-contain"
-                        style={{ background: "#1a1a1a" }}
-                      />
+                      {photo.cfStreamVideoId ? (
+                        /* Cloudflare Stream — iframe player with HLS/adaptive quality */
+                        <div style={{ position: "relative", paddingTop: "56.25%" }}>
+                          <iframe
+                            src={`https://iframe.videodelivery.net/${photo.cfStreamVideoId}?controls=true&autoplay=false&loop=false&muted=false&poster=${encodeURIComponent(`https://videodelivery.net/${photo.cfStreamVideoId}/thumbnails/thumbnail.jpg?time=1s&height=400`)}`}
+                            style={{ border: "none", position: "absolute", top: 0, left: 0, height: "100%", width: "100%" }}
+                            allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
+                            allowFullScreen
+                          />
+                        </div>
+                      ) : (
+                        /* Native video (R2 / Vercel Blob) */
+                        <video
+                          src={photo.blobUrl}
+                          controls
+                          playsInline
+                          preload="metadata"
+                          className="w-full h-auto block max-h-96 object-contain"
+                          style={{ background: "#1a1a1a" }}
+                        />
+                      )}
                       {/* Video badge */}
-                      <div className="absolute top-2 left-2 flex items-center gap-1 bg-black/60 rounded-full px-2 py-1 pointer-events-none">
+                      <div className="absolute top-2 left-2 flex items-center gap-1 bg-black/60 rounded-full px-2 py-1 pointer-events-none z-10">
                         <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 24 24">
                           <path d="M8 5v14l11-7z" />
                         </svg>
                         <span className="text-white text-[10px] font-medium">Video</span>
                       </div>
                       {photo.uploaderName && (
-                        <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/60 to-transparent px-3 py-2 pointer-events-none">
+                        <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/60 to-transparent px-3 py-2 pointer-events-none z-10">
                           <p className="text-white text-xs truncate">{photo.uploaderName}</p>
                         </div>
                       )}

@@ -3,11 +3,16 @@ import { db } from "@/lib/db";
 import { albums, photos } from "@/lib/db/schema";
 import { eq, sql } from "drizzle-orm";
 import { sendNewPhotoNotification } from "@/lib/email/notifications";
+import { streamThumbnailUrl, streamIframeUrl } from "@/lib/storage/stream";
 
 export const runtime = "nodejs";
 
 interface SaveBody {
-  blobUrl: string;
+  // R2 / Vercel Blob upload
+  blobUrl?: string;
+  // Cloudflare Stream upload
+  cfStreamVideoId?: string;
+  // Common
   mimeType: string;
   originalFilename?: string;
   sizeBytes?: number;
@@ -19,33 +24,55 @@ export async function POST(
   { params }: { params: Promise<{ slug: string }> }
 ) {
   const { slug } = await params;
-
   const body: SaveBody = await req.json();
-  const { blobUrl, mimeType, originalFilename, sizeBytes, uploaderName } = body;
+  const { blobUrl, cfStreamVideoId, mimeType, originalFilename, sizeBytes, uploaderName } = body;
 
-  if (!blobUrl || !mimeType) {
-    return NextResponse.json({ error: "blobUrl and mimeType required" }, { status: 400 });
+  if (!blobUrl && !cfStreamVideoId) {
+    return NextResponse.json({ error: "blobUrl or cfStreamVideoId required" }, { status: 400 });
+  }
+  if (!mimeType) {
+    return NextResponse.json({ error: "mimeType required" }, { status: 400 });
   }
 
-  // Fetch album
-  const album = await db.query.albums.findFirst({ where: eq(albums.slug, slug) });
+  const album = await db.query.albums.findFirst({ where: eq(albums.slug, slug) }).catch(() => null);
   if (!album || !album.isPublished) {
     return NextResponse.json({ error: "Album not found" }, { status: 404 });
   }
 
-  // Idempotent — skip if already saved by onUploadCompleted webhook
-  const existing = await db.query.photos.findFirst({ where: eq(photos.blobUrl, blobUrl) });
-  if (existing) {
-    return NextResponse.json({ success: true, photoId: existing.id, alreadySaved: true });
+  // Idempotency — deduplicate by blobUrl or cfStreamVideoId
+  if (blobUrl) {
+    const existing = await db.query.photos.findFirst({
+      where: eq(photos.blobUrl, blobUrl),
+    }).catch(() => null);
+    if (existing) {
+      return NextResponse.json({ success: true, photoId: existing.id, alreadySaved: true });
+    }
+  }
+  if (cfStreamVideoId) {
+    const existing = await db.query.photos.findFirst({
+      where: eq(photos.cfStreamVideoId, cfStreamVideoId),
+    }).catch(() => null);
+    if (existing) {
+      return NextResponse.json({ success: true, photoId: existing.id, alreadySaved: true });
+    }
   }
 
   const isVideo = mimeType.startsWith("video/");
   const status = album.moderationEnabled ? "pending" : "published";
 
+  // Build the stored URL values
+  const storedBlobUrl = blobUrl
+    ?? (cfStreamVideoId ? streamIframeUrl(cfStreamVideoId) : "");
+  const storedThumbnailUrl = cfStreamVideoId
+    ? streamThumbnailUrl(cfStreamVideoId)
+    : undefined;
+
   const [photo] = await db.insert(photos).values({
     albumId: album.id,
     uploaderName,
-    blobUrl,
+    blobUrl: storedBlobUrl,
+    thumbnailUrl: storedThumbnailUrl,
+    cfStreamVideoId: cfStreamVideoId ?? null,
     mimeType,
     sizeBytes,
     originalFilename,
@@ -63,7 +90,7 @@ export async function POST(
       .where(eq(albums.id, album.id));
   }
 
-  // Email notification (photos only, fire-and-forget)
+  // Email notification for photos only
   if (album.notifyEmail && !isVideo) {
     sendNewPhotoNotification({
       to: album.notifyEmail,
