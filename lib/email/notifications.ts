@@ -1,10 +1,6 @@
 import { Resend } from "resend";
 
-// Lazy — avoids crash at build time when env vars aren't set
-function getResend() {
-  return new Resend(process.env.RESEND_API_KEY ?? "");
-}
-const FROM = process.env.RESEND_FROM ?? "album@guestcam.si";
+const FROM = process.env.RESEND_FROM ?? "noreply@guestcam.si";
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://guestcam.si";
 
 interface NewPhotoNotificationParams {
@@ -22,10 +18,18 @@ export async function sendNewPhotoNotification({
   albumSlug,
   photoCount,
 }: NewPhotoNotificationParams) {
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) {
+    // Email not configured — skip silently rather than crashing
+    console.warn("[email] RESEND_API_KEY not set — skipping notification");
+    return;
+  }
+
+  const resend = new Resend(apiKey);
   const albumUrl = `${APP_URL}/${albumSlug}`;
   const dashboardUrl = `${APP_URL}/dashboard/${albumSlug}`;
 
-  await getResend().emails.send({
+  await resend.emails.send({
     from: `Guestcam <${FROM}>`,
     to,
     subject: `Nova fotografija v vašem albumu — ${coupleName}`,
