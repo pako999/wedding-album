@@ -28,6 +28,7 @@ export const metadata: Metadata = {
   },
   description: "Share and collect your wedding memories with Guestcam.",
   manifest: "/manifest.json",
+  robots: { index: false, follow: false },
   openGraph: {
     siteName: "Guestcam",
     type: "website",
