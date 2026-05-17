@@ -23,8 +23,7 @@ export const dynamic = "force-dynamic";
 
 const storageApiKey = () => process.env.BUNNY_STORAGE_API_KEY ?? "";
 const storageZone   = () => process.env.BUNNY_STORAGE_ZONE ?? "frank1";
-const cdnUrl        = () =>
-  process.env.BUNNY_CDN_URL ?? `https://${storageZone()}.b-cdn.net`;
+const cdnUrl        = () => process.env.BUNNY_CDN_URL ?? "https://frfr1.b-cdn.net";
 
 export async function PUT(
   req: NextRequest,

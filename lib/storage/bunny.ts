@@ -13,8 +13,10 @@ async function sha256hex(input: string): Promise<string> {
 
 const storageApiKey  = () => process.env.BUNNY_STORAGE_API_KEY ?? "";
 const storageZone    = () => process.env.BUNNY_STORAGE_ZONE ?? "frank1";
+// Pull zone CDN hostname — frfr1 is the pull zone linked to the frank1 storage zone.
+// Override with BUNNY_CDN_URL env var if the hostname changes.
 const cdnUrl         = () =>
-  process.env.BUNNY_CDN_URL ?? `https://${storageZone()}.b-cdn.net`;
+  process.env.BUNNY_CDN_URL ?? "https://frfr1.b-cdn.net";
 
 // ── Bunny Stream ──────────────────────────────────────────────────────────────
 
