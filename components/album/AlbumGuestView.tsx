@@ -39,7 +39,7 @@ function eventIcon(eventType: string): string {
 
 function eventLabel(eventType: string): string {
   switch (eventType) {
-    case "wedding":     return "Poroke";
+    case "wedding":     return "Poroka";
     case "birthday":    return "Rojstni dan";
     case "anniversary": return "Obletnica";
     case "party":       return "Zabava";
@@ -47,6 +47,25 @@ function eventLabel(eventType: string): string {
     case "graduation":  return "Matura";
     default:            return "Dogodek";
   }
+}
+
+/** Human-readable relative/absolute upload time (Slovenian) */
+function formatUploadTime(date: Date | string | null | undefined): string {
+  if (!date) return "";
+  const d = typeof date === "string" ? new Date(date) : date;
+  if (isNaN(d.getTime())) return "";
+  const now = new Date();
+  const diffMs = now.getTime() - d.getTime();
+  const diffMins = Math.floor(diffMs / 60_000);
+  if (diffMins < 1)   return "Pravkar";
+  if (diffMins < 60)  return `${diffMins} min`;
+  const hh = d.getHours().toString().padStart(2, "0");
+  const mm = d.getMinutes().toString().padStart(2, "0");
+  const diffHours = Math.floor(diffMs / 3_600_000);
+  if (diffHours < 24) return `Danes, ${hh}:${mm}`;
+  const diffDays  = Math.floor(diffMs / 86_400_000);
+  if (diffDays === 1) return `Včeraj, ${hh}:${mm}`;
+  return d.toLocaleDateString("sl-SI", { day: "numeric", month: "short" }) + ` ${hh}:${mm}`;
 }
 
 const BRAND = {
@@ -62,31 +81,58 @@ const BRAND = {
 const BROKEN_IMG_SRC =
   "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 24 24' fill='none' stroke='%23d1d5db' stroke-width='1.5'%3E%3Crect x='2' y='7' width='20' height='14' rx='3'/%3E%3Ccircle cx='12' cy='14' r='3'/%3E%3C/svg%3E";
 
+/* Avatar initial bubble shared by photo captions + video cards */
+function AvatarBubble({ name, size = 5 }: { name: string; size?: number }) {
+  return (
+    <div
+      className={`w-${size} h-${size} rounded-full flex items-center justify-center text-white font-bold shrink-0`}
+      style={{ background: BRAND.accent, fontSize: size <= 5 ? "9px" : "11px" }}
+    >
+      {name.charAt(0).toUpperCase()}
+    </div>
+  );
+}
+
 export function AlbumGuestView({ album, photos, passwordRequired, passwordCorrect, providedPassword: _pw, initialLang }: Props) {
   const router = useRouter();
-  const [lang, setLang] = useState<Lang>(initialLang);
+  const [lang, setLang]                 = useState<Lang>(initialLang);
   const [lightboxIndex, setLightboxIndex] = useState(-1);
-  const [uploadOpen, setUploadOpen] = useState(false);
-  const [pwInput, setPwInput] = useState("");
-  const [pwError, setPwError] = useState(false);
+  const [uploadOpen, setUploadOpen]     = useState(false);
+  const [pwInput, setPwInput]           = useState("");
+  const [pwError, setPwError]           = useState(false);
   const [uploaderName, setUploaderName] = useState("");
   const [nameConfirmed, setNameConfirmed] = useState(false);
-  const [filter, setFilter] = useState<FilterTab>("all");
-  const nameInputRef = useRef<HTMLInputElement>(null);
+  const [filter, setFilter]             = useState<FilterTab>("all");
+  const [personFilter, setPersonFilter] = useState<string | null>(null);
+  const nameInputRef  = useRef<HTMLInputElement>(null);
   const cameraFilesRef = useRef<FileList | null>(null);
 
-  const t = translations[lang];
+  const t       = translations[lang];
   const evtIcon = eventIcon(album.eventType ?? "other");
   const albumFull = album.plan === "free" && photos.length >= (album.maxPhotos ?? 20);
 
+  // ── Uploader list (sorted by upload count desc) ───────────────────────────
+  const uploaders: string[] = (() => {
+    const counts = new Map<string, number>();
+    for (const p of photos) {
+      if (p.uploaderName) counts.set(p.uploaderName, (counts.get(p.uploaderName) ?? 0) + 1);
+    }
+    return Array.from(counts.entries()).sort((a, b) => b[1] - a[1]).map(([n]) => n);
+  })();
+
+  // ── Counts (total, not affected by filters) ───────────────────────────────
   const photoCount = photos.filter(p => !p.mimeType?.startsWith("video/")).length;
   const videoCount = photos.filter(p =>  p.mimeType?.startsWith("video/")).length;
 
+  // ── Filtered collection (type + person) ───────────────────────────────────
   const filteredPhotos = photos.filter(p => {
-    if (filter === "photos") return !p.mimeType?.startsWith("video/");
-    if (filter === "videos") return  p.mimeType?.startsWith("video/");
+    if (filter === "photos" &&  p.mimeType?.startsWith("video/")) return false;
+    if (filter === "videos" && !p.mimeType?.startsWith("video/")) return false;
+    if (personFilter && p.uploaderName !== personFilter) return false;
     return true;
   });
+  const filteredImages = filteredPhotos.filter(p => !p.mimeType?.startsWith("video/"));
+  const filteredVideos = filteredPhotos.filter(p =>  p.mimeType?.startsWith("video/"));
 
   const switchLang = (l: Lang) => {
     setLang(l);
@@ -101,7 +147,7 @@ export function AlbumGuestView({ album, photos, passwordRequired, passwordCorrec
     setNameConfirmed(true);
   };
 
-  // ── Lightbox slides (only images, in "all" or "photos" view) ──────────────
+  // ── Lightbox slides — all non-video photos (unaffected by filters) ─────────
   const lightboxSlides = photos
     .filter(p => !p.mimeType?.startsWith("video/"))
     .map(p => ({
@@ -112,11 +158,7 @@ export function AlbumGuestView({ album, photos, passwordRequired, passwordCorrec
       description: p.caption ?? undefined,
     }));
 
-  // When filter = "photos", lightbox index maps 1:1
-  // When filter = "all", we need to find the image's index among all images
-  const getLightboxIdx = (photo: Photo, indexInFiltered: number): number => {
-    if (filter === "photos") return indexInFiltered;
-    // find position among all non-video photos
+  const getLightboxIdx = (photo: Photo): number => {
     const allImages = photos.filter(p => !p.mimeType?.startsWith("video/"));
     return allImages.findIndex(p => p.id === photo.id);
   };
@@ -167,13 +209,9 @@ export function AlbumGuestView({ album, photos, passwordRequired, passwordCorrec
       ════════════════════════════════════════════════════════════════════ */}
       <div className="relative">
         {album.coverImageUrl ? (
-          /* ── Cover photo hero ─────────────────────────────────────────── */
           <div className="relative h-72 sm:h-96 lg:h-[460px] w-full overflow-hidden">
             <Image src={album.coverImageUrl} alt={album.coupleName} fill className="object-cover" priority />
-            {/* Deep gradient overlay */}
             <div className="absolute inset-0" style={{ background: "linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.35) 50%, rgba(0,0,0,0.1) 100%)" }} />
-
-            {/* Top bar overlay */}
             <div className="absolute top-0 inset-x-0 flex items-center justify-between px-6 pt-5">
               <div className="flex items-center gap-2 text-white/80 text-sm font-medium">
                 <span>{evtIcon}</span>
@@ -186,8 +224,6 @@ export function AlbumGuestView({ album, photos, passwordRequired, passwordCorrec
                 ))}
               </div>
             </div>
-
-            {/* Album info bottom */}
             <div className="absolute bottom-0 inset-x-0 px-6 pb-8 sm:px-10">
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-2 leading-tight">{album.coupleName}</h1>
               <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-white/70 text-sm">
@@ -196,7 +232,7 @@ export function AlbumGuestView({ album, photos, passwordRequired, passwordCorrec
                 <span>·</span>
                 <span>{photoCount} foto{videoCount > 0 ? ` · ${videoCount} video` : ""}</span>
                 {photos.length > 0 && (
-                  <span className="flex items-center gap-1" style={{ color: "rgba(255,255,255,0.8)" }}>
+                  <span className="flex items-center gap-1 text-white/80">
                     <span className="w-1.5 h-1.5 rounded-full animate-pulse bg-white inline-block" />
                     V živo
                   </span>
@@ -205,12 +241,8 @@ export function AlbumGuestView({ album, photos, passwordRequired, passwordCorrec
             </div>
           </div>
         ) : (
-          /* ── No cover — text hero ──────────────────────────────────────── */
           <div className="relative pt-16 pb-12 sm:pt-20 sm:pb-16 px-6 text-center overflow-hidden" style={{ background: BRAND.dark }}>
-            {/* Subtle pattern */}
             <div className="absolute inset-0 opacity-10" style={{ backgroundImage: "radial-gradient(circle at 20% 50%, #C4738A 0%, transparent 50%), radial-gradient(circle at 80% 20%, #C4738A 0%, transparent 40%)" }} />
-
-            {/* Top bar */}
             <div className="absolute top-0 inset-x-0 flex items-center justify-between px-6 pt-4">
               <div className="flex items-center gap-2 text-white/50 text-sm">
                 <span>{evtIcon}</span>
@@ -223,8 +255,6 @@ export function AlbumGuestView({ album, photos, passwordRequired, passwordCorrec
                 ))}
               </div>
             </div>
-
-            {/* Content */}
             <div className="relative">
               <div className="text-5xl sm:text-6xl mb-5">{evtIcon}</div>
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-3 leading-tight">{album.coupleName}</h1>
@@ -240,14 +270,16 @@ export function AlbumGuestView({ album, photos, passwordRequired, passwordCorrec
       </div>
 
       {/* ════════════════════════════════════════════════════════════════════
-          TOOLBAR: name/upload + filter tabs
+          STICKY TOOLBAR
       ════════════════════════════════════════════════════════════════════ */}
       <div className="sticky top-0 z-20 bg-white border-b" style={{ borderColor: BRAND.border }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
+
+          {/* Row 1 — type filter + upload */}
           <div className="flex items-center justify-between gap-4 py-3">
 
-            {/* Left: filter tabs */}
-            <div className="flex items-center gap-1 bg-gray-100 rounded-xl p-1">
+            {/* Type filter pills */}
+            <div className="flex items-center gap-1 bg-gray-100 rounded-xl p-1 shrink-0">
               {([
                 { id: "all",    label: "Vse",         count: photos.length },
                 { id: "photos", label: "Fotografije",  count: photoCount },
@@ -264,7 +296,10 @@ export function AlbumGuestView({ album, photos, passwordRequired, passwordCorrec
                 >
                   {tab.label}
                   {tab.count > 0 && (
-                    <span className="text-xs px-1.5 py-0.5 rounded-full" style={filter === tab.id ? { background: BRAND.accentLight, color: BRAND.accent } : { background: "transparent", color: BRAND.muted }}>
+                    <span className="text-xs px-1.5 py-0.5 rounded-full"
+                      style={filter === tab.id
+                        ? { background: BRAND.accentLight, color: BRAND.accent }
+                        : { background: "transparent", color: BRAND.muted }}>
                       {tab.count}
                     </span>
                   )}
@@ -272,11 +307,10 @@ export function AlbumGuestView({ album, photos, passwordRequired, passwordCorrec
               ))}
             </div>
 
-            {/* Right: upload section */}
+            {/* Upload section */}
             {!albumFull && (
               <div className="flex items-center gap-2 shrink-0">
                 {!nameConfirmed ? (
-                  /* Compact name entry */
                   <div className="flex items-center gap-2">
                     <input
                       ref={nameInputRef}
@@ -299,17 +333,11 @@ export function AlbumGuestView({ album, photos, passwordRequired, passwordCorrec
                     </button>
                   </div>
                 ) : (
-                  /* Upload buttons */
                   <div className="flex items-center gap-2">
-                    {/* Avatar */}
                     <div className="hidden sm:flex items-center gap-1.5">
-                      <div className="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0" style={{ background: BRAND.accent }}>
-                        {uploaderName.charAt(0).toUpperCase()}
-                      </div>
+                      <AvatarBubble name={uploaderName} size={7} />
                       <button onClick={() => setNameConfirmed(false)} className="text-xs underline" style={{ color: BRAND.muted }}>{uploaderName}</button>
                     </div>
-
-                    {/* Camera */}
                     <label className="relative flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-semibold text-white cursor-pointer transition-all hover:opacity-90" style={{ background: BRAND.dark }}>
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z" />
@@ -319,8 +347,6 @@ export function AlbumGuestView({ album, photos, passwordRequired, passwordCorrec
                       <input type="file" accept="image/*,video/*" capture="environment" multiple className="absolute inset-0 opacity-0 cursor-pointer"
                         onChange={(e) => { if (e.target.files?.length) { cameraFilesRef.current = e.target.files; setUploadOpen(true); } }} />
                     </label>
-
-                    {/* Gallery */}
                     <button onClick={() => setUploadOpen(true)}
                       className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-sm font-semibold transition-all hover:bg-gray-50"
                       style={{ borderColor: BRAND.border, color: BRAND.dark }}
@@ -335,11 +361,53 @@ export function AlbumGuestView({ album, photos, passwordRequired, passwordCorrec
               </div>
             )}
           </div>
+
+          {/* Row 2 — person filter chips (only if 2+ distinct uploaders) */}
+          {uploaders.length >= 2 && (
+            <div className="flex items-center gap-2 pb-3 overflow-x-auto" style={{ scrollbarWidth: "none" }}>
+              {/* "Vsi" chip */}
+              <button
+                onClick={() => setPersonFilter(null)}
+                className="flex-shrink-0 px-3 py-1 rounded-full text-xs font-semibold transition-all border"
+                style={personFilter === null
+                  ? { background: BRAND.dark, color: "white", borderColor: BRAND.dark }
+                  : { background: "white", color: BRAND.muted, borderColor: BRAND.border }}
+              >
+                Vsi
+              </button>
+
+              {uploaders.map(name => {
+                const active = personFilter === name;
+                return (
+                  <button
+                    key={name}
+                    onClick={() => setPersonFilter(active ? null : name)}
+                    className="flex-shrink-0 flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold transition-all border"
+                    style={active
+                      ? { background: BRAND.accent, color: "white", borderColor: BRAND.accent }
+                      : { background: "white", color: BRAND.dark, borderColor: BRAND.border }}
+                  >
+                    <span
+                      className="w-4 h-4 rounded-full flex items-center justify-center font-bold"
+                      style={{
+                        fontSize: "9px",
+                        background: active ? "rgba(255,255,255,0.25)" : BRAND.accentLight,
+                        color:      active ? "white"                  : BRAND.accent,
+                      }}
+                    >
+                      {name.charAt(0).toUpperCase()}
+                    </span>
+                    {name}
+                  </button>
+                );
+              })}
+            </div>
+          )}
         </div>
       </div>
 
       {/* ════════════════════════════════════════════════════════════════════
-          GALLERY BODY
+          GALLERY
       ════════════════════════════════════════════════════════════════════ */}
       <div className="max-w-7xl mx-auto px-3 sm:px-6 py-6">
 
@@ -354,86 +422,121 @@ export function AlbumGuestView({ album, photos, passwordRequired, passwordCorrec
           </div>
         )}
 
+        {/* Person filter active banner */}
+        {personFilter && (
+          <div className="flex items-center gap-2 mb-5 px-3 py-2 rounded-xl border text-sm" style={{ borderColor: BRAND.accentLight, background: BRAND.accentLight }}>
+            <AvatarBubble name={personFilter} size={6} />
+            <span className="font-medium" style={{ color: BRAND.dark }}>
+              Fotografije od: <strong>{personFilter}</strong>
+            </span>
+            <button
+              onClick={() => setPersonFilter(null)}
+              className="ml-auto text-xs font-semibold px-2 py-0.5 rounded-lg transition-all hover:bg-white/60"
+              style={{ color: BRAND.accent }}
+            >
+              Počisti ✕
+            </button>
+          </div>
+        )}
+
         {/* Empty state */}
         {filteredPhotos.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-28 text-center">
             <div className="text-5xl mb-4 opacity-20">{filter === "videos" ? "🎥" : "📷"}</div>
             <p className="text-sm font-medium" style={{ color: BRAND.muted }}>
-              {filter === "videos" ? "Ni videoposnetkov" : filter === "photos" ? "Ni fotografij" : t.noPhotosDesc}
+              {personFilter
+                ? `${personFilter} nima ${filter === "videos" ? "videoposnetkov" : "fotografij"}`
+                : filter === "videos" ? "Ni videoposnetkov"
+                : filter === "photos" ? "Ni fotografij"
+                : t.noPhotosDesc}
             </p>
           </div>
         ) : (
           <>
-            {/* Videos section (shown in "all" view above images) */}
-            {filter === "all" && videoCount > 0 && (
-              <div className="mb-8">
-                <h2 className="text-xs font-bold uppercase tracking-widest mb-4" style={{ color: BRAND.muted }}>Videi · {videoCount}</h2>
+            {/* ── Videos section (in "all" view) ──────────────────────────── */}
+            {filter === "all" && filteredVideos.length > 0 && (
+              <div className="mb-10">
+                <h2 className="text-xs font-bold uppercase tracking-widest mb-4" style={{ color: BRAND.muted }}>
+                  Videi · {filteredVideos.length}
+                </h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {photos.filter(p => p.mimeType?.startsWith("video/")).map(photo => (
-                    <VideoCard key={photo.id} photo={photo} />
-                  ))}
+                  {filteredVideos.map(photo => <VideoCard key={photo.id} photo={photo} />)}
                 </div>
               </div>
             )}
 
-            {/* Photos masonry */}
-            {filter !== "videos" && photoCount > 0 && (
-              <div>
-                {filter === "all" && <h2 className="text-xs font-bold uppercase tracking-widest mb-4" style={{ color: BRAND.muted }}>Fotografije · {photoCount}</h2>}
-                <div className="masonry-grid">
-                  {filteredPhotos
-                    .filter(p => !p.mimeType?.startsWith("video/"))
-                    .map((photo, idx) => (
-                      <div key={photo.id} className="masonry-item group rounded-xl overflow-hidden bg-gray-100 cursor-pointer"
-                        onClick={() => setLightboxIndex(getLightboxIdx(photo, idx))}>
-                        <div className="relative">
-                          <img
-                            src={bunnyDisplayUrl(photo.thumbnailUrl ?? photo.blobUrl, 800, 82)}
-                            alt={photo.caption ?? ""}
-                            className="w-full h-auto block transition-transform duration-500 group-hover:scale-[1.03]"
-                            loading="lazy"
-                            onError={(e) => {
-                              e.currentTarget.onerror = null;
-                              e.currentTarget.src = BROKEN_IMG_SRC;
-                              e.currentTarget.style.minHeight = "120px";
-                              e.currentTarget.style.objectFit = "none";
-                              e.currentTarget.style.background = "#f3f4f6";
-                            }}
-                          />
-                          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/15 transition-all duration-300 rounded-xl flex items-end">
-                            {photo.uploaderName && (
-                              <p className="text-xs text-white font-medium p-2.5 opacity-0 group-hover:opacity-100 transition-opacity truncate w-full drop-shadow">
-                                {photo.uploaderName}
-                              </p>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                </div>
-              </div>
-            )}
-
-            {/* Videos-only view */}
+            {/* ── Videos-only view ────────────────────────────────────────── */}
             {filter === "videos" && (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {filteredPhotos.map(photo => (
-                  <VideoCard key={photo.id} photo={photo} />
-                ))}
+                {filteredVideos.map(photo => <VideoCard key={photo.id} photo={photo} />)}
+              </div>
+            )}
+
+            {/* ── Photo masonry ────────────────────────────────────────────── */}
+            {filter !== "videos" && filteredImages.length > 0 && (
+              <div>
+                {filter === "all" && (
+                  <h2 className="text-xs font-bold uppercase tracking-widest mb-4" style={{ color: BRAND.muted }}>
+                    Fotografije · {filteredImages.length}
+                  </h2>
+                )}
+                <div className="masonry-grid">
+                  {filteredImages.map((photo) => (
+                    <div
+                      key={photo.id}
+                      className="masonry-item group cursor-pointer"
+                      onClick={() => setLightboxIndex(getLightboxIdx(photo))}
+                    >
+                      {/* Image */}
+                      <div className="relative rounded-xl overflow-hidden bg-gray-100">
+                        <img
+                          src={bunnyDisplayUrl(photo.thumbnailUrl ?? photo.blobUrl, 800, 82)}
+                          alt={photo.caption ?? ""}
+                          className="w-full h-auto block transition-transform duration-500 group-hover:scale-[1.03]"
+                          loading="lazy"
+                          onError={(e) => {
+                            e.currentTarget.onerror = null;
+                            e.currentTarget.src = BROKEN_IMG_SRC;
+                            e.currentTarget.style.minHeight = "120px";
+                            e.currentTarget.style.objectFit = "none";
+                            e.currentTarget.style.background = "#f3f4f6";
+                          }}
+                        />
+                        {/* Subtle hover tint */}
+                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-300" />
+                      </div>
+
+                      {/* Uploader + time — below image, not on it */}
+                      <div className="flex items-center gap-1.5 px-1 pt-1.5 pb-0.5">
+                        {photo.uploaderName && <AvatarBubble name={photo.uploaderName} size={5} />}
+                        <div className="min-w-0">
+                          {photo.uploaderName && (
+                            <p className="text-[11px] font-semibold leading-tight truncate" style={{ color: BRAND.dark }}>
+                              {photo.uploaderName}
+                            </p>
+                          )}
+                          <p className="text-[10px] leading-tight" style={{ color: BRAND.muted }}>
+                            {formatUploadTime(photo.uploadedAt)}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
           </>
         )}
       </div>
 
-      {/* ── Footer ────────────────────────────────────────────────────────────── */}
+      {/* ── Footer ────────────────────────────────────────────────────────── */}
       <footer className="border-t mt-8 py-6 text-center" style={{ borderColor: BRAND.border }}>
         <p className="text-xs" style={{ color: BRAND.muted }}>
           Guestcam · <a href="https://guestcam.si" className="hover:underline">guestcam.si</a>
         </p>
       </footer>
 
-      {/* ── Lightbox ──────────────────────────────────────────────────────────── */}
+      {/* ── Lightbox ─────────────────────────────────────────────────────── */}
       {lightboxSlides.length > 0 && (
         <Lightbox
           open={lightboxIndex >= 0}
@@ -445,7 +548,7 @@ export function AlbumGuestView({ album, photos, passwordRequired, passwordCorrec
         />
       )}
 
-      {/* ── Upload modal ──────────────────────────────────────────────────────── */}
+      {/* ── Upload modal ──────────────────────────────────────────────────── */}
       {uploadOpen && (
         <UploadModal
           albumSlug={album.slug}
@@ -464,10 +567,11 @@ export function AlbumGuestView({ album, photos, passwordRequired, passwordCorrec
   );
 }
 
-/* ── VideoCard sub-component ──────────────────────────────────────────────── */
+/* ── VideoCard ────────────────────────────────────────────────────────────── */
 function VideoCard({ photo }: { photo: Photo }) {
   return (
-    <div className="rounded-xl overflow-hidden bg-black border" style={{ borderColor: "#1f2937" }}>
+    <div className="rounded-2xl overflow-hidden bg-gray-950 border border-gray-800 flex flex-col">
+      {/* Video player */}
       {photo.cfStreamVideoId ? (
         <div style={{ position: "relative", paddingTop: "56.25%" }}>
           <iframe
@@ -480,11 +584,17 @@ function VideoCard({ photo }: { photo: Photo }) {
       ) : (
         <video src={photo.blobUrl} controls playsInline preload="metadata" className="w-full h-auto block" style={{ maxHeight: "360px" }} />
       )}
-      {photo.uploaderName && (
-        <div className="px-3 py-2 bg-gray-900">
-          <p className="text-xs text-gray-400 truncate">{photo.uploaderName}</p>
+
+      {/* Uploader + time */}
+      <div className="flex items-center gap-2.5 px-3 py-2.5 bg-gray-900">
+        {photo.uploaderName && <AvatarBubble name={photo.uploaderName} size={6} />}
+        <div className="min-w-0">
+          {photo.uploaderName && (
+            <p className="text-xs font-semibold text-gray-100 truncate">{photo.uploaderName}</p>
+          )}
+          <p className="text-[10px] text-gray-400">{formatUploadTime(photo.uploadedAt)}</p>
         </div>
-      )}
+      </div>
     </div>
   );
 }
