@@ -31,7 +31,68 @@ const ALL_ACCEPTED = [...ACCEPTED_IMAGES, ...ACCEPTED_VIDEOS];
 const MAX_IMAGE_MB = 50;
 const MAX_VIDEO_MB = 500;
 
+// Vercel's hard proxy body limit — keep images well under this
+const PROXY_LIMIT_BYTES = 3.8 * 1024 * 1024; // 3.8 MB
+
 function fmt(bytes: number) { return (bytes / 1024 / 1024).toFixed(1) + " MB"; }
+
+/**
+ * Compress an image to JPEG ≤ 3.8 MB using Canvas API.
+ * Large phone photos (15–20 MB HEIC/JPEG) are resized + re-encoded.
+ * Small images and videos pass through unchanged.
+ */
+async function compressImageIfNeeded(file: File): Promise<File> {
+  // Skip non-images, GIFs (animation would break), and already-small files
+  if (!file.type.startsWith("image/") || file.type === "image/gif") return file;
+  if (file.size <= PROXY_LIMIT_BYTES) return file;
+
+  return new Promise((resolve) => {
+    const img = new Image();
+    const objectUrl = URL.createObjectURL(file);
+
+    img.onload = () => {
+      URL.revokeObjectURL(objectUrl);
+
+      // Cap at 4 K while keeping aspect ratio
+      const MAX_DIM = 4096;
+      let w = img.naturalWidth;
+      let h = img.naturalHeight;
+      if (w > MAX_DIM || h > MAX_DIM) {
+        const r = Math.min(MAX_DIM / w, MAX_DIM / h);
+        w = Math.round(w * r);
+        h = Math.round(h * r);
+      }
+
+      const canvas = document.createElement("canvas");
+      canvas.width = w;
+      canvas.height = h;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) { resolve(file); return; }
+      ctx.drawImage(img, 0, 0, w, h);
+
+      // First try 85 % quality
+      canvas.toBlob((blob85) => {
+        if (!blob85) { resolve(file); return; }
+
+        if (blob85.size <= PROXY_LIMIT_BYTES) {
+          const ext = file.name.replace(/\.(heic|heif|avif|bmp|tiff?|png|webp)$/i, "") + ".jpg";
+          resolve(new File([blob85], ext, { type: "image/jpeg", lastModified: file.lastModified }));
+          return;
+        }
+
+        // Still too big → try 70 %
+        canvas.toBlob((blob70) => {
+          if (!blob70) { resolve(file); return; }
+          const ext = file.name.replace(/\.[^.]+$/, "") + ".jpg";
+          resolve(new File([blob70], ext, { type: "image/jpeg", lastModified: file.lastModified }));
+        }, "image/jpeg", 0.70);
+      }, "image/jpeg", 0.85);
+    };
+
+    img.onerror = () => { URL.revokeObjectURL(objectUrl); resolve(file); };
+    img.src = objectUrl;
+  });
+}
 
 /** Upload a single file using the best available backend. */
 async function uploadFile(
@@ -74,19 +135,34 @@ async function uploadFile(
 
   // ── Bunny Storage (streaming proxy via our route handler) ─────────────────
   if (urlData.type === "bunny-storage") {
-    onProgress(10);
+    onProgress(5);
+    // Compress large images so they stay under Vercel's 4.5 MB proxy limit
+    const fileToUpload = await compressImageIfNeeded(file);
+    onProgress(12);
+
     const proxyRes = await fetch(
       `/api/albums/${albumSlug}/bunny-upload?key=${encodeURIComponent(urlData.key)}`,
-      { method: "PUT", body: file, headers: { "Content-Type": file.type } },
+      {
+        method: "PUT",
+        body: fileToUpload,
+        headers: {
+          "Content-Type": fileToUpload.type,
+          "Content-Length": String(fileToUpload.size),
+        },
+      },
     );
-    if (!proxyRes.ok) throw new Error(`Bunny Storage upload failed: ${proxyRes.status}`);
-    const { publicUrl } = await proxyRes.json() as { publicUrl: string };
+    if (!proxyRes.ok) {
+      const errText = await proxyRes.text().catch(() => proxyRes.statusText);
+      throw new Error(`Upload failed (${proxyRes.status}): ${errText}`);
+    }
+    const { publicUrl, error: uploadErr } = await proxyRes.json() as { publicUrl?: string; error?: string };
+    if (uploadErr || !publicUrl) throw new Error(uploadErr ?? "No URL returned from storage");
     onProgress(80);
     await saveUpload(albumSlug, {
       blobUrl: publicUrl,
-      mimeType: file.type,
+      mimeType: fileToUpload.type,
       originalFilename: file.name,
-      sizeBytes: file.size,
+      sizeBytes: fileToUpload.size,
       uploaderName,
     });
     onProgress(100);
