@@ -2,12 +2,12 @@
 
 /**
  * FilmStudio — dashboard component for generating Kling AI video clips
- * from album photos.  Drop it inside any tab content area.
+ * from album photos. Drop it inside any tab content area.
  *
- * Flow:
- *  1. "Generiraj film" → POST /api/albums/[slug]/film/generate
- *  2. Poll /api/albums/[slug]/film/status every 4 s while processing
- *  3. Show a scrollable clip reel once clips start arriving
+ * Tiers:
+ *   free      → max 48 photos  (default, ~3-4 min film)
+ *   pro       → max 100 photos (€10 one-time)
+ *   premium   → max 300 photos (€20 one-time)
  */
 
 import { useState, useEffect, useRef, useCallback } from "react";
@@ -35,6 +35,14 @@ interface GenerationStatus {
 
 const POLL_MS = 4_000;
 
+const TIER_LIMITS: Record<string, number> = { free: 48, pro: 100, premium: 300 };
+const TIER_LABELS: Record<string, string> = { free: "Free", pro: "Pro", premium: "Premium" };
+const TIER_COLORS: Record<string, string> = {
+  free:    "bg-gray-100 text-gray-600",
+  pro:     "bg-blue-100 text-blue-700",
+  premium: "bg-violet-100 text-violet-700",
+};
+
 export function FilmStudio({ album }: { album: Album }) {
   const [generation, setGeneration] = useState<GenerationStatus | null>(null);
   const [clips, setClips] = useState<ClipItem[]>([]);
@@ -42,7 +50,13 @@ export function FilmStudio({ album }: { album: Album }) {
   const [error, setError] = useState<string | null>(null);
   const [testing, setTesting] = useState(false);
   const [testResult, setTestResult] = useState<string | null>(null);
+  const [upgrading, setUpgrading] = useState<string | null>(null);
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const filmTier = (album.filmTier ?? "free") as "free" | "pro" | "premium";
+  const tierLimit = TIER_LIMITS[filmTier];
+  const totalPhotos = album.photoCount ?? 0;
+  const photosToGenerate = Math.min(totalPhotos, tierLimit);
 
   // ── Poll status ─────────────────────────────────────────────────────────────
   const fetchStatus = useCallback(async () => {
@@ -56,24 +70,20 @@ export function FilmStudio({ album }: { album: Album }) {
       setGeneration(data.generation);
       setClips(data.clips);
 
-      // Stop polling once complete/failed
       if (data.generation?.status === "complete" || data.generation?.status === "failed") {
         if (pollRef.current) clearInterval(pollRef.current);
       }
     } catch { /* ignore */ }
   }, [album.slug]);
 
-  // Load existing status on mount
   useEffect(() => {
     fetchStatus();
   }, [fetchStatus]);
 
-  // Keep polling while processing — also kick the server-side Kling poll cron
   useEffect(() => {
     if (!generation) return;
     if (generation.status === "processing" || generation.status === "queued") {
       pollRef.current = setInterval(async () => {
-        // Nudge the poll-kling cron so we don't wait a full 2 min interval
         fetch("/api/cron/poll-kling").catch(() => {});
         await fetchStatus();
       }, POLL_MS);
@@ -101,6 +111,28 @@ export function FilmStudio({ album }: { album: Album }) {
     }
   };
 
+  // ── Upgrade film tier via Stripe ─────────────────────────────────────────────
+  const upgradeFilm = async (planId: "film_pro" | "film_premium") => {
+    setUpgrading(planId);
+    try {
+      const res = await fetch("/api/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ planId, albumSlug: album.slug }),
+      });
+      const data = await res.json() as { url?: string; error?: string };
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        setError(data.error ?? "Napaka pri plačilu.");
+        setUpgrading(null);
+      }
+    } catch {
+      setError("Napaka pri povezavi s plačilnim sistemom.");
+      setUpgrading(null);
+    }
+  };
+
   // ── Start generation ────────────────────────────────────────────────────────
   const startGeneration = async () => {
     setStarting(true);
@@ -114,7 +146,6 @@ export function FilmStudio({ album }: { album: Album }) {
         setError(data.error ?? "Napaka pri zagonu generiranja.");
         return;
       }
-      // Start polling immediately
       await fetchStatus();
       pollRef.current = setInterval(fetchStatus, POLL_MS);
     } catch {
@@ -130,16 +161,14 @@ export function FilmStudio({ album }: { album: Album }) {
   const doneClips    = clips.filter(c => c.status === "done" && c.videoUrl);
   const pct = generation ? Math.round((generation.clipsDone / Math.max(1, generation.clipsTotal)) * 100) : 0;
 
-  // ── Cost estimate ───────────────────────────────────────────────────────────
-  const totalPhotos = (album.photoCount ?? 0);
-  const estimatedCostEur = (totalPhotos * 0.05).toFixed(2); // ~$0.05 = ~€0.046
+  // Cost: each 5-sec clip ~€0.05
+  const estimatedCostEur = (photosToGenerate * 0.05).toFixed(2);
 
   return (
     <div className="space-y-6">
 
-      {/* ── Header card ────────────────────────────────────────────────── */}
+      {/* ── Header card ──────────────────────────────────────────────────── */}
       <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
-        {/* Gradient banner */}
         <div className="h-1.5 w-full" style={{
           background: "linear-gradient(to right, #C4738A, #9b59b6, #3498db)"
         }} />
@@ -152,25 +181,53 @@ export function FilmStudio({ album }: { album: Album }) {
                 <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-violet-100 text-violet-700">
                   Kling AI
                 </span>
+                {/* Tier badge */}
+                <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${TIER_COLORS[filmTier]}`}>
+                  {TIER_LABELS[filmTier]}
+                </span>
               </h2>
               <p className="text-sm text-gray-500 mt-1 max-w-md">
                 Vsako fotografijo pretvori v 5-sekundni kinematografski video posnetek
-                z glasnim gibanjem kamere. Idealno za highlights film.
+                z gladkim gibanjem kamere. Idealno za highlights film.
               </p>
             </div>
 
-            {/* Cost pill */}
+            {/* Cost + limit pill */}
             <div className="text-right shrink-0">
               <p className="text-xs text-gray-400">Ocenjena cena</p>
               <p className="text-lg font-bold text-gray-900">
                 ~€{estimatedCostEur}
               </p>
-              <p className="text-[10px] text-gray-400">{totalPhotos} foto × €0.05 / posnetek</p>
+              <p className="text-[10px] text-gray-400">
+                {photosToGenerate} foto × €0.05 / posnetek
+              </p>
+              {totalPhotos > tierLimit && (
+                <p className="text-[10px] text-amber-600 font-medium mt-0.5">
+                  Omejeno na {tierLimit} (od {totalPhotos})
+                </p>
+              )}
+            </div>
+          </div>
+
+          {/* Tier limit bar */}
+          <div className="mt-4 mb-5">
+            <div className="flex items-center justify-between text-xs text-gray-500 mb-1.5">
+              <span>{photosToGenerate} / {tierLimit} foto za generiranje</span>
+              <span className="font-medium">{Math.round((photosToGenerate / tierLimit) * 100)}% kapacitete</span>
+            </div>
+            <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
+              <div
+                className="h-full rounded-full transition-all"
+                style={{
+                  width: `${Math.min(100, (photosToGenerate / tierLimit) * 100)}%`,
+                  background: "linear-gradient(to right, #C4738A, #9b59b6)",
+                }}
+              />
             </div>
           </div>
 
           {/* Start / status */}
-          <div className="mt-5">
+          <div className="space-y-3">
             {!generation ? (
               <div className="flex items-center gap-3 flex-wrap">
                 <button
@@ -192,7 +249,7 @@ export function FilmStudio({ album }: { album: Album }) {
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 010 1.972l-11.54 6.347a1.125 1.125 0 01-1.667-.986V5.653z" />
                       </svg>
-                      Generiraj film
+                      Generiraj film ({photosToGenerate} foto)
                     </>
                   )}
                 </button>
@@ -201,7 +258,6 @@ export function FilmStudio({ album }: { album: Album }) {
                 )}
               </div>
             ) : isProcessing ? (
-              /* Progress bar */
               <div className="space-y-2">
                 <div className="flex items-center justify-between text-sm">
                   <span className="font-medium text-gray-700 flex items-center gap-2">
@@ -242,7 +298,6 @@ export function FilmStudio({ album }: { album: Album }) {
                 </button>
               </div>
             ) : (
-              /* Failed */
               <div className="space-y-2">
                 <div className="flex items-center gap-3 flex-wrap">
                   <div className="flex items-center gap-2 text-sm font-semibold text-red-700 bg-red-50 px-3 py-2 rounded-xl">
@@ -257,7 +312,6 @@ export function FilmStudio({ album }: { album: Album }) {
                     {testing ? "Testiram…" : "Testiraj API povezavo"}
                   </button>
                 </div>
-                {/* Show first clip error so we know what went wrong */}
                 {clips.find(c => c.errorMessage) && (
                   <p className="text-xs text-red-600 bg-red-50 px-3 py-2 rounded-lg font-mono break-all">
                     {clips.find(c => c.errorMessage)?.errorMessage}
@@ -272,13 +326,49 @@ export function FilmStudio({ album }: { album: Album }) {
             )}
 
             {error && (
-              <p className="mt-2 text-xs text-red-600 bg-red-50 px-3 py-2 rounded-lg">{error}</p>
+              <p className="text-xs text-red-600 bg-red-50 px-3 py-2 rounded-lg">{error}</p>
             )}
           </div>
         </div>
       </div>
 
-      {/* ── Clip reel ──────────────────────────────────────────────────── */}
+      {/* ── Upgrade card (only shown when not on premium) ─────────────────── */}
+      {filmTier !== "premium" && (
+        <div className="bg-gradient-to-br from-violet-50 to-blue-50 rounded-2xl border border-violet-100 p-5">
+          <h3 className="text-sm font-bold text-gray-800 mb-1 flex items-center gap-2">
+            ✨ Povečaj kapaciteto filma
+          </h3>
+          <p className="text-xs text-gray-500 mb-4">
+            Enkratno plačilo za ta album. Omejitev se trajno poveča.
+          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {filmTier === "free" && (
+              <UpgradeOption
+                title="Pro"
+                price="€10"
+                photos={100}
+                duration="~8 min"
+                current={false}
+                loading={upgrading === "film_pro"}
+                onUpgrade={() => upgradeFilm("film_pro")}
+                highlight={false}
+              />
+            )}
+            <UpgradeOption
+              title="Premium"
+              price="€20"
+              photos={300}
+              duration="~25 min"
+              current={false}
+              loading={upgrading === "film_premium"}
+              onUpgrade={() => upgradeFilm("film_premium")}
+              highlight={true}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* ── Clip reel ────────────────────────────────────────────────────── */}
       {clips.length > 0 && (
         <div className="bg-white rounded-2xl border border-gray-200 p-6">
           <h3 className="text-sm font-bold text-gray-700 mb-4 flex items-center gap-2">
@@ -287,18 +377,14 @@ export function FilmStudio({ album }: { album: Album }) {
               {doneClips.length}/{clips.length} pripravljenih
             </span>
           </h3>
-
-          {/* Horizontal scroll reel */}
           <div className="flex gap-3 overflow-x-auto pb-2" style={{ scrollbarWidth: "thin" }}>
             {clips.map((clip) => (
               <ClipCard key={clip.id} clip={clip} />
             ))}
           </div>
-
-          {/* Download all */}
           {doneClips.length > 0 && (
             <div className="mt-4 pt-4 border-t border-gray-100">
-              <p className="text-xs text-gray-400 mb-2">
+              <p className="text-xs text-gray-400">
                 Klikni posamezni posnetek → desni klik → &quot;Shrani video&quot; za prenos.
                 {doneClips.length > 3 && " Za množični prenos kontaktiraj podporo."}
               </p>
@@ -307,7 +393,7 @@ export function FilmStudio({ album }: { album: Album }) {
         </div>
       )}
 
-      {/* ── Info cards ─────────────────────────────────────────────────── */}
+      {/* ── Info cards ───────────────────────────────────────────────────── */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {[
           { icon: "⚡", title: "Kling AI v1.6", body: "State-of-the-art model za image-to-video generiranje." },
@@ -321,6 +407,54 @@ export function FilmStudio({ album }: { album: Album }) {
           </div>
         ))}
       </div>
+    </div>
+  );
+}
+
+// ── Upgrade option card ──────────────────────────────────────────────────────
+
+function UpgradeOption({
+  title, price, photos, duration, loading, onUpgrade, highlight,
+}: {
+  title: string;
+  price: string;
+  photos: number;
+  duration: string;
+  current: boolean;
+  loading: boolean;
+  onUpgrade: () => void;
+  highlight: boolean;
+}) {
+  return (
+    <div className={`relative rounded-xl border p-4 flex flex-col gap-3 ${highlight ? "border-violet-300 bg-white" : "border-gray-200 bg-white/60"}`}>
+      {highlight && (
+        <div className="absolute -top-2.5 left-4 bg-violet-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
+          Priporočeno
+        </div>
+      )}
+      <div>
+        <p className="text-sm font-bold text-gray-900">{title} <span className="text-violet-600">{price}</span></p>
+        <p className="text-xs text-gray-500 mt-0.5">do {photos} fotografij · {duration} film</p>
+      </div>
+      <button
+        onClick={onUpgrade}
+        disabled={loading}
+        className={`w-full py-2 rounded-lg text-xs font-semibold transition-all disabled:opacity-50 ${
+          highlight
+            ? "bg-violet-600 text-white hover:bg-violet-700"
+            : "bg-gray-800 text-white hover:bg-gray-900"
+        }`}
+      >
+        {loading ? (
+          <span className="flex items-center justify-center gap-1.5">
+            <svg className="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
+            </svg>
+            Preusmerjam…
+          </span>
+        ) : `Nadgradi na ${title}`}
+      </button>
     </div>
   );
 }
@@ -357,7 +491,6 @@ function ClipCard({ clip }: { clip: ClipItem }) {
             className="w-full h-full object-cover"
             onEnded={() => setPlaying(false)}
           />
-          {/* Play/pause overlay */}
           <button
             onClick={togglePlay}
             className="absolute inset-0 flex items-center justify-center bg-black/0 group-hover:bg-black/30 transition-all"
@@ -374,7 +507,6 @@ function ClipCard({ clip }: { clip: ClipItem }) {
               )}
             </div>
           </button>
-          {/* Sort order badge */}
           <div className="absolute top-1.5 left-1.5 w-5 h-5 rounded-full bg-black/50 flex items-center justify-center text-white text-[9px] font-bold">
             {clip.sortOrder + 1}
           </div>
@@ -386,7 +518,6 @@ function ClipCard({ clip }: { clip: ClipItem }) {
           <span className="text-[10px] text-red-300 relative z-10">Napaka</span>
         </div>
       ) : (
-        /* Queued / processing */
         <div className="flex flex-col items-center justify-center h-full gap-1.5 relative">
           <img src={clip.photoUrl} alt="" className="absolute inset-0 w-full h-full object-cover opacity-30" />
           <svg className="w-5 h-5 text-white/60 animate-spin relative z-10" fill="none" viewBox="0 0 24 24">

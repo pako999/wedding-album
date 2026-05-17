@@ -41,7 +41,12 @@ export async function POST(
   });
   const imagePhotos = albumPhotos.filter(p => !p.mimeType?.startsWith("video/"));
 
-  if (imagePhotos.length === 0) {
+  // Enforce tier photo limit
+  const TIER_LIMITS: Record<string, number> = { free: 48, pro: 100, premium: 300 };
+  const tierLimit = TIER_LIMITS[album.filmTier ?? "free"] ?? 48;
+  const limitedPhotos = imagePhotos.slice(0, tierLimit);
+
+  if (limitedPhotos.length === 0) {
     return NextResponse.json({ error: "No photos to generate from" }, { status: 400 });
   }
 
@@ -51,12 +56,12 @@ export async function POST(
     .values({
       albumId: album.id,
       status: "processing",
-      clipsTotal: imagePhotos.length,
+      clipsTotal: limitedPhotos.length,
     })
     .returning();
 
   // Insert all clip rows first, then submit to Kling and store task_id
-  const clipValues = imagePhotos.map((p, i) => ({
+  const clipValues = limitedPhotos.map((p, i) => ({
     generationId: generation.id,
     albumId: album.id,
     photoId: p.id,
@@ -100,6 +105,8 @@ export async function POST(
 
   return NextResponse.json({
     generationId: generation.id,
-    clipsTotal: imagePhotos.length,
+    clipsTotal: limitedPhotos.length,
+    tierLimit,
+    totalPhotos: imagePhotos.length,
   });
 }

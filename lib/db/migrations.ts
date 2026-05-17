@@ -45,6 +45,9 @@ export async function runMigrations() {
     await sql`ALTER TABLE albums ADD COLUMN IF NOT EXISTS cover_image_url TEXT`;
     await sql`ALTER TABLE albums ADD COLUMN IF NOT EXISTS custom_domain TEXT`;
     await sql`ALTER TABLE albums ADD COLUMN IF NOT EXISTS notify_email TEXT`;
+    await sql`ALTER TABLE albums ADD COLUMN IF NOT EXISTS stripe_session_id TEXT`;
+    await sql`ALTER TABLE albums ADD COLUMN IF NOT EXISTS expires_at TIMESTAMPTZ`;
+    await sql`ALTER TABLE albums ADD COLUMN IF NOT EXISTS film_tier TEXT NOT NULL DEFAULT 'free'`;
 
     // Create photos table if not exists
     await sql`

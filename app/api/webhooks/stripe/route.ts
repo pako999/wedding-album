@@ -41,6 +41,21 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Missing metadata" }, { status: 400 });
     }
 
+    // Film tier upgrades — just set filmTier, no expiry
+    if (planId === "film_pro" || planId === "film_premium") {
+      const filmTier = planId === "film_pro" ? "pro" : "premium";
+      try {
+        await db
+          .update(albums)
+          .set({ filmTier: filmTier as "pro" | "premium", stripeSessionId: session.id })
+          .where(eq(albums.slug, albumSlug));
+      } catch (err) {
+        console.error("[stripe webhook] DB update failed:", err);
+        return NextResponse.json({ error: "DB update failed" }, { status: 500 });
+      }
+      return NextResponse.json({ received: true });
+    }
+
     // Per-plan limits and expiry
     const planConfig: Record<string, { maxPhotos: number; daysAccess: number }> = {
       basic:   { maxPhotos: 1000,    daysAccess: 90  }, // 3 months

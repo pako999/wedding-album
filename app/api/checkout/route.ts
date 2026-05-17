@@ -9,12 +9,14 @@ const APP_URL =
   process.env.NEXT_PUBLIC_APP_URL ?? "https://guestcam.si";
 
 const PLAN_CONFIG: Record<string, { name: string; amount: number }> = {
-  basic:   { name: "Guestcam Basic",   amount: 3900 },
-  plus:    { name: "Guestcam Plus",    amount: 4900 },
-  premium: { name: "Guestcam Premium", amount: 7900 },
+  basic:      { name: "Guestcam Basic",         amount: 3900 },
+  plus:       { name: "Guestcam Plus",           amount: 4900 },
+  premium:    { name: "Guestcam Premium",        amount: 7900 },
+  film_pro:   { name: "Film Studio Pro (100 foto)",     amount: 1000 }, // €10
+  film_premium: { name: "Film Studio Premium (300 foto)", amount: 2000 }, // €20
 };
 
-type PlanId = "basic" | "plus" | "premium";
+type PlanId = "basic" | "plus" | "premium" | "film_pro" | "film_premium";
 
 export async function POST(req: NextRequest) {
   const stripeKey = process.env.STRIPE_SECRET_KEY;

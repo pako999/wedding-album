@@ -36,6 +36,9 @@ export const albums = pgTable(
     // Plan
     plan: text("plan", { enum: ["free", "basic", "plus", "premium"] }).notNull().default("free"),
 
+    // Film generation tier (separate add-on from album plan)
+    filmTier: text("film_tier", { enum: ["free", "pro", "premium"] }).notNull().default("free"),
+
     // Stripe
     stripeSessionId: text("stripe_session_id"),
 
