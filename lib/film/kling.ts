@@ -1,33 +1,63 @@
 /**
- * Kling AI image-to-video via fal.ai queue API.
+ * Kling AI image-to-video — direct API (platform.klingai.com)
  *
- * Pricing (May 2026): ~$0.05 per 5-second clip (standard v1.6)
- * Docs: https://fal.ai/models/fal-ai/kling-video/v1.6/standard/image-to-video
+ * Auth: HMAC-SHA256 JWT generated from KLING_ACCESS_KEY + KLING_SECRET_KEY
+ * Docs: https://docs.qingque.cn/d/home/eZQByLHnpxuE_S26L7RKJL6Vs
  *
- * Required env var: FAL_KEY
+ * Pricing (direct): ~$0.03–0.05 per 5-second clip (no fal.ai markup)
+ *
+ * Required env vars:
+ *   KLING_ACCESS_KEY   — "Access Key" from platform.klingai.com
+ *   KLING_SECRET_KEY   — "Secret Key" from platform.klingai.com
  */
 
-const FAL_MODEL = "fal-ai/kling-video/v1.6/standard/image-to-video";
-const FAL_QUEUE_URL = `https://queue.fal.run/${FAL_MODEL}`;
+const KLING_BASE = "https://api.klingai.com";
 
-export interface KlingQueueResponse {
-  request_id: string;
-  status: string;
-  queue_position?: number;
-}
+// ─── JWT ─────────────────────────────────────────────────────────────────────
 
-export interface KlingWebhookPayload {
-  request_id: string;
-  status: "COMPLETED" | "FAILED";
-  payload?: {
-    video?: { url: string; content_type: string; file_size?: number };
-  };
-  error?: string;
+function base64urlEncode(buf: ArrayBuffer): string {
+  return Buffer.from(new Uint8Array(buf))
+    .toString("base64")
+    .replace(/\+/g, "-")
+    .replace(/\//g, "_")
+    .replace(/=+$/, "");
 }
 
 /**
- * Event-type → cinematic motion prompt so the AI adds the right vibe.
+ * Build a short-lived JWT (30 min) signed with KLING_SECRET_KEY.
+ * Kling requires this on every API call.
  */
+async function buildJwt(): Promise<string> {
+  const accessKey = process.env.KLING_ACCESS_KEY;
+  const secretKey = process.env.KLING_SECRET_KEY;
+  if (!accessKey || !secretKey) {
+    throw new Error("KLING_ACCESS_KEY and KLING_SECRET_KEY env vars are required");
+  }
+
+  const now = Math.floor(Date.now() / 1000);
+  const enc = new TextEncoder();
+  const header  = base64urlEncode(enc.encode(JSON.stringify({ alg: "HS256", typ: "JWT" })).buffer as ArrayBuffer);
+  const payload = base64urlEncode(enc.encode(JSON.stringify({
+    iss: accessKey,
+    exp: now + 1800,
+    nbf: now - 5,
+  })).buffer as ArrayBuffer);
+
+  const signingInput = `${header}.${payload}`;
+  const key = await crypto.subtle.importKey(
+    "raw",
+    enc.encode(secretKey).buffer as ArrayBuffer,
+    { name: "HMAC", hash: "SHA-256" },
+    false,
+    ["sign"],
+  );
+  const sig = await crypto.subtle.sign("HMAC", key, enc.encode(signingInput).buffer as ArrayBuffer);
+
+  return `${signingInput}.${base64urlEncode(sig)}`;
+}
+
+// ─── Prompts ─────────────────────────────────────────────────────────────────
+
 export function filmPrompt(eventType: string | null | undefined): string {
   switch (eventType) {
     case "wedding":
@@ -47,42 +77,94 @@ export function filmPrompt(eventType: string | null | undefined): string {
   }
 }
 
+// ─── Submit job ───────────────────────────────────────────────────────────────
+
+export interface KlingJobResponse {
+  code: number;
+  message: string;
+  data?: {
+    task_id: string;
+    task_status: string; // "submitted" | "processing" | "succeed" | "failed"
+  };
+}
+
+export interface KlingTaskResult {
+  code: number;
+  data?: {
+    task_id: string;
+    task_status: string;
+    task_result?: {
+      videos?: { url: string; duration: string }[];
+    };
+    task_status_msg?: string;
+  };
+}
+
 /**
- * Submit one photo to the fal.ai Kling queue.
- * Returns the fal request_id to store in film_clips.fal_request_id.
+ * Submit one image → video job to Kling.
+ * Returns the task_id to poll later.
+ *
+ * Model used: kling-v1-6  (standard, 5 s, 720p)
+ * Cheaper option: kling-v1 if credits are limited
  */
-export async function queueKlingClip({
+export async function submitKlingJob({
   imageUrl,
   eventType,
-  webhookUrl,
 }: {
   imageUrl: string;
   eventType?: string | null;
-  webhookUrl: string;
 }): Promise<string> {
-  const falKey = process.env.FAL_KEY;
-  if (!falKey) throw new Error("FAL_KEY env var not set");
+  const jwt = await buildJwt();
 
-  const res = await fetch(FAL_QUEUE_URL, {
+  const res = await fetch(`${KLING_BASE}/v1/videos/image2video`, {
     method: "POST",
     headers: {
-      "Authorization": `Key ${falKey}`,
+      Authorization: `Bearer ${jwt}`,
       "Content-Type": "application/json",
-      "x-fal-webhook-url": webhookUrl,
     },
     body: JSON.stringify({
-      image_url: imageUrl,
+      model_name: "kling-v1-6",          // best quality
+      image: imageUrl,
       prompt: filmPrompt(eventType),
-      duration: "5",
-      aspect_ratio: "16:9",
+      negative_prompt: "blurry, low quality, watermark, text",
+      cfg_scale: 0.5,
+      mode: "std",                        // "std" = standard (cheaper), "pro" = higher quality
+      duration: "5",                      // 5 seconds
     }),
   });
 
-  if (!res.ok) {
-    const text = await res.text().catch(() => "");
-    throw new Error(`fal.ai queue error ${res.status}: ${text}`);
+  const data = (await res.json()) as KlingJobResponse;
+
+  if (!res.ok || data.code !== 0 || !data.data?.task_id) {
+    throw new Error(`Kling API error ${data.code}: ${data.message}`);
   }
 
-  const data = (await res.json()) as KlingQueueResponse;
-  return data.request_id;
+  return data.data.task_id;
+}
+
+/**
+ * Poll a task for its result.
+ * Returns { status, videoUrl } — status is "processing"|"done"|"failed".
+ */
+export async function pollKlingJob(taskId: string): Promise<{
+  status: "processing" | "done" | "failed";
+  videoUrl?: string;
+}> {
+  const jwt = await buildJwt();
+
+  const res = await fetch(`${KLING_BASE}/v1/videos/image2video/${taskId}`, {
+    headers: { Authorization: `Bearer ${jwt}` },
+  });
+
+  const data = (await res.json()) as KlingTaskResult;
+
+  if (!res.ok || !data.data) return { status: "failed" };
+
+  const s = data.data.task_status;
+  if (s === "succeed") {
+    const url = data.data.task_result?.videos?.[0]?.url;
+    return { status: "done", videoUrl: url };
+  }
+  if (s === "failed") return { status: "failed" };
+  return { status: "processing" };
 }

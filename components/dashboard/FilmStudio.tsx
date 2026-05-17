@@ -65,11 +65,15 @@ export function FilmStudio({ album }: { album: Album }) {
     fetchStatus();
   }, [fetchStatus]);
 
-  // Keep polling while processing
+  // Keep polling while processing — also kick the server-side Kling poll cron
   useEffect(() => {
     if (!generation) return;
     if (generation.status === "processing" || generation.status === "queued") {
-      pollRef.current = setInterval(fetchStatus, POLL_MS);
+      pollRef.current = setInterval(async () => {
+        // Nudge the poll-kling cron so we don't wait a full 2 min interval
+        fetch("/api/cron/poll-kling").catch(() => {});
+        await fetchStatus();
+      }, POLL_MS);
     }
     return () => { if (pollRef.current) clearInterval(pollRef.current); };
   }, [generation?.status, fetchStatus]);

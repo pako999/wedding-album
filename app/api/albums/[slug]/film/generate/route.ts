@@ -3,7 +3,7 @@ import { auth } from "@clerk/nextjs/server";
 import { db } from "@/lib/db";
 import { albums, photos, filmGenerations, filmClips } from "@/lib/db/schema";
 import { eq, and } from "drizzle-orm";
-import { queueKlingClip } from "@/lib/film/kling";
+import { submitKlingJob } from "@/lib/film/kling";
 import { bunnyDisplayUrl } from "@/lib/storage/bunny";
 
 export const runtime = "nodejs";
@@ -56,11 +56,7 @@ export async function POST(
     })
     .returning();
 
-  // Build webhook URL (needs to be public; works on Vercel production)
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? `https://${req.headers.get("host")}`;
-  const webhookUrl = `${appUrl}/api/webhooks/fal`;
-
-  // Insert all clip rows first so webhook can resolve request_id → clip
+  // Insert all clip rows first, then submit to Kling and store task_id
   const clipValues = imagePhotos.map((p, i) => ({
     generationId: generation.id,
     albumId: album.id,
@@ -75,35 +71,32 @@ export async function POST(
     .values(clipValues)
     .returning();
 
-  // Queue each clip to fal.ai (5 at a time to respect rate limits)
-  const BATCH = 5;
+  // Submit each clip to Kling AI (3 at a time — direct API rate limit is ~5 rps)
+  const BATCH = 3;
   for (let i = 0; i < insertedClips.length; i += BATCH) {
     const batch = insertedClips.slice(i, i + BATCH);
     await Promise.allSettled(
       batch.map(async (clip) => {
         try {
-          const falRequestId = await queueKlingClip({
+          const taskId = await submitKlingJob({
             imageUrl: clip.photoUrl,
             eventType: album.eventType,
-            webhookUrl,
           });
           await db
             .update(filmClips)
-            .set({ falRequestId, status: "processing" })
+            .set({ falRequestId: taskId, status: "processing" })
             .where(eq(filmClips.id, clip.id));
         } catch (err) {
-          console.error(`[film/generate] clip ${clip.id} queue error:`, err);
+          console.error(`[film/generate] clip ${clip.id} submit error:`, err);
           await db
             .update(filmClips)
             .set({ status: "failed", errorMessage: String(err) })
             .where(eq(filmClips.id, clip.id));
-          await db
-            .update(filmGenerations)
-            .set({ clipsFailed: generation.clipsFailed + 1 })
-            .where(eq(filmGenerations.id, generation.id));
         }
       })
     );
+    // Small delay between batches to respect rate limits
+    if (i + BATCH < insertedClips.length) await new Promise(r => setTimeout(r, 500));
   }
 
   return NextResponse.json({
