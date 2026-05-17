@@ -80,6 +80,8 @@ export function UpgradePage({ album }: Props) {
   const [expandedPlan, setExpandedPlan] = useState<PlanId>("premium");
   const [discountCode, setDiscountCode] = useState("");
   const [discountApplied, setDiscountApplied] = useState(false);
+  const [tableStandsSelected, setTableStandsSelected] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const chosen = PLANS.find((p) => p.id === selectedPlan)!;
 
@@ -221,8 +223,15 @@ export function UpgradePage({ album }: Props) {
                 <p className="text-xs text-gray-400">Elegantni kartončki s QR kodo za vsako mizo</p>
               </div>
             </div>
-            <button className="px-3 py-1.5 text-xs font-semibold border border-gray-200 rounded-lg text-gray-600 hover:border-gray-300 transition-colors whitespace-nowrap">
-              Dodaj +9€
+            <button
+              onClick={() => setTableStandsSelected((prev) => !prev)}
+              className={`px-3 py-1.5 text-xs font-semibold border rounded-lg transition-colors whitespace-nowrap ${
+                tableStandsSelected
+                  ? "border-green-400 bg-green-50 text-green-700"
+                  : "border-gray-200 text-gray-600 hover:border-gray-300"
+              }`}
+            >
+              {tableStandsSelected ? "Dodano ✓" : "Dodaj +9€"}
             </button>
           </div>
         </div>
@@ -265,22 +274,39 @@ export function UpgradePage({ album }: Props) {
           </div>
         </div>
 
-        {/* Payment placeholder */}
-        <div className="bg-indigo-50 rounded-xl border border-indigo-100 p-4 mb-5 text-center">
-          <p className="text-sm text-indigo-700 font-medium mb-1">Podatki za plačilo</p>
-          <p className="text-xs text-indigo-500">Integracija s Stripe prihaja kmalu. Kontaktirajte nas na <a href="mailto:hello@guestcam.si" className="underline">hello@guestcam.si</a> za ročno aktivacijo paketa.</p>
-        </div>
-
         {/* CTA */}
         <button
-          className="w-full py-4 rounded-xl text-white font-bold text-base transition-opacity hover:opacity-90 mb-4"
+          className="w-full py-4 rounded-xl text-white font-bold text-base transition-opacity hover:opacity-90 mb-4 flex items-center justify-center gap-2 disabled:opacity-60"
           style={{ background: "#4F46E5" }}
-          onClick={() => {
-            // TODO: redirect to Stripe checkout
-            alert("Plačilo bo kmalu na voljo. Kontaktirajte nas na hello@guestcam.si.");
+          disabled={isLoading}
+          onClick={async () => {
+            setIsLoading(true);
+            try {
+              const res = await fetch("/api/checkout", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ planId: selectedPlan, albumSlug: album.slug, tableStands: tableStandsSelected }),
+              });
+              const { url, error } = await res.json();
+              if (error) throw new Error(error);
+              window.location.href = url;
+            } catch (err) {
+              alert("Napaka pri plačilu. Prosimo, poskusite znova ali nas kontaktirajte na hello@guestcam.si");
+              setIsLoading(false);
+            }
           }}
         >
-          Nadgradi na {chosen.name} za {discountApplied ? Math.round(chosen.price * 0.9) : chosen.price}€ →
+          {isLoading ? (
+            <>
+              <svg className="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+              </svg>
+              Preusmeritev…
+            </>
+          ) : (
+            <>Nadgradi na {chosen.name} za {discountApplied ? Math.round(chosen.price * 0.9) : chosen.price}€ →</>
+          )}
         </button>
 
         <p className="text-center text-xs text-gray-400">

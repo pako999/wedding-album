@@ -15,6 +15,7 @@ interface Props {
   pendingCount: number;
   activeTab: Tab;
   isNew?: boolean;
+  isUpgraded?: boolean;
 }
 
 // ─── Success Screen ───────────────────────────────────────────────────────────
@@ -85,7 +86,7 @@ function NewAlbumSuccess({ album }: { album: Album }) {
 
 // ─── Main Panel ───────────────────────────────────────────────────────────────
 
-export function AlbumAdminPanel({ album, photos, pendingCount, activeTab, isNew }: Props) {
+export function AlbumAdminPanel({ album, photos, pendingCount, activeTab, isNew, isUpgraded }: Props) {
   const router = useRouter();
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://guestcam.si";
   const albumUrl = `${appUrl}/${album.slug}`;
@@ -133,14 +134,17 @@ export function AlbumAdminPanel({ album, photos, pendingCount, activeTab, isNew 
 
   const planLabel =
     album.plan === "premium" ? "Premium" :
-    album.plan === "pro"     ? "Plus"    :
+    album.plan === "plus"    ? "Plus"    :
+    album.plan === "basic"   ? "Basic"   :
     "Brezplačno";
 
   const planBadgeClass =
     album.plan === "premium"
       ? "bg-rose-500 text-white"
-      : album.plan === "pro"
+      : album.plan === "plus"
       ? "bg-gray-900 text-white"
+      : album.plan === "basic"
+      ? "bg-indigo-600 text-white"
       : "bg-gray-100 text-gray-600";
 
   // Last uploaded photo date
@@ -249,6 +253,18 @@ export function AlbumAdminPanel({ album, photos, pendingCount, activeTab, isNew 
 
       {/* ── MAIN CONTENT ─────────────────────────────────────────────── */}
       <main className="flex-1 flex flex-col min-w-0">
+        {/* Upgrade success banner */}
+        {isUpgraded && (
+          <div
+            className="flex items-center justify-between px-6 py-3 gap-4"
+            style={{ background: "#F0FDF4" }}
+          >
+            <p className="text-sm text-green-700 font-medium">
+              🎉 Paket aktiviran! Hvala za zaupanje.
+            </p>
+          </div>
+        )}
+
         {/* Upgrade banner (free plan only) */}
         {album.plan === "free" && (
           <div

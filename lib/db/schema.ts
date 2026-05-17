@@ -33,7 +33,10 @@ export const albums = pgTable(
     isPublished: boolean("is_published").notNull().default(false),
 
     // Plan
-    plan: text("plan", { enum: ["free", "pro", "premium"] }).notNull().default("free"),
+    plan: text("plan", { enum: ["free", "basic", "plus", "premium"] }).notNull().default("free"),
+
+    // Stripe
+    stripeSessionId: text("stripe_session_id"),
 
     // Limits
     maxPhotos: integer("max_photos").notNull().default(50),

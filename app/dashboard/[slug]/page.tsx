@@ -9,7 +9,7 @@ export const dynamic = "force-dynamic";
 
 interface Props {
   params: Promise<{ slug: string }>;
-  searchParams: Promise<{ tab?: string; new?: string }>;
+  searchParams: Promise<{ tab?: string; new?: string; upgraded?: string }>;
 }
 
 export default async function AlbumAdminPage({ params, searchParams }: Props) {
@@ -24,8 +24,9 @@ export default async function AlbumAdminPage({ params, searchParams }: Props) {
   if (!userId) redirect("/sign-in");
 
   const { slug } = await params;
-  const { tab = "overview", new: isNewParam } = await searchParams;
+  const { tab = "overview", new: isNewParam, upgraded: isUpgradedParam } = await searchParams;
   const isNew = isNewParam === "1";
+  const isUpgraded = isUpgradedParam === "1";
 
   let album: (typeof albums.$inferSelect) | null = null;
   let albumPhotos: (typeof photos.$inferSelect)[] = [];
@@ -81,6 +82,7 @@ export default async function AlbumAdminPage({ params, searchParams }: Props) {
       pendingCount={pendingCount}
       activeTab={tab as "overview" | "gallery" | "qr" | "settings" | "pending"}
       isNew={isNew}
+      isUpgraded={isUpgraded}
     />
   );
 }

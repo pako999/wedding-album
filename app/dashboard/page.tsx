@@ -138,11 +138,12 @@ export default async function DashboardPage() {
                   <div className="absolute top-3 left-3">
                     <span className={`text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full ${
                       album.plan === "premium" ? "text-white" :
-                      album.plan === "pro"     ? "text-white bg-[#2C2825]" :
+                      album.plan === "plus"    ? "text-white bg-[#2C2825]" :
+                      album.plan === "basic"   ? "text-white bg-indigo-600" :
                       "bg-white/80 text-[#2C2825]/50"
                     }`}
                     style={album.plan === "premium" ? { background: "#C4738A" } : undefined}>
-                      {album.plan === "free" ? "Basic" : album.plan === "pro" ? "Plus" : "Premium"}
+                      {album.plan === "free" ? "Free" : album.plan === "basic" ? "Basic" : album.plan === "plus" ? "Plus" : "Premium"}
                     </span>
                   </div>
                 </div>

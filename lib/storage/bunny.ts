@@ -1,4 +1,13 @@
-import { createHash } from "crypto";
+// ── Web Crypto helper (works in Node.js 18+ and Edge runtime) ────────────────
+
+/** SHA-256 hex digest — no Node.js `crypto` import needed. */
+async function sha256hex(input: string): Promise<string> {
+  const buf = new TextEncoder().encode(input);
+  const hashBuf = await crypto.subtle.digest("SHA-256", buf);
+  return Array.from(new Uint8Array(hashBuf))
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
+}
 
 // ── Bunny Storage ─────────────────────────────────────────────────────────────
 
@@ -26,10 +35,10 @@ export function isBunnyStreamConfigured(): boolean {
 // ── Storage: stream-proxy upload ─────────────────────────────────────────────
 
 /**
- * Upload a file to Bunny Storage by streaming the body directly
- * (no server-side buffering — avoids Vercel's parsed-body size cap).
+ * Upload a file to Bunny Storage by streaming the body directly.
+ * No server-side buffering — the Edge runtime proxy passes bytes straight through.
  *
- * `body` should be the raw `ReadableStream` from `req.body`.
+ * `body` is the raw `ReadableStream` from `req.body`.
  * Returns the public CDN URL.
  */
 export async function uploadToBunnyStorage(
@@ -46,8 +55,9 @@ export async function uploadToBunnyStorage(
       "Content-Type": contentType,
     },
     body: body as BodyInit,
-    // Required in Node 18+ when the request body is a ReadableStream
-    // @ts-expect-error — not in all TS lib versions
+    // duplex:"half" is required in Node.js 18+ undici for streaming request bodies.
+    // It is a no-op / silently ignored in Edge (browser-like) environments.
+    // @ts-expect-error — not present in all TypeScript lib versions
     duplex: "half",
   });
 
@@ -96,10 +106,11 @@ export async function createBunnyStreamUpload(title: string): Promise<BunnyStrea
   }
   const { guid: videoId } = (await createRes.json()) as { guid: string };
 
-  // 2. Generate tus auth (SHA-256 of concatenated string — NOT HMAC)
+  // 2. Generate tus auth: SHA-256(libraryId + apiKey + expiration + videoId)
+  //    Uses Web Crypto — works in both Node.js 18+ and Edge runtime.
   const expiration = Math.floor(Date.now() / 1000) + 3600; // 1 h
   const hashInput  = `${libraryId}${streamApiKey()}${expiration}${videoId}`;
-  const signature  = createHash("sha256").update(hashInput).digest("hex");
+  const signature  = await sha256hex(hashInput);
 
   return {
     videoId,

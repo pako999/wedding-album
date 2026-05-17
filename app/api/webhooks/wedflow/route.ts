@@ -16,8 +16,8 @@ export async function POST(req: NextRequest) {
   switch (event) {
     case "plan.upgraded": {
       // WedFlow notifies us that a couple upgraded their plan
-      const { ownerClerkId, newPlan } = data as { ownerClerkId: string; newPlan: "free" | "pro" | "premium" };
-      const maxPhotos = newPlan === "free" ? 50 : newPlan === "pro" ? 500 : 2000;
+      const { ownerClerkId, newPlan } = data as { ownerClerkId: string; newPlan: "free" | "basic" | "plus" | "premium" };
+      const maxPhotos = newPlan === "free" ? 50 : newPlan === "premium" ? 2000 : 500;
 
       await db
         .update(albums)

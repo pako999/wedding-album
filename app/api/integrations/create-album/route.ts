@@ -12,7 +12,7 @@ const bodySchema = z.object({
   weddingDate: z.string().min(1), // "2025-06-14"
   location: z.string().optional(),
   slug: z.string().min(3).max(80).regex(/^[a-z0-9-]+$/),
-  plan: z.enum(["free", "pro", "premium"]).default("free"),
+  plan: z.enum(["free", "basic", "plus", "premium"]).default("free"),
   notifyEmail: z.string().email().optional(),
   password: z.string().optional(),
   moderationEnabled: z.boolean().default(false),
@@ -43,7 +43,7 @@ export async function POST(req: NextRequest) {
   }
 
   // Set plan limits
-  const maxPhotos = data.plan === "free" ? 50 : data.plan === "pro" ? 500 : 2000;
+  const maxPhotos = data.plan === "free" ? 50 : data.plan === "premium" ? 2000 : 500;
 
   const [album] = await db
     .insert(albums)
