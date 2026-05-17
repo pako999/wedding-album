@@ -9,7 +9,7 @@ export const dynamic = "force-dynamic";
 
 interface Props {
   params: Promise<{ slug: string }>;
-  searchParams: Promise<{ tab?: string }>;
+  searchParams: Promise<{ tab?: string; new?: string }>;
 }
 
 export default async function AlbumAdminPage({ params, searchParams }: Props) {
@@ -24,7 +24,8 @@ export default async function AlbumAdminPage({ params, searchParams }: Props) {
   if (!userId) redirect("/sign-in");
 
   const { slug } = await params;
-  const { tab = "published" } = await searchParams;
+  const { tab = "overview", new: isNewParam } = await searchParams;
+  const isNew = isNewParam === "1";
 
   let album: (typeof albums.$inferSelect) | null = null;
   let albumPhotos: (typeof photos.$inferSelect)[] = [];
@@ -53,7 +54,6 @@ export default async function AlbumAdminPage({ params, searchParams }: Props) {
     }
   } catch (err) {
     console.error("[album page] DB error:", err);
-    // Return a helpful error page instead of crashing
     return (
       <div className="min-h-screen flex items-center justify-center" style={{ background: "#FDF4F5" }}>
         <div className="bg-white rounded-2xl border border-amber-200 p-8 max-w-md text-center shadow">
@@ -79,7 +79,8 @@ export default async function AlbumAdminPage({ params, searchParams }: Props) {
       album={album}
       photos={albumPhotos}
       pendingCount={pendingCount}
-      activeTab={tab as "published" | "pending" | "rejected" | "settings" | "share" | "stats"}
+      activeTab={tab as "overview" | "gallery" | "qr" | "settings" | "pending"}
+      isNew={isNew}
     />
   );
 }

@@ -53,5 +53,5 @@ export async function createAlbum(formData: FormData) {
     moderationEnabled: false,
   });
 
-  redirect(`/dashboard/${slug}/print`);
+  redirect(`/dashboard/${slug}?new=1`);
 }
