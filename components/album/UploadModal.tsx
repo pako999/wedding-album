@@ -21,7 +21,7 @@ interface UploadFile {
   id: string;
   file: File;
   preview: string | null;
-  status: "idle" | "uploading" | "done" | "error";
+  status: "idle" | "compressing" | "uploading" | "done" | "error";
   progress: number;
   error?: string;
   isVideo: boolean;
@@ -33,16 +33,81 @@ const ALL_ACCEPTED = [...ACCEPTED_IMAGES, ...ACCEPTED_VIDEOS];
 const MAX_IMAGE_MB = 50;
 const MAX_VIDEO_MB = 500;
 
+// Vercel proxy hard-caps request bodies at 4.5 MB regardless of runtime config.
+// We compress any image above this before sending so uploads never hit 413.
+const COMPRESS_THRESHOLD_BYTES = 3.8 * 1024 * 1024; // 3.8 MB → target well under 4.5 MB
+const COMPRESS_MAX_PX = 3840;   // 4 K — more than enough for any screen
+const COMPRESS_QUALITY = 0.88;  // JPEG quality — visually lossless for photos
+
+/**
+ * Resize + re-encode a large image using canvas before it's uploaded.
+ * Returns the original file if:
+ *  - it's already small enough
+ *  - it's a video / GIF
+ *  - the browser can't decode it (e.g. HEIC on non-Safari — caught and ignored)
+ */
+async function maybeCompress(file: File): Promise<File> {
+  if (file.size <= COMPRESS_THRESHOLD_BYTES) return file;
+  if (file.type.startsWith("video/") || file.type === "image/gif") return file;
+
+  return new Promise<File>((resolve) => {
+    const img = new Image();
+    const objectUrl = URL.createObjectURL(file);
+
+    img.onload = () => {
+      URL.revokeObjectURL(objectUrl);
+
+      // Scale down to COMPRESS_MAX_PX on the longest edge, preserve aspect ratio
+      let { width, height } = img;
+      if (width > COMPRESS_MAX_PX || height > COMPRESS_MAX_PX) {
+        if (width >= height) {
+          height = Math.round((height * COMPRESS_MAX_PX) / width);
+          width = COMPRESS_MAX_PX;
+        } else {
+          width = Math.round((width * COMPRESS_MAX_PX) / height);
+          height = COMPRESS_MAX_PX;
+        }
+      }
+
+      const canvas = document.createElement("canvas");
+      canvas.width  = width;
+      canvas.height = height;
+      const ctx = canvas.getContext("2d")!;
+      ctx.drawImage(img, 0, 0, width, height);
+
+      canvas.toBlob(
+        (blob) => {
+          if (!blob) { resolve(file); return; } // fallback to original
+          const ext = file.name.replace(/\.[^.]+$/, "") + ".jpg";
+          resolve(new File([blob], ext, { type: "image/jpeg", lastModified: file.lastModified }));
+        },
+        "image/jpeg",
+        COMPRESS_QUALITY,
+      );
+    };
+
+    img.onerror = () => {
+      URL.revokeObjectURL(objectUrl);
+      resolve(file); // can't decode (e.g. HEIC on Chrome) — upload original, let server return 413 with clear msg
+    };
+
+    img.src = objectUrl;
+  });
+}
+
 function fmt(bytes: number) { return (bytes / 1024 / 1024).toFixed(1) + " MB"; }
 
 /** Upload a single file using the best available backend. */
 async function uploadFile(
-  file: File,
+  rawFile: File,
   albumSlug: string,
   albumId: string,
   uploaderName: string,
   onProgress: (pct: number) => void,
 ): Promise<void> {
+  // 0. Compress if the image is too large for Vercel's 4.5 MB proxy limit
+  const file = await maybeCompress(rawFile);
+
   // 1. Ask server which upload path to use
   const urlRes = await fetch(`/api/albums/${albumSlug}/upload-url`, {
     method: "POST",
@@ -388,11 +453,16 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
 
     for (const f of files) {
       if (f.status === "done") continue;
-      updateFile(f.id, { status: "uploading", progress: 5 });
+
+      // Show "Optimizira…" if this image is large enough to need compression
+      const needsCompress = !f.isVideo && f.file.size > COMPRESS_THRESHOLD_BYTES;
+      if (needsCompress) updateFile(f.id, { status: "compressing", progress: 0 });
+      else updateFile(f.id, { status: "uploading", progress: 5 });
+
       try {
         await uploadFile(
           f.file, albumSlug, albumId, uploaderName,
-          pct => updateFile(f.id, { progress: pct })
+          pct => updateFile(f.id, { status: "uploading", progress: pct })
         );
         updateFile(f.id, { status: "done", progress: 100 });
       } catch (err) {
@@ -493,6 +563,15 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
                     <p className="font-sans text-sm text-[#2C2825] truncate font-medium">{f.file.name}</p>
                     <div className="mt-1 flex items-center gap-2">
                       {f.status === "idle" && <p className="text-xs text-[#2C2825]/40">{f.isVideo ? "📹" : "📷"} {fmt(f.file.size)}</p>}
+                      {f.status === "compressing" && (
+                        <p className="text-xs text-amber-600 flex items-center gap-1.5 font-medium">
+                          <svg className="w-3 h-3 animate-spin shrink-0" fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
+                          </svg>
+                          Optimizira…
+                        </p>
+                      )}
                       {f.status === "uploading" && (
                         <div className="flex items-center gap-2 flex-1">
                           <div className="flex-1 h-1.5 bg-[#C9A96E]/15 rounded-full overflow-hidden">
