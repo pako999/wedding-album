@@ -8,6 +8,7 @@ import { z } from "zod";
 
 const bodySchema = z.object({
   ownerClerkId: z.string().min(1),
+  ownerEmail: z.string().email().optional(), // used to match albums across separate Clerk instances
   coupleName: z.string().min(1),
   weddingDate: z.string().min(1), // "2025-06-14"
   location: z.string().optional(),
@@ -50,6 +51,7 @@ export async function POST(req: NextRequest) {
     .values({
       slug: data.slug,
       ownerClerkId: data.ownerClerkId,
+      ownerEmail: data.ownerEmail ?? null,
       coupleName: data.coupleName,
       weddingDate: data.weddingDate,
       location: data.location,

@@ -1,8 +1,8 @@
-import { auth } from "@clerk/nextjs/server";
+import { auth, currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
 import { albums } from "@/lib/db/schema";
-import { eq, desc } from "drizzle-orm";
+import { eq, or, desc } from "drizzle-orm";
 import Link from "next/link";
 import { DashboardNav } from "@/components/dashboard/DashboardNav";
 
@@ -10,9 +10,14 @@ export const dynamic = "force-dynamic";
 
 export default async function DashboardPage() {
   let userId: string | null = null;
+  let userEmail: string | null = null;
   try {
     const session = await auth();
     userId = session.userId;
+    if (userId) {
+      const user = await currentUser();
+      userEmail = user?.emailAddresses?.[0]?.emailAddress ?? null;
+    }
   } catch {
     redirect("/sign-in");
   }
@@ -21,8 +26,14 @@ export default async function DashboardPage() {
   let userAlbums: (typeof albums.$inferSelect)[] = [];
   let dbError = false;
   try {
+    // Match by clerkId OR by email (for albums created via WedFlow integration
+    // where the ownerClerkId comes from a different Clerk instance)
+    const whereClause = userEmail
+      ? or(eq(albums.ownerClerkId, userId!), eq(albums.ownerEmail, userEmail))
+      : eq(albums.ownerClerkId, userId!);
+
     userAlbums = await db.query.albums.findMany({
-      where: eq(albums.ownerClerkId, userId),
+      where: whereClause,
       orderBy: desc(albums.createdAt),
     });
   } catch (err) {

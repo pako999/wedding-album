@@ -17,8 +17,10 @@ export const albums = pgTable(
     id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
     slug: varchar("slug", { length: 80 }).notNull().unique(),
 
-    // Owner (Clerk userId from WedFlow)
+    // Owner — Clerk userId from this app's Clerk instance
     ownerClerkId: text("owner_clerk_id").notNull(),
+    // Owner email — used to match albums created by WedFlow integration
+    ownerEmail: text("owner_email"),
 
     // Event type
     eventType: text("event_type").notNull().default("wedding"), // wedding | birthday | anniversary | party | baptism | graduation | other
