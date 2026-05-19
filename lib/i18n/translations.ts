@@ -58,6 +58,7 @@ export interface Translations {
   demoUploadNote: string;       // demo album: photos not public, just a test
   nameOnboardPrompt: string;    // "Enter your name to upload photos"
   close: string;                // "Close"
+  closeWindow: string;          // "Close window"
   fileUploaded: string;         // "Uploaded"
   alreadyUploaded: string;      // "Already in album"
   fileNetworkError: string;     // "Network error"
@@ -226,6 +227,7 @@ const sl: Translations = {
   demoUploadNote: "👀 To je predstavitveni album — vaše fotografije ne bodo javno objavljene. Naložene so v testni album, da vidite, kako poteka deljenje fotografij.",
   nameOnboardPrompt: "Vnesite svoje ime, da naložite svoje fotografije in videe.",
   close: "Zapri",
+  closeWindow: "Zapri okno",
   fileUploaded: "Naloženo",
   alreadyUploaded: "Že v albumu",
   fileNetworkError: "Omrežna napaka",
@@ -363,6 +365,7 @@ const hr: Translations = {
   demoUploadNote: "👀 Ovo je demo album — vaše fotografije neće biti javno objavljene. Učitane su u testni album da vidite kako izgleda dijeljenje fotografija.",
   nameOnboardPrompt: "Unesite svoje ime da biste učitali svoje fotografije i videozapise.",
   close: "Zatvori",
+  closeWindow: "Zatvori prozor",
   fileUploaded: "Učitano",
   alreadyUploaded: "Već u albumu",
   fileNetworkError: "Mrežna greška",
@@ -500,6 +503,7 @@ const sr: Translations = {
   demoUploadNote: "👀 Ovo je demo album — vaše fotografije neće biti javno objavljene. Otpremljene su u testni album da vidite kako izgleda deljenje fotografija.",
   nameOnboardPrompt: "Unesite svoje ime da biste otpremili svoje fotografije i video snimke.",
   close: "Zatvori",
+  closeWindow: "Zatvori prozor",
   fileUploaded: "Otpremljeno",
   alreadyUploaded: "Već u albumu",
   fileNetworkError: "Mrežna greška",
@@ -637,6 +641,7 @@ const en: Translations = {
   demoUploadNote: "👀 This is a demo album — your photos won't be published publicly. They're uploaded to the test album so you can see how photo sharing works.",
   nameOnboardPrompt: "Enter your name to upload your photos and videos.",
   close: "Close",
+  closeWindow: "Close window",
   fileUploaded: "Uploaded",
   alreadyUploaded: "Already in album",
   fileNetworkError: "Network error",
@@ -774,6 +779,7 @@ const de: Translations = {
   demoUploadNote: "👀 Dies ist ein Demo-Album — Ihre Fotos werden nicht öffentlich veröffentlicht. Sie werden ins Testalbum hochgeladen, damit Sie sehen, wie das Teilen von Fotos funktioniert.",
   nameOnboardPrompt: "Geben Sie Ihren Namen ein, um Ihre Fotos und Videos hochzuladen.",
   close: "Schließen",
+  closeWindow: "Fenster schließen",
   fileUploaded: "Hochgeladen",
   alreadyUploaded: "Bereits im Album",
   fileNetworkError: "Netzwerkfehler",
@@ -911,6 +917,7 @@ const es: Translations = {
   demoUploadNote: "👀 Este es un álbum de demostración — tus fotos no se publicarán públicamente. Se suben al álbum de prueba para que veas cómo funciona compartir fotos.",
   nameOnboardPrompt: "Introduce tu nombre para subir tus fotos y vídeos.",
   close: "Cerrar",
+  closeWindow: "Cerrar ventana",
   fileUploaded: "Subido",
   alreadyUploaded: "Ya en el álbum",
   fileNetworkError: "Error de red",

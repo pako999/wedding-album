@@ -510,6 +510,15 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
   // Keep retry ref up to date so the visibility handler can call latest uploadAll
   useEffect(() => { retryRef.current = uploadAll; });
 
+  // Auto-start the upload as soon as files are added — no "Naloži" button needed.
+  useEffect(() => {
+    if (!uploading && files.some(f => f.status === "idle")) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      void uploadAll();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [files, uploading]);
+
   const success = files.filter(f => f.status === "done").length;
 
   return (
@@ -555,7 +564,7 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
                 onMouseEnter={e => { e.currentTarget.style.background = accent; }}
                 onMouseLeave={e => { e.currentTarget.style.background = "#0F1729"; }}
               >
-                {t.close}
+                {t.closeWindow}
               </button>
             </div>
           ) : (
@@ -684,20 +693,19 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
               );
             })()}
 
-            <div className="flex items-center justify-between gap-3">
-              <button onClick={hasUploaded ? onSuccess : onClose} disabled={uploading} className="text-sm font-medium text-[#0F1729]/60 hover:text-[#0F1729] transition-colors disabled:opacity-40">{hasUploaded ? t.close : t.cancel}</button>
-              <button
-                onClick={uploadAll}
-                disabled={files.length === 0 || uploading}
-                className="px-6 py-2.5 rounded-2xl text-white font-semibold text-sm transition-all disabled:opacity-40 flex items-center gap-2 hover:brightness-95"
-                style={{ background: accent }}
-              >
-                {uploading
-                  ? <><svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>{t.uploading}</>
-                  : <><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" /></svg>{t.uploadBtn(files.length)}</>
-                }
-              </button>
-            </div>
+            {/* Single action — uploading starts automatically, so the footer
+                only needs a clear, visible close button. */}
+            <button
+              onClick={hasUploaded ? onSuccess : onClose}
+              disabled={uploading}
+              className="flex items-center justify-center gap-2 w-full px-6 py-3 rounded-2xl text-white font-semibold text-sm transition-all disabled:opacity-60"
+              style={{ background: uploading ? "#94A3B8" : accent }}
+            >
+              {uploading
+                ? <><svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>{t.uploading}</>
+                : <><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>{t.closeWindow}</>
+              }
+            </button>
           </div>
         )}
       </div>

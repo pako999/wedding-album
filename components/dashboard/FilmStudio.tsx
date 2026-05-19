@@ -14,7 +14,11 @@
  */
 
 import { useState, useEffect, useRef, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import type { Album } from "@/lib/db/schema";
+
+// Demo dashboard account allowed to unlock Film Studio for a single film.
+const DEMO_FILM_SLUG = "marko-40-udt5";
 
 interface PhotoItem {
   id: string;
@@ -56,6 +60,30 @@ export function FilmStudio({ album }: { album: Album }) {
 // ── Free-tier upgrade gate ───────────────────────────────────────────────────
 
 function FreeTierGate({ album }: { album: Album }) {
+  const router = useRouter();
+  const isDemo = album.slug === DEMO_FILM_SLUG;
+  const [unlocking, setUnlocking] = useState(false);
+  const [unlockError, setUnlockError] = useState<string | null>(null);
+
+  const unlock = async () => {
+    setUnlocking(true);
+    setUnlockError(null);
+    try {
+      const res = await fetch(`/api/albums/${album.slug}/film/unlock`, { method: "POST" });
+      if (res.ok) { router.refresh(); return; }
+      const data = await res.json().catch(() => ({}));
+      setUnlockError(
+        data.error === "already_used"
+          ? "Predstavitveni film je že bil ustvarjen."
+          : "Odklepanja ni bilo mogoče dokončati.",
+      );
+    } catch {
+      setUnlockError("Odklepanja ni bilo mogoče dokončati.");
+    } finally {
+      setUnlocking(false);
+    }
+  };
+
   return (
     <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
       <div className="h-1.5 w-full" style={{ background: "#1E3A8A" }} />
@@ -76,6 +104,29 @@ function FreeTierGate({ album }: { album: Album }) {
         >
           ✨ Nadgradi na Premium
         </a>
+
+        {isDemo && (
+          <div className="mt-6 pt-6 border-t border-gray-100">
+            <p className="text-xs font-semibold uppercase tracking-wide text-gray-400 mb-2">
+              Predstavitveni način
+            </p>
+            <p className="text-xs text-gray-500 max-w-sm mx-auto mb-3">
+              Odkleni Film Studio in ustvari en predstavitveni film. Po
+              oddaji filma se možnost samodejno zapre.
+            </p>
+            <button
+              onClick={unlock}
+              disabled={unlocking}
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold border-2 transition-all hover:bg-blue-50 disabled:opacity-50"
+              style={{ borderColor: "#1E3A8A", color: "#1E3A8A" }}
+            >
+              {unlocking ? "Odklepanje…" : "🔓 Odkleni za 1 predstavitveni film"}
+            </button>
+            {unlockError && (
+              <p className="text-xs text-red-500 mt-2">{unlockError}</p>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );
