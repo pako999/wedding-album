@@ -1508,7 +1508,10 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
             index={lightboxIndex}
             slides={lightboxSlides}
             plugins={[Download, Counter]}
-            on={{ view: ({ index }) => setLightboxViewIndex(index) }}
+            /* Keep the controlled `index` in sync with swipes/arrows — without
+               this, the controlled prop snaps every swipe back to the photo
+               the lightbox was opened on. */
+            on={{ view: ({ index }) => { setLightboxViewIndex(index); setLightboxIndex(index); } }}
             styles={{ container: { backgroundColor: "rgba(0,0,0,0.97)" } }}
             /* When the desktop panel is OPEN the container also carries
                `guestcam-lightbox--panel`; globals.css scopes the right-padding
