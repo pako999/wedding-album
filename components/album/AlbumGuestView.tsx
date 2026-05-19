@@ -845,6 +845,16 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
       ════════════════════════════════════════════════════════════════════ */}
       <div className="max-w-7xl mx-auto px-3 sm:px-6 py-6">
 
+        {/* Demo album notice — uploads stay private, this rule is demo-only */}
+        {isDemo && (
+          <div
+            className="mb-6 rounded-2xl border px-4 py-3.5 text-sm leading-relaxed font-medium"
+            style={{ borderColor: accentTint, background: accentTint, color: BRAND.dark }}
+          >
+            {t.demoUploadNote}
+          </div>
+        )}
+
         {/* Name-entry onboarding — the guest enters a name before uploading.
             (Empty albums use the big empty-state CTA instead.) */}
         {!albumFull && !nameConfirmed && photos.length > 0 && (
