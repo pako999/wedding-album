@@ -1141,16 +1141,22 @@ function AlbumSettingsForm({ album }: { album: Album }) {
                     : "ring-1 ring-gray-200 hover:ring-gray-300"
                 }`}
               >
-                <span
-                  className="relative flex items-center justify-center w-full h-12 rounded-lg"
-                  style={{ background: tm.heroBg }}
-                >
-                  <span
-                    className="w-5 h-5 rounded-full shadow-sm"
-                    style={{ background: tm.accent }}
-                  />
+                {/* Mini preview of how the public album page looks in this theme */}
+                <span className="relative block w-full overflow-hidden rounded-lg border border-gray-200">
+                  {/* Hero header */}
+                  <span className="block px-2 pt-2.5 pb-2" style={{ background: tm.heroBg }}>
+                    <span className="block h-[5px] w-3/5 mx-auto rounded-full" style={{ background: "rgba(255,255,255,0.85)" }} />
+                    <span className="block h-[3px] w-2/5 mx-auto mt-1 rounded-full" style={{ background: "rgba(255,255,255,0.3)" }} />
+                    <span className="block h-2 w-1/3 mx-auto mt-1.5 rounded-full" style={{ background: tm.accent }} />
+                  </span>
+                  {/* Photo grid */}
+                  <span className="grid grid-cols-3 gap-[3px] bg-white p-[3px]">
+                    {Array.from({ length: 6 }).map((_, i) => (
+                      <span key={i} className="block aspect-square rounded-[2px] bg-gray-200" />
+                    ))}
+                  </span>
                   {selected && (
-                    <span className="absolute top-1 right-1 w-4 h-4 rounded-full bg-indigo-500 text-white flex items-center justify-center">
+                    <span className="absolute top-1 right-1 w-4 h-4 rounded-full bg-indigo-500 text-white flex items-center justify-center shadow">
                       <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={3.5}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                       </svg>

@@ -12,7 +12,15 @@ export const metadata: Metadata = {
     type: "article",
   },
   alternates: {
-    canonical: "https://guestcam.me/es/fotos-boda-qr",
+    canonical: "https://guestcam.si/es/fotos-boda-qr",
+    languages: {
+      "sl": "https://guestcam.si/sl/qr-koda-poroka",
+      "hr": "https://guestcam.si/hr/qr-kod-vjencanje",
+      "de": "https://guestcam.si/de/hochzeitsfotos-sammeln",
+      "en": "https://guestcam.si/en/wedding-photo-sharing",
+      "es": "https://guestcam.si/es/fotos-boda-qr",
+      "x-default": "https://guestcam.si/sl/qr-koda-poroka",
+    },
   },
 };
 

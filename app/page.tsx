@@ -1,7 +1,44 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { GuestcamLogo } from "@/components/GuestcamLogo";
 import { DemoButton } from "@/components/DemoButton";
+
+export const metadata: Metadata = {
+  alternates: { canonical: "https://guestcam.si" },
+};
+
+// Structured data — helps search engines understand the brand & product.
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://guestcam.si/#organization",
+      name: "Guestcam",
+      url: "https://guestcam.si",
+      logo: "https://guestcam.si/icon-512.png",
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://guestcam.si/#website",
+      name: "Guestcam",
+      url: "https://guestcam.si",
+      inLanguage: "sl-SI",
+      publisher: { "@id": "https://guestcam.si/#organization" },
+    },
+    {
+      "@type": "SoftwareApplication",
+      name: "Guestcam",
+      applicationCategory: "PhotographyApplication",
+      operatingSystem: "Web",
+      url: "https://guestcam.si",
+      description:
+        "Z eno QR kodo zberite vse fotografije in videe gostov v eni zasebni galeriji.",
+      offers: { "@type": "Offer", price: "0", priceCurrency: "EUR" },
+    },
+  ],
+};
 
 // ── SVG Feature Icons ─────────────────────────────────────────────────────────
 function IconQR() {
@@ -83,6 +120,10 @@ function QRPattern() {
 export default function HomePage() {
   return (
     <div className="min-h-screen bg-white text-[#0F1729] font-sans">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
 
       {/* ── Announcement bar ─────────────────────────────────────────────────── */}
       <div className="text-white text-center text-xs font-semibold py-2.5 px-4" style={{ background: '#1E3A8A' }}>
@@ -592,7 +633,7 @@ export default function HomePage() {
         <div className="max-w-6xl mx-auto px-6">
           <h2 className="text-[2.5rem] font-extrabold text-center text-[#0F1729] mb-4">Zakaj izbrati Guestcam?</h2>
           <p className="text-center text-gray-400 mb-14 max-w-md mx-auto">Vse, kar potrebujete za popoln poročni album.</p>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 text-center">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {[
               { Icon: IconPhone,  title: "Brez aplikacije",     desc: "Gosti odprejo album direktno v brskalniku. Nobene namestitve, nobene prijave." },
               { Icon: IconGlobe,  title: "6 jezikov",            desc: "Slovenščina, hrvaščina, srbščina, angleščina, nemščina, španščina — vmesnik se prilagodi vsakemu gostu." },
@@ -601,15 +642,21 @@ export default function HomePage() {
               { Icon: IconBolt,   title: "Takojšen dostop",      desc: "Med poroko že vidite nove vsebine. Popolno za deljenje z gosti v realnem času." },
               { Icon: IconQR,     title: "Lastna domena",        desc: "foto.vase-ime.si — album na vaši domeni, brez omembe Guestcam (Premium)." },
             ].map(({ Icon, title, desc }) => (
-              <div key={title} className="flex flex-col items-center">
+              <div
+                key={title}
+                className="group rounded-2xl border border-gray-100 bg-white p-7 text-left transition-all duration-200 hover:border-[#1E3A8A]/20 hover:shadow-[0_12px_36px_rgba(15,23,41,0.08)]"
+              >
                 <div
-                  className="w-16 h-16 rounded-2xl flex items-center justify-center mb-5"
-                  style={{ background: 'rgba(30,58,138,0.12)', color: '#1E3A8A' }}
+                  className="w-14 h-14 rounded-2xl flex items-center justify-center mb-5 text-white transition-transform duration-200 group-hover:scale-105"
+                  style={{
+                    background: 'linear-gradient(135deg, #1E3A8A 0%, #3551A8 100%)',
+                    boxShadow: '0 10px 22px rgba(30,58,138,0.28)',
+                  }}
                 >
                   <Icon />
                 </div>
                 <h3 className="font-bold text-[#0F1729] text-lg mb-2">{title}</h3>
-                <p className="text-gray-400 text-sm leading-relaxed max-w-[220px]">{desc}</p>
+                <p className="text-gray-500 text-sm leading-relaxed">{desc}</p>
               </div>
             ))}
           </div>
