@@ -18,7 +18,7 @@ const cormorant = Cormorant_Garamond({
 });
 
 export const viewport: Viewport = {
-  themeColor: "#C4738A",
+  themeColor: "#1E3A8A",
 };
 
 export const metadata: Metadata = {
@@ -43,7 +43,7 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="sl" className={`${dmSans.variable} ${cormorant.variable}`}>
-        <body className="font-sans antialiased bg-[#FAF7F2] text-[#2C2825] min-h-screen">
+        <body className="font-sans antialiased bg-[#F2F4F8] text-[#0F1729] min-h-screen">
           {children}
         </body>
       </html>

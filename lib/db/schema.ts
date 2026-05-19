@@ -60,6 +60,11 @@ export const albums = pgTable(
     // Notification email
     notifyEmail: text("notify_email"),
 
+    // Custom print-card text (Premium only) — null = use template default
+    cardHeadline: text("card_headline"),
+    cardSubtitle: text("card_subtitle"),
+    cardCta: text("card_cta"),
+
     // Stats cache
     photoCount: integer("photo_count").notNull().default(0),
     pendingCount: integer("pending_count").notNull().default(0),
@@ -73,6 +78,22 @@ export const albums = pgTable(
   ]
 );
 
+// ─── Moments ─────────────────────────────────────────────────────────────────
+
+export const moments = pgTable(
+  "moments",
+  {
+    id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+    albumId: text("album_id")
+      .notNull()
+      .references(() => albums.id, { onDelete: "cascade" }),
+    name: text("name").notNull(),
+    sortOrder: integer("sort_order").notNull().default(0),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+  },
+  (t) => [index("moments_album_idx").on(t.albumId)]
+);
+
 // ─── Photos ──────────────────────────────────────────────────────────────────
 
 export const photos = pgTable(
@@ -82,6 +103,9 @@ export const photos = pgTable(
     albumId: text("album_id")
       .notNull()
       .references(() => albums.id, { onDelete: "cascade" }),
+
+    // Sub-gallery / moment this photo belongs to (nullable)
+    momentId: text("moment_id").references(() => moments.id, { onDelete: "set null" }),
 
     // Uploader info (optional, from guest table or anonymous)
     guestId: text("guest_id"),
@@ -242,15 +266,36 @@ export const photoComments = pgTable(
   ]
 );
 
+// ─── Upload Reminders ────────────────────────────────────────────────────────
+
+export const uploadReminders = pgTable(
+  "upload_reminders",
+  {
+    id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+    albumId: text("album_id")
+      .notNull()
+      .references(() => albums.id, { onDelete: "cascade" }),
+    email: text("email").notNull(),
+    sendAt: timestamp("send_at").notNull(),
+    sent: boolean("sent").notNull().default(false),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+  },
+  (t) => [index("upload_reminders_due_idx").on(t.sent, t.sendAt)]
+);
+
 // ─── Types ───────────────────────────────────────────────────────────────────
 
 export type Album = typeof albums.$inferSelect;
 export type NewAlbum = typeof albums.$inferInsert;
 export type Photo = typeof photos.$inferSelect;
 export type NewPhoto = typeof photos.$inferInsert;
+export type Moment = typeof moments.$inferSelect;
+export type NewMoment = typeof moments.$inferInsert;
 export type Guest = typeof guests.$inferSelect;
 export type NewGuest = typeof guests.$inferInsert;
 export type PhotoLike    = typeof photoLikes.$inferSelect;
 export type PhotoComment = typeof photoComments.$inferSelect;
 export type FilmGeneration = typeof filmGenerations.$inferSelect;
 export type FilmClip       = typeof filmClips.$inferSelect;
+export type UploadReminder    = typeof uploadReminders.$inferSelect;
+export type NewUploadReminder = typeof uploadReminders.$inferInsert;

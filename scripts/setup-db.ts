@@ -80,6 +80,9 @@ async function main() {
   console.log("✅ guests table ready");
 
   // Safe migrations — add columns if they don't exist yet
+  await sql`ALTER TABLE albums ADD COLUMN IF NOT EXISTS owner_email TEXT`;
+  console.log("✅ owner_email column ready");
+
   await sql`ALTER TABLE albums ADD COLUMN IF NOT EXISTS event_type TEXT NOT NULL DEFAULT 'wedding'`;
   console.log("✅ event_type column ready");
 

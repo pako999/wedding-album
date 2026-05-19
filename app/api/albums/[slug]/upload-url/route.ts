@@ -52,8 +52,32 @@ export async function POST(
   if (!album || !album.isPublished) {
     return NextResponse.json({ error: "Album not found" }, { status: 404 });
   }
+  // Password-protected albums: the guest must supply the album password
+  // (collected at the password gate) to obtain an upload destination.
+  if (album.password) {
+    const provided = req.headers.get("x-album-password");
+    if (provided !== album.password) {
+      return NextResponse.json({ error: "Wrong album password" }, { status: 403 });
+    }
+  }
   if (album.photoCount >= album.maxPhotos) {
     return NextResponse.json({ error: "Album photo limit reached" }, { status: 403 });
+  }
+
+  // Skip duplicates — an identical file (same name + size) is already in this album.
+  if (typeof body.size === "number") {
+    const dup = await db.query.photos
+      .findFirst({
+        where: and(
+          eq(photos.albumId, album.id),
+          eq(photos.originalFilename, filename),
+          eq(photos.sizeBytes, body.size),
+        ),
+      })
+      .catch(() => null);
+    if (dup) {
+      return NextResponse.json({ type: "duplicate" });
+    }
   }
 
   const isVideo = ALLOWED_VIDEO_TYPES.has(contentType);

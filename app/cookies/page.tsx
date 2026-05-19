@@ -18,18 +18,18 @@ function SiteHeader() {
     <header className="sticky top-0 z-40 bg-white border-b border-gray-100">
       <nav className="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-0.5">
-          <span className="font-serif italic text-xl font-bold text-[#2C2825]">
+          <span className="font-serif italic text-xl font-bold text-[#0F1729]">
             Guestcam
           </span>
-          <span className="font-black text-2xl leading-none text-[#C4738A]">.</span>
+          <span className="font-black text-2xl leading-none text-[#1E3A8A]">.</span>
         </Link>
         <div className="flex items-center gap-6 text-sm font-medium text-gray-500">
-          <Link href="/" className="hover:text-[#2C2825] transition-colors">
+          <Link href="/" className="hover:text-[#0F1729] transition-colors">
             Domov
           </Link>
           <Link
             href="/dashboard/new"
-            className="px-4 py-2 rounded-full text-sm font-bold border-2 border-[#2C2825] text-[#2C2825] hover:bg-[#2C2825] hover:text-white transition-all duration-200"
+            className="px-4 py-2 rounded-full text-sm font-bold border-2 border-[#0F1729] text-[#0F1729] hover:bg-[#0F1729] hover:text-white transition-all duration-200"
           >
             Začni brezplačno
           </Link>
@@ -41,7 +41,7 @@ function SiteHeader() {
 
 function SiteFooter() {
   return (
-    <footer className="bg-[#2C2825] text-white py-8 mt-16">
+    <footer className="bg-[#0F1729] text-white py-8 mt-16">
       <div className="max-w-5xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-gray-400">
         <p>© 2025 Sport group d.o.o. · SI72133449</p>
         <div className="flex items-center gap-5">
@@ -78,7 +78,7 @@ function Section({
 }) {
   return (
     <div className="mb-8">
-      <h2 className="text-xl font-bold text-[#2C2825] mb-3 pb-2 border-b border-gray-100">
+      <h2 className="text-xl font-bold text-[#0F1729] mb-3 pb-2 border-b border-gray-100">
         {title}
       </h2>
       {children}
@@ -108,7 +108,7 @@ function CookieRow({
 
   return (
     <tr className="border-b border-gray-100">
-      <td className="p-3 text-sm font-mono text-[#2C2825]">{name}</td>
+      <td className="p-3 text-sm font-mono text-[#0F1729]">{name}</td>
       <td className="p-3 text-sm text-gray-600">{provider}</td>
       <td className="p-3 text-sm text-gray-600">{purpose}</td>
       <td className="p-3 text-sm text-gray-500">{duration}</td>
@@ -125,16 +125,16 @@ function CookieRow({
 
 export default function CookiesPage() {
   return (
-    <div className="min-h-screen bg-[#FAF7F2] text-[#2C2825] font-sans">
+    <div className="min-h-screen bg-[#F2F4F8] text-[#0F1729] font-sans">
       <SiteHeader />
 
       <main className="max-w-3xl mx-auto px-6 py-16">
         <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-8 md:p-12">
           <div className="mb-10">
-            <p className="text-xs font-bold uppercase tracking-widest text-[#C4738A] mb-3">
+            <p className="text-xs font-bold uppercase tracking-widest text-[#1E3A8A] mb-3">
               Pravni dokument
             </p>
-            <h1 className="font-serif text-4xl font-bold text-[#2C2825] mb-3">
+            <h1 className="font-serif text-4xl font-bold text-[#0F1729] mb-3">
               Politika piškotkov
             </h1>
             <p className="text-sm text-gray-400">
@@ -145,11 +145,11 @@ export default function CookiesPage() {
           {/* Highlight box */}
           <div
             className="rounded-2xl p-5 mb-8 flex gap-4"
-            style={{ background: "rgba(196,115,138,0.08)", border: "1px solid rgba(196,115,138,0.2)" }}
+            style={{ background: "rgba(30,58,138,0.08)", border: "1px solid rgba(30,58,138,0.2)" }}
           >
             <svg
               className="w-5 h-5 shrink-0 mt-0.5"
-              style={{ color: "#C4738A" }}
+              style={{ color: "#1E3A8A" }}
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -186,7 +186,7 @@ export default function CookiesPage() {
             </p>
             <div className="overflow-x-auto rounded-xl border border-gray-200">
               <table className="w-full text-left">
-                <thead className="bg-[#FAF7F2]">
+                <thead className="bg-[#F2F4F8]">
                   <tr>
                     <th className="p-3 text-xs font-bold uppercase tracking-wider text-gray-500">
                       Piškotek
@@ -256,7 +256,7 @@ export default function CookiesPage() {
                   href="https://clerk.com/privacy"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-[#C4738A] hover:underline"
+                  className="text-[#1E3A8A] hover:underline"
                 >
                   clerk.com/privacy
                 </a>
@@ -307,13 +307,13 @@ export default function CookiesPage() {
             <p className="text-gray-600 mb-3">
               Vprašanja glede piškotkov pišite na:
             </p>
-            <div className="bg-[#FAF7F2] rounded-xl p-4 border border-gray-100">
-              <p className="font-semibold text-[#2C2825]">Sport group d.o.o.</p>
+            <div className="bg-[#F2F4F8] rounded-xl p-4 border border-gray-100">
+              <p className="font-semibold text-[#0F1729]">Sport group d.o.o.</p>
               <p className="text-sm text-gray-600 mt-1">
                 E-pošta:{" "}
                 <a
                   href="mailto:hello@guestcam.si"
-                  className="text-[#C4738A] hover:underline"
+                  className="text-[#1E3A8A] hover:underline"
                 >
                   hello@guestcam.si
                 </a>

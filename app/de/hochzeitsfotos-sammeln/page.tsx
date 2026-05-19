@@ -21,18 +21,18 @@ function SiteHeader() {
     <header className="sticky top-0 z-40 bg-white border-b border-gray-100">
       <nav className="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-0.5">
-          <span className="font-serif italic text-xl font-bold text-[#2C2825]">
+          <span className="font-serif italic text-xl font-bold text-[#0F1729]">
             Guestcam
           </span>
-          <span className="font-black text-2xl leading-none text-[#C4738A]">.</span>
+          <span className="font-black text-2xl leading-none text-[#1E3A8A]">.</span>
         </Link>
         <div className="flex items-center gap-6 text-sm font-medium text-gray-500">
-          <Link href="/" className="hover:text-[#2C2825] transition-colors">
+          <Link href="/" className="hover:text-[#0F1729] transition-colors">
             Startseite
           </Link>
           <Link
             href="/dashboard/new"
-            className="px-4 py-2 rounded-full text-sm font-bold border-2 border-[#2C2825] text-[#2C2825] hover:bg-[#2C2825] hover:text-white transition-all duration-200"
+            className="px-4 py-2 rounded-full text-sm font-bold border-2 border-[#0F1729] text-[#0F1729] hover:bg-[#0F1729] hover:text-white transition-all duration-200"
           >
             Kostenlos starten
           </Link>
@@ -44,7 +44,7 @@ function SiteHeader() {
 
 function SiteFooter() {
   return (
-    <footer className="bg-[#2C2825] text-white py-8 mt-20">
+    <footer className="bg-[#0F1729] text-white py-8 mt-20">
       <div className="max-w-5xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-gray-400">
         <p>© 2025 Sport group d.o.o. · SI72133449</p>
         <div className="flex items-center gap-5">
@@ -68,11 +68,11 @@ function CtaBox() {
     <div
       className="rounded-3xl p-8 my-12 text-center"
       style={{
-        background: "linear-gradient(135deg, rgba(196,115,138,0.12) 0%, rgba(201,169,110,0.12) 100%)",
-        border: "1px solid rgba(196,115,138,0.2)",
+        background: "linear-gradient(135deg, rgba(30,58,138,0.12) 0%, rgba(30,58,138,0.12) 100%)",
+        border: "1px solid rgba(30,58,138,0.2)",
       }}
     >
-      <p className="font-serif text-2xl font-bold text-[#2C2825] mb-3">
+      <p className="font-serif text-2xl font-bold text-[#0F1729] mb-3">
         Ihre Hochzeitsgalerie in 2 Minuten erstellen
       </p>
       <p className="text-gray-600 mb-6 max-w-md mx-auto">
@@ -81,7 +81,7 @@ function CtaBox() {
       <Link
         href="/dashboard/new"
         className="inline-flex items-center gap-2 px-8 py-4 rounded-full text-white font-bold text-base transition-all duration-200 hover:scale-[1.02]"
-        style={{ background: "#C4738A", boxShadow: "0 10px 30px rgba(196,115,138,0.35)" }}
+        style={{ background: "#1E3A8A", boxShadow: "0 10px 30px rgba(30,58,138,0.35)" }}
       >
         Jetzt kostenlos starten →
       </Link>
@@ -91,7 +91,7 @@ function CtaBox() {
 
 export default function HochzeitsfotosSammelnPage() {
   return (
-    <div className="min-h-screen bg-[#FAF7F2] text-[#2C2825] font-sans">
+    <div className="min-h-screen bg-[#F2F4F8] text-[#0F1729] font-sans">
       <SiteHeader />
 
       <main className="max-w-3xl mx-auto px-6 py-16">
@@ -99,11 +99,11 @@ export default function HochzeitsfotosSammelnPage() {
         <div className="mb-12">
           <div
             className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold mb-5 uppercase tracking-widest"
-            style={{ background: "rgba(196,115,138,0.1)", color: "#C4738A" }}
+            style={{ background: "rgba(30,58,138,0.1)", color: "#1E3A8A" }}
           >
             Ratgeber · Deutschland · 2025
           </div>
-          <h1 className="font-serif text-4xl md:text-5xl font-bold text-[#2C2825] leading-tight mb-5">
+          <h1 className="font-serif text-4xl md:text-5xl font-bold text-[#0F1729] leading-tight mb-5">
             Hochzeitsfotos sammeln mit QR-Code — der vollständige Leitfaden
           </h1>
           <p className="text-lg text-gray-600 leading-relaxed mb-6">
@@ -115,13 +115,13 @@ export default function HochzeitsfotosSammelnPage() {
           </p>
           <div className="flex flex-wrap gap-4 text-sm text-gray-500">
             <span className="flex items-center gap-1.5">
-              <svg className="w-4 h-4 text-[#C4738A]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+              <svg className="w-4 h-4 text-[#1E3A8A]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
               Lesezeit: ~6 Minuten
             </span>
             <span className="flex items-center gap-1.5">
-              <svg className="w-4 h-4 text-[#C4738A]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+              <svg className="w-4 h-4 text-[#1E3A8A]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z" />
               </svg>
               Aktualisiert: Januar 2025
@@ -131,7 +131,7 @@ export default function HochzeitsfotosSammelnPage() {
 
         {/* Section 1 */}
         <section className="mb-10">
-          <h2 className="font-serif text-2xl font-bold text-[#2C2825] mb-4">
+          <h2 className="font-serif text-2xl font-bold text-[#0F1729] mb-4">
             Das Problem: Hochzeitsfotos gehen verloren
           </h2>
           <p className="text-gray-600 leading-relaxed mb-5">
@@ -148,13 +148,13 @@ export default function HochzeitsfotosSammelnPage() {
               { title: "E-Mail ist umständlich für alle Beteiligten", desc: "Hundert Gäste per E-Mail anzuschreiben und auf Antworten zu warten ist für Sie mühsam und für Gäste unbequem." },
             ].map(({ title, desc }) => (
               <div key={title} className="flex gap-4 p-4 rounded-2xl bg-white border border-gray-100 shadow-sm">
-                <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0" style={{ background: "rgba(196,115,138,0.1)" }}>
-                  <svg className="w-4 h-4" style={{ color: "#C4738A" }} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0" style={{ background: "rgba(30,58,138,0.1)" }}>
+                  <svg className="w-4 h-4" style={{ color: "#1E3A8A" }} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                   </svg>
                 </div>
                 <div>
-                  <p className="font-semibold text-[#2C2825]">{title}</p>
+                  <p className="font-semibold text-[#0F1729]">{title}</p>
                   <p className="text-sm text-gray-600 mt-0.5">{desc}</p>
                 </div>
               </div>
@@ -166,7 +166,7 @@ export default function HochzeitsfotosSammelnPage() {
 
         {/* Section 2 */}
         <section className="mb-10">
-          <h2 className="font-serif text-2xl font-bold text-[#2C2825] mb-4">
+          <h2 className="font-serif text-2xl font-bold text-[#0F1729] mb-4">
             Die Lösung: Hochzeitsfotos per QR-Code sammeln
           </h2>
           <p className="text-gray-600 leading-relaxed mb-6">
@@ -181,11 +181,11 @@ export default function HochzeitsfotosSammelnPage() {
               { step: "5", title: "Sie sehen es in Echtzeit", desc: "Jedes hochgeladene Foto erscheint sofort in Ihrer Galerie. Viele Paare projizieren eine Live-Diashow beim Abendessen — die Gäste lieben es." },
             ].map(({ step, title, desc }) => (
               <div key={step} className="flex gap-5">
-                <div className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm shrink-0 mt-0.5" style={{ background: "#C4738A", color: "white" }}>
+                <div className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm shrink-0 mt-0.5" style={{ background: "#1E3A8A", color: "white" }}>
                   {step}
                 </div>
                 <div className="bg-white border border-gray-100 rounded-2xl p-5 flex-1 shadow-sm">
-                  <p className="font-semibold text-[#2C2825] mb-1">{title}</p>
+                  <p className="font-semibold text-[#0F1729] mb-1">{title}</p>
                   <p className="text-sm text-gray-600 leading-relaxed">{desc}</p>
                 </div>
               </div>
@@ -195,7 +195,7 @@ export default function HochzeitsfotosSammelnPage() {
 
         {/* Section 3 */}
         <section className="mb-10">
-          <h2 className="font-serif text-2xl font-bold text-[#2C2825] mb-4">
+          <h2 className="font-serif text-2xl font-bold text-[#0F1729] mb-4">
             Warum Guestcam die beste Wahl ist
           </h2>
           <div className="grid sm:grid-cols-2 gap-4">
@@ -209,7 +209,7 @@ export default function HochzeitsfotosSammelnPage() {
             ].map(({ icon, title, desc }) => (
               <div key={title} className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
                 <div className="text-2xl mb-3">{icon}</div>
-                <p className="font-semibold text-[#2C2825] mb-1">{title}</p>
+                <p className="font-semibold text-[#0F1729] mb-1">{title}</p>
                 <p className="text-sm text-gray-600 leading-relaxed">{desc}</p>
               </div>
             ))}
@@ -218,7 +218,7 @@ export default function HochzeitsfotosSammelnPage() {
 
         {/* Section 4 — Step by step setup */}
         <section className="mb-10">
-          <h2 className="font-serif text-2xl font-bold text-[#2C2825] mb-4">
+          <h2 className="font-serif text-2xl font-bold text-[#0F1729] mb-4">
             So richten Sie Guestcam in 5 Schritten ein
           </h2>
           <div className="space-y-4">
@@ -230,11 +230,11 @@ export default function HochzeitsfotosSammelnPage() {
               { step: "05", title: "Karten auf der Hochzeit platzieren", desc: "Karten auf Tische verteilen, am Bartresen aufstellen oder als Beilage zu den Einladungen. Mindestens eine Karte pro Tisch wird empfohlen." },
             ].map(({ step, title, desc }) => (
               <div key={step} className="flex gap-5">
-                <div className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm shrink-0 mt-0.5" style={{ background: "#C4738A", color: "white" }}>
+                <div className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm shrink-0 mt-0.5" style={{ background: "#1E3A8A", color: "white" }}>
                   {step}
                 </div>
                 <div className="bg-white border border-gray-100 rounded-2xl p-5 flex-1 shadow-sm">
-                  <p className="font-semibold text-[#2C2825] mb-1">{title}</p>
+                  <p className="font-semibold text-[#0F1729] mb-1">{title}</p>
                   <p className="text-sm text-gray-600 leading-relaxed">{desc}</p>
                 </div>
               </div>
@@ -244,7 +244,7 @@ export default function HochzeitsfotosSammelnPage() {
 
         {/* Tips */}
         <section className="mb-10">
-          <h2 className="font-serif text-2xl font-bold text-[#2C2825] mb-4">
+          <h2 className="font-serif text-2xl font-bold text-[#0F1729] mb-4">
             Tipps für maximale Foto-Uploads
           </h2>
           <ul className="space-y-3 text-gray-600">
@@ -257,8 +257,8 @@ export default function HochzeitsfotosSammelnPage() {
               "Aktivieren Sie die Live-Galerie-Funktion für eine projizierte Diashow beim Empfang.",
             ].map((tip, i) => (
               <li key={i} className="flex gap-3">
-                <div className="w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5" style={{ background: "rgba(196,115,138,0.15)" }}>
-                  <svg className="w-3 h-3" style={{ color: "#C4738A" }} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={3}>
+                <div className="w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5" style={{ background: "rgba(30,58,138,0.15)" }}>
+                  <svg className="w-3 h-3" style={{ color: "#1E3A8A" }} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={3}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                   </svg>
                 </div>
@@ -270,7 +270,7 @@ export default function HochzeitsfotosSammelnPage() {
 
         {/* FAQ */}
         <section className="mb-10">
-          <h2 className="font-serif text-2xl font-bold text-[#2C2825] mb-4">
+          <h2 className="font-serif text-2xl font-bold text-[#0F1729] mb-4">
             Häufig gestellte Fragen
           </h2>
           <div className="space-y-3">
@@ -282,7 +282,7 @@ export default function HochzeitsfotosSammelnPage() {
               { q: "Ist die Galerie privat?", a: "Ja. Ihre Galerie ist nur über Ihren einzigartigen QR-Code oder direkten Link zugänglich. Sie wird niemals von Google oder anderen Suchmaschinen indexiert." },
             ].map(({ q, a }) => (
               <details key={q} className="bg-white border border-gray-100 rounded-2xl group">
-                <summary className="flex items-center justify-between px-5 py-4 cursor-pointer font-semibold text-[#2C2825] list-none text-sm">
+                <summary className="flex items-center justify-between px-5 py-4 cursor-pointer font-semibold text-[#0F1729] list-none text-sm">
                   {q}
                   <svg className="w-4 h-4 text-gray-400 shrink-0 group-open:rotate-180 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
@@ -295,7 +295,7 @@ export default function HochzeitsfotosSammelnPage() {
         </section>
 
         {/* Final CTA */}
-        <div className="rounded-3xl p-8 text-center" style={{ background: "#2C2825" }}>
+        <div className="rounded-3xl p-8 text-center" style={{ background: "#0F1729" }}>
           <p className="font-serif text-3xl font-bold text-white mb-3">
             Ihre Hochzeit verdient jede Erinnerung
           </p>
@@ -305,7 +305,7 @@ export default function HochzeitsfotosSammelnPage() {
           <Link
             href="/dashboard/new"
             className="inline-flex items-center gap-2 px-8 py-4 rounded-full font-bold text-base transition-all duration-200 hover:scale-[1.02]"
-            style={{ background: "#C4738A", color: "white" }}
+            style={{ background: "#1E3A8A", color: "white" }}
           >
             Jetzt starten →
           </Link>

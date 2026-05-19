@@ -35,8 +35,8 @@ export async function GET(
     type: "svg",
     margin: 2,
     color: {
-      dark: "#2C2825",
-      light: "#FAF7F2",
+      dark: "#0F1729",
+      light: "#F2F4F8",
     },
   });
 
@@ -48,7 +48,7 @@ export async function GET(
       type: "png",
       width: 400,
       margin: 2,
-      color: { dark: "#2C2825", light: "#FAF7F2" },
+      color: { dark: "#0F1729", light: "#F2F4F8" },
     });
     return new NextResponse(new Uint8Array(png), {
       headers: {

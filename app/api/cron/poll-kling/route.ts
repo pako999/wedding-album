@@ -19,10 +19,13 @@ export async function GET(req: NextRequest) {
   const authHeader = req.headers.get("authorization");
   const secret = req.nextUrl.searchParams.get("secret");
   const cronSecret = process.env.CRON_SECRET;
+  // Fail closed if CRON_SECRET is not configured.
+  if (!cronSecret) {
+    return NextResponse.json({ error: "CRON_SECRET not configured" }, { status: 503 });
+  }
   const isVercelCron = authHeader === `Bearer ${cronSecret}`;
-  const isManual     = cronSecret && secret === cronSecret;
-
-  if (cronSecret && !isVercelCron && !isManual) {
+  const isManual     = secret === cronSecret;
+  if (!isVercelCron && !isManual) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

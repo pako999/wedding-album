@@ -7,6 +7,10 @@
     {
       "path": "/api/cron/poll-kling",
       "schedule": "*/2 * * * *"
+    },
+    {
+      "path": "/api/cron/send-reminders",
+      "schedule": "*/15 * * * *"
     }
   ]
 }

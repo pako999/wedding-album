@@ -18,18 +18,18 @@ function SiteHeader() {
     <header className="sticky top-0 z-40 bg-white border-b border-gray-100">
       <nav className="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-0.5">
-          <span className="font-serif italic text-xl font-bold text-[#2C2825]">
+          <span className="font-serif italic text-xl font-bold text-[#0F1729]">
             Guestcam
           </span>
-          <span className="font-black text-2xl leading-none text-[#C4738A]">.</span>
+          <span className="font-black text-2xl leading-none text-[#1E3A8A]">.</span>
         </Link>
         <div className="flex items-center gap-6 text-sm font-medium text-gray-500">
-          <Link href="/" className="hover:text-[#2C2825] transition-colors">
+          <Link href="/" className="hover:text-[#0F1729] transition-colors">
             Domov
           </Link>
           <Link
             href="/dashboard/new"
-            className="px-4 py-2 rounded-full text-sm font-bold border-2 border-[#2C2825] text-[#2C2825] hover:bg-[#2C2825] hover:text-white transition-all duration-200"
+            className="px-4 py-2 rounded-full text-sm font-bold border-2 border-[#0F1729] text-[#0F1729] hover:bg-[#0F1729] hover:text-white transition-all duration-200"
           >
             Začni brezplačno
           </Link>
@@ -41,7 +41,7 @@ function SiteHeader() {
 
 function SiteFooter() {
   return (
-    <footer className="bg-[#2C2825] text-white py-8 mt-16">
+    <footer className="bg-[#0F1729] text-white py-8 mt-16">
       <div className="max-w-5xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-gray-400">
         <p>© 2025 Sport group d.o.o. · SI72133449</p>
         <div className="flex items-center gap-5">
@@ -78,7 +78,7 @@ function Section({
 }) {
   return (
     <div className="mb-8">
-      <h2 className="text-xl font-bold text-[#2C2825] mb-3 pb-2 border-b border-gray-100">
+      <h2 className="text-xl font-bold text-[#0F1729] mb-3 pb-2 border-b border-gray-100">
         {title}
       </h2>
       {children}
@@ -88,16 +88,16 @@ function Section({
 
 export default function TermsPage() {
   return (
-    <div className="min-h-screen bg-[#FAF7F2] text-[#2C2825] font-sans">
+    <div className="min-h-screen bg-[#F2F4F8] text-[#0F1729] font-sans">
       <SiteHeader />
 
       <main className="max-w-3xl mx-auto px-6 py-16">
         <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-8 md:p-12">
           <div className="mb-10">
-            <p className="text-xs font-bold uppercase tracking-widest text-[#C4738A] mb-3">
+            <p className="text-xs font-bold uppercase tracking-widest text-[#1E3A8A] mb-3">
               Pravni dokument
             </p>
-            <h1 className="font-serif text-4xl font-bold text-[#2C2825] mb-3">
+            <h1 className="font-serif text-4xl font-bold text-[#0F1729] mb-3">
               Pogoji uporabe
             </h1>
             <p className="text-sm text-gray-400">
@@ -181,7 +181,7 @@ export default function TermsPage() {
             <div className="overflow-x-auto">
               <table className="w-full text-sm border-collapse">
                 <thead>
-                  <tr className="bg-[#FAF7F2]">
+                  <tr className="bg-[#F2F4F8]">
                     <th className="text-left p-3 font-semibold border border-gray-200">
                       Paket
                     </th>
@@ -245,7 +245,7 @@ export default function TermsPage() {
                 pošljite na{" "}
                 <a
                   href="mailto:hello@guestcam.si"
-                  className="text-[#C4738A] hover:underline"
+                  className="text-[#1E3A8A] hover:underline"
                 >
                   hello@guestcam.si
                 </a>
@@ -314,7 +314,7 @@ export default function TermsPage() {
               sporov poskušamo doseči sporazumno rešitev — kontaktirajte nas na{" "}
               <a
                 href="mailto:hello@guestcam.si"
-                className="text-[#C4738A] hover:underline"
+                className="text-[#1E3A8A] hover:underline"
               >
                 hello@guestcam.si
               </a>
@@ -323,13 +323,13 @@ export default function TermsPage() {
           </Section>
 
           <Section title="11. Kontakt">
-            <div className="bg-[#FAF7F2] rounded-xl p-4 border border-gray-100">
-              <p className="font-semibold text-[#2C2825]">Sport group d.o.o.</p>
+            <div className="bg-[#F2F4F8] rounded-xl p-4 border border-gray-100">
+              <p className="font-semibold text-[#0F1729]">Sport group d.o.o.</p>
               <p className="text-sm text-gray-600 mt-1">
                 E-pošta:{" "}
                 <a
                   href="mailto:hello@guestcam.si"
-                  className="text-[#C4738A] hover:underline"
+                  className="text-[#1E3A8A] hover:underline"
                 >
                   hello@guestcam.si
                 </a>

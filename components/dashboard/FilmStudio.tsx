@@ -213,9 +213,7 @@ export function FilmStudio({ album }: { album: Album }) {
 
       {/* ── Header card ──────────────────────────────────────────────────── */}
       <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
-        <div className="h-1.5 w-full" style={{
-          background: "linear-gradient(to right, #C4738A, #9b59b6, #3498db)"
-        }} />
+        <div className="h-1.5 w-full" style={{ background: "#1E3A8A" }} />
 
         <div className="p-6">
           <div className="flex items-start justify-between gap-4 flex-wrap">
@@ -264,7 +262,7 @@ export function FilmStudio({ album }: { album: Album }) {
                 className="h-full rounded-full transition-all"
                 style={{
                   width: `${Math.min(100, (photosToGenerate / tierLimit) * 100)}%`,
-                  background: "linear-gradient(to right, #C4738A, #9b59b6)",
+                  background: "#1E3A8A",
                 }}
               />
             </div>
@@ -278,7 +276,7 @@ export function FilmStudio({ album }: { album: Album }) {
                   onClick={startGeneration}
                   disabled={starting || totalPhotos === 0}
                   className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white transition-all disabled:opacity-40 hover:opacity-90"
-                  style={{ background: "linear-gradient(135deg, #C4738A, #9b59b6)" }}
+                  style={{ background: "#1E3A8A" }}
                 >
                   {starting ? (
                     <>
@@ -317,7 +315,7 @@ export function FilmStudio({ album }: { album: Album }) {
                     className="h-full rounded-full transition-all duration-700"
                     style={{
                       width: `${pct}%`,
-                      background: "linear-gradient(to right, #C4738A, #9b59b6)",
+                      background: "#1E3A8A",
                     }}
                   />
                 </div>
@@ -470,7 +468,7 @@ export function FilmStudio({ album }: { album: Album }) {
 
       {/* ── Upgrade card (only shown when not on premium) ─────────────────── */}
       {filmTier !== "premium" && (
-        <div className="bg-gradient-to-br from-violet-50 to-blue-50 rounded-2xl border border-violet-100 p-5">
+        <div className="bg-violet-50 rounded-2xl border border-violet-100 p-5">
           <h3 className="text-sm font-bold text-gray-800 mb-1 flex items-center gap-2">
             ✨ Povečaj kapaciteto filma
           </h3>

@@ -15,13 +15,21 @@ interface Props {
   onNameChange?: (name: string) => void;
   /** Files pre-selected before the modal opened (e.g. camera capture). */
   initialFiles?: FileList | null;
+  /** Event-specific accent color for accent elements (dropzone, progress, button). */
+  accent?: string;
+  /** Album password (if the album is password-protected) — sent with upload requests. */
+  albumPassword?: string;
+  /** Album moments (named sub-galleries) — if non-empty, a Moment selector is shown. */
+  moments?: { id: string; name: string }[];
+  /** Pre-selected moment id for the Moment selector. */
+  defaultMomentId?: string | null;
 }
 
 interface UploadFile {
   id: string;
   file: File;
   preview: string | null;
-  status: "idle" | "compressing" | "uploading" | "done" | "error";
+  status: "idle" | "compressing" | "uploading" | "done" | "error" | "skipped";
   progress: number;
   error?: string;
   isVideo: boolean;
@@ -104,14 +112,16 @@ async function uploadFile(
   albumId: string,
   uploaderName: string,
   onProgress: (pct: number) => void,
-): Promise<void> {
+  albumPassword: string,
+  momentId: string | null,
+): Promise<"uploaded" | "duplicate"> {
   // 0. Compress if the image is too large for Vercel's 4.5 MB proxy limit
   const file = await maybeCompress(rawFile);
 
   // 1. Ask server which upload path to use
   const urlRes = await fetch(`/api/albums/${albumSlug}/upload-url`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json", "x-album-password": albumPassword },
     body: JSON.stringify({ filename: file.name, contentType: file.type, size: file.size }),
   });
   if (!urlRes.ok) {
@@ -126,9 +136,13 @@ async function uploadFile(
     | { type: "bunny-storage"; key: string }
     | { type: "r2";            presignedUrl: string; publicUrl: string; key: string }
     | { type: "stream";        uploadUrl: string; videoId: string }
-    | { type: "vercel-blob" };
+    | { type: "vercel-blob" }
+    | { type: "duplicate" };
 
   const urlData = await urlRes.json() as UrlData;
+
+  // Server detected an identical file already in this album — skip it.
+  if (urlData.type === "duplicate") return "duplicate";
 
   // ── Bunny Stream (tus direct upload) ──────────────────────────────────────
   if (urlData.type === "bunny-stream") {
@@ -139,9 +153,10 @@ async function uploadFile(
       originalFilename: file.name,
       sizeBytes: file.size,
       uploaderName,
+      momentId,
     });
     onProgress(100);
-    return;
+    return "uploaded";
   }
 
   // ── Bunny Storage (XHR proxy — real byte-level progress) ────────────────────
@@ -159,9 +174,10 @@ async function uploadFile(
       originalFilename: file.name,
       sizeBytes: file.size,
       uploaderName,
+      momentId,
     });
     onProgress(100);
-    return;
+    return "uploaded";
   }
 
   // ── Cloudflare R2 (presigned PUT) ─────────────────────────────────────────
@@ -180,9 +196,10 @@ async function uploadFile(
       originalFilename: file.name,
       sizeBytes: file.size,
       uploaderName,
+      momentId,
     });
     onProgress(100);
-    return;
+    return "uploaded";
   }
 
   // ── Cloudflare Stream (tus) ───────────────────────────────────────────────
@@ -194,9 +211,10 @@ async function uploadFile(
       originalFilename: file.name,
       sizeBytes: file.size,
       uploaderName,
+      momentId,
     });
     onProgress(100);
-    return;
+    return "uploaded";
   }
 
   // ── Vercel Blob fallback ──────────────────────────────────────────────────
@@ -220,8 +238,10 @@ async function uploadFile(
     originalFilename: file.name,
     sizeBytes: file.size,
     uploaderName,
+    momentId,
   });
   onProgress(100);
+  return "uploaded";
 }
 
 /** tus upload for Bunny Stream */
@@ -354,12 +374,13 @@ async function saveUpload(slug: string, body: object) {
 
 // ── Component ─────────────────────────────────────────────────────────────────
 
-export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, currentCount, lang, onClose, onSuccess, onNameChange: _onNameChange, initialFiles }: Props) {
+export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, currentCount, lang, onClose, onSuccess, onNameChange: _onNameChange, initialFiles, accent = "#1E3A8A", albumPassword = "", moments = [], defaultMomentId = null }: Props) {
   const t = translations[lang];
   const [files, setFiles] = useState<UploadFile[]>([]);
   const [uploading, setUploading] = useState(false);
   const [allDone, setAllDone] = useState(false);
   const [dragOver, setDragOver] = useState(false);
+  const [momentId, setMomentId] = useState<string>(defaultMomentId ?? "");
   const inputRef = useRef<HTMLInputElement>(null);
   const remaining = Math.max(0, maxPhotos - currentCount);
 
@@ -452,7 +473,7 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
     setUploading(true);
 
     for (const f of files) {
-      if (f.status === "done") continue;
+      if (f.status === "done" || f.status === "skipped") continue;
 
       // Show "Optimizira…" if this image is large enough to need compression
       const needsCompress = !f.isVideo && f.file.size > COMPRESS_THRESHOLD_BYTES;
@@ -460,13 +481,15 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
       else updateFile(f.id, { status: "uploading", progress: 5 });
 
       try {
-        await uploadFile(
+        const result = await uploadFile(
           f.file, albumSlug, albumId, uploaderName,
-          pct => updateFile(f.id, { status: "uploading", progress: pct })
+          pct => updateFile(f.id, { status: "uploading", progress: pct }),
+          albumPassword,
+          momentId || null,
         );
-        updateFile(f.id, { status: "done", progress: 100 });
+        updateFile(f.id, { status: result === "duplicate" ? "skipped" : "done", progress: 100 });
       } catch (err) {
-        const msg = err instanceof Error ? err.message : "Napaka";
+        const msg = err instanceof Error ? err.message : t.genericError;
         // STALL = phone was locked/backgrounded — don't show red error text,
         // visibility-change handler will auto-retry when user returns
         const isStall = msg === "STALL";
@@ -489,21 +512,21 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
 
   return (
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-6">
-      <div className="absolute inset-0 bg-[#2C2825]/70 backdrop-blur-sm" onClick={!uploading ? onClose : undefined} />
+      <div className="absolute inset-0 bg-[#0F1729]/70 backdrop-blur-sm" onClick={!uploading ? onClose : undefined} />
 
-      <div className="relative w-full sm:max-w-lg bg-[#FAF7F2] rounded-t-3xl sm:rounded-3xl shadow-2xl max-h-[92vh] flex flex-col overflow-hidden">
+      <div className="relative w-full sm:max-w-lg bg-white rounded-t-3xl sm:rounded-2xl shadow-xl max-h-[92vh] flex flex-col overflow-hidden">
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-[#C9A96E]/20 shrink-0">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 shrink-0">
           <div>
-            <h2 className="font-serif text-xl font-light text-[#2C2825]">{t.uploadModalTitle}</h2>
+            <h2 className="font-serif text-xl font-light text-[#0F1729]">{t.uploadModalTitle}</h2>
             <div className="flex items-center gap-3 mt-0.5">
-              <span className="text-[10px] text-[#2C2825]/40 bg-[#C9A96E]/10 px-2 py-0.5 rounded-full font-medium">📷 Do {MAX_IMAGE_MB} MB</span>
-              <span className="text-[10px] text-[#2C2825]/40 bg-[#C9A96E]/10 px-2 py-0.5 rounded-full font-medium">📹 Videi do {MAX_VIDEO_MB} MB</span>
-              <span className="text-[10px] text-green-600 font-medium">Polna kakovost</span>
+              <span className="text-[10px] text-[#0F1729]/40 px-2 py-0.5 rounded-full font-medium" style={{ background: `${accent}1A` }}>📷 {t.maxImageSize(MAX_IMAGE_MB)}</span>
+              <span className="text-[10px] text-[#0F1729]/40 px-2 py-0.5 rounded-full font-medium" style={{ background: `${accent}1A` }}>📹 {t.maxVideoSize(MAX_VIDEO_MB)}</span>
+              <span className="text-[10px] text-green-600 font-medium">{t.fullQuality}</span>
             </div>
           </div>
-          <button onClick={onClose} disabled={uploading} className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-[#C9A96E]/10 disabled:opacity-40">
-            <svg className="w-4 h-4 text-[#2C2825]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+          <button onClick={onClose} disabled={uploading} className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 disabled:opacity-40">
+            <svg className="w-4 h-4 text-[#0F1729]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
@@ -517,18 +540,42 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
                   <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                 </svg>
               </div>
-              <p className="font-serif text-xl font-light text-[#2C2825] mb-1">{t.successTitle(success)}</p>
-              <p className="font-sans text-sm text-[#2C2825]/60 mb-3">{t.successDesc}</p>
+              <p className="font-serif text-xl font-light text-[#0F1729] mb-1">{t.successTitle(success)}</p>
+              <p className="font-sans text-sm text-[#0F1729]/60 mb-3">{t.successDesc}</p>
               {/* Approval note */}
-              <p className="font-sans text-xs text-[#2C2825]/45 bg-[#FAF7F2] border border-[#C9A96E]/20 rounded-xl px-4 py-2.5 mb-6 leading-relaxed">
+              <p className="font-sans text-xs text-[#0F1729]/45 bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 mb-6 leading-relaxed">
                 {t.approvalNote}
               </p>
-              <button onClick={onSuccess} className="px-6 py-2.5 bg-[#2C2825] text-[#FAF7F2] font-sans text-sm rounded-xl hover:bg-[#C9A96E] transition-colors">
+              <button
+                onClick={onSuccess}
+                className="px-6 py-2.5 text-[#F2F4F8] font-sans text-sm rounded-xl transition-colors"
+                style={{ background: "#0F1729" }}
+                onMouseEnter={e => { e.currentTarget.style.background = accent; }}
+                onMouseLeave={e => { e.currentTarget.style.background = "#0F1729"; }}
+              >
                 {t.close}
               </button>
             </div>
           ) : (
             <>
+              {/* Moment selector */}
+              {moments.length > 0 && (
+                <div>
+                  <label className="block text-xs font-semibold text-[#0F1729]/60 mb-1.5">{t.momentLabel}</label>
+                  <select
+                    value={momentId}
+                    onChange={(e) => setMomentId(e.target.value)}
+                    disabled={uploading}
+                    className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm text-[#0F1729] bg-white outline-none disabled:opacity-50"
+                  >
+                    <option value="">{t.momentNone}</option>
+                    {moments.map(m => (
+                      <option key={m.id} value={m.id}>{m.name}</option>
+                    ))}
+                  </select>
+                </div>
+              )}
+
               {/* Drop zone */}
               {files.length < remaining && (
                 <div
@@ -536,51 +583,57 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
                   onDragOver={e => { e.preventDefault(); setDragOver(true); }}
                   onDragLeave={() => setDragOver(false)}
                   onClick={() => inputRef.current?.click()}
-                  className={`border-2 border-dashed rounded-2xl p-8 text-center cursor-pointer select-none transition-all ${dragOver ? "border-[#C9A96E] bg-[#C9A96E]/8 scale-[1.01]" : "border-[#C9A96E]/30 hover:border-[#C9A96E]/60 hover:bg-[#C9A96E]/5"}`}
+                  onMouseEnter={e => { if (!dragOver) { e.currentTarget.style.borderColor = `${accent}99`; e.currentTarget.style.background = `${accent}0D`; } }}
+                  onMouseLeave={e => { if (!dragOver) { e.currentTarget.style.borderColor = "#D1D5DB"; e.currentTarget.style.background = "transparent"; } }}
+                  className="border-2 border-dashed rounded-2xl p-8 text-center cursor-pointer select-none transition-all"
+                  style={dragOver
+                    ? { borderColor: accent, background: `${accent}14` }
+                    : { borderColor: "#D1D5DB", background: "transparent" }}
                 >
                   <input ref={inputRef} type="file" multiple accept={ALL_ACCEPTED.join(",")} className="hidden" onChange={e => e.target.files && addFiles(e.target.files)} />
-                  <div className="w-12 h-12 rounded-full bg-[#C9A96E]/10 flex items-center justify-center mx-auto mb-3">
-                    <svg className="w-6 h-6 text-[#C9A96E]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                  <div className="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3" style={{ background: `${accent}1A` }}>
+                    <svg className="w-6 h-6" style={{ color: accent }} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
                     </svg>
                   </div>
-                  <p className="font-sans text-sm font-semibold text-[#2C2825]/80 mb-1">
-                    {dragOver ? "Spusti datoteke" : "Izberi fotografije in videe"}
+                  <p className="font-sans text-sm font-semibold text-[#0F1729]/80 mb-1">
+                    {dragOver ? t.dropFiles : t.selectPhotosVideos}
                   </p>
-                  <p className="font-sans text-xs text-[#2C2825]/40">JPEG · PNG · HEIC · MP4 · MOV · do {remaining} datotek</p>
+                  <p className="font-sans text-xs text-[#0F1729]/40">{t.fileTypesHint(remaining)}</p>
                 </div>
               )}
 
               {/* File list */}
               {files.map(f => (
-                <div key={f.id} className="flex items-center gap-3 p-3 bg-white rounded-2xl border border-[#C9A96E]/15">
-                  <div className="w-12 h-12 rounded-xl overflow-hidden shrink-0 bg-[#C9A96E]/10 flex items-center justify-center">
+                <div key={f.id} className="flex items-center gap-3 p-3 bg-white rounded-2xl border border-gray-200">
+                  <div className="w-12 h-12 rounded-xl overflow-hidden shrink-0 flex items-center justify-center" style={{ background: `${accent}1A` }}>
                     {f.isVideo
-                      ? <svg className="w-6 h-6 text-[#C9A96E]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /><path strokeLinecap="round" strokeLinejoin="round" d="M15.91 11.672a.375.375 0 010 .656l-5.603 3.113a.375.375 0 01-.557-.328V8.887c0-.286.307-.466.557-.327l5.603 3.112z" /></svg>
+                      ? <svg className="w-6 h-6" style={{ color: accent }} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /><path strokeLinecap="round" strokeLinejoin="round" d="M15.91 11.672a.375.375 0 010 .656l-5.603 3.113a.375.375 0 01-.557-.328V8.887c0-.286.307-.466.557-.327l5.603 3.112z" /></svg>
                       : f.preview ? <img src={f.preview} alt="" className="w-full h-full object-cover" /> : null}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="font-sans text-sm text-[#2C2825] truncate font-medium">{f.file.name}</p>
+                    <p className="font-sans text-sm text-[#0F1729] truncate font-medium">{f.file.name}</p>
                     <div className="mt-1 flex items-center gap-2">
-                      {f.status === "idle" && <p className="text-xs text-[#2C2825]/40">{f.isVideo ? "📹" : "📷"} {fmt(f.file.size)}</p>}
+                      {f.status === "idle" && <p className="text-xs text-[#0F1729]/40">{f.isVideo ? "📹" : "📷"} {fmt(f.file.size)}</p>}
                       {f.status === "compressing" && (
                         <p className="text-xs text-amber-600 flex items-center gap-1.5 font-medium">
                           <svg className="w-3 h-3 animate-spin shrink-0" fill="none" viewBox="0 0 24 24">
                             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
                             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
                           </svg>
-                          Optimizira…
+                          {t.optimizing}
                         </p>
                       )}
                       {f.status === "uploading" && (
                         <div className="flex items-center gap-2 flex-1">
-                          <div className="flex-1 h-1.5 bg-[#C9A96E]/15 rounded-full overflow-hidden">
-                            <div className="h-full bg-[#C9A96E] rounded-full transition-all duration-300" style={{ width: `${f.progress}%` }} />
+                          <div className="flex-1 h-1.5 rounded-full overflow-hidden" style={{ background: `${accent}26` }}>
+                            <div className="h-full rounded-full transition-all duration-300" style={{ width: `${f.progress}%`, background: accent }} />
                           </div>
-                          <span className="text-xs text-[#C9A96E] font-semibold shrink-0">{f.progress}%</span>
+                          <span className="text-xs font-semibold shrink-0" style={{ color: accent }}>{f.progress}%</span>
                         </div>
                       )}
-                      {f.status === "done" && <p className="text-xs text-green-600 flex items-center gap-1"><svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>Naloženo</p>}
+                      {f.status === "done" && <p className="text-xs text-green-600 flex items-center gap-1"><svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>{t.fileUploaded}</p>}
+                      {f.status === "skipped" && <p className="text-xs text-gray-400 flex items-center gap-1"><svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>{t.alreadyUploaded}</p>}
                       {f.status === "error" && <p className="text-xs text-red-500 truncate">{f.error}</p>}
                     </div>
                   </div>
@@ -596,7 +649,7 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
         </div>
 
         {!allDone && (
-          <div className="px-6 py-4 border-t border-[#C9A96E]/20 shrink-0 space-y-3">
+          <div className="px-6 py-4 border-t border-gray-100 shrink-0 space-y-3">
             {/* Overall progress bar — visible only while uploading */}
             {uploading && (() => {
               const total = files.length;
@@ -607,15 +660,15 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
               return (
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs text-[#2C2825]/50 font-medium">
-                      {done < total ? `Nalagam ${done + 1} / ${total}` : "Shranjujem…"}
+                    <span className="text-xs text-[#0F1729]/50 font-medium">
+                      {done < total ? t.uploadingProgress(done + 1, total) : t.saving}
                     </span>
-                    <span className="text-xs font-bold text-[#C9A96E]">{avgPct}%</span>
+                    <span className="text-xs font-bold" style={{ color: accent }}>{avgPct}%</span>
                   </div>
-                  <div className="h-2 bg-[#C9A96E]/15 rounded-full overflow-hidden">
+                  <div className="h-2 rounded-full overflow-hidden" style={{ background: `${accent}26` }}>
                     <div
                       className="h-full rounded-full transition-all duration-200"
-                      style={{ width: `${avgPct}%`, background: "linear-gradient(90deg, #C9A96E, #b8874a)" }}
+                      style={{ width: `${avgPct}%`, background: accent }}
                     />
                   </div>
                   {/* Keep-screen-on warning */}
@@ -623,23 +676,23 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
                     <svg className="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
                     </svg>
-                    <span>Ne zaprite okna in ne zamenjajte aplikacije med nalaganjem</span>
+                    <span>{t.doNotCloseWindow}</span>
                   </div>
                 </div>
               );
             })()}
 
             <div className="flex items-center justify-between gap-3">
-              <button onClick={onClose} disabled={uploading} className="text-sm text-[#2C2825]/60 hover:text-[#2C2825] transition-colors disabled:opacity-40">{t.cancel}</button>
+              <button onClick={onClose} disabled={uploading} className="text-sm text-[#0F1729]/60 hover:text-[#0F1729] transition-colors disabled:opacity-40">{t.cancel}</button>
               <button
                 onClick={uploadAll}
                 disabled={files.length === 0 || uploading}
-                className="px-6 py-2.5 rounded-2xl text-white font-semibold text-sm transition-all disabled:opacity-40 flex items-center gap-2"
-                style={{ background: "#C9A96E", boxShadow: files.length > 0 && !uploading ? "0 4px 14px rgba(201,169,110,0.4)" : "none" }}
+                className="px-6 py-2.5 rounded-2xl text-white font-semibold text-sm transition-all disabled:opacity-40 flex items-center gap-2 hover:brightness-95"
+                style={{ background: accent }}
               >
                 {uploading
-                  ? <><svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>Nalagam…</>
-                  : <><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" /></svg>Naloži {files.length > 0 ? `(${files.length})` : ""}</>
+                  ? <><svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>{t.uploading}</>
+                  : <><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" /></svg>{t.uploadBtn(files.length)}</>
                 }
               </button>
             </div>

@@ -17,13 +17,13 @@ export default async function NewAlbumPage() {
   if (!userId) redirect("/sign-in");
 
   return (
-    <div className="min-h-screen" style={{ background: "#FDF4F5" }}>
+    <div className="min-h-screen" style={{ background: "#F4F6FB" }}>
       <DashboardNav />
 
       <main className="max-w-xl mx-auto px-4 sm:px-6 py-14">
 
         {/* Back */}
-        <Link href="/dashboard" className="inline-flex items-center gap-1.5 text-sm text-gray-400 hover:text-[#2C2825] transition-colors mb-8">
+        <Link href="/dashboard" className="inline-flex items-center gap-1.5 text-sm text-gray-400 hover:text-[#0F1729] transition-colors mb-8">
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
           </svg>

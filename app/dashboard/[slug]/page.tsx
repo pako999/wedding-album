@@ -63,14 +63,14 @@ export default async function AlbumAdminPage({ params, searchParams }: Props) {
   } catch (err) {
     console.error("[album page] DB error:", err);
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ background: "#FDF4F5" }}>
+      <div className="min-h-screen flex items-center justify-center" style={{ background: "#F4F6FB" }}>
         <div className="bg-white rounded-2xl border border-amber-200 p-8 max-w-md text-center shadow">
           <div className="text-4xl mb-4">⚠️</div>
-          <h1 className="font-serif text-2xl text-[#2C2825] mb-2">Napaka pri nalaganju</h1>
+          <h1 className="font-serif text-2xl text-[#0F1729] mb-2">Napaka pri nalaganju</h1>
           <p className="text-sm text-gray-500 mb-4">
             Prišlo je do napake z bazo podatkov. Poskusite znova čez trenutek.
           </p>
-          <a href="/dashboard" className="inline-block px-6 py-3 rounded-xl text-white text-sm font-semibold" style={{ background: "#C4738A" }}>
+          <a href="/dashboard" className="inline-block px-6 py-3 rounded-xl text-white text-sm font-semibold" style={{ background: "#1E3A8A" }}>
             Nazaj na galerije
           </a>
         </div>

@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { headers } from "next/headers";
 import { db } from "@/lib/db";
-import { albums, photos } from "@/lib/db/schema";
+import { albums, photos, moments } from "@/lib/db/schema";
 import { eq, and } from "drizzle-orm";
 import { AlbumGuestView } from "@/components/album/AlbumGuestView";
 import { detectLang, type Lang } from "@/lib/i18n/translations";
@@ -63,10 +63,17 @@ export default async function AlbumPage({ params, searchParams }: Props) {
       })
     : [];
 
+  // Fetch the album's moments (named sub-galleries)
+  const albumMoments = await db.query.moments.findMany({
+    where: eq(moments.albumId, album.id),
+    orderBy: (m, { asc }) => [asc(m.sortOrder), asc(m.createdAt)],
+  });
+
   return (
     <AlbumGuestView
       album={album}
       photos={albumPhotos}
+      moments={albumMoments}
       passwordRequired={passwordRequired}
       passwordCorrect={passwordCorrect}
       providedPassword={pw}
