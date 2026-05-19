@@ -71,6 +71,15 @@ body {
   .masonry-item { margin-bottom: 12px; }
 }
 
+/* Lightbox likes/comments side panel (desktop only, >= lg).
+   The panel occupies the right 340px of the lightbox; pad the slide so the photo
+   shrinks to fit beside it, and nudge the next-arrow + toolbar clear of it. */
+@media (min-width: 1024px) {
+  .guestcam-lightbox .yarl__slide { padding-right: 340px; }
+  .guestcam-lightbox .yarl__navigation_next { right: 340px; }
+  .guestcam-lightbox .yarl__toolbar { right: 340px; }
+}
+
 /* Smooth scrollbar */
 * { scrollbar-width: thin; scrollbar-color: var(--gold-light) transparent; }
 

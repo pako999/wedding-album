@@ -239,17 +239,13 @@ export default function HomePage() {
             </div>
 
             {/* ── RIGHT: Hero image story — scan → live gallery → printed cards ──
-                 Placeholder images live in public/hero/. Replace these 3 files
-                 with the generated photos, keeping the same filenames:
-                   scan.jpg    — hand scanning a QR card        (≈ 4:5 portrait)
-                   gallery.jpg — phone showing the live gallery (≈ 4:5 portrait)
-                   cards.jpg   — printed QR cards on a table    (1:1 square)
-            ─────────────────────────────────────────────────────────────────── */}
+                 Images live in public/hero/ (WebP): scan.webp (4:5),
+                 gallery.webp (4:5), cards.webp (1:1). ─────────────────────────── */}
             <div className="hidden lg:block relative select-none" style={{ height: 600 }}>
 
               {/* 1 — Scan moment (dominant, biggest) */}
               <div className="absolute rounded-3xl overflow-hidden shadow-2xl" style={{ top: 56, left: 0, width: 372, height: 466, transform: 'rotate(-5deg)', zIndex: 20 }}>
-                <img src="/hero/scan.jpg" alt="Skeniranje QR kartice s telefonom" className="w-full h-full object-cover" />
+                <img src="/hero/scan.webp" alt="Skeniranje QR kartice s telefonom" className="w-full h-full object-cover" />
                 {/* Polna kakovost — labels the scan/photo quality */}
                 <div className="absolute bottom-4 left-4 bg-white rounded-2xl shadow-lg px-4 py-2.5 flex items-center gap-2">
                   <svg className="w-3.5 h-3.5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
@@ -261,7 +257,7 @@ export default function HomePage() {
 
               {/* 2 — Live gallery (top-right, smaller) */}
               <div className="absolute rounded-2xl overflow-hidden shadow-xl" style={{ top: 0, right: 0, width: 244, height: 304, transform: 'rotate(5deg)', zIndex: 30 }}>
-                <img src="/hero/gallery.jpg" alt="Galerija fotografij v živo" className="w-full h-full object-cover" />
+                <img src="/hero/gallery.webp" alt="Galerija fotografij v živo" className="w-full h-full object-cover" />
               </div>
 
               {/* +183 fotografij — labels the live gallery */}
@@ -279,7 +275,7 @@ export default function HomePage() {
 
               {/* 3 — Printed cards (bottom-right, smaller) */}
               <div className="absolute rounded-2xl overflow-hidden shadow-2xl" style={{ bottom: 20, right: 24, width: 252, height: 252, transform: 'rotate(4deg)', zIndex: 30 }}>
-                <img src="/hero/cards.jpg" alt="Natisnjene QR kartice na poročni mizi" className="w-full h-full object-cover" />
+                <img src="/hero/cards.webp" alt="Natisnjene QR kartice na poročni mizi" className="w-full h-full object-cover" />
                 {/* Brez aplikacije — labels the printed cards */}
                 <div className="absolute top-4 left-4 bg-white rounded-2xl shadow-lg px-3.5 py-2 flex items-center gap-2">
                   <svg className="w-3.5 h-3.5" style={{ color: '#1E3A8A' }} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>

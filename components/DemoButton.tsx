@@ -65,7 +65,7 @@ export function DemoButton({ variant = "hero" }: { variant?: "hero" | "nav" }) {
             </button>
 
             <p className="text-xs font-bold uppercase tracking-[0.18em] text-gray-400 mb-2">Demo v živo</p>
-            <h2 className="font-serif text-2xl font-light text-[#0F1729] mb-2">
+            <h2 className="text-2xl font-bold tracking-tight text-[#0F1729] mb-2">
               Razišči demo galerijo
             </h2>
             <p className="text-sm text-gray-500 leading-relaxed mb-6">
@@ -103,7 +103,9 @@ export function DemoButton({ variant = "hero" }: { variant?: "hero" | "nav" }) {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
               </svg>
             </a>
-            <p className="mt-3 text-xs text-gray-400">Brez prijave · Brez aplikacije</p>
+            <p className="mt-4 text-sm font-bold uppercase tracking-wide text-[#1E3A8A]">
+              Brez prijave · Brez aplikacije
+            </p>
           </div>
         </div>
       )}
