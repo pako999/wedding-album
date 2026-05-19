@@ -39,6 +39,6 @@ export function CountdownTimer({ targetDate, translations: t, accent = "#1E3A8A"
   if (!label) return null;
 
   return (
-    <span className="font-sans text-xs font-medium" style={{ color: accent }}>{label}</span>
+    <span className="font-sans text-xs font-semibold tracking-wide" style={{ color: accent }}>{label}</span>
   );
 }

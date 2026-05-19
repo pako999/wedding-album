@@ -79,6 +79,9 @@ const BRAND = {
   bg:          "#F9FAFB",
 };
 
+/** Public demo album — guests browse freely but cannot upload. */
+const DEMO_ALBUM_SLUG = "ana-marko-13ka";
+
 const BROKEN_IMG_SRC =
   "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 24 24' fill='none' stroke='%23d1d5db' stroke-width='1.5'%3E%3Crect x='2' y='7' width='20' height='14' rx='3'/%3E%3Ccircle cx='12' cy='14' r='3'/%3E%3C/svg%3E";
 
@@ -125,6 +128,9 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
   const [commentInput, setCommentInput]         = useState("");
   const [commentPosting, setCommentPosting]     = useState(false);
   const [turnstileToken, setTurnstileToken]     = useState<string | null>(null);
+  // Lightbox info panel (likes + comments for the currently shown photo)
+  const [lightboxViewIndex, setLightboxViewIndex] = useState(0);
+  const [lightboxPanelOpen, setLightboxPanelOpen] = useState(false); // mobile collapsible
 
   const nameInputRef  = useRef<HTMLInputElement>(null);
   const cameraFilesRef = useRef<FileList | null>(null);
@@ -134,6 +140,13 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
   const t       = translations[lang];
   const evtIcon = eventIcon(album.eventType ?? "other");
   const albumFull = album.plan === "free" && photos.length >= (album.maxPhotos ?? 20);
+
+  // ── Demo album: uploads allowed, but a tester is capped at 5 photos ───────
+  const isDemo = album.slug === DEMO_ALBUM_SLUG;
+  /** Open the upload modal. */
+  const openUpload = useCallback(() => {
+    setUploadOpen(true);
+  }, []);
 
   // ── Per-occasion theme (dark hero hue + accent color) ─────────────────────
   const theme = getEventTheme(album.eventType);
@@ -229,6 +242,12 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
       }
     }
   }, [openCommentsPhoto, nameConfirmed]);
+
+  // ── Lightbox panel ↔ comment target sync ──────────────────────────────────
+  // While the lightbox is open, the info panel reuses the existing comment
+  // pipeline (postComment / turnstile effect) by pointing `openCommentsPhoto`
+  // at the currently shown photo. The standalone comments modal is suppressed
+  // whenever the lightbox is open, so the two never collide.
 
   // ── Like toggle ───────────────────────────────────────────────────────────
   const toggleLike = useCallback((photoId: string) => {
@@ -361,6 +380,18 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
   const getLightboxIdx = (photo: Photo): number =>
     filteredImages.findIndex(p => p.id === photo.id);
 
+  const lightboxOpen = lightboxIndex >= 0;
+  // Photo currently shown in the lightbox (drives the info panel)
+  const lightboxPhoto: Photo | undefined = lightboxOpen ? filteredImages[lightboxViewIndex] : undefined;
+
+  // Keep the comment pipeline pointed at the lightbox's current photo while open.
+  useEffect(() => {
+    if (lightboxOpen && lightboxPhoto) {
+      setOpenCommentsPhoto(lightboxPhoto.id);
+      setCommentInput("");
+    }
+  }, [lightboxOpen, lightboxPhoto?.id]); // eslint-disable-line react-hooks/exhaustive-deps
+
   // ── Password gate ─────────────────────────────────────────────────────────
   if (passwordRequired && !passwordCorrect) {
     return (
@@ -441,14 +472,14 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
         ) : (
           <div className="relative pt-14 pb-14 sm:pt-16 sm:pb-20 px-6 text-center overflow-hidden" style={{ background: theme.heroBg }}>
             <div className="absolute top-0 inset-x-0 flex items-center justify-between px-6 pt-4">
-              <div className="flex items-center gap-2 text-white/50 text-xs font-medium uppercase tracking-[0.18em]">
+              <div className="flex items-center gap-2 text-white/70 text-xs font-medium uppercase tracking-[0.18em]">
                 <span className="text-sm">{evtIcon}</span>
                 <span>{t.eventLabel(album.eventType ?? "other")}</span>
               </div>
               <div className="flex items-center gap-1">
                 {LANGS.map((l) => (
                   <button key={l.code} onClick={() => switchLang(l.code)} className="px-1.5 py-1 rounded-lg text-sm transition-all hover:bg-white/10"
-                    style={lang === l.code ? { background: `${theme.accent}4D` } : { color: "rgba(255,255,255,0.5)" }}>{l.flag}</button>
+                    style={lang === l.code ? { background: "rgba(255,255,255,0.22)" } : { color: "rgba(255,255,255,0.7)" }}>{l.flag}</button>
                 ))}
               </div>
             </div>
@@ -463,22 +494,22 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
               </h1>
               {/* Date · location row, framed by thin dividers */}
               <div className="flex items-center justify-center gap-3 sm:gap-4 mb-6">
-                <span className="h-px w-8 sm:w-12" style={{ background: "rgba(255,255,255,0.18)" }} />
-                <div className="flex flex-wrap items-center justify-center gap-x-2.5 gap-y-0.5 text-white/60 text-xs sm:text-sm uppercase tracking-[0.14em]">
+                <span className="h-px w-8 sm:w-12" style={{ background: "rgba(255,255,255,0.3)" }} />
+                <div className="flex flex-wrap items-center justify-center gap-x-2.5 gap-y-0.5 text-white/75 text-xs sm:text-sm uppercase tracking-[0.14em]">
                   <span>{album.weddingDate}</span>
-                  {album.location && <><span className="text-white/25">·</span><span>{album.location}</span></>}
+                  {album.location && <><span className="text-white/40">·</span><span>{album.location}</span></>}
                 </div>
-                <span className="h-px w-8 sm:w-12" style={{ background: "rgba(255,255,255,0.18)" }} />
+                <span className="h-px w-8 sm:w-12" style={{ background: "rgba(255,255,255,0.3)" }} />
               </div>
               {photos.length > 0 && (
-                <p className="text-white/45 text-xs tracking-wide mb-6">
+                <p className="text-white/65 text-xs tracking-wide mb-6">
                   {t.photoCount(photoCount)}{videoCount > 0 ? ` · ${t.videoCount(videoCount)}` : ""}
                 </p>
               )}
-              {/* Countdown as a tasteful pill */}
+              {/* Countdown as a tasteful pill — translucent white on the navy hero */}
               <div className="inline-flex items-center rounded-full px-5 py-2"
-                style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)" }}>
-                <CountdownTimer targetDate={album.weddingDate} translations={t} accent={theme.accent} />
+                style={{ background: "rgba(255,255,255,0.12)", border: "1px solid rgba(255,255,255,0.25)" }}>
+                <CountdownTimer targetDate={album.weddingDate} translations={t} accent="#FFFFFF" />
               </div>
             </div>
           </div>
@@ -606,9 +637,13 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
                       </svg>
                       <span className="hidden sm:inline">{t.takePhoto}</span>
                       <input type="file" accept="image/*,video/*" capture="environment" multiple className="absolute inset-0 opacity-0 cursor-pointer"
-                        onChange={(e) => { if (e.target.files?.length) { cameraFilesRef.current = e.target.files; setUploadOpen(true); } }} />
+                        onChange={(e) => {
+                          if (!e.target.files?.length) return;
+                          cameraFilesRef.current = e.target.files;
+                          setUploadOpen(true);
+                        }} />
                     </label>
-                    <button onClick={() => setUploadOpen(true)}
+                    <button onClick={openUpload}
                       className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-sm font-semibold transition-all hover:bg-gray-50"
                       style={{ borderColor: BRAND.border, color: BRAND.dark }}
                     >
@@ -885,10 +920,14 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
                       </svg>
                       {t.takePhoto}
                       <input type="file" accept="image/*,video/*" capture="environment" multiple className="absolute inset-0 opacity-0 cursor-pointer"
-                        onChange={(e) => { if (e.target.files?.length) { cameraFilesRef.current = e.target.files; setUploadOpen(true); } }} />
+                        onChange={(e) => {
+                          if (!e.target.files?.length) return;
+                          cameraFilesRef.current = e.target.files;
+                          setUploadOpen(true);
+                        }} />
                     </label>
                     <button
-                      onClick={() => setUploadOpen(true)}
+                      onClick={openUpload}
                       className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-3 rounded-2xl border text-sm font-semibold transition-all hover:bg-gray-50"
                       style={{ borderColor: BRAND.border, color: BRAND.dark }}
                     >
@@ -952,7 +991,12 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
                     <div
                       key={photo.id}
                       className="masonry-item group cursor-pointer"
-                      onClick={() => setLightboxIndex(getLightboxIdx(photo))}
+                      onClick={() => {
+                        const idx = getLightboxIdx(photo);
+                        setLightboxViewIndex(idx);
+                        setLightboxPanelOpen(false);
+                        setLightboxIndex(idx);
+                      }}
                     >
                       {/* Image */}
                       <div className="relative rounded-xl overflow-hidden bg-gray-100">
@@ -992,10 +1036,10 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
                           title={myLikes.has(photo.id) ? t.unlike : t.like}
                           className="flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[11px] font-semibold transition-all shrink-0"
                           style={myLikes.has(photo.id)
-                            ? { background: accentTint, color: theme.accent }
+                            ? { background: "#FEE2E2", color: "#EF4444" }
                             : { background: "transparent", color: BRAND.muted }}
                         >
-                          <svg className="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill={myLikes.has(photo.id) ? theme.accent : "none"} stroke={myLikes.has(photo.id) ? theme.accent : "currentColor"} strokeWidth={2}>
+                          <svg className="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill={myLikes.has(photo.id) ? "#EF4444" : "none"} stroke={myLikes.has(photo.id) ? "#EF4444" : "currentColor"} strokeWidth={2}>
                             <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
                           </svg>
                           {(likeCounts[photo.id] ?? 0) > 0 && (
@@ -1036,9 +1080,13 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
               <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0z" />
             </svg>
             <input type="file" accept="image/*,video/*" capture="environment" multiple className="absolute inset-0 opacity-0 cursor-pointer"
-              onChange={(e) => { if (e.target.files?.length) { cameraFilesRef.current = e.target.files; setUploadOpen(true); } }} />
+              onChange={(e) => {
+                if (!e.target.files?.length) return;
+                cameraFilesRef.current = e.target.files;
+                setUploadOpen(true);
+              }} />
           </label>
-          <button onClick={() => setUploadOpen(true)}
+          <button onClick={openUpload}
             className="w-14 h-14 rounded-full flex items-center justify-center text-white shadow-lg transition-all active:scale-95"
             style={{ background: BRAND.dark }}>
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
@@ -1056,7 +1104,7 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
       </footer>
 
       {/* ── Comments panel ───────────────────────────────────────────────── */}
-      {openCommentsPhoto && (() => {
+      {openCommentsPhoto && !lightboxOpen && (() => {
         const photo = photos.find(p => p.id === openCommentsPhoto);
         const comments = commentMap[openCommentsPhoto] ?? [];
         return (
@@ -1155,7 +1203,6 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
                       className="flex-1 px-3 py-2 border rounded-xl text-sm outline-none transition-all"
                       style={{ borderColor: BRAND.border }}
                     />
-                    <div ref={turnstileContainerRef} className="hidden" />
                     <button
                       onClick={postComment}
                       disabled={!commentInput.trim() || commentPosting}
@@ -1199,17 +1246,198 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
         />
       )}
 
+      {/* Invisible Turnstile widget host — always mounted so the panel and the
+          standalone comments modal can both reuse the existing comment flow. */}
+      <div ref={turnstileContainerRef} className="hidden" aria-hidden="true" />
+
       {/* ── Lightbox ─────────────────────────────────────────────────────── */}
-      {lightboxSlides.length > 0 && (
-        <Lightbox
-          open={lightboxIndex >= 0}
-          close={() => setLightboxIndex(-1)}
-          index={lightboxIndex}
-          slides={lightboxSlides}
-          plugins={[Download, Counter]}
-          styles={{ container: { backgroundColor: "rgba(0,0,0,0.97)" } }}
-        />
-      )}
+      {lightboxSlides.length > 0 && (() => {
+        const PANEL_W = 340; // px — desktop side panel width
+        const lbComments = lightboxPhoto ? (commentMap[lightboxPhoto.id] ?? []) : [];
+        const lbLiked    = lightboxPhoto ? myLikes.has(lightboxPhoto.id) : false;
+        const lbLikes    = lightboxPhoto ? (likeCounts[lightboxPhoto.id] ?? 0) : 0;
+
+        /* The likes + comments panel body — shared by desktop side panel and
+           mobile bottom sheet. Reuses toggleLike / postComment / comment state. */
+        const panelBody = lightboxPhoto && (
+          <div className="flex flex-col h-full min-h-0">
+            {/* Header: uploader + like */}
+            <div className="flex items-center gap-2.5 px-4 py-3.5 border-b shrink-0" style={{ borderColor: BRAND.border }}>
+              {lightboxPhoto.uploaderName && <AvatarBubble name={lightboxPhoto.uploaderName} size={7} accent={theme.accent} />}
+              <div className="min-w-0 flex-1">
+                {lightboxPhoto.uploaderName && (
+                  <p className="text-sm font-semibold leading-tight truncate" style={{ color: BRAND.dark }}>
+                    {lightboxPhoto.uploaderName}
+                  </p>
+                )}
+                <p className="text-[11px] leading-tight" style={{ color: BRAND.muted }}>
+                  {formatUploadTime(lightboxPhoto.uploadedAt, t)}
+                </p>
+              </div>
+              <button
+                onClick={() => toggleLike(lightboxPhoto.id)}
+                disabled={!uploaderName.trim()}
+                title={lbLiked ? t.unlike : t.like}
+                className="flex items-center gap-1 px-2.5 py-1.5 rounded-full text-sm font-semibold transition-all shrink-0 disabled:opacity-40"
+                style={lbLiked
+                  ? { background: "#FEE2E2", color: "#EF4444" }
+                  : { background: BRAND.bg, color: BRAND.muted }}
+              >
+                <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill={lbLiked ? "#EF4444" : "none"} stroke={lbLiked ? "#EF4444" : "currentColor"} strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+                </svg>
+                {lbLikes > 0 && <span>{lbLikes}</span>}
+              </button>
+            </div>
+
+            {/* Comment list */}
+            <div className="flex-1 min-h-0 overflow-y-auto px-4 py-4 space-y-4">
+              <p className="text-[11px] font-bold uppercase tracking-widest" style={{ color: BRAND.muted }}>
+                {t.comments}{lbComments.length > 0 && ` · ${lbComments.length}`}
+              </p>
+              {lbComments.length === 0 ? (
+                <div className="text-center py-8">
+                  <div className="text-3xl mb-2 opacity-20">💬</div>
+                  <p className="text-sm" style={{ color: BRAND.muted }}>{t.beFirstToComment}</p>
+                </div>
+              ) : lbComments.map(c => (
+                <div key={c.id} className="flex items-start gap-2.5">
+                  <AvatarBubble name={c.uploaderName} size={7} accent={theme.accent} />
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-baseline gap-1.5">
+                      <span className="text-xs font-semibold" style={{ color: BRAND.dark }}>{c.uploaderName}</span>
+                      <span className="text-[10px]" style={{ color: BRAND.muted }}>{formatUploadTime(c.createdAt, t)}</span>
+                    </div>
+                    <p className="text-sm leading-snug mt-0.5 break-words" style={{ color: BRAND.dark }}>{c.body}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Add comment / name entry */}
+            <div className="border-t px-3 py-3 shrink-0" style={{ borderColor: BRAND.border }}>
+              {!nameConfirmed ? (
+                <div className="space-y-2 py-1">
+                  <p className="text-xs text-center font-medium" style={{ color: BRAND.muted }}>
+                    {t.enterNameToComment}
+                  </p>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="text"
+                      value={uploaderName}
+                      onChange={e => setUploaderName(e.target.value)}
+                      onKeyDown={e => e.key === "Enter" && confirmName()}
+                      placeholder={t.yourNamePlaceholder}
+                      autoComplete="given-name"
+                      className="flex-1 px-3 py-2 border rounded-xl text-sm outline-none transition-all"
+                      style={{ borderColor: BRAND.border }}
+                    />
+                    <button
+                      onClick={confirmName}
+                      disabled={!uploaderName.trim()}
+                      className="px-4 py-2 rounded-xl text-sm font-semibold text-white transition-all disabled:opacity-30 shrink-0 hover:opacity-90"
+                      style={{ background: theme.accent }}
+                    >
+                      {t.ok}
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className="flex items-center gap-2">
+                  <AvatarBubble name={uploaderName} size={7} accent={theme.accent} />
+                  <input
+                    type="text"
+                    value={commentInput}
+                    onChange={e => setCommentInput(e.target.value)}
+                    onKeyDown={e => e.key === "Enter" && !e.shiftKey && postComment()}
+                    placeholder={t.addComment}
+                    maxLength={500}
+                    className="flex-1 px-3 py-2 border rounded-xl text-sm outline-none transition-all"
+                    style={{ borderColor: BRAND.border }}
+                  />
+                  <button
+                    onClick={postComment}
+                    disabled={!commentInput.trim() || commentPosting}
+                    className="w-9 h-9 rounded-full flex items-center justify-center text-white transition-all disabled:opacity-30 shrink-0"
+                    style={{ background: theme.accent }}
+                  >
+                    {commentPosting ? (
+                      <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
+                      </svg>
+                    ) : (
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
+                      </svg>
+                    )}
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+        );
+
+        return (
+          <Lightbox
+            open={lightboxIndex >= 0}
+            close={() => { setLightboxIndex(-1); setLightboxPanelOpen(false); setOpenCommentsPhoto(null); }}
+            index={lightboxIndex}
+            slides={lightboxSlides}
+            plugins={[Download, Counter]}
+            on={{ view: ({ index }) => setLightboxViewIndex(index) }}
+            styles={{ container: { backgroundColor: "rgba(0,0,0,0.97)" } }}
+            /* On desktop the slide is padded right (globals.css .yarl__slide rule)
+               so the photo shrinks and never sits under the side panel. */
+            className="guestcam-lightbox"
+            render={{
+              /* Inject the panel as a custom control (absolute positioned) */
+              controls: () => lightboxPhoto ? (
+                <>
+                  {/* Desktop: fixed-width side panel, full height */}
+                  <div
+                    className="hidden lg:flex flex-col absolute top-0 right-0 bottom-0 bg-white shadow-2xl z-[1]"
+                    style={{ width: PANEL_W }}
+                  >
+                    {panelBody}
+                  </div>
+
+                  {/* Mobile: toggle button + bottom sheet */}
+                  <button
+                    onClick={() => setLightboxPanelOpen(o => !o)}
+                    className="lg:hidden absolute left-1/2 -translate-x-1/2 bottom-4 z-[2] flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold text-white shadow-lg"
+                    style={{ background: theme.accent }}
+                  >
+                    <svg className="w-4 h-4" viewBox="0 0 24 24" fill={lbLiked ? "white" : "none"} stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+                    </svg>
+                    {lightboxPanelOpen ? t.hideInfo : t.showInfo}
+                    {(lbLikes > 0 || lbComments.length > 0) && !lightboxPanelOpen && (
+                      <span className="ml-0.5 opacity-90">· {lbLikes + lbComments.length}</span>
+                    )}
+                  </button>
+
+                  {lightboxPanelOpen && (
+                    <div className="lg:hidden absolute inset-0 z-[2] flex flex-col justify-end" onClick={() => setLightboxPanelOpen(false)}>
+                      <div className="absolute inset-0 bg-black/40" />
+                      <div
+                        className="relative bg-white rounded-t-2xl flex flex-col overflow-hidden shadow-2xl"
+                        style={{ maxHeight: "75%" }}
+                        onClick={e => e.stopPropagation()}
+                      >
+                        <div className="flex justify-center pt-2 pb-1 shrink-0">
+                          <div className="w-10 h-1 rounded-full" style={{ background: BRAND.border }} />
+                        </div>
+                        <div className="flex-1 min-h-0 flex flex-col">{panelBody}</div>
+                      </div>
+                    </div>
+                  )}
+                </>
+              ) : null,
+            }}
+          />
+        );
+      })()}
 
       {/* ── Upload modal ──────────────────────────────────────────────────── */}
       {uploadOpen && (
@@ -1217,7 +1445,7 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
           albumSlug={album.slug}
           albumId={album.id}
           uploaderName={uploaderName}
-          maxPhotos={album.maxPhotos}
+          maxPhotos={isDemo ? album.photoCount + 5 : album.maxPhotos}
           currentCount={album.photoCount}
           lang={lang}
           accent={theme.accent}

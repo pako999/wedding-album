@@ -150,6 +150,8 @@ export interface Translations {
   enterNameToComment: string;   // "Enter your name to comment:"
   addComment: string;           // "Add a comment…"
   ok: string;                   // "OK"
+  showInfo: string;             // "Likes & comments"
+  hideInfo: string;             // "Hide"
 
   // Upload time
   justNow: string;              // "Just now"
@@ -288,6 +290,8 @@ const sl: Translations = {
   enterNameToComment: "Vnesi ime za komentar:",
   addComment: "Dodaj komentar…",
   ok: "OK",
+  showInfo: "Všečki in komentarji",
+  hideInfo: "Skrij",
   justNow: "Pravkar",
   minutesAgo: (n) => `${n} min`,
   todayAt: (time) => `Danes, ${time}`,
@@ -418,6 +422,8 @@ const hr: Translations = {
   enterNameToComment: "Unesi ime za komentar:",
   addComment: "Dodaj komentar…",
   ok: "U redu",
+  showInfo: "Sviđanja i komentari",
+  hideInfo: "Sakrij",
   justNow: "Upravo sada",
   minutesAgo: (n) => `${n} min`,
   todayAt: (time) => `Danas, ${time}`,
@@ -548,6 +554,8 @@ const sr: Translations = {
   enterNameToComment: "Unesi ime za komentar:",
   addComment: "Dodaj komentar…",
   ok: "U redu",
+  showInfo: "Sviđanja i komentari",
+  hideInfo: "Sakrij",
   justNow: "Upravo sada",
   minutesAgo: (n) => `${n} min`,
   todayAt: (time) => `Danas, ${time}`,
@@ -678,6 +686,8 @@ const en: Translations = {
   enterNameToComment: "Enter your name to comment:",
   addComment: "Add a comment…",
   ok: "OK",
+  showInfo: "Likes & comments",
+  hideInfo: "Hide",
   justNow: "Just now",
   minutesAgo: (n) => `${n} min`,
   todayAt: (time) => `Today, ${time}`,
@@ -808,6 +818,8 @@ const de: Translations = {
   enterNameToComment: "Namen eingeben zum Kommentieren:",
   addComment: "Kommentar hinzufügen…",
   ok: "OK",
+  showInfo: "Likes & Kommentare",
+  hideInfo: "Ausblenden",
   justNow: "Gerade eben",
   minutesAgo: (n) => `${n} Min`,
   todayAt: (time) => `Heute, ${time}`,
@@ -938,6 +950,8 @@ const es: Translations = {
   enterNameToComment: "Introduce tu nombre para comentar:",
   addComment: "Añadir un comentario…",
   ok: "OK",
+  showInfo: "Me gusta y comentarios",
+  hideInfo: "Ocultar",
   justNow: "Ahora mismo",
   minutesAgo: (n) => `${n} min`,
   todayAt: (time) => `Hoy, ${time}`,
