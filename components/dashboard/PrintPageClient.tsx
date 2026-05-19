@@ -20,7 +20,7 @@ const TEMPLATES: TemplateInfo[] = [
     name: "Elegantna",
     emoji: "🌸",
     style: "white",
-    headline: "Capture the Love",
+    headline: "Ujemite ljubezen",
     sub: "Delite fotografije s tega posebnega dne",
     cta: "Skeniraj QR kodo · Dodaj fotografijo",
   },
@@ -65,9 +65,9 @@ const TEMPLATES: TemplateInfo[] = [
     name: "Minimalistična",
     emoji: "◻",
     style: "minimal",
-    headline: "Scan & Share",
-    sub: "Upload your photos from today",
-    cta: "No app needed · Instant upload",
+    headline: "Skeniraj in deli",
+    sub: "Naložite fotografije z današnjega dne",
+    cta: "Brez aplikacije · Takojšnje nalaganje",
   },
 ];
 
