@@ -101,5 +101,13 @@ export async function POST(
     })
     .returning();
 
+  // Demo account: Film Studio unlocks for a single montage only — lock it
+  // again now that the one render has been submitted.
+  if (album.slug === "marko-40-udt5") {
+    await db.update(albums)
+      .set({ filmTier: "free" })
+      .where(eq(albums.id, album.id));
+  }
+
   return NextResponse.json({ generationId: generation.id });
 }
