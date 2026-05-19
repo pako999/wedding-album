@@ -47,13 +47,12 @@ export function DemoButton({ variant = "hero" }: { variant?: "hero" | "nav" }) {
       )}
 
       {open && (
-        <div className="fixed inset-0 z-[60] overflow-y-auto" role="dialog" aria-modal="true">
+        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4" role="dialog" aria-modal="true">
           <div
-            className="fixed inset-0 bg-[#0F1729]/70 backdrop-blur-sm"
+            className="absolute inset-0 bg-[#0F1729]/70 backdrop-blur-sm"
             onClick={() => setOpen(false)}
           />
-          <div className="relative flex min-h-full items-center justify-center p-4">
-            <div className="relative w-full max-w-md bg-white rounded-3xl shadow-xl p-6 sm:p-8 text-center my-6">
+          <div className="relative w-full max-w-md max-h-[calc(100dvh-2rem)] overflow-y-auto bg-white rounded-3xl shadow-xl p-6 sm:p-8 text-center">
             <button
               type="button"
               onClick={() => setOpen(false)}
@@ -105,7 +104,6 @@ export function DemoButton({ variant = "hero" }: { variant?: "hero" | "nav" }) {
               </svg>
             </a>
             <p className="mt-3 text-xs text-gray-400">Brez prijave · Brez aplikacije</p>
-            </div>
           </div>
         </div>
       )}
