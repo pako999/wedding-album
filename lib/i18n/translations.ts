@@ -54,7 +54,7 @@ export interface Translations {
   cancel: string;               // "Cancel"
   successTitle: (n: number) => string; // "3 photos uploaded"
   successDesc: string;          // "Thank you for your memories!"
-  approvalNote: string;         // "Photos will be visible in the gallery once the host approves them."
+  approvalNote: string;         // "Photos appear in the gallery as soon as they're processed."
   close: string;                // "Close"
   fileUploaded: string;         // "Uploaded"
   alreadyUploaded: string;      // "Already in album"
@@ -217,7 +217,7 @@ const sl: Translations = {
   cancel: "Prekliči",
   successTitle: (n) => `${n} ${n === 1 ? "fotografija naložena" : "fotografij naloženih"}`,
   successDesc: "Hvala za vaše spomine!",
-  approvalNote: "📸 Vaše fotografije bodo vidne v galeriji, takoj ko jih potrdi gostitelj.",
+  approvalNote: "📸 Vaše fotografije bodo vidne v galeriji takoj, ko jih sistem obdela.",
   close: "Zapri",
   fileUploaded: "Naloženo",
   alreadyUploaded: "Že v albumu",
@@ -347,7 +347,7 @@ const hr: Translations = {
   cancel: "Odustani",
   successTitle: (n) => `${n} ${n === 1 ? "fotografija učitana" : "fotografija učitano"}`,
   successDesc: "Hvala na uspomenama!",
-  approvalNote: "📸 Vaše fotografije bit će vidljive u galeriji čim ih potvrdi domaćin.",
+  approvalNote: "📸 Vaše fotografije bit će vidljive u galeriji čim ih sustav obradi.",
   close: "Zatvori",
   fileUploaded: "Učitano",
   alreadyUploaded: "Već u albumu",
@@ -477,7 +477,7 @@ const sr: Translations = {
   cancel: "Otkaži",
   successTitle: (n) => `${n} ${n === 1 ? "fotografija otpremljena" : "fotografija otpremljeno"}`,
   successDesc: "Hvala na uspomenama!",
-  approvalNote: "📸 Vaše fotografije biće vidljive u galeriji čim ih potvrdi domaćin.",
+  approvalNote: "📸 Vaše fotografije biće vidljive u galeriji čim ih sistem obradi.",
   close: "Zatvori",
   fileUploaded: "Otpremljeno",
   alreadyUploaded: "Već u albumu",
@@ -607,7 +607,7 @@ const en: Translations = {
   cancel: "Cancel",
   successTitle: (n) => `${n} ${n === 1 ? "photo uploaded" : "photos uploaded"}`,
   successDesc: "Thank you for your memories!",
-  approvalNote: "📸 Your photos will appear in the gallery as soon as the host approves them.",
+  approvalNote: "📸 Your photos appear in the gallery as soon as they're processed.",
   close: "Close",
   fileUploaded: "Uploaded",
   alreadyUploaded: "Already in album",
@@ -737,7 +737,7 @@ const de: Translations = {
   cancel: "Abbrechen",
   successTitle: (n) => `${n} ${n === 1 ? "Foto hochgeladen" : "Fotos hochgeladen"}`,
   successDesc: "Vielen Dank für Ihre Erinnerungen!",
-  approvalNote: "📸 Ihre Fotos erscheinen in der Galerie, sobald der Gastgeber sie bestätigt.",
+  approvalNote: "📸 Ihre Fotos erscheinen in der Galerie, sobald sie verarbeitet sind.",
   close: "Schließen",
   fileUploaded: "Hochgeladen",
   alreadyUploaded: "Bereits im Album",
@@ -867,7 +867,7 @@ const es: Translations = {
   cancel: "Cancelar",
   successTitle: (n) => `${n} ${n === 1 ? "foto subida" : "fotos subidas"}`,
   successDesc: "¡Gracias por tus recuerdos!",
-  approvalNote: "📸 Tus fotos aparecerán en la galería en cuanto el anfitrión las apruebe.",
+  approvalNote: "📸 Tus fotos aparecen en la galería en cuanto se procesan.",
   close: "Cerrar",
   fileUploaded: "Subido",
   alreadyUploaded: "Ya en el álbum",
