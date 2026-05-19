@@ -476,7 +476,7 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white overflow-x-hidden">
 
       {/* ════════════════════════════════════════════════════════════════════
           HERO HEADER
@@ -639,37 +639,11 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
               </div>
             )}
 
-            {/* Upload section */}
-            {!albumFull && (
+            {/* Upload section — shown once the guest has entered a name.
+                Name entry lives in the prominent banner below the toolbar,
+                so nothing here can push the toolbar off a narrow screen. */}
+            {!albumFull && nameConfirmed && (
               <div className="flex items-center gap-2 shrink-0">
-                {!nameConfirmed ? (
-                  /* Name not yet entered — toolbar shows the inline name input
-                     only when there are photos. With an empty album the big
-                     empty-state CTA owns name entry, so nothing is shown here. */
-                  photos.length > 0 && (
-                    <div className="flex items-center gap-2">
-                      <input
-                        ref={nameInputRef}
-                        type="text"
-                        value={uploaderName}
-                        onChange={(e) => setUploaderName(e.target.value)}
-                        onKeyDown={(e) => e.key === "Enter" && confirmName()}
-                        placeholder={t.yourNamePlaceholder}
-                        autoComplete="given-name"
-                        className="w-32 sm:w-44 px-3 py-1.5 border rounded-xl text-sm outline-none transition-all"
-                        style={{ borderColor: BRAND.border }}
-                      />
-                      <button
-                        onClick={confirmName}
-                        disabled={!uploaderName.trim()}
-                        className="px-4 py-1.5 rounded-xl text-sm font-semibold text-white transition-all disabled:opacity-30 hover:opacity-90"
-                        style={{ background: BRAND.dark }}
-                      >
-                        {t.next}
-                      </button>
-                    </div>
-                  )
-                ) : (
                   <div className="flex items-center gap-2">
                     <div className="hidden sm:flex items-center gap-1.5">
                       <AvatarBubble name={uploaderName} size={7} accent={theme.accent} />
@@ -698,7 +672,6 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
                       <span className="hidden sm:inline">{t.uploadShort}</span>
                     </button>
                   </div>
-                )}
               </div>
             )}
           </div>
@@ -871,6 +844,50 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
           GALLERY
       ════════════════════════════════════════════════════════════════════ */}
       <div className="max-w-7xl mx-auto px-3 sm:px-6 py-6">
+
+        {/* Name-entry onboarding — the guest enters a name before uploading.
+            (Empty albums use the big empty-state CTA instead.) */}
+        {!albumFull && !nameConfirmed && photos.length > 0 && (
+          <div
+            className="mb-6 rounded-2xl border bg-white px-5 py-6 sm:px-8 sm:py-7"
+            style={{ borderColor: BRAND.border }}
+          >
+            <div className="flex items-center gap-3 mb-4">
+              <div
+                className="w-11 h-11 rounded-xl flex items-center justify-center text-2xl shrink-0"
+                style={{ background: accentTint }}
+              >
+                👋
+              </div>
+              <p className="text-base sm:text-lg font-semibold leading-snug" style={{ color: BRAND.dark }}>
+                {t.nameOnboardPrompt}
+              </p>
+            </div>
+            <div className="flex flex-col sm:flex-row gap-2.5">
+              <input
+                ref={nameInputRef}
+                type="text"
+                value={uploaderName}
+                onChange={(e) => setUploaderName(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && uploaderName.trim()) { confirmName(); openUpload(); }
+                }}
+                placeholder={t.yourNamePlaceholder}
+                autoComplete="given-name"
+                className="flex-1 min-w-0 px-4 py-3 border rounded-2xl text-base outline-none transition-all"
+                style={{ borderColor: BRAND.border }}
+              />
+              <button
+                onClick={() => { confirmName(); openUpload(); }}
+                disabled={!uploaderName.trim()}
+                className="px-7 py-3 rounded-2xl text-sm font-semibold text-white transition-all disabled:opacity-30 hover:opacity-90 shrink-0"
+                style={{ background: BRAND.dark }}
+              >
+                {t.uploadShort}
+              </button>
+            </div>
+          </div>
+        )}
 
         {/* Album full notice */}
         {albumFull && (
