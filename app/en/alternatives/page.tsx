@@ -12,7 +12,7 @@ export const metadata: Metadata = {
     type: "article",
   },
   alternates: {
-    canonical: "https://guestcam.me/en/alternatives",
+    canonical: "https://guestcam.si/en/alternatives",
   },
 };
 

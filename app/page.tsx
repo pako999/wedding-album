@@ -1,7 +1,44 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { GuestcamLogo } from "@/components/GuestcamLogo";
 import { DemoButton } from "@/components/DemoButton";
+
+export const metadata: Metadata = {
+  alternates: { canonical: "https://guestcam.si" },
+};
+
+// Structured data — helps search engines understand the brand & product.
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://guestcam.si/#organization",
+      name: "Guestcam",
+      url: "https://guestcam.si",
+      logo: "https://guestcam.si/icon-512.png",
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://guestcam.si/#website",
+      name: "Guestcam",
+      url: "https://guestcam.si",
+      inLanguage: "sl-SI",
+      publisher: { "@id": "https://guestcam.si/#organization" },
+    },
+    {
+      "@type": "SoftwareApplication",
+      name: "Guestcam",
+      applicationCategory: "PhotographyApplication",
+      operatingSystem: "Web",
+      url: "https://guestcam.si",
+      description:
+        "Z eno QR kodo zberite vse fotografije in videe gostov v eni zasebni galeriji.",
+      offers: { "@type": "Offer", price: "0", priceCurrency: "EUR" },
+    },
+  ],
+};
 
 // ── SVG Feature Icons ─────────────────────────────────────────────────────────
 function IconQR() {
@@ -83,6 +120,10 @@ function QRPattern() {
 export default function HomePage() {
   return (
     <div className="min-h-screen bg-white text-[#0F1729] font-sans">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
 
       {/* ── Announcement bar ─────────────────────────────────────────────────── */}
       <div className="text-white text-center text-xs font-semibold py-2.5 px-4" style={{ background: '#1E3A8A' }}>

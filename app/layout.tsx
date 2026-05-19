@@ -21,17 +21,42 @@ export const viewport: Viewport = {
   themeColor: "#1E3A8A",
 };
 
+const SITE_URL = "https://guestcam.si";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: {
-    default: "Guestcam",
+    default: "Guestcam — Zberite fotografije gostov z eno QR kodo",
     template: "%s | Guestcam",
   },
-  description: "Share and collect your wedding memories with Guestcam.",
+  description:
+    "Z eno QR kodo zberite vse fotografije in videe svojih gostov v eni zasebni galeriji. Brez aplikacije, v polni kakovosti — za poroke, rojstne dneve in dogodke.",
+  applicationName: "Guestcam",
+  keywords: [
+    "QR koda za poroko",
+    "poročni album",
+    "zbiranje fotografij gostov",
+    "deljenje fotografij",
+    "galerija dogodka",
+    "Guestcam",
+  ],
+  authors: [{ name: "Guestcam" }],
   manifest: "/manifest.json",
+  // Site is still under construction — flip this and app/robots.ts to go live.
   robots: { index: false, follow: false },
   openGraph: {
-    siteName: "Guestcam",
     type: "website",
+    siteName: "Guestcam",
+    locale: "sl_SI",
+    title: "Guestcam — Zberite fotografije gostov z eno QR kodo",
+    description:
+      "Z eno QR kodo zberite vse fotografije in videe gostov v eni zasebni galeriji. Brez aplikacije, v polni kakovosti.",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Guestcam — Zberite fotografije gostov z eno QR kodo",
+    description:
+      "Z eno QR kodo zberite vse fotografije in videe gostov v eni zasebni galeriji.",
   },
 };
 
