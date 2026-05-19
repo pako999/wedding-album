@@ -99,11 +99,25 @@ export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activ
   const [driveClicked, setDriveClicked] = useState(false);
 
   const handleGoogleDrive = () => {
-    // Open Google Drive in a new tab — user downloads ZIP separately via ZipDownloader
-    window.open("https://drive.google.com/drive/my-drive", "_blank", "noopener,noreferrer");
+    // Start the Google Drive OAuth flow — the callback uploads the album
+    // straight into the owner's Drive.
     setDriveClicked(true);
-    setTimeout(() => setDriveClicked(false), 4000);
+    window.location.href = `/api/google-drive/auth?slug=${album.slug}`;
   };
+
+  // Result banner after returning from the Google Drive OAuth flow.
+  const [driveResult, setDriveResult] = useState<{ status: string; count: number } | null>(null);
+  useEffect(() => {
+    const sp = new URLSearchParams(window.location.search);
+    const d = sp.get("drive");
+    if (!d) return;
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setDriveResult({ status: d, count: Number(sp.get("n") ?? 0) });
+    sp.delete("drive");
+    sp.delete("n");
+    const qs = sp.toString();
+    window.history.replaceState(null, "", `/dashboard/${album.slug}${qs ? `?${qs}` : ""}`);
+  }, [album.slug]);
 
   // Show success screen if just created
   if (isNew) {
@@ -358,7 +372,7 @@ export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activ
             <button
               onClick={handleGoogleDrive}
               disabled={driveClicked}
-              title="Prenese ZIP in odpre Google Drive v novem oknu"
+              title="Shrani vse fotografije galerije v svoj Google Drive"
               className="flex items-center gap-1.5 px-3 py-2 text-sm border rounded-lg transition-all"
               style={driveClicked
                 ? { background: "#e8f5e9", borderColor: "#81c784", color: "#2e7d32" }
@@ -370,7 +384,7 @@ export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activ
                   <svg className="w-3.5 h-3.5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                   </svg>
-                  Drive odprt · ZIP se prenaša
+                  Odpiranje Google Drive…
                 </>
               ) : (
                 <>
@@ -388,6 +402,34 @@ export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activ
             </button>
           </div>
         </div>
+
+        {/* Google Drive result banner */}
+        {driveResult && (() => {
+          const map: Record<string, { bg: string; border: string; color: string; text: string }> = {
+            ok:            { bg: "#e8f5e9", border: "#81c784", color: "#2e7d32", text: `✅ ${driveResult.count} datotek shranjenih v Google Drive.` },
+            partial:       { bg: "#fff8e1", border: "#ffd54f", color: "#a06b00", text: `⚠️ Shranjeno v Google Drive — ${driveResult.count} datotek uspešnih, nekatere niso uspele.` },
+            empty:         { bg: "#eef2f7", border: "#cbd5e1", color: "#475569", text: "V galeriji ni fotografij za shranjevanje." },
+            denied:        { bg: "#eef2f7", border: "#cbd5e1", color: "#475569", text: "Dostop do Google Drive je bil zavrnjen." },
+            notconfigured: { bg: "#fff8e1", border: "#ffd54f", color: "#a06b00", text: "Google Drive ni nastavljen — manjkajo OAuth poverilnice." },
+            error:         { bg: "#fdecea", border: "#f5a097", color: "#b3261e", text: "❌ Shranjevanje v Google Drive ni uspelo. Poskusite znova." },
+          };
+          const s = map[driveResult.status] ?? map.error;
+          return (
+            <div
+              className="mx-8 mb-4 flex items-center gap-3 rounded-xl border px-4 py-3"
+              style={{ background: s.bg, borderColor: s.border, color: s.color }}
+            >
+              <p className="text-sm font-medium">{s.text}</p>
+              <button
+                onClick={() => setDriveResult(null)}
+                className="ml-auto text-lg leading-none opacity-60 hover:opacity-100"
+                aria-label="Zapri"
+              >
+                ×
+              </button>
+            </div>
+          );
+        })()}
 
         {/* ── TAB CONTENT ── */}
         <div className="flex-1 px-8 pb-8">
