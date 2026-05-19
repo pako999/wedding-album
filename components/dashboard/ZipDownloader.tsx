@@ -46,14 +46,14 @@ export function ZipDownloader({ albumSlug, className, children }: Props) {
     try {
       // 1. Fetch the list of file URLs from the server (lightweight JSON)
       const listRes = await fetch(`/api/albums/${albumSlug}/download-urls`);
-      if (!listRes.ok) throw new Error("Could not load file list");
+      if (!listRes.ok) throw new Error("Seznama datotek ni bilo mogoče naložiti");
       const { files, slug } = await listRes.json() as {
         files: { name: string; url: string }[];
         slug: string;
       };
 
       if (files.length === 0) {
-        throw new Error("Album has no downloadable files");
+        throw new Error("Galerija nima datotek za prenos");
       }
 
       setTotal(files.length);
@@ -89,7 +89,7 @@ export function ZipDownloader({ albumSlug, className, children }: Props) {
         try {
           const handle = await (window as Window & {
             showSaveFilePicker: (opts: object) => Promise<FileSystemFileHandle>;
-          }).showSaveFilePicker({ suggestedName: filename, types: [{ description: "ZIP archive", accept: { "application/zip": [".zip"] } }] });
+          }).showSaveFilePicker({ suggestedName: filename, types: [{ description: "ZIP arhiv", accept: { "application/zip": [".zip"] } }] });
           const writable = await handle.createWritable();
           await zipResponse.body!.pipeTo(writable);
           setPhase("done");
@@ -117,7 +117,7 @@ export function ZipDownloader({ albumSlug, className, children }: Props) {
       setTimeout(() => setPhase("idle"), 4000);
     } catch (err) {
       console.error("[ZipDownloader]", err);
-      setErrorMsg(err instanceof Error ? err.message : "Download failed");
+      setErrorMsg(err instanceof Error ? err.message : "Prenos ni uspel");
       setPhase("error");
     }
   }

@@ -169,18 +169,46 @@ export default function HomePage() {
                 QR koda za poroke · rojstne dneve · obletnice · baby shower
               </p>
 
-              {/* Giant headline */}
-              <h1 className="font-extrabold leading-[1.04] tracking-tight text-[#0F1729] mb-8" style={{ fontSize: 'clamp(2.8rem, 5.5vw, 5.2rem)' }}>
-                Zberi vse<br />
-                <span style={{ color: '#1E3A8A' }}>spomine</span><br />
-                z eno QR kodo
+              {/* Headline */}
+              <h1 className="font-extrabold leading-[1.15] tracking-tight text-[#0F1729] mb-8" style={{ fontSize: 'clamp(1.9rem, 3.6vw, 3.15rem)' }}>
+                Skenirajte eno QR kodo in zberite vse fotografije ter videe vaših gostov v{' '}
+                <span style={{ color: '#1E3A8A' }}>eni zasebni galeriji</span>.
               </h1>
 
               {/* Subtitle */}
-              <p className="text-lg text-gray-500 leading-relaxed mb-10 max-w-[500px]">
+              <p className="text-lg text-gray-500 leading-relaxed mb-8 max-w-[500px]">
                 Gostje enostavno delijo slike in videje polne kakovosti v vaš personaliziran album.
                 Izberite predlogo za tisk, ki ustreza vašemu dogodku.
               </p>
+
+              {/* Mobile hero collage — desktop shows the full collage on the right;
+                  mobile gets this compact version of the same 3-image story. */}
+              <div className="lg:hidden relative mx-auto mb-10 select-none" style={{ height: 330, maxWidth: 380 }}>
+                {/* scan — main */}
+                <div className="absolute rounded-2xl overflow-hidden shadow-xl" style={{ top: 18, left: 0, width: "58%", aspectRatio: "4 / 5", transform: "rotate(-4deg)", zIndex: 20 }}>
+                  <img src="/hero/scan.webp" alt="Skeniranje QR kartice s telefonom" className="w-full h-full object-cover" />
+                  <div className="absolute bottom-2.5 left-2.5 bg-white rounded-xl shadow-md px-2.5 py-1.5 flex items-center gap-1.5">
+                    <svg className="w-3 h-3 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <p className="text-[10px] font-bold text-[#0F1729]">Polna kakovost</p>
+                  </div>
+                </div>
+                {/* gallery — top right */}
+                <div className="absolute rounded-2xl overflow-hidden shadow-lg" style={{ top: 0, right: 0, width: "43%", aspectRatio: "4 / 5", transform: "rotate(5deg)", zIndex: 30 }}>
+                  <img src="/hero/gallery.webp" alt="Galerija fotografij v živo" className="w-full h-full object-cover" />
+                </div>
+                {/* cards — bottom right */}
+                <div className="absolute rounded-2xl overflow-hidden shadow-xl" style={{ bottom: 0, right: 8, width: "46%", aspectRatio: "1 / 1", transform: "rotate(4deg)", zIndex: 30 }}>
+                  <img src="/hero/cards.webp" alt="Natisnjene QR kartice na poročni mizi" className="w-full h-full object-cover" />
+                  <div className="absolute top-2.5 left-2.5 bg-white rounded-xl shadow-md px-2.5 py-1.5 flex items-center gap-1.5">
+                    <svg className="w-3 h-3" style={{ color: "#1E3A8A" }} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3" />
+                    </svg>
+                    <p className="text-[10px] font-bold text-[#0F1729]">Brez aplikacije</p>
+                  </div>
+                </div>
+              </div>
 
               {/* 3-step mini icons — wedtrove style */}
               <div className="flex items-start gap-10 mb-12">

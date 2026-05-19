@@ -15,7 +15,7 @@ import { Slideshow } from "./Slideshow";
 import { ProjectionWall } from "./ProjectionWall";
 import { translations, LANGS, type Lang, type Translations } from "@/lib/i18n/translations";
 import { bunnyDisplayUrl, bunnyOriginalUrl } from "@/lib/storage/bunny";
-import { getEventTheme } from "@/lib/event-themes";
+import { getAlbumTheme } from "@/lib/album-themes";
 import type { Album, Photo, Moment } from "@/lib/db/schema";
 
 interface Props {
@@ -162,8 +162,8 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
     setUploadOpen(true);
   }, []);
 
-  // ── Per-occasion theme (dark hero hue + accent color) ─────────────────────
-  const theme = getEventTheme(album.eventType);
+  // ── Owner-chosen theme (dark hero hue + accent color) ─────────────────────
+  const theme = getAlbumTheme(album.theme);
   // Soft, flat tint of the accent for light-background accent elements
   const accentTint = `${theme.accent}14`; // ~8% alpha — flat tint, no gradient
 
