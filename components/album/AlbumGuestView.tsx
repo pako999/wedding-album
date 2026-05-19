@@ -873,7 +873,7 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
                 {t.nameOnboardPrompt}
               </p>
             </div>
-            <div className="flex flex-col sm:flex-row gap-2.5">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-2.5">
               <input
                 ref={nameInputRef}
                 type="text"
@@ -884,7 +884,7 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
                 }}
                 placeholder={t.yourNamePlaceholder}
                 autoComplete="given-name"
-                className="flex-1 min-w-0 px-4 py-3 border rounded-2xl text-base outline-none transition-all"
+                className="w-full sm:w-64 px-4 py-3 border rounded-2xl text-base outline-none transition-all"
                 style={{ borderColor: BRAND.border }}
               />
               <button
