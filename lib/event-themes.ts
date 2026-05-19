@@ -13,14 +13,18 @@ export type EventTheme = {
   accent: string;
 };
 
+// Unified black-blue palette — every event type uses the same colours as the
+// rest of the site. The per-type structure is kept so it can be re-themed later.
+const NAVY: EventTheme = { heroBg: "#1A2238", accent: "#1E3A8A" };
+
 export const EVENT_THEMES: Record<string, EventTheme> = {
-  wedding:     { heroBg: "#1A2238", accent: "#1E3A8A" }, // navy + champagne gold
-  birthday:    { heroBg: "#2A1C24", accent: "#E06A2E" }, // deep grape + festive orange
-  anniversary: { heroBg: "#2E1F26", accent: "#BD7A4E" }, // deep wine + rose-bronze
-  party:       { heroBg: "#1E1A33", accent: "#7558E0" }, // deep indigo + violet
-  baptism:     { heroBg: "#16252C", accent: "#5B93B5" }, // deep teal + soft blue
-  graduation:  { heroBg: "#15203A", accent: "#3E6FB0" }, // midnight navy + academic blue
-  other:       { heroBg: "#1E2329", accent: "#1E3A8A" }, // slate + bronze (current default)
+  wedding:     NAVY,
+  birthday:    NAVY,
+  anniversary: NAVY,
+  party:       NAVY,
+  baptism:     NAVY,
+  graduation:  NAVY,
+  other:       NAVY,
 };
 
 /**
