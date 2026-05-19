@@ -383,6 +383,8 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
   const [momentId, setMomentId] = useState<string>(defaultMomentId ?? "");
   const inputRef = useRef<HTMLInputElement>(null);
   const remaining = Math.max(0, maxPhotos - currentCount);
+  const isDemo = albumSlug === "ana-marko-13ka";
+  const hasUploaded = files.some(f => f.status === "done" || f.status === "skipped");
 
   // Keep a ref so async callbacks always see latest values
   const uploadingRef = useRef(false);
@@ -542,9 +544,9 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
               </div>
               <p className="font-serif text-xl font-light text-[#0F1729] mb-1">{t.successTitle(success)}</p>
               <p className="font-sans text-sm text-[#0F1729]/60 mb-3">{t.successDesc}</p>
-              {/* Approval note */}
+              {/* Approval note — demo albums show a "not public" notice instead */}
               <p className="font-sans text-xs text-[#0F1729]/45 bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 mb-6 leading-relaxed">
-                {t.approvalNote}
+                {isDemo ? t.demoUploadNote : t.approvalNote}
               </p>
               <button
                 onClick={onSuccess}
@@ -683,7 +685,7 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
             })()}
 
             <div className="flex items-center justify-between gap-3">
-              <button onClick={onClose} disabled={uploading} className="text-sm text-[#0F1729]/60 hover:text-[#0F1729] transition-colors disabled:opacity-40">{t.cancel}</button>
+              <button onClick={hasUploaded ? onSuccess : onClose} disabled={uploading} className="text-sm font-medium text-[#0F1729]/60 hover:text-[#0F1729] transition-colors disabled:opacity-40">{hasUploaded ? t.close : t.cancel}</button>
               <button
                 onClick={uploadAll}
                 disabled={files.length === 0 || uploading}

@@ -432,6 +432,7 @@ export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activ
               <AlbumSettingsForm album={album} />
               <MomentsManager album={album} />
               <CustomDomainPanel album={album} />
+              <DangerZone album={album} />
             </div>
           )}
         </div>
@@ -640,6 +641,7 @@ function GalleryTab({
   deletePhoto: (id: string) => void;
   setCoverPhoto: (blobUrl: string) => void;
 }) {
+  const [viewPhoto, setViewPhoto] = useState<Photo | null>(null);
   return (
     <div>
       <div className="flex items-center justify-between mb-4">
@@ -658,7 +660,8 @@ function GalleryTab({
             {photos.map((photo) => (
               <div
                 key={photo.id}
-                className="group relative bg-white border border-gray-100 rounded-xl overflow-hidden"
+                onClick={() => setViewPhoto(photo)}
+                className="group relative bg-white border border-gray-100 rounded-xl overflow-hidden cursor-pointer"
               >
                 <img
                   src={bunnyDisplayUrl(photo.thumbnailUrl ?? photo.blobUrl)}
@@ -680,7 +683,7 @@ function GalleryTab({
                   {activeTab === "pending" && (
                     <>
                       <button
-                        onClick={() => approvePhoto(photo.id)}
+                        onClick={(e) => { e.stopPropagation(); approvePhoto(photo.id); }}
                         title="Odobri"
                         className="w-9 h-9 rounded-full bg-green-500 text-white flex items-center justify-center hover:bg-green-600 transition-colors"
                       >
@@ -689,7 +692,7 @@ function GalleryTab({
                         </svg>
                       </button>
                       <button
-                        onClick={() => rejectPhoto(photo.id)}
+                        onClick={(e) => { e.stopPropagation(); rejectPhoto(photo.id); }}
                         title="Zavrni"
                         className="w-9 h-9 rounded-full bg-red-500 text-white flex items-center justify-center hover:bg-red-600 transition-colors"
                       >
@@ -701,7 +704,7 @@ function GalleryTab({
                   )}
                   {activeTab === "gallery" && !photo.mimeType?.startsWith("video/") && (
                     <button
-                      onClick={() => setCoverPhoto(photo.thumbnailUrl ?? photo.blobUrl)}
+                      onClick={(e) => { e.stopPropagation(); setCoverPhoto(photo.thumbnailUrl ?? photo.blobUrl); }}
                       title="Nastavi kot naslovnico"
                       className="w-9 h-9 rounded-full bg-white/90 text-gray-800 flex items-center justify-center hover:bg-white transition-colors"
                     >
@@ -712,7 +715,7 @@ function GalleryTab({
                   )}
                   {activeTab === "gallery" && (
                     <button
-                      onClick={() => deletePhoto(photo.id)}
+                      onClick={(e) => { e.stopPropagation(); deletePhoto(photo.id); }}
                       title="Izbriši"
                       className="w-9 h-9 rounded-full bg-red-500/90 text-white flex items-center justify-center hover:bg-red-600 transition-colors"
                     >
@@ -736,6 +739,54 @@ function GalleryTab({
             </a>
           </div>
         </>
+      )}
+
+      {/* Larger-view lightbox — opens when a photo is clicked */}
+      {viewPhoto && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80"
+          onClick={() => setViewPhoto(null)}
+        >
+          <div className="relative flex flex-col items-center" onClick={(e) => e.stopPropagation()}>
+            {viewPhoto.mimeType?.startsWith("video/") ? (
+              <video
+                src={bunnyDisplayUrl(viewPhoto.blobUrl)}
+                controls
+                autoPlay
+                className="max-h-[78vh] max-w-[90vw] rounded-2xl bg-black"
+              />
+            ) : (
+              /* eslint-disable-next-line @next/next/no-img-element */
+              <img
+                src={bunnyDisplayUrl(viewPhoto.blobUrl, 1800, 90)}
+                alt={viewPhoto.caption ?? ""}
+                className="max-h-[78vh] max-w-[90vw] rounded-2xl object-contain"
+              />
+            )}
+            <div className="flex items-center justify-center flex-wrap gap-2 mt-4">
+              {!viewPhoto.mimeType?.startsWith("video/") && (
+                <button
+                  onClick={() => { setCoverPhoto(viewPhoto.thumbnailUrl ?? viewPhoto.blobUrl); setViewPhoto(null); }}
+                  className="px-4 py-2 rounded-xl bg-white text-gray-800 text-sm font-medium hover:bg-gray-100 transition-colors"
+                >
+                  Nastavi kot naslovnico
+                </button>
+              )}
+              <button
+                onClick={() => { deletePhoto(viewPhoto.id); setViewPhoto(null); }}
+                className="px-4 py-2 rounded-xl bg-red-500 text-white text-sm font-medium hover:bg-red-600 transition-colors"
+              >
+                Izbriši
+              </button>
+              <button
+                onClick={() => setViewPhoto(null)}
+                className="px-4 py-2 rounded-xl border border-white/40 text-white text-sm font-medium hover:bg-white/10 transition-colors"
+              >
+                Zapri
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
@@ -923,7 +974,6 @@ function AlbumSettingsForm({ album }: { album: Album }) {
   const router = useRouter();
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const [coupleName, setCoupleName]           = useState(album.coupleName);
   const [weddingDate, setWeddingDate]         = useState(album.weddingDate);
@@ -1109,9 +1159,17 @@ function AlbumSettingsForm({ album }: { album: Album }) {
       >
         {saving ? "Shranjevanje…" : saved ? "✓ Shranjeno" : "Shrani spremembe"}
       </button>
+    </div>
+  );
+}
 
-      {/* ── Danger Zone ─────────────────────────────────────────────────── */}
-      <div className="border border-red-200 rounded-2xl p-5 space-y-3 mt-2" style={{ background: "#fff5f5" }}>
+// ─── Danger Zone ─────────────────────────────────────────────────────────────
+// Rendered as the very last section of the Settings tab.
+function DangerZone({ album }: { album: Album }) {
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  return (
+    <>
+      <div className="border border-red-200 rounded-2xl p-5 space-y-3" style={{ background: "#fff5f5" }}>
         <div>
           <h4 className="font-semibold text-red-700 text-sm">Nevarno območje</h4>
           <p className="text-xs text-red-500 mt-0.5">Spodnja dejanja so nepovratna. Nadaljuj previdno.</p>
@@ -1133,7 +1191,7 @@ function AlbumSettingsForm({ album }: { album: Album }) {
       {showDeleteModal && (
         <DeleteAlbumModal album={album} onClose={() => setShowDeleteModal(false)} />
       )}
-    </div>
+    </>
   );
 }
 
