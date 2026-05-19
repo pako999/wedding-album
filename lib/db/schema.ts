@@ -25,6 +25,9 @@ export const albums = pgTable(
     // Event type
     eventType: text("event_type").notNull().default("wedding"), // wedding | birthday | anniversary | party | baptism | graduation | other
 
+    // Visual theme — owner-chosen preset for the guest album page (see lib/album-themes.ts)
+    theme: text("theme").notNull().default("navy"),
+
     // Names and display
     coupleName: text("couple_name").notNull(), // "Ana & Marko" or event title
     weddingDate: text("wedding_date").notNull(), // ISO date string "2025-06-14"

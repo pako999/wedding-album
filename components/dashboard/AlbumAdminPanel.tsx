@@ -10,6 +10,7 @@ import { GuestcamLogo } from "@/components/GuestcamLogo";
 import { bunnyDisplayUrl } from "@/lib/storage/bunny";
 import { ZipDownloader } from "@/components/dashboard/ZipDownloader";
 import { FilmStudio } from "@/components/dashboard/FilmStudio";
+import { ALBUM_THEMES } from "@/lib/album-themes";
 
 type Tab = "overview" | "gallery" | "qr" | "settings" | "pending" | "film";
 
@@ -931,6 +932,8 @@ function AlbumSettingsForm({ album }: { album: Album }) {
   const [password, setPassword]               = useState(album.password ?? "");
   const [moderationEnabled, setModerationEnabled] = useState(album.moderationEnabled);
   const [isPublished, setIsPublished]         = useState(album.isPublished);
+  const [eventType, setEventType]             = useState(album.eventType ?? "wedding");
+  const [theme, setTheme]                     = useState(album.theme ?? "navy");
 
   const save = async () => {
     setSaving(true);
@@ -945,6 +948,8 @@ function AlbumSettingsForm({ album }: { album: Album }) {
         password,
         moderationEnabled,
         isPublished,
+        eventType,
+        theme,
       }),
     });
     setSaving(false);
@@ -976,6 +981,25 @@ function AlbumSettingsForm({ album }: { album: Album }) {
       </div>
 
       <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Vrsta dogodka</label>
+        <select
+          value={eventType}
+          onChange={(e) => setEventType(e.target.value)}
+          className={inputClass}
+        >
+          <option value="wedding">Poroka</option>
+          <option value="birthday">Rojstni dan</option>
+          <option value="anniversary">Obletnica</option>
+          <option value="party">Zabava</option>
+          <option value="baptism">Krst</option>
+          <option value="graduation">Diploma/Matura</option>
+          <option value="baby_shower">Baby Shower</option>
+          <option value="business">Poslovni dogodek</option>
+          <option value="other">Drugo</option>
+        </select>
+      </div>
+
+      <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">Lokacija</label>
         <input
           value={location}
@@ -1004,6 +1028,50 @@ function AlbumSettingsForm({ album }: { album: Album }) {
           placeholder="Prazno = brez gesla"
           className={inputClass}
         />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Tema galerije</label>
+        <p className="text-xs text-gray-400 mb-2.5">Izberite barvno temo za javno stran galerije.</p>
+        <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5">
+          {ALBUM_THEMES.map((tm) => {
+            const selected = theme === tm.id;
+            return (
+              <button
+                key={tm.id}
+                type="button"
+                onClick={() => setTheme(tm.id)}
+                aria-pressed={selected}
+                title={tm.name}
+                className={`group flex flex-col items-center gap-1.5 rounded-xl p-1.5 transition-all ${
+                  selected
+                    ? "ring-2 ring-indigo-500 ring-offset-1"
+                    : "ring-1 ring-gray-200 hover:ring-gray-300"
+                }`}
+              >
+                <span
+                  className="relative flex items-center justify-center w-full h-12 rounded-lg"
+                  style={{ background: tm.heroBg }}
+                >
+                  <span
+                    className="w-5 h-5 rounded-full shadow-sm"
+                    style={{ background: tm.accent }}
+                  />
+                  {selected && (
+                    <span className="absolute top-1 right-1 w-4 h-4 rounded-full bg-indigo-500 text-white flex items-center justify-center">
+                      <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={3.5}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                      </svg>
+                    </span>
+                  )}
+                </span>
+                <span className={`text-[11px] text-center leading-tight ${selected ? "font-semibold text-indigo-700" : "text-gray-600"}`}>
+                  {tm.name}
+                </span>
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       <div className="flex flex-col gap-3 pt-1">

@@ -43,6 +43,7 @@ export async function runMigrations() {
     // Add columns that may be missing in older deployments
     await sql`ALTER TABLE albums ADD COLUMN IF NOT EXISTS owner_email TEXT`;
     await sql`ALTER TABLE albums ADD COLUMN IF NOT EXISTS event_type TEXT NOT NULL DEFAULT 'wedding'`;
+    await sql`ALTER TABLE albums ADD COLUMN IF NOT EXISTS theme TEXT NOT NULL DEFAULT 'navy'`;
     await sql`ALTER TABLE albums ADD COLUMN IF NOT EXISTS pending_count INTEGER NOT NULL DEFAULT 0`;
     await sql`ALTER TABLE albums ADD COLUMN IF NOT EXISTS cover_image_url TEXT`;
     await sql`ALTER TABLE albums ADD COLUMN IF NOT EXISTS custom_domain TEXT`;

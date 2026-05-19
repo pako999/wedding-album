@@ -52,7 +52,7 @@ export function DemoButton({ variant = "hero" }: { variant?: "hero" | "nav" }) {
             className="absolute inset-0 bg-[#0F1729]/70 backdrop-blur-sm"
             onClick={() => setOpen(false)}
           />
-          <div className="relative w-full max-w-md max-h-[calc(100dvh-2rem)] overflow-y-auto bg-white rounded-3xl shadow-xl p-6 sm:p-8 text-center">
+          <div className="relative w-full max-w-md max-h-[calc(100dvh_-_2rem)] overflow-y-auto bg-white rounded-3xl shadow-xl p-6 sm:p-8 text-center">
             <button
               type="button"
               onClick={() => setOpen(false)}
