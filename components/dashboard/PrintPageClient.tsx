@@ -29,9 +29,9 @@ const TEMPLATES: TemplateInfo[] = [
     name: "Moderna",
     emoji: "🖤",
     style: "dark",
-    headline: "Share Our Memories",
-    sub: "Scan to share your photos from today",
-    cta: "Scan QR · Upload instantly · No app needed",
+    headline: "Delite naše spomine",
+    sub: "Skenirajte in delite fotografije z današnjega dne",
+    cta: "Skeniraj QR · Naloži takoj · Brez aplikacije",
   },
   {
     id: "blush",

@@ -20,6 +20,7 @@ const EVENT_TYPES: EventType[] = [
   { id: "baptism",     emoji: "👶", label: "Krst",        nameLabel: "Ime otroka",    namePlaceholder: "npr. Mali Luka",         dateLabel: "Datum krsta"        },
   { id: "graduation",  emoji: "🎓", label: "Diploma/Matura", nameLabel: "Ime",      namePlaceholder: "npr. Sara, diplomirala", dateLabel: "Datum zagovora"     },
   { id: "baby_shower", emoji: "👶", label: "Baby Shower", nameLabel: "Ime",           namePlaceholder: "npr. Ana",               dateLabel: "Datum baby showerja"},
+  { id: "business",    emoji: "💼", label: "Poslovni dogodek", nameLabel: "Ime dogodka", namePlaceholder: "npr. Letna konferenca 2026", dateLabel: "Datum dogodka" },
   { id: "other",       emoji: "📸", label: "Drugo",       nameLabel: "Ime dogodka",   namePlaceholder: "npr. Ekskurzija 2025",   dateLabel: "Datum dogodka"      },
 ];
 
@@ -82,6 +83,15 @@ const EVENT_ICON_PATHS: Record<string, ReactNode> = {
       <path d="M8.7 7.5h6.6l-.5-2.1H9.2z" />
       <rect x="8.3" y="7.5" width="7.4" height="13.1" rx="2.6" />
       <path d="M8.3 11.6h4.4M8.3 14.6h4.4" />
+    </>
+  ),
+  // Briefcase
+  business: (
+    <>
+      <rect x="3" y="7.6" width="18" height="12.4" rx="2.4" />
+      <path d="M9 7.6V6.3A2 2 0 0 1 11 4.3h2A2 2 0 0 1 15 6.3v1.3" />
+      <path d="M3 13.2h18" />
+      <rect x="10.4" y="11.7" width="3.2" height="3" rx="0.7" />
     </>
   ),
   // Camera

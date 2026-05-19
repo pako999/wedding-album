@@ -62,7 +62,7 @@ function FreeTierGate({ album }: { album: Album }) {
       <div className="p-8 text-center">
         <div className="text-4xl mb-3">🎬</div>
         <h2 className="text-lg font-bold text-gray-900 mb-2">
-          Film Studio je na voljo z nivojem Pro
+          Film Studio je na voljo s paketom Premium
         </h2>
         <p className="text-sm text-gray-500 max-w-md mx-auto mb-6">
           Združi najlepše fotografije albuma v en kinematografski film z
@@ -74,7 +74,7 @@ function FreeTierGate({ album }: { album: Album }) {
           className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold text-white transition-all hover:opacity-90"
           style={{ background: "#1E3A8A" }}
         >
-          ✨ Nadgradi na Pro
+          ✨ Nadgradi na Premium
         </a>
       </div>
     </div>

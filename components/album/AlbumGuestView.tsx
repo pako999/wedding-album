@@ -140,8 +140,13 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
   const [lightboxViewIndex, setLightboxViewIndex] = useState(0);
   const [lightboxPanelOpen, setLightboxPanelOpen] = useState(false); // mobile bottom sheet
   const [lightboxDesktopPanelOpen, setLightboxDesktopPanelOpen] = useState(true); // desktop side panel
+  // When a guest taps "like" in the lightbox without a name yet, highlight the
+  // name-entry field and remember the photo to like once the name is confirmed.
+  const [lightboxNamePrompt, setLightboxNamePrompt] = useState(false);
+  const pendingLikeRef = useRef<string | null>(null);
 
   const nameInputRef  = useRef<HTMLInputElement>(null);
+  const lbNameInputRef = useRef<HTMLInputElement>(null);
   const cameraFilesRef = useRef<FileList | null>(null);
   const turnstileContainerRef = useRef<HTMLDivElement>(null);
   const sortMenuRef = useRef<HTMLDivElement>(null);
@@ -255,8 +260,11 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
   // whenever the lightbox is open, so the two never collide.
 
   // ── Like toggle ───────────────────────────────────────────────────────────
-  const toggleLike = useCallback((photoId: string) => {
-    if (!uploaderName.trim()) return; // need a name first
+  // Core like logic — takes the guest name explicitly so it can be invoked
+  // straight after a name is confirmed (before `uploaderName` state settles).
+  const likeWithName = useCallback((photoId: string, name: string) => {
+    const trimmed = name.trim();
+    if (!trimmed) return;
     const alreadyLiked = myLikes.has(photoId);
     const action = alreadyLiked ? "unlike" : "like";
 
@@ -276,7 +284,7 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
     fetch(`/api/albums/${album.slug}/photos/${photoId}/like`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ uploaderName: uploaderName.trim(), action }),
+      body: JSON.stringify({ uploaderName: trimmed, action }),
     })
       .then(r => r.json())
       .then((d: { count: number }) => {
@@ -294,7 +302,32 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
           [photoId]: Math.max(0, (prev[photoId] ?? 0) + (alreadyLiked ? 1 : -1)),
         }));
       });
-  }, [uploaderName, myLikes, album.slug]);
+  }, [myLikes, album.slug]);
+
+  const toggleLike = useCallback((photoId: string) => {
+    if (!uploaderName.trim()) return; // need a name first
+    likeWithName(photoId, uploaderName);
+  }, [uploaderName, likeWithName]);
+
+  /* Lightbox like handler — if the guest has no name yet, reveal & focus the
+     name-entry field and remember which photo to like once confirmed, instead
+     of being a dead disabled button. */
+  const handleLightboxLike = useCallback((photoId: string) => {
+    if (uploaderName.trim() && nameConfirmed) {
+      likeWithName(photoId, uploaderName);
+      return;
+    }
+    pendingLikeRef.current = photoId;
+    setLightboxNamePrompt(true);
+    setLightboxPanelOpen(true); // ensure the bottom sheet (with the input) is open on mobile
+    requestAnimationFrame(() => {
+      const el = lbNameInputRef.current;
+      if (el) {
+        el.focus();
+        el.scrollIntoView({ block: "center", behavior: "smooth" });
+      }
+    });
+  }, [uploaderName, nameConfirmed, likeWithName]);
 
   // ── Post comment ─────────────────────────────────────────────────────────
   const postComment = useCallback(async () => {
@@ -371,6 +404,13 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
     if (!uploaderName.trim()) return;
     setUploaderName(uploaderName.trim());
     setNameConfirmed(true);
+    setLightboxNamePrompt(false);
+    // If the guest tapped "like" before having a name, register that like now.
+    const pending = pendingLikeRef.current;
+    if (pending) {
+      pendingLikeRef.current = null;
+      likeWithName(pending, uploaderName.trim());
+    }
   };
 
   // ── Lightbox slides — mirror the currently displayed images (filtered+sorted) ──
@@ -1302,12 +1342,13 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
                   </button>
                 )}
               </div>
-              {/* Like button — full-width, prominent */}
+              {/* Like button — full-width, prominent. Never disabled: when the
+                  guest has no name yet, tapping it reveals the name-entry field
+                  (see handleLightboxLike) instead of being a dead button. */}
               <button
-                onClick={() => toggleLike(lightboxPhoto.id)}
-                disabled={!uploaderName.trim()}
+                onClick={() => handleLightboxLike(lightboxPhoto.id)}
                 title={lbLiked ? t.unlike : t.like}
-                className="mt-3 w-full flex items-center justify-center gap-2 py-2 rounded-xl text-sm font-semibold transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+                className="mt-3 w-full flex items-center justify-center gap-2 py-2 rounded-xl text-sm font-semibold transition-all hover:opacity-90"
                 style={lbLiked
                   ? { background: "#FEE2E2", color: "#EF4444" }
                   : { background: BRAND.bg, color: BRAND.muted, border: `1px solid ${BRAND.border}` }}
@@ -1363,19 +1404,21 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
             <div className="border-t px-3 py-3 shrink-0" style={{ borderColor: BRAND.border, background: BRAND.bg }}>
               {!nameConfirmed ? (
                 <div className="space-y-2 py-0.5">
-                  <p className="text-xs text-center font-medium" style={{ color: BRAND.muted }}>
-                    {t.enterNameToComment}
+                  <p className="text-xs text-center font-medium" style={{ color: lightboxNamePrompt ? "#EF4444" : BRAND.muted }}>
+                    {lightboxNamePrompt ? t.enterNameToLike : t.enterNameToComment}
                   </p>
                   <div className="flex items-center gap-2">
                     <input
+                      ref={lbNameInputRef}
                       type="text"
                       value={uploaderName}
                       onChange={e => setUploaderName(e.target.value)}
                       onKeyDown={e => e.key === "Enter" && confirmName()}
+                      onFocus={e => e.currentTarget.scrollIntoView({ block: "center", behavior: "smooth" })}
                       placeholder={t.yourNamePlaceholder}
                       autoComplete="given-name"
                       className="flex-1 px-3.5 py-2.5 bg-white border rounded-full text-sm outline-none transition-all focus:ring-2"
-                      style={{ borderColor: BRAND.border }}
+                      style={{ borderColor: lightboxNamePrompt ? "#EF4444" : BRAND.border }}
                     />
                     <button
                       onClick={confirmName}
@@ -1396,6 +1439,11 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
                       value={commentInput}
                       onChange={e => setCommentInput(e.target.value)}
                       onKeyDown={e => e.key === "Enter" && !e.shiftKey && postComment()}
+                      onFocus={e => {
+                        // Keep the input above the on-screen keyboard on mobile.
+                        const el = e.currentTarget;
+                        setTimeout(() => el.scrollIntoView({ block: "center", behavior: "smooth" }), 300);
+                      }}
                       placeholder={t.addComment}
                       maxLength={500}
                       className="flex-1 min-w-0 py-1.5 text-sm outline-none bg-transparent"
@@ -1429,7 +1477,7 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
         return (
           <Lightbox
             open={lightboxIndex >= 0}
-            close={() => { setLightboxIndex(-1); setLightboxPanelOpen(false); setLightboxDesktopPanelOpen(true); setOpenCommentsPhoto(null); }}
+            close={() => { setLightboxIndex(-1); setLightboxPanelOpen(false); setLightboxDesktopPanelOpen(true); setOpenCommentsPhoto(null); setLightboxNamePrompt(false); pendingLikeRef.current = null; }}
             index={lightboxIndex}
             slides={lightboxSlides}
             plugins={[Download, Counter]}
@@ -1503,11 +1551,20 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
                   </button>
 
                   {lightboxPanelOpen && (
-                    <div className="lg:hidden absolute inset-0 z-[2] flex flex-col justify-end" onClick={() => setLightboxPanelOpen(false)}>
+                    /* The overlay is `fixed` and sized with dynamic viewport
+                       units (100dvh) so that on iOS Safari it tracks the
+                       *visible* viewport when the on-screen keyboard opens —
+                       the sheet stays anchored to the bottom of what the user
+                       actually sees, never pushed off-screen. */
+                    <div
+                      className="lg:hidden fixed inset-x-0 top-0 z-[2] flex flex-col justify-end"
+                      style={{ height: "100dvh" }}
+                      onClick={() => setLightboxPanelOpen(false)}
+                    >
                       <div className="absolute inset-0 bg-black/40" />
                       <div
                         className="relative bg-white rounded-t-2xl flex flex-col overflow-hidden shadow-2xl"
-                        style={{ maxHeight: "75%" }}
+                        style={{ maxHeight: "85dvh" }}
                         onClick={e => e.stopPropagation()}
                       >
                         <div className="flex justify-center pt-2 pb-1 shrink-0">
