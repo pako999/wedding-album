@@ -430,6 +430,7 @@ export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activ
             <div className="max-w-lg space-y-6">
               <AlbumSettingsForm album={album} />
               <MomentsManager album={album} />
+              <CustomDomainPanel album={album} />
             </div>
           )}
         </div>
@@ -1236,6 +1237,296 @@ function MomentsManager({ album }: { album: Album }) {
           ))}
         </div>
       )}
+    </div>
+  );
+}
+
+// ─── Custom Domain Panel (Premium) ────────────────────────────────────────────
+
+interface DnsRecord {
+  type: string;
+  domain: string;
+  value: string;
+}
+
+interface DomainStatus {
+  verified: boolean;
+  misconfigured: boolean;
+  verification: DnsRecord[];
+}
+
+const ACCENT = "#1E3A8A"; // black-blue accent
+
+function CustomDomainPanel({ album }: { album: Album }) {
+  const isPremium = album.plan === "premium";
+
+  const [domain, setDomain] = useState<string | null>(album.customDomain ?? null);
+  const [status, setStatus] = useState<DomainStatus | null>(null);
+  const [input, setInput] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  // Load current domain + status on mount (Premium only).
+  useEffect(() => {
+    if (!isPremium) return;
+    let cancelled = false;
+    (async () => {
+      setLoading(true);
+      try {
+        const res = await fetch(`/api/albums/${album.slug}/domain`);
+        if (res.ok) {
+          const data = (await res.json()) as { domain: string | null; status: DomainStatus | null };
+          if (!cancelled) {
+            setDomain(data.domain);
+            setStatus(data.status);
+          }
+        }
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+    return () => { cancelled = true; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [album.slug]);
+
+  const saveDomain = async () => {
+    const value = input.trim();
+    if (!value || busy) return;
+    setBusy(true);
+    setError("");
+    try {
+      const res = await fetch(`/api/albums/${album.slug}/domain`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ domain: value }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setError(data.error ?? "Shranjevanje ni uspelo.");
+        return;
+      }
+      setDomain(data.domain ?? value);
+      setStatus(data.status ?? null);
+      setInput("");
+    } catch {
+      setError("Napaka pri povezavi.");
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const refreshStatus = async () => {
+    if (busy) return;
+    setBusy(true);
+    setError("");
+    try {
+      const res = await fetch(`/api/albums/${album.slug}/domain`);
+      const data = await res.json().catch(() => ({}));
+      if (res.ok) {
+        setDomain(data.domain);
+        setStatus(data.status);
+      } else {
+        setError(data.error ?? "Osvežitev ni uspela.");
+      }
+    } catch {
+      setError("Napaka pri povezavi.");
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const removeDomain = async () => {
+    if (busy || !confirm("Res želite odstraniti lastno domeno?")) return;
+    setBusy(true);
+    setError("");
+    try {
+      const res = await fetch(`/api/albums/${album.slug}/domain`, {
+        method: "DELETE",
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setError(data.error ?? "Odstranjevanje ni uspelo.");
+        return;
+      }
+      setDomain(null);
+      setStatus(null);
+    } catch {
+      setError("Napaka pri povezavi.");
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const inputClass =
+    "w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm text-gray-800 bg-white outline-none focus:border-indigo-400 transition-colors";
+
+  // ── Locked panel (non-Premium) ──────────────────────────────────────────────
+  if (!isPremium) {
+    return (
+      <div className="bg-white rounded-2xl border border-gray-100 p-6 space-y-4">
+        <div className="flex items-center gap-2">
+          <span className="text-base">🌐</span>
+          <h3 className="font-semibold text-gray-900">Lastna domena</h3>
+          <span className="ml-auto text-[11px] font-semibold px-2 py-0.5 rounded-full bg-rose-500 text-white">
+            Premium
+          </span>
+        </div>
+        <p className="text-sm text-gray-500">
+          Lastna domena je na voljo v paketu Premium. Galerijo lahko prikažete na
+          svoji domeni, npr. <span className="font-mono">galerija.mojadomena.si</span>.
+        </p>
+        <Link
+          href={`/dashboard/${album.slug}/upgrade`}
+          className="inline-block px-5 py-2.5 rounded-xl text-white text-sm font-semibold transition-opacity hover:opacity-90"
+          style={{ background: ACCENT }}
+        >
+          Nadgradi na Premium →
+        </Link>
+      </div>
+    );
+  }
+
+  // ── Premium panel ───────────────────────────────────────────────────────────
+  return (
+    <div className="bg-white rounded-2xl border border-gray-100 p-6 space-y-4">
+      <div className="flex items-center gap-2">
+        <span className="text-base">🌐</span>
+        <h3 className="font-semibold text-gray-900">Lastna domena</h3>
+      </div>
+
+      {loading ? (
+        <p className="text-sm text-gray-400">Nalaganje…</p>
+      ) : !domain ? (
+        // No domain set — input + save.
+        <>
+          <p className="text-sm text-gray-500">
+            Vnesite domeno, na kateri želite prikazati svojo galerijo. Po vnosu vam
+            bomo prikazali DNS zapis, ki ga dodate pri svojem ponudniku domene.
+          </p>
+          <input
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && saveDomain()}
+            placeholder="npr. galerija.mojadomena.si"
+            className={inputClass}
+          />
+          <button
+            onClick={saveDomain}
+            disabled={busy || !input.trim()}
+            className="w-full py-3 rounded-xl text-white text-sm font-semibold transition-opacity hover:opacity-90 disabled:opacity-40"
+            style={{ background: ACCENT }}
+          >
+            {busy ? "Shranjevanje…" : "Shrani"}
+          </button>
+        </>
+      ) : (
+        // Domain set — show status + DNS records.
+        <>
+          <div className="flex items-center justify-between gap-3 flex-wrap">
+            <span className="font-mono text-sm text-gray-800 break-all">{domain}</span>
+            {status?.verified ? (
+              <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-green-100 text-green-700">
+                ✅ Preverjeno
+              </span>
+            ) : (
+              <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-amber-100 text-amber-700">
+                ⏳ Čaka na DNS
+              </span>
+            )}
+          </div>
+
+          {!status?.verified && (
+            <div
+              className="rounded-xl p-4 space-y-3 text-sm"
+              style={{ background: "#EFF2FB" }}
+            >
+              <p className="font-medium" style={{ color: ACCENT }}>
+                Dodajte naslednji DNS zapis pri svojem ponudniku domene:
+              </p>
+
+              {status?.verification && status.verification.length > 0 ? (
+                status.verification.map((r, i) => (
+                  <div key={i} className="bg-white rounded-lg border border-gray-200 p-3 space-y-1.5">
+                    <DnsRow label="Tip" value={r.type} />
+                    <DnsRow label="Ime" value={r.domain} />
+                    <DnsRow label="Vrednost" value={r.value} />
+                  </div>
+                ))
+              ) : (
+                // No explicit verification records → standard CNAME / A instruction.
+                <div className="bg-white rounded-lg border border-gray-200 p-3 space-y-1.5">
+                  {domain.split(".").length > 2 ? (
+                    <>
+                      <DnsRow label="Tip" value="CNAME" />
+                      <DnsRow label="Ime" value={domain.split(".")[0]} />
+                      <DnsRow label="Vrednost" value="cname.vercel-dns.com" />
+                    </>
+                  ) : (
+                    <>
+                      <DnsRow label="Tip" value="A" />
+                      <DnsRow label="Ime" value="@" />
+                      <DnsRow label="Vrednost" value="76.76.21.21" />
+                    </>
+                  )}
+                </div>
+              )}
+
+              <p className="text-xs text-gray-500">
+                Ko dodate DNS zapis pri svojem ponudniku domene, ga sistem samodejno
+                preveri in izda SSL certifikat. To lahko traja nekaj minut.
+              </p>
+            </div>
+          )}
+
+          {status?.verified && (
+            <p className="text-sm text-gray-500">
+              Vaša galerija je dostopna na{" "}
+              <a
+                href={`https://${domain}`}
+                target="_blank"
+                rel="noreferrer"
+                className="font-medium underline"
+                style={{ color: ACCENT }}
+              >
+                {domain}
+              </a>
+              .
+            </p>
+          )}
+
+          <div className="flex gap-2">
+            <button
+              onClick={refreshStatus}
+              disabled={busy}
+              className="flex-1 py-2.5 rounded-xl border text-sm font-semibold transition-colors disabled:opacity-40"
+              style={{ borderColor: ACCENT, color: ACCENT }}
+            >
+              {busy ? "…" : "Osveži stanje"}
+            </button>
+            <button
+              onClick={removeDomain}
+              disabled={busy}
+              className="flex-1 py-2.5 rounded-xl border border-red-300 text-red-600 text-sm font-semibold hover:bg-red-50 transition-colors disabled:opacity-40"
+            >
+              Odstrani
+            </button>
+          </div>
+        </>
+      )}
+
+      {error && (
+        <p className="text-sm text-red-600 bg-red-50 rounded-xl px-4 py-2">{error}</p>
+      )}
+    </div>
+  );
+}
+
+function DnsRow({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="flex items-center gap-2 text-xs">
+      <span className="w-20 flex-shrink-0 text-gray-400 uppercase tracking-wide">{label}</span>
+      <span className="font-mono text-gray-800 break-all select-all">{value}</span>
     </div>
   );
 }
