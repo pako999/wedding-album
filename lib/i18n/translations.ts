@@ -148,6 +148,7 @@ export interface Translations {
   beFirstToComment: string;     // "Be the first to comment!"
   photoBy: string;              // "Photo:"
   enterNameToComment: string;   // "Enter your name to comment:"
+  enterNameToLike: string;      // "Enter your name first to like photos:"
   addComment: string;           // "Add a comment…"
   ok: string;                   // "OK"
   showInfo: string;             // "Likes & comments"
@@ -228,6 +229,7 @@ const sl: Translations = {
   footerCredit: "Guestcam",
   eventLabel: (type) => ({
     baby_shower: "Baby Shower",
+    business: "Poslovni dogodek",
     wedding: "Poroka", birthday: "Rojstni dan", anniversary: "Obletnica",
     party: "Zabava", baptism: "Krst", graduation: "Matura",
   } as Record<string, string>)[type] ?? "Dogodek",
@@ -289,6 +291,7 @@ const sl: Translations = {
   beFirstToComment: "Bodi prvi, ki komentira!",
   photoBy: "Foto:",
   enterNameToComment: "Vnesi ime za komentar:",
+  enterNameToLike: "Najprej vnesi ime za všečkanje:",
   addComment: "Dodaj komentar…",
   ok: "OK",
   showInfo: "Všečki in komentarji",
@@ -361,6 +364,7 @@ const hr: Translations = {
   footerCredit: "Guestcam",
   eventLabel: (type) => ({
     baby_shower: "Baby Shower",
+    business: "Poslovni događaj",
     wedding: "Vjenčanje", birthday: "Rođendan", anniversary: "Godišnjica",
     party: "Zabava", baptism: "Krštenje", graduation: "Matura",
   } as Record<string, string>)[type] ?? "Događaj",
@@ -422,6 +426,7 @@ const hr: Translations = {
   beFirstToComment: "Budi prvi koji komentira!",
   photoBy: "Foto:",
   enterNameToComment: "Unesi ime za komentar:",
+  enterNameToLike: "Prvo unesi ime za sviđanje:",
   addComment: "Dodaj komentar…",
   ok: "U redu",
   showInfo: "Sviđanja i komentari",
@@ -494,6 +499,7 @@ const sr: Translations = {
   footerCredit: "Guestcam",
   eventLabel: (type) => ({
     baby_shower: "Baby Shower",
+    business: "Poslovni događaj",
     wedding: "Venčanje", birthday: "Rođendan", anniversary: "Godišnjica",
     party: "Žurka", baptism: "Krštenje", graduation: "Matura",
   } as Record<string, string>)[type] ?? "Događaj",
@@ -555,6 +561,7 @@ const sr: Translations = {
   beFirstToComment: "Budi prvi koji komentariše!",
   photoBy: "Foto:",
   enterNameToComment: "Unesi ime za komentar:",
+  enterNameToLike: "Prvo unesi ime za sviđanje:",
   addComment: "Dodaj komentar…",
   ok: "U redu",
   showInfo: "Sviđanja i komentari",
@@ -627,6 +634,7 @@ const en: Translations = {
   footerCredit: "Guestcam",
   eventLabel: (type) => ({
     baby_shower: "Baby Shower",
+    business: "Business event",
     wedding: "Wedding", birthday: "Birthday", anniversary: "Anniversary",
     party: "Party", baptism: "Baptism", graduation: "Graduation",
   } as Record<string, string>)[type] ?? "Event",
@@ -688,6 +696,7 @@ const en: Translations = {
   beFirstToComment: "Be the first to comment!",
   photoBy: "Photo:",
   enterNameToComment: "Enter your name to comment:",
+  enterNameToLike: "Enter your name first to like photos:",
   addComment: "Add a comment…",
   ok: "OK",
   showInfo: "Likes & comments",
@@ -760,6 +769,7 @@ const de: Translations = {
   footerCredit: "Guestcam",
   eventLabel: (type) => ({
     baby_shower: "Baby Shower",
+    business: "Firmenevent",
     wedding: "Hochzeit", birthday: "Geburtstag", anniversary: "Jubiläum",
     party: "Party", baptism: "Taufe", graduation: "Abschluss",
   } as Record<string, string>)[type] ?? "Veranstaltung",
@@ -821,6 +831,7 @@ const de: Translations = {
   beFirstToComment: "Kommentieren Sie als Erster!",
   photoBy: "Foto:",
   enterNameToComment: "Namen eingeben zum Kommentieren:",
+  enterNameToLike: "Erst Namen eingeben, um zu liken:",
   addComment: "Kommentar hinzufügen…",
   ok: "OK",
   showInfo: "Likes & Kommentare",
@@ -893,6 +904,7 @@ const es: Translations = {
   footerCredit: "Guestcam",
   eventLabel: (type) => ({
     baby_shower: "Baby Shower",
+    business: "Evento de empresa",
     wedding: "Boda", birthday: "Cumpleaños", anniversary: "Aniversario",
     party: "Fiesta", baptism: "Bautizo", graduation: "Graduación",
   } as Record<string, string>)[type] ?? "Evento",
@@ -954,6 +966,7 @@ const es: Translations = {
   beFirstToComment: "¡Sé el primero en comentar!",
   photoBy: "Foto:",
   enterNameToComment: "Introduce tu nombre para comentar:",
+  enterNameToLike: "Introduce tu nombre para dar me gusta:",
   addComment: "Añadir un comentario…",
   ok: "OK",
   showInfo: "Me gusta y comentarios",
