@@ -19,6 +19,7 @@ const EVENT_TYPES: EventType[] = [
   { id: "party",       emoji: "🎉", label: "Zabava",      nameLabel: "Ime zabave",    namePlaceholder: "npr. Novoletna zabava",  dateLabel: "Datum zabave"       },
   { id: "baptism",     emoji: "👶", label: "Krst",        nameLabel: "Ime otroka",    namePlaceholder: "npr. Mali Luka",         dateLabel: "Datum krsta"        },
   { id: "graduation",  emoji: "🎓", label: "Diploma/Matura", nameLabel: "Ime",      namePlaceholder: "npr. Sara, diplomirala", dateLabel: "Datum zagovora"     },
+  { id: "baby_shower", emoji: "👶", label: "Baby Shower", nameLabel: "Ime",           namePlaceholder: "npr. Ana",               dateLabel: "Datum baby showerja"},
   { id: "other",       emoji: "📸", label: "Drugo",       nameLabel: "Ime dogodka",   namePlaceholder: "npr. Ekskurzija 2025",   dateLabel: "Datum dogodka"      },
 ];
 
@@ -72,6 +73,15 @@ const EVENT_ICON_PATHS: Record<string, ReactNode> = {
       <path d="M6 10.4v4.2c0 1.6 2.7 2.9 6 2.9s6-1.3 6-2.9v-4.2" />
       <path d="M22 8.4v6.2" />
       <circle cx="22" cy="15.6" r="1.05" />
+    </>
+  ),
+  // Baby bottle
+  baby_shower: (
+    <>
+      <rect x="9.5" y="3.4" width="5" height="2" rx="0.8" />
+      <path d="M8.7 7.5h6.6l-.5-2.1H9.2z" />
+      <rect x="8.3" y="7.5" width="7.4" height="13.1" rx="2.6" />
+      <path d="M8.3 11.6h4.4M8.3 14.6h4.4" />
     </>
   ),
   // Camera
@@ -146,7 +156,7 @@ export function CreateEventWizard() {
               <span className="text-xl">📸</span>
             </div>
             <div>
-              <h1 className="font-serif text-2xl font-light text-[#0F1729]">Nova galerija</h1>
+              <h1 className="text-2xl font-bold tracking-tight text-[#0F1729]">Nova galerija</h1>
               <p className="text-xs text-gray-400">Korak 1 od 2 · Izberi vrsto dogodka</p>
             </div>
           </div>
@@ -193,7 +203,7 @@ export function CreateEventWizard() {
             <EventIcon id={eventInfo.id} className="w-6 h-6" />
           </div>
           <div>
-            <h1 className="font-serif text-2xl font-light text-[#0F1729]">{eventInfo.label}</h1>
+            <h1 className="text-2xl font-bold tracking-tight text-[#0F1729]">{eventInfo.label}</h1>
             <p className="text-xs text-gray-400">Korak 2 od 2 · Podatki o dogodku</p>
           </div>
         </div>

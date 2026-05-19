@@ -185,6 +185,9 @@ export const filmGenerations = pgTable(
     clipsTotal:  integer("clips_total").notNull().default(0),
     clipsDone:   integer("clips_done").notNull().default(0),
     clipsFailed: integer("clips_failed").notNull().default(0),
+    // Shotstack montage render — one render per generation
+    shotstackRenderId: text("shotstack_render_id"),
+    videoUrl:          text("video_url"),
     createdAt:   timestamp("created_at").notNull().defaultNow(),
     completedAt: timestamp("completed_at"),
   },

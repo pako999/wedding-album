@@ -1,16 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { db } from "@/lib/db";
-import { albums, filmGenerations, filmClips } from "@/lib/db/schema";
+import { albums, filmGenerations } from "@/lib/db/schema";
 import { eq, desc } from "drizzle-orm";
+import { pollMontage } from "@/lib/film/shotstack";
 
 export const runtime = "nodejs";
 
 /**
  * GET /api/albums/[slug]/film/status
  *
- * Returns the latest film generation + all its clips.
- * Frontend polls this every few seconds while processing.
+ * Returns the latest film montage generation for the album. If it is still
+ * processing, polls Shotstack and updates the row.
+ * The frontend polls this every few seconds while rendering.
  */
 export async function GET(
   _req: NextRequest,
@@ -39,50 +41,58 @@ export async function GET(
     .catch(() => []);
 
   if (!generation) {
-    return NextResponse.json({ generation: null, clips: [] });
+    return NextResponse.json({ generation: null });
   }
 
-  const clips = await db.query.filmClips
-    .findMany({
-      where: eq(filmClips.generationId, generation.id),
-      orderBy: (c, { asc }) => [asc(c.sortOrder)],
-    })
-    .catch(() => []);
-
-  // Re-derive counts from actual clip rows in case webhook updated them
-  const done   = clips.filter(c => c.status === "done").length;
-  const failed = clips.filter(c => c.status === "failed").length;
-  const total  = clips.length;
-
-  // Auto-complete when all clips resolved
   let status = generation.status;
-  if (status === "processing" && done + failed === total && total > 0) {
-    status = failed === total ? "failed" : "complete";
-    await db
-      .update(filmGenerations)
-      .set({ status, clipsDone: done, clipsFailed: failed, completedAt: new Date() })
-      .where(eq(filmGenerations.id, generation.id))
-      .catch(() => null);
+  let videoUrl = generation.videoUrl;
+  let completedAt = generation.completedAt;
+
+  // If still processing, poll Shotstack for the render result.
+  if (status === "processing" && generation.shotstackRenderId) {
+    try {
+      const result = await pollMontage(generation.shotstackRenderId);
+      if (result.status === "done") {
+        status = "complete";
+        videoUrl = result.url ?? null;
+        completedAt = new Date();
+        await db
+          .update(filmGenerations)
+          .set({
+            status: "complete",
+            videoUrl,
+            clipsDone: generation.clipsTotal,
+            completedAt,
+          })
+          .where(eq(filmGenerations.id, generation.id))
+          .catch(() => null);
+      } else if (result.status === "failed") {
+        status = "failed";
+        completedAt = new Date();
+        await db
+          .update(filmGenerations)
+          .set({
+            status: "failed",
+            clipsFailed: generation.clipsTotal,
+            completedAt,
+          })
+          .where(eq(filmGenerations.id, generation.id))
+          .catch(() => null);
+      }
+    } catch (err) {
+      console.error("[film/status] Shotstack poll error:", err);
+      // Leave status as processing — the client will retry on the next poll.
+    }
   }
 
   return NextResponse.json({
     generation: {
       id: generation.id,
       status,
-      clipsTotal: total,
-      clipsDone: done,
-      clipsFailed: failed,
+      videoUrl,
+      clipsTotal: generation.clipsTotal,
       createdAt: generation.createdAt,
-      completedAt: generation.completedAt,
+      completedAt,
     },
-    clips: clips.map(c => ({
-      id: c.id,
-      photoId: c.photoId,
-      photoUrl: c.photoUrl,
-      status: c.status,
-      videoUrl: c.videoUrl,
-      errorMessage: c.errorMessage,
-      sortOrder: c.sortOrder,
-    })),
   });
 }

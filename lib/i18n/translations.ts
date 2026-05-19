@@ -227,6 +227,7 @@ const sl: Translations = {
   limitReached: "Omejitev albuma je dosežena.",
   footerCredit: "Guestcam",
   eventLabel: (type) => ({
+    baby_shower: "Baby Shower",
     wedding: "Poroka", birthday: "Rojstni dan", anniversary: "Obletnica",
     party: "Zabava", baptism: "Krst", graduation: "Matura",
   } as Record<string, string>)[type] ?? "Dogodek",
@@ -359,6 +360,7 @@ const hr: Translations = {
   limitReached: "Dostignut limit fotografija.",
   footerCredit: "Guestcam",
   eventLabel: (type) => ({
+    baby_shower: "Baby Shower",
     wedding: "Vjenčanje", birthday: "Rođendan", anniversary: "Godišnjica",
     party: "Zabava", baptism: "Krštenje", graduation: "Matura",
   } as Record<string, string>)[type] ?? "Događaj",
@@ -491,6 +493,7 @@ const sr: Translations = {
   limitReached: "Dostignut limit fotografija.",
   footerCredit: "Guestcam",
   eventLabel: (type) => ({
+    baby_shower: "Baby Shower",
     wedding: "Venčanje", birthday: "Rođendan", anniversary: "Godišnjica",
     party: "Žurka", baptism: "Krštenje", graduation: "Matura",
   } as Record<string, string>)[type] ?? "Događaj",
@@ -623,6 +626,7 @@ const en: Translations = {
   limitReached: "Album photo limit reached.",
   footerCredit: "Guestcam",
   eventLabel: (type) => ({
+    baby_shower: "Baby Shower",
     wedding: "Wedding", birthday: "Birthday", anniversary: "Anniversary",
     party: "Party", baptism: "Baptism", graduation: "Graduation",
   } as Record<string, string>)[type] ?? "Event",
@@ -755,6 +759,7 @@ const de: Translations = {
   limitReached: "Foto-Limit des Albums erreicht.",
   footerCredit: "Guestcam",
   eventLabel: (type) => ({
+    baby_shower: "Baby Shower",
     wedding: "Hochzeit", birthday: "Geburtstag", anniversary: "Jubiläum",
     party: "Party", baptism: "Taufe", graduation: "Abschluss",
   } as Record<string, string>)[type] ?? "Veranstaltung",
@@ -887,6 +892,7 @@ const es: Translations = {
   limitReached: "Límite de fotos del álbum alcanzado.",
   footerCredit: "Guestcam",
   eventLabel: (type) => ({
+    baby_shower: "Baby Shower",
     wedding: "Boda", birthday: "Cumpleaños", anniversary: "Aniversario",
     party: "Fiesta", baptism: "Bautizo", graduation: "Graduación",
   } as Record<string, string>)[type] ?? "Evento",

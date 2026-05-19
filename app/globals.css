@@ -73,11 +73,14 @@ body {
 
 /* Lightbox likes/comments side panel (desktop only, >= lg).
    The panel occupies the right 340px of the lightbox; pad the slide so the photo
-   shrinks to fit beside it, and nudge the next-arrow + toolbar clear of it. */
+   shrinks to fit beside it, and nudge the next-arrow + toolbar clear of it.
+   Scoped to `.guestcam-lightbox--panel` — the modifier class is only present
+   while the desktop panel is OPEN. When the panel is hidden the class is
+   dropped, so no padding/shift applies and the photo uses the full width. */
 @media (min-width: 1024px) {
-  .guestcam-lightbox .yarl__slide { padding-right: 340px; }
-  .guestcam-lightbox .yarl__navigation_next { right: 340px; }
-  .guestcam-lightbox .yarl__toolbar { right: 340px; }
+  .guestcam-lightbox--panel .yarl__slide { padding-right: 340px; }
+  .guestcam-lightbox--panel .yarl__navigation_next { right: 340px; }
+  .guestcam-lightbox--panel .yarl__toolbar { right: 340px; }
 }
 
 /* Smooth scrollbar */

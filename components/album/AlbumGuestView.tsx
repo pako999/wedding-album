@@ -85,12 +85,20 @@ const DEMO_ALBUM_SLUG = "ana-marko-13ka";
 const BROKEN_IMG_SRC =
   "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 24 24' fill='none' stroke='%23d1d5db' stroke-width='1.5'%3E%3Crect x='2' y='7' width='20' height='14' rx='3'/%3E%3Ccircle cx='12' cy='14' r='3'/%3E%3C/svg%3E";
 
-/* Avatar initial bubble shared by photo captions + video cards */
+/* Avatar initial bubble shared by photo captions + video cards.
+   `size` is a Tailwind spacing step (1 step = 0.25rem); sized via inline
+   style so any value works without relying on dynamic class generation. */
 function AvatarBubble({ name, size = 5, accent = BRAND.accent }: { name: string; size?: number; accent?: string }) {
+  const px = size * 4;
   return (
     <div
-      className={`w-${size} h-${size} rounded-full flex items-center justify-center text-white font-bold shrink-0`}
-      style={{ background: accent, fontSize: size <= 5 ? "9px" : "11px" }}
+      className="rounded-full flex items-center justify-center text-white font-bold shrink-0"
+      style={{
+        background: accent,
+        width: `${px}px`,
+        height: `${px}px`,
+        fontSize: size <= 5 ? "9px" : size <= 7 ? "11px" : "13px",
+      }}
     >
       {name.charAt(0).toUpperCase()}
     </div>
@@ -130,7 +138,8 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
   const [turnstileToken, setTurnstileToken]     = useState<string | null>(null);
   // Lightbox info panel (likes + comments for the currently shown photo)
   const [lightboxViewIndex, setLightboxViewIndex] = useState(0);
-  const [lightboxPanelOpen, setLightboxPanelOpen] = useState(false); // mobile collapsible
+  const [lightboxPanelOpen, setLightboxPanelOpen] = useState(false); // mobile bottom sheet
+  const [lightboxDesktopPanelOpen, setLightboxDesktopPanelOpen] = useState(true); // desktop side panel
 
   const nameInputRef  = useRef<HTMLInputElement>(null);
   const cameraFilesRef = useRef<FileList | null>(null);
@@ -170,17 +179,13 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
       .catch(() => { /* non-fatal */ });
   }, [album.slug]);
 
-  // ── Load completed film clips ─────────────────────────────────────────────
+  // ── Load completed montage film ───────────────────────────────────────────
   useEffect(() => {
     fetch(`/api/albums/${album.slug}/film/status`)
       .then(r => r.ok ? r.json() : null)
-      .then((data: { generation: { status: string } | null; clips: { status: string; videoUrl: string | null; sortOrder: number }[] } | null) => {
-        if (data?.generation?.status === "complete") {
-          const done = data.clips
-            .filter(c => c.status === "done" && c.videoUrl)
-            .sort((a, b) => a.sortOrder - b.sortOrder)
-            .map(c => ({ videoUrl: c.videoUrl!, sortOrder: c.sortOrder }));
-          setFilmClips(done);
+      .then((data: { generation: { status: string; videoUrl: string | null } | null } | null) => {
+        if (data?.generation?.status === "complete" && data.generation.videoUrl) {
+          setFilmClips([{ videoUrl: data.generation.videoUrl, sortOrder: 0 }]);
         }
       })
       .catch(() => { /* non-fatal */ });
@@ -995,6 +1000,7 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
                         const idx = getLightboxIdx(photo);
                         setLightboxViewIndex(idx);
                         setLightboxPanelOpen(false);
+                        setLightboxDesktopPanelOpen(true);
                         setLightboxIndex(idx);
                       }}
                     >
@@ -1258,66 +1264,105 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
         const lbLikes    = lightboxPhoto ? (likeCounts[lightboxPhoto.id] ?? 0) : 0;
 
         /* The likes + comments panel body — shared by desktop side panel and
-           mobile bottom sheet. Reuses toggleLike / postComment / comment state. */
-        const panelBody = lightboxPhoto && (
+           mobile bottom sheet. Reuses toggleLike / postComment / comment state.
+           `onCollapse` (desktop only) renders a chevron "hide" control. */
+        const renderPanelBody = (onCollapse?: () => void) => lightboxPhoto && (
           <div className="flex flex-col h-full min-h-0">
-            {/* Header: uploader + like */}
-            <div className="flex items-center gap-2.5 px-4 py-3.5 border-b shrink-0" style={{ borderColor: BRAND.border }}>
-              {lightboxPhoto.uploaderName && <AvatarBubble name={lightboxPhoto.uploaderName} size={7} accent={theme.accent} />}
-              <div className="min-w-0 flex-1">
-                {lightboxPhoto.uploaderName && (
-                  <p className="text-sm font-semibold leading-tight truncate" style={{ color: BRAND.dark }}>
-                    {lightboxPhoto.uploaderName}
+            {/* ── Header: uploader avatar + name + like ───────────────────── */}
+            <div className="shrink-0 px-4 pt-4 pb-3.5 border-b" style={{ borderColor: BRAND.border }}>
+              <div className="flex items-center gap-3">
+                {lightboxPhoto.uploaderName
+                  ? <AvatarBubble name={lightboxPhoto.uploaderName} size={9} accent={theme.accent} />
+                  : <div className="w-9 h-9 rounded-full shrink-0" style={{ background: BRAND.bg }} />}
+                <div className="min-w-0 flex-1">
+                  <p className="text-[10px] font-semibold uppercase tracking-widest" style={{ color: theme.accent }}>
+                    {t.eventLabel(album.eventType ?? "other")}
                   </p>
+                  {lightboxPhoto.uploaderName && (
+                    <p className="text-sm font-bold leading-tight truncate" style={{ color: BRAND.dark }}>
+                      {lightboxPhoto.uploaderName}
+                    </p>
+                  )}
+                  <p className="text-[11px] leading-tight mt-0.5" style={{ color: BRAND.muted }}>
+                    {formatUploadTime(lightboxPhoto.uploadedAt, t)}
+                  </p>
+                </div>
+                {/* Desktop collapse / hide control */}
+                {onCollapse && (
+                  <button
+                    onClick={onCollapse}
+                    title={t.hideInfo}
+                    aria-label={t.hideInfo}
+                    className="w-8 h-8 rounded-full flex items-center justify-center transition-all shrink-0 hover:bg-gray-100"
+                    style={{ color: BRAND.muted }}
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                    </svg>
+                  </button>
                 )}
-                <p className="text-[11px] leading-tight" style={{ color: BRAND.muted }}>
-                  {formatUploadTime(lightboxPhoto.uploadedAt, t)}
-                </p>
               </div>
+              {/* Like button — full-width, prominent */}
               <button
                 onClick={() => toggleLike(lightboxPhoto.id)}
                 disabled={!uploaderName.trim()}
                 title={lbLiked ? t.unlike : t.like}
-                className="flex items-center gap-1 px-2.5 py-1.5 rounded-full text-sm font-semibold transition-all shrink-0 disabled:opacity-40"
+                className="mt-3 w-full flex items-center justify-center gap-2 py-2 rounded-xl text-sm font-semibold transition-all disabled:opacity-40 disabled:cursor-not-allowed"
                 style={lbLiked
                   ? { background: "#FEE2E2", color: "#EF4444" }
-                  : { background: BRAND.bg, color: BRAND.muted }}
+                  : { background: BRAND.bg, color: BRAND.muted, border: `1px solid ${BRAND.border}` }}
               >
-                <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill={lbLiked ? "#EF4444" : "none"} stroke={lbLiked ? "#EF4444" : "currentColor"} strokeWidth={2}>
+                <svg className="w-[18px] h-[18px] shrink-0" viewBox="0 0 24 24" fill={lbLiked ? "#EF4444" : "none"} stroke={lbLiked ? "#EF4444" : "currentColor"} strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
                 </svg>
-                {lbLikes > 0 && <span>{lbLikes}</span>}
+                <span>{lbLiked ? t.unlike : t.like}</span>
+                {lbLikes > 0 && (
+                  <span className="ml-0.5 text-xs font-bold px-1.5 py-0.5 rounded-full tabular-nums"
+                    style={lbLiked ? { background: "#EF4444", color: "white" } : { background: "white", color: BRAND.muted }}>
+                    {lbLikes}
+                  </span>
+                )}
               </button>
             </div>
 
-            {/* Comment list */}
-            <div className="flex-1 min-h-0 overflow-y-auto px-4 py-4 space-y-4">
-              <p className="text-[11px] font-bold uppercase tracking-widest" style={{ color: BRAND.muted }}>
-                {t.comments}{lbComments.length > 0 && ` · ${lbComments.length}`}
+            {/* ── Comment list ────────────────────────────────────────────── */}
+            <div className="flex-1 min-h-0 overflow-y-auto px-4 pt-3.5 pb-2">
+              <p className="text-[11px] font-bold uppercase tracking-widest mb-3" style={{ color: BRAND.muted }}>
+                {t.comments}{lbComments.length > 0 && <span style={{ color: theme.accent }}> · {lbComments.length}</span>}
               </p>
               {lbComments.length === 0 ? (
-                <div className="text-center py-8">
-                  <div className="text-3xl mb-2 opacity-20">💬</div>
-                  <p className="text-sm" style={{ color: BRAND.muted }}>{t.beFirstToComment}</p>
-                </div>
-              ) : lbComments.map(c => (
-                <div key={c.id} className="flex items-start gap-2.5">
-                  <AvatarBubble name={c.uploaderName} size={7} accent={theme.accent} />
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-baseline gap-1.5">
-                      <span className="text-xs font-semibold" style={{ color: BRAND.dark }}>{c.uploaderName}</span>
-                      <span className="text-[10px]" style={{ color: BRAND.muted }}>{formatUploadTime(c.createdAt, t)}</span>
-                    </div>
-                    <p className="text-sm leading-snug mt-0.5 break-words" style={{ color: BRAND.dark }}>{c.body}</p>
+                <div className="flex flex-col items-center justify-center text-center py-10 px-4 rounded-2xl"
+                  style={{ background: BRAND.bg, border: `1px dashed ${BRAND.border}` }}>
+                  <div className="w-11 h-11 rounded-full flex items-center justify-center mb-2.5" style={{ background: accentTint }}>
+                    <svg className="w-5 h-5" fill="none" stroke={theme.accent} viewBox="0 0 24 24" strokeWidth={1.8}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z" />
+                    </svg>
                   </div>
+                  <p className="text-sm font-medium" style={{ color: BRAND.dark }}>{t.beFirstToComment}</p>
                 </div>
-              ))}
+              ) : (
+                <ul className="space-y-1">
+                  {lbComments.map((c, i) => (
+                    <li key={c.id} className="flex items-start gap-2.5 py-2.5"
+                      style={i > 0 ? { borderTop: `1px solid ${BRAND.border}` } : undefined}>
+                      <AvatarBubble name={c.uploaderName} size={8} accent={theme.accent} />
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-baseline gap-2">
+                          <span className="text-xs font-bold truncate" style={{ color: BRAND.dark }}>{c.uploaderName}</span>
+                          <span className="text-[10px] shrink-0" style={{ color: BRAND.muted }}>{formatUploadTime(c.createdAt, t)}</span>
+                        </div>
+                        <p className="text-sm leading-snug mt-0.5 break-words" style={{ color: "#374151" }}>{c.body}</p>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              )}
             </div>
 
-            {/* Add comment / name entry */}
-            <div className="border-t px-3 py-3 shrink-0" style={{ borderColor: BRAND.border }}>
+            {/* ── Add comment / name entry (pinned bottom) ────────────────── */}
+            <div className="border-t px-3 py-3 shrink-0" style={{ borderColor: BRAND.border, background: BRAND.bg }}>
               {!nameConfirmed ? (
-                <div className="space-y-2 py-1">
+                <div className="space-y-2 py-0.5">
                   <p className="text-xs text-center font-medium" style={{ color: BRAND.muted }}>
                     {t.enterNameToComment}
                   </p>
@@ -1329,13 +1374,13 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
                       onKeyDown={e => e.key === "Enter" && confirmName()}
                       placeholder={t.yourNamePlaceholder}
                       autoComplete="given-name"
-                      className="flex-1 px-3 py-2 border rounded-xl text-sm outline-none transition-all"
+                      className="flex-1 px-3.5 py-2.5 bg-white border rounded-full text-sm outline-none transition-all focus:ring-2"
                       style={{ borderColor: BRAND.border }}
                     />
                     <button
                       onClick={confirmName}
                       disabled={!uploaderName.trim()}
-                      className="px-4 py-2 rounded-xl text-sm font-semibold text-white transition-all disabled:opacity-30 shrink-0 hover:opacity-90"
+                      className="px-4 py-2.5 rounded-full text-sm font-semibold text-white transition-all disabled:opacity-30 shrink-0 hover:opacity-90"
                       style={{ background: theme.accent }}
                     >
                       {t.ok}
@@ -1344,34 +1389,37 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
                 </div>
               ) : (
                 <div className="flex items-center gap-2">
-                  <AvatarBubble name={uploaderName} size={7} accent={theme.accent} />
-                  <input
-                    type="text"
-                    value={commentInput}
-                    onChange={e => setCommentInput(e.target.value)}
-                    onKeyDown={e => e.key === "Enter" && !e.shiftKey && postComment()}
-                    placeholder={t.addComment}
-                    maxLength={500}
-                    className="flex-1 px-3 py-2 border rounded-xl text-sm outline-none transition-all"
-                    style={{ borderColor: BRAND.border }}
-                  />
-                  <button
-                    onClick={postComment}
-                    disabled={!commentInput.trim() || commentPosting}
-                    className="w-9 h-9 rounded-full flex items-center justify-center text-white transition-all disabled:opacity-30 shrink-0"
-                    style={{ background: theme.accent }}
-                  >
-                    {commentPosting ? (
-                      <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
-                      </svg>
-                    ) : (
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
-                      </svg>
-                    )}
-                  </button>
+                  <AvatarBubble name={uploaderName} size={8} accent={theme.accent} />
+                  <div className="flex-1 flex items-center gap-1 bg-white border rounded-full pl-3.5 pr-1 py-1" style={{ borderColor: BRAND.border }}>
+                    <input
+                      type="text"
+                      value={commentInput}
+                      onChange={e => setCommentInput(e.target.value)}
+                      onKeyDown={e => e.key === "Enter" && !e.shiftKey && postComment()}
+                      placeholder={t.addComment}
+                      maxLength={500}
+                      className="flex-1 min-w-0 py-1.5 text-sm outline-none bg-transparent"
+                    />
+                    <button
+                      onClick={postComment}
+                      disabled={!commentInput.trim() || commentPosting}
+                      title={t.addComment}
+                      aria-label={t.addComment}
+                      className="w-8 h-8 rounded-full flex items-center justify-center text-white transition-all disabled:opacity-30 shrink-0 hover:opacity-90"
+                      style={{ background: theme.accent }}
+                    >
+                      {commentPosting ? (
+                        <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
+                        </svg>
+                      ) : (
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
+                        </svg>
+                      )}
+                    </button>
+                  </div>
                 </div>
               )}
             </div>
@@ -1381,26 +1429,63 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
         return (
           <Lightbox
             open={lightboxIndex >= 0}
-            close={() => { setLightboxIndex(-1); setLightboxPanelOpen(false); setOpenCommentsPhoto(null); }}
+            close={() => { setLightboxIndex(-1); setLightboxPanelOpen(false); setLightboxDesktopPanelOpen(true); setOpenCommentsPhoto(null); }}
             index={lightboxIndex}
             slides={lightboxSlides}
             plugins={[Download, Counter]}
             on={{ view: ({ index }) => setLightboxViewIndex(index) }}
             styles={{ container: { backgroundColor: "rgba(0,0,0,0.97)" } }}
-            /* On desktop the slide is padded right (globals.css .yarl__slide rule)
-               so the photo shrinks and never sits under the side panel. */
-            className="guestcam-lightbox"
+            /* When the desktop panel is OPEN the container also carries
+               `guestcam-lightbox--panel`; globals.css scopes the right-padding
+               + toolbar/arrow shift to that class, so a hidden panel ⇒ no
+               padding ⇒ the photo uses the full lightbox width. */
+            className={`guestcam-lightbox${lightboxDesktopPanelOpen ? " guestcam-lightbox--panel" : ""}`}
             render={{
               /* Inject the panel as a custom control (absolute positioned) */
               controls: () => lightboxPhoto ? (
                 <>
-                  {/* Desktop: fixed-width side panel, full height */}
-                  <div
-                    className="hidden lg:flex flex-col absolute top-0 right-0 bottom-0 bg-white shadow-2xl z-[1]"
-                    style={{ width: PANEL_W }}
-                  >
-                    {panelBody}
-                  </div>
+                  {/* Desktop: fixed-width side panel, full height — collapsible */}
+                  {lightboxDesktopPanelOpen ? (
+                    <div
+                      className="hidden lg:flex flex-col absolute top-0 right-0 bottom-0 bg-white shadow-2xl z-[1]"
+                      style={{ width: PANEL_W }}
+                    >
+                      {renderPanelBody(() => setLightboxDesktopPanelOpen(false))}
+                    </div>
+                  ) : (
+                    /* Hidden state — a tasteful pill to re-open the panel */
+                    <button
+                      onClick={() => setLightboxDesktopPanelOpen(true)}
+                      title={t.showInfo}
+                      className="hidden lg:flex absolute top-4 right-4 z-[2] items-center gap-2 pl-3 pr-3.5 py-2 rounded-full text-sm font-semibold text-white shadow-xl transition-all hover:opacity-95"
+                      style={{ background: theme.accent }}
+                    >
+                      <svg className="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+                      </svg>
+                      <span>{t.showInfo}</span>
+                      {(lbLikes > 0 || lbComments.length > 0) && (
+                        <span className="flex items-center gap-1 ml-0.5 text-xs font-bold tabular-nums">
+                          {lbLikes > 0 && (
+                            <span className="flex items-center gap-0.5">
+                              <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="#EF4444" stroke="#EF4444" strokeWidth={2}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+                              </svg>
+                              {lbLikes}
+                            </span>
+                          )}
+                          {lbComments.length > 0 && (
+                            <span className="flex items-center gap-0.5">
+                              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z" />
+                              </svg>
+                              {lbComments.length}
+                            </span>
+                          )}
+                        </span>
+                      )}
+                    </button>
+                  )}
 
                   {/* Mobile: toggle button + bottom sheet */}
                   <button
@@ -1428,7 +1513,7 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
                         <div className="flex justify-center pt-2 pb-1 shrink-0">
                           <div className="w-10 h-1 rounded-full" style={{ background: BRAND.border }} />
                         </div>
-                        <div className="flex-1 min-h-0 flex flex-col">{panelBody}</div>
+                        <div className="flex-1 min-h-0 flex flex-col">{renderPanelBody()}</div>
                       </div>
                     </div>
                   )}

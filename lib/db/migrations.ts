@@ -151,6 +151,10 @@ export async function runMigrations() {
     `;
     await sql`CREATE INDEX IF NOT EXISTS film_gen_album_idx ON film_generations (album_id)`;
 
+    // Shotstack montage columns (one combined video per generation)
+    await sql`ALTER TABLE film_generations ADD COLUMN IF NOT EXISTS shotstack_render_id TEXT`;
+    await sql`ALTER TABLE film_generations ADD COLUMN IF NOT EXISTS video_url TEXT`;
+
     // ── Film clips ────────────────────────────────────────────────────────────
     await sql`
       CREATE TABLE IF NOT EXISTS film_clips (
