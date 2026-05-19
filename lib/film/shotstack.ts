@@ -27,6 +27,15 @@ const KEN_BURNS_EFFECTS = [
   "slideUp",
 ] as const;
 
+/**
+ * Background music for the montage. Override with the FILM_SOUNDTRACK_URL
+ * env var to use your own track; defaults to a royalty-free track hosted
+ * by Shotstack. Set FILM_SOUNDTRACK_URL="" to render without music.
+ */
+const SOUNDTRACK_URL =
+  process.env.FILM_SOUNDTRACK_URL ??
+  "https://shotstack-assets.s3-ap-southeast-2.amazonaws.com/music/unminus/ambisax.mp3";
+
 function apiKey(): string {
   const key = process.env.SHOTSTACK_API_KEY;
   if (!key) throw new Error("SHOTSTACK_API_KEY env var is required");
@@ -53,19 +62,28 @@ export async function submitMontage(photoUrls: string[]): Promise<string> {
     },
     start: Number((i * CLIP_LENGTH).toFixed(2)),
     length: CLIP_LENGTH,
-    fit: "cover",
+    // "crop" keeps the photo's aspect ratio (fills the frame, crops the
+    // overflow). "cover" stretches the image and distorts portrait photos.
+    fit: "crop",
     effect: KEN_BURNS_EFFECTS[i % KEN_BURNS_EFFECTS.length],
     transition: { in: "fade", out: "fade" },
   }));
 
+  const timeline: Record<string, unknown> = {
+    background: "#000000",
+    tracks: [{ clips }],
+  };
+  // Add a soundtrack that fades in/out, unless music is disabled.
+  if (SOUNDTRACK_URL) {
+    timeline.soundtrack = { src: SOUNDTRACK_URL, effect: "fadeInFadeOut" };
+  }
+
   const edit = {
-    timeline: {
-      background: "#000000",
-      tracks: [{ clips }],
-    },
+    timeline,
     output: {
+      // Full HD for a noticeably sharper montage.
       format: "mp4",
-      size: { width: 1280, height: 720 },
+      size: { width: 1920, height: 1080 },
     },
   };
 
