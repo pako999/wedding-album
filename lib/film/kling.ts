@@ -124,7 +124,7 @@ export async function submitKlingJob({
     },
     body: JSON.stringify({
       model_name: "kling-v1-6",          // best quality
-      image_url: imageUrl,               // image_url = HTTP URL; "image" field is base64 only
+      image: imageUrl,                   // Kling's "image" field accepts a base64 string OR an HTTP URL
       prompt: filmPrompt(eventType),
       negative_prompt: "blurry, low quality, watermark, text",
       cfg_scale: 0.5,
