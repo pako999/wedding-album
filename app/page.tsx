@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { GuestcamLogo } from "@/components/GuestcamLogo";
+import { DemoModal } from "@/components/DemoModal";
 
 // ── SVG Feature Icons ─────────────────────────────────────────────────────────
 function IconQR() {
@@ -100,6 +101,7 @@ export default function HomePage() {
             <a href="#templates" className="hover:text-[#2C2825] transition-colors">Predloge</a>
             <a href="#pricing" className="hover:text-[#2C2825] transition-colors">Cenik</a>
             <a href="#faq" className="hover:text-[#2C2825] transition-colors">FAQ</a>
+            <DemoModal variant="nav" />
           </div>
           <div className="flex items-center gap-4">
             <Link href="/dashboard" className="hidden sm:block text-sm font-medium text-gray-500 hover:text-[#2C2825] transition-colors">Prijava</Link>
