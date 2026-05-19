@@ -6,9 +6,11 @@ import type { Translations } from "@/lib/i18n/translations";
 interface Props {
   targetDate: string; // ISO date "2025-06-14"
   translations: Translations;
+  /** Event-specific accent color for the countdown label. */
+  accent?: string;
 }
 
-export function CountdownTimer({ targetDate, translations: t }: Props) {
+export function CountdownTimer({ targetDate, translations: t, accent = "#1E3A8A" }: Props) {
   const [label, setLabel] = useState<string | null>(null);
 
   useEffect(() => {
@@ -37,6 +39,6 @@ export function CountdownTimer({ targetDate, translations: t }: Props) {
   if (!label) return null;
 
   return (
-    <span className="font-sans text-xs text-[#C9A96E] font-medium">{label}</span>
+    <span className="font-sans text-xs font-medium" style={{ color: accent }}>{label}</span>
   );
 }

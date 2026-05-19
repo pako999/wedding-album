@@ -20,7 +20,7 @@ export const dynamic = "force-dynamic";
 export async function GET(req: NextRequest) {
   const key = req.nextUrl.searchParams.get("key");
 
-  if (!key || !key.startsWith("albums/")) {
+  if (!key || !key.startsWith("albums/") || key.includes("..")) {
     return new NextResponse("Invalid key", { status: 400 });
   }
 

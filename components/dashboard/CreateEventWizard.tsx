@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, type ReactNode } from "react";
 import { createAlbum } from "@/app/actions/create-album";
 
 type EventType = {
@@ -21,6 +21,84 @@ const EVENT_TYPES: EventType[] = [
   { id: "graduation",  emoji: "🎓", label: "Diploma/Matura", nameLabel: "Ime",      namePlaceholder: "npr. Sara, diplomirala", dateLabel: "Datum zagovora"     },
   { id: "other",       emoji: "📸", label: "Drugo",       nameLabel: "Ime dogodka",   namePlaceholder: "npr. Ekskurzija 2025",   dateLabel: "Datum dogodka"      },
 ];
+
+// ── Event category icons — clean line icons in the brand gold ────────────────
+const EVENT_ICON_PATHS: Record<string, ReactNode> = {
+  // Solitaire ring — band + diamond
+  wedding: (
+    <>
+      <path d="M9 4.5h6l2 2.8-5 3.2-5-3.2z" />
+      <path d="M9 4.5l3 2.7 3-2.7M7 7.3h10" />
+      <circle cx="12" cy="15.5" r="5.7" />
+    </>
+  ),
+  // Cake with a candle
+  birthday: (
+    <>
+      <rect x="4.5" y="12.5" width="15" height="8" rx="1.6" />
+      <path d="M4.5 15.6h15" />
+      <path d="M12 12.5V8" />
+      <path d="M12 4.6c1.3 1.4 1.3 2.7 0 3.4-1.3-.7-1.3-2 0-3.4z" />
+    </>
+  ),
+  // Two hearts
+  anniversary: (
+    <>
+      <path d="M11 19.4C7.2 17 5 14.1 5 11.4A3.3 3.3 0 0 1 11 9.6 3.3 3.3 0 0 1 17 11.4C17 14.1 14.8 17 11 19.4Z" />
+      <path d="M17.6 9.1c-1.7-1.1-2.7-2.3-2.7-3.4a1.35 1.35 0 0 1 2.7-.6 1.35 1.35 0 0 1 2.7.6c0 1.1-1 2.3-2.7 3.4z" />
+    </>
+  ),
+  // Balloons
+  party: (
+    <>
+      <ellipse cx="9.3" cy="8" rx="3.9" ry="4.8" />
+      <ellipse cx="15.6" cy="10.6" rx="3.2" ry="4" />
+      <path d="M9.3 12.8c0 1.7-1.1 2.2-.7 4M15.6 14.6c0 1.5.9 1.9.5 3.3" />
+    </>
+  ),
+  // Candle
+  baptism: (
+    <>
+      <rect x="9" y="9" width="6" height="11.5" rx="1.1" />
+      <path d="M9 12.4h6" />
+      <path d="M12 9V6" />
+      <path d="M12 2.6c1.6 1.9 1.6 3.4 0 4.3-1.6-.9-1.6-2.4 0-4.3z" />
+    </>
+  ),
+  // Graduation cap
+  graduation: (
+    <>
+      <path d="M12 4 22 8.4 12 12.8 2 8.4Z" />
+      <path d="M6 10.4v4.2c0 1.6 2.7 2.9 6 2.9s6-1.3 6-2.9v-4.2" />
+      <path d="M22 8.4v6.2" />
+      <circle cx="22" cy="15.6" r="1.05" />
+    </>
+  ),
+  // Camera
+  other: (
+    <>
+      <path d="M7.2 6.2 8 4.8a1.6 1.6 0 0 1 1.4-.8h5.2a1.6 1.6 0 0 1 1.4.8l.8 1.4" />
+      <rect x="3" y="6.2" width="18" height="13.4" rx="2.6" />
+      <circle cx="12" cy="12.9" r="3.6" />
+    </>
+  ),
+};
+
+function EventIcon({ id, className }: { id: string; className?: string }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.5}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      {EVENT_ICON_PATHS[id] ?? EVENT_ICON_PATHS.other}
+    </svg>
+  );
+}
 
 export function CreateEventWizard() {
   const [step, setStep] = useState<1 | 2>(1);
@@ -60,15 +138,15 @@ export function CreateEventWizard() {
   /* ── Step 1: Choose event type ───────────────────────────────────────── */
   if (step === 1) {
     return (
-      <div className="bg-white rounded-3xl border border-[#C4738A]/15 shadow-sm overflow-hidden">
+      <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
         {/* Header */}
-        <div className="px-8 py-7 border-b border-gray-100" style={{ background: "linear-gradient(135deg, #FDF4F5, #FEF2F4)" }}>
+        <div className="px-8 py-6 border-b border-gray-100">
           <div className="flex items-center gap-3 mb-1">
-            <div className="w-10 h-10 rounded-2xl flex items-center justify-center" style={{ background: "rgba(196,115,138,0.12)" }}>
+            <div className="w-10 h-10 rounded-2xl flex items-center justify-center" style={{ background: "rgba(30,58,138,0.10)" }}>
               <span className="text-xl">📸</span>
             </div>
             <div>
-              <h1 className="font-serif text-2xl font-light text-[#2C2825]">Nova galerija</h1>
+              <h1 className="font-serif text-2xl font-light text-[#0F1729]">Nova galerija</h1>
               <p className="text-xs text-gray-400">Korak 1 od 2 · Izberi vrsto dogodka</p>
             </div>
           </div>
@@ -83,18 +161,20 @@ export function CreateEventWizard() {
                 key={et.id}
                 onClick={() => handleTypeSelect(et)}
                 className="group flex flex-col items-center justify-center gap-2.5 p-5 rounded-2xl border-2 transition-all duration-150 hover:shadow-md text-center"
-                style={{ borderColor: "rgba(196,115,138,0.2)", background: "rgba(196,115,138,0.03)" }}
+                style={{ borderColor: "rgba(30,58,138,0.2)", background: "rgba(30,58,138,0.03)" }}
                 onMouseEnter={e => {
-                  (e.currentTarget as HTMLElement).style.borderColor = "#C4738A";
-                  (e.currentTarget as HTMLElement).style.background = "rgba(196,115,138,0.07)";
+                  (e.currentTarget as HTMLElement).style.borderColor = "#1E3A8A";
+                  (e.currentTarget as HTMLElement).style.background = "rgba(30,58,138,0.07)";
                 }}
                 onMouseLeave={e => {
-                  (e.currentTarget as HTMLElement).style.borderColor = "rgba(196,115,138,0.2)";
-                  (e.currentTarget as HTMLElement).style.background = "rgba(196,115,138,0.03)";
+                  (e.currentTarget as HTMLElement).style.borderColor = "rgba(30,58,138,0.2)";
+                  (e.currentTarget as HTMLElement).style.background = "rgba(30,58,138,0.03)";
                 }}
               >
-                <span className="text-3xl group-hover:scale-110 transition-transform">{et.emoji}</span>
-                <span className="text-sm font-semibold text-[#2C2825]">{et.label}</span>
+                <span className="group-hover:scale-110 transition-transform" style={{ color: "#1E3A8A" }}>
+                  <EventIcon id={et.id} className="w-9 h-9" />
+                </span>
+                <span className="text-sm font-semibold text-[#0F1729]">{et.label}</span>
               </button>
             ))}
           </div>
@@ -105,15 +185,15 @@ export function CreateEventWizard() {
 
   /* ── Step 2: Event details ───────────────────────────────────────────── */
   return (
-    <div className="bg-white rounded-3xl border border-[#C4738A]/15 shadow-sm overflow-hidden">
+    <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
       {/* Header */}
-      <div className="px-8 py-7 border-b border-gray-100" style={{ background: "linear-gradient(135deg, #FDF4F5, #FEF2F4)" }}>
+      <div className="px-8 py-6 border-b border-gray-100">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-2xl flex items-center justify-center text-2xl" style={{ background: "rgba(196,115,138,0.12)" }}>
-            {eventInfo.emoji}
+          <div className="w-10 h-10 rounded-2xl flex items-center justify-center" style={{ background: "rgba(30,58,138,0.10)", color: "#1E3A8A" }}>
+            <EventIcon id={eventInfo.id} className="w-6 h-6" />
           </div>
           <div>
-            <h1 className="font-serif text-2xl font-light text-[#2C2825]">{eventInfo.label}</h1>
+            <h1 className="font-serif text-2xl font-light text-[#0F1729]">{eventInfo.label}</h1>
             <p className="text-xs text-gray-400">Korak 2 od 2 · Podatki o dogodku</p>
           </div>
         </div>
@@ -126,52 +206,52 @@ export function CreateEventWizard() {
 
         {/* Name */}
         <div>
-          <label className="block text-sm font-semibold text-[#2C2825] mb-2">
-            {eventInfo.nameLabel} <span style={{ color: "#C4738A" }}>*</span>
+          <label className="block text-sm font-semibold text-[#0F1729] mb-2">
+            {eventInfo.nameLabel} <span style={{ color: "#1E3A8A" }}>*</span>
           </label>
           <input
             name="coupleName"
             required
             placeholder={eventInfo.namePlaceholder}
-            className="w-full px-4 py-3 rounded-xl border border-gray-200 text-[#2C2825] text-sm outline-none transition-all focus:border-[#C4738A]"
-            style={{ boxShadow: "0 0 0 0px rgba(196,115,138,0)" }}
-            onFocus={e => (e.target.style.boxShadow = "0 0 0 3px rgba(196,115,138,0.15)")}
-            onBlur={e => (e.target.style.boxShadow = "0 0 0 0px rgba(196,115,138,0)")}
+            className="w-full px-4 py-3 rounded-xl border border-gray-200 text-[#0F1729] text-sm outline-none transition-all focus:border-[#1E3A8A]"
+            style={{ boxShadow: "0 0 0 0px rgba(30,58,138,0)" }}
+            onFocus={e => (e.target.style.boxShadow = "0 0 0 3px rgba(30,58,138,0.15)")}
+            onBlur={e => (e.target.style.boxShadow = "0 0 0 0px rgba(30,58,138,0)")}
           />
         </div>
 
         {/* Date */}
         <div>
-          <label className="block text-sm font-semibold text-[#2C2825] mb-2">
-            {eventInfo.dateLabel} <span style={{ color: "#C4738A" }}>*</span>
+          <label className="block text-sm font-semibold text-[#0F1729] mb-2">
+            {eventInfo.dateLabel} <span style={{ color: "#1E3A8A" }}>*</span>
           </label>
           <input
             type="date"
             name="eventDate"
             required
-            className="w-full px-4 py-3 rounded-xl border border-gray-200 text-[#2C2825] text-sm outline-none transition-all focus:border-[#C4738A]"
-            onFocus={e => (e.target.style.boxShadow = "0 0 0 3px rgba(196,115,138,0.15)")}
-            onBlur={e => (e.target.style.boxShadow = "0 0 0 0px rgba(196,115,138,0)")}
+            className="w-full px-4 py-3 rounded-xl border border-gray-200 text-[#0F1729] text-sm outline-none transition-all focus:border-[#1E3A8A]"
+            onFocus={e => (e.target.style.boxShadow = "0 0 0 3px rgba(30,58,138,0.15)")}
+            onBlur={e => (e.target.style.boxShadow = "0 0 0 0px rgba(30,58,138,0)")}
           />
         </div>
 
         {/* Location */}
         <div>
-          <label className="block text-sm font-semibold text-[#2C2825] mb-2">
+          <label className="block text-sm font-semibold text-[#0F1729] mb-2">
             Lokacija <span className="text-gray-400 font-normal">(neobvezno)</span>
           </label>
           <input
             name="location"
             placeholder="npr. Grad Bogenšperk, Ljubljana"
-            className="w-full px-4 py-3 rounded-xl border border-gray-200 text-[#2C2825] text-sm outline-none transition-all focus:border-[#C4738A]"
-            onFocus={e => (e.target.style.boxShadow = "0 0 0 3px rgba(196,115,138,0.15)")}
-            onBlur={e => (e.target.style.boxShadow = "0 0 0 0px rgba(196,115,138,0)")}
+            className="w-full px-4 py-3 rounded-xl border border-gray-200 text-[#0F1729] text-sm outline-none transition-all focus:border-[#1E3A8A]"
+            onFocus={e => (e.target.style.boxShadow = "0 0 0 3px rgba(30,58,138,0.15)")}
+            onBlur={e => (e.target.style.boxShadow = "0 0 0 0px rgba(30,58,138,0)")}
           />
         </div>
 
         {/* Password */}
         <div>
-          <label className="block text-sm font-semibold text-[#2C2825] mb-2">
+          <label className="block text-sm font-semibold text-[#0F1729] mb-2">
             Geslo galerije <span className="text-gray-400 font-normal">(neobvezno)</span>
           </label>
           <div className="relative">
@@ -182,19 +262,19 @@ export function CreateEventWizard() {
               name="password"
               type="text"
               placeholder="Pustite prazno za javni dostop"
-              className="w-full pl-9 pr-4 py-3 rounded-xl border border-gray-200 text-[#2C2825] text-sm outline-none transition-all focus:border-[#C4738A]"
-              onFocus={e => (e.target.style.boxShadow = "0 0 0 3px rgba(196,115,138,0.15)")}
-              onBlur={e => (e.target.style.boxShadow = "0 0 0 0px rgba(196,115,138,0)")}
+              className="w-full pl-9 pr-4 py-3 rounded-xl border border-gray-200 text-[#0F1729] text-sm outline-none transition-all focus:border-[#1E3A8A]"
+              onFocus={e => (e.target.style.boxShadow = "0 0 0 3px rgba(30,58,138,0.15)")}
+              onBlur={e => (e.target.style.boxShadow = "0 0 0 0px rgba(30,58,138,0)")}
             />
           </div>
           <p className="text-xs text-gray-400 mt-1.5">Gosti bodo morali vnesti geslo za ogled in dodajanje fotografij.</p>
         </div>
 
         {/* Info strip */}
-        <div className="rounded-2xl p-4 flex items-start gap-3 text-sm" style={{ background: "rgba(196,115,138,0.06)", border: "1px solid rgba(196,115,138,0.15)" }}>
-          <span className="shrink-0" style={{ color: "#C4738A" }}>✨</span>
+        <div className="rounded-2xl p-4 flex items-start gap-3 text-sm" style={{ background: "rgba(30,58,138,0.06)", border: "1px solid rgba(30,58,138,0.15)" }}>
+          <span className="shrink-0" style={{ color: "#1E3A8A" }}>✨</span>
           <p className="text-gray-500 leading-relaxed">
-            Galerija se ustvari z <strong className="text-[#2C2825]">brezplačnim</strong> paketom (do 200 fotografij).
+            Galerija se ustvari z <strong className="text-[#0F1729]">brezplačnim</strong> paketom (do 200 fotografij).
             Nadgradnjo na Plus ali Premium lahko opravite kadarkoli.
           </p>
         </div>
@@ -211,15 +291,15 @@ export function CreateEventWizard() {
           <button
             type="button"
             onClick={handleBack}
-            className="px-5 py-3.5 rounded-2xl border border-gray-200 text-sm font-semibold text-gray-500 hover:border-gray-300 hover:text-[#2C2825] transition-all"
+            className="px-5 py-3.5 rounded-2xl border border-gray-200 text-sm font-semibold text-gray-500 hover:border-gray-300 hover:text-[#0F1729] transition-all"
           >
             ← Nazaj
           </button>
           <button
             type="submit"
             disabled={isPending}
-            className="flex-1 py-3.5 rounded-2xl text-white font-bold text-base transition-all duration-200 disabled:opacity-60"
-            style={{ background: "#C4738A", boxShadow: "0 6px 20px rgba(196,115,138,0.3)" }}
+            className="flex-1 py-3.5 rounded-2xl text-white font-bold text-base transition-all duration-200 disabled:opacity-60 hover:brightness-95"
+            style={{ background: "#1E3A8A" }}
           >
             {isPending ? (
               <span className="flex items-center justify-center gap-2">

@@ -127,10 +127,6 @@ export function ProjectionWall({ album, photos, onClose }: Props) {
           from { opacity: 0; transform: translateY(18px) scale(0.93); }
           to   { opacity: 1; transform: translateY(0)   scale(1); }
         }
-        @keyframes pwGlow {
-          0%,100% { box-shadow: 0 0 22px 4px rgba(196,115,138,0.55); }
-          50%     { box-shadow: 0 0 44px 8px rgba(196,115,138,0.85); }
-        }
         @keyframes pwLiveDot {
           0%,100% { opacity: 1; }
           50%     { opacity: 0.25; }
@@ -147,19 +143,19 @@ export function ProjectionWall({ album, photos, onClose }: Props) {
         {/* Colour blobs */}
         <div style={{
           position:"absolute", width:"600px", height:"600px", borderRadius:"50%",
-          background:"radial-gradient(circle, rgba(196,115,138,0.18), transparent 68%)",
+          background:"rgba(30,58,138,0.10)",
           top:"-120px", left:"8%",
           animation:"pwBlob1 12s ease-in-out infinite alternate",
         }}/>
         <div style={{
           position:"absolute", width:"450px", height:"450px", borderRadius:"50%",
-          background:"radial-gradient(circle, rgba(99,60,180,0.12), transparent 68%)",
+          background:"rgba(99,60,180,0.07)",
           bottom:"-60px", right:"12%",
           animation:"pwBlob2 15s ease-in-out infinite alternate",
         }}/>
         <div style={{
           position:"absolute", width:"320px", height:"320px", borderRadius:"50%",
-          background:"radial-gradient(circle, rgba(196,115,138,0.08), transparent 68%)",
+          background:"rgba(30,58,138,0.05)",
           top:"45%", right:"4%",
           animation:"pwBlob3 9s ease-in-out infinite alternate",
         }}/>
@@ -167,14 +163,8 @@ export function ProjectionWall({ album, photos, onClose }: Props) {
         {/* Subtle scanning line */}
         <div style={{
           position:"absolute", left:0, right:0, height:"1px",
-          background:"linear-gradient(90deg, transparent 0%, rgba(196,115,138,0.25) 50%, transparent 100%)",
+          background:"rgba(30,58,138,0.25)",
           animation:"pwScan 10s linear infinite",
-        }}/>
-
-        {/* Vignette */}
-        <div style={{
-          position:"absolute", inset:0,
-          background:"radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.45) 100%)",
         }}/>
       </div>
 
@@ -205,10 +195,10 @@ export function ProjectionWall({ album, photos, onClose }: Props) {
 
           {/* LIVE badge */}
           <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full"
-            style={{ background:"rgba(196,115,138,0.12)", border:"1px solid rgba(196,115,138,0.35)" }}>
+            style={{ background:"rgba(30,58,138,0.12)", border:"1px solid rgba(30,58,138,0.35)" }}>
             <span className="w-2 h-2 rounded-full shrink-0"
-              style={{ background:"#C4738A", animation:"pwLiveDot 1.4s ease-in-out infinite" }}/>
-            <span className="text-xs font-bold tracking-widest" style={{ color:"#C4738A" }}>V ŽIVO</span>
+              style={{ background:"#1E3A8A", animation:"pwLiveDot 1.4s ease-in-out infinite" }}/>
+            <span className="text-xs font-bold tracking-widest" style={{ color:"#1E3A8A" }}>V ŽIVO</span>
           </div>
 
           {/* Clock */}
@@ -269,7 +259,6 @@ export function ProjectionWall({ album, photos, onClose }: Props) {
                     gridColumn: isNewest ? "span 2" : undefined,
                     gridRow:    isNewest ? "span 2" : undefined,
                     animation:  `pwIn 0.5s cubic-bezier(.4,0,.2,1) ${i * 0.055}s both`,
-                    ...(isNewest ? { animation: `pwIn 0.5s cubic-bezier(.4,0,.2,1) both, pwGlow 2.8s ease-in-out 0.5s infinite` } : {}),
                   }}
                 >
                   {/* Media */}
@@ -301,7 +290,7 @@ export function ProjectionWall({ album, photos, onClose }: Props) {
                           width:      isNewest ? "28px" : "20px",
                           height:     isNewest ? "28px" : "20px",
                           fontSize:   isNewest ? "11px" : "8px",
-                          background: "#C4738A",
+                          background: "#1E3A8A",
                         }}
                       >
                         {photo.uploaderName.charAt(0).toUpperCase()}
@@ -324,7 +313,7 @@ export function ProjectionWall({ album, photos, onClose }: Props) {
                       <div
                         className="shrink-0 px-2.5 py-1 rounded-full text-white text-[11px] font-bold tracking-wide"
                         style={{
-                          background: "linear-gradient(135deg, #C4738A, #9E5268)",
+                          background: "#1E3A8A",
                           animation: "pwBadge 0.4s cubic-bezier(.4,0,.2,1) 0.3s both",
                         }}
                       >
@@ -336,7 +325,7 @@ export function ProjectionWall({ album, photos, onClose }: Props) {
                   {/* Glow border for newest */}
                   {isNewest && (
                     <div className="absolute inset-0 rounded-xl pointer-events-none"
-                      style={{ border: "2px solid rgba(196,115,138,0.7)" }}/>
+                      style={{ border: "2px solid rgba(30,58,138,0.7)" }}/>
                   )}
 
                   {/* Subtle inner border for all others */}

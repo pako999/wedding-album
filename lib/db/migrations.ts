@@ -20,6 +20,7 @@ export async function runMigrations() {
         id               TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
         slug             VARCHAR(80) NOT NULL UNIQUE,
         owner_clerk_id   TEXT NOT NULL,
+        owner_email      TEXT,
         event_type       TEXT NOT NULL DEFAULT 'wedding',
         couple_name      TEXT NOT NULL,
         wedding_date     TEXT NOT NULL,
@@ -40,6 +41,7 @@ export async function runMigrations() {
     `;
 
     // Add columns that may be missing in older deployments
+    await sql`ALTER TABLE albums ADD COLUMN IF NOT EXISTS owner_email TEXT`;
     await sql`ALTER TABLE albums ADD COLUMN IF NOT EXISTS event_type TEXT NOT NULL DEFAULT 'wedding'`;
     await sql`ALTER TABLE albums ADD COLUMN IF NOT EXISTS pending_count INTEGER NOT NULL DEFAULT 0`;
     await sql`ALTER TABLE albums ADD COLUMN IF NOT EXISTS cover_image_url TEXT`;
@@ -48,6 +50,9 @@ export async function runMigrations() {
     await sql`ALTER TABLE albums ADD COLUMN IF NOT EXISTS stripe_session_id TEXT`;
     await sql`ALTER TABLE albums ADD COLUMN IF NOT EXISTS expires_at TIMESTAMPTZ`;
     await sql`ALTER TABLE albums ADD COLUMN IF NOT EXISTS film_tier TEXT NOT NULL DEFAULT 'free'`;
+    await sql`ALTER TABLE albums ADD COLUMN IF NOT EXISTS card_headline TEXT`;
+    await sql`ALTER TABLE albums ADD COLUMN IF NOT EXISTS card_subtitle TEXT`;
+    await sql`ALTER TABLE albums ADD COLUMN IF NOT EXISTS card_cta TEXT`;
 
     // Create photos table if not exists
     await sql`
@@ -74,6 +79,21 @@ export async function runMigrations() {
 
     // Add cf_stream_video_id to existing photos tables
     await sql`ALTER TABLE photos ADD COLUMN IF NOT EXISTS cf_stream_video_id TEXT`;
+
+    // ── Moments (named sub-galleries) ─────────────────────────────────────────
+    await sql`
+      CREATE TABLE IF NOT EXISTS moments (
+        id          TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
+        album_id    TEXT NOT NULL REFERENCES albums(id) ON DELETE CASCADE,
+        name        TEXT NOT NULL,
+        sort_order  INTEGER NOT NULL DEFAULT 0,
+        created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
+      )
+    `;
+    await sql`CREATE INDEX IF NOT EXISTS moments_album_idx ON moments (album_id)`;
+
+    // Add moment_id to existing photos tables (plain nullable column — no raw FK)
+    await sql`ALTER TABLE photos ADD COLUMN IF NOT EXISTS moment_id TEXT`;
 
     // Create guests table if not exists
     await sql`
@@ -150,6 +170,19 @@ export async function runMigrations() {
     `;
     await sql`CREATE INDEX IF NOT EXISTS film_clips_gen_idx ON film_clips (generation_id)`;
     await sql`CREATE INDEX IF NOT EXISTS film_clips_fal_idx ON film_clips (fal_request_id)`;
+
+    // ── Upload reminders ──────────────────────────────────────────────────────
+    await sql`
+      CREATE TABLE IF NOT EXISTS upload_reminders (
+        id          TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
+        album_id    TEXT NOT NULL REFERENCES albums(id) ON DELETE CASCADE,
+        email       TEXT NOT NULL,
+        send_at     TIMESTAMPTZ NOT NULL,
+        sent        BOOLEAN NOT NULL DEFAULT false,
+        created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
+      )
+    `;
+    await sql`CREATE INDEX IF NOT EXISTS upload_reminders_due_idx ON upload_reminders (sent, send_at)`;
 
     console.log("[migrations] ✓ DB schema up to date");
   } catch (err) {

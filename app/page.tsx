@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { GuestcamLogo } from "@/components/GuestcamLogo";
-import { DemoModal } from "@/components/DemoModal";
+import { DemoButton } from "@/components/DemoButton";
 
 // ── SVG Feature Icons ─────────────────────────────────────────────────────────
 function IconQR() {
@@ -74,7 +74,7 @@ function QRPattern() {
   return (
     <div className="grid gap-px" style={{ gridTemplateColumns: `repeat(17, 1fr)`, width: 68, height: 68 }}>
       {cells.flat().map((v, i) => (
-        <div key={i} style={{ backgroundColor: v ? '#2C2825' : 'transparent' }} />
+        <div key={i} style={{ backgroundColor: v ? '#0F1729' : 'transparent' }} />
       ))}
     </div>
   );
@@ -82,38 +82,70 @@ function QRPattern() {
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen bg-white text-[#2C2825] font-sans">
+    <div className="min-h-screen bg-white text-[#0F1729] font-sans">
 
       {/* ── Announcement bar ─────────────────────────────────────────────────── */}
-      <div className="text-white text-center text-xs font-semibold py-2.5 px-4" style={{ background: '#C4738A' }}>
+      <div className="text-white text-center text-xs font-semibold py-2.5 px-4" style={{ background: '#1E3A8A' }}>
         Ustvarite galerijo danes — <strong>brezplačno za vedno!</strong> 🎉{' '}
         <Link href="/dashboard/new" className="underline font-bold ml-2">Začni zdaj →</Link>
       </div>
 
       {/* ── Navbar ──────────────────────────────────────────────────────────── */}
-      <header className="sticky top-0 z-40 bg-white border-b border-gray-100">
+      <header className="sticky top-0 z-40 border-b border-[#1E3A8A]/15 bg-white/80 backdrop-blur-md">
         <nav className="max-w-7xl mx-auto px-8 h-16 flex items-center justify-between">
-          <Link href="/" className="flex items-center">
+          <Link href="/" className="flex items-center transition-transform duration-200 hover:scale-[1.03]">
             <GuestcamLogo size="sm" showMark={true} />
           </Link>
-          <div className="hidden md:flex items-center gap-8 text-sm font-medium text-gray-500">
-            <a href="#how" className="hover:text-[#2C2825] transition-colors">Kako deluje</a>
-            <a href="#templates" className="hover:text-[#2C2825] transition-colors">Predloge</a>
-            <a href="#pricing" className="hover:text-[#2C2825] transition-colors">Cenik</a>
-            <a href="#faq" className="hover:text-[#2C2825] transition-colors">FAQ</a>
-            <DemoModal variant="nav" />
+          <div className="hidden md:flex items-center gap-9 text-sm font-medium text-gray-600">
+            {[
+              { href: "#how", label: "Kako deluje" },
+              { href: "#templates", label: "Predloge" },
+              { href: "#pricing", label: "Cenik" },
+              { href: "#faq", label: "FAQ" },
+            ].map((item) => (
+              <a
+                key={item.href}
+                href={item.href}
+                className="relative group py-1 transition-colors hover:text-[#0F1729]"
+              >
+                {item.label}
+                <span className="absolute -bottom-0.5 left-0 h-[2px] w-0 rounded-full bg-[#1E3A8A] transition-all duration-300 ease-out group-hover:w-full" />
+              </a>
+            ))}
           </div>
-          <div className="flex items-center gap-4">
-            <Link href="/dashboard" className="hidden sm:block text-sm font-medium text-gray-500 hover:text-[#2C2825] transition-colors">Prijava</Link>
-            <Link href="/dashboard/new" className="px-5 py-2.5 rounded-full text-sm font-bold border-2 border-[#2C2825] text-[#2C2825] hover:bg-[#2C2825] hover:text-white transition-all duration-200">
+          <div className="flex items-center gap-5">
+            <DemoButton variant="nav" />
+            <Link
+              href="/dashboard"
+              className="hidden sm:block text-sm font-medium text-gray-600 hover:text-[#0F1729] transition-colors"
+            >
+              Prijava
+            </Link>
+            <Link
+              href="/dashboard/new"
+              className="group inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full text-sm font-bold text-white transition-all duration-200 hover:scale-[1.03]"
+              style={{
+                background: "linear-gradient(135deg, #3551A8 0%, #1E3A8A 55%, #1E3A8A 100%)",
+                boxShadow: "0 6px 18px rgba(30,58,138,0.35)",
+              }}
+            >
               Začni brezplačno
+              <svg
+                className="w-3.5 h-3.5 transition-transform duration-200 group-hover:translate-x-0.5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                strokeWidth={2.5}
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+              </svg>
             </Link>
           </div>
         </nav>
       </header>
 
       {/* ── Hero ────────────────────────────────────────────────────────────── */}
-      <section style={{ background: '#F2EDE7' }}>
+      <section style={{ background: '#F2F4F8' }}>
         <div className="max-w-7xl mx-auto px-8 py-16 xl:py-24">
           <div className="grid lg:grid-cols-2 gap-12 xl:gap-20 items-center">
 
@@ -123,30 +155,30 @@ export default function HomePage() {
               {/* Avatar stack + social proof */}
               <div className="flex items-center gap-3 mb-7">
                 <div className="flex -space-x-2.5">
-                  {['#C4738A','#9B5E74','#E8A4B4','#D4899A','#7A4A5E'].map((bg, i) => (
-                    <div key={i} className="w-9 h-9 rounded-full border-[2.5px] flex items-center justify-center text-[11px] font-bold text-white shrink-0" style={{ background: bg, borderColor: '#F2EDE7' }}>
+                  {['#1E3A8A','#3B5BA8','#93B0E0','#6E8FCF','#2A3C73'].map((bg, i) => (
+                    <div key={i} className="w-9 h-9 rounded-full border-[2.5px] flex items-center justify-center text-[11px] font-bold text-white shrink-0" style={{ background: bg, borderColor: '#F2F4F8' }}>
                       {['T','A','S','D','M'][i]}
                     </div>
                   ))}
                 </div>
-                <p className="text-sm text-gray-600">Zaupalo nam <span className="font-bold text-[#2C2825]">500+</span> parov &amp; organizatorjev</p>
+                <p className="text-sm text-gray-600">Zaupalo nam <span className="font-bold text-[#0F1729]">500+</span> parov &amp; organizatorjev</p>
               </div>
 
               {/* Small eyebrow label */}
               <p className="text-xs font-bold uppercase tracking-[0.18em] text-gray-400 mb-5">
-                QR koda za poroke · rojstne dneve · obletnice
+                QR koda za poroke · rojstne dneve · obletnice · baby shower
               </p>
 
               {/* Giant headline */}
-              <h1 className="font-extrabold leading-[1.04] tracking-tight text-[#1A1410] mb-8" style={{ fontSize: 'clamp(2.8rem, 5.5vw, 5.2rem)' }}>
+              <h1 className="font-extrabold leading-[1.04] tracking-tight text-[#0F1729] mb-8" style={{ fontSize: 'clamp(2.8rem, 5.5vw, 5.2rem)' }}>
                 Zberi vse<br />
-                <span style={{ color: '#C4738A' }}>spomine</span><br />
+                <span style={{ color: '#1E3A8A' }}>spomine</span><br />
                 z eno QR kodo
               </h1>
 
               {/* Subtitle */}
               <p className="text-lg text-gray-500 leading-relaxed mb-10 max-w-[500px]">
-                Gostje enostavno delijo fotografije polne kakovosti v vaš personaliziran album.
+                Gostje enostavno delijo slike in videje polne kakovosti v vaš personaliziran album.
                 Izberite predlogo za tisk, ki ustreza vašemu dogodku.
               </p>
 
@@ -172,7 +204,7 @@ export default function HomePage() {
                     ),
                   },
                   {
-                    label: 'Naložijo foto',
+                    label: 'Naložijo fotografije',
                     icon: (
                       <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.8}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
@@ -181,7 +213,7 @@ export default function HomePage() {
                   },
                 ].map(({ label, icon }) => (
                   <div key={label} className="flex flex-col items-center gap-2.5">
-                    <div className="w-14 h-14 rounded-2xl flex items-center justify-center" style={{ background: 'rgba(196,115,138,0.12)', color: '#C4738A' }}>
+                    <div className="w-14 h-14 rounded-2xl flex items-center justify-center" style={{ background: 'rgba(30,58,138,0.12)', color: '#1E3A8A' }}>
                       {icon}
                     </div>
                     <span className="text-xs font-semibold text-gray-500 text-center leading-tight">{label}</span>
@@ -189,78 +221,71 @@ export default function HomePage() {
                 ))}
               </div>
 
-              {/* Large pill CTA — wedtrove style */}
-              <Link
-                href="/dashboard/new"
-                className="inline-flex items-center gap-3 px-10 py-5 rounded-full text-white font-bold text-lg transition-all duration-200 hover:scale-[1.02]"
-                style={{ background: '#C4738A', boxShadow: '0 14px 40px rgba(196,115,138,0.42)' }}
-              >
-                Začni brezplačno zdaj
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                </svg>
-              </Link>
+              {/* Large pill CTA + demo */}
+              <div className="flex flex-wrap items-center gap-4">
+                <Link
+                  href="/dashboard/new"
+                  className="inline-flex items-center gap-3 px-10 py-5 rounded-full text-white font-bold text-lg transition-all duration-200 hover:scale-[1.02]"
+                  style={{ background: '#1E3A8A', boxShadow: '0 14px 40px rgba(30,58,138,0.42)' }}
+                >
+                  Začni brezplačno zdaj
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                  </svg>
+                </Link>
+                <DemoButton variant="hero" />
+              </div>
               <p className="mt-4 text-sm text-gray-400">Brez kreditne kartice · Pripravljeno v 2 minutah</p>
             </div>
 
-            {/* ── RIGHT: Floating overlapping image collage ──────────────── */}
+            {/* ── RIGHT: Hero image story — scan → live gallery → printed cards ──
+                 Placeholder images live in public/hero/. Replace these 3 files
+                 with the generated photos, keeping the same filenames:
+                   scan.jpg    — hand scanning a QR card        (≈ 4:5 portrait)
+                   gallery.jpg — phone showing the live gallery (≈ 4:5 portrait)
+                   cards.jpg   — printed QR cards on a table    (1:1 square)
+            ─────────────────────────────────────────────────────────────────── */}
             <div className="hidden lg:block relative select-none" style={{ height: 600 }}>
 
-              {/* Photo 1 — wedding dancing, top-left, tilted left */}
-              <div className="absolute rounded-2xl overflow-hidden shadow-2xl" style={{ top: 0, left: 0, width: 310, height: 370, transform: 'rotate(-4deg)', zIndex: 10 }}>
-                <img
-                  src="https://images.unsplash.com/photo-1529634806980-85c3dd6d34ac?w=620&h=740&fit=crop&q=85"
-                  alt="Wedding dancing"
-                  className="w-full h-full object-cover"
-                />
-                {/* Badge */}
+              {/* 1 — Scan moment (dominant, biggest) */}
+              <div className="absolute rounded-3xl overflow-hidden shadow-2xl" style={{ top: 56, left: 0, width: 372, height: 466, transform: 'rotate(-5deg)', zIndex: 20 }}>
+                <img src="/hero/scan.jpg" alt="Skeniranje QR kartice s telefonom" className="w-full h-full object-cover" />
+                {/* Polna kakovost — labels the scan/photo quality */}
                 <div className="absolute bottom-4 left-4 bg-white rounded-2xl shadow-lg px-4 py-2.5 flex items-center gap-2">
                   <svg className="w-3.5 h-3.5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
-                  <p className="text-xs font-bold text-[#2C2825]">Polna kakovost</p>
+                  <p className="text-xs font-bold text-[#0F1729]">Polna kakovost</p>
                 </div>
               </div>
 
-              {/* QR Card template — center, overlapping both photos */}
-              <div className="absolute bg-white rounded-2xl shadow-2xl p-5 text-center" style={{ top: 130, left: 200, width: 185, zIndex: 30, transform: 'rotate(3deg)', border: '1px solid rgba(196,115,138,0.15)' }}>
-                <p className="font-serif text-sm font-bold text-[#2C2825] mb-0.5 leading-tight">Capture the love ♥</p>
-                <p className="text-[9px] text-gray-400 mb-3">Skeniraj in deli fotografije</p>
-                <div className="flex justify-center mb-3" style={{ transform: 'scale(0.62)', transformOrigin: 'center top', height: 42, overflow: 'hidden' }}>
-                  <QRPattern />
-                </div>
-                <div className="border-t border-gray-100 pt-2.5 mt-1">
-                  <p className="font-serif text-[11px] italic text-[#C4738A]">Ana &amp; Marko</p>
-                  <p className="text-[8px] text-gray-300 mt-0.5">14. junij 2025</p>
-                </div>
+              {/* 2 — Live gallery (top-right, smaller) */}
+              <div className="absolute rounded-2xl overflow-hidden shadow-xl" style={{ top: 0, right: 0, width: 244, height: 304, transform: 'rotate(5deg)', zIndex: 30 }}>
+                <img src="/hero/gallery.jpg" alt="Galerija fotografij v živo" className="w-full h-full object-cover" />
               </div>
 
-              {/* Photo 2 — celebration/party, bottom-right, tilted right */}
-              <div className="absolute rounded-2xl overflow-hidden shadow-2xl" style={{ bottom: 0, right: 0, width: 295, height: 320, transform: 'rotate(3deg)', zIndex: 20 }}>
-                <img
-                  src="https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=590&h=640&fit=crop&q=85"
-                  alt="Event celebration"
-                  className="w-full h-full object-cover"
-                />
-                {/* Badge */}
-                <div className="absolute top-4 right-4 bg-white rounded-2xl shadow-lg px-4 py-2.5 flex items-center gap-2">
-                  <svg className="w-3.5 h-3.5" style={{ color: '#C4738A' }} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 8.25h3m-3 3h3m-3 3h3" />
-                  </svg>
-                  <p className="text-xs font-bold text-[#2C2825]">Brez aplikacije</p>
-                </div>
-              </div>
-
-              {/* Small floating photo count badge — top right */}
-              <div className="absolute bg-white rounded-2xl shadow-xl px-4 py-3 flex items-center gap-3" style={{ top: 20, right: 20, zIndex: 40 }}>
-                <div className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0" style={{ background: 'rgba(196,115,138,0.12)' }}>
-                  <svg className="w-4 h-4" style={{ color: '#C4738A' }} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+              {/* +183 fotografij — labels the live gallery */}
+              <div className="absolute bg-white rounded-2xl shadow-xl px-4 py-3 flex items-center gap-3" style={{ top: 264, right: 150, zIndex: 40 }}>
+                <div className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0" style={{ background: 'rgba(30,58,138,0.12)' }}>
+                  <svg className="w-4 h-4" style={{ color: '#1E3A8A' }} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5z" />
                   </svg>
                 </div>
                 <div>
-                  <p className="text-xs font-bold text-[#2C2825]">+183 fotografij</p>
+                  <p className="text-xs font-bold text-[#0F1729]">+183 fotografij</p>
                   <p className="text-[10px] text-gray-400">v živo · danes</p>
+                </div>
+              </div>
+
+              {/* 3 — Printed cards (bottom-right, smaller) */}
+              <div className="absolute rounded-2xl overflow-hidden shadow-2xl" style={{ bottom: 20, right: 24, width: 252, height: 252, transform: 'rotate(4deg)', zIndex: 30 }}>
+                <img src="/hero/cards.jpg" alt="Natisnjene QR kartice na poročni mizi" className="w-full h-full object-cover" />
+                {/* Brez aplikacije — labels the printed cards */}
+                <div className="absolute top-4 left-4 bg-white rounded-2xl shadow-lg px-3.5 py-2 flex items-center gap-2">
+                  <svg className="w-3.5 h-3.5" style={{ color: '#1E3A8A' }} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3" />
+                  </svg>
+                  <p className="text-xs font-bold text-[#0F1729]">Brez aplikacije</p>
                 </div>
               </div>
 
@@ -275,21 +300,21 @@ export default function HomePage() {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 py-6 px-4 text-center">
             <span className="text-[1.4rem]">👫👫👫</span>
             <div>
-              <p className="font-extrabold text-xl text-[#2C2825]">500+</p>
+              <p className="font-extrabold text-xl text-[#0F1729]">500+</p>
               <p className="text-xs text-gray-400 max-w-[90px] leading-snug">ustvarjenih galerij</p>
             </div>
           </div>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 py-6 px-4 text-center">
             <div className="text-amber-400 text-base leading-none shrink-0">★★★★★</div>
             <div>
-              <p className="font-extrabold text-xl text-[#C4738A]">5.0/5</p>
+              <p className="font-extrabold text-xl text-[#1E3A8A]">5.0/5</p>
               <p className="text-xs text-gray-400 max-w-[90px] leading-snug">na podlagi prvih ocen</p>
             </div>
           </div>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 py-6 px-4 text-center">
             <span className="text-[1.4rem]">📸</span>
             <div>
-              <p className="font-extrabold text-xl text-[#2C2825]">25.000+</p>
+              <p className="font-extrabold text-xl text-[#0F1729]">25.000+</p>
               <p className="text-xs text-gray-400 max-w-[90px] leading-snug">zbranih fotografij</p>
             </div>
           </div>
@@ -300,10 +325,10 @@ export default function HomePage() {
       <section id="templates" className="py-24 bg-white">
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-14">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold mb-4 uppercase tracking-widest" style={{ background: 'rgba(196,115,138,0.1)', color: '#C4738A' }}>
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold mb-4 uppercase tracking-widest" style={{ background: 'rgba(30,58,138,0.1)', color: '#1E3A8A' }}>
               Predloge za tisk
             </div>
-            <h2 className="text-[2.5rem] font-extrabold text-[#2C2825] mb-4">Prelepe predloge za vaš dogodek</h2>
+            <h2 className="text-[2.5rem] font-extrabold text-[#0F1729] mb-4">Prelepe predloge za vaš dogodek</h2>
             <p className="text-gray-400 max-w-lg mx-auto leading-relaxed">
               Natisnite kartico s QR kodo in jo postavite na mize. Gostje skenirajo in delijo fotografije takoj.
             </p>
@@ -337,10 +362,10 @@ export default function HomePage() {
                     className="absolute inset-0 flex items-center justify-center"
                   >
                     <div
-                      className={`${t.dark ? 'bg-[#2C2825] text-white' : 'bg-white/97 text-[#2C2825]'} rounded-xl p-4 shadow-2xl text-center`}
+                      className={`${t.dark ? 'bg-[#0F1729] text-white' : 'bg-white/97 text-[#0F1729]'} rounded-xl p-4 shadow-2xl text-center`}
                       style={{ width: 130, transform: `rotate(${t.rotate}deg)` }}
                     >
-                      <p className={`font-serif text-[11px] font-bold mb-0.5 leading-tight ${t.dark ? 'text-white' : 'text-[#2C2825]'}`}>
+                      <p className={`font-serif text-[11px] font-bold mb-0.5 leading-tight ${t.dark ? 'text-white' : 'text-[#0F1729]'}`}>
                         {t.headline}
                       </p>
                       <p className={`text-[8px] mb-2.5 ${t.dark ? 'text-white/60' : 'text-gray-400'}`}>{t.sub}</p>
@@ -348,19 +373,19 @@ export default function HomePage() {
                       <div className="flex justify-center mb-2" style={{ transform: 'scale(0.48)', transformOrigin: 'center', height: 33, overflow: 'hidden' }}>
                         <QRPattern />
                       </div>
-                      <p className={`font-serif text-[8px] italic ${t.dark ? 'text-[#f9a8c0]' : 'text-[#C4738A]'}`}>Ana & Marko</p>
+                      <p className={`font-serif text-[8px] italic ${t.dark ? 'text-[#f9a8c0]' : 'text-[#1E3A8A]'}`}>Ana & Marko</p>
                       {t.dark ? null : <div className="w-8 h-px bg-gray-200 mx-auto mt-1.5" />}
                       <p className={`text-[7px] mt-1 ${t.dark ? 'text-white/40' : 'text-gray-300'}`}>14. 06. 2025</p>
                     </div>
                   </div>
 
                   {/* Hover: CTA overlay */}
-                  <div className="absolute inset-0 bg-[#C4738A]/80 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center gap-3">
+                  <div className="absolute inset-0 bg-[#1E3A8A]/80 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center gap-3">
                     <p className="text-white font-bold text-sm">{t.name}</p>
                     <Link
                       href="/dashboard/new"
                       className="bg-white font-bold text-xs px-5 py-2.5 rounded-full transition-transform hover:scale-105"
-                      style={{ color: '#C4738A' }}
+                      style={{ color: '#1E3A8A' }}
                     >
                       Uporabi predlogo →
                     </Link>
@@ -369,8 +394,8 @@ export default function HomePage() {
 
                 {/* Name label */}
                 <div className="px-3 py-2.5 bg-white flex items-center justify-between">
-                  <span className="text-xs font-semibold text-[#2C2825]">{t.name}</span>
-                  <span className="text-[10px] text-[#C4738A] font-medium">PDF ↓</span>
+                  <span className="text-xs font-semibold text-[#0F1729]">{t.name}</span>
+                  <span className="text-[10px] text-[#1E3A8A] font-medium">PDF ↓</span>
                 </div>
               </div>
             ))}
@@ -381,7 +406,7 @@ export default function HomePage() {
             <Link
               href="/dashboard/new"
               className="inline-flex items-center gap-2.5 px-8 py-4 rounded-2xl font-bold text-sm transition-all duration-200 border-2"
-              style={{ borderColor: '#C4738A', color: '#C4738A' }}
+              style={{ borderColor: '#1E3A8A', color: '#1E3A8A' }}
             >
               Ustvari galerijo in prenesi predloge →
             </Link>
@@ -390,14 +415,14 @@ export default function HomePage() {
       </section>
 
       {/* ── How it works ────────────────────────────────────────────────────── */}
-      <section id="how" style={{ background: '#3D0A22' }} className="py-24 relative overflow-hidden">
+      <section id="how" style={{ background: '#0B1220' }} className="py-24 relative overflow-hidden">
         {/* Subtle petal decorations */}
-        <div className="absolute top-10 left-10 w-32 h-32 rounded-full opacity-10" style={{ background: 'radial-gradient(circle, #C4738A, transparent)' }} />
-        <div className="absolute bottom-20 right-16 w-48 h-48 rounded-full opacity-10" style={{ background: 'radial-gradient(circle, #C4738A, transparent)' }} />
+        <div className="absolute top-10 left-10 w-32 h-32 rounded-full opacity-10" style={{ background: 'radial-gradient(circle, #1E3A8A, transparent)' }} />
+        <div className="absolute bottom-20 right-16 w-48 h-48 rounded-full opacity-10" style={{ background: 'radial-gradient(circle, #1E3A8A, transparent)' }} />
 
         <div className="max-w-6xl mx-auto px-6 relative z-10">
           {/* Section label */}
-          <p className="text-center text-xs font-bold uppercase tracking-[0.25em] mb-4" style={{ color: '#C9A96E' }}>
+          <p className="text-center text-xs font-bold uppercase tracking-[0.25em] mb-4" style={{ color: '#1E3A8A' }}>
             Kako deluje
           </p>
 
@@ -413,7 +438,7 @@ export default function HomePage() {
           <div className="grid md:grid-cols-3 gap-6">
 
             {/* Card 1 — Sign Up */}
-            <div className="rounded-3xl overflow-hidden flex flex-col" style={{ background: '#1C0A14' }}>
+            <div className="rounded-3xl overflow-hidden flex flex-col" style={{ background: '#070A12' }}>
               {/* Photo area */}
               <div className="relative overflow-hidden" style={{ height: 280 }}>
                 <img
@@ -421,16 +446,16 @@ export default function HomePage() {
                   alt="Ustvari galerijo"
                   className="w-full h-full object-cover"
                 />
-                <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, transparent 40%, rgba(28,10,20,0.95) 100%)' }} />
+                <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, transparent 40%, rgba(23,18,6,0.95) 100%)' }} />
                 {/* Icon badge */}
                 <div className="absolute top-4 left-4 w-11 h-11 rounded-2xl bg-white flex items-center justify-center shadow-lg">
-                  <svg className="w-5 h-5" style={{ color: '#3D0A22' }} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                  <svg className="w-5 h-5" style={{ color: '#0B1220' }} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
                   </svg>
                 </div>
                 {/* Step label over photo */}
                 <div className="absolute bottom-4 left-5">
-                  <p className="text-xs font-bold uppercase tracking-widest mb-1" style={{ color: '#C9A96E' }}>KORAK 01</p>
+                  <p className="text-xs font-bold uppercase tracking-widest mb-1" style={{ color: '#1E3A8A' }}>KORAK 01</p>
                 </div>
               </div>
               {/* Text below */}
@@ -443,24 +468,24 @@ export default function HomePage() {
             </div>
 
             {/* Card 2 — Share QR */}
-            <div className="rounded-3xl overflow-hidden flex flex-col" style={{ background: '#1C0A14' }}>
+            <div className="rounded-3xl overflow-hidden flex flex-col" style={{ background: '#070A12' }}>
               <div className="relative overflow-hidden" style={{ height: 280 }}>
                 <img
                   src="https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=600&h=560&fit=crop&q=80"
                   alt="Deli QR kodo"
                   className="w-full h-full object-cover"
                 />
-                <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, transparent 40%, rgba(28,10,20,0.95) 100%)' }} />
+                <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, transparent 40%, rgba(23,18,6,0.95) 100%)' }} />
                 {/* Icon badge */}
                 <div className="absolute top-4 left-4 w-11 h-11 rounded-2xl bg-white flex items-center justify-center shadow-lg">
-                  <svg className="w-5 h-5" style={{ color: '#3D0A22' }} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                  <svg className="w-5 h-5" style={{ color: '#0B1220' }} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                     <rect x="3" y="3" width="7" height="7" rx="1" /><rect x="14" y="3" width="7" height="7" rx="1" />
                     <rect x="3" y="14" width="7" height="7" rx="1" />
                     <path d="M14 14h3v3M17 14v3h3M14 17h3" />
                   </svg>
                 </div>
                 <div className="absolute bottom-4 left-5">
-                  <p className="text-xs font-bold uppercase tracking-widest mb-1" style={{ color: '#C9A96E' }}>KORAK 02</p>
+                  <p className="text-xs font-bold uppercase tracking-widest mb-1" style={{ color: '#1E3A8A' }}>KORAK 02</p>
                 </div>
               </div>
               <div className="p-6 flex-1">
@@ -472,22 +497,22 @@ export default function HomePage() {
             </div>
 
             {/* Card 3 — Enjoy */}
-            <div className="rounded-3xl overflow-hidden flex flex-col" style={{ background: '#1C0A14' }}>
+            <div className="rounded-3xl overflow-hidden flex flex-col" style={{ background: '#070A12' }}>
               <div className="relative overflow-hidden" style={{ height: 280 }}>
                 <img
                   src="https://images.unsplash.com/photo-1529634806980-85c3dd6d34ac?w=600&h=560&fit=crop&q=80"
                   alt="Uživaj v fotografijah"
                   className="w-full h-full object-cover"
                 />
-                <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, transparent 40%, rgba(28,10,20,0.95) 100%)' }} />
+                <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, transparent 40%, rgba(23,18,6,0.95) 100%)' }} />
                 {/* Icon badge */}
                 <div className="absolute top-4 left-4 w-11 h-11 rounded-2xl bg-white flex items-center justify-center shadow-lg">
-                  <svg className="w-5 h-5" style={{ color: '#3D0A22' }} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                  <svg className="w-5 h-5" style={{ color: '#0B1220' }} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5z" />
                   </svg>
                 </div>
                 <div className="absolute bottom-4 left-5">
-                  <p className="text-xs font-bold uppercase tracking-widest mb-1" style={{ color: '#C9A96E' }}>KORAK 03</p>
+                  <p className="text-xs font-bold uppercase tracking-widest mb-1" style={{ color: '#1E3A8A' }}>KORAK 03</p>
                 </div>
               </div>
               <div className="p-6 flex-1">
@@ -505,7 +530,7 @@ export default function HomePage() {
             <Link
               href="/dashboard/new"
               className="inline-flex items-center gap-2.5 px-9 py-4 text-white font-bold rounded-full transition-all duration-200 hover:scale-105"
-              style={{ background: '#C4738A', boxShadow: '0 6px 24px rgba(196,115,138,0.45)' }}
+              style={{ background: '#1E3A8A', boxShadow: '0 6px 24px rgba(30,58,138,0.45)' }}
             >
               Ustvari svojo galerijo zdaj →
             </Link>
@@ -514,9 +539,9 @@ export default function HomePage() {
       </section>
 
       {/* ── Why you need it ─────────────────────────────────────────────────── */}
-      <section id="why" className="py-24" style={{ background: '#FEF2F4' }}>
+      <section id="why" className="py-24" style={{ background: '#EAEEF6' }}>
         <div className="max-w-6xl mx-auto px-6">
-          <h2 className="text-[2.5rem] font-extrabold text-center text-[#2C2825] mb-4">Zakaj to potrebuješ?</h2>
+          <h2 className="text-[2.5rem] font-extrabold text-center text-[#0F1729] mb-4">Zakaj to potrebuješ?</h2>
           <p className="text-center text-gray-400 text-base mb-14 max-w-md mx-auto">
             Na vaši poroki fotografira vsak gost — ampak te slike nikoli ne pridejo do vas.
           </p>
@@ -526,11 +551,11 @@ export default function HomePage() {
               { icon: "📱", title: "Slike ostanejo na telefonih",     desc: "Fotografije ostanejo zaklenjene v klepetih WhatsApp in jih nikoli ne prejmete. Za vedno izgubljene." },
               { icon: "👁",  title: "Vse iz vseh zornih kotov",       desc: "Dobite celotno zgodbo vašega dne, skozi oči vseh vaših gostov — od strica Franca do sestrične Tine." },
             ].map((f) => (
-              <div key={f.title} className="bg-white border border-gray-100 rounded-2xl p-7 hover:shadow-md hover:border-[#C4738A]/30 transition-all duration-200">
-                <div className="w-12 h-12 border border-gray-100 rounded-2xl flex items-center justify-center text-2xl mb-5 shadow-sm" style={{ background: '#FEF2F4' }}>
+              <div key={f.title} className="bg-white border border-gray-100 rounded-2xl p-7 hover:shadow-md hover:border-[#1E3A8A]/30 transition-all duration-200">
+                <div className="w-12 h-12 border border-gray-100 rounded-2xl flex items-center justify-center text-2xl mb-5 shadow-sm" style={{ background: '#EAEEF6' }}>
                   {f.icon}
                 </div>
-                <h3 className="font-bold text-[#2C2825] text-lg mb-2">{f.title}</h3>
+                <h3 className="font-bold text-[#0F1729] text-lg mb-2">{f.title}</h3>
                 <p className="text-gray-400 text-sm leading-relaxed">{f.desc}</p>
               </div>
             ))}
@@ -541,7 +566,7 @@ export default function HomePage() {
       {/* ── Features ────────────────────────────────────────────────────────── */}
       <section id="features" className="py-24 bg-white">
         <div className="max-w-6xl mx-auto px-6">
-          <h2 className="text-[2.5rem] font-extrabold text-center text-[#2C2825] mb-4">Zakaj izbrati Guestcam?</h2>
+          <h2 className="text-[2.5rem] font-extrabold text-center text-[#0F1729] mb-4">Zakaj izbrati Guestcam?</h2>
           <p className="text-center text-gray-400 mb-14 max-w-md mx-auto">Vse, kar potrebujete za popoln poročni album.</p>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 text-center">
             {[
@@ -555,11 +580,11 @@ export default function HomePage() {
               <div key={title} className="flex flex-col items-center">
                 <div
                   className="w-16 h-16 rounded-2xl flex items-center justify-center mb-5"
-                  style={{ background: 'rgba(196,115,138,0.12)', color: '#C4738A' }}
+                  style={{ background: 'rgba(30,58,138,0.12)', color: '#1E3A8A' }}
                 >
                   <Icon />
                 </div>
-                <h3 className="font-bold text-[#2C2825] text-lg mb-2">{title}</h3>
+                <h3 className="font-bold text-[#0F1729] text-lg mb-2">{title}</h3>
                 <p className="text-gray-400 text-sm leading-relaxed max-w-[220px]">{desc}</p>
               </div>
             ))}
@@ -568,9 +593,9 @@ export default function HomePage() {
       </section>
 
       {/* ── Testimonials ────────────────────────────────────────────────────── */}
-      <section id="reviews" className="py-24" style={{ background: '#FEF2F4' }}>
+      <section id="reviews" className="py-24" style={{ background: '#EAEEF6' }}>
         <div className="max-w-6xl mx-auto px-6">
-          <h2 className="text-[2.5rem] font-extrabold text-center text-[#2C2825] mb-14">Mnenja naših parov</h2>
+          <h2 className="text-[2.5rem] font-extrabold text-center text-[#0F1729] mb-14">Mnenja naših parov</h2>
           <div className="grid md:grid-cols-3 gap-5">
             {[
               { text: "Noro dobra ideja! Dobila sva toliko spontanih fotografij, ki jih fotograf nikoli ne bi ujel. Gosti so bili navdušeni nad tem, kako enostavno je bilo.", name: "Tina & Luka",   date: "April 2026" },
@@ -587,9 +612,9 @@ export default function HomePage() {
                 </div>
                 <p className="text-gray-600 text-sm leading-relaxed mb-5 italic">&ldquo;{t.text}&rdquo;</p>
                 <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-full flex items-center justify-center text-base shrink-0" style={{ background: 'rgba(196,115,138,0.15)' }}>💑</div>
+                  <div className="w-9 h-9 rounded-full flex items-center justify-center text-base shrink-0" style={{ background: 'rgba(30,58,138,0.15)' }}>💑</div>
                   <div>
-                    <p className="font-bold text-sm text-[#2C2825]">{t.name}</p>
+                    <p className="font-bold text-sm text-[#0F1729]">{t.name}</p>
                     <p className="text-xs text-gray-400">{t.date}</p>
                   </div>
                 </div>
@@ -602,7 +627,7 @@ export default function HomePage() {
       {/* ── Pricing ─────────────────────────────────────────────────────────── */}
       <section id="pricing" className="py-24 bg-white">
         <div className="max-w-5xl mx-auto px-6">
-          <h2 className="text-[2.5rem] font-extrabold text-center text-[#2C2825] mb-4">Preprosti paketi</h2>
+          <h2 className="text-[2.5rem] font-extrabold text-center text-[#0F1729] mb-4">Preprosti paketi</h2>
           <p className="text-center text-gray-400 mb-14">Izberite paket, ki ustreza vaši poroki.</p>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 items-start">
@@ -635,10 +660,10 @@ export default function HomePage() {
 
             {/* BASIC */}
             <div className="bg-white border border-gray-200 rounded-3xl p-7 flex flex-col">
-              <p className="font-extrabold text-lg text-[#2C2825] mb-1">Basic</p>
+              <p className="font-extrabold text-lg text-[#0F1729] mb-1">Basic</p>
               <p className="text-sm text-gray-400 mb-6">Za manjše dogodke</p>
               <div className="flex items-end gap-2 mb-7">
-                <span className="font-extrabold text-[3rem] leading-none text-[#2C2825]">39€</span>
+                <span className="font-extrabold text-[3rem] leading-none text-[#0F1729]">39€</span>
                 <span className="text-gray-300 line-through text-lg mb-1.5">55€</span>
               </div>
               <ul className="space-y-3 flex-1 mb-8">
@@ -650,25 +675,25 @@ export default function HomePage() {
                   "Prenos vseh slik (ZIP)",
                 ].map(f => (
                   <li key={f} className="flex items-center gap-2.5">
-                    <svg className="w-4 h-4 shrink-0 text-[#C4738A]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+                    <svg className="w-4 h-4 shrink-0 text-[#1E3A8A]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
                     <span className="text-sm text-gray-600">{f}</span>
                   </li>
                 ))}
               </ul>
-              <Link href="/dashboard" className="block text-center py-3.5 rounded-2xl font-bold text-sm text-[#2C2825] transition-colors hover:bg-gray-50" style={{ border: '1.5px solid #e5e7eb' }}>
+              <Link href="/dashboard" className="block text-center py-3.5 rounded-2xl font-bold text-sm text-[#0F1729] transition-colors hover:bg-gray-50" style={{ border: '1.5px solid #e5e7eb' }}>
                 Izberi Basic
               </Link>
             </div>
 
             {/* PLUS — highlighted */}
-            <div className="relative bg-white rounded-3xl p-7 flex flex-col" style={{ border: '2px solid #C4738A', boxShadow: '0 8px 40px rgba(196,115,138,0.2)', transform: 'translateY(-8px)' }}>
-              <div className="absolute -top-4 left-1/2 -translate-x-1/2 text-white text-[10px] font-bold tracking-widest uppercase px-5 py-1.5 rounded-full" style={{ background: '#C4738A' }}>
+            <div className="relative bg-white rounded-3xl p-7 flex flex-col" style={{ border: '2px solid #1E3A8A', boxShadow: '0 8px 40px rgba(30,58,138,0.2)', transform: 'translateY(-8px)' }}>
+              <div className="absolute -top-4 left-1/2 -translate-x-1/2 text-white text-[10px] font-bold tracking-widest uppercase px-5 py-1.5 rounded-full" style={{ background: '#1E3A8A' }}>
                 NAJBOLJ PRILJUBLJENO
               </div>
-              <p className="font-extrabold text-lg text-[#2C2825] mb-1">Plus</p>
+              <p className="font-extrabold text-lg text-[#0F1729] mb-1">Plus</p>
               <p className="text-sm text-gray-400 mb-6">Za večje dogodke in poroke</p>
               <div className="flex items-end gap-2 mb-7">
-                <span className="font-extrabold text-[3rem] leading-none" style={{ color: '#C4738A' }}>49€</span>
+                <span className="font-extrabold text-[3rem] leading-none" style={{ color: '#1E3A8A' }}>49€</span>
                 <span className="text-gray-300 line-through text-lg mb-1.5">69€</span>
               </div>
               <ul className="space-y-3 flex-1 mb-8">
@@ -684,22 +709,22 @@ export default function HomePage() {
                   "E-mail obvestila za par",
                 ].map(f => (
                   <li key={f} className="flex items-center gap-2.5">
-                    <svg className="w-4 h-4 shrink-0 text-[#C4738A]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+                    <svg className="w-4 h-4 shrink-0 text-[#1E3A8A]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
                     <span className="text-sm text-gray-600">{f}</span>
                   </li>
                 ))}
               </ul>
-              <Link href="/dashboard" className="block text-center py-3.5 rounded-2xl font-bold text-sm text-white transition-colors" style={{ background: '#C4738A' }}>
+              <Link href="/dashboard" className="block text-center py-3.5 rounded-2xl font-bold text-sm text-white transition-colors" style={{ background: '#1E3A8A' }}>
                 Izberi Plus
               </Link>
             </div>
 
             {/* PREMIUM */}
             <div className="bg-white border border-gray-200 rounded-3xl p-7 flex flex-col">
-              <p className="font-extrabold text-lg text-[#2C2825] mb-1">Premium</p>
+              <p className="font-extrabold text-lg text-[#0F1729] mb-1">Premium</p>
               <p className="text-sm text-gray-400 mb-6">Za tiste, ki želite vse</p>
               <div className="flex items-end gap-2 mb-7">
-                <span className="font-extrabold text-[3rem] leading-none text-[#2C2825]">79€</span>
+                <span className="font-extrabold text-[3rem] leading-none text-[#0F1729]">79€</span>
                 <span className="text-gray-300 line-through text-lg mb-1.5">109€</span>
               </div>
               <ul className="space-y-3 flex-1 mb-8">
@@ -717,12 +742,12 @@ export default function HomePage() {
                   "Prioritetna podpora",
                 ].map(f => (
                   <li key={f} className="flex items-center gap-2.5">
-                    <svg className="w-4 h-4 shrink-0 text-[#C4738A]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+                    <svg className="w-4 h-4 shrink-0 text-[#1E3A8A]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
                     <span className="text-sm text-gray-600">{f}</span>
                   </li>
                 ))}
               </ul>
-              <Link href="/dashboard" className="block text-center py-3.5 rounded-2xl font-bold text-sm text-[#2C2825] transition-colors hover:bg-gray-50" style={{ border: '1.5px solid #e5e7eb' }}>
+              <Link href="/dashboard" className="block text-center py-3.5 rounded-2xl font-bold text-sm text-[#0F1729] transition-colors hover:bg-gray-50" style={{ border: '1.5px solid #e5e7eb' }}>
                 Izberi Premium
               </Link>
             </div>
@@ -739,9 +764,9 @@ export default function HomePage() {
       </section>
 
       {/* ── FAQ ─────────────────────────────────────────────────────────────── */}
-      <section id="faq" className="py-24" style={{ background: '#FEF2F4' }}>
+      <section id="faq" className="py-24" style={{ background: '#EAEEF6' }}>
         <div className="max-w-2xl mx-auto px-6">
-          <h2 className="text-[2.5rem] font-extrabold text-center text-[#2C2825] mb-12">Pogosta vprašanja</h2>
+          <h2 className="text-[2.5rem] font-extrabold text-center text-[#0F1729] mb-12">Pogosta vprašanja</h2>
           <div className="space-y-3">
             {[
               { q: "Ali morajo gosti prenesti aplikacijo?",        a: "Ne. Gosti odprejo album direktno v brskalniku telefona — brez namestitve, brez prijave. Enostavno skenirajo QR kodo in takoj naložijo fotografijo." },
@@ -751,7 +776,7 @@ export default function HomePage() {
               { q: "Kaj se zgodi po poroki?",                       a: "Album ostane aktiven toliko časa, kolikor traja vaš paket. Vse fotografije prenesete kot ZIP arhiv v enem kliku." },
             ].map((faq) => (
               <details key={faq.q} className="bg-white border border-gray-100 rounded-2xl group">
-                <summary className="flex items-center justify-between px-6 py-4 cursor-pointer font-semibold text-[#2C2825] list-none text-[0.95rem]">
+                <summary className="flex items-center justify-between px-6 py-4 cursor-pointer font-semibold text-[#0F1729] list-none text-[0.95rem]">
                   {faq.q}
                   <svg className="w-5 h-5 text-gray-400 shrink-0 group-open:rotate-180 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
@@ -766,15 +791,15 @@ export default function HomePage() {
 
       {/* ── Final CTA ───────────────────────────────────────────────────────── */}
       <section className="py-28 bg-white text-center px-6">
-        <h2 className="font-extrabold text-[#2C2825] mb-4" style={{ fontSize: 'clamp(2rem, 5vw, 3.2rem)' }}>
+        <h2 className="font-extrabold text-[#0F1729] mb-4" style={{ fontSize: 'clamp(2rem, 5vw, 3.2rem)' }}>
           Poroka, rojstni dan, obletnica —<br />
-          <span style={{ color: '#C4738A' }}>zberi vse spomine.</span>
+          <span style={{ color: '#1E3A8A' }}>zberi vse spomine.</span>
         </h2>
         <p className="text-gray-400 text-lg mb-10 max-w-md mx-auto">Brezplačno, brez kreditne kartice. Galerija pripravljena v 2 minutah.</p>
         <Link
           href="/dashboard/new"
           className="inline-flex items-center gap-2.5 px-10 py-5 text-white font-bold text-lg rounded-full transition-all duration-200 shadow-2xl"
-          style={{ background: '#C4738A', boxShadow: '0 12px 32px rgba(196,115,138,0.35)' }}
+          style={{ background: '#1E3A8A', boxShadow: '0 12px 32px rgba(30,58,138,0.35)' }}
         >
           Ustvari galerijo zdaj
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
@@ -785,7 +810,7 @@ export default function HomePage() {
       </section>
 
       {/* ── Footer ──────────────────────────────────────────────────────────── */}
-      <footer className="bg-[#2C2825] text-white pt-16 pb-8">
+      <footer className="bg-[#0F1729] text-white pt-16 pb-8">
         <div className="max-w-6xl mx-auto px-6">
 
           {/* Top grid */}

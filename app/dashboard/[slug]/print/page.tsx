@@ -44,6 +44,12 @@ export default async function PrintPage({ params }: Props) {
       location={album.location ?? null}
       qrUrl={qrUrl}
       albumUrl={albumUrl}
+      plan={album.plan}
+      customText={{
+        headline: album.cardHeadline ?? "",
+        subtitle: album.cardSubtitle ?? "",
+        cta: album.cardCta ?? "",
+      }}
     />
   );
 }

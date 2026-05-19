@@ -9,16 +9,19 @@ import Download from "yet-another-react-lightbox/plugins/download";
 import Counter from "yet-another-react-lightbox/plugins/counter";
 import "yet-another-react-lightbox/plugins/counter.css";
 import { UploadModal } from "./UploadModal";
+import { ReminderModal } from "./ReminderModal";
 import { CountdownTimer } from "./CountdownTimer";
 import { Slideshow } from "./Slideshow";
 import { ProjectionWall } from "./ProjectionWall";
-import { translations, LANGS, type Lang } from "@/lib/i18n/translations";
+import { translations, LANGS, type Lang, type Translations } from "@/lib/i18n/translations";
 import { bunnyDisplayUrl, bunnyOriginalUrl } from "@/lib/storage/bunny";
-import type { Album, Photo } from "@/lib/db/schema";
+import { getEventTheme } from "@/lib/event-themes";
+import type { Album, Photo, Moment } from "@/lib/db/schema";
 
 interface Props {
   album: Album;
   photos: Photo[];
+  moments: Moment[];
   passwordRequired: boolean;
   passwordCorrect: boolean;
   providedPassword?: string;
@@ -26,6 +29,7 @@ interface Props {
 }
 
 type FilterTab = "all" | "photos" | "videos";
+type SortMode = "newest" | "oldest" | "mostLiked";
 
 interface CommentItem {
   id: string;
@@ -46,41 +50,29 @@ function eventIcon(eventType: string): string {
   }
 }
 
-function eventLabel(eventType: string): string {
-  switch (eventType) {
-    case "wedding":     return "Poroka";
-    case "birthday":    return "Rojstni dan";
-    case "anniversary": return "Obletnica";
-    case "party":       return "Zabava";
-    case "baptism":     return "Krst";
-    case "graduation":  return "Matura";
-    default:            return "Dogodek";
-  }
-}
-
-/** Human-readable relative/absolute upload time (Slovenian) */
-function formatUploadTime(date: Date | string | null | undefined): string {
+/** Human-readable relative/absolute upload time, localized via translations */
+function formatUploadTime(date: Date | string | null | undefined, t: Translations): string {
   if (!date) return "";
   const d = typeof date === "string" ? new Date(date) : date;
   if (isNaN(d.getTime())) return "";
   const now = new Date();
   const diffMs = now.getTime() - d.getTime();
   const diffMins = Math.floor(diffMs / 60_000);
-  if (diffMins < 1)   return "Pravkar";
-  if (diffMins < 60)  return `${diffMins} min`;
+  if (diffMins < 1)   return t.justNow;
+  if (diffMins < 60)  return t.minutesAgo(diffMins);
   const hh = d.getHours().toString().padStart(2, "0");
   const mm = d.getMinutes().toString().padStart(2, "0");
   const diffHours = Math.floor(diffMs / 3_600_000);
-  if (diffHours < 24) return `Danes, ${hh}:${mm}`;
+  if (diffHours < 24) return t.todayAt(`${hh}:${mm}`);
   const diffDays  = Math.floor(diffMs / 86_400_000);
-  if (diffDays === 1) return `Včeraj, ${hh}:${mm}`;
-  return d.toLocaleDateString("sl-SI", { day: "numeric", month: "short" }) + ` ${hh}:${mm}`;
+  if (diffDays === 1) return t.yesterdayAt(`${hh}:${mm}`);
+  return d.toLocaleDateString(undefined, { day: "numeric", month: "short" }) + ` ${hh}:${mm}`;
 }
 
 const BRAND = {
-  accent:      "#C4738A",
-  accentHover: "#9E5268",
-  accentLight: "#FEF2F4",
+  accent:      "#1E3A8A",
+  accentHover: "#152C66",
+  accentLight: "#EAEEF6",
   dark:        "#111827",
   muted:       "#6B7280",
   border:      "#E5E7EB",
@@ -91,28 +83,33 @@ const BROKEN_IMG_SRC =
   "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 24 24' fill='none' stroke='%23d1d5db' stroke-width='1.5'%3E%3Crect x='2' y='7' width='20' height='14' rx='3'/%3E%3Ccircle cx='12' cy='14' r='3'/%3E%3C/svg%3E";
 
 /* Avatar initial bubble shared by photo captions + video cards */
-function AvatarBubble({ name, size = 5 }: { name: string; size?: number }) {
+function AvatarBubble({ name, size = 5, accent = BRAND.accent }: { name: string; size?: number; accent?: string }) {
   return (
     <div
       className={`w-${size} h-${size} rounded-full flex items-center justify-center text-white font-bold shrink-0`}
-      style={{ background: BRAND.accent, fontSize: size <= 5 ? "9px" : "11px" }}
+      style={{ background: accent, fontSize: size <= 5 ? "9px" : "11px" }}
     >
       {name.charAt(0).toUpperCase()}
     </div>
   );
 }
 
-export function AlbumGuestView({ album, photos, passwordRequired, passwordCorrect, providedPassword: _pw, initialLang }: Props) {
+export function AlbumGuestView({ album, photos, moments, passwordRequired, passwordCorrect, providedPassword, initialLang }: Props) {
   const router = useRouter();
   const [lang, setLang]                 = useState<Lang>(initialLang);
   const [lightboxIndex, setLightboxIndex] = useState(-1);
   const [uploadOpen, setUploadOpen]     = useState(false);
+  const [reminderOpen, setReminderOpen] = useState(false);
   const [pwInput, setPwInput]           = useState("");
   const [pwError, setPwError]           = useState(false);
   const [uploaderName, setUploaderName] = useState("");
   const [nameConfirmed, setNameConfirmed] = useState(false);
   const [filter, setFilter]             = useState<FilterTab>("all");
   const [personFilter, setPersonFilter] = useState<string | null>(null);
+  const [selectedMomentId, setSelectedMomentId] = useState<string | null>(null);
+  const [sortMode, setSortMode]         = useState<SortMode>("newest");
+  const [sortMenuOpen, setSortMenuOpen] = useState(false);
+  const [reactionsOnly, setReactionsOnly] = useState(false);
   const [slideshowOpen, setSlideshowOpen]     = useState(false);
   const [slideshowIdx, setSlideshowIdx]       = useState(0);
   const [projectionOpen, setProjectionOpen]   = useState(false);
@@ -132,10 +129,16 @@ export function AlbumGuestView({ album, photos, passwordRequired, passwordCorrec
   const nameInputRef  = useRef<HTMLInputElement>(null);
   const cameraFilesRef = useRef<FileList | null>(null);
   const turnstileContainerRef = useRef<HTMLDivElement>(null);
+  const sortMenuRef = useRef<HTMLDivElement>(null);
 
   const t       = translations[lang];
   const evtIcon = eventIcon(album.eventType ?? "other");
   const albumFull = album.plan === "free" && photos.length >= (album.maxPhotos ?? 20);
+
+  // ── Per-occasion theme (dark hero hue + accent color) ─────────────────────
+  const theme = getEventTheme(album.eventType);
+  // Soft, flat tint of the accent for light-background accent elements
+  const accentTint = `${theme.accent}14`; // ~8% alpha — flat tint, no gradient
 
   // ── Load reactions + restore myLikes from localStorage ────────────────────
   useEffect(() => {
@@ -169,6 +172,18 @@ export function AlbumGuestView({ album, photos, passwordRequired, passwordCorrec
       })
       .catch(() => { /* non-fatal */ });
   }, [album.slug]);
+
+  // ── Close sort menu on outside click ──────────────────────────────────────
+  useEffect(() => {
+    if (!sortMenuOpen) return;
+    const handler = (e: MouseEvent) => {
+      if (sortMenuRef.current && !sortMenuRef.current.contains(e.target as Node)) {
+        setSortMenuOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [sortMenuOpen]);
 
   // ── Cloudflare Turnstile ──────────────────────────────────────────────────
   useEffect(() => {
@@ -296,15 +311,30 @@ export function AlbumGuestView({ album, photos, passwordRequired, passwordCorrec
   const photoCount = photos.filter(p => !p.mimeType?.startsWith("video/")).length;
   const videoCount = photos.filter(p =>  p.mimeType?.startsWith("video/")).length;
 
-  // ── Filtered collection (type + person) ───────────────────────────────────
-  const filteredPhotos = photos.filter(p => {
-    if (filter === "photos" &&  p.mimeType?.startsWith("video/")) return false;
-    if (filter === "videos" && !p.mimeType?.startsWith("video/")) return false;
-    if (personFilter && p.uploaderName !== personFilter) return false;
-    return true;
-  });
+  // ── Filtered collection (type + person + my reactions) ────────────────────
+  const filteredPhotos = photos
+    .filter(p => {
+      if (filter === "photos" &&  p.mimeType?.startsWith("video/")) return false;
+      if (filter === "videos" && !p.mimeType?.startsWith("video/")) return false;
+      if (personFilter && p.uploaderName !== personFilter) return false;
+      if (selectedMomentId && p.momentId !== selectedMomentId) return false;
+      if (reactionsOnly && !myLikes.has(p.id)) return false;
+      return true;
+    })
+    .slice() // copy before sorting — don't mutate the prop array
+    .sort((a, b) => {
+      if (sortMode === "mostLiked") {
+        return (likeCounts[b.id] ?? 0) - (likeCounts[a.id] ?? 0);
+      }
+      const ta = a.uploadedAt ? new Date(a.uploadedAt).getTime() : 0;
+      const tb = b.uploadedAt ? new Date(b.uploadedAt).getTime() : 0;
+      return sortMode === "oldest" ? ta - tb : tb - ta;
+    });
   const filteredImages = filteredPhotos.filter(p => !p.mimeType?.startsWith("video/"));
   const filteredVideos = filteredPhotos.filter(p =>  p.mimeType?.startsWith("video/"));
+
+  // "My uploads" = guest's confirmed name appears among uploaders
+  const hasMyUploads = nameConfirmed && uploaders.includes(uploaderName.trim());
 
   const switchLang = (l: Lang) => {
     setLang(l);
@@ -319,27 +349,23 @@ export function AlbumGuestView({ album, photos, passwordRequired, passwordCorrec
     setNameConfirmed(true);
   };
 
-  // ── Lightbox slides — all non-video photos (unaffected by filters) ─────────
-  const lightboxSlides = photos
-    .filter(p => !p.mimeType?.startsWith("video/"))
-    .map(p => ({
-      src: bunnyDisplayUrl(p.blobUrl, 2400, 90),
-      width: p.width ?? 2400,
-      height: p.height ?? 1600,
-      download: { url: bunnyOriginalUrl(p.blobUrl), filename: p.originalFilename ?? "photo.jpg" },
-      description: p.caption ?? undefined,
-    }));
+  // ── Lightbox slides — mirror the currently displayed images (filtered+sorted) ──
+  const lightboxSlides = filteredImages.map(p => ({
+    src: bunnyDisplayUrl(p.blobUrl, 2400, 90),
+    width: p.width ?? 2400,
+    height: p.height ?? 1600,
+    download: { url: bunnyOriginalUrl(p.blobUrl), filename: p.originalFilename ?? "photo.jpg" },
+    description: p.caption ?? undefined,
+  }));
 
-  const getLightboxIdx = (photo: Photo): number => {
-    const allImages = photos.filter(p => !p.mimeType?.startsWith("video/"));
-    return allImages.findIndex(p => p.id === photo.id);
-  };
+  const getLightboxIdx = (photo: Photo): number =>
+    filteredImages.findIndex(p => p.id === photo.id);
 
   // ── Password gate ─────────────────────────────────────────────────────────
   if (passwordRequired && !passwordCorrect) {
     return (
       <div className="min-h-screen flex flex-col" style={{ background: BRAND.bg }}>
-        <div className="h-1 w-full shrink-0" style={{ background: BRAND.accent }} />
+        <div className="h-1 w-full shrink-0" style={{ background: theme.accent }} />
         <div className="flex-1 flex items-center justify-center p-6">
           <div className="w-full max-w-sm">
             <div className="text-center mb-8">
@@ -348,8 +374,8 @@ export function AlbumGuestView({ album, photos, passwordRequired, passwordCorrec
               <p className="text-sm mt-1" style={{ color: BRAND.muted }}>{album.weddingDate}{album.location ? ` · ${album.location}` : ""}</p>
             </div>
             <div className="bg-white rounded-2xl border p-8" style={{ borderColor: BRAND.border }}>
-              <div className="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-4" style={{ background: BRAND.accentLight }}>
-                <svg className="w-6 h-6" style={{ color: BRAND.accent }} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.8}>
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-4" style={{ background: accentTint }}>
+                <svg className="w-6 h-6" style={{ color: theme.accent }} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.8}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
                 </svg>
               </div>
@@ -364,7 +390,7 @@ export function AlbumGuestView({ album, photos, passwordRequired, passwordCorrec
             <div className="flex justify-center gap-1 mt-6">
               {LANGS.map((l) => (
                 <button key={l.code} onClick={() => switchLang(l.code)} className="px-2 py-1 rounded-lg text-sm transition-all hover:bg-white"
-                  style={lang === l.code ? { background: BRAND.accentLight } : { color: BRAND.muted }}>{l.flag}</button>
+                  style={lang === l.code ? { background: accentTint } : { color: BRAND.muted }}>{l.flag}</button>
               ))}
             </div>
           </div>
@@ -383,11 +409,11 @@ export function AlbumGuestView({ album, photos, passwordRequired, passwordCorrec
         {album.coverImageUrl ? (
           <div className="relative h-72 sm:h-96 lg:h-[460px] w-full overflow-hidden">
             <Image src={album.coverImageUrl} alt={album.coupleName} fill className="object-cover" priority />
-            <div className="absolute inset-0" style={{ background: "linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.35) 50%, rgba(0,0,0,0.1) 100%)" }} />
+            <div className="absolute inset-0" style={{ background: "rgba(0,0,0,0.45)" }} />
             <div className="absolute top-0 inset-x-0 flex items-center justify-between px-6 pt-5">
               <div className="flex items-center gap-2 text-white/80 text-sm font-medium">
                 <span>{evtIcon}</span>
-                <span>{eventLabel(album.eventType ?? "other")}</span>
+                <span>{t.eventLabel(album.eventType ?? "other")}</span>
               </div>
               <div className="flex items-center gap-1">
                 {LANGS.map((l) => (
@@ -402,40 +428,58 @@ export function AlbumGuestView({ album, photos, passwordRequired, passwordCorrec
                 <span>{album.weddingDate}</span>
                 {album.location && <><span>·</span><span>{album.location}</span></>}
                 <span>·</span>
-                <span>{photoCount} foto{videoCount > 0 ? ` · ${videoCount} video` : ""}</span>
+                <span>{t.photoCount(photoCount)}{videoCount > 0 ? ` · ${t.videoCount(videoCount)}` : ""}</span>
                 {photos.length > 0 && (
                   <span className="flex items-center gap-1 text-white/80">
                     <span className="w-1.5 h-1.5 rounded-full animate-pulse bg-white inline-block" />
-                    V živo
+                    {t.live}
                   </span>
                 )}
               </div>
             </div>
           </div>
         ) : (
-          <div className="relative pt-16 pb-12 sm:pt-20 sm:pb-16 px-6 text-center overflow-hidden" style={{ background: BRAND.dark }}>
-            <div className="absolute inset-0 opacity-10" style={{ backgroundImage: "radial-gradient(circle at 20% 50%, #C4738A 0%, transparent 50%), radial-gradient(circle at 80% 20%, #C4738A 0%, transparent 40%)" }} />
+          <div className="relative pt-14 pb-14 sm:pt-16 sm:pb-20 px-6 text-center overflow-hidden" style={{ background: theme.heroBg }}>
             <div className="absolute top-0 inset-x-0 flex items-center justify-between px-6 pt-4">
-              <div className="flex items-center gap-2 text-white/50 text-sm">
-                <span>{evtIcon}</span>
-                <span>{eventLabel(album.eventType ?? "other")}</span>
+              <div className="flex items-center gap-2 text-white/50 text-xs font-medium uppercase tracking-[0.18em]">
+                <span className="text-sm">{evtIcon}</span>
+                <span>{t.eventLabel(album.eventType ?? "other")}</span>
               </div>
               <div className="flex items-center gap-1">
                 {LANGS.map((l) => (
                   <button key={l.code} onClick={() => switchLang(l.code)} className="px-1.5 py-1 rounded-lg text-sm transition-all hover:bg-white/10"
-                    style={lang === l.code ? { background: "rgba(196,115,138,0.3)" } : { color: "rgba(255,255,255,0.5)" }}>{l.flag}</button>
+                    style={lang === l.code ? { background: `${theme.accent}4D` } : { color: "rgba(255,255,255,0.5)" }}>{l.flag}</button>
                 ))}
               </div>
             </div>
-            <div className="relative">
-              <div className="text-5xl sm:text-6xl mb-5">{evtIcon}</div>
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-3 leading-tight">{album.coupleName}</h1>
-              <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-white/50 text-sm mb-6">
-                <span>{album.weddingDate}</span>
-                {album.location && <><span>·</span><span>{album.location}</span></>}
-                {photos.length > 0 && <><span>·</span><span>{photoCount} foto{videoCount > 0 ? ` · ${videoCount} video` : ""}</span></>}
+            <div className="relative max-w-2xl mx-auto pt-6">
+              {/* Event emoji in a refined ring */}
+              <div className="mx-auto mb-7 w-20 h-20 sm:w-[88px] sm:h-[88px] rounded-full flex items-center justify-center text-4xl sm:text-5xl"
+                style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.12)" }}>
+                {evtIcon}
               </div>
-              <CountdownTimer targetDate={album.weddingDate} translations={t} />
+              <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-5 leading-[1.1] tracking-tight">
+                {album.coupleName}
+              </h1>
+              {/* Date · location row, framed by thin dividers */}
+              <div className="flex items-center justify-center gap-3 sm:gap-4 mb-6">
+                <span className="h-px w-8 sm:w-12" style={{ background: "rgba(255,255,255,0.18)" }} />
+                <div className="flex flex-wrap items-center justify-center gap-x-2.5 gap-y-0.5 text-white/60 text-xs sm:text-sm uppercase tracking-[0.14em]">
+                  <span>{album.weddingDate}</span>
+                  {album.location && <><span className="text-white/25">·</span><span>{album.location}</span></>}
+                </div>
+                <span className="h-px w-8 sm:w-12" style={{ background: "rgba(255,255,255,0.18)" }} />
+              </div>
+              {photos.length > 0 && (
+                <p className="text-white/45 text-xs tracking-wide mb-6">
+                  {t.photoCount(photoCount)}{videoCount > 0 ? ` · ${t.videoCount(videoCount)}` : ""}
+                </p>
+              )}
+              {/* Countdown as a tasteful pill */}
+              <div className="inline-flex items-center rounded-full px-5 py-2"
+                style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)" }}>
+                <CountdownTimer targetDate={album.weddingDate} translations={t} accent={theme.accent} />
+              </div>
             </div>
           </div>
         )}
@@ -448,30 +492,30 @@ export function AlbumGuestView({ album, photos, passwordRequired, passwordCorrec
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
 
           {/* Row 1 — type filter + upload */}
-          <div className="flex items-center justify-between gap-4 py-3">
+          <div className="flex items-center justify-between gap-3 py-2.5">
 
             {/* Type filter pills */}
-            <div className="flex items-center gap-1 bg-gray-100 rounded-xl p-1 shrink-0">
+            <div className="flex items-center gap-0.5 bg-gray-100 rounded-xl p-1 shrink-0">
               {([
-                { id: "all",    label: "Vse",    labelMd: "Vse",          count: photos.length },
-                { id: "photos", label: "Foto",   labelMd: "Fotografije",  count: photoCount },
-                { id: "videos", label: "Video",  labelMd: "Videi",        count: videoCount },
+                { id: "all",    label: t.filterAllShort,    labelMd: t.filterAll,          count: photos.length },
+                { id: "photos", label: t.filterPhotosShort, labelMd: t.filterPhotos,  count: photoCount },
+                { id: "videos", label: t.filterVideosShort, labelMd: t.filterVideos,        count: videoCount },
               ] as { id: FilterTab; label: string; labelMd: string; count: number }[]).map(tab => (
                 <button
                   key={tab.id}
                   onClick={() => setFilter(tab.id)}
-                  className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg text-sm font-medium transition-all"
+                  className="flex items-center gap-1.5 px-3 sm:px-3.5 py-1.5 rounded-lg text-sm font-medium transition-all"
                   style={filter === tab.id
-                    ? { background: "white", color: BRAND.dark, boxShadow: "0 1px 3px rgba(0,0,0,0.1)" }
-                    : { color: BRAND.muted }
+                    ? { background: "white", color: BRAND.dark, border: `1px solid ${BRAND.border}` }
+                    : { color: BRAND.muted, border: "1px solid transparent" }
                   }
                 >
                   <span className="sm:hidden">{tab.label}</span>
                   <span className="hidden sm:inline">{tab.labelMd}</span>
                   {tab.count > 0 && (
-                    <span className="text-xs px-1.5 py-0.5 rounded-full"
+                    <span className="text-[11px] font-semibold leading-none px-1.5 py-0.5 rounded-full tabular-nums"
                       style={filter === tab.id
-                        ? { background: BRAND.accentLight, color: BRAND.accent }
+                        ? { background: accentTint, color: theme.accent }
                         : { background: "transparent", color: BRAND.muted }}>
                       {tab.count}
                     </span>
@@ -485,35 +529,35 @@ export function AlbumGuestView({ album, photos, passwordRequired, passwordCorrec
               <div className="hidden sm:flex items-center gap-1 shrink-0">
                 <button
                   onClick={() => { setSlideshowIdx(0); setSlideshowOpen(true); }}
-                  title="Diaprojekcija"
+                  title={t.slideshow}
                   className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-sm font-medium transition-all hover:bg-gray-100"
                   style={{ color: BRAND.muted }}
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 010 1.972l-11.54 6.347a1.125 1.125 0 01-1.667-.986V5.653z" />
                   </svg>
-                  <span className="hidden lg:inline">Diapozitivi</span>
+                  <span className="hidden lg:inline">{t.slideshowShort}</span>
                 </button>
                 <button
                   onClick={() => setProjectionOpen(true)}
-                  title="Foto zid (projekcija)"
+                  title={t.photoWallTitle}
                   className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-sm font-medium transition-all hover:bg-gray-100"
                   style={{ color: BRAND.muted }}
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M6 20.25h12m-7.5-3v3m3-3v3m-10.125-3h17.25c.621 0 1.125-.504 1.125-1.125V4.875c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125z" />
                   </svg>
-                  <span className="hidden lg:inline">Foto zid</span>
+                  <span className="hidden lg:inline">{t.photoWall}</span>
                 </button>
                 {filmClips.length > 0 && (
                   <button
                     onClick={() => { setFilmClipIdx(0); setFilmPlayerOpen(true); }}
-                    title="Highlights film"
+                    title={t.highlightsFilm}
                     className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-sm font-medium transition-all hover:bg-gray-100"
                     style={{ color: BRAND.muted }}
                   >
                     <span>🎬</span>
-                    <span className="hidden lg:inline">Film</span>
+                    <span className="hidden lg:inline">{t.film}</span>
                   </button>
                 )}
               </div>
@@ -523,18 +567,20 @@ export function AlbumGuestView({ album, photos, passwordRequired, passwordCorrec
             {!albumFull && (
               <div className="flex items-center gap-2 shrink-0">
                 {!nameConfirmed ? (
-                  <>
-                    {/* Desktop: name input inline in toolbar */}
-                    <div className="hidden sm:flex items-center gap-2">
+                  /* Name not yet entered — toolbar shows the inline name input
+                     only when there are photos. With an empty album the big
+                     empty-state CTA owns name entry, so nothing is shown here. */
+                  photos.length > 0 && (
+                    <div className="flex items-center gap-2">
                       <input
                         ref={nameInputRef}
                         type="text"
                         value={uploaderName}
                         onChange={(e) => setUploaderName(e.target.value)}
                         onKeyDown={(e) => e.key === "Enter" && confirmName()}
-                        placeholder="Vaše ime"
+                        placeholder={t.yourNamePlaceholder}
                         autoComplete="given-name"
-                        className="w-36 sm:w-44 px-3 py-1.5 border rounded-xl text-sm outline-none transition-all"
+                        className="w-32 sm:w-44 px-3 py-1.5 border rounded-xl text-sm outline-none transition-all"
                         style={{ borderColor: BRAND.border }}
                       />
                       <button
@@ -543,25 +589,14 @@ export function AlbumGuestView({ album, photos, passwordRequired, passwordCorrec
                         className="px-4 py-1.5 rounded-xl text-sm font-semibold text-white transition-all disabled:opacity-30 hover:opacity-90"
                         style={{ background: BRAND.dark }}
                       >
-                        Naprej →
+                        {t.next}
                       </button>
                     </div>
-                    {/* Mobile: pill that scrolls down to the big CTA */}
-                    <button
-                      onClick={() => document.getElementById("upload-cta")?.scrollIntoView({ behavior: "smooth" })}
-                      className="sm:hidden flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-semibold text-white transition-all"
-                      style={{ background: BRAND.accent }}
-                    >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                      </svg>
-                      Naloži
-                    </button>
-                  </>
+                  )
                 ) : (
                   <div className="flex items-center gap-2">
                     <div className="hidden sm:flex items-center gap-1.5">
-                      <AvatarBubble name={uploaderName} size={7} />
+                      <AvatarBubble name={uploaderName} size={7} accent={theme.accent} />
                       <button onClick={() => setNameConfirmed(false)} className="text-xs underline" style={{ color: BRAND.muted }}>{uploaderName}</button>
                     </div>
                     <label className="relative flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-semibold text-white cursor-pointer transition-all hover:opacity-90" style={{ background: BRAND.dark }}>
@@ -569,7 +604,7 @@ export function AlbumGuestView({ album, photos, passwordRequired, passwordCorrec
                         <path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z" />
                         <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0z" />
                       </svg>
-                      <span className="hidden sm:inline">Fotografiraj</span>
+                      <span className="hidden sm:inline">{t.takePhoto}</span>
                       <input type="file" accept="image/*,video/*" capture="environment" multiple className="absolute inset-0 opacity-0 cursor-pointer"
                         onChange={(e) => { if (e.target.files?.length) { cameraFilesRef.current = e.target.files; setUploadOpen(true); } }} />
                     </label>
@@ -580,7 +615,7 @@ export function AlbumGuestView({ album, photos, passwordRequired, passwordCorrec
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
                       </svg>
-                      <span className="hidden sm:inline">Naloži</span>
+                      <span className="hidden sm:inline">{t.uploadShort}</span>
                     </button>
                   </div>
                 )}
@@ -588,42 +623,162 @@ export function AlbumGuestView({ album, photos, passwordRequired, passwordCorrec
             )}
           </div>
 
-          {/* Row 2 — person filter chips (only if 2+ distinct uploaders) */}
-          {uploaders.length >= 2 && (
+          {/* Row 2 — sort + quick filters + person filter chips */}
+          {(photos.length > 0) && (
             <div className="flex items-center gap-2 pb-3 overflow-x-auto" style={{ scrollbarWidth: "none" }}>
-              {/* "Vsi" chip */}
-              <button
-                onClick={() => setPersonFilter(null)}
-                className="flex-shrink-0 px-3 py-1 rounded-full text-xs font-semibold transition-all border"
-                style={personFilter === null
-                  ? { background: BRAND.dark, color: "white", borderColor: BRAND.dark }
-                  : { background: "white", color: BRAND.muted, borderColor: BRAND.border }}
-              >
-                Vsi
-              </button>
 
-              {uploaders.map(name => {
-                const active = personFilter === name;
+              {/* Sort menu */}
+              <div className="relative flex-shrink-0" ref={sortMenuRef}>
+                <button
+                  onClick={() => setSortMenuOpen(o => !o)}
+                  className="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold transition-all border"
+                  style={{ background: "white", color: BRAND.dark, borderColor: BRAND.border }}
+                >
+                  <svg className="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M3 7.5h18M6 12h12M10 16.5h4" />
+                  </svg>
+                  <span>
+                    {sortMode === "newest" ? t.sortNewest : sortMode === "oldest" ? t.sortOldest : t.sortMostLiked}
+                  </span>
+                  <svg className="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+                {sortMenuOpen && (
+                  <div
+                    className="absolute left-0 top-full mt-1 z-30 w-44 rounded-xl border bg-white py-1 shadow-lg"
+                    style={{ borderColor: BRAND.border }}
+                  >
+                    {([
+                      { id: "newest" as SortMode, label: t.sortNewest },
+                      { id: "oldest" as SortMode, label: t.sortOldest },
+                      { id: "mostLiked" as SortMode, label: t.sortMostLiked },
+                    ]).map(opt => (
+                      <button
+                        key={opt.id}
+                        onClick={() => { setSortMode(opt.id); setSortMenuOpen(false); }}
+                        className="flex w-full items-center justify-between px-3 py-1.5 text-xs font-medium transition-all hover:bg-gray-50"
+                        style={{ color: sortMode === opt.id ? theme.accent : BRAND.dark }}
+                      >
+                        {opt.label}
+                        {sortMode === opt.id && (
+                          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={3}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                          </svg>
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              <span className="h-4 w-px flex-shrink-0" style={{ background: BRAND.border }} />
+
+              {/* My uploads — shortcut into the per-person filter */}
+              {hasMyUploads && (() => {
+                const active = personFilter === uploaderName.trim();
                 return (
                   <button
-                    key={name}
-                    onClick={() => setPersonFilter(active ? null : name)}
+                    onClick={() => setPersonFilter(active ? null : uploaderName.trim())}
                     className="flex-shrink-0 flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold transition-all border"
                     style={active
-                      ? { background: BRAND.accent, color: "white", borderColor: BRAND.accent }
+                      ? { background: theme.accent, color: "white", borderColor: theme.accent }
                       : { background: "white", color: BRAND.dark, borderColor: BRAND.border }}
                   >
-                    <span
-                      className="w-4 h-4 rounded-full flex items-center justify-center font-bold"
-                      style={{
-                        fontSize: "9px",
-                        background: active ? "rgba(255,255,255,0.25)" : BRAND.accentLight,
-                        color:      active ? "white"                  : BRAND.accent,
-                      }}
-                    >
-                      {name.charAt(0).toUpperCase()}
-                    </span>
-                    {name}
+                    <svg className="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
+                    </svg>
+                    {t.myUploads}
+                  </button>
+                );
+              })()}
+
+              {/* My reactions — only photos the guest has liked */}
+              {nameConfirmed && (
+                <button
+                  onClick={() => setReactionsOnly(o => !o)}
+                  className="flex-shrink-0 flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold transition-all border"
+                  style={reactionsOnly
+                    ? { background: theme.accent, color: "white", borderColor: theme.accent }
+                    : { background: "white", color: BRAND.dark, borderColor: BRAND.border }}
+                >
+                  <svg className="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24"
+                    fill={reactionsOnly ? "white" : "none"}
+                    stroke={reactionsOnly ? "white" : "currentColor"} strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+                  </svg>
+                  {t.myReactions}
+                </button>
+              )}
+
+              {/* Person filter chips (only if 2+ distinct uploaders) */}
+              {uploaders.length >= 2 && (
+                <>
+                  <span className="h-4 w-px flex-shrink-0" style={{ background: BRAND.border }} />
+                  <button
+                    onClick={() => setPersonFilter(null)}
+                    className="flex-shrink-0 px-3 py-1 rounded-full text-xs font-semibold transition-all border"
+                    style={personFilter === null
+                      ? { background: BRAND.dark, color: "white", borderColor: BRAND.dark }
+                      : { background: "white", color: BRAND.muted, borderColor: BRAND.border }}
+                  >
+                    {t.everyone}
+                  </button>
+
+                  {uploaders.map(name => {
+                    const active = personFilter === name;
+                    return (
+                      <button
+                        key={name}
+                        onClick={() => setPersonFilter(active ? null : name)}
+                        className="flex-shrink-0 flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold transition-all border"
+                        style={active
+                          ? { background: theme.accent, color: "white", borderColor: theme.accent }
+                          : { background: "white", color: BRAND.dark, borderColor: BRAND.border }}
+                      >
+                        <span
+                          className="w-4 h-4 rounded-full flex items-center justify-center font-bold"
+                          style={{
+                            fontSize: "9px",
+                            background: active ? "rgba(255,255,255,0.25)" : accentTint,
+                            color:      active ? "white"                  : theme.accent,
+                          }}
+                        >
+                          {name.charAt(0).toUpperCase()}
+                        </span>
+                        {name}
+                      </button>
+                    );
+                  })}
+                </>
+              )}
+            </div>
+          )}
+
+          {/* Row 3 — moment tabs (only if the album has moments) */}
+          {moments.length > 0 && (
+            <div className="flex items-center gap-2 pb-3 overflow-x-auto" style={{ scrollbarWidth: "none" }}>
+              <button
+                onClick={() => setSelectedMomentId(null)}
+                className="flex-shrink-0 px-3.5 py-1 rounded-full text-xs font-semibold transition-all border"
+                style={selectedMomentId === null
+                  ? { background: theme.accent, color: "white", borderColor: theme.accent }
+                  : { background: "white", color: BRAND.dark, borderColor: BRAND.border }}
+              >
+                {t.momentsAll}
+              </button>
+              {moments.map(m => {
+                const active = selectedMomentId === m.id;
+                return (
+                  <button
+                    key={m.id}
+                    onClick={() => setSelectedMomentId(active ? null : m.id)}
+                    className="flex-shrink-0 px-3.5 py-1 rounded-full text-xs font-semibold transition-all border"
+                    style={active
+                      ? { background: theme.accent, color: "white", borderColor: theme.accent }
+                      : { background: "white", color: BRAND.dark, borderColor: BRAND.border }}
+                  >
+                    {m.name}
                   </button>
                 );
               })}
@@ -642,100 +797,119 @@ export function AlbumGuestView({ album, photos, passwordRequired, passwordCorrec
           <div className="bg-red-50 border border-red-200 rounded-2xl p-4 mb-6 flex items-center gap-3">
             <span className="text-xl shrink-0">🔒</span>
             <div>
-              <p className="font-semibold text-sm text-red-800">Galerija je polna</p>
-              <p className="text-xs text-red-600 mt-0.5">Lastnik mora nadgraditi paket za nadaljevanje.</p>
+              <p className="font-semibold text-sm text-red-800">{t.galleryFull}</p>
+              <p className="text-xs text-red-600 mt-0.5">{t.galleryFullDesc}</p>
             </div>
           </div>
         )}
 
         {/* Person filter active banner */}
         {personFilter && (
-          <div className="flex items-center gap-2 mb-5 px-3 py-2 rounded-xl border text-sm" style={{ borderColor: BRAND.accentLight, background: BRAND.accentLight }}>
-            <AvatarBubble name={personFilter} size={6} />
+          <div className="flex items-center gap-2 mb-5 px-3 py-2 rounded-xl border text-sm" style={{ borderColor: accentTint, background: accentTint }}>
+            <AvatarBubble name={personFilter} size={6} accent={theme.accent} />
             <span className="font-medium" style={{ color: BRAND.dark }}>
-              Fotografije od: <strong>{personFilter}</strong>
+              {t.photosFrom} <strong>{personFilter}</strong>
             </span>
             <button
               onClick={() => setPersonFilter(null)}
               className="ml-auto text-xs font-semibold px-2 py-0.5 rounded-lg transition-all hover:bg-white/60"
-              style={{ color: BRAND.accent }}
+              style={{ color: theme.accent }}
             >
-              Počisti ✕
+              {t.clear}
             </button>
           </div>
         )}
 
         {/* Empty state */}
         {filteredPhotos.length === 0 ? (
-          personFilter || filter !== "all" ? (
+          reactionsOnly || personFilter || selectedMomentId || filter !== "all" ? (
             /* Filtered empty — simple message */
             <div className="flex flex-col items-center justify-center py-28 text-center">
-              <div className="text-5xl mb-4 opacity-20">{filter === "videos" ? "🎥" : "📷"}</div>
+              <div className="text-5xl mb-4 opacity-20">
+                {reactionsOnly ? "🤍" : filter === "videos" ? "🎥" : "📷"}
+              </div>
               <p className="text-sm font-medium" style={{ color: BRAND.muted }}>
-                {personFilter
-                  ? `${personFilter} nima ${filter === "videos" ? "videoposnetkov" : "fotografij"}`
-                  : filter === "videos" ? "Ni videoposnetkov"
-                  : "Ni fotografij"}
+                {reactionsOnly
+                  ? t.noMyReactions
+                  : personFilter === uploaderName.trim() && nameConfirmed
+                  ? t.noMyUploads
+                  : personFilter
+                  ? (filter === "videos" ? t.personNoVideos(personFilter) : t.personNoPhotos(personFilter))
+                  : filter === "videos" ? t.noVideos
+                  : t.noPhotos}
               </p>
             </div>
           ) : !albumFull ? (
             /* Album is empty — big upload CTA */
-            <div id="upload-cta" className="flex flex-col items-center justify-center py-16 sm:py-24 px-4 text-center">
-              <div className="w-24 h-24 rounded-3xl flex items-center justify-center mb-6 text-4xl"
-                style={{ background: BRAND.accentLight }}>
-                📷
+            <div id="upload-cta" className="py-12 sm:py-20 px-4">
+              <div className="mx-auto max-w-md rounded-3xl border bg-white px-6 py-12 sm:px-10 sm:py-14 text-center"
+                style={{ borderColor: BRAND.border }}>
+                <div className="mx-auto w-20 h-20 rounded-2xl flex items-center justify-center mb-6 text-3xl"
+                  style={{ background: accentTint }}>
+                  📷
+                </div>
+                <h2 className="font-serif text-2xl font-bold mb-2.5" style={{ color: BRAND.dark }}>
+                  {t.beFirstToShare}
+                </h2>
+                <p className="text-sm leading-relaxed mb-8 max-w-xs mx-auto" style={{ color: BRAND.muted }}>
+                  {t.beFirstToShareHint}
+                </p>
+                {!nameConfirmed ? (
+                  <div className="flex flex-col items-center gap-2.5 w-full max-w-xs mx-auto">
+                    <input
+                      type="text"
+                      value={uploaderName}
+                      onChange={(e) => setUploaderName(e.target.value)}
+                      onKeyDown={(e) => e.key === "Enter" && confirmName()}
+                      placeholder={t.yourNamePlaceholder}
+                      autoComplete="given-name"
+                      className="w-full px-4 py-3 border rounded-2xl text-sm outline-none transition-all text-center"
+                      style={{ borderColor: BRAND.border }}
+                    />
+                    <button
+                      onClick={confirmName}
+                      disabled={!uploaderName.trim()}
+                      className="w-full px-6 py-3 rounded-2xl text-sm font-semibold text-white transition-all disabled:opacity-30 hover:opacity-90"
+                      style={{ background: BRAND.dark }}
+                    >
+                      {t.next}
+                    </button>
+                  </div>
+                ) : (
+                  <div className="flex flex-col sm:flex-row items-center justify-center gap-2.5">
+                    <label className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-3 rounded-2xl text-sm font-semibold text-white cursor-pointer transition-all hover:opacity-90 relative"
+                      style={{ background: theme.accent }}>
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0z" />
+                      </svg>
+                      {t.takePhoto}
+                      <input type="file" accept="image/*,video/*" capture="environment" multiple className="absolute inset-0 opacity-0 cursor-pointer"
+                        onChange={(e) => { if (e.target.files?.length) { cameraFilesRef.current = e.target.files; setUploadOpen(true); } }} />
+                    </label>
+                    <button
+                      onClick={() => setUploadOpen(true)}
+                      className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-3 rounded-2xl border text-sm font-semibold transition-all hover:bg-gray-50"
+                      style={{ borderColor: BRAND.border, color: BRAND.dark }}
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
+                      </svg>
+                      {t.uploadFromGallery}
+                    </button>
+                  </div>
+                )}
+                {/* Secondary actions: upload reminder */}
+                <div className="mt-6 flex flex-col items-center gap-2">
+                  <button
+                    onClick={() => setReminderOpen(true)}
+                    className="text-xs font-medium underline underline-offset-2 transition-opacity hover:opacity-70"
+                    style={{ color: BRAND.muted }}
+                  >
+                    {t.remindMeLink}
+                  </button>
+                </div>
               </div>
-              <h2 className="text-xl font-bold mb-2" style={{ color: BRAND.dark }}>
-                Bodi prvi, ki deli fotografijo!
-              </h2>
-              <p className="text-sm mb-8 max-w-xs" style={{ color: BRAND.muted }}>
-                {t.noPhotosDesc}
-              </p>
-              {!nameConfirmed ? (
-                <div className="flex flex-col sm:flex-row items-center gap-3 w-full max-w-xs">
-                  <input
-                    type="text"
-                    value={uploaderName}
-                    onChange={(e) => setUploaderName(e.target.value)}
-                    onKeyDown={(e) => e.key === "Enter" && confirmName()}
-                    placeholder="Vaše ime"
-                    autoComplete="given-name"
-                    className="w-full px-4 py-3 border rounded-2xl text-sm outline-none transition-all text-center"
-                    style={{ borderColor: BRAND.border }}
-                  />
-                  <button
-                    onClick={confirmName}
-                    disabled={!uploaderName.trim()}
-                    className="w-full sm:w-auto px-6 py-3 rounded-2xl text-sm font-semibold text-white transition-all disabled:opacity-30 hover:opacity-90 shrink-0"
-                    style={{ background: BRAND.dark }}
-                  >
-                    Naprej →
-                  </button>
-                </div>
-              ) : (
-                <div className="flex flex-col sm:flex-row items-center gap-3">
-                  <label className="flex items-center gap-2 px-5 py-3 rounded-2xl text-sm font-semibold text-white cursor-pointer transition-all hover:opacity-90 relative"
-                    style={{ background: BRAND.accent }}>
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z" />
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0z" />
-                    </svg>
-                    Fotografiraj
-                    <input type="file" accept="image/*,video/*" capture="environment" multiple className="absolute inset-0 opacity-0 cursor-pointer"
-                      onChange={(e) => { if (e.target.files?.length) { cameraFilesRef.current = e.target.files; setUploadOpen(true); } }} />
-                  </label>
-                  <button
-                    onClick={() => setUploadOpen(true)}
-                    className="flex items-center gap-2 px-5 py-3 rounded-2xl border text-sm font-semibold transition-all hover:bg-gray-50"
-                    style={{ borderColor: BRAND.border, color: BRAND.dark }}
-                  >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
-                    </svg>
-                    Naloži iz galerije
-                  </button>
-                </div>
-              )}
             </div>
           ) : (
             /* Album full */
@@ -750,10 +924,10 @@ export function AlbumGuestView({ album, photos, passwordRequired, passwordCorrec
             {filter === "all" && filteredVideos.length > 0 && (
               <div className="mb-10">
                 <h2 className="text-xs font-bold uppercase tracking-widest mb-4" style={{ color: BRAND.muted }}>
-                  Videi · {filteredVideos.length}
+                  {t.videosSection} · {filteredVideos.length}
                 </h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {filteredVideos.map(photo => <VideoCard key={photo.id} photo={photo} />)}
+                  {filteredVideos.map(photo => <VideoCard key={photo.id} photo={photo} t={t} accent={theme.accent} />)}
                 </div>
               </div>
             )}
@@ -761,7 +935,7 @@ export function AlbumGuestView({ album, photos, passwordRequired, passwordCorrec
             {/* ── Videos-only view ────────────────────────────────────────── */}
             {filter === "videos" && (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {filteredVideos.map(photo => <VideoCard key={photo.id} photo={photo} />)}
+                {filteredVideos.map(photo => <VideoCard key={photo.id} photo={photo} t={t} accent={theme.accent} />)}
               </div>
             )}
 
@@ -770,7 +944,7 @@ export function AlbumGuestView({ album, photos, passwordRequired, passwordCorrec
               <div>
                 {filter === "all" && (
                   <h2 className="text-xs font-bold uppercase tracking-widest mb-4" style={{ color: BRAND.muted }}>
-                    Fotografije · {filteredImages.length}
+                    {t.photosSection} · {filteredImages.length}
                   </h2>
                 )}
                 <div className="masonry-grid">
@@ -801,7 +975,7 @@ export function AlbumGuestView({ album, photos, passwordRequired, passwordCorrec
 
                       {/* Uploader + time + reactions — below image */}
                       <div className="flex items-center gap-1.5 px-1 pt-1.5 pb-0.5">
-                        {photo.uploaderName && <AvatarBubble name={photo.uploaderName} size={5} />}
+                        {photo.uploaderName && <AvatarBubble name={photo.uploaderName} size={5} accent={theme.accent} />}
                         <div className="min-w-0 flex-1">
                           {photo.uploaderName && (
                             <p className="text-[11px] font-semibold leading-tight truncate" style={{ color: BRAND.dark }}>
@@ -809,19 +983,19 @@ export function AlbumGuestView({ album, photos, passwordRequired, passwordCorrec
                             </p>
                           )}
                           <p className="text-[10px] leading-tight" style={{ color: BRAND.muted }}>
-                            {formatUploadTime(photo.uploadedAt)}
+                            {formatUploadTime(photo.uploadedAt, t)}
                           </p>
                         </div>
                         {/* Like button */}
                         <button
                           onClick={(e) => { e.stopPropagation(); toggleLike(photo.id); }}
-                          title={myLikes.has(photo.id) ? "Odstrani všeček" : "Všečkaj"}
+                          title={myLikes.has(photo.id) ? t.unlike : t.like}
                           className="flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[11px] font-semibold transition-all shrink-0"
                           style={myLikes.has(photo.id)
-                            ? { background: "#FEF2F4", color: BRAND.accent }
+                            ? { background: accentTint, color: theme.accent }
                             : { background: "transparent", color: BRAND.muted }}
                         >
-                          <svg className="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill={myLikes.has(photo.id) ? BRAND.accent : "none"} stroke={myLikes.has(photo.id) ? BRAND.accent : "currentColor"} strokeWidth={2}>
+                          <svg className="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill={myLikes.has(photo.id) ? theme.accent : "none"} stroke={myLikes.has(photo.id) ? theme.accent : "currentColor"} strokeWidth={2}>
                             <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
                           </svg>
                           {(likeCounts[photo.id] ?? 0) > 0 && (
@@ -831,7 +1005,7 @@ export function AlbumGuestView({ album, photos, passwordRequired, passwordCorrec
                         {/* Comment button */}
                         <button
                           onClick={(e) => { e.stopPropagation(); setOpenCommentsPhoto(photo.id); setCommentInput(""); }}
-                          title="Komentarji"
+                          title={t.comments}
                           className="flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[11px] font-semibold transition-all shrink-0"
                           style={{ background: "transparent", color: BRAND.muted }}
                         >
@@ -855,8 +1029,8 @@ export function AlbumGuestView({ album, photos, passwordRequired, passwordCorrec
       {/* ── Mobile floating upload FAB ────────────────────────────────────── */}
       {!albumFull && nameConfirmed && photos.length > 0 && (
         <div className="sm:hidden fixed bottom-5 right-5 z-30 flex flex-col items-end gap-2">
-          <label className="relative w-14 h-14 rounded-full flex items-center justify-center text-white shadow-lg cursor-pointer transition-all active:scale-95"
-            style={{ background: BRAND.accent, boxShadow: `0 4px 20px ${BRAND.accent}60` }}>
+          <label className="relative w-14 h-14 rounded-full flex items-center justify-center text-white shadow-lg cursor-pointer transition-all active:scale-95 hover:brightness-95"
+            style={{ background: theme.accent }}>
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z" />
               <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0z" />
@@ -891,17 +1065,17 @@ export function AlbumGuestView({ album, photos, passwordRequired, passwordCorrec
             <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" />
             {/* Panel */}
             <div
-              className="relative w-full sm:w-[440px] max-h-[82vh] sm:max-h-[70vh] bg-white sm:rounded-2xl rounded-t-2xl flex flex-col overflow-hidden shadow-2xl"
+              className="relative w-full sm:w-[440px] max-h-[82vh] sm:max-h-[70vh] bg-white sm:rounded-2xl rounded-t-2xl flex flex-col overflow-hidden shadow-lg"
               onClick={e => e.stopPropagation()}
             >
               {/* Header */}
               <div className="flex items-center justify-between px-5 py-4 border-b shrink-0" style={{ borderColor: BRAND.border }}>
                 <div className="flex items-center gap-2">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2} style={{ color: BRAND.accent }}>
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2} style={{ color: theme.accent }}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z" />
                   </svg>
                   <span className="font-semibold text-sm" style={{ color: BRAND.dark }}>
-                    Komentarji
+                    {t.comments}
                     {comments.length > 0 && (
                       <span className="ml-1.5 text-xs font-normal" style={{ color: BRAND.muted }}>· {comments.length}</span>
                     )}
@@ -909,7 +1083,7 @@ export function AlbumGuestView({ album, photos, passwordRequired, passwordCorrec
                 </div>
                 {photo?.uploaderName && (
                   <span className="text-xs" style={{ color: BRAND.muted }}>
-                    Foto: <span className="font-medium">{photo.uploaderName}</span>
+                    {t.photoBy} <span className="font-medium">{photo.uploaderName}</span>
                   </span>
                 )}
                 <button onClick={() => setOpenCommentsPhoto(null)}
@@ -923,15 +1097,15 @@ export function AlbumGuestView({ album, photos, passwordRequired, passwordCorrec
                 {comments.length === 0 ? (
                   <div className="text-center py-10">
                     <div className="text-4xl mb-3 opacity-20">💬</div>
-                    <p className="text-sm" style={{ color: BRAND.muted }}>Bodi prvi, ki komentira!</p>
+                    <p className="text-sm" style={{ color: BRAND.muted }}>{t.beFirstToComment}</p>
                   </div>
                 ) : comments.map(c => (
                   <div key={c.id} className="flex items-start gap-2.5">
-                    <AvatarBubble name={c.uploaderName} size={7} />
+                    <AvatarBubble name={c.uploaderName} size={7} accent={theme.accent} />
                     <div className="flex-1 min-w-0">
                       <div className="flex items-baseline gap-1.5">
                         <span className="text-xs font-semibold" style={{ color: BRAND.dark }}>{c.uploaderName}</span>
-                        <span className="text-[10px]" style={{ color: BRAND.muted }}>{formatUploadTime(c.createdAt)}</span>
+                        <span className="text-[10px]" style={{ color: BRAND.muted }}>{formatUploadTime(c.createdAt, t)}</span>
                       </div>
                       <p className="text-sm leading-snug mt-0.5" style={{ color: BRAND.dark }}>{c.body}</p>
                     </div>
@@ -944,7 +1118,7 @@ export function AlbumGuestView({ album, photos, passwordRequired, passwordCorrec
                 {!nameConfirmed ? (
                   <div className="space-y-2 py-1">
                     <p className="text-xs text-center font-medium" style={{ color: BRAND.muted }}>
-                      Vnesi ime za komentar:
+                      {t.enterNameToComment}
                     </p>
                     <div className="flex items-center gap-2">
                       <input
@@ -952,7 +1126,7 @@ export function AlbumGuestView({ album, photos, passwordRequired, passwordCorrec
                         value={uploaderName}
                         onChange={e => setUploaderName(e.target.value)}
                         onKeyDown={e => e.key === "Enter" && confirmName()}
-                        placeholder="Vaše ime"
+                        placeholder={t.yourNamePlaceholder}
                         autoComplete="given-name"
                         autoFocus
                         className="flex-1 px-3 py-2 border rounded-xl text-sm outline-none transition-all"
@@ -962,21 +1136,21 @@ export function AlbumGuestView({ album, photos, passwordRequired, passwordCorrec
                         onClick={confirmName}
                         disabled={!uploaderName.trim()}
                         className="px-4 py-2 rounded-xl text-sm font-semibold text-white transition-all disabled:opacity-30 shrink-0 hover:opacity-90"
-                        style={{ background: BRAND.accent }}
+                        style={{ background: theme.accent }}
                       >
-                        OK
+                        {t.ok}
                       </button>
                     </div>
                   </div>
                 ) : (
                   <div className="flex items-center gap-2">
-                    <AvatarBubble name={uploaderName} size={7} />
+                    <AvatarBubble name={uploaderName} size={7} accent={theme.accent} />
                     <input
                       type="text"
                       value={commentInput}
                       onChange={e => setCommentInput(e.target.value)}
                       onKeyDown={e => e.key === "Enter" && !e.shiftKey && postComment()}
-                      placeholder="Dodaj komentar…"
+                      placeholder={t.addComment}
                       maxLength={500}
                       className="flex-1 px-3 py-2 border rounded-xl text-sm outline-none transition-all"
                       style={{ borderColor: BRAND.border }}
@@ -986,7 +1160,7 @@ export function AlbumGuestView({ album, photos, passwordRequired, passwordCorrec
                       onClick={postComment}
                       disabled={!commentInput.trim() || commentPosting}
                       className="w-9 h-9 rounded-full flex items-center justify-center text-white transition-all disabled:opacity-30 shrink-0"
-                      style={{ background: BRAND.accent }}
+                      style={{ background: theme.accent }}
                     >
                       {commentPosting ? (
                         <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
@@ -1046,10 +1220,24 @@ export function AlbumGuestView({ album, photos, passwordRequired, passwordCorrec
           maxPhotos={album.maxPhotos}
           currentCount={album.photoCount}
           lang={lang}
+          accent={theme.accent}
+          albumPassword={providedPassword ?? ""}
+          moments={moments}
+          defaultMomentId={selectedMomentId}
           initialFiles={cameraFilesRef.current}
           onClose={() => { cameraFilesRef.current = null; setUploadOpen(false); }}
           onNameChange={(name) => setUploaderName(name)}
           onSuccess={() => { cameraFilesRef.current = null; setUploadOpen(false); router.refresh(); }}
+        />
+      )}
+
+      {/* ── Upload reminder modal ─────────────────────────────────────────── */}
+      {reminderOpen && (
+        <ReminderModal
+          albumSlug={album.slug}
+          lang={lang}
+          accent={theme.accent}
+          onClose={() => setReminderOpen(false)}
         />
       )}
 
@@ -1059,6 +1247,7 @@ export function AlbumGuestView({ album, photos, passwordRequired, passwordCorrec
           clips={filmClips}
           initialIndex={filmClipIdx}
           onClose={() => setFilmPlayerOpen(false)}
+          t={t}
         />
       )}
     </div>
@@ -1066,7 +1255,7 @@ export function AlbumGuestView({ album, photos, passwordRequired, passwordCorrec
 }
 
 /* ── VideoCard ────────────────────────────────────────────────────────────── */
-function VideoCard({ photo }: { photo: Photo }) {
+function VideoCard({ photo, t, accent = BRAND.accent }: { photo: Photo; t: Translations; accent?: string }) {
   return (
     <div className="rounded-2xl overflow-hidden bg-gray-950 border border-gray-800 flex flex-col">
       {/* Video player */}
@@ -1085,12 +1274,12 @@ function VideoCard({ photo }: { photo: Photo }) {
 
       {/* Uploader + time */}
       <div className="flex items-center gap-2.5 px-3 py-2.5 bg-gray-900">
-        {photo.uploaderName && <AvatarBubble name={photo.uploaderName} size={6} />}
+        {photo.uploaderName && <AvatarBubble name={photo.uploaderName} size={6} accent={accent} />}
         <div className="min-w-0">
           {photo.uploaderName && (
             <p className="text-xs font-semibold text-gray-100 truncate">{photo.uploaderName}</p>
           )}
-          <p className="text-[10px] text-gray-400">{formatUploadTime(photo.uploadedAt)}</p>
+          <p className="text-[10px] text-gray-400">{formatUploadTime(photo.uploadedAt, t)}</p>
         </div>
       </div>
     </div>
@@ -1100,10 +1289,11 @@ function VideoCard({ photo }: { photo: Photo }) {
 // ── Film Player ──────────────────────────────────────────────────────────────
 interface FilmClip { videoUrl: string; sortOrder: number }
 
-function FilmPlayer({ clips, initialIndex, onClose }: {
+function FilmPlayer({ clips, initialIndex, onClose, t }: {
   clips: FilmClip[];
   initialIndex: number;
   onClose: () => void;
+  t: Translations;
 }) {
   const [idx, setIdx] = useState(initialIndex);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -1143,7 +1333,7 @@ function FilmPlayer({ clips, initialIndex, onClose }: {
       {/* Top bar */}
       <div className="flex items-center justify-between px-5 py-4 shrink-0" style={{ background: "rgba(0,0,0,0.6)" }}>
         <div className="flex items-center gap-3">
-          <span className="text-white font-bold text-sm">🎬 Highlights film</span>
+          <span className="text-white font-bold text-sm">🎬 {t.highlightsFilm}</span>
           <span className="text-white/50 text-xs">{idx + 1} / {clips.length}</span>
         </div>
         <button

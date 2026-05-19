@@ -3,7 +3,7 @@ import { GuestcamLogo } from "@/components/GuestcamLogo";
 
 export default function SignInPage() {
   return (
-    <div className="min-h-screen bg-[#FAF7F2] flex items-center justify-center px-4 py-16">
+    <div className="min-h-screen bg-[#F2F4F8] flex items-center justify-center px-4 py-16">
       <div className="w-full max-w-md">
         {/* Brand header */}
         <div className="text-center mb-8 flex flex-col items-center gap-2">
@@ -11,13 +11,15 @@ export default function SignInPage() {
           <p className="text-sm text-gray-400">Prijavite se za dostop do vaših albumov</p>
         </div>
         <SignIn
+          fallbackRedirectUrl="/dashboard"
+          signUpUrl="/sign-up"
           appearance={{
             elements: {
               rootBox: "w-full",
-              card: "shadow-md rounded-2xl border border-[#C9A96E]/15 bg-white",
-              headerTitle: "font-serif text-[#2C2825]",
-              formButtonPrimary: "bg-[#2C2825] hover:bg-[#C9A96E] transition-colors rounded-xl",
-              footerActionLink: "text-[#C9A96E] hover:text-[#B8945A]",
+              card: "shadow-md rounded-2xl border border-[#1E3A8A]/15 bg-white",
+              headerTitle: "font-serif text-[#0F1729]",
+              formButtonPrimary: "bg-[#0F1729] hover:bg-[#1E3A8A] transition-colors rounded-xl",
+              footerActionLink: "text-[#1E3A8A] hover:text-[#152C66]",
             },
           }}
         />

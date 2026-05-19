@@ -18,18 +18,18 @@ function SiteHeader() {
     <header className="sticky top-0 z-40 bg-white border-b border-gray-100">
       <nav className="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-0.5">
-          <span className="font-serif italic text-xl font-bold text-[#2C2825]">
+          <span className="font-serif italic text-xl font-bold text-[#0F1729]">
             Guestcam
           </span>
-          <span className="font-black text-2xl leading-none text-[#C4738A]">.</span>
+          <span className="font-black text-2xl leading-none text-[#1E3A8A]">.</span>
         </Link>
         <div className="flex items-center gap-6 text-sm font-medium text-gray-500">
-          <Link href="/" className="hover:text-[#2C2825] transition-colors">
+          <Link href="/" className="hover:text-[#0F1729] transition-colors">
             Domov
           </Link>
           <Link
             href="/dashboard/new"
-            className="px-4 py-2 rounded-full text-sm font-bold border-2 border-[#2C2825] text-[#2C2825] hover:bg-[#2C2825] hover:text-white transition-all duration-200"
+            className="px-4 py-2 rounded-full text-sm font-bold border-2 border-[#0F1729] text-[#0F1729] hover:bg-[#0F1729] hover:text-white transition-all duration-200"
           >
             Začni brezplačno
           </Link>
@@ -41,7 +41,7 @@ function SiteHeader() {
 
 function SiteFooter() {
   return (
-    <footer className="bg-[#2C2825] text-white py-8 mt-16">
+    <footer className="bg-[#0F1729] text-white py-8 mt-16">
       <div className="max-w-5xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-gray-400">
         <p>© 2025 Sport group d.o.o. · SI72133449</p>
         <div className="flex items-center gap-5">
@@ -78,7 +78,7 @@ function Section({
 }) {
   return (
     <div className="mb-8">
-      <h2 className="text-xl font-bold text-[#2C2825] mb-3 pb-2 border-b border-gray-100">
+      <h2 className="text-xl font-bold text-[#0F1729] mb-3 pb-2 border-b border-gray-100">
         {title}
       </h2>
       {children}
@@ -126,16 +126,16 @@ const rights = [
 
 export default function GdprPage() {
   return (
-    <div className="min-h-screen bg-[#FAF7F2] text-[#2C2825] font-sans">
+    <div className="min-h-screen bg-[#F2F4F8] text-[#0F1729] font-sans">
       <SiteHeader />
 
       <main className="max-w-3xl mx-auto px-6 py-16">
         <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-8 md:p-12">
           <div className="mb-10">
-            <p className="text-xs font-bold uppercase tracking-widest text-[#C4738A] mb-3">
+            <p className="text-xs font-bold uppercase tracking-widest text-[#1E3A8A] mb-3">
               Varstvo podatkov
             </p>
-            <h1 className="font-serif text-4xl font-bold text-[#2C2825] mb-3">
+            <h1 className="font-serif text-4xl font-bold text-[#0F1729] mb-3">
               GDPR — Varstvo osebnih podatkov
             </h1>
             <p className="text-sm text-gray-400">
@@ -152,10 +152,10 @@ export default function GdprPage() {
             ].map(({ icon, label, sub }) => (
               <div
                 key={label}
-                className="bg-[#FAF7F2] rounded-2xl p-4 text-center border border-gray-100"
+                className="bg-[#F2F4F8] rounded-2xl p-4 text-center border border-gray-100"
               >
                 <div className="text-2xl mb-2">{icon}</div>
-                <p className="font-semibold text-sm text-[#2C2825]">{label}</p>
+                <p className="font-semibold text-sm text-[#0F1729]">{label}</p>
                 <p className="text-xs text-gray-500 mt-0.5">{sub}</p>
               </div>
             ))}
@@ -169,8 +169,8 @@ export default function GdprPage() {
           </p>
 
           <Section title="1. Kdo smo">
-            <div className="bg-[#FAF7F2] rounded-xl p-4 border border-gray-100">
-              <p className="font-semibold text-[#2C2825]">Sport group d.o.o.</p>
+            <div className="bg-[#F2F4F8] rounded-xl p-4 border border-gray-100">
+              <p className="font-semibold text-[#0F1729]">Sport group d.o.o.</p>
               <p className="text-sm text-gray-600 mt-1">
                 ID za DDV: SI72133449
               </p>
@@ -178,7 +178,7 @@ export default function GdprPage() {
                 Kontaktna e-pošta za vprašanja o zasebnosti:{" "}
                 <a
                   href="mailto:hello@guestcam.si"
-                  className="text-[#C4738A] hover:underline"
+                  className="text-[#1E3A8A] hover:underline"
                 >
                   hello@guestcam.si
                 </a>
@@ -218,7 +218,7 @@ export default function GdprPage() {
                 },
               ].map(({ cat, items }) => (
                 <div key={cat} className="rounded-xl border border-gray-100 p-4">
-                  <p className="font-semibold text-[#2C2825] mb-2">{cat}</p>
+                  <p className="font-semibold text-[#0F1729] mb-2">{cat}</p>
                   <ul className="list-disc pl-5 space-y-1 text-sm text-gray-600">
                     {items.map((item) => (
                       <li key={item}>{item}</li>
@@ -232,10 +232,10 @@ export default function GdprPage() {
           <Section title="3. Pravna podlaga za obdelavo">
             <div className="overflow-x-auto rounded-xl border border-gray-200">
               <table className="w-full text-sm text-left">
-                <thead className="bg-[#FAF7F2]">
+                <thead className="bg-[#F2F4F8]">
                   <tr>
-                    <th className="p-3 font-semibold text-[#2C2825]">Obdelava</th>
-                    <th className="p-3 font-semibold text-[#2C2825]">
+                    <th className="p-3 font-semibold text-[#0F1729]">Obdelava</th>
+                    <th className="p-3 font-semibold text-[#0F1729]">
                       Pravna podlaga
                     </th>
                   </tr>
@@ -309,7 +309,7 @@ export default function GdprPage() {
                   className="flex items-center justify-between rounded-xl border border-gray-100 p-4"
                 >
                   <div>
-                    <p className="font-semibold text-[#2C2825]">{name}</p>
+                    <p className="font-semibold text-[#0F1729]">{name}</p>
                     <p className="text-sm text-gray-600">{role}</p>
                   </div>
                   <div className="text-right">
@@ -321,7 +321,7 @@ export default function GdprPage() {
                         href={link}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-xs text-[#C4738A] hover:underline"
+                        className="text-xs text-[#1E3A8A] hover:underline"
                       >
                         Politika zasebnosti →
                       </a>
@@ -349,7 +349,7 @@ export default function GdprPage() {
                 >
                   <span className="text-xl shrink-0">{icon}</span>
                   <div>
-                    <p className="font-semibold text-[#2C2825] text-sm">{title}</p>
+                    <p className="font-semibold text-[#0F1729] text-sm">{title}</p>
                     <p className="text-sm text-gray-600 mt-0.5">{desc}</p>
                   </div>
                 </div>
@@ -358,15 +358,15 @@ export default function GdprPage() {
             <div
               className="mt-5 rounded-2xl p-4"
               style={{
-                background: "rgba(196,115,138,0.08)",
-                border: "1px solid rgba(196,115,138,0.2)",
+                background: "rgba(30,58,138,0.08)",
+                border: "1px solid rgba(30,58,138,0.2)",
               }}
             >
               <p className="text-sm text-gray-700">
                 <strong>Kako uveljavljate svojo pravico:</strong> Pišite nam na{" "}
                 <a
                   href="mailto:hello@guestcam.si"
-                  className="text-[#C4738A] hover:underline"
+                  className="text-[#1E3A8A] hover:underline"
                 >
                   hello@guestcam.si
                 </a>{" "}
@@ -407,7 +407,7 @@ export default function GdprPage() {
               pravico vložiti pritožbo pri nacionalnem nadzornem organu:
             </p>
             <div className="mt-3 rounded-xl border border-gray-100 p-4">
-              <p className="font-semibold text-[#2C2825]">
+              <p className="font-semibold text-[#0F1729]">
                 Informacijski pooblaščenec RS
               </p>
               <p className="text-sm text-gray-600 mt-1">
@@ -418,7 +418,7 @@ export default function GdprPage() {
                   href="https://www.ip-rs.si"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-[#C4738A] hover:underline"
+                  className="text-[#1E3A8A] hover:underline"
                 >
                   www.ip-rs.si
                 </a>
@@ -434,13 +434,13 @@ export default function GdprPage() {
             <p className="text-gray-600 mb-3">
               Za vse GDPR poizvedbe pišite na:
             </p>
-            <div className="bg-[#FAF7F2] rounded-xl p-4 border border-gray-100">
-              <p className="font-semibold text-[#2C2825]">Sport group d.o.o.</p>
+            <div className="bg-[#F2F4F8] rounded-xl p-4 border border-gray-100">
+              <p className="font-semibold text-[#0F1729]">Sport group d.o.o.</p>
               <p className="text-sm text-gray-600 mt-1">
                 E-pošta:{" "}
                 <a
                   href="mailto:hello@guestcam.si"
-                  className="text-[#C4738A] hover:underline"
+                  className="text-[#1E3A8A] hover:underline"
                 >
                   hello@guestcam.si
                 </a>{" "}

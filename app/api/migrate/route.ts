@@ -10,9 +10,16 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const secret = searchParams.get("secret");
 
-  // Simple protection — set MIGRATE_SECRET env var, or allow if not set (first deploy)
+  // Require MIGRATE_SECRET — fail closed if it is not configured, so the
+  // endpoint can never run migrations unauthenticated.
   const expectedSecret = process.env.MIGRATE_SECRET;
-  if (expectedSecret && secret !== expectedSecret) {
+  if (!expectedSecret) {
+    return NextResponse.json(
+      { error: "Migration endpoint disabled — MIGRATE_SECRET is not set" },
+      { status: 503 },
+    );
+  }
+  if (secret !== expectedSecret) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

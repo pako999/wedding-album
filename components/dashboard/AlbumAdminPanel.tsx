@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { SignOutButton } from "@clerk/nextjs";
-import type { Album, Photo } from "@/lib/db/schema";
+import type { Album, Photo, Moment } from "@/lib/db/schema";
+import { translations } from "@/lib/i18n/translations";
 import { GuestcamLogo } from "@/components/GuestcamLogo";
 import { bunnyDisplayUrl } from "@/lib/storage/bunny";
 import { ZipDownloader } from "@/components/dashboard/ZipDownloader";
@@ -426,8 +427,9 @@ export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activ
 
           {/* SETTINGS */}
           {activeTab === "settings" && (
-            <div className="max-w-lg">
+            <div className="max-w-lg space-y-6">
               <AlbumSettingsForm album={album} />
+              <MomentsManager album={album} />
             </div>
           )}
         </div>
@@ -459,7 +461,7 @@ function OverviewTab({
     <div className="space-y-6">
       {/* Upgrade nudge card — free plan only */}
       {album.plan === "free" && (
-        <div className="bg-gradient-to-r from-indigo-50 to-purple-50 border border-indigo-100 rounded-2xl p-5 flex flex-col sm:flex-row sm:items-center gap-4">
+        <div className="bg-indigo-50 border border-indigo-100 rounded-2xl p-5 flex flex-col sm:flex-row sm:items-center gap-4">
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-1">
               <span className="text-sm font-bold text-indigo-800">📦 Brezplačni paket</span>
@@ -484,8 +486,8 @@ function OverviewTab({
           </div>
           <Link
             href={`/dashboard/${album.slug}/upgrade`}
-            className="flex-shrink-0 px-5 py-2.5 rounded-xl text-white text-sm font-bold transition-all hover:opacity-90 shadow-sm"
-            style={{ background: "linear-gradient(135deg, #6366F1, #8B5CF6)" }}
+            className="flex-shrink-0 px-5 py-2.5 rounded-xl text-white text-sm font-bold transition-all hover:opacity-90 hover:brightness-95 shadow-sm"
+            style={{ background: "#6366F1" }}
           >
             Poglej pakete →
           </Link>
@@ -851,7 +853,7 @@ function DeleteAlbumModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: "rgba(0,0,0,0.55)" }}>
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 space-y-5">
+      <div className="bg-white rounded-2xl shadow-lg w-full max-w-md p-6 space-y-5">
         {/* Header */}
         <div className="flex items-start gap-3">
           <div className="flex-shrink-0 w-10 h-10 rounded-full bg-red-100 flex items-center justify-center">
@@ -1065,3 +1067,176 @@ function AlbumSettingsForm({ album }: { album: Album }) {
     </div>
   );
 }
+
+// ─── Moments Manager ──────────────────────────────────────────────────────────
+
+function MomentsManager({ album }: { album: Album }) {
+  const t = translations.sl;
+  const [moments, setMoments] = useState<Moment[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [newName, setNewName] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editName, setEditName] = useState("");
+
+  const load = async () => {
+    try {
+      const res = await fetch(`/api/albums/${album.slug}/moments`);
+      if (res.ok) {
+        const data = (await res.json()) as { moments: Moment[] };
+        setMoments(data.moments ?? []);
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    load();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [album.slug]);
+
+  const addMoment = async () => {
+    const name = newName.trim();
+    if (!name || busy) return;
+    setBusy(true);
+    try {
+      const res = await fetch(`/api/albums/${album.slug}/moments`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name }),
+      });
+      if (res.ok) {
+        setNewName("");
+        await load();
+      }
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const renameMoment = async (id: string) => {
+    const name = editName.trim();
+    if (!name || busy) return;
+    setBusy(true);
+    try {
+      const res = await fetch(`/api/albums/${album.slug}/moments`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id, name }),
+      });
+      if (res.ok) {
+        setEditingId(null);
+        await load();
+      }
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const deleteMoment = async (id: string) => {
+    if (busy || !confirm(t.momentDeleteConfirm)) return;
+    setBusy(true);
+    try {
+      const res = await fetch(`/api/albums/${album.slug}/moments`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id }),
+      });
+      if (res.ok) await load();
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const inputClass =
+    "w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm text-gray-800 bg-white outline-none focus:border-indigo-400 transition-colors";
+
+  return (
+    <div className="bg-white rounded-2xl border border-gray-100 p-6 space-y-4">
+      <div>
+        <h3 className="font-semibold text-gray-900">{t.momentsTitle}</h3>
+        <p className="text-xs text-gray-400 mt-0.5">{t.momentsDesc}</p>
+      </div>
+
+      {/* Add */}
+      <div className="flex items-center gap-2">
+        <input
+          value={newName}
+          onChange={(e) => setNewName(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && addMoment()}
+          placeholder={t.momentNamePlaceholder}
+          maxLength={60}
+          className={inputClass}
+        />
+        <button
+          onClick={addMoment}
+          disabled={busy || !newName.trim()}
+          className="flex-shrink-0 px-4 py-2.5 rounded-xl text-white text-sm font-semibold bg-indigo-600 hover:bg-indigo-700 transition-colors disabled:opacity-40"
+        >
+          {t.momentAdd}
+        </button>
+      </div>
+
+      {/* List */}
+      {loading ? (
+        <p className="text-sm text-gray-400">…</p>
+      ) : moments.length === 0 ? (
+        <p className="text-sm text-gray-400">{t.momentEmpty}</p>
+      ) : (
+        <div className="space-y-2">
+          {moments.map((m) => (
+            <div
+              key={m.id}
+              className="flex items-center gap-2 border border-gray-100 rounded-xl px-3 py-2"
+            >
+              {editingId === m.id ? (
+                <>
+                  <input
+                    value={editName}
+                    onChange={(e) => setEditName(e.target.value)}
+                    onKeyDown={(e) => e.key === "Enter" && renameMoment(m.id)}
+                    maxLength={60}
+                    autoFocus
+                    className={`${inputClass} py-1.5`}
+                  />
+                  <button
+                    onClick={() => renameMoment(m.id)}
+                    disabled={busy || !editName.trim()}
+                    className="flex-shrink-0 px-3 py-1.5 rounded-lg text-white text-xs font-semibold bg-indigo-600 hover:bg-indigo-700 transition-colors disabled:opacity-40"
+                  >
+                    {t.momentRename}
+                  </button>
+                  <button
+                    onClick={() => setEditingId(null)}
+                    className="flex-shrink-0 px-3 py-1.5 rounded-lg border border-gray-200 text-xs font-medium text-gray-600 hover:bg-gray-50 transition-colors"
+                  >
+                    ✕
+                  </button>
+                </>
+              ) : (
+                <>
+                  <span className="flex-1 text-sm text-gray-800 truncate">{m.name}</span>
+                  <button
+                    onClick={() => { setEditingId(m.id); setEditName(m.name); }}
+                    className="flex-shrink-0 px-3 py-1.5 rounded-lg border border-gray-200 text-xs font-medium text-gray-600 hover:bg-gray-50 transition-colors"
+                  >
+                    {t.momentRename}
+                  </button>
+                  <button
+                    onClick={() => deleteMoment(m.id)}
+                    disabled={busy}
+                    className="flex-shrink-0 px-3 py-1.5 rounded-lg border border-red-200 text-xs font-medium text-red-600 hover:bg-red-50 transition-colors disabled:opacity-40"
+                  >
+                    {t.momentDelete}
+                  </button>
+                </>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+

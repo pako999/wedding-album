@@ -3,9 +3,12 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 const isProtectedRoute = createRouteMatcher(["/dashboard(.*)"]);
+// Internal endpoints gated by the x-api-key header. NOTE: the Stripe webhook
+// (/api/webhooks/stripe) is intentionally NOT here — it authenticates via its
+// own `stripe-signature` header, so gating it on x-api-key would block Stripe.
 const isInternalApi = createRouteMatcher([
   "/api/integrations(.*)",
-  "/api/webhooks(.*)",
+  "/api/webhooks/wedflow(.*)",
 ]);
 
 function parseHostname(url: string | undefined): string {
@@ -27,7 +30,8 @@ function isOwnDomain(hostname: string) {
     bare === `www.${APP_HOSTNAME}` ||
     bare.endsWith(".vercel.app") ||   // all preview URLs
     bare.endsWith(".localhost") ||
-    bare === "localhost"
+    bare === "localhost" ||
+    /^\d{1,3}(\.\d{1,3}){3}$/.test(bare) // bare IPv4 (LAN dev access) — never a custom domain
   );
 }
 

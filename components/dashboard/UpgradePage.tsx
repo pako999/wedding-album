@@ -70,6 +70,7 @@ const PLANS: Plan[] = [
       "Live galerija",
       "Personalizirana stran",
       "Premium predloge",
+      "Lasten napis na QR kartici",
       "Prioritetna podpora",
     ],
   },
