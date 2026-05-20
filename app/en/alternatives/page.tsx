@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import { LanguageSwitcher, ALTERNATIVES_HREFLANG } from "@/components/LanguageSwitcher";
 
 export const metadata: Metadata = {
   title: "Best Wedding Photo Sharing App Alternatives 2025 | Guestcam",
@@ -13,6 +14,15 @@ export const metadata: Metadata = {
   },
   alternates: {
     canonical: "https://guestcam.si/en/alternatives",
+    languages: {
+      "sl": "https://guestcam.si/sl/alternative-aplikacije",
+      "hr": "https://guestcam.si/hr/alternativne-aplikacije",
+      "sr": "https://guestcam.si/sr/alternativne-aplikacije",
+      "de": "https://guestcam.si/de/alternativen",
+      "en": "https://guestcam.si/en/alternatives",
+      "es": "https://guestcam.si/es/alternativas",
+      "x-default": "https://guestcam.si/sl/alternative-aplikacije",
+    },
   },
 };
 
@@ -26,8 +36,9 @@ function SiteHeader() {
           </span>
           <span className="font-black text-2xl leading-none text-[#1E3A8A]">.</span>
         </Link>
-        <div className="flex items-center gap-6 text-sm font-medium text-gray-500">
-          <Link href="/" className="hover:text-[#0F1729] transition-colors">
+        <div className="flex items-center gap-3 sm:gap-5 text-sm font-medium text-gray-500">
+          <LanguageSwitcher current="en" languages={ALTERNATIVES_HREFLANG} ariaLabel="Change language" />
+          <Link href="/" className="hidden sm:inline hover:text-[#0F1729] transition-colors">
             Home
           </Link>
           <Link

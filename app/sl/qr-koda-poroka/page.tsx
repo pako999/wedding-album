@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import { LanguageSwitcher, GUIDE_HREFLANG } from "@/components/LanguageSwitcher";
 
 export const metadata: Metadata = {
   title: "QR koda za poroko — Popoln vodnik 2025 | Guestcam",
@@ -16,6 +17,7 @@ export const metadata: Metadata = {
     languages: {
       "sl": "https://guestcam.si/sl/qr-koda-poroka",
       "hr": "https://guestcam.si/hr/qr-kod-vjencanje",
+      "sr": "https://guestcam.si/sr/qr-kod-vencanje",
       "de": "https://guestcam.si/de/hochzeitsfotos-sammeln",
       "en": "https://guestcam.si/en/wedding-photo-sharing",
       "es": "https://guestcam.si/es/fotos-boda-qr",
@@ -34,8 +36,9 @@ function SiteHeader() {
           </span>
           <span className="font-black text-2xl leading-none text-[#1E3A8A]">.</span>
         </Link>
-        <div className="flex items-center gap-6 text-sm font-medium text-gray-500">
-          <Link href="/" className="hover:text-[#0F1729] transition-colors">
+        <div className="flex items-center gap-3 sm:gap-5 text-sm font-medium text-gray-500">
+          <LanguageSwitcher current="sl" languages={GUIDE_HREFLANG} ariaLabel="Spremeni jezik" />
+          <Link href="/" className="hidden sm:inline hover:text-[#0F1729] transition-colors">
             Domov
           </Link>
           <Link
