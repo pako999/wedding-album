@@ -28,13 +28,13 @@ function CamMark({ size }: { size: number }) {
       aria-hidden="true"
     >
       {/* Body */}
-      <rect x="1" y="7" width="30" height="21" rx="4" fill="#1E3A8A" />
+      <rect x="1" y="7" width="30" height="21" rx="4" fill="#FFC94D" />
       {/* Lens ring */}
       <circle cx="16" cy="17" r="7" fill="white" opacity="0.2" />
       {/* Lens */}
       <circle cx="16" cy="17" r="5" fill="white" />
       {/* Viewfinder bump */}
-      <rect x="10" y="5" width="6" height="4" rx="1.5" fill="#1E3A8A" />
+      <rect x="10" y="5" width="6" height="4" rx="1.5" fill="#F0B429" />
       {/* Flash */}
       <rect x="24" y="10" width="4" height="3" rx="1" fill="white" opacity="0.55" />
     </svg>
@@ -52,7 +52,7 @@ export function GuestcamLogo({ size = "md", showMark = true, className = "" }: G
       {showMark && <CamMark size={markSize} />}
       <span className={`font-bold leading-none tracking-tight ${text}`} style={{ fontFamily: "var(--font-dm-sans), DM Sans, sans-serif" }}>
         <span style={{ color: "#0F1729" }}>Guest</span>
-        <span style={{ color: "#1E3A8A" }}>cam</span>
+        <span style={{ color: "#C9820A" }}>cam</span>
       </span>
     </span>
   );
