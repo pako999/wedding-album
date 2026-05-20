@@ -95,19 +95,21 @@ function NewAlbumSuccess({ album }: { album: Album }) {
               <img src={qrPreview} alt="QR koda za galerijo" width={208} height={208} className="rounded-lg" />
             </div>
             <div className="grid grid-cols-2 gap-2 mb-4">
+              <Link
+                href={`/dashboard/${album.slug}/print`}
+                target="_blank"
+                rel="noreferrer"
+                className="flex items-center justify-center gap-1.5 py-3 text-sm font-medium text-gray-700 border border-gray-200 rounded-xl hover:border-gray-300 hover:bg-gray-50 transition-colors"
+              >
+                🖨️ Poglej predloge
+              </Link>
               <a
                 href={`/api/albums/${album.slug}/qr?format=png&design=1`}
-                download={`qr-design-${album.slug}.png`}
-                className="py-2.5 text-xs font-medium text-gray-700 border border-gray-200 rounded-xl hover:border-gray-300 hover:bg-gray-50 transition-colors"
-              >
-                ⬇ Prenesi z dizajnom
-              </a>
-              <a
-                href={`/api/albums/${album.slug}/qr?format=png`}
                 download={`qr-${album.slug}.png`}
-                className="py-2.5 text-xs font-medium text-gray-700 border border-gray-200 rounded-xl hover:border-gray-300 hover:bg-gray-50 transition-colors"
+                className="flex items-center justify-center gap-1.5 py-3 text-sm font-medium text-white rounded-xl transition-opacity hover:opacity-90"
+                style={{ background: "#4F46E5" }}
               >
-                ⬇ Samo QR koda
+                ⬇ Prenesi QR kodo
               </a>
             </div>
             <div className="flex items-center gap-2">

@@ -155,7 +155,6 @@ export default function HomePage() {
             ))}
           </div>
           <div className="flex items-center gap-5">
-            <DemoButton variant="nav" />
             <Link
               href="/dashboard"
               className="hidden sm:block text-sm font-medium text-gray-600 hover:text-[#0F1729] transition-colors"
