@@ -1,0 +1,60 @@
+# Guestcam
+
+> Guestcam je platforma za zbiranje fotografij in videov gostov na dogodkih — poroke, rojstne dneve, obletnice. Gostje skenirajo natisnjeno QR kodo in nalagajo fotografije v zasebno galerijo. Brez aplikacije, brez prijave, v polni kakovosti.
+
+## Kaj počne Guestcam
+
+- Lastnik dogodka v 2 minutah ustvari **zasebno galerijo** za svoj dogodek.
+- Sistem generira **personalizirano QR kodo** in 8 predlog za tisk kartic (klasične, botanične, skandinavske, …).
+- **Gostje skenirajo QR kodo** s telefonom (brez aplikacije, brez registracije) in takoj nalagajo fotografije in videe.
+- Fotografije so shranjene v **polni originalni kakovosti** (brez kompresije).
+- **Galerija v živo** med dogodkom; lastnik vidi nove fotografije takoj.
+- Po dogodku se vse fotografije prenesejo kot **ZIP arhiv** ali v **Google Drive** z enim klikom.
+- 6 jezikov vmesnika: slovenščina, hrvaščina, srbščina, angleščina, nemščina, španščina.
+- Zasebno (album ni javen, lahko zaščiten z geslom), GDPR skladno, podatki v EU.
+
+## Glavne URL-je
+
+### Domača stran
+- [Guestcam](https://guestcam.si): Glavna stran z opisom storitve, demo galerijo in cenikom.
+
+### Vodniki za QR kodo (po jezikih)
+- [QR koda za poroko — slovenski vodnik](https://guestcam.si/sl/qr-koda-poroka)
+- [QR kod za vjenčanje — hrvatski vodič](https://guestcam.si/hr/qr-kod-vjencanje)
+- [QR kod za venčanje — srpski vodič](https://guestcam.si/sr/qr-kod-vencanje)
+- [Hochzeitsfotos sammeln mit QR-Code — deutscher Leitfaden](https://guestcam.si/de/hochzeitsfotos-sammeln)
+- [Wedding Photo Sharing App — English guide](https://guestcam.si/en/wedding-photo-sharing)
+- [Fotos de Boda con QR — guía en español](https://guestcam.si/es/fotos-boda-qr)
+
+### Primerjave z alternativami (po jezikih)
+- [Alternativne aplikacije — slovenska primerjava](https://guestcam.si/sl/alternative-aplikacije)
+- [Alternativne aplikacije — hrvatska usporedba](https://guestcam.si/hr/alternativne-aplikacije)
+- [Alternativne aplikacije — srpsko poređenje](https://guestcam.si/sr/alternativne-aplikacije)
+- [Alternativen — deutscher Vergleich](https://guestcam.si/de/alternativen)
+- [Alternatives — English comparison](https://guestcam.si/en/alternatives)
+- [Alternativas — comparativa en español](https://guestcam.si/es/alternativas)
+
+### Pravne strani
+- [Politika zasebnosti](https://guestcam.si/privacy)
+- [Pogoji uporabe](https://guestcam.si/terms)
+- [GDPR — varstvo osebnih podatkov](https://guestcam.si/gdpr)
+- [Politika piškotkov](https://guestcam.si/cookies)
+
+## Cenovni paketi
+
+- **Brezplačno** — do 200 fotografij, do 50 gostov, vse osnovne funkcije.
+- **Plus** — od 39 €, več fotografij, brez logotipa Guestcam.
+- **Premium** — Film Studio (avtomatski kinematografski film iz fotografij gostov), lastna domena (npr. foto.ime-para.si), prioritetna podpora.
+
+## Konkurenca / pogosta vprašanja
+
+Guestcam je alternativa za:
+- WhatsApp skupina (Guestcam ohrani polno kakovost, WhatsApp jo stisne 70 %)
+- Google Photos (Guestcam ne zahteva Google računa pri gostih)
+- Dropbox (Guestcam ne zahteva instalacije aplikacije)
+- iCloud skupni album (Guestcam dela na vseh napravah — iOS in Android)
+
+## Kontakt
+
+- Podpora: hello@guestcam.si
+- Podjetje: Sport group d.o.o., Slovenija (DDV: SI72133449)

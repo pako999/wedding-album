@@ -892,10 +892,10 @@ export default function HomePage() {
         <div className="max-w-6xl mx-auto px-6">
 
           {/* Top grid */}
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-10 pb-12 border-b border-white/10">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10 pb-12 border-b border-white/10">
 
             {/* Brand */}
-            <div className="col-span-2 md:col-span-4 lg:col-span-1">
+            <div className="col-span-2 md:col-span-3 lg:col-span-1">
               <div className="mb-3">
                 <GuestcamLogo size="sm" showMark={true} variant="onDark" />
               </div>
@@ -935,29 +935,14 @@ export default function HomePage() {
               </ul>
             </div>
 
-            {/* Jeziki / Trgi */}
-            <div>
-              <h3 className="text-xs font-bold uppercase tracking-widest text-gray-500 mb-4">Jeziki</h3>
-              <ul className="space-y-2.5 text-sm text-gray-400">
-                <li><Link href="/sl" className="hover:text-white transition-colors">🇸🇮 Slovenija</Link></li>
-                <li><Link href="/hr" className="hover:text-white transition-colors">🇭🇷 Hrvatska</Link></li>
-                <li><Link href="/sr" className="hover:text-white transition-colors">🇷🇸 Srbija</Link></li>
-                <li><Link href="/de" className="hover:text-white transition-colors">🇩🇪 Deutschland</Link></li>
-                <li><Link href="/es" className="hover:text-white transition-colors">🇪🇸 España</Link></li>
-                <li><Link href="/en" className="hover:text-white transition-colors">🇬🇧 English</Link></li>
-              </ul>
-            </div>
-
-            {/* Vodniki & SEO */}
+            {/* Vodniki — homepage is in Slovenian, so the guides shown here
+                are the Slovenian ones. Localised guide pages have their own
+                footers that swap these for the matching language. */}
             <div>
               <h3 className="text-xs font-bold uppercase tracking-widest text-gray-500 mb-4">Vodniki</h3>
               <ul className="space-y-2.5 text-sm text-gray-400">
                 <li><Link href="/sl/qr-koda-poroka" className="hover:text-white transition-colors">QR koda za poroko</Link></li>
-                <li><Link href="/hr/qr-kod-vjencanje" className="hover:text-white transition-colors">QR kod za vjenčanje</Link></li>
-                <li><Link href="/en/wedding-photo-sharing" className="hover:text-white transition-colors">Wedding photo sharing</Link></li>
-                <li><Link href="/de/hochzeitsfotos-sammeln" className="hover:text-white transition-colors">Hochzeitsfotos sammeln</Link></li>
-                <li><Link href="/es/fotos-boda-qr" className="hover:text-white transition-colors">Fotos boda QR</Link></li>
-                <li><Link href="/en/alternatives" className="hover:text-white transition-colors">App alternatives</Link></li>
+                <li><Link href="/sl/alternative-aplikacije" className="hover:text-white transition-colors">Alternativne aplikacije</Link></li>
               </ul>
             </div>
 
