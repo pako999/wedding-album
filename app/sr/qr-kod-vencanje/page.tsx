@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import { LanguageSwitcher, GUIDE_HREFLANG } from "@/components/LanguageSwitcher";
 
 export const metadata: Metadata = {
   title: "QR kod za venčanje — Potpuni vodič 2025 | Guestcam",
@@ -49,8 +50,9 @@ function SiteHeader() {
           <span className="font-serif italic text-xl font-bold text-[#0F1729]">Guestcam</span>
           <span className="font-black text-2xl leading-none text-[#C9820A]">.</span>
         </Link>
-        <div className="flex items-center gap-6 text-sm font-medium text-gray-500">
-          <Link href="/" className="hover:text-[#0F1729] transition-colors">Početna</Link>
+        <div className="flex items-center gap-3 sm:gap-5 text-sm font-medium text-gray-500">
+          <LanguageSwitcher current="sr" languages={GUIDE_HREFLANG} ariaLabel="Promeni jezik" />
+          <Link href="/" className="hidden sm:inline hover:text-[#0F1729] transition-colors">Početna</Link>
           <Link
             href="/dashboard/new"
             className="px-4 py-2 rounded-full text-sm font-bold bg-[#FFC94D] text-[#0F1729] hover:brightness-95 transition-all"
