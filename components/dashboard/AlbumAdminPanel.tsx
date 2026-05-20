@@ -29,11 +29,11 @@ interface Props {
 function NewAlbumSuccess({ album }: { album: Album }) {
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://guestcam.si";
   const albumUrl = `${appUrl}/${album.slug}`;
-  const router = useRouter();
+  const dashboardUrl = `/dashboard/${album.slug}`;
 
   return (
-    <div className="min-h-screen flex items-center justify-center" style={{ background: "#f5f5f7" }}>
-      <div className="bg-white rounded-2xl shadow-lg p-10 max-w-md w-full mx-4 text-center">
+    <div className="min-h-screen flex items-center justify-center p-4" style={{ background: "#f5f5f7" }}>
+      <div className="bg-white rounded-2xl shadow-lg p-8 sm:p-10 max-w-md w-full text-center">
         {/* Green checkmark */}
         <div className="flex items-center justify-center w-20 h-20 rounded-full bg-green-100 mx-auto mb-6">
           <svg className="w-10 h-10 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
@@ -41,19 +41,23 @@ function NewAlbumSuccess({ album }: { album: Album }) {
           </svg>
         </div>
 
-        {/* Title */}
-        <h1 className="font-sans text-[28px] font-bold text-gray-900 mb-6 leading-snug">
+        {/* Title + lead-in */}
+        <h1 className="font-sans text-[26px] sm:text-[28px] font-bold text-gray-900 mb-3 leading-snug">
           Vaša galerija je ustvarjena! 🎉
         </h1>
+        <p className="text-sm text-gray-500 leading-relaxed mb-6">
+          Naslednji korak: odprite nadzorno ploščo, da nastavite QR kodo,
+          izberete predlogo za tisk in spremljate fotografije svojih gostov.
+        </p>
 
-        {/* Info box */}
+        {/* What you can do next */}
         <div className="bg-gray-50 rounded-xl p-5 mb-6 text-left">
-          <p className="text-sm font-semibold text-gray-600 mb-3">Tukaj lahko:</p>
+          <p className="text-sm font-semibold text-gray-700 mb-3">V nadzorni plošči lahko:</p>
           <ul className="space-y-2">
             {[
-              "Preizkusite galerijo",
-              "Naložite do 20 slik brezplačno",
-              "Vidite, kako bo Guestcam izgledal na vašem dnevu 😊",
+              "Prenesete in natisnete personalizirano QR kartico",
+              "Uredite ime, datum in temo galerije",
+              "Spremljate fotografije gostov v živo",
             ].map((item) => (
               <li key={item} className="flex items-start gap-2.5 text-sm text-gray-700">
                 <span className="mt-0.5 flex-shrink-0 w-5 h-5 flex items-center justify-center rounded bg-green-100">
@@ -67,24 +71,35 @@ function NewAlbumSuccess({ album }: { album: Album }) {
           </ul>
         </div>
 
-        {/* Primary button */}
-        <a
-          href={albumUrl}
-          target="_blank"
-          rel="noreferrer"
-          className="block w-full py-3.5 rounded-xl text-white font-bold text-base mb-3 transition-opacity hover:opacity-90"
+        {/* Primary CTA — go to the admin dashboard */}
+        <Link
+          href={dashboardUrl}
+          className="flex items-center justify-center gap-2 w-full py-3.5 rounded-xl text-white font-bold text-base mb-3 transition-opacity hover:opacity-90"
           style={{ background: "#4F46E5" }}
         >
-          Odpri mojo galerijo →
-        </a>
+          Odpri nadzorno ploščo
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+          </svg>
+        </Link>
 
-        {/* Secondary link */}
-        <button
-          onClick={() => router.push(`/dashboard/${album.slug}/print`)}
-          className="text-sm text-gray-400 hover:text-gray-600 transition-colors"
-        >
-          Natisni QR predloge →
-        </button>
+        {/* Secondary actions */}
+        <div className="grid grid-cols-2 gap-2">
+          <Link
+            href={`/dashboard/${album.slug}/print`}
+            className="py-2.5 rounded-xl border border-gray-200 text-sm font-medium text-gray-700 hover:border-gray-300 hover:bg-gray-50 transition-colors"
+          >
+            🖨️ QR kartice
+          </Link>
+          <a
+            href={albumUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="py-2.5 rounded-xl border border-gray-200 text-sm font-medium text-gray-700 hover:border-gray-300 hover:bg-gray-50 transition-colors"
+          >
+            🔗 Poglej kot gost
+          </a>
+        </div>
       </div>
     </div>
   );
