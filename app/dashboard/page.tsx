@@ -41,6 +41,13 @@ export default async function DashboardPage() {
     dbError = true;
   }
 
+  // First-time owners (no albums yet) go straight into the create wizard so
+  // the post-signup flow is one seamless step into onboarding instead of an
+  // empty list with a CTA they have to click.
+  if (!dbError && userAlbums.length === 0) {
+    redirect("/dashboard/new");
+  }
+
   return (
     <div className="min-h-screen" style={{ background: "#F4F6FB" }}>
       <DashboardNav />

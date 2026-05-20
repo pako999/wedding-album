@@ -30,76 +30,144 @@ function NewAlbumSuccess({ album }: { album: Album }) {
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://guestcam.si";
   const albumUrl = `${appUrl}/${album.slug}`;
   const dashboardUrl = `/dashboard/${album.slug}`;
+  const qrPreview =
+    `https://api.qrserver.com/v1/create-qr-code/?size=320x320&qzone=2&format=png` +
+    `&bgcolor=ffffff&color=0F1729&data=${encodeURIComponent(albumUrl)}`;
+
+  // 3-step onboarding wizard: success → QR code → print templates → dashboard.
+  const [step, setStep] = useState<1 | 2 | 3>(1);
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4" style={{ background: "#f5f5f7" }}>
-      <div className="bg-white rounded-2xl shadow-lg p-8 sm:p-10 max-w-md w-full text-center">
-        {/* Green checkmark */}
-        <div className="flex items-center justify-center w-20 h-20 rounded-full bg-green-100 mx-auto mb-6">
-          <svg className="w-10 h-10 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-          </svg>
+      <div className="bg-white rounded-2xl shadow-lg p-6 sm:p-10 max-w-md w-full">
+        {/* Stepper */}
+        <div className="flex items-center gap-2 mb-6">
+          {[1, 2, 3].map((n) => (
+            <div
+              key={n}
+              className="flex-1 h-1.5 rounded-full transition-colors"
+              style={{ background: n <= step ? "#4F46E5" : "#E5E7EB" }}
+            />
+          ))}
         </div>
-
-        {/* Title + lead-in */}
-        <h1 className="font-sans text-[26px] sm:text-[28px] font-bold text-gray-900 mb-3 leading-snug">
-          Vaša galerija je ustvarjena! 🎉
-        </h1>
-        <p className="text-sm text-gray-500 leading-relaxed mb-6">
-          Naslednji korak: odprite nadzorno ploščo, da nastavite QR kodo,
-          izberete predlogo za tisk in spremljate fotografije svojih gostov.
+        <p className="text-center text-[11px] font-semibold uppercase tracking-widest text-gray-400 mb-5">
+          Korak {step} od 3
         </p>
 
-        {/* What you can do next */}
-        <div className="bg-gray-50 rounded-xl p-5 mb-6 text-left">
-          <p className="text-sm font-semibold text-gray-700 mb-3">V nadzorni plošči lahko:</p>
-          <ul className="space-y-2">
-            {[
-              "Prenesete in natisnete personalizirano QR kartico",
-              "Uredite ime, datum in temo galerije",
-              "Spremljate fotografije gostov v živo",
-            ].map((item) => (
-              <li key={item} className="flex items-start gap-2.5 text-sm text-gray-700">
-                <span className="mt-0.5 flex-shrink-0 w-5 h-5 flex items-center justify-center rounded bg-green-100">
-                  <svg className="w-3 h-3 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={3}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                  </svg>
-                </span>
-                {item}
-              </li>
-            ))}
-          </ul>
-        </div>
+        {/* ── Step 1 — Album created ─────────────────────────────────── */}
+        {step === 1 && (
+          <div className="text-center">
+            <div className="flex items-center justify-center w-20 h-20 rounded-full bg-green-100 mx-auto mb-5">
+              <svg className="w-10 h-10 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+            <h1 className="text-[26px] sm:text-[28px] font-bold text-gray-900 mb-2 leading-snug">
+              Galerija je ustvarjena! 🎉
+            </h1>
+            <p className="text-sm text-gray-500 leading-relaxed mb-6">
+              <strong className="text-gray-800">{album.coupleName}</strong> — vse je pripravljeno.
+              V naslednjih dveh korakih si oglejte svojo QR kodo in izberite predlogo za tisk.
+            </p>
+            <button
+              onClick={() => setStep(2)}
+              className="flex items-center justify-center gap-2 w-full py-3.5 rounded-xl text-white font-bold text-base transition-opacity hover:opacity-90"
+              style={{ background: "#4F46E5" }}
+            >
+              Naprej
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+              </svg>
+            </button>
+          </div>
+        )}
 
-        {/* Primary CTA — go to the admin dashboard */}
-        <Link
-          href={dashboardUrl}
-          className="flex items-center justify-center gap-2 w-full py-3.5 rounded-xl text-white font-bold text-base mb-3 transition-opacity hover:opacity-90"
-          style={{ background: "#4F46E5" }}
-        >
-          Odpri nadzorno ploščo
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-          </svg>
-        </Link>
+        {/* ── Step 2 — Your QR code ──────────────────────────────────── */}
+        {step === 2 && (
+          <div className="text-center">
+            <h2 className="text-xl font-bold text-gray-900 mb-2">Vaša QR koda</h2>
+            <p className="text-sm text-gray-500 leading-relaxed mb-5">
+              Gostje skenirajo to QR kodo s telefonom — brez aplikacije, brez prijave — in začnejo deliti fotografije.
+            </p>
+            <div className="inline-flex items-center justify-center p-4 rounded-2xl border-2 mx-auto mb-5"
+              style={{ borderColor: "rgba(79,70,229,0.25)" }}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={qrPreview} alt="QR koda za galerijo" width={208} height={208} className="rounded-lg" />
+            </div>
+            <div className="grid grid-cols-2 gap-2 mb-4">
+              <a
+                href={`/api/albums/${album.slug}/qr?format=png&design=1`}
+                download={`qr-design-${album.slug}.png`}
+                className="py-2.5 text-xs font-medium text-gray-700 border border-gray-200 rounded-xl hover:border-gray-300 hover:bg-gray-50 transition-colors"
+              >
+                ⬇ Prenesi z dizajnom
+              </a>
+              <a
+                href={`/api/albums/${album.slug}/qr?format=png`}
+                download={`qr-${album.slug}.png`}
+                className="py-2.5 text-xs font-medium text-gray-700 border border-gray-200 rounded-xl hover:border-gray-300 hover:bg-gray-50 transition-colors"
+              >
+                ⬇ Samo QR koda
+              </a>
+            </div>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setStep(1)}
+                className="px-4 py-3 rounded-xl border border-gray-200 text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors"
+              >
+                ← Nazaj
+              </button>
+              <button
+                onClick={() => setStep(3)}
+                className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-white font-bold text-sm transition-opacity hover:opacity-90"
+                style={{ background: "#4F46E5" }}
+              >
+                Naprej
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        )}
 
-        {/* Secondary actions */}
-        <div className="grid grid-cols-2 gap-2">
-          <Link
-            href={`/dashboard/${album.slug}/print`}
-            className="py-2.5 rounded-xl border border-gray-200 text-sm font-medium text-gray-700 hover:border-gray-300 hover:bg-gray-50 transition-colors"
-          >
-            🖨️ QR kartice
-          </Link>
-          <a
-            href={albumUrl}
-            target="_blank"
-            rel="noreferrer"
-            className="py-2.5 rounded-xl border border-gray-200 text-sm font-medium text-gray-700 hover:border-gray-300 hover:bg-gray-50 transition-colors"
-          >
-            🔗 Poglej kot gost
-          </a>
-        </div>
+        {/* ── Step 3 — Print template ────────────────────────────────── */}
+        {step === 3 && (
+          <div className="text-center">
+            <div className="flex items-center justify-center w-16 h-16 rounded-2xl bg-indigo-50 mx-auto mb-4">
+              <svg className="w-8 h-8 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.8}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6.72 13.829c-.24.03-.48.062-.72.096m.72-.096a42.415 42.415 0 0110.56 0m-10.56 0L6.34 18m10.94-4.171c.24.03.48.062.72.096m-.72-.096L17.66 18m0 0l.229 2.523a1.125 1.125 0 01-1.12 1.227H7.231c-.662 0-1.18-.568-1.12-1.227L6.34 18m11.318 0h1.091A2.25 2.25 0 0021 15.75V9.456c0-1.081-.768-2.015-1.837-2.175a48.055 48.055 0 00-1.913-.247M6.34 18H5.25A2.25 2.25 0 013 15.75V9.456c0-1.081.768-2.015 1.837-2.175a48.041 48.041 0 011.913-.247m10.5 0a48.536 48.536 0 00-10.5 0m10.5 0V3.375c0-.621-.504-1.125-1.125-1.125h-8.25c-.621 0-1.125.504-1.125 1.125v3.659M18 10.5h.008v.008H18V10.5zm-3 0h.008v.008H15V10.5z" />
+              </svg>
+            </div>
+            <h2 className="text-xl font-bold text-gray-900 mb-2">Izberite predlogo za tisk</h2>
+            <p className="text-sm text-gray-500 leading-relaxed mb-5">
+              Personalizirana kartica z imenom para, datumom in vašo QR kodo.
+              Natisnite in postavite na mize ali ob vhod — gostje takoj vedo, kaj storiti.
+            </p>
+            <Link
+              href={`/dashboard/${album.slug}/print`}
+              className="flex items-center justify-center gap-2 w-full py-3.5 rounded-xl text-white font-bold text-base mb-3 transition-opacity hover:opacity-90"
+              style={{ background: "#4F46E5" }}
+            >
+              🖨️ Odpri predloge za tisk
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+              </svg>
+            </Link>
+            <Link
+              href={dashboardUrl}
+              className="block text-sm text-gray-500 hover:text-gray-700 transition-colors mb-4"
+            >
+              Preskoči — to lahko storim kasneje v nadzorni plošči
+            </Link>
+            <button
+              onClick={() => setStep(2)}
+              className="text-sm font-medium text-gray-600 hover:text-gray-800 transition-colors"
+            >
+              ← Nazaj na QR kodo
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
