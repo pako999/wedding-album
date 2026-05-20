@@ -21,7 +21,7 @@ export default function OpengraphImage() {
           fontFamily: "sans-serif",
         }}
       >
-        <div style={{ display: "flex", fontSize: 30, letterSpacing: 6, color: "#7E94CF", fontWeight: 700 }}>
+        <div style={{ display: "flex", fontSize: 30, letterSpacing: 6, color: "#FFC94D", fontWeight: 700 }}>
           GUESTCAM
         </div>
         <div
@@ -37,7 +37,7 @@ export default function OpengraphImage() {
         >
           Zberite fotografije gostov z eno QR kodo
         </div>
-        <div style={{ display: "flex", fontSize: 31, color: "#AEB9CE", marginTop: 30 }}>
+        <div style={{ display: "flex", fontSize: 31, color: "#FFF3CC", marginTop: 30 }}>
           Brez aplikacije · Polna kakovost · Zasebna galerija
         </div>
       </div>

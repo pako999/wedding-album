@@ -29,11 +29,11 @@ interface Props {
 function NewAlbumSuccess({ album }: { album: Album }) {
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://guestcam.si";
   const albumUrl = `${appUrl}/${album.slug}`;
-  const router = useRouter();
+  const dashboardUrl = `/dashboard/${album.slug}`;
 
   return (
-    <div className="min-h-screen flex items-center justify-center" style={{ background: "#f5f5f7" }}>
-      <div className="bg-white rounded-2xl shadow-lg p-10 max-w-md w-full mx-4 text-center">
+    <div className="min-h-screen flex items-center justify-center p-4" style={{ background: "#f5f5f7" }}>
+      <div className="bg-white rounded-2xl shadow-lg p-8 sm:p-10 max-w-md w-full text-center">
         {/* Green checkmark */}
         <div className="flex items-center justify-center w-20 h-20 rounded-full bg-green-100 mx-auto mb-6">
           <svg className="w-10 h-10 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
@@ -41,19 +41,23 @@ function NewAlbumSuccess({ album }: { album: Album }) {
           </svg>
         </div>
 
-        {/* Title */}
-        <h1 className="font-sans text-[28px] font-bold text-gray-900 mb-6 leading-snug">
+        {/* Title + lead-in */}
+        <h1 className="font-sans text-[26px] sm:text-[28px] font-bold text-gray-900 mb-3 leading-snug">
           Vaša galerija je ustvarjena! 🎉
         </h1>
+        <p className="text-sm text-gray-500 leading-relaxed mb-6">
+          Naslednji korak: odprite nadzorno ploščo, da nastavite QR kodo,
+          izberete predlogo za tisk in spremljate fotografije svojih gostov.
+        </p>
 
-        {/* Info box */}
+        {/* What you can do next */}
         <div className="bg-gray-50 rounded-xl p-5 mb-6 text-left">
-          <p className="text-sm font-semibold text-gray-600 mb-3">Tukaj lahko:</p>
+          <p className="text-sm font-semibold text-gray-700 mb-3">V nadzorni plošči lahko:</p>
           <ul className="space-y-2">
             {[
-              "Preizkusite galerijo",
-              "Naložite do 20 slik brezplačno",
-              "Vidite, kako bo Guestcam izgledal na vašem dnevu 😊",
+              "Prenesete in natisnete personalizirano QR kartico",
+              "Uredite ime, datum in temo galerije",
+              "Spremljate fotografije gostov v živo",
             ].map((item) => (
               <li key={item} className="flex items-start gap-2.5 text-sm text-gray-700">
                 <span className="mt-0.5 flex-shrink-0 w-5 h-5 flex items-center justify-center rounded bg-green-100">
@@ -67,24 +71,35 @@ function NewAlbumSuccess({ album }: { album: Album }) {
           </ul>
         </div>
 
-        {/* Primary button */}
-        <a
-          href={albumUrl}
-          target="_blank"
-          rel="noreferrer"
-          className="block w-full py-3.5 rounded-xl text-white font-bold text-base mb-3 transition-opacity hover:opacity-90"
+        {/* Primary CTA — go to the admin dashboard */}
+        <Link
+          href={dashboardUrl}
+          className="flex items-center justify-center gap-2 w-full py-3.5 rounded-xl text-white font-bold text-base mb-3 transition-opacity hover:opacity-90"
           style={{ background: "#4F46E5" }}
         >
-          Odpri mojo galerijo →
-        </a>
+          Odpri nadzorno ploščo
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+          </svg>
+        </Link>
 
-        {/* Secondary link */}
-        <button
-          onClick={() => router.push(`/dashboard/${album.slug}/print`)}
-          className="text-sm text-gray-400 hover:text-gray-600 transition-colors"
-        >
-          Natisni QR predloge →
-        </button>
+        {/* Secondary actions */}
+        <div className="grid grid-cols-2 gap-2">
+          <Link
+            href={`/dashboard/${album.slug}/print`}
+            className="py-2.5 rounded-xl border border-gray-200 text-sm font-medium text-gray-700 hover:border-gray-300 hover:bg-gray-50 transition-colors"
+          >
+            🖨️ QR kartice
+          </Link>
+          <a
+            href={albumUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="py-2.5 rounded-xl border border-gray-200 text-sm font-medium text-gray-700 hover:border-gray-300 hover:bg-gray-50 transition-colors"
+          >
+            🔗 Poglej kot gost
+          </a>
+        </div>
       </div>
     </div>
   );
@@ -97,6 +112,8 @@ export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activ
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://guestcam.si";
   const albumUrl = `${appUrl}/${album.slug}`;
   const [driveClicked, setDriveClicked] = useState(false);
+  // Mobile sidebar drawer — hidden by default on small screens.
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const handleGoogleDrive = () => {
     // Start the Google Drive OAuth flow — the callback uploads the album
@@ -125,6 +142,7 @@ export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activ
   }
 
   const navigateTab = (tab: Tab) => {
+    setSidebarOpen(false);
     router.push(`/dashboard/${album.slug}?tab=${tab}`);
   };
 
@@ -200,19 +218,22 @@ export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activ
 
   return (
     <div className="flex min-h-screen" style={{ background: "#f9fafb" }}>
+      {/* Backdrop — covers the page while the mobile drawer is open. */}
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-black/40 lg:hidden"
+          onClick={() => setSidebarOpen(false)}
+          aria-hidden="true"
+        />
+      )}
+
       {/* ── LEFT SIDEBAR ─────────────────────────────────────────────── */}
+      {/* On mobile the sidebar is a fixed drawer toggled by the hamburger;
+         on lg+ it sits in the flex flow as a sticky column. */}
       <aside
-        className="flex flex-col"
-        style={{
-          width: 220,
-          minWidth: 220,
-          background: "#fff",
-          borderRight: "1px solid #e5e7eb",
-          position: "sticky",
-          top: 0,
-          height: "100vh",
-          overflowY: "auto",
-        }}
+        className={`fixed lg:sticky inset-y-0 left-0 top-0 z-50 w-[220px] h-screen flex flex-col bg-white border-r border-gray-200 overflow-y-auto transform transition-transform duration-200 lg:translate-x-0 lg:flex-shrink-0 ${
+          sidebarOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
       >
         {/* Logo */}
         <div className="px-5 py-5">
@@ -292,7 +313,7 @@ export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activ
         {/* Upgrade success banner */}
         {isUpgraded && (
           <div
-            className="flex items-center justify-between px-6 py-3 gap-4"
+            className="flex items-center justify-between px-4 sm:px-6 py-3 gap-4"
             style={{ background: "#F0FDF4" }}
           >
             <p className="text-sm text-green-700 font-medium">
@@ -309,7 +330,7 @@ export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activ
           const atLimit = used >= max;
           return (
             <div
-              className="flex items-center justify-between px-6 py-2.5 gap-4"
+              className="flex items-center justify-between px-4 sm:px-6 py-2.5 gap-4"
               style={{ background: atLimit ? "#FEF2F2" : "#EEF2FF" }}
             >
               <div className="flex items-center gap-3 min-w-0">
@@ -344,19 +365,30 @@ export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activ
         })()}
 
         {/* Page header */}
-        <div className="flex items-start justify-between px-8 pt-7 pb-4 gap-4">
-          <div>
-            <h1 className="text-xl font-bold text-gray-900">
-              {activeTab === "overview"  && "Pregled galerije"}
-              {activeTab === "gallery"   && "Galerija"}
-              {activeTab === "film"      && "🎬 Film Studio"}
-              {activeTab === "qr"        && "QR koda"}
-              {activeTab === "settings"  && "Nastavitve"}
-              {activeTab === "pending"   && "Čakajoče fotografije"}
-            </h1>
-            <p className="text-sm text-gray-400 mt-0.5">Upravljaj svojo galerijo.</p>
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between px-4 sm:px-8 pt-5 sm:pt-7 pb-4">
+          <div className="flex items-start gap-3 min-w-0">
+            <button
+              onClick={() => setSidebarOpen(true)}
+              className="lg:hidden p-2 -ml-1 rounded-lg hover:bg-gray-100 text-gray-600 flex-shrink-0"
+              aria-label="Odpri meni"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+              </svg>
+            </button>
+            <div className="min-w-0">
+              <h1 className="text-xl font-bold text-gray-900 truncate">
+                {activeTab === "overview"  && "Pregled galerije"}
+                {activeTab === "gallery"   && "Galerija"}
+                {activeTab === "film"      && "🎬 Film Studio"}
+                {activeTab === "qr"        && "QR koda"}
+                {activeTab === "settings"  && "Nastavitve"}
+                {activeTab === "pending"   && "Čakajoče fotografije"}
+              </h1>
+              <p className="text-sm text-gray-400 mt-0.5">Upravljaj svojo galerijo.</p>
+            </div>
           </div>
-          <div className="flex items-center gap-2 flex-shrink-0">
+          <div className="flex flex-wrap items-center gap-2">
             <a
               href={albumUrl}
               target="_blank"
@@ -416,7 +448,7 @@ export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activ
           const s = map[driveResult.status] ?? map.error;
           return (
             <div
-              className="mx-8 mb-4 flex items-center gap-3 rounded-xl border px-4 py-3"
+              className="mx-4 sm:mx-8 mb-4 flex items-center gap-3 rounded-xl border px-4 py-3"
               style={{ background: s.bg, borderColor: s.border, color: s.color }}
             >
               <p className="text-sm font-medium">{s.text}</p>
@@ -432,7 +464,7 @@ export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activ
         })()}
 
         {/* ── TAB CONTENT ── */}
-        <div className="flex-1 px-8 pb-8">
+        <div className="flex-1 px-4 sm:px-8 pb-8">
 
           {/* OVERVIEW */}
           {activeTab === "overview" && (
@@ -698,7 +730,7 @@ function GalleryTab({
         </div>
       ) : (
         <>
-          <div className="grid grid-cols-4 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
             {photos.map((photo) => (
               <div
                 key={photo.id}
@@ -897,12 +929,23 @@ function QrTab({
           </a>
         </div>
 
-        <Link
-          href={`/dashboard/${album.slug}/print`}
-          className="text-sm text-indigo-600 hover:underline"
-        >
-          Odpri predloge za tisk →
-        </Link>
+        <div className="w-full pt-2 text-center">
+          <p className="text-xs text-gray-500 mb-3 max-w-xs mx-auto leading-relaxed">
+            Personalizirajte kartico s QR kodo za vaše goste — izberite med 8 predlogami za tisk.
+          </p>
+          <Link
+            href={`/dashboard/${album.slug}/print`}
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700 transition-colors shadow-sm"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6.72 13.829c-.24.03-.48.062-.72.096m.72-.096a42.415 42.415 0 0110.56 0m-10.56 0L6.34 18m10.94-4.171c.24.03.48.062.72.096m-.72-.096L17.66 18m0 0l.229 2.523a1.125 1.125 0 01-1.12 1.227H7.231c-.662 0-1.18-.568-1.12-1.227L6.34 18m11.318 0h1.091A2.25 2.25 0 0021 15.75V9.456c0-1.081-.768-2.015-1.837-2.175a48.055 48.055 0 00-1.913-.247M6.34 18H5.25A2.25 2.25 0 013 15.75V9.456c0-1.081.768-2.015 1.837-2.175a48.041 48.041 0 011.913-.247m10.5 0a48.536 48.536 0 00-10.5 0m10.5 0V3.375c0-.621-.504-1.125-1.125-1.125h-8.25c-.621 0-1.125.504-1.125 1.125v3.659M18 10.5h.008v.008H18V10.5zm-3 0h.008v.008H15V10.5z" />
+            </svg>
+            Odpri predloge za tisk
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+            </svg>
+          </Link>
+        </div>
       </div>
     </div>
   );
