@@ -7,6 +7,12 @@ interface GuestcamLogoProps {
   showMark?: boolean;
   /** Extra className on the wrapper */
   className?: string;
+  /**
+   * Color variant. Default `onLight` renders dark "Guest" + amber "cam"
+   * for use on white/cream backgrounds. `onDark` renders white "Guest" +
+   * yellow "cam" so the wordmark stays readable on dark footers.
+   */
+  variant?: "onLight" | "onDark";
 }
 
 const SIZE_MAP = {
@@ -45,14 +51,23 @@ function CamMark({ size }: { size: number }) {
  * Guestcam brand logo.
  * Use `showMark={false}` for text-only (sidebar / header).
  */
-export function GuestcamLogo({ size = "md", showMark = true, className = "" }: GuestcamLogoProps) {
+export function GuestcamLogo({
+  size = "md",
+  showMark = true,
+  className = "",
+  variant = "onLight",
+}: GuestcamLogoProps) {
   const { text, markSize } = SIZE_MAP[size];
+  const colors =
+    variant === "onDark"
+      ? { primary: "#FFFFFF", accent: "#FFC94D" }
+      : { primary: "#0F1729", accent: "#C9820A" };
   return (
     <span className={`inline-flex items-center gap-2 select-none ${className}`}>
       {showMark && <CamMark size={markSize} />}
       <span className={`font-bold leading-none tracking-tight ${text}`} style={{ fontFamily: "var(--font-dm-sans), DM Sans, sans-serif" }}>
-        <span style={{ color: "#0F1729" }}>Guest</span>
-        <span style={{ color: "#C9820A" }}>cam</span>
+        <span style={{ color: colors.primary }}>Guest</span>
+        <span style={{ color: colors.accent }}>cam</span>
       </span>
     </span>
   );

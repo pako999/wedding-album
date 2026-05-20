@@ -42,8 +42,9 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: "Guestcam" }],
   manifest: "/manifest.json",
-  // Site is still under construction — flip this and app/robots.ts to go live.
-  robots: { index: false, follow: false },
+  // Site is live — individual private routes (albums, dashboard, etc.) override
+  // this with their own noindex where appropriate.
+  robots: { index: true, follow: true },
   openGraph: {
     type: "website",
     siteName: "Guestcam",
