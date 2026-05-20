@@ -702,7 +702,7 @@ export default function HomePage() {
       <section id="pricing" className="py-24 bg-white">
         <div className="max-w-5xl mx-auto px-6">
           <h2 className="text-[2.5rem] font-extrabold text-center text-[#0F1729] mb-4">Preprosti paketi</h2>
-          <p className="text-center text-gray-400 mb-14">Izberite paket, ki ustreza vaši poroki.</p>
+          <p className="text-center text-gray-400 mb-14">Izberite paket, ki ustreza vašemu dogodku.</p>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 items-start">
 
@@ -847,7 +847,7 @@ export default function HomePage() {
               { q: "Ali so fotografije zasebne?",                   a: "Da. Album je dostopen samo z vašo QR kodo ali povezavo. Po želji ga zaščitite z geslom za dodatno varnost." },
               { q: "V kakšni kakovosti se shranjujejo fotografije?", a: "V polni originalni ločljivosti, brez kakršnega koli stiskanja ali zmanjšanja kakovosti." },
               { q: "Ali podpirate videe?",                          a: "Pro in Premium paket podpirata nalaganje videov do 500 MB na posnetek." },
-              { q: "Kaj se zgodi po poroki?",                       a: "Album ostane aktiven toliko časa, kolikor traja vaš paket. Vse fotografije prenesete kot ZIP arhiv v enem kliku." },
+              { q: "Kaj se zgodi po dogodku?",                      a: "Album ostane aktiven toliko časa, kolikor traja vaš paket. Vse fotografije in videe lahko kadar koli prenesete kot ZIP arhiv ali jih shranite neposredno v Google Drive." },
             ].map((faq) => (
               <details key={faq.q} className="bg-white border border-gray-100 rounded-2xl group">
                 <summary className="flex items-center justify-between px-6 py-4 cursor-pointer font-semibold text-[#0F1729] list-none text-[0.95rem]">
