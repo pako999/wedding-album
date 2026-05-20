@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { auth, currentUser } from "@clerk/nextjs/server";
 import { db } from "@/lib/db";
 import { albums, photos, moments } from "@/lib/db/schema";
 import { eq, and } from "drizzle-orm";
@@ -45,9 +46,28 @@ export default async function AlbumPage({ params, searchParams }: Props) {
     notFound();
   }
 
-  // Password gate (server-side check)
-  const passwordRequired = !!album.password;
-  const passwordCorrect = !album.password || pw === album.password;
+  // Is the signed-in viewer the album owner? Two checks:
+  //   1. Clerk userId matches `ownerClerkId` (normal case).
+  //   2. Email matches `ownerEmail` (cross-Clerk WedFlow integration case).
+  let isOwner = false;
+  try {
+    const session = await auth();
+    if (session.userId) {
+      if (session.userId === album.ownerClerkId) {
+        isOwner = true;
+      } else if (album.ownerEmail) {
+        const user = await currentUser();
+        const email = user?.emailAddresses?.[0]?.emailAddress;
+        if (email && email.toLowerCase() === album.ownerEmail.toLowerCase()) {
+          isOwner = true;
+        }
+      }
+    }
+  } catch { /* viewer is anonymous — that's fine */ }
+
+  // Password gate (server-side check). Owners always bypass.
+  const passwordRequired = !!album.password && !isOwner;
+  const passwordCorrect = isOwner || !album.password || pw === album.password;
 
   // Fetch published photos
   const albumPhotos = passwordCorrect
@@ -75,6 +95,7 @@ export default async function AlbumPage({ params, searchParams }: Props) {
       passwordCorrect={passwordCorrect}
       providedPassword={pw}
       initialLang={lang}
+      isOwner={isOwner}
     />
   );
 }
