@@ -4,6 +4,7 @@ import Image from "next/image";
 import { GuestcamLogo } from "@/components/GuestcamLogo";
 import { DemoButton } from "@/components/DemoButton";
 import { HomeMobileMenu } from "@/components/HomeMobileMenu";
+import { LanguageSwitcher, GUIDE_HREFLANG } from "@/components/LanguageSwitcher";
 
 export const metadata: Metadata = {
   alternates: { canonical: "https://guestcam.si" },
@@ -156,6 +157,7 @@ export default function HomePage() {
             ))}
           </div>
           <div className="flex items-center gap-3 sm:gap-5">
+            <LanguageSwitcher current="sl" languages={GUIDE_HREFLANG} ariaLabel="Spremeni jezik" />
             <Link
               href="/dashboard"
               className="hidden sm:block text-sm font-medium text-gray-600 hover:text-[#0F1729] transition-colors"
