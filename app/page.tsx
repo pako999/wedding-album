@@ -212,14 +212,14 @@ export default function HomePage() {
 
               {/* Headline */}
               <h1 className="font-extrabold leading-[1.15] tracking-tight text-[#0F1729] mb-8" style={{ fontSize: 'clamp(1.9rem, 3.6vw, 3.15rem)' }}>
-                Skenirajte eno QR kodo in zberite vse fotografije ter videe vaših gostov v{' '}
-                <span style={{ color: '#1E3A8A' }}>eni zasebni galeriji</span>.
+                Fotografije, ki jih sicer{' '}
+                <span style={{ color: '#1E3A8A' }}>nikoli ne bi videli</span>.
               </h1>
 
               {/* Subtitle */}
               <p className="text-lg text-gray-500 leading-relaxed mb-8 max-w-[500px]">
-                Gostje enostavno delijo slike in videje polne kakovosti v vaš personaliziran album.
-                Izberite predlogo za tisk, ki ustreza vašemu dogodku.
+                Zberite vse fotografije in videe svojih gostov v eni zasebni galeriji.
+                Gostje samo skenirajo QR kodo in delijo svoje utrinke v nekaj sekundah.
               </p>
 
               {/* Mobile hero collage — desktop shows the full collage on the right;
@@ -304,7 +304,7 @@ export default function HomePage() {
                 </Link>
                 <DemoButton variant="hero" />
               </div>
-              <p className="mt-4 text-sm text-gray-400">Brez kreditne kartice · Pripravljeno v 2 minutah</p>
+              <p className="mt-4 text-sm text-gray-400">Brez kreditne kartice • Pripravljeno v manj kot 2 minutah</p>
             </div>
 
             {/* ── RIGHT: Hero image story — scan → live gallery → printed cards ──
@@ -393,9 +393,9 @@ export default function HomePage() {
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold mb-4 uppercase tracking-widest" style={{ background: 'rgba(30,58,138,0.1)', color: '#1E3A8A' }}>
               Predloge za tisk
             </div>
-            <h2 className="text-[2.5rem] font-extrabold text-[#0F1729] mb-4">Prelepe predloge za vaš dogodek</h2>
+            <h2 className="text-[2.5rem] font-extrabold text-[#0F1729] mb-4">Kartice, ki goste spodbudijo k deljenju fotografij</h2>
             <p className="text-gray-400 max-w-lg mx-auto leading-relaxed">
-              Natisnite kartico s QR kodo in jo postavite na mize. Gostje skenirajo in delijo fotografije takoj.
+              Izberite predlogo, dodajte svojo QR kodo in jo natisnite. Več gostov sodeluje, več nepozabnih trenutkov se zbere v vaši galeriji.
             </p>
           </div>
 
@@ -493,10 +493,10 @@ export default function HomePage() {
 
           {/* Heading */}
           <h2 className="text-center font-extrabold text-white mb-5 leading-tight" style={{ fontSize: 'clamp(2rem, 4vw, 3rem)' }}>
-            Preprosto, brezhibno<br />in brez stresa
+            Enostavno za vas,<br />preprosto za goste
           </h2>
           <p className="text-center max-w-xl mx-auto leading-relaxed mb-16" style={{ color: 'rgba(255,255,255,0.55)', fontSize: '1.05rem' }}>
-            V le nekaj klikih ustvarite zasebno galerijo za vse fotografije in videe z vašega posebnega dne — vsak trenutek shranjen za vedno.
+            V manj kot dveh minutah ustvarite zasebno galerijo, kjer se bodo zbirale vse fotografije in videe vašega dogodka.
           </p>
 
           {/* 3 large cards */}
@@ -525,9 +525,9 @@ export default function HomePage() {
               </div>
               {/* Text below */}
               <div className="p-6 flex-1">
-                <h3 className="text-white font-extrabold text-2xl mb-3 leading-tight">Ustvari galerijo</h3>
+                <h3 className="text-white font-extrabold text-2xl mb-3 leading-tight">Ustvarite galerijo</h3>
                 <p style={{ color: 'rgba(255,255,255,0.55)', lineHeight: 1.65 }} className="text-sm">
-                  V 2 minutah ustvarite personalizirano galerijo, izberite predlogo za tisk in jo natisnite. Postavite kartice na mize ali ob vhod.
+                  Ustvarite svojo galerijo, izberite dizajn QR kartice in jo natisnite. Kartice postavite na mize ali ob vhod.
                 </p>
               </div>
             </div>
@@ -554,9 +554,9 @@ export default function HomePage() {
                 </div>
               </div>
               <div className="p-6 flex-1">
-                <h3 className="text-white font-extrabold text-2xl mb-3 leading-tight">Gosti skenirajo QR</h3>
+                <h3 className="text-white font-extrabold text-2xl mb-3 leading-tight">Gostje delijo fotografije</h3>
                 <p style={{ color: 'rgba(255,255,255,0.55)', lineHeight: 1.65 }} className="text-sm">
-                  Gosti enostavno skenirajo QR kodo s telefona in takoj začnejo nalagati fotografije ter videe v polni kakovosti — brez aplikacije, brez prijave.
+                  Gostje preprosto skenirajo QR kodo in začnejo deliti fotografije ter videe v polni kakovosti. Brez aplikacije in brez prijave.
                 </p>
               </div>
             </div>
@@ -581,9 +581,9 @@ export default function HomePage() {
                 </div>
               </div>
               <div className="p-6 flex-1">
-                <h3 className="text-white font-extrabold text-2xl mb-3 leading-tight">Uživaj v spominih</h3>
+                <h3 className="text-white font-extrabold text-2xl mb-3 leading-tight">Uživajte v spominih</h3>
                 <p style={{ color: 'rgba(255,255,255,0.55)', lineHeight: 1.65 }} className="text-sm">
-                  Sproti gledate, kako gostje nalagajo fotografije v živo. Po poroki prenesite vse z enim klikom — brez izgube kakovosti.
+                  Oglejte si vse fotografije in videe na enem mestu ter jih prenesite v polni kakovosti, kadar koli želite.
                 </p>
               </div>
             </div>
@@ -606,15 +606,15 @@ export default function HomePage() {
       {/* ── Why you need it ─────────────────────────────────────────────────── */}
       <section id="why" className="py-24" style={{ background: '#EAEEF6' }}>
         <div className="max-w-6xl mx-auto px-6">
-          <h2 className="text-[2.5rem] font-extrabold text-center text-[#0F1729] mb-4">Zakaj to potrebuješ?</h2>
+          <h2 className="text-[2.5rem] font-extrabold text-center text-[#0F1729] mb-4">Vsak gost fotografira. Vi pa teh slik nikoli ne vidite.</h2>
           <p className="text-center text-gray-400 text-base mb-14 max-w-md mx-auto">
-            Na vaši poroki fotografira vsak gost — ampak te slike nikoli ne pridejo do vas.
+            Vsak gost ujame drugačne trenutke. Večina teh fotografij pa ostane na njihovih telefonih.
           </p>
           <div className="grid md:grid-cols-3 gap-6">
             {[
-              { icon: "📷", title: "Fotograf ne more biti povsod",   desc: "Gosti ujamejo spontane trenutke, ki jih profesionalni fotograf pogosto zamudi. Ti drobni, nepozabni momenti." },
-              { icon: "📱", title: "Slike ostanejo na telefonih",     desc: "Fotografije ostanejo zaklenjene v klepetih WhatsApp in jih nikoli ne prejmete. Za vedno izgubljene." },
-              { icon: "👁",  title: "Vse iz vseh zornih kotov",       desc: "Dobite celotno zgodbo vašega dne, skozi oči vseh vaših gostov — od strica Franca do sestrične Tine." },
+              { icon: "📷", title: "Fotograf ne more biti povsod",            desc: "Gostje ujamejo spontane trenutke, ki jih profesionalni fotograf pogosto zamudi. Ravno ti neplanirani trenutki pogosto postanejo najlepši spomini." },
+              { icon: "📱", title: "Fotografije ostanejo na telefonih",       desc: "Po dogodku so fotografije razpršene med telefoni, WhatsApp skupinami in družbenimi omrežji. Večine jih organizator nikoli ne prejme." },
+              { icon: "👁",  title: "Doživite dogodek skozi oči svojih gostov", desc: "Oglejte si trenutke, ki ste jih morda zamudili, in sestavite celotno zgodbo dogodka iz vseh zornih kotov." },
             ].map((f) => (
               <div key={f.title} className="bg-white border border-gray-100 rounded-2xl p-7 hover:shadow-md hover:border-[#1E3A8A]/30 transition-all duration-200">
                 <div className="w-12 h-12 border border-gray-100 rounded-2xl flex items-center justify-center text-2xl mb-5 shadow-sm" style={{ background: '#EAEEF6' }}>
@@ -632,15 +632,18 @@ export default function HomePage() {
       <section id="features" className="py-24 bg-white">
         <div className="max-w-6xl mx-auto px-6">
           <h2 className="text-[2.5rem] font-extrabold text-center text-[#0F1729] mb-4">Zakaj izbrati Guestcam?</h2>
-          <p className="text-center text-gray-400 mb-14 max-w-md mx-auto">Vse, kar potrebujete za popoln poročni album.</p>
+          <p className="text-center text-gray-500 mb-14 max-w-lg mx-auto leading-relaxed">
+            Vse fotografije in videi vaših gostov. Na enem mestu.<br />
+            <span className="text-gray-400">Brez aplikacij, brez pošiljanja po WhatsAppu in brez izgubljenih spominov.</span>
+          </p>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {[
-              { Icon: IconPhone,  title: "Brez aplikacije",     desc: "Gosti odprejo album direktno v brskalniku. Nobene namestitve, nobene prijave." },
-              { Icon: IconGlobe,  title: "6 jezikov",            desc: "Slovenščina, hrvaščina, srbščina, angleščina, nemščina, španščina — vmesnik se prilagodi vsakemu gostu." },
-              { Icon: IconLock,   title: "100% zasebnost",       desc: "Album je samo za vas in vaše goste. Brez javnih povezav, brez oglaševanja." },
-              { Icon: IconCamera, title: "Polna kakovost",       desc: "Fotografije so shranjene v originalni ločljivosti. Brez stiskanja, brez izgube kakovosti." },
-              { Icon: IconBolt,   title: "Takojšen dostop",      desc: "Med poroko že vidite nove vsebine. Popolno za deljenje z gosti v realnem času." },
-              { Icon: IconQR,     title: "Lastna domena",        desc: "foto.vase-ime.si — album na vaši domeni, brez omembe Guestcam (Premium)." },
+              { Icon: IconPhone,  title: "Brez aplikacije",            desc: "Gostje preprosto skenirajo QR kodo in začnejo deliti fotografije. Brez prenosa aplikacije, registracije ali prijave." },
+              { Icon: IconGlobe,  title: "Več jezikov",                desc: "Vmesnik se samodejno prikaže v jeziku vaših gostov, zato lahko brez težav sodelujejo tudi mednarodni obiskovalci." },
+              { Icon: IconLock,   title: "Popolna zasebnost",          desc: "Fotografije in videi so vidni samo vam in vašim gostom. Brez javnih galerij in brez neželenega deljenja." },
+              { Icon: IconCamera, title: "Polna kakovost",             desc: "Vse fotografije in videi se shranijo v originalni kakovosti. Brez stiskanja in brez izgube podrobnosti." },
+              { Icon: IconBolt,   title: "V živo med dogodkom",        desc: "Nove fotografije se prikazujejo takoj, ko jih gostje naložijo. Utrinke lahko spremljate že med samim dogodkom." },
+              { Icon: IconQR,     title: "Prilagojeno vašemu dogodku", desc: "Izberite dizajn QR kartice, ki se ujema z vašim dogodkom, in ustvarite izkušnjo, ki bo videti kot del praznovanja." },
             ].map(({ Icon, title, desc }) => (
               <div
                 key={title}
@@ -863,10 +866,10 @@ export default function HomePage() {
       {/* ── Final CTA ───────────────────────────────────────────────────────── */}
       <section className="py-28 bg-white text-center px-6">
         <h2 className="font-extrabold text-[#0F1729] mb-4" style={{ fontSize: 'clamp(2rem, 5vw, 3.2rem)' }}>
-          Poroka, rojstni dan, obletnica —<br />
-          <span style={{ color: '#1E3A8A' }}>zberi vse spomine.</span>
+          Doživite svoj dogodek skozi oči{' '}
+          <span style={{ color: '#1E3A8A' }}>vseh svojih gostov</span>.
         </h2>
-        <p className="text-gray-400 text-lg mb-10 max-w-md mx-auto">Brezplačno, brez kreditne kartice. Galerija pripravljena v 2 minutah.</p>
+        <p className="text-gray-500 text-lg mb-10 max-w-lg mx-auto leading-relaxed">Vse fotografije in videi v polni kakovosti. Brez aplikacije, brez zapletov.</p>
         <Link
           href="/dashboard/new"
           className="inline-flex items-center gap-2.5 px-10 py-5 text-white font-bold text-lg rounded-full transition-all duration-200 shadow-2xl"
@@ -877,7 +880,7 @@ export default function HomePage() {
             <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
           </svg>
         </Link>
-        <p className="mt-5 text-sm text-gray-300">Varno · Zasebno · GDPR skladno</p>
+        <p className="mt-5 text-sm text-gray-400">Brez kreditne kartice • Pripravljeno v manj kot 2 minutah</p>
       </section>
 
       {/* ── Footer ──────────────────────────────────────────────────────────── */}
