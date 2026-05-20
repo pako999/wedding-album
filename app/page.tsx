@@ -3,6 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { GuestcamLogo } from "@/components/GuestcamLogo";
 import { DemoButton } from "@/components/DemoButton";
+import { HomeMobileMenu } from "@/components/HomeMobileMenu";
 
 export const metadata: Metadata = {
   alternates: { canonical: "https://guestcam.si" },
@@ -154,7 +155,7 @@ export default function HomePage() {
               </a>
             ))}
           </div>
-          <div className="flex items-center gap-5">
+          <div className="flex items-center gap-3 sm:gap-5">
             <Link
               href="/dashboard"
               className="hidden sm:block text-sm font-medium text-gray-600 hover:text-[#0F1729] transition-colors"
@@ -163,7 +164,7 @@ export default function HomePage() {
             </Link>
             <Link
               href="/dashboard/new"
-              className="group inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full text-sm font-bold text-white transition-all duration-200 hover:scale-[1.03]"
+              className="group hidden sm:inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full text-sm font-bold text-white transition-all duration-200 hover:scale-[1.03]"
               style={{
                 background: "linear-gradient(135deg, #FFD966 0%, #FFC94D 55%, #F0B429 100%)",
                 boxShadow: "0 6px 18px rgba(255,201,77,0.45)",
@@ -181,6 +182,7 @@ export default function HomePage() {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
               </svg>
             </Link>
+            <HomeMobileMenu />
           </div>
         </nav>
       </header>
