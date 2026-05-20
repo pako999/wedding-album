@@ -10,6 +10,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
   const pages: { path: string; priority: number }[] = [
     { path: "", priority: 1.0 },
+    // Localized homepages (one per language other than Slovenian)
+    { path: "/hr", priority: 0.9 },
+    { path: "/sr", priority: 0.9 },
+    { path: "/de", priority: 0.9 },
+    { path: "/en", priority: 0.9 },
+    { path: "/es", priority: 0.9 },
     // Wedding-guide pages (one per language)
     { path: "/sl/qr-koda-poroka", priority: 0.9 },
     { path: "/hr/qr-kod-vjencanje", priority: 0.8 },

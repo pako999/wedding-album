@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { LanguageSwitcher, ALTERNATIVES_HREFLANG } from "@/components/LanguageSwitcher";
+import { SeoFooter } from "@/components/SeoFooter";
 
 export const metadata: Metadata = {
   title: "Mejores Apps para Compartir Fotos de Boda 2025 | Guestcam",
@@ -568,7 +569,7 @@ export default function AlternativasPage() {
         </div>
       </main>
 
-      <SiteFooter />
+      <SeoFooter lang="es" />
     </div>
   );
 }

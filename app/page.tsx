@@ -4,7 +4,7 @@ import Image from "next/image";
 import { GuestcamLogo } from "@/components/GuestcamLogo";
 import { DemoButton } from "@/components/DemoButton";
 import { HomeMobileMenu } from "@/components/HomeMobileMenu";
-import { LanguageSwitcher, GUIDE_HREFLANG } from "@/components/LanguageSwitcher";
+import { LanguageSwitcher, HOME_HREFLANG } from "@/components/LanguageSwitcher";
 
 export const metadata: Metadata = {
   alternates: { canonical: "https://guestcam.si" },
@@ -157,7 +157,7 @@ export default function HomePage() {
             ))}
           </div>
           <div className="flex items-center gap-3 sm:gap-5">
-            <LanguageSwitcher current="sl" languages={GUIDE_HREFLANG} ariaLabel="Spremeni jezik" />
+            <LanguageSwitcher current="sl" languages={HOME_HREFLANG} ariaLabel="Spremeni jezik" />
             <Link
               href="/dashboard"
               className="hidden sm:block text-sm font-medium text-gray-600 hover:text-[#0F1729] transition-colors"
@@ -935,14 +935,18 @@ export default function HomePage() {
               </ul>
             </div>
 
-            {/* Vodniki — homepage is in Slovenian, so the guides shown here
-                are the Slovenian ones. Localised guide pages have their own
-                footers that swap these for the matching language. */}
+            {/* Vodniki — each guide listed in its native title for cross-language
+                internal linking + the alternatives page in the current language. */}
             <div>
               <h3 className="text-xs font-bold uppercase tracking-widest text-gray-500 mb-4">Vodniki</h3>
               <ul className="space-y-2.5 text-sm text-gray-400">
                 <li><Link href="/sl/qr-koda-poroka" className="hover:text-white transition-colors">QR koda za poroko</Link></li>
-                <li><Link href="/sl/alternative-aplikacije" className="hover:text-white transition-colors">Alternativne aplikacije</Link></li>
+                <li><Link href="/hr/qr-kod-vjencanje" className="hover:text-white transition-colors">QR kod za vjenčanje</Link></li>
+                <li><Link href="/sr/qr-kod-vencanje" className="hover:text-white transition-colors">QR kod za venčanje</Link></li>
+                <li><Link href="/de/hochzeitsfotos-sammeln" className="hover:text-white transition-colors">Hochzeitsfotos sammeln</Link></li>
+                <li><Link href="/en/wedding-photo-sharing" className="hover:text-white transition-colors">Wedding photo sharing</Link></li>
+                <li><Link href="/es/fotos-boda-qr" className="hover:text-white transition-colors">Fotos boda QR</Link></li>
+                <li><Link href="/sl/alternative-aplikacije" className="hover:text-white transition-colors">Primerjava aplikacij</Link></li>
               </ul>
             </div>
 
