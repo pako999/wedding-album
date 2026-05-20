@@ -97,6 +97,8 @@ export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activ
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://guestcam.si";
   const albumUrl = `${appUrl}/${album.slug}`;
   const [driveClicked, setDriveClicked] = useState(false);
+  // Mobile sidebar drawer — hidden by default on small screens.
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const handleGoogleDrive = () => {
     // Start the Google Drive OAuth flow — the callback uploads the album
@@ -125,6 +127,7 @@ export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activ
   }
 
   const navigateTab = (tab: Tab) => {
+    setSidebarOpen(false);
     router.push(`/dashboard/${album.slug}?tab=${tab}`);
   };
 
@@ -200,19 +203,22 @@ export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activ
 
   return (
     <div className="flex min-h-screen" style={{ background: "#f9fafb" }}>
+      {/* Backdrop — covers the page while the mobile drawer is open. */}
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-black/40 lg:hidden"
+          onClick={() => setSidebarOpen(false)}
+          aria-hidden="true"
+        />
+      )}
+
       {/* ── LEFT SIDEBAR ─────────────────────────────────────────────── */}
+      {/* On mobile the sidebar is a fixed drawer toggled by the hamburger;
+         on lg+ it sits in the flex flow as a sticky column. */}
       <aside
-        className="flex flex-col"
-        style={{
-          width: 220,
-          minWidth: 220,
-          background: "#fff",
-          borderRight: "1px solid #e5e7eb",
-          position: "sticky",
-          top: 0,
-          height: "100vh",
-          overflowY: "auto",
-        }}
+        className={`fixed lg:sticky inset-y-0 left-0 top-0 z-50 w-[220px] h-screen flex flex-col bg-white border-r border-gray-200 overflow-y-auto transform transition-transform duration-200 lg:translate-x-0 lg:flex-shrink-0 ${
+          sidebarOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
       >
         {/* Logo */}
         <div className="px-5 py-5">
@@ -292,7 +298,7 @@ export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activ
         {/* Upgrade success banner */}
         {isUpgraded && (
           <div
-            className="flex items-center justify-between px-6 py-3 gap-4"
+            className="flex items-center justify-between px-4 sm:px-6 py-3 gap-4"
             style={{ background: "#F0FDF4" }}
           >
             <p className="text-sm text-green-700 font-medium">
@@ -309,7 +315,7 @@ export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activ
           const atLimit = used >= max;
           return (
             <div
-              className="flex items-center justify-between px-6 py-2.5 gap-4"
+              className="flex items-center justify-between px-4 sm:px-6 py-2.5 gap-4"
               style={{ background: atLimit ? "#FEF2F2" : "#EEF2FF" }}
             >
               <div className="flex items-center gap-3 min-w-0">
@@ -344,19 +350,30 @@ export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activ
         })()}
 
         {/* Page header */}
-        <div className="flex items-start justify-between px-8 pt-7 pb-4 gap-4">
-          <div>
-            <h1 className="text-xl font-bold text-gray-900">
-              {activeTab === "overview"  && "Pregled galerije"}
-              {activeTab === "gallery"   && "Galerija"}
-              {activeTab === "film"      && "🎬 Film Studio"}
-              {activeTab === "qr"        && "QR koda"}
-              {activeTab === "settings"  && "Nastavitve"}
-              {activeTab === "pending"   && "Čakajoče fotografije"}
-            </h1>
-            <p className="text-sm text-gray-400 mt-0.5">Upravljaj svojo galerijo.</p>
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between px-4 sm:px-8 pt-5 sm:pt-7 pb-4">
+          <div className="flex items-start gap-3 min-w-0">
+            <button
+              onClick={() => setSidebarOpen(true)}
+              className="lg:hidden p-2 -ml-1 rounded-lg hover:bg-gray-100 text-gray-600 flex-shrink-0"
+              aria-label="Odpri meni"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+              </svg>
+            </button>
+            <div className="min-w-0">
+              <h1 className="text-xl font-bold text-gray-900 truncate">
+                {activeTab === "overview"  && "Pregled galerije"}
+                {activeTab === "gallery"   && "Galerija"}
+                {activeTab === "film"      && "🎬 Film Studio"}
+                {activeTab === "qr"        && "QR koda"}
+                {activeTab === "settings"  && "Nastavitve"}
+                {activeTab === "pending"   && "Čakajoče fotografije"}
+              </h1>
+              <p className="text-sm text-gray-400 mt-0.5">Upravljaj svojo galerijo.</p>
+            </div>
           </div>
-          <div className="flex items-center gap-2 flex-shrink-0">
+          <div className="flex flex-wrap items-center gap-2">
             <a
               href={albumUrl}
               target="_blank"
@@ -416,7 +433,7 @@ export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activ
           const s = map[driveResult.status] ?? map.error;
           return (
             <div
-              className="mx-8 mb-4 flex items-center gap-3 rounded-xl border px-4 py-3"
+              className="mx-4 sm:mx-8 mb-4 flex items-center gap-3 rounded-xl border px-4 py-3"
               style={{ background: s.bg, borderColor: s.border, color: s.color }}
             >
               <p className="text-sm font-medium">{s.text}</p>
@@ -432,7 +449,7 @@ export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activ
         })()}
 
         {/* ── TAB CONTENT ── */}
-        <div className="flex-1 px-8 pb-8">
+        <div className="flex-1 px-4 sm:px-8 pb-8">
 
           {/* OVERVIEW */}
           {activeTab === "overview" && (
@@ -698,7 +715,7 @@ function GalleryTab({
         </div>
       ) : (
         <>
-          <div className="grid grid-cols-4 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
             {photos.map((photo) => (
               <div
                 key={photo.id}
