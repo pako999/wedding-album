@@ -1,9 +1,11 @@
 "use server";
 
-import { auth } from "@clerk/nextjs/server";
+import { auth, currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
+import { eq } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { albums } from "@/lib/db/schema";
+import { sendWelcomeEmail } from "@/lib/email/notifications";
 
 function slugify(text: string): string {
   return text
@@ -55,6 +57,30 @@ export async function createAlbum(formData: FormData) {
     moderationEnabled: false,
     expiresAt:         freeExpiresAt,
   });
+
+  // Send a welcome email on the owner's *first* album. Best-effort — if
+  // anything goes wrong (Resend down, no email on file) we still redirect.
+  try {
+    const userAlbums = await db.query.albums.findMany({
+      where: eq(albums.ownerClerkId, userId),
+      limit: 2,
+    });
+    if (userAlbums.length === 1) {
+      const user = await currentUser();
+      const email = user?.emailAddresses?.[0]?.emailAddress;
+      if (email) {
+        await sendWelcomeEmail({
+          to: email,
+          ownerName: user?.firstName ?? undefined,
+          coupleName,
+          weddingDate: eventDate,
+          albumSlug: slug,
+        });
+      }
+    }
+  } catch (err) {
+    console.error("[create-album] welcome email error:", err);
+  }
 
   redirect(`/dashboard/${slug}?new=1`);
 }
