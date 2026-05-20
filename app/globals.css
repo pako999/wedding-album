@@ -3,11 +3,11 @@
 :root {
   --ivory: #F4F6FB;       /* warm ivory */
   --charcoal: #0F1729;
-  --gold: #1E3A8A;        /* champagne gold accent — event-neutral */
-  --gold-light: #E3E9F4;  /* light champagne tint */
-  --rose: #1E3A8A;        /* alias of --gold (legacy name) */
-  --rose-dark: #152C66;   /* deep gold for hovers */
-  --blush: #EAEEF6;       /* ultra-soft champagne for sections */
+  --gold: #FFC94D;        /* golden yellow accent */
+  --gold-light: #FFF3CC;  /* light yellow tint */
+  --rose: #FFC94D;        /* alias of --gold (legacy name) */
+  --rose-dark: #C9820A;   /* deep amber for hovers */
+  --blush: #FFF9EC;       /* ultra-soft warm cream for sections */
 }
 
 @theme inline {
@@ -88,5 +88,5 @@ body {
 
 /* Rose gradient hero accent */
 .hero-rose-glow {
-  background: radial-gradient(ellipse at 60% 50%, rgba(30,58,138,0.12) 0%, transparent 70%);
+  background: radial-gradient(ellipse at 60% 50%, rgba(255,201,77,0.15) 0%, transparent 70%);
 }

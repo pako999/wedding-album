@@ -29,9 +29,9 @@ export function DemoButton({ variant = "hero" }: { variant?: "hero" | "nav" }) {
           type="button"
           onClick={() => setOpen(true)}
           className="inline-flex items-center gap-2.5 px-8 py-5 rounded-full font-bold text-lg border-2 transition-all duration-200 hover:scale-[1.02]"
-          style={{ borderColor: "#1E3A8A", color: "#0F1729" }}
+          style={{ borderColor: "#FFC94D", color: "#0F1729" }}
         >
-          <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor" style={{ color: "#1E3A8A" }}>
+          <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor" style={{ color: "#C9820A" }}>
             <path d="M8 5v14l11-7z" />
           </svg>
           Poglej demo zdaj
@@ -75,7 +75,7 @@ export function DemoButton({ variant = "hero" }: { variant?: "hero" | "nav" }) {
 
             <div
               className="inline-flex items-center justify-center p-4 rounded-2xl border-2"
-              style={{ borderColor: "rgba(30,58,138,0.3)", width: 248, height: 248 }}
+              style={{ borderColor: "rgba(255,201,77,0.4)", width: 248, height: 248 }}
             >
               {qrSrc ? (
                 /* eslint-disable-next-line @next/next/no-img-element */
@@ -95,15 +95,15 @@ export function DemoButton({ variant = "hero" }: { variant?: "hero" | "nav" }) {
               href={demoUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-6 inline-flex items-center justify-center gap-2 w-full py-3.5 rounded-2xl text-white font-bold transition-all hover:brightness-95"
-              style={{ background: "#1E3A8A" }}
+              className="mt-6 inline-flex items-center justify-center gap-2 w-full py-3.5 rounded-2xl text-[#0F1729] font-bold transition-all hover:brightness-95"
+              style={{ background: "#FFC94D" }}
             >
               Odpri demo galerijo
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
               </svg>
             </a>
-            <p className="mt-4 text-sm font-bold uppercase tracking-wide text-[#1E3A8A]">
+            <p className="mt-4 text-sm font-bold uppercase tracking-wide text-[#C9820A]">
               Brez prijave · Brez aplikacije
             </p>
           </div>

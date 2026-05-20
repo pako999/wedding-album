@@ -244,7 +244,7 @@ export default function HomePage() {
                 <div className="absolute rounded-2xl overflow-hidden shadow-xl" style={{ bottom: 0, right: 8, width: "46%", aspectRatio: "1 / 1", transform: "rotate(4deg)", zIndex: 30 }}>
                   <img src="/hero/cards.webp" alt="Natisnjene QR kartice na poročni mizi" className="w-full h-full object-cover" />
                   <div className="absolute top-2.5 left-2.5 bg-white rounded-xl shadow-md px-2.5 py-1.5 flex items-center gap-1.5">
-                    <svg className="w-3 h-3" style={{ color: "#1E3A8A" }} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                    <svg className="w-3 h-3" style={{ color: "#C9820A" }} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3" />
                     </svg>
                     <p className="text-[10px] font-bold text-[#0F1729]">Brez aplikacije</p>
@@ -439,7 +439,7 @@ export default function HomePage() {
                       <div className="flex justify-center mb-2" style={{ transform: 'scale(0.48)', transformOrigin: 'center', height: 33, overflow: 'hidden' }}>
                         <QRPattern />
                       </div>
-                      <p className={`font-serif text-[8px] italic ${t.dark ? 'text-[#f9a8c0]' : 'text-[#1E3A8A]'}`}>Ana & Marko</p>
+                      <p className={`font-serif text-[8px] italic ${t.dark ? 'text-[#f9a8c0]' : 'text-[#C9820A]'}`}>Ana & Marko</p>
                       {t.dark ? null : <div className="w-8 h-px bg-gray-200 mx-auto mt-1.5" />}
                       <p className={`text-[7px] mt-1 ${t.dark ? 'text-white/40' : 'text-gray-300'}`}>14. 06. 2025</p>
                     </div>
@@ -618,7 +618,7 @@ export default function HomePage() {
               { icon: "👁",  title: "Doživite dogodek skozi oči svojih gostov", desc: "Oglejte si trenutke, ki ste jih morda zamudili, in sestavite celotno zgodbo dogodka iz vseh zornih kotov." },
             ].map((f) => (
               <div key={f.title} className="bg-white border border-gray-100 rounded-2xl p-7 hover:shadow-md hover:border-[#FFC94D]/50 transition-all duration-200">
-                <div className="w-12 h-12 border border-gray-100 rounded-2xl flex items-center justify-center text-2xl mb-5 shadow-sm" style={{ background: '#EAEEF6' }}>
+                <div className="w-12 h-12 border border-gray-100 rounded-2xl flex items-center justify-center text-2xl mb-5 shadow-sm" style={{ background: '#FFF3CC' }}>
                   {f.icon}
                 </div>
                 <h3 className="font-bold text-[#0F1729] text-lg mb-2">{f.title}</h3>
