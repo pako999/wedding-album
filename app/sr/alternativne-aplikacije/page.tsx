@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { LanguageSwitcher, ALTERNATIVES_HREFLANG } from "@/components/LanguageSwitcher";
+import { SeoFooter } from "@/components/SeoFooter";
 
 export const metadata: Metadata = {
   title: "Najbolje aplikacije za deljenje fotografija sa venčanja 2025 | Guestcam",
@@ -562,7 +563,7 @@ export default function AlternativneAplikacijePage() {
         </div>
       </main>
 
-      <SiteFooter />
+      <SeoFooter lang="sr" />
     </div>
   );
 }

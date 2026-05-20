@@ -121,6 +121,19 @@ export function LanguageSwitcher({ current, languages, ariaLabel }: Props) {
 }
 
 /**
+ * Per-language homepage URLs. The Slovenian homepage lives at `/`;
+ * every other language has its own minimal landing page at `/<lang>`.
+ */
+export const HOME_HREFLANG: Record<LangCode, string> = {
+  sl: "https://guestcam.si/",
+  hr: "https://guestcam.si/hr",
+  sr: "https://guestcam.si/sr",
+  de: "https://guestcam.si/de",
+  en: "https://guestcam.si/en",
+  es: "https://guestcam.si/es",
+};
+
+/**
  * Canonical hreflang map for the six wedding-guide landing pages.
  * Exported so guide pages and the homepage can share one source of truth.
  */

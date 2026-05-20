@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { LanguageSwitcher, GUIDE_HREFLANG } from "@/components/LanguageSwitcher";
+import { SeoFooter } from "@/components/SeoFooter";
 
 export const metadata: Metadata = {
   title: "Fotos de Boda con QR — Guía Completa 2025 | Guestcam",
@@ -300,7 +301,7 @@ export default function FotosBodaQrPage() {
         </div>
       </main>
 
-      <SiteFooter />
+      <SeoFooter lang="es" />
     </div>
   );
 }

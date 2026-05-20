@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { LanguageSwitcher, GUIDE_HREFLANG } from "@/components/LanguageSwitcher";
+import { SeoFooter } from "@/components/SeoFooter";
 
 export const metadata: Metadata = {
   title: "QR koda za poroko — Popoln vodnik 2025 | Guestcam",
@@ -456,7 +457,7 @@ export default function QrKodaPorokaPage() {
         </div>
       </main>
 
-      <SiteFooter />
+      <SeoFooter lang="sl" />
     </div>
   );
 }

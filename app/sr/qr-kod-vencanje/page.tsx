@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { LanguageSwitcher, GUIDE_HREFLANG } from "@/components/LanguageSwitcher";
+import { SeoFooter } from "@/components/SeoFooter";
 
 export const metadata: Metadata = {
   title: "QR kod za venčanje — Potpuni vodič 2025 | Guestcam",
@@ -356,7 +357,7 @@ export default function QrKodVencanjePage() {
         </div>
       </main>
 
-      <SiteFooter />
+      <SeoFooter lang="sr" />
     </div>
   );
 }

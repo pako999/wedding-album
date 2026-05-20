@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { LanguageSwitcher, GUIDE_HREFLANG } from "@/components/LanguageSwitcher";
+import { SeoFooter } from "@/components/SeoFooter";
 
 export const metadata: Metadata = {
   title: "Wedding Photo Sharing App — Complete Guide 2025 | Guestcam",
@@ -302,7 +303,7 @@ export default function WeddingPhotoSharingPage() {
         </div>
       </main>
 
-      <SiteFooter />
+      <SeoFooter lang="en" />
     </div>
   );
 }

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { LanguageSwitcher, GUIDE_HREFLANG } from "./LanguageSwitcher";
+import { LanguageSwitcher, HOME_HREFLANG } from "./LanguageSwitcher";
 
 const LINKS = [
   { href: "#how",       label: "Kako deluje" },
@@ -69,7 +69,7 @@ export function HomeMobileMenu() {
                 <span className="text-xs font-semibold uppercase tracking-wider text-gray-400">
                   Jezik
                 </span>
-                <LanguageSwitcher current="sl" languages={GUIDE_HREFLANG} ariaLabel="Spremeni jezik" />
+                <LanguageSwitcher current="sl" languages={HOME_HREFLANG} ariaLabel="Spremeni jezik" />
               </div>
               {LINKS.map((l) => (
                 <a

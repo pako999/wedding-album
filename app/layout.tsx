@@ -30,7 +30,7 @@ export const metadata: Metadata = {
     template: "%s | Guestcam",
   },
   description:
-    "Z eno QR kodo zberite vse fotografije in videe svojih gostov v eni zasebni galeriji. Brez aplikacije, v polni kakovosti — za poroke, rojstne dneve in dogodke.",
+    "Z eno QR kodo zberite vse fotografije in videe gostov v eni zasebni galeriji. Brez aplikacije, v polni kakovosti.",
   applicationName: "Guestcam",
   keywords: [
     "QR koda za poroko",
