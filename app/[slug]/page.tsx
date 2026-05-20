@@ -21,7 +21,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!album) return { title: "Album not found" };
   return {
     title: `${album.coupleName} — Guestcam`,
-    description: `Wedding album for ${album.coupleName}, ${album.weddingDate}`,
+    description: `Poročni album za ${album.coupleName}, ${album.weddingDate}`,
     robots: { index: false, follow: false },
     openGraph: {
       title: `${album.coupleName} — Guestcam`,

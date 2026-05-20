@@ -126,13 +126,13 @@ export default function HomePage() {
       />
 
       {/* ── Announcement bar ─────────────────────────────────────────────────── */}
-      <div className="text-white text-center text-xs font-semibold py-2.5 px-4" style={{ background: '#1E3A8A' }}>
+      <div className="text-[#0F1729] text-center text-xs font-semibold py-2.5 px-4" style={{ background: '#FFC94D' }}>
         Ustvarite galerijo danes — <strong>brezplačno za vedno!</strong> 🎉{' '}
         <Link href="/dashboard/new" className="underline font-bold ml-2">Začni zdaj →</Link>
       </div>
 
       {/* ── Navbar ──────────────────────────────────────────────────────────── */}
-      <header className="sticky top-0 z-40 border-b border-[#1E3A8A]/15 bg-white/80 backdrop-blur-md">
+      <header className="sticky top-0 z-40 border-b border-[#FFC94D]/30 bg-white/80 backdrop-blur-md">
         <nav className="max-w-7xl mx-auto px-8 h-16 flex items-center justify-between">
           <Link href="/" className="flex items-center transition-transform duration-200 hover:scale-[1.03]">
             <GuestcamLogo size="sm" showMark={true} />
@@ -150,7 +150,7 @@ export default function HomePage() {
                 className="relative group py-1 transition-colors hover:text-[#0F1729]"
               >
                 {item.label}
-                <span className="absolute -bottom-0.5 left-0 h-[2px] w-0 rounded-full bg-[#1E3A8A] transition-all duration-300 ease-out group-hover:w-full" />
+                <span className="absolute -bottom-0.5 left-0 h-[2px] w-0 rounded-full bg-[#FFC94D] transition-all duration-300 ease-out group-hover:w-full" />
               </a>
             ))}
           </div>
@@ -166,8 +166,9 @@ export default function HomePage() {
               href="/dashboard/new"
               className="group inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full text-sm font-bold text-white transition-all duration-200 hover:scale-[1.03]"
               style={{
-                background: "linear-gradient(135deg, #3551A8 0%, #1E3A8A 55%, #1E3A8A 100%)",
-                boxShadow: "0 6px 18px rgba(30,58,138,0.35)",
+                background: "linear-gradient(135deg, #FFD966 0%, #FFC94D 55%, #F0B429 100%)",
+                boxShadow: "0 6px 18px rgba(255,201,77,0.45)",
+                color: "#0F1729",
               }}
             >
               Začni brezplačno
@@ -196,8 +197,8 @@ export default function HomePage() {
               {/* Avatar stack + social proof */}
               <div className="flex items-center gap-3 mb-7">
                 <div className="flex -space-x-2.5">
-                  {['#1E3A8A','#3B5BA8','#93B0E0','#6E8FCF','#2A3C73'].map((bg, i) => (
-                    <div key={i} className="w-9 h-9 rounded-full border-[2.5px] flex items-center justify-center text-[11px] font-bold text-white shrink-0" style={{ background: bg, borderColor: '#F2F4F8' }}>
+                  {['#FFC94D','#F0B429','#E8A800','#FFD966','#C9820A'].map((bg, i) => (
+                    <div key={i} className="w-9 h-9 rounded-full border-[2.5px] flex items-center justify-center text-[11px] font-bold text-[#0F1729] shrink-0" style={{ background: bg, borderColor: '#F2F4F8' }}>
                       {['T','A','S','D','M'][i]}
                     </div>
                   ))}
@@ -213,7 +214,7 @@ export default function HomePage() {
               {/* Headline */}
               <h1 className="font-extrabold leading-[1.15] tracking-tight text-[#0F1729] mb-8" style={{ fontSize: 'clamp(1.9rem, 3.6vw, 3.15rem)' }}>
                 Fotografije, ki jih sicer{' '}
-                <span style={{ color: '#1E3A8A' }}>nikoli ne bi videli</span>.
+                <span style={{ color: '#C9820A' }}>nikoli ne bi videli</span>.
               </h1>
 
               {/* Subtitle */}
@@ -243,7 +244,7 @@ export default function HomePage() {
                 <div className="absolute rounded-2xl overflow-hidden shadow-xl" style={{ bottom: 0, right: 8, width: "46%", aspectRatio: "1 / 1", transform: "rotate(4deg)", zIndex: 30 }}>
                   <img src="/hero/cards.webp" alt="Natisnjene QR kartice na poročni mizi" className="w-full h-full object-cover" />
                   <div className="absolute top-2.5 left-2.5 bg-white rounded-xl shadow-md px-2.5 py-1.5 flex items-center gap-1.5">
-                    <svg className="w-3 h-3" style={{ color: "#1E3A8A" }} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                    <svg className="w-3 h-3" style={{ color: "#C9820A" }} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3" />
                     </svg>
                     <p className="text-[10px] font-bold text-[#0F1729]">Brez aplikacije</p>
@@ -282,7 +283,7 @@ export default function HomePage() {
                   },
                 ].map(({ label, icon }) => (
                   <div key={label} className="flex flex-col items-center gap-2.5">
-                    <div className="w-14 h-14 rounded-2xl flex items-center justify-center" style={{ background: 'rgba(30,58,138,0.12)', color: '#1E3A8A' }}>
+                    <div className="w-14 h-14 rounded-2xl flex items-center justify-center" style={{ background: 'rgba(255,201,77,0.18)', color: '#C9820A' }}>
                       {icon}
                     </div>
                     <span className="text-xs font-semibold text-gray-500 text-center leading-tight">{label}</span>
@@ -294,8 +295,8 @@ export default function HomePage() {
               <div className="flex flex-wrap items-center gap-4">
                 <Link
                   href="/dashboard/new"
-                  className="inline-flex items-center gap-3 px-10 py-5 rounded-full text-white font-bold text-lg transition-all duration-200 hover:scale-[1.02]"
-                  style={{ background: '#1E3A8A', boxShadow: '0 14px 40px rgba(30,58,138,0.42)' }}
+                  className="inline-flex items-center gap-3 px-10 py-5 rounded-full text-[#0F1729] font-bold text-lg transition-all duration-200 hover:scale-[1.02]"
+                  style={{ background: '#FFC94D', boxShadow: '0 14px 40px rgba(255,201,77,0.45)' }}
                 >
                   Začni brezplačno zdaj
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
@@ -331,8 +332,8 @@ export default function HomePage() {
 
               {/* +183 fotografij — labels the live gallery */}
               <div className="absolute bg-white rounded-2xl shadow-xl px-4 py-3 flex items-center gap-3" style={{ top: 264, right: 150, zIndex: 40 }}>
-                <div className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0" style={{ background: 'rgba(30,58,138,0.12)' }}>
-                  <svg className="w-4 h-4" style={{ color: '#1E3A8A' }} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                <div className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0" style={{ background: 'rgba(255,201,77,0.18)' }}>
+                  <svg className="w-4 h-4" style={{ color: '#C9820A' }} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5z" />
                   </svg>
                 </div>
@@ -347,7 +348,7 @@ export default function HomePage() {
                 <img src="/hero/cards.webp" alt="Natisnjene QR kartice na poročni mizi" className="w-full h-full object-cover" />
                 {/* Brez aplikacije — labels the printed cards */}
                 <div className="absolute top-4 left-4 bg-white rounded-2xl shadow-lg px-3.5 py-2 flex items-center gap-2">
-                  <svg className="w-3.5 h-3.5" style={{ color: '#1E3A8A' }} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                  <svg className="w-3.5 h-3.5" style={{ color: '#C9820A' }} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3" />
                   </svg>
                   <p className="text-xs font-bold text-[#0F1729]">Brez aplikacije</p>
@@ -372,7 +373,7 @@ export default function HomePage() {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 py-6 px-4 text-center">
             <div className="text-amber-400 text-base leading-none shrink-0">★★★★★</div>
             <div>
-              <p className="font-extrabold text-xl text-[#1E3A8A]">5.0/5</p>
+              <p className="font-extrabold text-xl text-[#C9820A]">5.0/5</p>
               <p className="text-xs text-gray-400 max-w-[90px] leading-snug">na podlagi prvih ocen</p>
             </div>
           </div>
@@ -390,7 +391,7 @@ export default function HomePage() {
       <section id="templates" className="py-24 bg-white">
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-14">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold mb-4 uppercase tracking-widest" style={{ background: 'rgba(30,58,138,0.1)', color: '#1E3A8A' }}>
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold mb-4 uppercase tracking-widest" style={{ background: 'rgba(255,201,77,0.18)', color: '#C9820A' }}>
               Predloge za tisk
             </div>
             <h2 className="text-[2.5rem] font-extrabold text-[#0F1729] mb-4">Kartice, ki goste spodbudijo k deljenju fotografij</h2>
@@ -438,19 +439,19 @@ export default function HomePage() {
                       <div className="flex justify-center mb-2" style={{ transform: 'scale(0.48)', transformOrigin: 'center', height: 33, overflow: 'hidden' }}>
                         <QRPattern />
                       </div>
-                      <p className={`font-serif text-[8px] italic ${t.dark ? 'text-[#f9a8c0]' : 'text-[#1E3A8A]'}`}>Ana & Marko</p>
+                      <p className={`font-serif text-[8px] italic ${t.dark ? 'text-[#f9a8c0]' : 'text-[#C9820A]'}`}>Ana & Marko</p>
                       {t.dark ? null : <div className="w-8 h-px bg-gray-200 mx-auto mt-1.5" />}
                       <p className={`text-[7px] mt-1 ${t.dark ? 'text-white/40' : 'text-gray-300'}`}>14. 06. 2025</p>
                     </div>
                   </div>
 
                   {/* Hover: CTA overlay */}
-                  <div className="absolute inset-0 bg-[#1E3A8A]/80 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center gap-3">
-                    <p className="text-white font-bold text-sm">{t.name}</p>
+                  <div className="absolute inset-0 bg-[#FFC94D]/90 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center gap-3">
+                    <p className="text-[#0F1729] font-bold text-sm">{t.name}</p>
                     <Link
                       href="/dashboard/new"
                       className="bg-white font-bold text-xs px-5 py-2.5 rounded-full transition-transform hover:scale-105"
-                      style={{ color: '#1E3A8A' }}
+                      style={{ color: '#0F1729' }}
                     >
                       Uporabi predlogo →
                     </Link>
@@ -460,7 +461,7 @@ export default function HomePage() {
                 {/* Name label */}
                 <div className="px-3 py-2.5 bg-white flex items-center justify-between">
                   <span className="text-xs font-semibold text-[#0F1729]">{t.name}</span>
-                  <span className="text-[10px] text-[#1E3A8A] font-medium">PDF ↓</span>
+                  <span className="text-[10px] text-[#C9820A] font-medium">PDF ↓</span>
                 </div>
               </div>
             ))}
@@ -471,7 +472,7 @@ export default function HomePage() {
             <Link
               href="/dashboard/new"
               className="inline-flex items-center gap-2.5 px-8 py-4 rounded-2xl font-bold text-sm transition-all duration-200 border-2"
-              style={{ borderColor: '#1E3A8A', color: '#1E3A8A' }}
+              style={{ borderColor: '#FFC94D', color: '#C9820A' }}
             >
               Ustvari galerijo in prenesi predloge →
             </Link>
@@ -482,12 +483,12 @@ export default function HomePage() {
       {/* ── How it works ────────────────────────────────────────────────────── */}
       <section id="how" style={{ background: '#0B1220' }} className="py-24 relative overflow-hidden">
         {/* Subtle petal decorations */}
-        <div className="absolute top-10 left-10 w-32 h-32 rounded-full opacity-10" style={{ background: 'radial-gradient(circle, #1E3A8A, transparent)' }} />
-        <div className="absolute bottom-20 right-16 w-48 h-48 rounded-full opacity-10" style={{ background: 'radial-gradient(circle, #1E3A8A, transparent)' }} />
+        <div className="absolute top-10 left-10 w-32 h-32 rounded-full opacity-20" style={{ background: 'radial-gradient(circle, #FFC94D, transparent)' }} />
+        <div className="absolute bottom-20 right-16 w-48 h-48 rounded-full opacity-20" style={{ background: 'radial-gradient(circle, #FFC94D, transparent)' }} />
 
         <div className="max-w-6xl mx-auto px-6 relative z-10">
           {/* Section label */}
-          <p className="text-center text-xs font-bold uppercase tracking-[0.25em] mb-4" style={{ color: '#1E3A8A' }}>
+          <p className="text-center text-xs font-bold uppercase tracking-[0.25em] mb-4" style={{ color: '#FFC94D' }}>
             Kako deluje
           </p>
 
@@ -520,7 +521,7 @@ export default function HomePage() {
                 </div>
                 {/* Step label over photo */}
                 <div className="absolute bottom-4 left-5">
-                  <p className="text-xs font-bold uppercase tracking-widest mb-1" style={{ color: '#1E3A8A' }}>KORAK 01</p>
+                  <p className="text-xs font-bold uppercase tracking-widest mb-1" style={{ color: '#FFC94D' }}>KORAK 01</p>
                 </div>
               </div>
               {/* Text below */}
@@ -550,7 +551,7 @@ export default function HomePage() {
                   </svg>
                 </div>
                 <div className="absolute bottom-4 left-5">
-                  <p className="text-xs font-bold uppercase tracking-widest mb-1" style={{ color: '#1E3A8A' }}>KORAK 02</p>
+                  <p className="text-xs font-bold uppercase tracking-widest mb-1" style={{ color: '#FFC94D' }}>KORAK 02</p>
                 </div>
               </div>
               <div className="p-6 flex-1">
@@ -577,7 +578,7 @@ export default function HomePage() {
                   </svg>
                 </div>
                 <div className="absolute bottom-4 left-5">
-                  <p className="text-xs font-bold uppercase tracking-widest mb-1" style={{ color: '#1E3A8A' }}>KORAK 03</p>
+                  <p className="text-xs font-bold uppercase tracking-widest mb-1" style={{ color: '#FFC94D' }}>KORAK 03</p>
                 </div>
               </div>
               <div className="p-6 flex-1">
@@ -594,8 +595,8 @@ export default function HomePage() {
           <div className="text-center mt-12">
             <Link
               href="/dashboard/new"
-              className="inline-flex items-center gap-2.5 px-9 py-4 text-white font-bold rounded-full transition-all duration-200 hover:scale-105"
-              style={{ background: '#1E3A8A', boxShadow: '0 6px 24px rgba(30,58,138,0.45)' }}
+              className="inline-flex items-center gap-2.5 px-9 py-4 text-[#0F1729] font-bold rounded-full transition-all duration-200 hover:scale-105"
+              style={{ background: '#FFC94D', boxShadow: '0 6px 24px rgba(255,201,77,0.45)' }}
             >
               Ustvari svojo galerijo zdaj →
             </Link>
@@ -604,7 +605,7 @@ export default function HomePage() {
       </section>
 
       {/* ── Why you need it ─────────────────────────────────────────────────── */}
-      <section id="why" className="py-24" style={{ background: '#EAEEF6' }}>
+      <section id="why" className="py-24" style={{ background: '#FFF9EC' }}>
         <div className="max-w-6xl mx-auto px-6">
           <h2 className="text-[2.5rem] font-extrabold text-center text-[#0F1729] mb-4">Vsak gost fotografira. Vi pa teh slik nikoli ne vidite.</h2>
           <p className="text-center text-gray-400 text-base mb-14 max-w-md mx-auto">
@@ -616,8 +617,8 @@ export default function HomePage() {
               { icon: "📱", title: "Fotografije ostanejo na telefonih",       desc: "Po dogodku so fotografije razpršene med telefoni, WhatsApp skupinami in družbenimi omrežji. Večine jih organizator nikoli ne prejme." },
               { icon: "👁",  title: "Doživite dogodek skozi oči svojih gostov", desc: "Oglejte si trenutke, ki ste jih morda zamudili, in sestavite celotno zgodbo dogodka iz vseh zornih kotov." },
             ].map((f) => (
-              <div key={f.title} className="bg-white border border-gray-100 rounded-2xl p-7 hover:shadow-md hover:border-[#1E3A8A]/30 transition-all duration-200">
-                <div className="w-12 h-12 border border-gray-100 rounded-2xl flex items-center justify-center text-2xl mb-5 shadow-sm" style={{ background: '#EAEEF6' }}>
+              <div key={f.title} className="bg-white border border-gray-100 rounded-2xl p-7 hover:shadow-md hover:border-[#FFC94D]/50 transition-all duration-200">
+                <div className="w-12 h-12 border border-gray-100 rounded-2xl flex items-center justify-center text-2xl mb-5 shadow-sm" style={{ background: '#FFF3CC' }}>
                   {f.icon}
                 </div>
                 <h3 className="font-bold text-[#0F1729] text-lg mb-2">{f.title}</h3>
@@ -647,13 +648,13 @@ export default function HomePage() {
             ].map(({ Icon, title, desc }) => (
               <div
                 key={title}
-                className="group rounded-2xl border border-gray-100 bg-white p-7 text-left transition-all duration-200 hover:border-[#1E3A8A]/20 hover:shadow-[0_12px_36px_rgba(15,23,41,0.08)]"
+                className="group rounded-2xl border border-gray-100 bg-white p-7 text-left transition-all duration-200 hover:border-[#FFC94D]/40 hover:shadow-[0_12px_36px_rgba(255,201,77,0.12)]"
               >
                 <div
-                  className="w-14 h-14 rounded-2xl flex items-center justify-center mb-5 text-white transition-transform duration-200 group-hover:scale-105"
+                  className="w-14 h-14 rounded-2xl flex items-center justify-center mb-5 text-[#0F1729] transition-transform duration-200 group-hover:scale-105"
                   style={{
-                    background: 'linear-gradient(135deg, #1E3A8A 0%, #3551A8 100%)',
-                    boxShadow: '0 10px 22px rgba(30,58,138,0.28)',
+                    background: 'linear-gradient(135deg, #FFC94D 0%, #F0B429 100%)',
+                    boxShadow: '0 10px 22px rgba(255,201,77,0.35)',
                   }}
                 >
                   <Icon />
@@ -667,7 +668,7 @@ export default function HomePage() {
       </section>
 
       {/* ── Testimonials ────────────────────────────────────────────────────── */}
-      <section id="reviews" className="py-24" style={{ background: '#EAEEF6' }}>
+      <section id="reviews" className="py-24" style={{ background: '#FFF9EC' }}>
         <div className="max-w-6xl mx-auto px-6">
           <h2 className="text-[2.5rem] font-extrabold text-center text-[#0F1729] mb-14">Mnenja naših parov</h2>
           <div className="grid md:grid-cols-3 gap-5">
@@ -686,7 +687,7 @@ export default function HomePage() {
                 </div>
                 <p className="text-gray-600 text-sm leading-relaxed mb-5 italic">&ldquo;{t.text}&rdquo;</p>
                 <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-full flex items-center justify-center text-base shrink-0" style={{ background: 'rgba(30,58,138,0.15)' }}>💑</div>
+                  <div className="w-9 h-9 rounded-full flex items-center justify-center text-base shrink-0" style={{ background: 'rgba(255,201,77,0.20)' }}>💑</div>
                   <div>
                     <p className="font-bold text-sm text-[#0F1729]">{t.name}</p>
                     <p className="text-xs text-gray-400">{t.date}</p>
@@ -749,7 +750,7 @@ export default function HomePage() {
                   "Prenos vseh slik (ZIP)",
                 ].map(f => (
                   <li key={f} className="flex items-center gap-2.5">
-                    <svg className="w-4 h-4 shrink-0 text-[#1E3A8A]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+                    <svg className="w-4 h-4 shrink-0 text-[#C9820A]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
                     <span className="text-sm text-gray-600">{f}</span>
                   </li>
                 ))}
@@ -760,14 +761,14 @@ export default function HomePage() {
             </div>
 
             {/* PLUS — highlighted */}
-            <div className="relative bg-white rounded-3xl p-7 flex flex-col" style={{ border: '2px solid #1E3A8A', boxShadow: '0 8px 40px rgba(30,58,138,0.2)', transform: 'translateY(-8px)' }}>
-              <div className="absolute -top-4 left-1/2 -translate-x-1/2 text-white text-[10px] font-bold tracking-widest uppercase px-5 py-1.5 rounded-full" style={{ background: '#1E3A8A' }}>
+            <div className="relative bg-white rounded-3xl p-7 flex flex-col" style={{ border: '2px solid #FFC94D', boxShadow: '0 8px 40px rgba(255,201,77,0.25)', transform: 'translateY(-8px)' }}>
+              <div className="absolute -top-4 left-1/2 -translate-x-1/2 text-[#0F1729] text-[10px] font-bold tracking-widest uppercase px-5 py-1.5 rounded-full" style={{ background: '#FFC94D' }}>
                 NAJBOLJ PRILJUBLJENO
               </div>
               <p className="font-extrabold text-lg text-[#0F1729] mb-1">Plus</p>
               <p className="text-sm text-gray-400 mb-6">Za večje dogodke in poroke</p>
               <div className="flex items-end gap-2 mb-7">
-                <span className="font-extrabold text-[3rem] leading-none" style={{ color: '#1E3A8A' }}>49€</span>
+                <span className="font-extrabold text-[3rem] leading-none" style={{ color: '#C9820A' }}>49€</span>
                 <span className="text-gray-300 line-through text-lg mb-1.5">69€</span>
               </div>
               <ul className="space-y-3 flex-1 mb-8">
@@ -783,12 +784,12 @@ export default function HomePage() {
                   "E-mail obvestila za par",
                 ].map(f => (
                   <li key={f} className="flex items-center gap-2.5">
-                    <svg className="w-4 h-4 shrink-0 text-[#1E3A8A]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+                    <svg className="w-4 h-4 shrink-0 text-[#C9820A]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
                     <span className="text-sm text-gray-600">{f}</span>
                   </li>
                 ))}
               </ul>
-              <Link href="/dashboard" className="block text-center py-3.5 rounded-2xl font-bold text-sm text-white transition-colors" style={{ background: '#1E3A8A' }}>
+              <Link href="/dashboard" className="block text-center py-3.5 rounded-2xl font-bold text-sm text-[#0F1729] transition-colors" style={{ background: '#FFC94D' }}>
                 Izberi Plus
               </Link>
             </div>
@@ -816,7 +817,7 @@ export default function HomePage() {
                   "Prioritetna podpora",
                 ].map(f => (
                   <li key={f} className="flex items-center gap-2.5">
-                    <svg className="w-4 h-4 shrink-0 text-[#1E3A8A]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+                    <svg className="w-4 h-4 shrink-0 text-[#C9820A]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
                     <span className="text-sm text-gray-600">{f}</span>
                   </li>
                 ))}
@@ -838,7 +839,7 @@ export default function HomePage() {
       </section>
 
       {/* ── FAQ ─────────────────────────────────────────────────────────────── */}
-      <section id="faq" className="py-24" style={{ background: '#EAEEF6' }}>
+      <section id="faq" className="py-24" style={{ background: '#FFF9EC' }}>
         <div className="max-w-2xl mx-auto px-6">
           <h2 className="text-[2.5rem] font-extrabold text-center text-[#0F1729] mb-12">Pogosta vprašanja</h2>
           <div className="space-y-3">
@@ -867,13 +868,13 @@ export default function HomePage() {
       <section className="py-28 bg-white text-center px-6">
         <h2 className="font-extrabold text-[#0F1729] mb-4" style={{ fontSize: 'clamp(2rem, 5vw, 3.2rem)' }}>
           Doživite svoj dogodek skozi oči{' '}
-          <span style={{ color: '#1E3A8A' }}>vseh svojih gostov</span>.
+          <span style={{ color: '#C9820A' }}>vseh svojih gostov</span>.
         </h2>
         <p className="text-gray-500 text-lg mb-10 max-w-lg mx-auto leading-relaxed">Vse fotografije in videi v polni kakovosti. Brez aplikacije, brez zapletov.</p>
         <Link
           href="/dashboard/new"
-          className="inline-flex items-center gap-2.5 px-10 py-5 text-white font-bold text-lg rounded-full transition-all duration-200 shadow-2xl"
-          style={{ background: '#1E3A8A', boxShadow: '0 12px 32px rgba(30,58,138,0.35)' }}
+          className="inline-flex items-center gap-2.5 px-10 py-5 text-[#0F1729] font-bold text-lg rounded-full transition-all duration-200 shadow-2xl"
+          style={{ background: '#FFC94D', boxShadow: '0 12px 32px rgba(255,201,77,0.45)' }}
         >
           Ustvari galerijo zdaj
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
