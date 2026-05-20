@@ -895,7 +895,7 @@ export default function HomePage() {
             {/* Brand */}
             <div className="col-span-2 md:col-span-4 lg:col-span-1">
               <div className="mb-3">
-                <GuestcamLogo size="sm" showMark={true} className="opacity-90" />
+                <GuestcamLogo size="sm" showMark={true} variant="onDark" />
               </div>
               <p className="text-gray-400 text-xs leading-relaxed mb-5">
                 Poročna galerija s QR kodo — brez aplikacije. Gostje fotografirajo, vi zbirate spomine.
