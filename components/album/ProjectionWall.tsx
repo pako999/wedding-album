@@ -143,7 +143,7 @@ export function ProjectionWall({ album, photos, onClose }: Props) {
         {/* Colour blobs */}
         <div style={{
           position:"absolute", width:"600px", height:"600px", borderRadius:"50%",
-          background:"rgba(30,58,138,0.10)",
+          background:"rgba(255,201,77,0.10)",
           top:"-120px", left:"8%",
           animation:"pwBlob1 12s ease-in-out infinite alternate",
         }}/>
@@ -155,7 +155,7 @@ export function ProjectionWall({ album, photos, onClose }: Props) {
         }}/>
         <div style={{
           position:"absolute", width:"320px", height:"320px", borderRadius:"50%",
-          background:"rgba(30,58,138,0.05)",
+          background:"rgba(255,201,77,0.05)",
           top:"45%", right:"4%",
           animation:"pwBlob3 9s ease-in-out infinite alternate",
         }}/>
@@ -163,7 +163,7 @@ export function ProjectionWall({ album, photos, onClose }: Props) {
         {/* Subtle scanning line */}
         <div style={{
           position:"absolute", left:0, right:0, height:"1px",
-          background:"rgba(30,58,138,0.25)",
+          background:"rgba(255,201,77,0.25)",
           animation:"pwScan 10s linear infinite",
         }}/>
       </div>
@@ -195,10 +195,10 @@ export function ProjectionWall({ album, photos, onClose }: Props) {
 
           {/* LIVE badge */}
           <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full"
-            style={{ background:"rgba(30,58,138,0.12)", border:"1px solid rgba(30,58,138,0.35)" }}>
+            style={{ background:"rgba(255,201,77,0.12)", border:"1px solid rgba(255,201,77,0.35)" }}>
             <span className="w-2 h-2 rounded-full shrink-0"
-              style={{ background:"#1E3A8A", animation:"pwLiveDot 1.4s ease-in-out infinite" }}/>
-            <span className="text-xs font-bold tracking-widest" style={{ color:"#1E3A8A" }}>V ŽIVO</span>
+              style={{ background:"#C9820A", animation:"pwLiveDot 1.4s ease-in-out infinite" }}/>
+            <span className="text-xs font-bold tracking-widest" style={{ color:"#C9820A" }}>V ŽIVO</span>
           </div>
 
           {/* Clock */}
@@ -290,7 +290,7 @@ export function ProjectionWall({ album, photos, onClose }: Props) {
                           width:      isNewest ? "28px" : "20px",
                           height:     isNewest ? "28px" : "20px",
                           fontSize:   isNewest ? "11px" : "8px",
-                          background: "#1E3A8A",
+                          background: "#FFC94D",
                         }}
                       >
                         {photo.uploaderName.charAt(0).toUpperCase()}
@@ -313,7 +313,7 @@ export function ProjectionWall({ album, photos, onClose }: Props) {
                       <div
                         className="shrink-0 px-2.5 py-1 rounded-full text-white text-[11px] font-bold tracking-wide"
                         style={{
-                          background: "#1E3A8A",
+                          background: "#FFC94D",
                           animation: "pwBadge 0.4s cubic-bezier(.4,0,.2,1) 0.3s both",
                         }}
                       >
@@ -325,7 +325,7 @@ export function ProjectionWall({ album, photos, onClose }: Props) {
                   {/* Glow border for newest */}
                   {isNewest && (
                     <div className="absolute inset-0 rounded-xl pointer-events-none"
-                      style={{ border: "2px solid rgba(30,58,138,0.7)" }}/>
+                      style={{ border: "2px solid rgba(255,201,77,0.7)" }}/>
                   )}
 
                   {/* Subtle inner border for all others */}

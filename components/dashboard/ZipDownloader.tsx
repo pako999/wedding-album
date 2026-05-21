@@ -148,7 +148,7 @@ export function ZipDownloader({ albumSlug, className, children }: Props) {
         </button>
         <div className="h-1.5 w-full bg-gray-200 rounded-full overflow-hidden">
           <div
-            className="h-full bg-indigo-500 rounded-full transition-all duration-300"
+            className="h-full bg-[#FFF9EC]0 rounded-full transition-all duration-300"
             style={{ width: `${progress}%` }}
           />
         </div>

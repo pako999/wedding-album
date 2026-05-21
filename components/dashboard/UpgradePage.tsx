@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import type { Album } from "@/lib/db/schema";
 
 type PlanId = "free" | "basic" | "plus" | "premium";
@@ -151,8 +151,15 @@ interface Props {
 export function UpgradePage({ album }: Props) {
   const router = useRouter();
   const copy = getEventCopy(album.eventType ?? "wedding");
-  const [selectedPlan, setSelectedPlan] = useState<PlanId>("premium");
-  const [expandedPlan, setExpandedPlan] = useState<PlanId>("premium");
+  // Honour a ?plan=... query param so a click on a homepage pricing card
+  // lands on the upgrade screen with that plan already chosen and expanded.
+  const searchParams = useSearchParams();
+  const initialPlan: PlanId = (() => {
+    const p = searchParams.get("plan");
+    return p === "basic" || p === "plus" || p === "premium" ? p : "premium";
+  })();
+  const [selectedPlan, setSelectedPlan] = useState<PlanId>(initialPlan);
+  const [expandedPlan, setExpandedPlan] = useState<PlanId>(initialPlan);
   const [discountCode, setDiscountCode] = useState("");
   const [discountApplied, setDiscountApplied] = useState(false);
   const [tableStandsSelected, setTableStandsSelected] = useState(false);
@@ -182,7 +189,7 @@ export function UpgradePage({ album }: Props) {
 
         {/* Discount badge */}
         <div className="flex justify-center mb-4">
-          <span className="px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest text-white" style={{ background: "#4F46E5" }}>
+          <span className="px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest text-white" style={{ background: "#FFC94D" }}>
             -30% SAMO ŠE DANES!
           </span>
         </div>
@@ -234,7 +241,7 @@ export function UpgradePage({ album }: Props) {
               <div
                 key={plan.id}
                 className="bg-white rounded-xl border-2 transition-all cursor-pointer"
-                style={{ borderColor: isSelected ? "#4F46E5" : "#e5e7eb" }}
+                style={{ borderColor: isSelected ? "#FFC94D" : "#e5e7eb" }}
                 onClick={() => {
                   setSelectedPlan(plan.id);
                   setExpandedPlan(plan.id);
@@ -245,8 +252,8 @@ export function UpgradePage({ album }: Props) {
                   <div
                     className="w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0"
                     style={{
-                      borderColor: isSelected ? "#4F46E5" : "#d1d5db",
-                      background: isSelected ? "#4F46E5" : "white",
+                      borderColor: isSelected ? "#FFC94D" : "#d1d5db",
+                      background: isSelected ? "#FFC94D" : "white",
                     }}
                   >
                     {isSelected && <div className="w-2 h-2 rounded-full bg-white" />}
@@ -362,7 +369,7 @@ export function UpgradePage({ album }: Props) {
               value={discountCode}
               onChange={(e) => setDiscountCode(e.target.value)}
               placeholder="Koda za popust"
-              className="flex-1 px-3 py-2 border border-gray-200 rounded-lg text-sm text-gray-700 outline-none focus:border-indigo-400 transition-colors"
+              className="flex-1 px-3 py-2 border border-gray-200 rounded-lg text-sm text-gray-700 outline-none focus:border-[#FFC94D] transition-colors"
             />
             <button
               onClick={applyDiscount}
@@ -384,7 +391,7 @@ export function UpgradePage({ album }: Props) {
         {/* CTA */}
         <button
           className="w-full py-4 rounded-xl text-white font-bold text-base transition-opacity hover:opacity-90 mb-4 flex items-center justify-center gap-2 disabled:opacity-60"
-          style={{ background: "#4F46E5" }}
+          style={{ background: "#FFC94D" }}
           disabled={isLoading}
           onClick={async () => {
             setIsLoading(true);

@@ -21,7 +21,7 @@ function SiteHeader() {
           <span className="font-serif italic text-xl font-bold text-[#0F1729]">
             Guestcam
           </span>
-          <span className="font-black text-2xl leading-none text-[#1E3A8A]">.</span>
+          <span className="font-black text-2xl leading-none text-[#C9820A]">.</span>
         </Link>
         <div className="flex items-center gap-6 text-sm font-medium text-gray-500">
           <Link href="/" className="hover:text-[#0F1729] transition-colors">
@@ -78,7 +78,7 @@ export default function PrivacyPage() {
         <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-8 md:p-12">
           {/* Title */}
           <div className="mb-10">
-            <p className="text-xs font-bold uppercase tracking-widest text-[#1E3A8A] mb-3">
+            <p className="text-xs font-bold uppercase tracking-widest text-[#C9820A] mb-3">
               Pravni dokument
             </p>
             <h1 className="font-serif text-4xl font-bold text-[#0F1729] mb-3">
@@ -108,7 +108,7 @@ export default function PrivacyPage() {
                 Davčna številka: SI72133449
                 <br />
                 E-pošta:{" "}
-                <a href="mailto:hello@guestcam.si" className="text-[#1E3A8A]">
+                <a href="mailto:hello@guestcam.si" className="text-[#C9820A]">
                   hello@guestcam.si
                 </a>
               </p>
@@ -297,7 +297,7 @@ export default function PrivacyPage() {
               </div>
               <p className="text-gray-600 mt-4">
                 Svojo pravico uveljavljate prek e-pošte{" "}
-                <a href="mailto:hello@guestcam.si" className="text-[#1E3A8A]">
+                <a href="mailto:hello@guestcam.si" className="text-[#C9820A]">
                   hello@guestcam.si
                 </a>
                 . Odgovorimo v 30 dneh.
@@ -319,7 +319,7 @@ export default function PrivacyPage() {
             <Section title="8. Piškotki">
               <p className="text-gray-600">
                 Za informacije o piškotkih glejte našo{" "}
-                <Link href="/cookies" className="text-[#1E3A8A] hover:underline">
+                <Link href="/cookies" className="text-[#C9820A] hover:underline">
                   Politiko piškotkov
                 </Link>
                 .
@@ -348,7 +348,7 @@ export default function PrivacyPage() {
                   E-pošta:{" "}
                   <a
                     href="mailto:hello@guestcam.si"
-                    className="text-[#1E3A8A] hover:underline"
+                    className="text-[#C9820A] hover:underline"
                   >
                     hello@guestcam.si
                   </a>

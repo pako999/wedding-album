@@ -706,7 +706,10 @@ export function LocalizedHomePage({ lang }: { lang: Lang }) {
               { label: t.basic.label,   tagline: t.basic.tagline,   price: t.basic.price,   was: t.basic.was,   features: t.basic.features,   cta: t.basic.cta,   ribbon: undefined as string | undefined, highlighted: false, dimmed: false },
               { label: t.plus.label,    tagline: t.plus.tagline,    price: t.plus.price,    was: t.plus.was,    features: t.plus.features,    cta: t.plus.cta,    ribbon: t.plus.ribbon as string | undefined,    highlighted: true,  dimmed: false },
               { label: t.premium.label, tagline: t.premium.tagline, price: t.premium.price, was: t.premium.was, features: t.premium.features, cta: t.premium.cta, ribbon: undefined as string | undefined, highlighted: false, dimmed: false },
-            ]).map((p) => (
+            ]).map((p, planIdx) => {
+              const planSlug = ["free", "basic", "plus", "premium"][planIdx];
+              const href = planSlug === "free" ? "/dashboard/new" : `/dashboard/new?plan=${planSlug}`;
+              return (
               <div key={p.label}
                 className={`${p.dimmed ? "bg-gray-50 border border-gray-200 opacity-80" : p.highlighted ? "relative bg-white" : "bg-white border border-gray-200"} rounded-3xl p-7 flex flex-col`}
                 style={p.highlighted ? { border: "2px solid #FFC94D", boxShadow: "0 8px 40px rgba(255,201,77,0.25)", transform: "translateY(-8px)" } : undefined}
@@ -730,13 +733,14 @@ export function LocalizedHomePage({ lang }: { lang: Lang }) {
                     </li>
                   ))}
                 </ul>
-                <Link href="/dashboard" className={`block text-center py-3.5 rounded-2xl font-bold text-sm transition-colors ${
+                <Link href={href} className={`block text-center py-3.5 rounded-2xl font-bold text-sm transition-colors ${
                   p.highlighted ? "text-[#0F1729]" : p.dimmed ? "text-gray-400 bg-white hover:bg-gray-100" : "text-[#0F1729] hover:bg-gray-50"
                 }`} style={p.highlighted ? { background: "#FFC94D" } : { border: "1.5px solid #e5e7eb" }}>
                   {p.cta}
                 </Link>
               </div>
-            ))}
+              );
+            })}
           </div>
           <div className="flex items-center justify-center gap-2 mt-10 text-sm text-gray-400">
             <svg className="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.8}>

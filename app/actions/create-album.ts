@@ -32,6 +32,11 @@ export async function createAlbum(formData: FormData) {
   const eventDate  = (formData.get("eventDate")    as string ?? "").trim();
   const location   = (formData.get("location")     as string ?? "").trim() || null;
   const password   = (formData.get("password")     as string ?? "").trim() || null;
+  // Optional: when the owner came from a pricing card (homepage → wizard),
+  // remember which paid plan they picked so we can route them straight to
+  // the Stripe checkout step after the onboarding wizard.
+  const planRaw    = (formData.get("plan")         as string ?? "").trim();
+  const plan       = (planRaw === "basic" || planRaw === "plus" || planRaw === "premium") ? planRaw : null;
 
   if (!coupleName || !eventDate) {
     throw new Error("Ime in datum sta obvezni polji.");
@@ -82,5 +87,8 @@ export async function createAlbum(formData: FormData) {
     console.error("[create-album] welcome email error:", err);
   }
 
-  redirect(`/dashboard/${slug}?new=1`);
+  const redirectUrl = plan
+    ? `/dashboard/${slug}?new=1&plan=${plan}`
+    : `/dashboard/${slug}?new=1`;
+  redirect(redirectUrl);
 }

@@ -120,7 +120,9 @@ function EventIcon({ id, className }: { id: string; className?: string }) {
   );
 }
 
-export function CreateEventWizard() {
+type PaidPlanId = "basic" | "plus" | "premium";
+
+export function CreateEventWizard({ initialPlan }: { initialPlan?: PaidPlanId } = {}) {
   const [step, setStep] = useState<1 | 2>(1);
   const [selectedType, setSelectedType] = useState<EventType | null>(null);
   const [isPending, startTransition] = useTransition();
@@ -162,7 +164,7 @@ export function CreateEventWizard() {
         {/* Header */}
         <div className="px-8 py-6 border-b border-gray-100">
           <div className="flex items-center gap-3 mb-1">
-            <div className="w-10 h-10 rounded-2xl flex items-center justify-center" style={{ background: "rgba(30,58,138,0.10)" }}>
+            <div className="w-10 h-10 rounded-2xl flex items-center justify-center" style={{ background: "rgba(255,201,77,0.10)" }}>
               <span className="text-xl">📸</span>
             </div>
             <div>
@@ -181,17 +183,17 @@ export function CreateEventWizard() {
                 key={et.id}
                 onClick={() => handleTypeSelect(et)}
                 className="group flex flex-col items-center justify-center gap-2.5 p-5 rounded-2xl border-2 transition-all duration-150 hover:shadow-md text-center"
-                style={{ borderColor: "rgba(30,58,138,0.2)", background: "rgba(30,58,138,0.03)" }}
+                style={{ borderColor: "rgba(255,201,77,0.2)", background: "rgba(255,201,77,0.03)" }}
                 onMouseEnter={e => {
-                  (e.currentTarget as HTMLElement).style.borderColor = "#1E3A8A";
-                  (e.currentTarget as HTMLElement).style.background = "rgba(30,58,138,0.07)";
+                  (e.currentTarget as HTMLElement).style.borderColor = "#C9820A";
+                  (e.currentTarget as HTMLElement).style.background = "rgba(255,201,77,0.07)";
                 }}
                 onMouseLeave={e => {
-                  (e.currentTarget as HTMLElement).style.borderColor = "rgba(30,58,138,0.2)";
-                  (e.currentTarget as HTMLElement).style.background = "rgba(30,58,138,0.03)";
+                  (e.currentTarget as HTMLElement).style.borderColor = "rgba(255,201,77,0.2)";
+                  (e.currentTarget as HTMLElement).style.background = "rgba(255,201,77,0.03)";
                 }}
               >
-                <span className="group-hover:scale-110 transition-transform" style={{ color: "#1E3A8A" }}>
+                <span className="group-hover:scale-110 transition-transform" style={{ color: "#C9820A" }}>
                   <EventIcon id={et.id} className="w-9 h-9" />
                 </span>
                 <span className="text-sm font-semibold text-[#0F1729]">{et.label}</span>
@@ -209,7 +211,7 @@ export function CreateEventWizard() {
       {/* Header */}
       <div className="px-8 py-6 border-b border-gray-100">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-2xl flex items-center justify-center" style={{ background: "rgba(30,58,138,0.10)", color: "#1E3A8A" }}>
+          <div className="w-10 h-10 rounded-2xl flex items-center justify-center" style={{ background: "rgba(255,201,77,0.10)", color: "#C9820A" }}>
             <EventIcon id={eventInfo.id} className="w-6 h-6" />
           </div>
           <div>
@@ -221,37 +223,38 @@ export function CreateEventWizard() {
 
       {/* Form */}
       <form onSubmit={handleSubmit} className="px-8 py-8 space-y-6">
-        {/* Hidden event type */}
+        {/* Hidden event type + pre-selected plan (when arriving from a pricing card) */}
         <input type="hidden" name="eventType" value={eventInfo.id} />
+        {initialPlan ? <input type="hidden" name="plan" value={initialPlan} /> : null}
 
         {/* Name */}
         <div>
           <label className="block text-sm font-semibold text-[#0F1729] mb-2">
-            {eventInfo.nameLabel} <span style={{ color: "#1E3A8A" }}>*</span>
+            {eventInfo.nameLabel} <span style={{ color: "#C9820A" }}>*</span>
           </label>
           <input
             name="coupleName"
             required
             placeholder={eventInfo.namePlaceholder}
-            className="w-full px-4 py-3 rounded-xl border border-gray-200 text-[#0F1729] text-sm outline-none transition-all focus:border-[#1E3A8A]"
-            style={{ boxShadow: "0 0 0 0px rgba(30,58,138,0)" }}
-            onFocus={e => (e.target.style.boxShadow = "0 0 0 3px rgba(30,58,138,0.15)")}
-            onBlur={e => (e.target.style.boxShadow = "0 0 0 0px rgba(30,58,138,0)")}
+            className="w-full px-4 py-3 rounded-xl border border-gray-200 text-[#0F1729] text-sm outline-none transition-all focus:border-[#C9820A]"
+            style={{ boxShadow: "0 0 0 0px rgba(255,201,77,0)" }}
+            onFocus={e => (e.target.style.boxShadow = "0 0 0 3px rgba(255,201,77,0.15)")}
+            onBlur={e => (e.target.style.boxShadow = "0 0 0 0px rgba(255,201,77,0)")}
           />
         </div>
 
         {/* Date */}
         <div>
           <label className="block text-sm font-semibold text-[#0F1729] mb-2">
-            {eventInfo.dateLabel} <span style={{ color: "#1E3A8A" }}>*</span>
+            {eventInfo.dateLabel} <span style={{ color: "#C9820A" }}>*</span>
           </label>
           <input
             type="date"
             name="eventDate"
             required
-            className="w-full px-4 py-3 rounded-xl border border-gray-200 text-[#0F1729] text-sm outline-none transition-all focus:border-[#1E3A8A]"
-            onFocus={e => (e.target.style.boxShadow = "0 0 0 3px rgba(30,58,138,0.15)")}
-            onBlur={e => (e.target.style.boxShadow = "0 0 0 0px rgba(30,58,138,0)")}
+            className="w-full px-4 py-3 rounded-xl border border-gray-200 text-[#0F1729] text-sm outline-none transition-all focus:border-[#C9820A]"
+            onFocus={e => (e.target.style.boxShadow = "0 0 0 3px rgba(255,201,77,0.15)")}
+            onBlur={e => (e.target.style.boxShadow = "0 0 0 0px rgba(255,201,77,0)")}
           />
         </div>
 
@@ -263,9 +266,9 @@ export function CreateEventWizard() {
           <input
             name="location"
             placeholder="npr. Grad Bogenšperk, Ljubljana"
-            className="w-full px-4 py-3 rounded-xl border border-gray-200 text-[#0F1729] text-sm outline-none transition-all focus:border-[#1E3A8A]"
-            onFocus={e => (e.target.style.boxShadow = "0 0 0 3px rgba(30,58,138,0.15)")}
-            onBlur={e => (e.target.style.boxShadow = "0 0 0 0px rgba(30,58,138,0)")}
+            className="w-full px-4 py-3 rounded-xl border border-gray-200 text-[#0F1729] text-sm outline-none transition-all focus:border-[#C9820A]"
+            onFocus={e => (e.target.style.boxShadow = "0 0 0 3px rgba(255,201,77,0.15)")}
+            onBlur={e => (e.target.style.boxShadow = "0 0 0 0px rgba(255,201,77,0)")}
           />
         </div>
 
@@ -282,17 +285,17 @@ export function CreateEventWizard() {
               name="password"
               type="text"
               placeholder="Pustite prazno za javni dostop"
-              className="w-full pl-9 pr-4 py-3 rounded-xl border border-gray-200 text-[#0F1729] text-sm outline-none transition-all focus:border-[#1E3A8A]"
-              onFocus={e => (e.target.style.boxShadow = "0 0 0 3px rgba(30,58,138,0.15)")}
-              onBlur={e => (e.target.style.boxShadow = "0 0 0 0px rgba(30,58,138,0)")}
+              className="w-full pl-9 pr-4 py-3 rounded-xl border border-gray-200 text-[#0F1729] text-sm outline-none transition-all focus:border-[#C9820A]"
+              onFocus={e => (e.target.style.boxShadow = "0 0 0 3px rgba(255,201,77,0.15)")}
+              onBlur={e => (e.target.style.boxShadow = "0 0 0 0px rgba(255,201,77,0)")}
             />
           </div>
           <p className="text-xs text-gray-400 mt-1.5">Gosti bodo morali vnesti geslo za ogled in dodajanje fotografij.</p>
         </div>
 
         {/* Info strip */}
-        <div className="rounded-2xl p-4 flex items-start gap-3 text-sm" style={{ background: "rgba(30,58,138,0.06)", border: "1px solid rgba(30,58,138,0.15)" }}>
-          <span className="shrink-0" style={{ color: "#1E3A8A" }}>✨</span>
+        <div className="rounded-2xl p-4 flex items-start gap-3 text-sm" style={{ background: "rgba(255,201,77,0.06)", border: "1px solid rgba(255,201,77,0.15)" }}>
+          <span className="shrink-0" style={{ color: "#C9820A" }}>✨</span>
           <p className="text-gray-500 leading-relaxed">
             Galerija se ustvari z <strong className="text-[#0F1729]">brezplačnim</strong> paketom (do 200 fotografij).
             Nadgradnjo na Plus ali Premium lahko opravite kadarkoli.
@@ -319,7 +322,7 @@ export function CreateEventWizard() {
             type="submit"
             disabled={isPending}
             className="flex-1 py-3.5 rounded-2xl text-white font-bold text-base transition-all duration-200 disabled:opacity-60 hover:brightness-95"
-            style={{ background: "#1E3A8A" }}
+            style={{ background: "#FFC94D" }}
           >
             {isPending ? (
               <span className="flex items-center justify-center gap-2">

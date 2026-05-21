@@ -22,14 +22,23 @@ interface Props {
   activeTab: Tab;
   isNew?: boolean;
   isUpgraded?: boolean;
+  /** When the owner came from a homepage pricing card, this is the plan
+   *  they picked. The onboarding success screen finishes by routing them
+   *  straight into Stripe checkout for that plan. */
+  paidPlan?: "basic" | "plus" | "premium";
 }
 
 // ─── Success Screen ───────────────────────────────────────────────────────────
 
-function NewAlbumSuccess({ album }: { album: Album }) {
+function NewAlbumSuccess({ album, paidPlan }: { album: Album; paidPlan?: "basic" | "plus" | "premium" }) {
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://guestcam.si";
   const albumUrl = `${appUrl}/${album.slug}`;
-  const dashboardUrl = `/dashboard/${album.slug}`;
+  // When the owner picked a paid plan on the pricing card, finish the
+  // onboarding wizard by routing into the upgrade screen with that plan
+  // pre-selected so they can hit Stripe checkout in one click.
+  const dashboardUrl = paidPlan
+    ? `/dashboard/${album.slug}/upgrade?plan=${paidPlan}`
+    : `/dashboard/${album.slug}`;
   const qrPreview =
     `https://api.qrserver.com/v1/create-qr-code/?size=320x320&qzone=2&format=png` +
     `&bgcolor=ffffff&color=0F1729&data=${encodeURIComponent(albumUrl)}`;
@@ -46,7 +55,7 @@ function NewAlbumSuccess({ album }: { album: Album }) {
             <div
               key={n}
               className="flex-1 h-1.5 rounded-full transition-colors"
-              style={{ background: n <= step ? "#4F46E5" : "#E5E7EB" }}
+              style={{ background: n <= step ? "#FFC94D" : "#E5E7EB" }}
             />
           ))}
         </div>
@@ -72,7 +81,7 @@ function NewAlbumSuccess({ album }: { album: Album }) {
             <button
               onClick={() => setStep(2)}
               className="flex items-center justify-center gap-2 w-full py-3.5 rounded-xl text-white font-bold text-base transition-opacity hover:opacity-90"
-              style={{ background: "#4F46E5" }}
+              style={{ background: "#FFC94D" }}
             >
               Naprej
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
@@ -90,7 +99,7 @@ function NewAlbumSuccess({ album }: { album: Album }) {
               Gostje skenirajo to QR kodo s telefonom — brez aplikacije, brez prijave — in začnejo deliti fotografije.
             </p>
             <div className="inline-flex items-center justify-center p-4 rounded-2xl border-2 mx-auto mb-5"
-              style={{ borderColor: "rgba(79,70,229,0.25)" }}>
+              style={{ borderColor: "rgba(255,201,77,0.25)" }}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={qrPreview} alt="QR koda za galerijo" width={208} height={208} className="rounded-lg" />
             </div>
@@ -107,7 +116,7 @@ function NewAlbumSuccess({ album }: { album: Album }) {
                 href={`/api/albums/${album.slug}/qr?format=png&design=1`}
                 download={`qr-${album.slug}.png`}
                 className="flex items-center justify-center gap-1.5 py-3 text-sm font-medium text-white rounded-xl transition-opacity hover:opacity-90"
-                style={{ background: "#4F46E5" }}
+                style={{ background: "#FFC94D" }}
               >
                 ⬇ Prenesi QR kodo
               </a>
@@ -122,7 +131,7 @@ function NewAlbumSuccess({ album }: { album: Album }) {
               <button
                 onClick={() => setStep(3)}
                 className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-white font-bold text-sm transition-opacity hover:opacity-90"
-                style={{ background: "#4F46E5" }}
+                style={{ background: "#FFC94D" }}
               >
                 Naprej
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
@@ -136,8 +145,8 @@ function NewAlbumSuccess({ album }: { album: Album }) {
         {/* ── Step 3 — Print template ────────────────────────────────── */}
         {step === 3 && (
           <div className="text-center">
-            <div className="flex items-center justify-center w-16 h-16 rounded-2xl bg-indigo-50 mx-auto mb-4">
-              <svg className="w-8 h-8 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.8}>
+            <div className="flex items-center justify-center w-16 h-16 rounded-2xl bg-[#FFF9EC] mx-auto mb-4">
+              <svg className="w-8 h-8 text-[#C9820A]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.8}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6.72 13.829c-.24.03-.48.062-.72.096m.72-.096a42.415 42.415 0 0110.56 0m-10.56 0L6.34 18m10.94-4.171c.24.03.48.062.72.096m-.72-.096L17.66 18m0 0l.229 2.523a1.125 1.125 0 01-1.12 1.227H7.231c-.662 0-1.18-.568-1.12-1.227L6.34 18m11.318 0h1.091A2.25 2.25 0 0021 15.75V9.456c0-1.081-.768-2.015-1.837-2.175a48.055 48.055 0 00-1.913-.247M6.34 18H5.25A2.25 2.25 0 013 15.75V9.456c0-1.081.768-2.015 1.837-2.175a48.041 48.041 0 011.913-.247m10.5 0a48.536 48.536 0 00-10.5 0m10.5 0V3.375c0-.621-.504-1.125-1.125-1.125h-8.25c-.621 0-1.125.504-1.125 1.125v3.659M18 10.5h.008v.008H18V10.5zm-3 0h.008v.008H15V10.5z" />
               </svg>
             </div>
@@ -149,7 +158,7 @@ function NewAlbumSuccess({ album }: { album: Album }) {
             <Link
               href={`/dashboard/${album.slug}/print`}
               className="flex items-center justify-center gap-2 w-full py-3.5 rounded-xl text-white font-bold text-base mb-3 transition-opacity hover:opacity-90"
-              style={{ background: "#4F46E5" }}
+              style={{ background: "#FFC94D" }}
             >
               🖨️ Odpri predloge za tisk
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
@@ -177,7 +186,7 @@ function NewAlbumSuccess({ album }: { album: Album }) {
 
 // ─── Main Panel ───────────────────────────────────────────────────────────────
 
-export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activeTab, isNew, isUpgraded }: Props) {
+export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activeTab, isNew, isUpgraded, paidPlan }: Props) {
   const router = useRouter();
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://guestcam.si";
   const albumUrl = `${appUrl}/${album.slug}`;
@@ -208,7 +217,7 @@ export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activ
 
   // Show success screen if just created
   if (isNew) {
-    return <NewAlbumSuccess album={album} />;
+    return <NewAlbumSuccess album={album} paidPlan={paidPlan} />;
   }
 
   const navigateTab = (tab: Tab) => {
@@ -269,7 +278,7 @@ export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activ
       : album.plan === "plus"
       ? "bg-gray-900 text-white"
       : album.plan === "basic"
-      ? "bg-indigo-600 text-white"
+      ? "bg-[#FFC94D] text-white"
       : "bg-gray-100 text-gray-600";
 
   // Last uploaded photo date
@@ -341,7 +350,7 @@ export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activ
                 onClick={() => navigateTab(item.id)}
                 className={`w-full flex items-center gap-2.5 px-4 py-2.5 rounded-lg mx-0 text-sm font-medium transition-colors text-left ${
                   isActive
-                    ? "border-l-2 border-indigo-500 bg-indigo-50 text-indigo-700"
+                    ? "border-l-2 border-[#FFC94D] bg-[#FFF9EC] text-[#C9820A]"
                     : "text-gray-600 hover:bg-gray-50 hover:text-gray-800"
                 }`}
               >
@@ -355,7 +364,7 @@ export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activ
               onClick={() => navigateTab("pending")}
               className={`w-full flex items-center gap-2.5 px-4 py-2.5 rounded-lg text-sm font-medium transition-colors text-left ${
                 activeTab === "pending"
-                  ? "border-l-2 border-indigo-500 bg-indigo-50 text-indigo-700"
+                  ? "border-l-2 border-[#FFC94D] bg-[#FFF9EC] text-[#C9820A]"
                   : "text-gray-600 hover:bg-gray-50 hover:text-gray-800"
               }`}
             >
@@ -405,28 +414,28 @@ export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activ
             >
               <div className="flex items-center gap-3 min-w-0">
                 <div className="flex items-center gap-2 shrink-0">
-                  <span className="text-sm font-bold" style={{ color: atLimit ? "#DC2626" : "#4F46E5" }}>
+                  <span className="text-sm font-bold" style={{ color: atLimit ? "#DC2626" : "#FFC94D" }}>
                     {used} / {max}
                   </span>
-                  <span className="text-xs" style={{ color: atLimit ? "#DC2626" : "#6366F1" }}>slik</span>
+                  <span className="text-xs" style={{ color: atLimit ? "#DC2626" : "#FFC94D" }}>slik</span>
                 </div>
                 <div className="w-28 h-1.5 rounded-full bg-gray-200 hidden sm:block">
                   <div
                     className="h-full rounded-full transition-all"
                     style={{
                       width: `${pct}%`,
-                      background: atLimit ? "#DC2626" : pct > 70 ? "#F59E0B" : "#6366F1",
+                      background: atLimit ? "#DC2626" : pct > 70 ? "#F59E0B" : "#FFC94D",
                     }}
                   />
                 </div>
-                <span className="text-xs hidden md:block" style={{ color: atLimit ? "#DC2626" : "#6366F1" }}>
+                <span className="text-xs hidden md:block" style={{ color: atLimit ? "#DC2626" : "#FFC94D" }}>
                   {atLimit ? "⚠️ Dosežena meja — gostje ne morejo več nalagati!" : "Brezplačni paket"}
                 </span>
               </div>
               <Link
                 href={`/dashboard/${album.slug}/upgrade`}
                 className="flex-shrink-0 px-4 py-1.5 rounded-lg text-white text-xs font-bold transition-opacity hover:opacity-90 whitespace-nowrap"
-                style={{ background: atLimit ? "#DC2626" : "#4F46E5" }}
+                style={{ background: atLimit ? "#DC2626" : "#FFC94D" }}
               >
                 {atLimit ? "Odkleni takoj →" : "Odkleni galerijo →"}
               </Link>
@@ -608,24 +617,24 @@ function OverviewTab({
     <div className="space-y-6">
       {/* Upgrade nudge card — free plan only */}
       {album.plan === "free" && (
-        <div className="bg-indigo-50 border border-indigo-100 rounded-2xl p-5 flex flex-col sm:flex-row sm:items-center gap-4">
+        <div className="bg-[#FFF9EC] border border-indigo-100 rounded-2xl p-5 flex flex-col sm:flex-row sm:items-center gap-4">
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-1">
               <span className="text-sm font-bold text-indigo-800">📦 Brezplačni paket</span>
-              <span className="text-xs bg-indigo-100 text-indigo-600 px-2 py-0.5 rounded-full font-medium">
+              <span className="text-xs bg-[#FFF3CC] text-[#C9820A] px-2 py-0.5 rounded-full font-medium">
                 {album.photoCount ?? 0} / {album.maxPhotos ?? 20} slik
               </span>
             </div>
-            <div className="w-full h-2 bg-indigo-100 rounded-full mb-2">
+            <div className="w-full h-2 bg-[#FFF3CC] rounded-full mb-2">
               <div
                 className="h-full rounded-full transition-all"
                 style={{
                   width: `${usedPct}%`,
-                  background: usedPct >= 100 ? "#DC2626" : usedPct > 70 ? "#F59E0B" : "#6366F1",
+                  background: usedPct >= 100 ? "#DC2626" : usedPct > 70 ? "#F59E0B" : "#FFC94D",
                 }}
               />
             </div>
-            <p className="text-xs text-indigo-600">
+            <p className="text-xs text-[#C9820A]">
               {usedPct >= 100
                 ? "⚠️ Meja dosežena — nadgradi za neomejeno nalaganje"
                 : `Nadgradi za neomejene fotografije, videe in dostop 1 leto`}
@@ -634,7 +643,7 @@ function OverviewTab({
           <Link
             href={`/dashboard/${album.slug}/upgrade`}
             className="flex-shrink-0 px-5 py-2.5 rounded-xl text-white text-sm font-bold transition-all hover:opacity-90 hover:brightness-95 shadow-sm"
-            style={{ background: "#6366F1" }}
+            style={{ background: "#FFC94D" }}
           >
             Poglej pakete →
           </Link>
@@ -680,7 +689,7 @@ function OverviewTab({
               <p className="text-3xl font-bold text-gray-900">{card.value}</p>
               <p className="text-xs font-medium uppercase tracking-wide text-gray-400 mt-1">{card.label}</p>
             </div>
-            <div className="w-9 h-9 rounded-lg flex items-center justify-center text-indigo-500 bg-indigo-50 shrink-0">
+            <div className="w-9 h-9 rounded-lg flex items-center justify-center text-[#C9820A] bg-[#FFF9EC] shrink-0">
               {card.icon}
             </div>
           </div>
@@ -699,7 +708,7 @@ function OverviewTab({
             href={albumUrl}
             target="_blank"
             rel="noreferrer"
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs text-indigo-600 border border-indigo-200 rounded-lg hover:bg-indigo-50 transition-colors self-start"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs text-[#C9820A] border border-[#FFE08A] rounded-lg hover:bg-[#FFF9EC] transition-colors self-start"
           >
             Skeniraj to QR kodo in preizkusi, kako deluje
           </a>
@@ -733,7 +742,7 @@ function OverviewTab({
         <div className="bg-white rounded-2xl border border-gray-100 p-5 flex flex-col gap-3">
           <div className="flex items-center justify-between">
             <h3 className="font-semibold text-gray-900 text-sm">Zadnje naloženo</h3>
-            <Link href={`/dashboard/${album.slug}?tab=gallery`} className="text-xs text-indigo-600 hover:underline">
+            <Link href={`/dashboard/${album.slug}?tab=gallery`} className="text-xs text-[#C9820A] hover:underline">
               Poglej vse
             </Link>
           </div>
@@ -975,7 +984,7 @@ function QrTab({
           <button
             onClick={handleCopy}
             className="px-4 py-2.5 text-sm font-semibold rounded-lg text-white transition-colors whitespace-nowrap"
-            style={{ background: copied ? "#22c55e" : "#4F46E5" }}
+            style={{ background: copied ? "#22c55e" : "#FFC94D" }}
           >
             {copied ? "Kopirano!" : "Kopiraj"}
           </button>
@@ -1005,7 +1014,7 @@ function QrTab({
           </p>
           <Link
             href={`/dashboard/${album.slug}/print`}
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700 transition-colors shadow-sm"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#FFC94D] text-white text-sm font-semibold hover:bg-[#F0B429] transition-colors shadow-sm"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M6.72 13.829c-.24.03-.48.062-.72.096m.72-.096a42.415 42.415 0 0110.56 0m-10.56 0L6.34 18m10.94-4.171c.24.03.48.062.72.096m-.72-.096L17.66 18m0 0l.229 2.523a1.125 1.125 0 01-1.12 1.227H7.231c-.662 0-1.18-.568-1.12-1.227L6.34 18m11.318 0h1.091A2.25 2.25 0 0021 15.75V9.456c0-1.081-.768-2.015-1.837-2.175a48.055 48.055 0 00-1.913-.247M6.34 18H5.25A2.25 2.25 0 013 15.75V9.456c0-1.081.768-2.015 1.837-2.175a48.041 48.041 0 011.913-.247m10.5 0a48.536 48.536 0 00-10.5 0m10.5 0V3.375c0-.621-.504-1.125-1.125-1.125h-8.25c-.621 0-1.125.504-1.125 1.125v3.659M18 10.5h.008v.008H18V10.5zm-3 0h.008v.008H15V10.5z" />
@@ -1164,7 +1173,7 @@ function AlbumSettingsForm({ album }: { album: Album }) {
   };
 
   const inputClass =
-    "w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm text-gray-800 bg-white outline-none focus:border-indigo-400 transition-colors";
+    "w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm text-gray-800 bg-white outline-none focus:border-[#FFC94D] transition-colors";
 
   return (
     <div className="bg-white rounded-2xl border border-gray-100 p-6 space-y-5">
@@ -1250,7 +1259,7 @@ function AlbumSettingsForm({ album }: { album: Album }) {
                 title={tm.name}
                 className={`group flex flex-col items-center gap-1.5 rounded-xl p-1.5 transition-all ${
                   selected
-                    ? "ring-2 ring-indigo-500 ring-offset-1"
+                    ? "ring-2 ring-[#FFC94D] ring-offset-1"
                     : "ring-1 ring-gray-200 hover:ring-gray-300"
                 }`}
               >
@@ -1269,14 +1278,14 @@ function AlbumSettingsForm({ album }: { album: Album }) {
                     ))}
                   </span>
                   {selected && (
-                    <span className="absolute top-1 right-1 w-4 h-4 rounded-full bg-indigo-500 text-white flex items-center justify-center shadow">
+                    <span className="absolute top-1 right-1 w-4 h-4 rounded-full bg-[#FFF9EC]0 text-white flex items-center justify-center shadow">
                       <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={3.5}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                       </svg>
                     </span>
                   )}
                 </span>
-                <span className={`text-[11px] text-center leading-tight ${selected ? "font-semibold text-indigo-700" : "text-gray-600"}`}>
+                <span className={`text-[11px] text-center leading-tight ${selected ? "font-semibold text-[#C9820A]" : "text-gray-600"}`}>
                   {tm.name}
                 </span>
               </button>
@@ -1291,7 +1300,7 @@ function AlbumSettingsForm({ album }: { album: Album }) {
             role="switch"
             aria-checked={isPublished}
             onClick={() => setIsPublished(!isPublished)}
-            className={`relative w-10 h-5 rounded-full transition-colors ${isPublished ? "bg-indigo-500" : "bg-gray-200"}`}
+            className={`relative w-10 h-5 rounded-full transition-colors ${isPublished ? "bg-[#FFF9EC]0" : "bg-gray-200"}`}
           >
             <span className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white shadow transition-transform ${isPublished ? "translate-x-5" : "translate-x-0"}`} />
           </button>
@@ -1304,7 +1313,7 @@ function AlbumSettingsForm({ album }: { album: Album }) {
               role="switch"
               aria-checked={moderationEnabled}
               onClick={() => setModerationEnabled(!moderationEnabled)}
-              className={`relative w-10 h-5 rounded-full transition-colors ${moderationEnabled ? "bg-indigo-500" : "bg-gray-200"}`}
+              className={`relative w-10 h-5 rounded-full transition-colors ${moderationEnabled ? "bg-[#FFF9EC]0" : "bg-gray-200"}`}
             >
               <span className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white shadow transition-transform ${moderationEnabled ? "translate-x-5" : "translate-x-0"}`} />
             </button>
@@ -1316,7 +1325,7 @@ function AlbumSettingsForm({ album }: { album: Album }) {
       <button
         onClick={save}
         disabled={saving}
-        className="w-full py-3 rounded-xl text-white text-sm font-semibold disabled:opacity-50 transition-colors bg-indigo-600 hover:bg-indigo-700"
+        className="w-full py-3 rounded-xl text-white text-sm font-semibold disabled:opacity-50 transition-colors bg-[#FFC94D] hover:bg-[#F0B429]"
       >
         {saving ? "Shranjevanje…" : saved ? "✓ Shranjeno" : "Shrani spremembe"}
       </button>
@@ -1438,7 +1447,7 @@ function MomentsManager({ album }: { album: Album }) {
   };
 
   const inputClass =
-    "w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm text-gray-800 bg-white outline-none focus:border-indigo-400 transition-colors";
+    "w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm text-gray-800 bg-white outline-none focus:border-[#FFC94D] transition-colors";
 
   return (
     <div className="bg-white rounded-2xl border border-gray-100 p-6 space-y-4">
@@ -1460,7 +1469,7 @@ function MomentsManager({ album }: { album: Album }) {
         <button
           onClick={addMoment}
           disabled={busy || !newName.trim()}
-          className="flex-shrink-0 px-4 py-2.5 rounded-xl text-white text-sm font-semibold bg-indigo-600 hover:bg-indigo-700 transition-colors disabled:opacity-40"
+          className="flex-shrink-0 px-4 py-2.5 rounded-xl text-white text-sm font-semibold bg-[#FFC94D] hover:bg-[#F0B429] transition-colors disabled:opacity-40"
         >
           {t.momentAdd}
         </button>
@@ -1491,7 +1500,7 @@ function MomentsManager({ album }: { album: Album }) {
                   <button
                     onClick={() => renameMoment(m.id)}
                     disabled={busy || !editName.trim()}
-                    className="flex-shrink-0 px-3 py-1.5 rounded-lg text-white text-xs font-semibold bg-indigo-600 hover:bg-indigo-700 transition-colors disabled:opacity-40"
+                    className="flex-shrink-0 px-3 py-1.5 rounded-lg text-white text-xs font-semibold bg-[#FFC94D] hover:bg-[#F0B429] transition-colors disabled:opacity-40"
                   >
                     {t.momentRename}
                   </button>
@@ -1542,7 +1551,7 @@ interface DomainStatus {
   verification: DnsRecord[];
 }
 
-const ACCENT = "#1E3A8A"; // black-blue accent
+const ACCENT = "#C9820A"; // black-blue accent
 
 function CustomDomainPanel({ album }: { album: Album }) {
   const isPremium = album.plan === "premium";
@@ -1646,7 +1655,7 @@ function CustomDomainPanel({ album }: { album: Album }) {
   };
 
   const inputClass =
-    "w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm text-gray-800 bg-white outline-none focus:border-indigo-400 transition-colors";
+    "w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm text-gray-800 bg-white outline-none focus:border-[#FFC94D] transition-colors";
 
   // ── Locked panel (non-Premium) ──────────────────────────────────────────────
   if (!isPremium) {

@@ -731,7 +731,7 @@ export default function HomePage() {
                   </li>
                 ))}
               </ul>
-              <Link href="/dashboard" className="block text-center py-3.5 rounded-2xl font-bold text-sm text-gray-400 transition-colors bg-white hover:bg-gray-100" style={{ border: '1.5px solid #e5e7eb' }}>
+              <Link href="/dashboard/new" className="block text-center py-3.5 rounded-2xl font-bold text-sm text-gray-400 transition-colors bg-white hover:bg-gray-100" style={{ border: '1.5px solid #e5e7eb' }}>
                 Začni brezplačno
               </Link>
             </div>
@@ -758,7 +758,7 @@ export default function HomePage() {
                   </li>
                 ))}
               </ul>
-              <Link href="/dashboard" className="block text-center py-3.5 rounded-2xl font-bold text-sm text-[#0F1729] transition-colors hover:bg-gray-50" style={{ border: '1.5px solid #e5e7eb' }}>
+              <Link href="/dashboard/new?plan=basic" className="block text-center py-3.5 rounded-2xl font-bold text-sm text-[#0F1729] transition-colors hover:bg-gray-50" style={{ border: '1.5px solid #e5e7eb' }}>
                 Izberi Basic
               </Link>
             </div>
@@ -792,7 +792,7 @@ export default function HomePage() {
                   </li>
                 ))}
               </ul>
-              <Link href="/dashboard" className="block text-center py-3.5 rounded-2xl font-bold text-sm text-[#0F1729] transition-colors" style={{ background: '#FFC94D' }}>
+              <Link href="/dashboard/new?plan=plus" className="block text-center py-3.5 rounded-2xl font-bold text-sm text-[#0F1729] transition-colors" style={{ background: '#FFC94D' }}>
                 Izberi Plus
               </Link>
             </div>
@@ -825,7 +825,7 @@ export default function HomePage() {
                   </li>
                 ))}
               </ul>
-              <Link href="/dashboard" className="block text-center py-3.5 rounded-2xl font-bold text-sm text-[#0F1729] transition-colors hover:bg-gray-50" style={{ border: '1.5px solid #e5e7eb' }}>
+              <Link href="/dashboard/new?plan=premium" className="block text-center py-3.5 rounded-2xl font-bold text-sm text-[#0F1729] transition-colors hover:bg-gray-50" style={{ border: '1.5px solid #e5e7eb' }}>
                 Izberi Premium
               </Link>
             </div>

@@ -9,7 +9,7 @@ export const dynamic = "force-dynamic";
 
 interface Props {
   params: Promise<{ slug: string }>;
-  searchParams: Promise<{ tab?: string; new?: string; upgraded?: string }>;
+  searchParams: Promise<{ tab?: string; new?: string; upgraded?: string; plan?: string }>;
 }
 
 export default async function AlbumAdminPage({ params, searchParams }: Props) {
@@ -24,9 +24,13 @@ export default async function AlbumAdminPage({ params, searchParams }: Props) {
   if (!userId) redirect("/sign-in");
 
   const { slug } = await params;
-  const { tab = "overview", new: isNewParam, upgraded: isUpgradedParam } = await searchParams;
+  const { tab = "overview", new: isNewParam, upgraded: isUpgradedParam, plan: planParam } = await searchParams;
   const isNew = isNewParam === "1";
   const isUpgraded = isUpgradedParam === "1";
+  const paidPlan =
+    planParam === "basic" || planParam === "plus" || planParam === "premium"
+      ? planParam
+      : undefined;
 
   let album: (typeof albums.$inferSelect) | null = null;
   let albumPhotos: (typeof photos.$inferSelect)[] = [];
@@ -70,7 +74,7 @@ export default async function AlbumAdminPage({ params, searchParams }: Props) {
           <p className="text-sm text-gray-500 mb-4">
             Prišlo je do napake z bazo podatkov. Poskusite znova čez trenutek.
           </p>
-          <a href="/dashboard" className="inline-block px-6 py-3 rounded-xl text-white text-sm font-semibold" style={{ background: "#1E3A8A" }}>
+          <a href="/dashboard" className="inline-block px-6 py-3 rounded-xl text-white text-sm font-semibold" style={{ background: "#FFC94D" }}>
             Nazaj na galerije
           </a>
         </div>
@@ -91,6 +95,7 @@ export default async function AlbumAdminPage({ params, searchParams }: Props) {
       activeTab={tab as "overview" | "gallery" | "qr" | "settings" | "pending" | "film"}
       isNew={isNew}
       isUpgraded={isUpgraded}
+      paidPlan={paidPlan}
     />
   );
 }

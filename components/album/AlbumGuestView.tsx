@@ -73,7 +73,7 @@ function formatUploadTime(date: Date | string | null | undefined, t: Translation
 }
 
 const BRAND = {
-  accent:      "#1E3A8A",
+  accent:      "#C9820A",
   accentHover: "#152C66",
   accentLight: "#EAEEF6",
   dark:        "#111827",

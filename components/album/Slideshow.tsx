@@ -157,7 +157,7 @@ export function Slideshow({ photos, startIndex = 0, onClose }: Props) {
             key={imgKey}
             className="h-full"
             style={{
-              background: "#1E3A8A",
+              background: "#FFC94D",
               transformOrigin: "left",
               animation: `ssProg ${SLIDE_MS}ms linear forwards`,
             }}
@@ -171,7 +171,7 @@ export function Slideshow({ photos, startIndex = 0, onClose }: Props) {
         <div className="flex items-center gap-2.5 flex-1 min-w-0">
           {photo.uploaderName && (
             <div className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0"
-              style={{ background: "#1E3A8A" }}>
+              style={{ background: "#FFC94D" }}>
               {photo.uploaderName.charAt(0).toUpperCase()}
             </div>
           )}
@@ -194,7 +194,7 @@ export function Slideshow({ photos, startIndex = 0, onClose }: Props) {
 
           <button onClick={() => setPlaying(v => !v)} aria-label={playing ? "Pavza" : "Predvajaj"}
             className="w-10 h-10 rounded-full flex items-center justify-center text-white transition-all"
-            style={{ background: "rgba(30,58,138,0.25)", border: "1px solid rgba(30,58,138,0.4)" }}>
+            style={{ background: "rgba(255,201,77,0.25)", border: "1px solid rgba(255,201,77,0.4)" }}>
             {playing ? (
               <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>

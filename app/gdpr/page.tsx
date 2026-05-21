@@ -21,7 +21,7 @@ function SiteHeader() {
           <span className="font-serif italic text-xl font-bold text-[#0F1729]">
             Guestcam
           </span>
-          <span className="font-black text-2xl leading-none text-[#1E3A8A]">.</span>
+          <span className="font-black text-2xl leading-none text-[#C9820A]">.</span>
         </Link>
         <div className="flex items-center gap-6 text-sm font-medium text-gray-500">
           <Link href="/" className="hover:text-[#0F1729] transition-colors">
@@ -132,7 +132,7 @@ export default function GdprPage() {
       <main className="max-w-3xl mx-auto px-6 py-16">
         <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-8 md:p-12">
           <div className="mb-10">
-            <p className="text-xs font-bold uppercase tracking-widest text-[#1E3A8A] mb-3">
+            <p className="text-xs font-bold uppercase tracking-widest text-[#C9820A] mb-3">
               Varstvo podatkov
             </p>
             <h1 className="font-serif text-4xl font-bold text-[#0F1729] mb-3">
@@ -178,7 +178,7 @@ export default function GdprPage() {
                 Kontaktna e-pošta za vprašanja o zasebnosti:{" "}
                 <a
                   href="mailto:hello@guestcam.si"
-                  className="text-[#1E3A8A] hover:underline"
+                  className="text-[#C9820A] hover:underline"
                 >
                   hello@guestcam.si
                 </a>
@@ -321,7 +321,7 @@ export default function GdprPage() {
                         href={link}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-xs text-[#1E3A8A] hover:underline"
+                        className="text-xs text-[#C9820A] hover:underline"
                       >
                         Politika zasebnosti →
                       </a>
@@ -358,15 +358,15 @@ export default function GdprPage() {
             <div
               className="mt-5 rounded-2xl p-4"
               style={{
-                background: "rgba(30,58,138,0.08)",
-                border: "1px solid rgba(30,58,138,0.2)",
+                background: "rgba(255,201,77,0.08)",
+                border: "1px solid rgba(255,201,77,0.2)",
               }}
             >
               <p className="text-sm text-gray-700">
                 <strong>Kako uveljavljate svojo pravico:</strong> Pišite nam na{" "}
                 <a
                   href="mailto:hello@guestcam.si"
-                  className="text-[#1E3A8A] hover:underline"
+                  className="text-[#C9820A] hover:underline"
                 >
                   hello@guestcam.si
                 </a>{" "}
@@ -418,7 +418,7 @@ export default function GdprPage() {
                   href="https://www.ip-rs.si"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-[#1E3A8A] hover:underline"
+                  className="text-[#C9820A] hover:underline"
                 >
                   www.ip-rs.si
                 </a>
@@ -440,7 +440,7 @@ export default function GdprPage() {
                 E-pošta:{" "}
                 <a
                   href="mailto:hello@guestcam.si"
-                  className="text-[#1E3A8A] hover:underline"
+                  className="text-[#C9820A] hover:underline"
                 >
                   hello@guestcam.si
                 </a>{" "}
