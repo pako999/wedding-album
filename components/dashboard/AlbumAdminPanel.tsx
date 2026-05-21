@@ -377,11 +377,14 @@ export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activ
           )}
         </nav>
 
-        {/* Sign out */}
-        <div className="px-4 pb-5 pt-2">
+        {/* Sign out — clear, visible button (not a faint text link) */}
+        <div className="px-4 pb-5 pt-3 border-t border-gray-100">
           <SignOutButton>
-            <button className="w-full flex items-center gap-2 px-3 py-2 text-xs text-gray-400 rounded-lg hover:text-red-500 transition-colors">
-              <span>→</span> Odjava
+            <button className="w-full flex items-center justify-center gap-2 px-3 py-2.5 text-sm font-semibold text-[#0F1729] bg-white border border-gray-200 rounded-lg hover:bg-[#FFF9EC] hover:border-[#FFC94D] transition-colors">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+              </svg>
+              Odjava
             </button>
           </SignOutButton>
         </div>
@@ -1278,7 +1281,7 @@ function AlbumSettingsForm({ album }: { album: Album }) {
                     ))}
                   </span>
                   {selected && (
-                    <span className="absolute top-1 right-1 w-4 h-4 rounded-full bg-[#FFF9EC]0 text-white flex items-center justify-center shadow">
+                    <span className="absolute top-1 right-1 w-4 h-4 rounded-full bg-[#FFC94D] text-[#0F1729] flex items-center justify-center shadow">
                       <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={3.5}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                       </svg>
@@ -1300,7 +1303,7 @@ function AlbumSettingsForm({ album }: { album: Album }) {
             role="switch"
             aria-checked={isPublished}
             onClick={() => setIsPublished(!isPublished)}
-            className={`relative w-10 h-5 rounded-full transition-colors ${isPublished ? "bg-[#FFF9EC]0" : "bg-gray-200"}`}
+            className={`relative w-10 h-5 rounded-full transition-colors ${isPublished ? "bg-[#FFC94D]" : "bg-gray-200"}`}
           >
             <span className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white shadow transition-transform ${isPublished ? "translate-x-5" : "translate-x-0"}`} />
           </button>
@@ -1313,7 +1316,7 @@ function AlbumSettingsForm({ album }: { album: Album }) {
               role="switch"
               aria-checked={moderationEnabled}
               onClick={() => setModerationEnabled(!moderationEnabled)}
-              className={`relative w-10 h-5 rounded-full transition-colors ${moderationEnabled ? "bg-[#FFF9EC]0" : "bg-gray-200"}`}
+              className={`relative w-10 h-5 rounded-full transition-colors ${moderationEnabled ? "bg-[#FFC94D]" : "bg-gray-200"}`}
             >
               <span className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white shadow transition-transform ${moderationEnabled ? "translate-x-5" : "translate-x-0"}`} />
             </button>
