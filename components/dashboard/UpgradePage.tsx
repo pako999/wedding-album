@@ -326,30 +326,6 @@ export function UpgradePage({ album }: Props) {
           <p className="text-xs text-gray-400">{copy.testimonialSub}</p>
         </div>
 
-        {/* Add-on upsell */}
-        <div className="bg-white rounded-xl border p-4 mb-5" style={{ borderColor: "#e5e7eb" }}>
-          <p className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-3">Morda potrebujete še to?</p>
-          <div className="flex items-center justify-between gap-3">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-amber-50 flex items-center justify-center text-lg">🪧</div>
-              <div>
-                <p className="text-sm font-semibold text-gray-800">Podstavki za mizo</p>
-                <p className="text-xs text-gray-400">Elegantni kartončki s QR kodo za vsako mizo</p>
-              </div>
-            </div>
-            <button
-              onClick={() => setTableStandsSelected((prev) => !prev)}
-              className={`px-3 py-1.5 text-xs font-semibold border rounded-lg transition-colors whitespace-nowrap ${
-                tableStandsSelected
-                  ? "border-green-400 bg-green-50 text-green-700"
-                  : "border-gray-200 text-gray-600 hover:border-gray-300"
-              }`}
-            >
-              {tableStandsSelected ? "Dodano ✓" : "Dodaj +9€"}
-            </button>
-          </div>
-        </div>
-
         {/* Order summary */}
         <div className="bg-white rounded-xl border p-5 mb-5" style={{ borderColor: "#e5e7eb" }}>
           <h3 className="font-semibold text-gray-900 text-sm mb-4">Povzetek naročila</h3>

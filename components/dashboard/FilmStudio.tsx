@@ -47,14 +47,20 @@ const TIER_COLORS: Record<string, string> = {
 };
 
 export function FilmStudio({ album }: { album: Album }) {
-  const filmTier = (album.filmTier ?? "free") as "free" | "pro" | "premium";
+  const rawFilmTier = (album.filmTier ?? "free") as "free" | "pro" | "premium";
+  // Premium plan owners get full Film Studio access even if the filmTier
+  // column is still "free" (e.g. paid for the plan, not the standalone film
+  // unlock). The Stripe webhook *should* also flip filmTier when a plan
+  // is purchased, but treat the plan as the source of truth at render time
+  // so a missed webhook never leaves a paying customer locked out.
+  const effectiveFilmTier: "free" | "pro" | "premium" =
+    album.plan === "premium" && rawFilmTier === "free" ? "premium" : rawFilmTier;
 
-  // Free tier: render the locked upgrade gate instead of the generator.
-  if (filmTier === "free") {
+  if (effectiveFilmTier === "free") {
     return <FreeTierGate album={album} />;
   }
 
-  return <FilmGenerator album={album} filmTier={filmTier} />;
+  return <FilmGenerator album={album} filmTier={effectiveFilmTier} />;
 }
 
 // ── Free-tier upgrade gate ───────────────────────────────────────────────────

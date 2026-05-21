@@ -69,6 +69,10 @@ export async function POST(req: NextRequest) {
     }
     const expiresAt = new Date(Date.now() + config.daysAccess * 24 * 60 * 60 * 1000);
 
+    // Premium plan also unlocks Film Studio — keep filmTier in sync so
+    // the gate doesn't have to fall back to plan checks at every render.
+    const filmTierUpdate = planId === "premium" ? { filmTier: "premium" as const } : {};
+
     try {
       await db
         .update(albums)
@@ -77,6 +81,7 @@ export async function POST(req: NextRequest) {
           stripeSessionId: session.id,
           maxPhotos: config.maxPhotos,
           expiresAt,
+          ...filmTierUpdate,
         })
         .where(eq(albums.slug, albumSlug));
     } catch (err) {
