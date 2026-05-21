@@ -1,4 +1,4 @@
-import { auth } from "@clerk/nextjs/server";
+import { auth, currentUser } from "@clerk/nextjs/server";
 import { notFound, redirect } from "next/navigation";
 import { db } from "@/lib/db";
 import { albums, photos } from "@/lib/db/schema";
@@ -108,6 +108,18 @@ export default async function AlbumAdminPage({ params, searchParams }: Props) {
     notFound();
   }
 
+  // Surface the owner's Clerk email so the Settings tab can show
+  // "you are signed in as …" — users have asked to easily confirm
+  // which account a given album is on. Best-effort: if Clerk is down
+  // we just pass null and the card renders an em-dash.
+  let ownerEmail: string | null = null;
+  try {
+    const user = await currentUser();
+    ownerEmail = user?.emailAddresses?.[0]?.emailAddress ?? null;
+  } catch {
+    ownerEmail = null;
+  }
+
   return (
     <AlbumAdminPanel
       album={album}
@@ -118,6 +130,7 @@ export default async function AlbumAdminPage({ params, searchParams }: Props) {
       isNew={isNew}
       isUpgraded={isUpgraded}
       paidPlan={paidPlan}
+      ownerEmail={ownerEmail}
     />
   );
 }
