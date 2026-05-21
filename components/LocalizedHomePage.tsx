@@ -453,7 +453,7 @@ export function LocalizedHomePage({ lang }: { lang: Lang }) {
     <div className="min-h-screen bg-white text-[#0F1729] font-sans">
 
       {/* Announcement bar */}
-      <div className="text-white text-center text-xs font-semibold py-2.5 px-4" style={{ background: "#1E3A8A" }}>
+      <div className="text-[#0F1729] text-center text-xs font-semibold py-2.5 px-4" style={{ background: "#FFC94D" }}>
         {t.announce}{" "}
         <Link href="/dashboard/new" className="underline font-bold ml-2">{t.announceLink}</Link>
       </div>
@@ -485,8 +485,8 @@ export function LocalizedHomePage({ lang }: { lang: Lang }) {
             <div>
               <div className="flex items-center gap-3 mb-7">
                 <div className="flex -space-x-2.5">
-                  {["#1E3A8A", "#3B5BA8", "#93B0E0", "#6E8FCF", "#2A3C73"].map((bg, i) => (
-                    <div key={i} className="w-9 h-9 rounded-full border-[2.5px] flex items-center justify-center text-[11px] font-bold text-white shrink-0" style={{ background: bg, borderColor: "#F2F4F8" }}>
+                  {["#FFC94D", "#F0B429", "#E8A800", "#FFD966", "#C9820A"].map((bg, i) => (
+                    <div key={i} className="w-9 h-9 rounded-full border-[2.5px] flex items-center justify-center text-[11px] font-bold text-[#0F1729] shrink-0" style={{ background: bg, borderColor: "#F2F4F8" }}>
                       {["T", "A", "S", "D", "M"][i]}
                     </div>
                   ))}
