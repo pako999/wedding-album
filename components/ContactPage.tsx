@@ -1,5 +1,6 @@
 import { SiteHeader } from "@/components/SiteHeader";
 import { SeoFooter } from "@/components/SeoFooter";
+import { ContactForm } from "@/components/ContactForm";
 import type { LangCode } from "@/components/LanguageSwitcher";
 
 interface ContactCopy {
@@ -46,7 +47,7 @@ const COPY: Record<LangCode, ContactCopy> = {
     faqs: [
       { q: "Kako hitro dobim odgovor?",        a: "Običajno v 24 urah, pogosto že v nekaj urah med tednom." },
       { q: "Ali ponujate račune za podjetja?",  a: "Da. V email napišite ime podjetja in davčno številko, dobite e-račun PDF." },
-      { q: "Lahko pridem v živo?",              a: "Trenutno delujemo le online. Vsa komunikacija poteka po emailu ali WhatsApp." },
+      { q: "Lahko pridem v živo?",              a: "Poslujemo online, lahko pa se po predhodnem dogovoru dogovorimo tudi za sestanek — online ali v živo." },
       { q: "Imate Premium poročno podporo?",    a: "Da — Premium paket vključuje prednostno podporo s odzivnim časom pod 4 ure ob delavnikih." },
     ],
     responseNote: "Sport group d.o.o. · DDV ID: SI12345678 · Sedež: Ljubljana, Slovenija",
@@ -71,7 +72,7 @@ const COPY: Record<LangCode, ContactCopy> = {
     faqs: [
       { q: "Koliko brzo dobivam odgovor?",      a: "Obično unutar 24 sata, često unutar nekoliko sati radnim danima." },
       { q: "Izdajete li račune za tvrtke?",     a: "Da. U e-mail napišite naziv tvrtke i OIB — dobivate PDF e-račun." },
-      { q: "Mogu li doći osobno?",              a: "Trenutno radimo isključivo online. Komunikacija ide e-mailom ili WhatsApp-om." },
+      { q: "Mogu li doći osobno?",              a: "Poslujemo online, ali uz prethodni dogovor možemo zakazati i sastanak — online ili uživo." },
       { q: "Imate li Premium podršku za vjenčanja?", a: "Da — Premium paket uključuje prioritetnu podršku s odzivom unutar 4 sata radnim danima." },
     ],
     responseNote: "Sport group d.o.o. · PDV ID: SI12345678 · Sjedište: Ljubljana, Slovenija",
@@ -96,7 +97,7 @@ const COPY: Record<LangCode, ContactCopy> = {
     faqs: [
       { q: "Koliko brzo dobijam odgovor?",       a: "Obično unutar 24 sata, često za nekoliko sati radnim danom." },
       { q: "Izdajete li račune za firme?",       a: "Da. U e-mail napišite naziv firme i PIB — dobijate PDF e-račun." },
-      { q: "Mogu li doći lično?",                a: "Trenutno radimo isključivo online. Komunikacija ide e-mailom ili WhatsApp-om." },
+      { q: "Mogu li doći lično?",                a: "Poslujemo online, ali uz prethodni dogovor možemo zakazati i sastanak — online ili uživo." },
       { q: "Imate li Premium podršku za venčanja?", a: "Da — Premium paket uključuje prioritetnu podršku sa odzivom u roku od 4 sata radnim danom." },
     ],
     responseNote: "Sport group d.o.o. · PDV ID: SI12345678 · Sedište: Ljubljana, Slovenija",
@@ -121,7 +122,7 @@ const COPY: Record<LangCode, ContactCopy> = {
     faqs: [
       { q: "Wie schnell antworten Sie?",          a: "Meist innerhalb von 24 Stunden, an Werktagen oft schon nach wenigen Stunden." },
       { q: "Stellen Sie Rechnungen für Firmen aus?", a: "Ja. Schreiben Sie Firmenname + USt-IdNr. in die E-Mail — Sie erhalten eine PDF-Rechnung." },
-      { q: "Kann man persönlich vorbeikommen?",   a: "Wir arbeiten zurzeit rein online. Alle Kommunikation läuft per E-Mail oder WhatsApp." },
+      { q: "Kann man persönlich vorbeikommen?",   a: "Wir arbeiten online, nach Absprache vereinbaren wir aber gerne auch einen Termin — online oder persönlich." },
       { q: "Gibt es Premium-Hochzeitssupport?",    a: "Ja — das Premium-Paket enthält Priority-Support mit Antwort unter 4 Stunden an Werktagen." },
     ],
     responseNote: "Sport group d.o.o. · USt-IdNr.: SI12345678 · Sitz: Ljubljana, Slowenien",
@@ -146,7 +147,7 @@ const COPY: Record<LangCode, ContactCopy> = {
     faqs: [
       { q: "How fast do you reply?",                 a: "Usually within 24 hours, often within a few hours on weekdays." },
       { q: "Do you issue invoices for companies?",   a: "Yes. Include company name + VAT ID in your email — you'll get a PDF invoice." },
-      { q: "Can we meet in person?",                 a: "We're fully online for now. All communication runs via email or WhatsApp." },
+      { q: "Can we meet in person?",                 a: "We operate online, but with prior arrangement we can also schedule a meeting — online or in person." },
       { q: "Is there Premium wedding-day support?",  a: "Yes — the Premium plan includes priority support with under-4h response on weekdays." },
     ],
     responseNote: "Sport group d.o.o. · VAT ID: SI12345678 · Registered office: Ljubljana, Slovenia",
@@ -171,16 +172,35 @@ const COPY: Record<LangCode, ContactCopy> = {
     faqs: [
       { q: "¿Cuándo recibo respuesta?",               a: "Normalmente en 24 horas, a menudo en pocas horas entre semana." },
       { q: "¿Emiten facturas para empresas?",         a: "Sí. Incluye nombre de empresa + CIF en el email — recibirás una factura PDF." },
-      { q: "¿Podemos vernos en persona?",             a: "Trabajamos completamente online. Toda la comunicación es por email o WhatsApp." },
+      { q: "¿Podemos vernos en persona?",             a: "Trabajamos online, pero con cita previa también podemos concertar una reunión — online o en persona." },
       { q: "¿Hay soporte Premium para el día de la boda?", a: "Sí — el plan Premium incluye soporte prioritario con respuesta en menos de 4h en días laborables." },
     ],
     responseNote: "Sport group d.o.o. · CIF: SI12345678 · Domicilio social: Liubliana, Eslovenia",
   },
 };
 
+// Localised success / error messages used by <ContactForm>. Defined
+// outside the COPY map because ContactForm sits in a separate client
+// component that doesn't need the full COPY object.
+const SUCCESS_COPY: Record<LangCode, { title: string; body: string }> = {
+  sl: { title: "Sporočilo poslano",  body: "Hvala! Odgovorili vam bomo na vaš email, običajno v 24 urah." },
+  hr: { title: "Poruka poslana",     body: "Hvala! Odgovorit ćemo na vaš email, obično u roku od 24 sata." },
+  sr: { title: "Poruka poslata",     body: "Hvala! Odgovorićemo na vaš email, obično u roku od 24 sata." },
+  de: { title: "Nachricht gesendet", body: "Danke! Wir antworten per E-Mail, meist innerhalb von 24 Stunden." },
+  en: { title: "Message sent",       body: "Thanks! We'll reply by email, usually within 24 hours." },
+  es: { title: "Mensaje enviado",    body: "¡Gracias! Te responderemos por email, normalmente en 24 horas." },
+};
+const ERROR_COPY: Record<LangCode, string> = {
+  sl: "Pošiljanje ni uspelo. Poskusite znova ali nam pišite na hello@guestcam.si.",
+  hr: "Slanje nije uspjelo. Pokušajte ponovno ili nam pišite na hello@guestcam.si.",
+  sr: "Slanje nije uspelo. Pokušajte ponovo ili nam pišite na hello@guestcam.si.",
+  de: "Senden fehlgeschlagen. Bitte erneut versuchen oder direkt an hello@guestcam.si schreiben.",
+  en: "Sending failed. Please try again or email us at hello@guestcam.si.",
+  es: "Error al enviar. Inténtalo de nuevo o escríbenos a hello@guestcam.si.",
+};
+
 export function ContactPage({ lang }: { lang: LangCode }) {
   const t = COPY[lang];
-  const subjectDefault = encodeURIComponent("Guestcam — povpraševanje");
 
   return (
     <div className="min-h-screen bg-white text-[#0F1729]">
@@ -226,62 +246,18 @@ export function ContactPage({ lang }: { lang: LangCode }) {
               <h2 className="font-serif text-2xl sm:text-3xl font-bold text-[#0F1729] mb-2">{t.formTitle}</h2>
               <p className="text-sm text-gray-500 mb-6">{t.formLead}</p>
 
-              {/* No server action — open the user's mail client with prefilled subject.
-                  We can wire this to /api/contact + Resend later without breaking the URL. */}
-              <form
-                method="get"
-                action="mailto:hello@guestcam.si"
-                encType="text/plain"
-                className="space-y-3"
-              >
-                <input type="hidden" name="subject" value="Guestcam — kontakt" />
-                <div className="grid sm:grid-cols-2 gap-3">
-                  <label className="block">
-                    <span className="block text-xs font-medium text-gray-500 mb-1">{t.formName}</span>
-                    <input
-                      name="name"
-                      required
-                      className="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-[#FFC94D] focus:ring-1 focus:ring-[#FFC94D]"
-                    />
-                  </label>
-                  <label className="block">
-                    <span className="block text-xs font-medium text-gray-500 mb-1">{t.formEmail}</span>
-                    <input
-                      type="email"
-                      name="email"
-                      required
-                      className="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-[#FFC94D] focus:ring-1 focus:ring-[#FFC94D]"
-                    />
-                  </label>
-                </div>
-                <label className="block">
-                  <span className="block text-xs font-medium text-gray-500 mb-1">{t.formSubject}</span>
-                  <input
-                    name="subject"
-                    className="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-[#FFC94D] focus:ring-1 focus:ring-[#FFC94D]"
-                  />
-                </label>
-                <label className="block">
-                  <span className="block text-xs font-medium text-gray-500 mb-1">{t.formMessage}</span>
-                  <textarea
-                    name="body"
-                    rows={5}
-                    required
-                    className="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-[#FFC94D] focus:ring-1 focus:ring-[#FFC94D] resize-y"
-                  />
-                </label>
-                <button
-                  type="submit"
-                  formAction={`mailto:hello@guestcam.si?subject=${subjectDefault}`}
-                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-sm font-bold text-[#0F1729]"
-                  style={{
-                    background: "linear-gradient(135deg, #FFD966 0%, #FFC94D 55%, #F0B429 100%)",
-                    boxShadow: "0 6px 18px rgba(255,201,77,0.45)",
-                  }}
-                >
-                  {t.formCta} →
-                </button>
-              </form>
+              <ContactForm
+                labels={{
+                  name:    t.formName,
+                  email:   t.formEmail,
+                  subject: t.formSubject,
+                  message: t.formMessage,
+                  cta:     t.formCta,
+                  successTitle: SUCCESS_COPY[lang].title,
+                  successBody:  SUCCESS_COPY[lang].body,
+                  errorGeneric: ERROR_COPY[lang],
+                }}
+              />
             </div>
           </div>
         </section>
