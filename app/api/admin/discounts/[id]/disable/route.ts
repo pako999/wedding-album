@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import Stripe from "stripe";
 import { requireAdmin } from "@/lib/admin";
 
 export const dynamic = "force-dynamic";
@@ -14,17 +15,12 @@ export async function POST(
   if (!key) return NextResponse.json({ error: "Stripe ni konfiguriran" }, { status: 503 });
 
   const { id } = await params;
-  const res = await fetch(`https://api.stripe.com/v1/promotion_codes/${id}`, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${key}`,
-      "Content-Type": "application/x-www-form-urlencoded",
-    },
-    body: new URLSearchParams({ active: "false" }).toString(),
-  });
-  if (!res.ok) {
-    const err = await res.text();
-    return NextResponse.json({ error: err.slice(0, 200) }, { status: 502 });
+  const stripe = new Stripe(key);
+  try {
+    await stripe.promotionCodes.update(id, { active: false });
+    return NextResponse.json({ ok: true });
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    return NextResponse.json({ error: msg.slice(0, 200) }, { status: 502 });
   }
-  return NextResponse.json({ ok: true });
 }

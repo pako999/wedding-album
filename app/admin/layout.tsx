@@ -1,8 +1,9 @@
 import Link from "next/link";
+import { headers } from "next/headers";
 import { notFound, redirect } from "next/navigation";
 import { auth } from "@clerk/nextjs/server";
 import { SignOutButton } from "@clerk/nextjs";
-import { requireAdmin } from "@/lib/admin";
+import { requireAdmin, requireAdminEmail, hasValidAdminCookie } from "@/lib/admin";
 import { GuestcamLogo } from "@/components/GuestcamLogo";
 
 export const dynamic = "force-dynamic";
@@ -28,8 +29,30 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   }
   if (!userId) redirect("/sign-in?redirect_url=/admin");
 
+  // /admin/login is its own page (renders the password form); skip the
+  // password check there to avoid a redirect loop.
+  const path = (await headers()).get("x-invoke-path") ?? (await headers()).get("next-url") ?? "";
+  const onLoginPage = path.startsWith("/admin/login");
+
+  if (onLoginPage) {
+    // Clerk email gate still applies — non-admins shouldn't even see
+    // the password prompt.
+    const allowed = await requireAdminEmail();
+    if (!allowed) notFound();
+    return <>{children}</>;
+  }
+
+  // Full check: email allowlist AND signed password cookie.
   const admin = await requireAdmin();
-  if (!admin) notFound();
+  if (!admin) {
+    // Email is allowed but no/expired password cookie? Send to the
+    // password form. Anyone else → 404 (don't leak admin existence).
+    const emailOnly = await requireAdminEmail();
+    if (emailOnly && !(await hasValidAdminCookie())) {
+      redirect("/admin/login");
+    }
+    notFound();
+  }
 
   return (
     <div className="min-h-screen flex" style={{ background: "#F4F6FB" }}>
