@@ -35,6 +35,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: "/terms", priority: 0.3 },
     { path: "/gdpr", priority: 0.3 },
     { path: "/cookies", priority: 0.3 },
+    // Contact pages
+    { path: "/contact", priority: 0.5 },
+    { path: "/hr/contact", priority: 0.45 },
+    { path: "/sr/contact", priority: 0.45 },
+    { path: "/de/contact", priority: 0.45 },
+    { path: "/en/contact", priority: 0.45 },
+    { path: "/es/contact", priority: 0.45 },
     // Legal — localized (HR / SR / DE / EN / ES × privacy/terms/gdpr/cookies)
     ...(["hr", "sr", "de", "en", "es"].flatMap((lang) =>
       ["privacy", "terms", "gdpr", "cookies"].map((doc) => ({

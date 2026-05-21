@@ -142,7 +142,7 @@ export function SeoFooter({ lang }: { lang: Lang }) {
               <li><Link href={lang === "sl" ? "/terms"   : `/${lang}/terms`}   className="hover:text-white transition-colors">{t.terms}</Link></li>
               <li><Link href={lang === "sl" ? "/cookies" : `/${lang}/cookies`} className="hover:text-white transition-colors">{t.cookies}</Link></li>
               <li><Link href={lang === "sl" ? "/gdpr"    : `/${lang}/gdpr`}    className="hover:text-white transition-colors">{t.gdpr}</Link></li>
-              <li><a href="mailto:hello@guestcam.si" className="hover:text-white transition-colors">{t.contact}</a></li>
+              <li><Link href={lang === "sl" ? "/contact" : `/${lang}/contact`} className="hover:text-white transition-colors">{t.contact}</Link></li>
             </ul>
           </div>
 

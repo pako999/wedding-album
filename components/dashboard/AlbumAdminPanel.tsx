@@ -170,16 +170,29 @@ function NewAlbumSuccess({ album, paidPlan }: { album: Album; paidPlan?: "basic"
             </Link>
             <Link
               href={dashboardUrl}
-              className="block text-sm text-gray-500 hover:text-gray-700 transition-colors mb-4"
+              className="block text-sm text-gray-500 hover:text-gray-700 transition-colors mb-6"
             >
               Preskoči — to lahko storim kasneje v nadzorni plošči
             </Link>
-            <button
-              onClick={() => setStep(2)}
-              className="text-sm font-medium text-gray-600 hover:text-gray-800 transition-colors"
-            >
-              ← Nazaj na QR kodo
-            </button>
+
+            {/* Bottom row — back on the left, primary dashboard CTA on the right.
+                Replaces the centred single 'back' button so new owners always
+                see a clear exit into the admin instead of having to use the
+                browser back arrow or click 'Preskoči'. */}
+            <div className="flex items-center justify-between gap-3 pt-2">
+              <button
+                onClick={() => setStep(2)}
+                className="text-sm font-medium text-gray-600 hover:text-gray-800 transition-colors"
+              >
+                ← Nazaj na QR kodo
+              </button>
+              <Link
+                href={dashboardUrl}
+                className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl text-sm font-bold border-2 border-[#0F1729] text-[#0F1729] hover:bg-[#0F1729] hover:text-white transition-colors"
+              >
+                Pojdi na nadzorno ploščo →
+              </Link>
+            </div>
           </div>
         )}
       </div>

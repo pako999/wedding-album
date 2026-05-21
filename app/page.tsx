@@ -948,7 +948,7 @@ export default function HomePage() {
                 <li><Link href="/terms" className="hover:text-white transition-colors">Pogoji uporabe</Link></li>
                 <li><Link href="/cookies" className="hover:text-white transition-colors">Piškotki</Link></li>
                 <li><Link href="/gdpr" className="hover:text-white transition-colors">GDPR</Link></li>
-                <li><a href="mailto:hello@guestcam.si" className="hover:text-white transition-colors">Kontakt</a></li>
+                <li><Link href="/contact" className="hover:text-white transition-colors">Kontakt</Link></li>
               </ul>
             </div>
 
