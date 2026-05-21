@@ -160,18 +160,10 @@ export function UpgradePage({ album }: Props) {
   })();
   const [selectedPlan, setSelectedPlan] = useState<PlanId>(initialPlan);
   const [expandedPlan, setExpandedPlan] = useState<PlanId>(initialPlan);
-  const [discountCode, setDiscountCode] = useState("");
-  const [discountApplied, setDiscountApplied] = useState(false);
   const [tableStandsSelected, setTableStandsSelected] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const chosen = PLANS.find((p) => p.id === selectedPlan)!;
-
-  const applyDiscount = () => {
-    if (discountCode.trim().length > 0) {
-      setDiscountApplied(true);
-    }
-  };
 
   return (
     <div className="min-h-screen py-10 px-4" style={{ background: "#f5f5f7" }}>
@@ -339,28 +331,13 @@ export function UpgradePage({ album }: Props) {
             <span className="text-xs text-gray-400 line-through">{chosen.originalPrice}€</span>
           </div>
 
-          {/* Discount code */}
-          <div className="flex gap-2 mb-4">
-            <input
-              value={discountCode}
-              onChange={(e) => setDiscountCode(e.target.value)}
-              placeholder="Koda za popust"
-              className="flex-1 px-3 py-2 border border-gray-200 rounded-lg text-sm text-gray-700 outline-none focus:border-[#FFC94D] transition-colors"
-            />
-            <button
-              onClick={applyDiscount}
-              className="px-4 py-2 text-sm font-semibold rounded-lg border border-gray-200 text-gray-600 hover:border-gray-300 transition-colors whitespace-nowrap"
-            >
-              Uporabi
-            </button>
-          </div>
-          {discountApplied && (
-            <p className="text-xs text-green-600 -mt-2 mb-3">Koda je bila uspešno uporabljena.</p>
-          )}
-
+          {/* Discount code lives on the Stripe Checkout page now
+              (allow_promotion_codes=true). Keeping it off this screen
+              avoids two places to enter the same code and stops us from
+              having to validate codes twice. */}
           <div className="flex items-center justify-between">
             <span className="font-semibold text-gray-900">Skupaj za plačilo</span>
-            <span className="font-bold text-xl text-gray-900">{discountApplied ? Math.round(chosen.price * 0.9) : chosen.price}€</span>
+            <span className="font-bold text-xl text-gray-900">{chosen.price}€</span>
           </div>
         </div>
 
@@ -395,7 +372,7 @@ export function UpgradePage({ album }: Props) {
               Preusmeritev…
             </>
           ) : (
-            <>Nadgradi na {chosen.name} za {discountApplied ? Math.round(chosen.price * 0.9) : chosen.price}€ →</>
+            <>Nadgradi na {chosen.name} za {chosen.price}€ →</>
           )}
         </button>
 

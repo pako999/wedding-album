@@ -86,7 +86,10 @@ export async function POST(req: NextRequest) {
     mode: "payment",
     payment_method_types: ["card", "link"],
     line_items: lineItems,
-    success_url: `${APP_URL}/dashboard/${albumSlug}?upgraded=1`,
+    // session_id is filled in by Stripe; the dashboard page uses it
+    // to reconcile the upgrade if the webhook didn't fire (e.g. apex
+    // domain redirect drops Stripe's POST). Belt-and-braces.
+    success_url: `${APP_URL}/dashboard/${albumSlug}?upgraded=1&session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${APP_URL}/dashboard/${albumSlug}/upgrade`,
     allow_promotion_codes: true,
     metadata: {
