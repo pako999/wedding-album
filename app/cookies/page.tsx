@@ -21,7 +21,7 @@ function SiteHeader() {
           <span className="font-serif italic text-xl font-bold text-[#0F1729]">
             Guestcam
           </span>
-          <span className="font-black text-2xl leading-none text-[#1E3A8A]">.</span>
+          <span className="font-black text-2xl leading-none text-[#C9820A]">.</span>
         </Link>
         <div className="flex items-center gap-6 text-sm font-medium text-gray-500">
           <Link href="/" className="hover:text-[#0F1729] transition-colors">
@@ -131,7 +131,7 @@ export default function CookiesPage() {
       <main className="max-w-3xl mx-auto px-6 py-16">
         <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-8 md:p-12">
           <div className="mb-10">
-            <p className="text-xs font-bold uppercase tracking-widest text-[#1E3A8A] mb-3">
+            <p className="text-xs font-bold uppercase tracking-widest text-[#C9820A] mb-3">
               Pravni dokument
             </p>
             <h1 className="font-serif text-4xl font-bold text-[#0F1729] mb-3">
@@ -145,11 +145,11 @@ export default function CookiesPage() {
           {/* Highlight box */}
           <div
             className="rounded-2xl p-5 mb-8 flex gap-4"
-            style={{ background: "rgba(30,58,138,0.08)", border: "1px solid rgba(30,58,138,0.2)" }}
+            style={{ background: "rgba(255,201,77,0.08)", border: "1px solid rgba(255,201,77,0.2)" }}
           >
             <svg
               className="w-5 h-5 shrink-0 mt-0.5"
-              style={{ color: "#1E3A8A" }}
+              style={{ color: "#C9820A" }}
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -256,7 +256,7 @@ export default function CookiesPage() {
                   href="https://clerk.com/privacy"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-[#1E3A8A] hover:underline"
+                  className="text-[#C9820A] hover:underline"
                 >
                   clerk.com/privacy
                 </a>
@@ -313,7 +313,7 @@ export default function CookiesPage() {
                 E-pošta:{" "}
                 <a
                   href="mailto:hello@guestcam.si"
-                  className="text-[#1E3A8A] hover:underline"
+                  className="text-[#C9820A] hover:underline"
                 >
                   hello@guestcam.si
                 </a>

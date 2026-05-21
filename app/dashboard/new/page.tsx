@@ -6,7 +6,7 @@ import { CreateEventWizard } from "@/components/dashboard/CreateEventWizard";
 
 export const dynamic = "force-dynamic";
 
-export default async function NewAlbumPage() {
+export default async function NewAlbumPage({ searchParams }: { searchParams: Promise<{ plan?: string }> }) {
   let userId: string | null = null;
   try {
     const session = await auth();
@@ -15,6 +15,12 @@ export default async function NewAlbumPage() {
     // Clerk not configured or session error — redirect to sign-in
   }
   if (!userId) redirect("/sign-in");
+
+  const { plan: planParam } = await searchParams;
+  const initialPlan =
+    planParam === "basic" || planParam === "plus" || planParam === "premium"
+      ? planParam
+      : undefined;
 
   return (
     <div className="min-h-screen" style={{ background: "#F4F6FB" }}>
@@ -31,7 +37,7 @@ export default async function NewAlbumPage() {
         </Link>
 
         {/* Multi-step wizard */}
-        <CreateEventWizard />
+        <CreateEventWizard initialPlan={initialPlan} />
 
         <p className="text-center text-xs text-gray-400 mt-6">
           Po ustvarjanju boste dobili edinstveno QR kodo za vaše goste.

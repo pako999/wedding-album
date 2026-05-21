@@ -87,9 +87,9 @@ function getColors(style: TemplateInfo["style"]) {
     case "dark":    return { bg: "#1C1917", text: "#F5F0EB", accent: "#D4A574", sub: "rgba(245,240,235,0.55)", border: "none", divider: "#D4A574" };
     case "cream":   return { bg: "#FEFBF3", text: "#0F1729", accent: "#8B6914", sub: "#9CA3AF", border: "1.5px solid rgba(139,105,20,0.25)", divider: "#C4A55A" };
     case "kraft":   return { bg: "#F0E8D8", text: "#3D2B1F", accent: "#8B5E3C", sub: "rgba(61,43,31,0.55)", border: "1.5px solid rgba(139,94,60,0.3)", divider: "#A0724A" };
-    case "blush":   return { bg: "#FDF0F3", text: "#0F1729", accent: "#1E3A8A", sub: "#9CA3AF", border: "1.5px solid rgba(30,58,138,0.3)", divider: "#1E3A8A" };
+    case "blush":   return { bg: "#FDF0F3", text: "#0F1729", accent: "#C9820A", sub: "#9CA3AF", border: "1.5px solid rgba(255,201,77,0.3)", divider: "#C9820A" };
     case "minimal": return { bg: "#FFFFFF", text: "#111111", accent: "#555555", sub: "#888888", border: "1px solid #E5E5E5", divider: "#CCCCCC" };
-    default:        return { bg: "#FFFFFF", text: "#0F1729", accent: "#1E3A8A", sub: "#9CA3AF", border: "1.5px solid rgba(30,58,138,0.2)", divider: "#1E3A8A" };
+    default:        return { bg: "#FFFFFF", text: "#0F1729", accent: "#C9820A", sub: "#9CA3AF", border: "1.5px solid rgba(255,201,77,0.2)", divider: "#C9820A" };
   }
 }
 
@@ -289,7 +289,7 @@ export function PrintPageClient({ slug, coupleName, weddingDate, location, qrUrl
   return (
     <div className="min-h-screen" style={{ background: "#F4F6FB" }}>
       {/* Screen nav */}
-      <nav className="no-print bg-white border-b sticky top-0 z-40" style={{ borderColor: "rgba(30,58,138,0.15)" }}>
+      <nav className="no-print bg-white border-b sticky top-0 z-40" style={{ borderColor: "rgba(255,201,77,0.15)" }}>
         <div className="max-w-5xl mx-auto px-6 h-14 flex items-center justify-between gap-4">
           <Link
             href={`/dashboard/${slug}`}
@@ -305,7 +305,7 @@ export function PrintPageClient({ slug, coupleName, weddingDate, location, qrUrl
             <button
               onClick={() => window.print()}
               className="inline-flex items-center gap-2 px-5 py-2 text-white text-sm font-bold rounded-xl hover:brightness-95"
-              style={{ background: "#1E3A8A" }}
+              style={{ background: "#FFC94D" }}
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6.72 13.829c-.24.03-.48.062-.72.096m.72-.096a42.415 42.415 0 0110.56 0m-10.56 0L6.34 18m10.94-4.171c.24.03.48.062.72.096m-.72-.096L17.66 18m0 0l.229 2.523a1.125 1.125 0 01-1.12 1.227H7.231c-.662 0-1.18-.568-1.12-1.227L6.34 18m11.318 0h1.091A2.25 2.25 0 0021 15.75V9.456c0-1.081-.768-2.015-1.837-2.175a48.055 48.055 0 00-1.913-.247M6.34 18H5.25A2.25 2.25 0 013 15.75V9.456c0-1.081.768-2.015 1.837-2.175a48.056 48.056 0 011.913-.247m10.5 0a48.536 48.536 0 00-10.5 0m10.5 0V3.375c0-.621-.504-1.125-1.125-1.125h-8.25c-.621 0-1.125.504-1.125 1.125v3.659M18 10.5h.008v.008H18V10.5zm-3 0h.008v.008H15V10.5z" />
@@ -341,7 +341,7 @@ export function PrintPageClient({ slug, coupleName, weddingDate, location, qrUrl
                     className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all text-left"
                     style={{
                       background: isActive ? "white" : "transparent",
-                      border: isActive ? "1.5px solid rgba(30,58,138,0.4)" : "1.5px solid transparent",
+                      border: isActive ? "1.5px solid rgba(255,201,77,0.4)" : "1.5px solid transparent",
                     }}
                   >
                     {/* Mini preview swatch */}
@@ -356,7 +356,7 @@ export function PrintPageClient({ slug, coupleName, weddingDate, location, qrUrl
                       <p className="text-xs text-gray-400 mt-0.5">{tmpl.headline}</p>
                     </div>
                     {isActive && (
-                      <div className="ml-auto w-5 h-5 rounded-full flex items-center justify-center shrink-0" style={{ background: "#1E3A8A" }}>
+                      <div className="ml-auto w-5 h-5 rounded-full flex items-center justify-center shrink-0" style={{ background: "#FFC94D" }}>
                         <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={3}>
                           <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                         </svg>
@@ -382,7 +382,7 @@ export function PrintPageClient({ slug, coupleName, weddingDate, location, qrUrl
                       onChange={(e) => setCustomHeadline(e.target.value)}
                       placeholder={selected.headline}
                       maxLength={200}
-                      className="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm text-[#0F1729] outline-none transition-colors focus:border-[#1E3A8A]"
+                      className="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm text-[#0F1729] outline-none transition-colors focus:border-[#C9820A]"
                     />
                   </div>
                   <div>
@@ -392,7 +392,7 @@ export function PrintPageClient({ slug, coupleName, weddingDate, location, qrUrl
                       onChange={(e) => setCustomSubtitle(e.target.value)}
                       placeholder={selected.sub}
                       maxLength={200}
-                      className="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm text-[#0F1729] outline-none transition-colors focus:border-[#1E3A8A]"
+                      className="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm text-[#0F1729] outline-none transition-colors focus:border-[#C9820A]"
                     />
                   </div>
                   <div>
@@ -402,7 +402,7 @@ export function PrintPageClient({ slug, coupleName, weddingDate, location, qrUrl
                       onChange={(e) => setCustomCta(e.target.value)}
                       placeholder={selected.cta}
                       maxLength={200}
-                      className="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm text-[#0F1729] outline-none transition-colors focus:border-[#1E3A8A]"
+                      className="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm text-[#0F1729] outline-none transition-colors focus:border-[#C9820A]"
                     />
                   </div>
                 </div>
@@ -410,7 +410,7 @@ export function PrintPageClient({ slug, coupleName, weddingDate, location, qrUrl
                   onClick={handleSaveText}
                   disabled={saving}
                   className="mt-3 w-full py-2.5 rounded-xl text-white text-sm font-bold transition-all disabled:opacity-60 hover:brightness-95"
-                  style={{ background: "#1E3A8A" }}
+                  style={{ background: "#FFC94D" }}
                 >
                   {saving ? "Shranjujem…" : saved ? "Shranjeno ✓" : "Shrani besedilo"}
                 </button>
@@ -418,7 +418,7 @@ export function PrintPageClient({ slug, coupleName, weddingDate, location, qrUrl
             ) : (
               <div className="mt-6 bg-white rounded-2xl p-4 border border-gray-200">
                 <div className="flex items-center gap-1.5 mb-1">
-                  <svg className="w-3.5 h-3.5 text-[#1E3A8A]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                  <svg className="w-3.5 h-3.5 text-[#C9820A]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
                   </svg>
                   <p className="text-xs font-bold text-[#0F1729]">Lasten napis na kartici</p>
@@ -430,7 +430,7 @@ export function PrintPageClient({ slug, coupleName, weddingDate, location, qrUrl
                 <Link
                   href={`/dashboard/${slug}/upgrade`}
                   className="block text-center py-2.5 rounded-xl text-white text-sm font-bold transition-all hover:brightness-95"
-                  style={{ background: "#1E3A8A" }}
+                  style={{ background: "#FFC94D" }}
                 >
                   Nadgradi na Premium
                 </Link>
@@ -438,7 +438,7 @@ export function PrintPageClient({ slug, coupleName, weddingDate, location, qrUrl
             )}
 
             {/* Print tip */}
-            <div className="mt-6 bg-white rounded-2xl p-4 border" style={{ borderColor: "rgba(30,58,138,0.15)" }}>
+            <div className="mt-6 bg-white rounded-2xl p-4 border" style={{ borderColor: "rgba(255,201,77,0.15)" }}>
               <p className="text-xs font-bold text-[#0F1729] mb-2">💡 Nasveti za tisk</p>
               <ul className="text-xs text-gray-500 space-y-1.5">
                 <li>→ Natisnite na debel papir (200g+)</li>
@@ -452,7 +452,7 @@ export function PrintPageClient({ slug, coupleName, weddingDate, location, qrUrl
           {/* RIGHT: Live preview */}
           <div className="flex-1 min-w-0">
             <h2 className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-3">Predogled</h2>
-            <div className="bg-white rounded-3xl p-6 border flex items-center justify-center" style={{ borderColor: "rgba(30,58,138,0.15)" }}>
+            <div className="bg-white rounded-3xl p-6 border flex items-center justify-center" style={{ borderColor: "rgba(255,201,77,0.15)" }}>
               {/* True-to-print A4 sheet — the real 210×297 mm / 4×A6 grid,
                   uniformly scaled down to fit the preview column. */}
               <div

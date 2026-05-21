@@ -18,7 +18,7 @@ const cormorant = Cormorant_Garamond({
 });
 
 export const viewport: Viewport = {
-  themeColor: "#1E3A8A",
+  themeColor: "#C9820A",
 };
 
 const SITE_URL = "https://guestcam.si";

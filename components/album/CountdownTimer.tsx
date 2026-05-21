@@ -10,7 +10,7 @@ interface Props {
   accent?: string;
 }
 
-export function CountdownTimer({ targetDate, translations: t, accent = "#1E3A8A" }: Props) {
+export function CountdownTimer({ targetDate, translations: t, accent = "#C9820A" }: Props) {
   const [label, setLabel] = useState<string | null>(null);
 
   useEffect(() => {

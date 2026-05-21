@@ -16,10 +16,10 @@ export default function SignUpPage() {
           appearance={{
             elements: {
               rootBox: "w-full",
-              card: "shadow-md rounded-2xl border border-[#1E3A8A]/15 bg-white",
+              card: "shadow-md rounded-2xl border border-[#C9820A]/15 bg-white",
               headerTitle: "font-serif text-[#0F1729]",
-              formButtonPrimary: "bg-[#0F1729] hover:bg-[#1E3A8A] transition-colors rounded-xl",
-              footerActionLink: "text-[#1E3A8A] hover:text-[#152C66]",
+              formButtonPrimary: "bg-[#0F1729] hover:bg-[#C9820A] transition-colors rounded-xl",
+              footerActionLink: "text-[#C9820A] hover:text-[#152C66]",
             },
           }}
         />
