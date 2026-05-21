@@ -25,6 +25,11 @@ export const metadata: Metadata = {
     description:
       "Reúne todas las fotos y vídeos de tus invitados en una galería privada. Sin app, calidad completa.",
   },
+  twitter: {
+    card: "summary_large_image",
+    title: "Guestcam — Reúne todas las fotos de boda con un solo código QR",
+    description: "Reúne todas las fotos y vídeos de tus invitados en una galería privada. Sin app, calidad completa — para bodas, cumpleaños y eventos.",
+  },
 };
 
 export default function EsHomePage() {

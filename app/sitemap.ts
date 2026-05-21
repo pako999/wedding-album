@@ -30,11 +30,18 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: "/de/alternativen", priority: 0.7 },
     { path: "/en/alternatives", priority: 0.7 },
     { path: "/es/alternativas", priority: 0.7 },
-    // Legal
+    // Legal — Slovenian master pages
     { path: "/privacy", priority: 0.3 },
     { path: "/terms", priority: 0.3 },
     { path: "/gdpr", priority: 0.3 },
     { path: "/cookies", priority: 0.3 },
+    // Legal — localized (HR / SR / DE / EN / ES × privacy/terms/gdpr/cookies)
+    ...(["hr", "sr", "de", "en", "es"].flatMap((lang) =>
+      ["privacy", "terms", "gdpr", "cookies"].map((doc) => ({
+        path: `/${lang}/${doc}`,
+        priority: 0.25,
+      })),
+    )),
   ];
 
   return pages.map(({ path, priority }) => ({

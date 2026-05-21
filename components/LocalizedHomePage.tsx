@@ -21,6 +21,56 @@ function IconCamera() { return (<svg viewBox="0 0 24 24" fill="none" stroke="cur
 function IconBolt()   { return (<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z" /></svg>); }
 function IconPhone()  { return (<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6"><rect x="5" y="2" width="14" height="20" rx="2" /><path d="M12 18h.01" /></svg>); }
 
+// Mini QR mockup used inside the rich template-card overlays. Same pattern
+// as the one on the SL homepage so all languages look identical.
+function QRPattern() {
+  const cells = [
+    [1,1,1,1,1,1,1,0,1,0,1,1,1,1,1,1,1],
+    [1,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,1],
+    [1,0,1,1,1,0,1,0,1,0,1,0,1,1,1,0,1],
+    [1,0,1,1,1,0,1,0,0,0,1,0,1,1,1,0,1],
+    [1,0,1,1,1,0,1,0,1,1,1,0,1,1,1,0,1],
+    [1,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,1],
+    [1,1,1,1,1,1,1,0,1,0,1,1,1,1,1,1,1],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [1,0,1,1,0,0,1,1,0,1,0,1,1,0,0,1,0],
+    [0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0],
+    [1,1,1,1,1,1,1,0,0,0,1,0,1,1,1,1,1],
+    [1,0,0,0,0,0,1,0,1,0,0,0,1,0,0,0,1],
+    [1,0,1,1,1,0,1,0,0,1,1,0,1,0,1,0,1],
+    [1,0,1,1,1,0,1,0,1,0,0,0,1,0,0,0,1],
+    [1,0,1,1,1,0,1,0,0,0,1,1,0,1,1,1,0],
+    [1,0,0,0,0,0,1,0,1,0,0,0,1,0,0,1,1],
+    [1,1,1,1,1,1,1,0,0,1,1,0,0,1,1,0,1],
+  ];
+  return (
+    <div className="grid gap-px" style={{ gridTemplateColumns: `repeat(17, 1fr)`, width: 68, height: 68 }}>
+      {cells.flat().map((v, i) => (
+        <div key={i} style={{ backgroundColor: v ? '#0F1729' : 'transparent' }} />
+      ))}
+    </div>
+  );
+}
+
+/**
+ * Visual data for the 8 template preview cards in the "Print templates"
+ * section. Shared across all languages so each one renders identically
+ * to the SL homepage — the localised `printTemplates[i].name` (and the
+ * localised `useTemplateCta` hover label) layer on top.
+ *
+ * Order MUST match `printTemplates` in every Lang's COPY entry.
+ */
+const TEMPLATE_VISUALS: Array<{ bg: string; headline: string; sub: string; rotate: number; dark: boolean }> = [
+  { bg: "photo-1537633552985-df8429e8048b", headline: "Capture the Love ♥", sub: "Scan & share",       rotate: -3, dark: false },
+  { bg: "photo-1523438885200-e635ba2c371e", headline: "Share Our Memories", sub: "Share the memories", rotate:  2, dark: false },
+  { bg: "photo-1606800052052-a08af7148866", headline: "Thank You",          sub: "For shared memories", rotate: -1, dark: false },
+  { bg: "photo-1515934751635-c81c6bc9a2d8", headline: "Scan & Share",       sub: "No app required",     rotate:  2, dark: false },
+  { bg: "photo-1501286353178-1ec881214838", headline: "Collect Memories",   sub: "Scan the QR code",    rotate: -2, dark: false },
+  { bg: "photo-1520854221256-17451cc331bf", headline: "Our Memories",       sub: "Scan to share",       rotate:  1, dark: true  },
+  { bg: "photo-1465495976277-4387d4b0b4c6", headline: "Your Day",           sub: "Add a photo",         rotate: -2, dark: false },
+  { bg: "photo-1529634806980-85c3dd6d34ac", headline: "Share the Love",     sub: "Scan the QR code",    rotate:  2, dark: true  },
+];
+
 // ─── Translation copy ────────────────────────────────────────────────────────
 interface Copy {
   switcherAria: string;
@@ -46,6 +96,7 @@ interface Copy {
   printNote: string;
   printCta: string;
   printTemplates: { name: string }[];
+  useTemplateCta: string;
   howEyebrow: string;
   howTitle: { line1: string; line2: string };
   howSubtitle: string;
@@ -90,6 +141,7 @@ const COPY: Record<Lang, Copy> = {
     printSubtitle: "Odaberite dizajn, dodajte svoj QR kod i ispišite. Više gostiju sudjeluje, više nezaboravnih trenutaka u vašoj galeriji.",
     printNote: "Svaki predložak uključuje vaše ime, datum i personalizirani QR kod",
     printCta: "Kreiraj galeriju i preuzmi predloške →",
+    useTemplateCta: "Koristi predložak",
     printTemplates: [
       { name: "Klasična" }, { name: "Botanička" }, { name: "Elegantna" }, { name: "Cvjetna" },
       { name: "Rustikalna" }, { name: "Moderna" }, { name: "Minimalistička" }, { name: "Skandinavska" },
@@ -163,6 +215,7 @@ const COPY: Record<Lang, Copy> = {
     printSubtitle: "Izaberite dizajn, dodajte svoj QR kod i odštampajte. Više gostiju učestvuje, više nezaboravnih trenutaka u vašoj galeriji.",
     printNote: "Svaki šablon uključuje vaše ime, datum i personalizovani QR kod",
     printCta: "Napravi galeriju i preuzmi šablone →",
+    useTemplateCta: "Koristi šablon",
     printTemplates: [
       { name: "Klasična" }, { name: "Botanička" }, { name: "Elegantna" }, { name: "Cvetna" },
       { name: "Rustikalna" }, { name: "Moderna" }, { name: "Minimalistička" }, { name: "Skandinavska" },
@@ -236,6 +289,7 @@ const COPY: Record<Lang, Copy> = {
     printSubtitle: "Wählen Sie ein Design, fügen Sie Ihren QR-Code hinzu und drucken Sie. Je mehr Gäste mitmachen, desto mehr Erinnerungen in Ihrer Galerie.",
     printNote: "Jede Vorlage enthält Ihren Namen, Datum und personalisierten QR-Code",
     printCta: "Galerie erstellen und Vorlagen herunterladen →",
+    useTemplateCta: "Vorlage verwenden",
     printTemplates: [
       { name: "Klassisch" }, { name: "Botanisch" }, { name: "Elegant" }, { name: "Blumen" },
       { name: "Rustikal" }, { name: "Modern" }, { name: "Minimalistisch" }, { name: "Skandinavisch" },
@@ -309,6 +363,7 @@ const COPY: Record<Lang, Copy> = {
     printSubtitle: "Pick a design, add your QR code and print. The more guests join in, the more unforgettable moments end up in your gallery.",
     printNote: "Every template includes your name, date and personalised QR code",
     printCta: "Create gallery and download templates →",
+    useTemplateCta: "Use template",
     printTemplates: [
       { name: "Classic" }, { name: "Botanical" }, { name: "Elegant" }, { name: "Floral" },
       { name: "Rustic" }, { name: "Modern" }, { name: "Minimal" }, { name: "Scandi" },
@@ -382,6 +437,7 @@ const COPY: Record<Lang, Copy> = {
     printSubtitle: "Elige un diseño, añade tu QR e imprime. Cuantos más invitados participen, más recuerdos llegarán a tu galería.",
     printNote: "Cada plantilla incluye tu nombre, fecha y código QR personalizado",
     printCta: "Crear galería y descargar plantillas →",
+    useTemplateCta: "Usar plantilla",
     printTemplates: [
       { name: "Clásica" }, { name: "Botánica" }, { name: "Elegante" }, { name: "Floral" },
       { name: "Rústica" }, { name: "Moderna" }, { name: "Minimalista" }, { name: "Escandinava" },
@@ -581,13 +637,52 @@ export function LocalizedHomePage({ lang }: { lang: Lang }) {
             <p className="text-gray-400 max-w-lg mx-auto leading-relaxed">{t.printSubtitle}</p>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
-            {t.printTemplates.map((tpl) => (
-              <div key={tpl.name} className="group relative rounded-2xl overflow-hidden cursor-pointer bg-[#FFF9EC] border border-[#FFC94D]/30 aspect-[4/5] flex items-center justify-center">
-                <div className="text-center px-4">
-                  <p className="font-serif text-base font-bold text-[#0F1729]">{tpl.name}</p>
+            {t.printTemplates.map((tpl, idx) => {
+              const v = TEMPLATE_VISUALS[idx] ?? TEMPLATE_VISUALS[0];
+              return (
+                <div key={tpl.name} className="group relative rounded-2xl overflow-hidden cursor-pointer" style={{ boxShadow: "0 4px 20px rgba(0,0,0,0.12)" }}>
+                  <div className="relative" style={{ height: 300 }}>
+                    <img
+                      src={`https://images.unsplash.com/${v.bg}?w=400&h=500&fit=crop&q=80`}
+                      alt={tpl.name}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                    <div className="absolute inset-0" style={{ background: "rgba(0,0,0,0.18)" }} />
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div
+                        className={`${v.dark ? "bg-[#0F1729] text-white" : "bg-white/97 text-[#0F1729]"} rounded-xl p-4 shadow-2xl text-center`}
+                        style={{ width: 130, transform: `rotate(${v.rotate}deg)` }}
+                      >
+                        <p className={`font-serif text-[11px] font-bold mb-0.5 leading-tight ${v.dark ? "text-white" : "text-[#0F1729]"}`}>
+                          {v.headline}
+                        </p>
+                        <p className={`text-[8px] mb-2.5 ${v.dark ? "text-white/60" : "text-gray-400"}`}>{v.sub}</p>
+                        <div className="flex justify-center mb-2" style={{ transform: "scale(0.48)", transformOrigin: "center", height: 33, overflow: "hidden" }}>
+                          <QRPattern />
+                        </div>
+                        <p className={`font-serif text-[8px] italic ${v.dark ? "text-[#f9a8c0]" : "text-[#C9820A]"}`}>Ana &amp; Marko</p>
+                        {v.dark ? null : <div className="w-8 h-px bg-gray-200 mx-auto mt-1.5" />}
+                        <p className={`text-[7px] mt-1 ${v.dark ? "text-white/40" : "text-gray-300"}`}>14. 06. 2025</p>
+                      </div>
+                    </div>
+                    <div className="absolute inset-0 bg-[#FFC94D]/90 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center gap-3">
+                      <p className="text-[#0F1729] font-bold text-sm">{tpl.name}</p>
+                      <Link
+                        href="/dashboard/new"
+                        className="bg-white font-bold text-xs px-5 py-2.5 rounded-full transition-transform hover:scale-105"
+                        style={{ color: "#0F1729" }}
+                      >
+                        {t.useTemplateCta} →
+                      </Link>
+                    </div>
+                  </div>
+                  <div className="px-3 py-2.5 bg-white flex items-center justify-between">
+                    <span className="text-xs font-semibold text-[#0F1729]">{tpl.name}</span>
+                    <span className="text-[10px] text-[#C9820A] font-medium">PDF ↓</span>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
           <div className="text-center mt-10">
             <p className="text-sm text-gray-400 mb-5">{t.printNote}</p>

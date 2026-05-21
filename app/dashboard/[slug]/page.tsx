@@ -9,7 +9,7 @@ export const dynamic = "force-dynamic";
 
 interface Props {
   params: Promise<{ slug: string }>;
-  searchParams: Promise<{ tab?: string; new?: string; upgraded?: string; plan?: string }>;
+  searchParams: Promise<{ tab?: string; new?: string; upgraded?: string; plan?: string; session_id?: string }>;
 }
 
 export default async function AlbumAdminPage({ params, searchParams }: Props) {
@@ -24,13 +24,35 @@ export default async function AlbumAdminPage({ params, searchParams }: Props) {
   if (!userId) redirect("/sign-in");
 
   const { slug } = await params;
-  const { tab = "overview", new: isNewParam, upgraded: isUpgradedParam, plan: planParam } = await searchParams;
+  const {
+    tab = "overview",
+    new: isNewParam,
+    upgraded: isUpgradedParam,
+    plan: planParam,
+    session_id: stripeSessionId,
+  } = await searchParams;
   const isNew = isNewParam === "1";
   const isUpgraded = isUpgradedParam === "1";
   const paidPlan =
     planParam === "basic" || planParam === "plus" || planParam === "premium"
       ? planParam
       : undefined;
+
+  // Webhook backstop: if the user arrived from Stripe Checkout with a
+  // session_id, reconcile the upgrade *before* loading the album so the
+  // page they see already reflects the new plan. Stripe webhooks can
+  // fail to deliver (e.g. apex->www redirect drops the POST), but the
+  // customer always hits this page after a successful payment, so this
+  // gives us a hard guarantee that paid albums actually flip.
+  if (isUpgraded && stripeSessionId) {
+    const { reconcileStripeSession } = await import("@/lib/stripe-reconcile");
+    const result = await reconcileStripeSession(stripeSessionId, slug);
+    if (!result.ok) {
+      console.warn("[reconcile] session", stripeSessionId, "→", result.reason);
+    } else {
+      console.log("[reconcile] applied", result.plan, "to", slug, `(${result.status})`);
+    }
+  }
 
   let album: (typeof albums.$inferSelect) | null = null;
   let albumPhotos: (typeof photos.$inferSelect)[] = [];
