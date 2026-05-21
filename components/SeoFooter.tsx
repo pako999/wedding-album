@@ -138,10 +138,10 @@ export function SeoFooter({ lang }: { lang: Lang }) {
           <div>
             <h3 className="text-xs font-bold uppercase tracking-widest text-gray-500 mb-4">{t.legal}</h3>
             <ul className="space-y-2.5 text-sm text-gray-400">
-              <li><Link href="/privacy" className="hover:text-white transition-colors">{t.privacy}</Link></li>
-              <li><Link href="/terms" className="hover:text-white transition-colors">{t.terms}</Link></li>
-              <li><Link href="/cookies" className="hover:text-white transition-colors">{t.cookies}</Link></li>
-              <li><Link href="/gdpr" className="hover:text-white transition-colors">{t.gdpr}</Link></li>
+              <li><Link href={lang === "sl" ? "/privacy" : `/${lang}/privacy`} className="hover:text-white transition-colors">{t.privacy}</Link></li>
+              <li><Link href={lang === "sl" ? "/terms"   : `/${lang}/terms`}   className="hover:text-white transition-colors">{t.terms}</Link></li>
+              <li><Link href={lang === "sl" ? "/cookies" : `/${lang}/cookies`} className="hover:text-white transition-colors">{t.cookies}</Link></li>
+              <li><Link href={lang === "sl" ? "/gdpr"    : `/${lang}/gdpr`}    className="hover:text-white transition-colors">{t.gdpr}</Link></li>
               <li><a href="mailto:hello@guestcam.si" className="hover:text-white transition-colors">{t.contact}</a></li>
             </ul>
           </div>
