@@ -34,7 +34,7 @@ const COPY: Record<LangCode, ContactCopy> = {
     cards: [
       { icon: "✉️", title: "Email podpora", desc: "Najhitrejši način do nas.", value: "hello@guestcam.si", href: "mailto:hello@guestcam.si" },
       { icon: "💼", title: "Prodaja & partnerstva", desc: "Velika poroka, agencija ali wedding planner?", value: "sales@guestcam.si", href: "mailto:sales@guestcam.si" },
-      { icon: "📱", title: "WhatsApp", desc: "Hiter klepet med 9-17h.", value: "+386 40 123 456", href: "https://wa.me/38640123456" },
+      { icon: "📱", title: "WhatsApp", desc: "Hiter klepet med 9-17h.", value: "+386 41 580 250", href: "https://wa.me/38641580250" },
     ],
     formTitle: "Pošljite sporočilo",
     formLead: "Sporočilo gre direktno na našo skupinsko pošto. Odgovorimo z osebnim emailom.",
@@ -59,7 +59,7 @@ const COPY: Record<LangCode, ContactCopy> = {
     cards: [
       { icon: "✉️", title: "Email podrška",    desc: "Najbrži način do nas.",              value: "hello@guestcam.si", href: "mailto:hello@guestcam.si" },
       { icon: "💼", title: "Prodaja & partneri", desc: "Veliko vjenčanje, agencija ili wedding planner?", value: "sales@guestcam.si", href: "mailto:sales@guestcam.si" },
-      { icon: "📱", title: "WhatsApp",          desc: "Brzi razgovor pon-pet 9-17h.",       value: "+386 40 123 456", href: "https://wa.me/38640123456" },
+      { icon: "📱", title: "WhatsApp",          desc: "Brzi razgovor pon-pet 9-17h.",       value: "+386 41 580 250", href: "https://wa.me/38641580250" },
     ],
     formTitle: "Pošaljite poruku",
     formLead: "Poruka ide ravno u našu zajedničku e-poštu. Odgovaramo osobnim e-mailom.",
@@ -84,7 +84,7 @@ const COPY: Record<LangCode, ContactCopy> = {
     cards: [
       { icon: "✉️", title: "Email podrška",    desc: "Najbrži način do nas.",              value: "hello@guestcam.si", href: "mailto:hello@guestcam.si" },
       { icon: "💼", title: "Prodaja & partneri", desc: "Veliko venčanje, agencija ili wedding planner?", value: "sales@guestcam.si", href: "mailto:sales@guestcam.si" },
-      { icon: "📱", title: "WhatsApp",          desc: "Brzi razgovor pon-pet 9-17h.",       value: "+386 40 123 456", href: "https://wa.me/38640123456" },
+      { icon: "📱", title: "WhatsApp",          desc: "Brzi razgovor pon-pet 9-17h.",       value: "+386 41 580 250", href: "https://wa.me/38641580250" },
     ],
     formTitle: "Pošaljite poruku",
     formLead: "Poruka ide direktno u našu zajedničku e-poštu. Odgovaramo ličnim e-mailom.",
@@ -109,7 +109,7 @@ const COPY: Record<LangCode, ContactCopy> = {
     cards: [
       { icon: "✉️", title: "E-Mail-Support",   desc: "Der schnellste Weg zu uns.",        value: "hello@guestcam.si", href: "mailto:hello@guestcam.si" },
       { icon: "💼", title: "Vertrieb & Partner", desc: "Große Hochzeit, Agentur oder Wedding Planner?", value: "sales@guestcam.si", href: "mailto:sales@guestcam.si" },
-      { icon: "📱", title: "WhatsApp",          desc: "Schnellchat Mo-Fr 9-17 Uhr.",        value: "+386 40 123 456", href: "https://wa.me/38640123456" },
+      { icon: "📱", title: "WhatsApp",          desc: "Schnellchat Mo-Fr 9-17 Uhr.",        value: "+386 41 580 250", href: "https://wa.me/38641580250" },
     ],
     formTitle: "Nachricht senden",
     formLead: "Die Nachricht geht direkt an unser gemeinsames Postfach. Wir antworten persönlich per E-Mail.",
@@ -134,7 +134,7 @@ const COPY: Record<LangCode, ContactCopy> = {
     cards: [
       { icon: "✉️", title: "Email support",      desc: "Fastest way to reach us.",            value: "hello@guestcam.si", href: "mailto:hello@guestcam.si" },
       { icon: "💼", title: "Sales & partnerships", desc: "Large wedding, agency or wedding planner?", value: "sales@guestcam.si", href: "mailto:sales@guestcam.si" },
-      { icon: "📱", title: "WhatsApp",           desc: "Quick chat, Mon-Fri 9-5 CET.",        value: "+386 40 123 456", href: "https://wa.me/38640123456" },
+      { icon: "📱", title: "WhatsApp",           desc: "Quick chat, Mon-Fri 9-5 CET.",        value: "+386 41 580 250", href: "https://wa.me/38641580250" },
     ],
     formTitle: "Send a message",
     formLead: "Your message lands in our shared inbox. We reply personally by email.",
@@ -159,7 +159,7 @@ const COPY: Record<LangCode, ContactCopy> = {
     cards: [
       { icon: "✉️", title: "Soporte por email",  desc: "La forma más rápida de contactarnos.",         value: "hello@guestcam.si", href: "mailto:hello@guestcam.si" },
       { icon: "💼", title: "Ventas y partners",  desc: "¿Boda grande, agencia o wedding planner?",     value: "sales@guestcam.si", href: "mailto:sales@guestcam.si" },
-      { icon: "📱", title: "WhatsApp",            desc: "Chat rápido, lun-vie 9-17h CET.",              value: "+386 40 123 456", href: "https://wa.me/38640123456" },
+      { icon: "📱", title: "WhatsApp",            desc: "Chat rápido, lun-vie 9-17h CET.",              value: "+386 41 580 250", href: "https://wa.me/38641580250" },
     ],
     formTitle: "Envíanos un mensaje",
     formLead: "Tu mensaje llega a nuestra bandeja compartida. Respondemos personalmente por email.",
