@@ -1,8 +1,9 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { LanguageSwitcher, ALTERNATIVES_HREFLANG } from "@/components/LanguageSwitcher";
+import { ALTERNATIVES_HREFLANG, LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { GuestcamLogo } from "@/components/GuestcamLogo";
 import { SeoFooter } from "@/components/SeoFooter";
+import { SiteHeader } from "@/components/SiteHeader";
 
 export const metadata: Metadata = {
   title: "Najbolje aplikacije za dijeljenje vjenčanih fotografija 2025 | Guestcam",
@@ -44,25 +45,6 @@ const articleSchema = {
   mainEntityOfPage: "https://guestcam.si/hr/alternativne-aplikacije",
 };
 
-function SiteHeader() {
-  return (
-    <header className="sticky top-0 z-40 bg-white border-b border-gray-100">
-      <nav className="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
-        <Link href="/" className="flex items-center transition-transform duration-200 hover:scale-[1.03]"><GuestcamLogo size="sm" showMark={true} /></Link>
-        <div className="flex items-center gap-3 sm:gap-5 text-sm font-medium text-gray-500">
-          <LanguageSwitcher current="hr" languages={ALTERNATIVES_HREFLANG} ariaLabel="Promijeni jezik" />
-          <Link href="/" className="hidden sm:inline hover:text-[#0F1729] transition-colors">Početna</Link>
-          <Link
-            href="/dashboard/new"
-            className="px-4 py-2 rounded-full text-sm font-bold bg-[#FFC94D] text-[#0F1729] hover:brightness-95 transition-all"
-          >
-            Kreiraj galeriju
-          </Link>
-        </div>
-      </nav>
-    </header>
-  );
-}
 
 function SiteFooter() {
   return (
@@ -109,7 +91,7 @@ export default function AlternativneAplikacijePage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
       />
-      <SiteHeader />
+      <SiteHeader lang="hr" hreflang={ALTERNATIVES_HREFLANG} />
 
       <main className="max-w-4xl mx-auto px-6 py-16">
         {/* Hero */}

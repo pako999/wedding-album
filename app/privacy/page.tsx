@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import { SiteHeader } from "@/components/SiteHeader";
 
 export const metadata: Metadata = {
   title: "Politika zasebnosti | Guestcam",
@@ -13,31 +14,6 @@ export const metadata: Metadata = {
   },
 };
 
-function SiteHeader() {
-  return (
-    <header className="sticky top-0 z-40 bg-white border-b border-gray-100">
-      <nav className="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-0.5">
-          <span className="font-serif italic text-xl font-bold text-[#0F1729]">
-            Guestcam
-          </span>
-          <span className="font-black text-2xl leading-none text-[#C9820A]">.</span>
-        </Link>
-        <div className="flex items-center gap-6 text-sm font-medium text-gray-500">
-          <Link href="/" className="hover:text-[#0F1729] transition-colors">
-            Domov
-          </Link>
-          <Link
-            href="/dashboard/new"
-            className="px-4 py-2 rounded-full text-sm font-bold border-2 border-[#0F1729] text-[#0F1729] hover:bg-[#0F1729] hover:text-white transition-all duration-200"
-          >
-            Začni brezplačno
-          </Link>
-        </div>
-      </nav>
-    </header>
-  );
-}
 
 function SiteFooter() {
   return (
@@ -72,7 +48,7 @@ function SiteFooter() {
 export default function PrivacyPage() {
   return (
     <div className="min-h-screen bg-[#F2F4F8] text-[#0F1729] font-sans">
-      <SiteHeader />
+      <SiteHeader lang="sl" />
 
       <main className="max-w-3xl mx-auto px-6 py-16">
         <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-8 md:p-12">

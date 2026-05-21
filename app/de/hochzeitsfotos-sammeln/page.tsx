@@ -1,8 +1,9 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { LanguageSwitcher, GUIDE_HREFLANG } from "@/components/LanguageSwitcher";
+import { GUIDE_HREFLANG, LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { GuestcamLogo } from "@/components/GuestcamLogo";
 import { SeoFooter } from "@/components/SeoFooter";
+import { SiteHeader } from "@/components/SiteHeader";
 
 export const metadata: Metadata = {
   title: "Hochzeitsfotos sammeln mit QR-Code — Vollständiger Leitfaden 2025 | Guestcam",
@@ -28,27 +29,6 @@ export const metadata: Metadata = {
   },
 };
 
-function SiteHeader() {
-  return (
-    <header className="sticky top-0 z-40 bg-white border-b border-gray-100">
-      <nav className="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
-        <Link href="/" className="flex items-center transition-transform duration-200 hover:scale-[1.03]"><GuestcamLogo size="sm" showMark={true} /></Link>
-        <div className="flex items-center gap-3 sm:gap-5 text-sm font-medium text-gray-500">
-          <LanguageSwitcher current="de" languages={GUIDE_HREFLANG} ariaLabel="Sprache ändern" />
-          <Link href="/" className="hidden sm:inline hover:text-[#0F1729] transition-colors">
-            Startseite
-          </Link>
-          <Link
-            href="/dashboard/new"
-            className="px-4 py-2 rounded-full text-sm font-bold border-2 border-[#0F1729] text-[#0F1729] hover:bg-[#0F1729] hover:text-white transition-all duration-200"
-          >
-            Kostenlos starten
-          </Link>
-        </div>
-      </nav>
-    </header>
-  );
-}
 
 function SiteFooter() {
   return (
@@ -100,7 +80,7 @@ function CtaBox() {
 export default function HochzeitsfotosSammelnPage() {
   return (
     <div className="min-h-screen bg-[#F2F4F8] text-[#0F1729] font-sans">
-      <SiteHeader />
+      <SiteHeader lang="de" hreflang={GUIDE_HREFLANG} />
 
       <main className="max-w-3xl mx-auto px-6 py-16">
         {/* Hero */}
