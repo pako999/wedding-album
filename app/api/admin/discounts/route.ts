@@ -55,10 +55,12 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: `Stripe coupon: ${msg.slice(0, 200)}` }, { status: 502 });
   }
 
-  // 2) Create the promotion code (the human-readable string customers type)
+  // 2) Create the promotion code (the human-readable string customers type).
+  //    Newer Stripe SDK wraps the coupon reference under a `promotion`
+  //    object; the old top-level `coupon` shorthand is gone.
   try {
     const promoParams: Stripe.PromotionCodeCreateParams = {
-      coupon: coupon.id,
+      promotion: { type: "coupon", coupon: coupon.id },
       code,
       ...(maxRedemptions ? { max_redemptions: maxRedemptions } : {}),
       ...(expiresInDays
