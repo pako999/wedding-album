@@ -1,6 +1,10 @@
 import { deDE, enUS, esES, hrHR, srRS } from "@clerk/localizations";
-import type { LocalizationResource } from "@clerk/types";
 import type { LangCode } from "@/components/LanguageSwitcher";
+
+// @clerk/types isn't an explicit dep — derive the localization shape
+// from one of the packs we already import. enUS is the complete set,
+// so its type is the canonical LocalizationResource.
+type LocalizationResource = typeof enUS;
 
 /**
  * Minimal Slovenian localization for Clerk's sign-in / sign-up /
