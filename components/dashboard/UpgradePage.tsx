@@ -102,7 +102,7 @@ function getEventCopy(eventType: string): EventCopy {
         title: "Odklenite vse zmogljivosti",
         testimonialText: "Popoln način za zbiranje spominov ob naši obletnici. Vse fotografije na enem mestu!",
         testimonialName: "Maja & Peter",
-        testimonialSub: "25. obletnica 2025",
+        testimonialSub: "25. obletnica 2026",
         socialProof: "500+ galerij je bilo že ustvarjenih letos 🥂",
       };
     case "party":
@@ -111,7 +111,7 @@ function getEventCopy(eventType: string): EventCopy {
         title: "Odklenite vse zmogljivosti",
         testimonialText: "Fantastičen način za zbiranje foto-spominov s zabave. Vsi gostje so navdušeni!",
         testimonialName: "Nina",
-        testimonialSub: "Maturantska zabava 2025",
+        testimonialSub: "Maturantska zabava 2026",
         socialProof: "500+ galerij je bilo že ustvarjenih letos 🎉",
       };
     case "graduation":
@@ -119,8 +119,8 @@ function getEventCopy(eventType: string): EventCopy {
         emoji: "🎓",
         title: "Odklenite vse zmogljivosti",
         testimonialText: "Vsi sošolci so naložili fotografije z mature. Neprecenljiv spomin za vse!",
-        testimonialName: "Razred 2025",
-        testimonialSub: "Matura 2025",
+        testimonialName: "Razred 2026",
+        testimonialSub: "Matura 2026",
         socialProof: "500+ galerij je bilo že ustvarjenih letos 🎓",
       };
     case "baptism":
@@ -129,7 +129,7 @@ function getEventCopy(eventType: string): EventCopy {
         title: "Odklenite vse zmogljivosti",
         testimonialText: "Lepa galerija za krst naše hčerke. Vsi sorodniki so delili fotografije!",
         testimonialName: "Ana & Luka",
-        testimonialSub: "Krst 2025",
+        testimonialSub: "Krst 2026",
         socialProof: "500+ galerij je bilo že ustvarjenih letos 🕊️",
       };
     default: // wedding
@@ -138,7 +138,7 @@ function getEventCopy(eventType: string): EventCopy {
         title: "Odklenite vse zmogljivosti",
         testimonialText: "Guestcam je bila najboljša odločitev za naše goste. Vse fotografije na enem mestu, brez aplikacij!",
         testimonialName: "Ana & Marko",
-        testimonialSub: "Poročena 2025",
+        testimonialSub: "Poročena 2026",
         socialProof: "500+ porok je že zbralo spomine z Guestcam 💍",
       };
   }
