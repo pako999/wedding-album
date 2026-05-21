@@ -66,7 +66,13 @@ export default clerkMiddleware(async (auth, req) => {
     await auth.protect();
   }
 
-  return NextResponse.next();
+  // ── Expose pathname for Server Components ─────────────────────────────────
+  // Server Components in App Router don't have direct access to the request
+  // URL via headers(); echo it through a custom header so the root layout
+  // can pick the matching Clerk localization (sign-in UI in user's language).
+  const res = NextResponse.next();
+  res.headers.set("x-pathname", pathname);
+  return res;
 });
 
 export const config = {
