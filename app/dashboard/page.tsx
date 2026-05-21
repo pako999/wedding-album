@@ -113,7 +113,7 @@ export default async function DashboardPage() {
               </svg>
               Ustvari prvo galerijo
             </Link>
-            <p className="text-xs text-[#0F1729]/30 mt-4">Brezplačno · Do 200 fotografij · QR koda vključena</p>
+            <p className="text-xs text-[#0F1729]/30 mt-4">Brezplačno · Do 20 fotografij · QR koda vključena</p>
           </div>
         ) : (
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">

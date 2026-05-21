@@ -297,7 +297,7 @@ export function CreateEventWizard({ initialPlan }: { initialPlan?: PaidPlanId } 
         <div className="rounded-2xl p-4 flex items-start gap-3 text-sm" style={{ background: "rgba(255,201,77,0.06)", border: "1px solid rgba(255,201,77,0.15)" }}>
           <span className="shrink-0" style={{ color: "#C9820A" }}>✨</span>
           <p className="text-gray-500 leading-relaxed">
-            Galerija se ustvari z <strong className="text-[#0F1729]">brezplačnim</strong> paketom (do 200 fotografij).
+            Galerija se ustvari z <strong className="text-[#0F1729]">brezplačnim</strong> paketom (do 20 fotografij).
             Nadgradnjo na Plus ali Premium lahko opravite kadarkoli.
           </p>
         </div>
