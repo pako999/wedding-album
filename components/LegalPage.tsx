@@ -1,6 +1,5 @@
-import Link from "next/link";
-import { GuestcamLogo } from "@/components/GuestcamLogo";
 import { SeoFooter } from "@/components/SeoFooter";
+import { SiteHeader } from "@/components/SiteHeader";
 import type { LangCode } from "@/components/LanguageSwitcher";
 
 export type LegalKind = "privacy" | "terms" | "gdpr" | "cookies";
@@ -250,16 +249,7 @@ export function LegalPage({ kind, lang }: { kind: LegalKind; lang: LegalLang }) 
 
   return (
     <div className="min-h-screen bg-white text-[#0F1729]">
-      <header className="sticky top-0 z-40 bg-white border-b border-gray-100">
-        <nav className="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
-          <Link href={lang === "sl" ? "/" : `/${lang}`} className="flex items-center gap-2">
-            <GuestcamLogo variant="onLight" />
-          </Link>
-          <Link href={lang === "sl" ? "/" : `/${lang}`} className="text-sm font-medium text-gray-500 hover:text-[#0F1729]">
-            ←
-          </Link>
-        </nav>
-      </header>
+      <SiteHeader lang={lang} />
 
       <main className="max-w-3xl mx-auto px-6 py-16">
         <h1 className="font-serif text-4xl font-bold text-[#0F1729] mb-3">{copy.heading}</h1>

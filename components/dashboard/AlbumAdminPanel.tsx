@@ -26,6 +26,9 @@ interface Props {
    *  they picked. The onboarding success screen finishes by routing them
    *  straight into Stripe checkout for that plan. */
   paidPlan?: "basic" | "plus" | "premium";
+  /** Logged-in user's primary email — shown in the Settings tab so the
+   *  owner can confirm which account this album is attached to. */
+  ownerEmail?: string | null;
 }
 
 // ─── Success Screen ───────────────────────────────────────────────────────────
@@ -186,7 +189,7 @@ function NewAlbumSuccess({ album, paidPlan }: { album: Album; paidPlan?: "basic"
 
 // ─── Main Panel ───────────────────────────────────────────────────────────────
 
-export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activeTab, isNew, isUpgraded, paidPlan }: Props) {
+export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activeTab, isNew, isUpgraded, paidPlan, ownerEmail }: Props) {
   const router = useRouter();
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://guestcam.si";
   const albumUrl = `${appUrl}/${album.slug}`;
@@ -585,6 +588,7 @@ export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activ
           {/* SETTINGS */}
           {activeTab === "settings" && (
             <div className="max-w-lg space-y-6">
+              <AccountInfoCard ownerEmail={ownerEmail ?? null} />
               <AlbumSettingsForm album={album} />
               <MomentsManager album={album} />
               <CustomDomainPanel album={album} />
@@ -1132,6 +1136,28 @@ function DeleteAlbumModal({
             {deleting ? "Brišem…" : "Izbriši galerijo"}
           </button>
         </div>
+      </div>
+    </div>
+  );
+}
+
+// Tiny card at the top of Settings showing the owner's Clerk email +
+// a sign-out shortcut. Users have asked for an easy way to confirm
+// which account a given album is on.
+function AccountInfoCard({ ownerEmail }: { ownerEmail: string | null }) {
+  return (
+    <div className="bg-white rounded-2xl border border-gray-200 p-5">
+      <div className="flex items-center justify-between gap-4">
+        <div className="min-w-0">
+          <p className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-1">Prijavljeni račun</p>
+          <p className="text-sm font-semibold text-[#0F1729] truncate">{ownerEmail ?? "—"}</p>
+          <p className="text-xs text-gray-400 mt-0.5">Ta galerija je vezana na ta račun.</p>
+        </div>
+        <SignOutButton>
+          <button className="flex-shrink-0 px-3 py-2 text-xs font-semibold text-[#0F1729] border border-gray-200 rounded-lg hover:bg-[#FFF9EC] hover:border-[#FFC94D] transition-colors">
+            Odjava
+          </button>
+        </SignOutButton>
       </div>
     </div>
   );

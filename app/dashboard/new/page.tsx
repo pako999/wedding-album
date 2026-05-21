@@ -1,6 +1,9 @@
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import { db } from "@/lib/db";
+import { albums } from "@/lib/db/schema";
+import { eq, desc } from "drizzle-orm";
 import { DashboardNav } from "@/components/dashboard/DashboardNav";
 import { CreateEventWizard } from "@/components/dashboard/CreateEventWizard";
 
@@ -21,6 +24,22 @@ export default async function NewAlbumPage({ searchParams }: { searchParams: Pro
     planParam === "basic" || planParam === "plus" || planParam === "premium"
       ? planParam
       : undefined;
+
+  // If a logged-in user lands here with `?plan=` from a homepage pricing
+  // card AND already has at least one album, skip the wizard and send
+  // them straight to the upgrade page for their most recent album with
+  // that plan pre-selected. The upgrade page then takes them to Stripe
+  // Checkout on a single click. Skipping the wizard avoids forcing
+  // returning customers to create a duplicate gallery just to pay.
+  if (initialPlan) {
+    const existing = await db.query.albums.findFirst({
+      where: eq(albums.ownerClerkId, userId),
+      orderBy: [desc(albums.createdAt)],
+    });
+    if (existing) {
+      redirect(`/dashboard/${existing.slug}/upgrade?plan=${initialPlan}`);
+    }
+  }
 
   return (
     <div className="min-h-screen" style={{ background: "#F4F6FB" }}>
