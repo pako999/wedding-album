@@ -18,6 +18,9 @@ interface FooterCopy {
   createAlbum: string;
   login: string;
   guides: string;
+  /** Guide URL/label for THIS language only (no cross-language list). */
+  guideUrl: string;
+  guideLabel: string;
   altLabel: string;
   altUrl: string;
   legal: string;
@@ -33,6 +36,7 @@ const COPY: Record<Lang, FooterCopy> = {
     brandDesc: "Poročna galerija s QR kodo — brez aplikacije. Gostje fotografirajo, vi zbirate spomine.",
     product: "Produkt", howWorks: "Kako deluje", features: "Funkcionalnosti", pricing: "Cenik", faq: "Pogosta vprašanja", createAlbum: "Ustvari album", login: "Prijava",
     guides: "Vodniki",
+    guideLabel: "QR koda za poroko", guideUrl: "/sl/qr-koda-poroka",
     altLabel: "Primerjava aplikacij", altUrl: "/sl/alternative-aplikacije",
     legal: "Pravno", privacy: "Zasebnost", terms: "Pogoji uporabe", cookies: "Piškotki", gdpr: "GDPR", contact: "Kontakt",
   },
@@ -40,6 +44,7 @@ const COPY: Record<Lang, FooterCopy> = {
     brandDesc: "Vjenčana galerija s QR kodom — bez aplikacije. Gosti fotografiraju, vi skupljate uspomene.",
     product: "Proizvod", howWorks: "Kako radi", features: "Značajke", pricing: "Cijene", faq: "Česta pitanja", createAlbum: "Kreiraj album", login: "Prijava",
     guides: "Vodiči",
+    guideLabel: "QR kod za vjenčanje", guideUrl: "/hr/qr-kod-vjencanje",
     altLabel: "Usporedba aplikacija", altUrl: "/hr/alternativne-aplikacije",
     legal: "Pravno", privacy: "Privatnost", terms: "Uvjeti", cookies: "Kolačići", gdpr: "GDPR", contact: "Kontakt",
   },
@@ -47,6 +52,7 @@ const COPY: Record<Lang, FooterCopy> = {
     brandDesc: "Galerija sa venčanja sa QR kodom — bez aplikacije. Gosti fotografišu, vi skupljate uspomene.",
     product: "Proizvod", howWorks: "Kako radi", features: "Funkcije", pricing: "Cene", faq: "Česta pitanja", createAlbum: "Napravi album", login: "Prijava",
     guides: "Vodiči",
+    guideLabel: "QR kod za venčanje", guideUrl: "/sr/qr-kod-vencanje",
     altLabel: "Poređenje aplikacija", altUrl: "/sr/alternativne-aplikacije",
     legal: "Pravno", privacy: "Privatnost", terms: "Uslovi", cookies: "Kolačići", gdpr: "GDPR", contact: "Kontakt",
   },
@@ -54,6 +60,7 @@ const COPY: Record<Lang, FooterCopy> = {
     brandDesc: "Hochzeitsgalerie mit QR-Code — keine App nötig. Gäste fotografieren, Sie sammeln Erinnerungen.",
     product: "Produkt", howWorks: "So funktioniert's", features: "Funktionen", pricing: "Preise", faq: "FAQ", createAlbum: "Album erstellen", login: "Anmelden",
     guides: "Anleitungen",
+    guideLabel: "Hochzeitsfotos sammeln", guideUrl: "/de/hochzeitsfotos-sammeln",
     altLabel: "App-Vergleich", altUrl: "/de/alternativen",
     legal: "Rechtliches", privacy: "Datenschutz", terms: "AGB", cookies: "Cookies", gdpr: "DSGVO", contact: "Kontakt",
   },
@@ -61,6 +68,7 @@ const COPY: Record<Lang, FooterCopy> = {
     brandDesc: "Wedding gallery with a QR code — no app required. Guests snap, you collect the memories.",
     product: "Product", howWorks: "How it works", features: "Features", pricing: "Pricing", faq: "FAQ", createAlbum: "Create album", login: "Sign in",
     guides: "Guides",
+    guideLabel: "Wedding photo sharing", guideUrl: "/en/wedding-photo-sharing",
     altLabel: "App alternatives", altUrl: "/en/alternatives",
     legal: "Legal", privacy: "Privacy", terms: "Terms", cookies: "Cookies", gdpr: "GDPR", contact: "Contact",
   },
@@ -68,20 +76,11 @@ const COPY: Record<Lang, FooterCopy> = {
     brandDesc: "Galería de boda con código QR — sin app. Los invitados fotografían, tú recopilas los recuerdos.",
     product: "Producto", howWorks: "Cómo funciona", features: "Funciones", pricing: "Precios", faq: "Preguntas", createAlbum: "Crear álbum", login: "Iniciar sesión",
     guides: "Guías",
+    guideLabel: "Fotos boda QR", guideUrl: "/es/fotos-boda-qr",
     altLabel: "Comparativa de apps", altUrl: "/es/alternativas",
     legal: "Legal", privacy: "Privacidad", terms: "Términos", cookies: "Cookies", gdpr: "RGPD", contact: "Contacto",
   },
 };
-
-/** The Vodniki list — same on every footer, each guide keeps its native title. */
-const GUIDES: { url: string; label: string }[] = [
-  { url: "/sl/qr-koda-poroka",         label: "QR koda za poroko" },
-  { url: "/hr/qr-kod-vjencanje",       label: "QR kod za vjenčanje" },
-  { url: "/sr/qr-kod-vencanje",        label: "QR kod za venčanje" },
-  { url: "/de/hochzeitsfotos-sammeln", label: "Hochzeitsfotos sammeln" },
-  { url: "/en/wedding-photo-sharing",  label: "Wedding photo sharing" },
-  { url: "/es/fotos-boda-qr",          label: "Fotos boda QR" },
-];
 
 export function SeoFooter({ lang }: { lang: Lang }) {
   const t = COPY[lang];
@@ -130,18 +129,13 @@ export function SeoFooter({ lang }: { lang: Lang }) {
             </ul>
           </div>
 
-          {/* Vodniki (always six native-titled guides + alternatives in current language) */}
+          {/* Guides — only this language's guide + alternatives, so every label
+              matches the page's language. */}
           <div>
             <h3 className="text-xs font-bold uppercase tracking-widest text-gray-500 mb-4">{t.guides}</h3>
             <ul className="space-y-2.5 text-sm text-gray-400">
-              {GUIDES.map((g) => (
-                <li key={g.url}>
-                  <Link href={g.url} className="hover:text-white transition-colors">{g.label}</Link>
-                </li>
-              ))}
-              <li>
-                <Link href={t.altUrl} className="hover:text-white transition-colors">{t.altLabel}</Link>
-              </li>
+              <li><Link href={t.guideUrl} className="hover:text-white transition-colors">{t.guideLabel}</Link></li>
+              <li><Link href={t.altUrl} className="hover:text-white transition-colors">{t.altLabel}</Link></li>
             </ul>
           </div>
 
