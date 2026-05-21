@@ -150,8 +150,18 @@ export function SeoFooter({ lang }: { lang: Lang }) {
 
         {/* Bottom bar */}
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-gray-500">
-          <p>© 2025 Sport group d.o.o. · SI72133449</p>
-          <p>Made with 💛 in Slovenia</p>
+          <p>© 2026 Sport group d.o.o. · SI72133449</p>
+          <p>
+            Narejeno v Sloveniji by{" "}
+            <a
+              href="https://futurecode.si"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-semibold text-[#FFC94D] hover:text-white transition-colors"
+            >
+              Futurecode.si
+            </a>
+          </p>
         </div>
       </div>
     </footer>
