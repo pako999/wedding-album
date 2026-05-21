@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { LanguageSwitcher, ALTERNATIVES_HREFLANG } from "@/components/LanguageSwitcher";
+import { GuestcamLogo } from "@/components/GuestcamLogo";
 import { SeoFooter } from "@/components/SeoFooter";
 
 export const metadata: Metadata = {
@@ -47,10 +48,7 @@ function SiteHeader() {
   return (
     <header className="sticky top-0 z-40 bg-white border-b border-gray-100">
       <nav className="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-0.5">
-          <span className="font-serif italic text-xl font-bold text-[#0F1729]">Guestcam</span>
-          <span className="font-black text-2xl leading-none text-[#C9820A]">.</span>
-        </Link>
+        <Link href="/" className="flex items-center transition-transform duration-200 hover:scale-[1.03]"><GuestcamLogo size="sm" showMark={true} /></Link>
         <div className="flex items-center gap-3 sm:gap-5 text-sm font-medium text-gray-500">
           <LanguageSwitcher current="es" languages={ALTERNATIVES_HREFLANG} ariaLabel="Cambiar idioma" />
           <Link href="/" className="hidden sm:inline hover:text-[#0F1729] transition-colors">Inicio</Link>
