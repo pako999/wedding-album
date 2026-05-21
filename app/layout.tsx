@@ -1,7 +1,33 @@
 import type { Metadata, Viewport } from "next";
+import { headers } from "next/headers";
 import { DM_Sans, Cormorant_Garamond } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
+import { clerkLocaleFor } from "@/lib/clerk-locales";
+import type { LangCode } from "@/components/LanguageSwitcher";
 import "./globals.css";
+
+const SUPPORTED_LANGS: LangCode[] = ["sl", "hr", "sr", "de", "en", "es"];
+
+/** Detect the visitor's UI language from the request URL so Clerk's
+ *  sign-in / sign-up flows render in the same language as the
+ *  surrounding page. Middleware sets x-pathname; we fall back to
+ *  parsing the standard "next-url" / "referer" headers. */
+async function detectLang(): Promise<LangCode> {
+  try {
+    const h = await headers();
+    const path =
+      h.get("x-pathname") ??
+      h.get("next-url") ??
+      new URL(h.get("referer") ?? "https://guestcam.si").pathname;
+    const first = path.split("/").filter(Boolean)[0] ?? "";
+    if ((SUPPORTED_LANGS as string[]).includes(first)) {
+      return first as LangCode;
+    }
+  } catch {
+    // header unavailable — fall through
+  }
+  return "sl";
+}
 
 const dmSans = DM_Sans({
   subsets: ["latin"],
@@ -61,14 +87,17 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const lang = await detectLang();
+  const clerkLocalization = clerkLocaleFor(lang);
+
   return (
-    <ClerkProvider>
-      <html lang="sl" className={`${dmSans.variable} ${cormorant.variable}`}>
+    <ClerkProvider localization={clerkLocalization}>
+      <html lang={lang} className={`${dmSans.variable} ${cormorant.variable}`}>
         <body className="font-sans antialiased bg-[#F2F4F8] text-[#0F1729] min-h-screen">
           {children}
         </body>

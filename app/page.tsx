@@ -957,7 +957,15 @@ export default function HomePage() {
           {/* Bottom bar */}
           <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
             <p className="text-xs text-gray-500">
-              © {new Date().getFullYear()} Guestcam · Sport group d.o.o.
+              © {new Date().getFullYear()} Guestcam · Sport group d.o.o. · Narejeno v Sloveniji by{" "}
+              <a
+                href="https://futurecode.si"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-semibold text-[#FFC94D] hover:text-white transition-colors"
+              >
+                Futurecode.si
+              </a>
             </p>
             <div className="flex items-center gap-4 text-xs text-gray-600">
               <span className="flex items-center gap-1">
