@@ -25,6 +25,11 @@ export const metadata: Metadata = {
     description:
       "Collect all your guests' photos and videos in one private gallery. No app, full quality.",
   },
+  twitter: {
+    card: "summary_large_image",
+    title: "Guestcam — Collect every guest photo with a single QR code",
+    description: "Collect all your guests' photos and videos in one private gallery. No app, full quality — for weddings, birthdays and events.",
+  },
 };
 
 export default function EnHomePage() {

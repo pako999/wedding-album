@@ -25,6 +25,11 @@ export const metadata: Metadata = {
     description:
       "Sakupite sve fotografije i video snimke gostiju u jednoj privatnoj galeriji. Bez aplikacije, u punom kvalitetu.",
   },
+  twitter: {
+    card: "summary_large_image",
+    title: "Guestcam — Sakupite sve fotografije gostiju jednim QR kodom",
+    description: "Sakupite sve fotografije i video snimke gostiju u jednoj privatnoj galeriji. Bez aplikacije, u punom kvalitetu — za venčanja, rođendane i događaje.",
+  },
 };
 
 export default function SrHomePage() {

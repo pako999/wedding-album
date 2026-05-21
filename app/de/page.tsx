@@ -25,6 +25,11 @@ export const metadata: Metadata = {
     description:
       "Sammeln Sie alle Fotos und Videos Ihrer Gäste in einer privaten Galerie. Keine App, volle Qualität.",
   },
+  twitter: {
+    card: "summary_large_image",
+    title: "Guestcam — Hochzeitsfotos der Gäste mit einem QR-Code sammeln",
+    description: "Sammeln Sie alle Fotos und Videos Ihrer Gäste in einer privaten Galerie. Keine App, volle Qualität — für Hochzeiten, Geburtstage und Veranstaltungen.",
+  },
 };
 
 export default function DeHomePage() {
