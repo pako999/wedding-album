@@ -17,6 +17,7 @@ interface FooterCopy {
   faq: string;
   createAlbum: string;
   login: string;
+  blog: string;
   guides: string;
   /** Guide URL/label for THIS language only (no cross-language list). */
   guideUrl: string;
@@ -35,7 +36,7 @@ const COPY: Record<Lang, FooterCopy> = {
   sl: {
     brandDesc: "Poročna galerija s QR kodo — brez aplikacije. Gostje fotografirajo, vi zbirate spomine.",
     product: "Produkt", howWorks: "Kako deluje", features: "Funkcionalnosti", pricing: "Cenik", faq: "Pogosta vprašanja", createAlbum: "Ustvari album", login: "Prijava",
-    guides: "Vodniki",
+    blog: "Blog", guides: "Vodniki",
     guideLabel: "QR koda za poroko", guideUrl: "/sl/qr-koda-poroka",
     altLabel: "Primerjava aplikacij", altUrl: "/sl/alternative-aplikacije",
     legal: "Pravno", privacy: "Zasebnost", terms: "Pogoji uporabe", cookies: "Piškotki", gdpr: "GDPR", contact: "Kontakt",
@@ -43,7 +44,7 @@ const COPY: Record<Lang, FooterCopy> = {
   hr: {
     brandDesc: "Vjenčana galerija s QR kodom — bez aplikacije. Gosti fotografiraju, vi skupljate uspomene.",
     product: "Proizvod", howWorks: "Kako radi", features: "Značajke", pricing: "Cijene", faq: "Česta pitanja", createAlbum: "Kreiraj album", login: "Prijava",
-    guides: "Vodiči",
+    blog: "Blog", guides: "Vodiči",
     guideLabel: "QR kod za vjenčanje", guideUrl: "/hr/qr-kod-vjencanje",
     altLabel: "Usporedba aplikacija", altUrl: "/hr/alternativne-aplikacije",
     legal: "Pravno", privacy: "Privatnost", terms: "Uvjeti", cookies: "Kolačići", gdpr: "GDPR", contact: "Kontakt",
@@ -51,7 +52,7 @@ const COPY: Record<Lang, FooterCopy> = {
   sr: {
     brandDesc: "Galerija sa venčanja sa QR kodom — bez aplikacije. Gosti fotografišu, vi skupljate uspomene.",
     product: "Proizvod", howWorks: "Kako radi", features: "Funkcije", pricing: "Cene", faq: "Česta pitanja", createAlbum: "Napravi album", login: "Prijava",
-    guides: "Vodiči",
+    blog: "Blog", guides: "Vodiči",
     guideLabel: "QR kod za venčanje", guideUrl: "/sr/qr-kod-vencanje",
     altLabel: "Poređenje aplikacija", altUrl: "/sr/alternativne-aplikacije",
     legal: "Pravno", privacy: "Privatnost", terms: "Uslovi", cookies: "Kolačići", gdpr: "GDPR", contact: "Kontakt",
@@ -59,7 +60,7 @@ const COPY: Record<Lang, FooterCopy> = {
   de: {
     brandDesc: "Hochzeitsgalerie mit QR-Code — keine App nötig. Gäste fotografieren, Sie sammeln Erinnerungen.",
     product: "Produkt", howWorks: "So funktioniert's", features: "Funktionen", pricing: "Preise", faq: "FAQ", createAlbum: "Album erstellen", login: "Anmelden",
-    guides: "Anleitungen",
+    blog: "Blog", guides: "Anleitungen",
     guideLabel: "Hochzeitsfotos sammeln", guideUrl: "/de/hochzeitsfotos-sammeln",
     altLabel: "App-Vergleich", altUrl: "/de/alternativen",
     legal: "Rechtliches", privacy: "Datenschutz", terms: "AGB", cookies: "Cookies", gdpr: "DSGVO", contact: "Kontakt",
@@ -67,7 +68,7 @@ const COPY: Record<Lang, FooterCopy> = {
   en: {
     brandDesc: "Wedding gallery with a QR code — no app required. Guests snap, you collect the memories.",
     product: "Product", howWorks: "How it works", features: "Features", pricing: "Pricing", faq: "FAQ", createAlbum: "Create album", login: "Sign in",
-    guides: "Guides",
+    blog: "Blog", guides: "Guides",
     guideLabel: "Wedding photo sharing", guideUrl: "/en/wedding-photo-sharing",
     altLabel: "App alternatives", altUrl: "/en/alternatives",
     legal: "Legal", privacy: "Privacy", terms: "Terms", cookies: "Cookies", gdpr: "GDPR", contact: "Contact",
@@ -75,7 +76,7 @@ const COPY: Record<Lang, FooterCopy> = {
   es: {
     brandDesc: "Galería de boda con código QR — sin app. Los invitados fotografían, tú recopilas los recuerdos.",
     product: "Producto", howWorks: "Cómo funciona", features: "Funciones", pricing: "Precios", faq: "Preguntas", createAlbum: "Crear álbum", login: "Iniciar sesión",
-    guides: "Guías",
+    blog: "Blog", guides: "Guías",
     guideLabel: "Fotos boda QR", guideUrl: "/es/fotos-boda-qr",
     altLabel: "Comparativa de apps", altUrl: "/es/alternativas",
     legal: "Legal", privacy: "Privacidad", terms: "Términos", cookies: "Cookies", gdpr: "RGPD", contact: "Contacto",
@@ -120,6 +121,7 @@ export function SeoFooter({ lang }: { lang: Lang }) {
               <li><a href="/#pricing" className="hover:text-white transition-colors">{t.pricing}</a></li>
               <li><a href="/#faq" className="hover:text-white transition-colors">{t.faq}</a></li>
               <li><Link href="/dashboard/new" className="hover:text-white transition-colors">{t.createAlbum}</Link></li>
+              <li><Link href={lang === "sl" ? "/blog" : `/${lang}/blog`} className="hover:text-white transition-colors">{t.blog}</Link></li>
               <li><Link href="/dashboard" className="hover:text-white transition-colors">{t.login}</Link></li>
             </ul>
           </div>

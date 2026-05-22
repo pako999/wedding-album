@@ -181,6 +181,27 @@ export async function BlogPostPage({ post }: Props) {
     });
   }
 
+  // HowTo schema — emit when the post contains an ordered list, which is
+  // our convention for step-by-step content. Helps Google + AI engines
+  // identify the post as a procedural guide.
+  const stepsBlock = post.content.find(
+    (b): b is Extract<BlogBlock, { type: "ol" }> => b.type === "ol",
+  );
+  if (stepsBlock && stepsBlock.items.length >= 3) {
+    jsonLd.push({
+      "@context": "https://schema.org",
+      "@type": "HowTo",
+      name: post.title,
+      description: post.description,
+      step: stepsBlock.items.map((text, i) => ({
+        "@type": "HowToStep",
+        position: i + 1,
+        name: text.split(/[—.]/)[0].trim().slice(0, 90),
+        text,
+      })),
+    });
+  }
+
   return (
     <div className="min-h-screen bg-[#F2F4F8] text-[#0F1729]">
       <SiteHeader lang={post.lang} />

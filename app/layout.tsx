@@ -3,6 +3,7 @@ import { headers } from "next/headers";
 import { DM_Sans, Cormorant_Garamond } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
 import { clerkLocaleFor } from "@/lib/clerk-locales";
+import { CookieConsent } from "@/components/CookieConsent";
 import type { LangCode } from "@/components/LanguageSwitcher";
 import "./globals.css";
 
@@ -100,6 +101,7 @@ export default async function RootLayout({
       <html lang={lang} className={`${dmSans.variable} ${cormorant.variable}`}>
         <body className="font-sans antialiased bg-[#F2F4F8] text-[#0F1729] min-h-screen">
           {children}
+          <CookieConsent lang={lang} />
         </body>
       </html>
     </ClerkProvider>

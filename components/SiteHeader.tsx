@@ -8,18 +8,19 @@ import {
 
 interface NavLinkSet {
   home: string;          // label for the "back to home" link
+  blog: string;          // label for the blog link
   login: string;         // label for "Sign in"
   cta: string;           // label for the primary "Create gallery" button
   switcherAria: string;  // a11y label for the language picker
 }
 
 const NAV_COPY: Record<LangCode, NavLinkSet> = {
-  sl: { home: "Domov",   login: "Prijava",  cta: "Ustvari galerijo", switcherAria: "Spremeni jezik" },
-  hr: { home: "Početna", login: "Prijava",  cta: "Kreiraj galeriju", switcherAria: "Promijeni jezik" },
-  sr: { home: "Početna", login: "Prijava",  cta: "Napravi galeriju", switcherAria: "Promeni jezik" },
-  de: { home: "Start",   login: "Anmelden", cta: "Galerie erstellen", switcherAria: "Sprache wechseln" },
-  en: { home: "Home",    login: "Sign in",  cta: "Create gallery",   switcherAria: "Change language" },
-  es: { home: "Inicio",  login: "Iniciar sesión", cta: "Crear galería", switcherAria: "Cambiar idioma" },
+  sl: { home: "Domov",   blog: "Blog", login: "Prijava",  cta: "Ustvari galerijo", switcherAria: "Spremeni jezik" },
+  hr: { home: "Početna", blog: "Blog", login: "Prijava",  cta: "Kreiraj galeriju", switcherAria: "Promijeni jezik" },
+  sr: { home: "Početna", blog: "Blog", login: "Prijava",  cta: "Napravi galeriju", switcherAria: "Promeni jezik" },
+  de: { home: "Start",   blog: "Blog", login: "Anmelden", cta: "Galerie erstellen", switcherAria: "Sprache wechseln" },
+  en: { home: "Home",    blog: "Blog", login: "Sign in",  cta: "Create gallery",   switcherAria: "Change language" },
+  es: { home: "Inicio",  blog: "Blog", login: "Iniciar sesión", cta: "Crear galería", switcherAria: "Cambiar idioma" },
 };
 
 /**
@@ -63,6 +64,12 @@ export function SiteHeader({
             className="hidden sm:inline text-sm font-medium text-gray-600 hover:text-[#0F1729] transition-colors"
           >
             {copy.home}
+          </Link>
+          <Link
+            href={lang === "sl" ? "/blog" : `/${lang}/blog`}
+            className="hidden sm:inline text-sm font-medium text-gray-600 hover:text-[#0F1729] transition-colors"
+          >
+            {copy.blog}
           </Link>
           <Link
             href="/dashboard"
