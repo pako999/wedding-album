@@ -67,12 +67,13 @@ export default clerkMiddleware(async (auth, req) => {
   }
 
   // ── Expose pathname for Server Components ─────────────────────────────────
-  // Server Components in App Router don't have direct access to the request
-  // URL via headers(); echo it through a custom header so the root layout
-  // can pick the matching Clerk localization (sign-in UI in user's language).
-  const res = NextResponse.next();
-  res.headers.set("x-pathname", pathname);
-  return res;
+  // Server Components read REQUEST headers via next/headers `headers()`.
+  // Setting it on the response (as we did initially) doesn't reach them.
+  // We have to fork the incoming request headers, inject x-pathname, and
+  // pass the new set through via `request.headers`.
+  const requestHeaders = new Headers(req.headers);
+  requestHeaders.set("x-pathname", pathname);
+  return NextResponse.next({ request: { headers: requestHeaders } });
 });
 
 export const config = {

@@ -30,8 +30,15 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   if (!userId) redirect("/sign-in?redirect_url=/admin");
 
   // /admin/login is its own page (renders the password form); skip the
-  // password check there to avoid a redirect loop.
-  const path = (await headers()).get("x-invoke-path") ?? (await headers()).get("next-url") ?? "";
+  // password check there to avoid a redirect loop. The middleware
+  // forwards the request path as x-pathname (header name varies across
+  // Next.js versions — check several to be robust).
+  const h = await headers();
+  const path =
+    h.get("x-pathname") ??
+    h.get("x-invoke-path") ??
+    h.get("next-url") ??
+    "";
   const onLoginPage = path.startsWith("/admin/login");
 
   if (onLoginPage) {
