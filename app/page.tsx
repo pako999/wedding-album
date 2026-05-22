@@ -144,6 +144,7 @@ export default function HomePage() {
               { href: "#how", label: "Kako deluje" },
               { href: "#templates", label: "Predloge" },
               { href: "#pricing", label: "Cenik" },
+              { href: "/blog", label: "Blog" },
               { href: "#faq", label: "FAQ" },
             ].map((item) => (
               <a
@@ -925,6 +926,7 @@ export default function HomePage() {
                 <li><a href="#features" className="hover:text-white transition-colors">Funkcionalnosti</a></li>
                 <li><a href="#pricing" className="hover:text-white transition-colors">Cenik</a></li>
                 <li><a href="#faq" className="hover:text-white transition-colors">Pogosta vprašanja</a></li>
+                <li><Link href="/blog" className="hover:text-white transition-colors">Blog</Link></li>
                 <li><Link href="/dashboard/new" className="hover:text-white transition-colors">Ustvari album</Link></li>
                 <li><Link href="/dashboard" className="hover:text-white transition-colors">Prijava</Link></li>
               </ul>
