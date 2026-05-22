@@ -1,0 +1,130 @@
+{
+  "slug": "guestcam-vs-whatsapp-fotos-boda",
+  "lang": "es",
+  "title": "Guestcam vs WhatsApp para fotos de boda: comparativa honesta",
+  "description": "WhatsApp comprime las fotos al 50% de calidad y el grupo se vuelve caótico. Guestcam mantiene calidad completa en una galería privada.",
+  "translationKey": "guestcam-vs-whatsapp",
+  "publishedAt": "2026-05-22",
+  "updatedAt": "2026-05-22",
+  "author": "Guestcam Team",
+  "category": "primerjava",
+  "readingTime": 5,
+  "tags": [
+    "comparativa",
+    "WhatsApp",
+    "código QR",
+    "Guestcam"
+  ],
+  "tldr": "WhatsApp comprime las fotos al 50% de calidad y el grupo se vuelve caótico. Guestcam mantiene calidad completa en una galería privada.",
+  "content": [
+    {
+      "type": "h2",
+      "text": "¿Cuál es el problema con los grupos de WhatsApp de boda?"
+    },
+    {
+      "type": "p",
+      "text": "Casi todas las bodas tienen un grupo «Boda Ana y Marko». Después del día empieza el caos: 200 fotos sin contexto, vídeos que nadie abre y fotos comprimidas en baja calidad que no se pueden imprimir."
+    },
+    {
+      "type": "h2",
+      "text": "¿En qué se diferencian Guestcam y WhatsApp?"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "",
+        "WhatsApp",
+        "Guestcam"
+      ],
+      "rows": [
+        [
+          "Calidad de las fotos",
+          "~50% (comprimida)",
+          "100% (original)"
+        ],
+        [
+          "Vídeos",
+          "Límite de 16 MB",
+          "Calidad completa"
+        ],
+        [
+          "Privacidad",
+          "Todos en el grupo lo ven todo",
+          "Galería privada, solo con enlace"
+        ],
+        [
+          "Orden",
+          "Cronológico y caótico",
+          "Por evento, por persona"
+        ],
+        [
+          "Descargar todo",
+          "Manual, uno por uno",
+          "Archivo ZIP, un clic"
+        ],
+        [
+          "Recopilar de no contactos",
+          "Difícil (sin número)",
+          "Escanean QR, se añaden solos"
+        ],
+        [
+          "Conservación",
+          "Puede perderse en el historial",
+          "Galería disponible 30 días a 1 año"
+        ]
+      ]
+    },
+    {
+      "type": "h2",
+      "text": "¿Cuándo funciona WhatsApp de verdad?"
+    },
+    {
+      "type": "p",
+      "text": "WhatsApp es genial para una celebración familiar pequeña de 10 personas en la que conoces todos los números. Con 100+ invitados se vuelve inmanejable rápidamente."
+    },
+    {
+      "type": "h2",
+      "text": "¿Por qué las parejas se pasan a Guestcam?"
+    },
+    {
+      "type": "ul",
+      "items": [
+        "Calidad completa de las fotos — apta para imprimir el álbum de boda.",
+        "Invitados sin app: escanean el QR con la cámara y suben las fotos.",
+        "Un enlace / una galería — sin mensajes dispersos por WhatsApp, Viber, Instagram.",
+        "Privacidad: protege la galería con contraseña, sin publicaciones públicas.",
+        "Descarga todo en un ZIP tras el evento — sin guardar a mano."
+      ]
+    },
+    {
+      "type": "cta",
+      "text": "Prueba Guestcam gratis",
+      "href": "/dashboard/new"
+    },
+    {
+      "type": "faq",
+      "q": "¿De verdad comprime WhatsApp las fotos?",
+      "a": "Sí. Por defecto WhatsApp comprime las fotos a cerca del 50 % de la calidad original para ahorrar datos. La opción «Enviar como documento» evita la compresión, pero pocos la conocen."
+    },
+    {
+      "type": "faq",
+      "q": "¿Puedo combinar WhatsApp y Guestcam?",
+      "a": "Por supuesto. Muchas parejas usan WhatsApp para hablar con los invitados antes de la boda y Guestcam para recopilar fotos durante y después del evento."
+    },
+    {
+      "type": "faq",
+      "q": "¿Cómo evito que los invitados vean las fotos de otros?",
+      "a": "En la galería Guestcam puedes activar la moderación — las fotos aparecen solo después de tu aprobación. O pon contraseña y compártela solo con los más cercanos."
+    },
+    {
+      "type": "faq",
+      "q": "¿Es Guestcam más caro que WhatsApp?",
+      "a": "El plan gratuito vale para eventos pequeños. Para toda una boda recomendamos Plus (49 €) o Premium (79 €) — menos que el ramo de novia promedio."
+    },
+    {
+      "type": "faq",
+      "q": "¿Qué pasa con el grupo de WhatsApp después de la boda?",
+      "a": "Se convierte en un cementerio — los mensajes se pierden, las fotos desaparecen cuando alguien limpia el móvil. La galería Guestcam sigue disponible hasta 1 año y puedes descargarla permanentemente."
+    }
+  ]
+}

@@ -1,0 +1,98 @@
+{
+  "slug": "fotos-boda-invitados-olvidan-compartir",
+  "lang": "es",
+  "title": "Por qué los invitados nunca comparten sus fotos de boda (y cómo arreglarlo)",
+  "description": "Los invitados se olvidan porque no hay una forma fácil. Un código QR en cada mesa elimina la fricción — las fotos llegan durante el evento.",
+  "translationKey": "guests-forget-to-share",
+  "publishedAt": "2026-05-22",
+  "updatedAt": "2026-05-22",
+  "author": "Guestcam Team",
+  "category": "nasvet",
+  "readingTime": 6,
+  "tags": [
+    "psicología",
+    "compartir fotos",
+    "consejos de boda"
+  ],
+  "tldr": "Los invitados se olvidan porque no hay una forma fácil. Un código QR en cada mesa elimina la fricción y las fotos llegan durante el evento.",
+  "content": [
+    {
+      "type": "h2",
+      "text": "La dura verdad después de la boda"
+    },
+    {
+      "type": "p",
+      "text": "La fiesta terminó. La sala está en silencio. Tienes 80 fotos en el móvil, las del fotógrafo llegarán en tres semanas. Pero esta noche había 200 móviles en la sala y cada uno captó un ángulo distinto, un momento distinto, una risa distinta. ¿Dónde están?"
+    },
+    {
+      "type": "h2",
+      "text": "7 razones por las que los invitados no comparten sus fotos"
+    },
+    {
+      "type": "ol",
+      "items": [
+        "Olvido — al día siguiente vuelven a la rutina.",
+        "Fricción — mandar 30 fotos por WhatsApp lleva una eternidad.",
+        "Tamaño — los vídeos son demasiado grandes para los datos móviles.",
+        "Incertidumbre — «¿A quién las envío? ¿Al grupo? ¿Directo a la pareja?»",
+        "Vergüenza — «Las mías están movidas, no merece la pena.»",
+        "Tecnología — los invitados mayores no saben subir a Google Photos.",
+        "Sin recordatorio — nadie les pregunta, así que se olvidan."
+      ]
+    },
+    {
+      "type": "h2",
+      "text": "¿Qué dice la psicología?"
+    },
+    {
+      "type": "p",
+      "text": "Cada barrera adicional (clic, seleccionar, enviar, esperar) reduce la probabilidad de acción en torno al 30%. Tres barreras = 70% menos fotos. Por eso el 90% de los invitados nunca envía esos preciosos planos de baile."
+    },
+    {
+      "type": "h2",
+      "text": "Código QR en la mesa: la solución en un gesto"
+    },
+    {
+      "type": "p",
+      "text": "Con un código QR no hay obstáculos entre el invitado y la galería: escanear, elegir, subir. Tres segundos del final de la foto a tu galería. Por eso las parejas con Guestcam reciben una media de 340 fotos — frente a 30 con métodos tradicionales."
+    },
+    {
+      "type": "h2",
+      "text": "Historia real: Ana & Marko"
+    },
+    {
+      "type": "p",
+      "text": "Ana y Marko se casaron en julio de 2025 en la costa eslovena. Pusieron un código QR en cada mesa con un mensaje sencillo: «Comparte nuestros recuerdos». Final de la noche: 340 fotos y 28 vídeos de 78 invitados. Sin grupo de WhatsApp, sin mensajes perdidos. Todo en una galería que medio año después repasaron con sus padres, con lágrimas en los ojos."
+    },
+    {
+      "type": "cta",
+      "text": "Empieza a recopilar recuerdos hoy",
+      "href": "/dashboard/new"
+    },
+    {
+      "type": "faq",
+      "q": "¿Y si mis invitados no saben escanear un QR?",
+      "a": "Los móviles modernos (a partir de 2018) llevan el escáner QR integrado en la cámara. Solo apuntan al código y tocan la notificación. Para invitados mayores puedes añadir también un enlace corto directo."
+    },
+    {
+      "type": "faq",
+      "q": "¿Cómo sé que participarán suficientes invitados?",
+      "a": "Según nuestros datos, participa entre el 65 y el 80% cuando hay un QR en cada mesa. Es 3× más que con un grupo de WhatsApp (15–25%)."
+    },
+    {
+      "type": "faq",
+      "q": "¿Pueden ver los invitados quién subió cada foto?",
+      "a": "Sí, cada persona escribe su nombre al subir las fotos. Ayuda a organizar los recuerdos y aporta un toque personal."
+    },
+    {
+      "type": "faq",
+      "q": "¿Y si un invitado sube una foto inapropiada?",
+      "a": "Activa la moderación — las fotos esperan tu aprobación antes de aparecer. Incluido en los planes Plus y Premium."
+    },
+    {
+      "type": "faq",
+      "q": "¿Cómo digo a los invitados que suban fotos sin que resulte forzado?",
+      "a": "Que el DJ o presentador lo mencione durante la noche: «Escanead el QR de vuestra mesa y compartid vuestros momentos con la pareja». Natural y sin presión."
+    }
+  ]
+}

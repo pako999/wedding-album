@@ -1,0 +1,137 @@
+{
+  "slug": "private-hochzeits-fotogalerie-erstellen",
+  "lang": "de",
+  "title": "Eine private Hochzeitsgalerie erstellen (kostenlos, ohne App)",
+  "description": "Schritt für Schritt — vom Tool-Auswahl bis zum Download aller Fotos nach der Hochzeit. Kein Google-Photos-Chaos, keine verlorenen Dateien.",
+  "translationKey": "private-wedding-gallery",
+  "publishedAt": "2026-05-22",
+  "updatedAt": "2026-05-22",
+  "author": "Guestcam Team",
+  "category": "vodnik",
+  "readingTime": 5,
+  "tags": [
+    "Privatsphäre",
+    "Galerie",
+    "DIY",
+    "Guestcam"
+  ],
+  "tldr": "Die beste kostenlose Option ist Guestcam: Galerie erstellen, QR-Code erhalten, Gäste scannen und laden hoch — alles privat, ohne App.",
+  "content": [
+    {
+      "type": "h2",
+      "text": "Was macht eine gute Hochzeitsgalerie aus?"
+    },
+    {
+      "type": "ul",
+      "items": [
+        "Privat — keine öffentlichen Suchergebnisse.",
+        "Keine Gäste-Registrierung — jede Hürde bedeutet weniger Fotos.",
+        "Volle Qualität — geeignet für Druck und Langzeitspeicherung.",
+        "Gemeinsamer Ort — alle Fotos in einer Galerie, nicht in 5 verschiedenen Chats.",
+        "Beständig — Galerie bleibt mindestens einige Monate, geht nicht im Chatverlauf verloren."
+      ]
+    },
+    {
+      "type": "h2",
+      "text": "Welche Optionen gibt es?"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Option",
+        "Vorteile",
+        "Nachteile"
+      ],
+      "rows": [
+        [
+          "Google Photos geteiltes Album",
+          "Kostenlos, bekannt",
+          "Gäste brauchen Google-Konto. Öffentlicher Link ist ein Risiko."
+        ],
+        [
+          "Dropbox geteilter Ordner",
+          "Viel Speicher",
+          "Kompliziert für ältere Gäste."
+        ],
+        [
+          "WhatsApp-Gruppe",
+          "Alle kennen es",
+          "Komprimiert auf 50%, chaotisch."
+        ],
+        [
+          "Guestcam",
+          "QR-Code, keine App, volle Qualität",
+          "Nach dem kostenlosen Paket (20 Fotos) kostenpflichtig."
+        ]
+      ]
+    },
+    {
+      "type": "h2",
+      "text": "Wie richte ich eine Galerie mit Guestcam Schritt für Schritt ein?"
+    },
+    {
+      "type": "ol",
+      "items": [
+        "Auf guestcam.si gehen und »Galerie erstellen« klicken — ohne Kreditkarte.",
+        "Namen des Paares ausfüllen (z. B. »Ana & Marko«), Hochzeitsdatum und Ort.",
+        "Optional ein Passwort für die Galerie setzen (für maximale Privatsphäre empfohlen).",
+        "Das System erstellt automatisch eine eindeutige URL und einen QR-Code.",
+        "QR-Code als PDF herunterladen — mit einem Design, das zu Ihrer Hochzeit passt."
+      ]
+    },
+    {
+      "type": "h2",
+      "text": "Wie teile ich die Galerie mit Gästen?"
+    },
+    {
+      "type": "p",
+      "text": "Drei bewährte Methoden:"
+    },
+    {
+      "type": "ul",
+      "items": [
+        "QR-Karten drucken und auf alle Tische stellen.",
+        "QR-Code in die Hochzeitsmappe oder das Dankeskärtchen einfügen.",
+        "Link an Gäste per WhatsApp oder E-Mail schicken (funktioniert auch ohne QR)."
+      ]
+    },
+    {
+      "type": "h2",
+      "text": "Wie lade ich nach dem Event alle Fotos herunter?"
+    },
+    {
+      "type": "p",
+      "text": "Im Admin-Panel auf »Alle herunterladen (ZIP)« klicken. Alle Fotos und Videos werden in einem Ordner in voller Qualität heruntergeladen — bereit für die Sicherung auf Ihrem Computer oder einer externen Festplatte."
+    },
+    {
+      "type": "cta",
+      "text": "Erstellen Sie Ihre kostenlose private Galerie",
+      "href": "/dashboard/new"
+    },
+    {
+      "type": "faq",
+      "q": "Ist die Galerie wirklich privat?",
+      "a": "Ja. Ohne Passwort ist sie nur über die genaue URL/den QR-Code erreichbar — Google und andere Suchmaschinen können sie nicht indexieren. Mit Passwort fügen Sie eine zusätzliche Sicherheitsschicht hinzu."
+    },
+    {
+      "type": "faq",
+      "q": "Kann ich einzelne Fotos löschen?",
+      "a": "Ja. Als Galerie-Administrator können Sie jeden Beitrag löschen. Gäste sehen im Moderationsmodus nur ihre eigenen Fotos."
+    },
+    {
+      "type": "faq",
+      "q": "Was, wenn ein Gast ein Video größer als 50 MB hochlädt?",
+      "a": "Plus und Premium unterstützen volle HD-Videos. Im kostenlosen Paket sind Videos auf 30 Sekunden / 50 MB begrenzt."
+    },
+    {
+      "type": "faq",
+      "q": "Wie lange bleiben die Fotos verfügbar?",
+      "a": "Kostenlos: 30 Tage. Basic: 3 Monate. Plus und Premium: 1 Jahr. Sie können jederzeit alles als ZIP herunterladen."
+    },
+    {
+      "type": "faq",
+      "q": "Kann ich die Galerie in sozialen Netzwerken teilen?",
+      "a": "Technisch ja, aber wir raten ab. Die Galerie ist als privat konzipiert — besser nur mit Gästen teilen."
+    }
+  ]
+}

@@ -1,0 +1,130 @@
+{
+  "slug": "guestcam-vs-whatsapp-vencanje-fotografije",
+  "lang": "sr",
+  "title": "Guestcam vs WhatsApp za fotografije sa venčanja: poštena uporedba",
+  "description": "WhatsApp kompresuje fotografije na 50% kvaliteta i grupa postaje haotična. Guestcam zadržava pun kvalitet u jednoj privatnoj galeriji.",
+  "translationKey": "guestcam-vs-whatsapp",
+  "publishedAt": "2026-05-22",
+  "updatedAt": "2026-05-22",
+  "author": "Guestcam Team",
+  "category": "primerjava",
+  "readingTime": 5,
+  "tags": [
+    "poređenje",
+    "WhatsApp",
+    "QR kod",
+    "Guestcam"
+  ],
+  "tldr": "WhatsApp kompresuje fotografije na 50% kvaliteta i grupa postaje haotična. Guestcam zadržava pun kvalitet u jednoj privatnoj galeriji.",
+  "content": [
+    {
+      "type": "h2",
+      "text": "U čemu je problem WhatsApp grupa za venčanje?"
+    },
+    {
+      "type": "p",
+      "text": "Gotovo sva venčanja imaju grupu »Venčanje Ane i Marka«. Posle događaja počinje haos: 200 fotografija bez konteksta, video zapisi koje niko ne otvori, i fotografije kompresovane na nizak kvalitet, koje se ne mogu štampati."
+    },
+    {
+      "type": "h2",
+      "text": "U čemu se Guestcam i WhatsApp razlikuju?"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "",
+        "WhatsApp",
+        "Guestcam"
+      ],
+      "rows": [
+        [
+          "Kvalitet fotografija",
+          "~50% (kompresovano)",
+          "100% (original)"
+        ],
+        [
+          "Video zapisi",
+          "Limit 16 MB",
+          "Pun kvalitet"
+        ],
+        [
+          "Privatnost",
+          "Svi u grupi sve vide",
+          "Privatna galerija, samo sa linkom"
+        ],
+        [
+          "Sortiranje",
+          "Hronološki i haotično",
+          "Po događaju, po osobi"
+        ],
+        [
+          "Preuzimanje svih fotografija",
+          "Ručno, jedna po jedna",
+          "ZIP datoteka, jedan klik"
+        ],
+        [
+          "Prikupljanje od ne-prijatelja",
+          "Teško (nemate broj)",
+          "Skeniraju QR, dodaju se sami"
+        ],
+        [
+          "Trajanje čuvanja",
+          "Može da se izgubi u istoriji",
+          "Galerija traje 30 dana do 1 godine"
+        ]
+      ]
+    },
+    {
+      "type": "h2",
+      "text": "Kada WhatsApp zapravo radi?"
+    },
+    {
+      "type": "p",
+      "text": "WhatsApp je super za malu porodičnu proslavu sa 10 ljudi, gde znate sve brojeve. Kada se radi o 100+ gostiju, brzo postaje neupravljivo."
+    },
+    {
+      "type": "h2",
+      "text": "Zašto parovi prelaze na Guestcam?"
+    },
+    {
+      "type": "ul",
+      "items": [
+        "Pun kvalitet fotografija — pogodno za štampu venčanog albuma.",
+        "Gosti bez aplikacije: skeniraju QR kod kamerom i otpremaju.",
+        "Jedan link / jedna galerija — bez razasutih poruka po WhatsAppu, Viberu, Instagramu.",
+        "Privatnost: galeriju možete zaštititi lozinkom, bez javnih zapisa.",
+        "Preuzimanje svega u ZIP posle događaja — bez ručnog čuvanja."
+      ]
+    },
+    {
+      "type": "cta",
+      "text": "Probajte Guestcam besplatno",
+      "href": "/dashboard/new"
+    },
+    {
+      "type": "faq",
+      "q": "Da li WhatsApp zaista kompresuje fotografije?",
+      "a": "Da. Po podrazumevanim podešavanjima WhatsApp kompresuje fotografije na oko 50% originalnog kvaliteta radi uštede podataka. Opcija »Pošalji kao dokument« zaobilazi kompresiju, ali za nju malo ko zna."
+    },
+    {
+      "type": "faq",
+      "q": "Mogu li kombinovati WhatsApp i Guestcam?",
+      "a": "Naravno. Mnogi parovi koriste WhatsApp za komunikaciju sa gostima pre venčanja i Guestcam za prikupljanje fotografija tokom i posle događaja."
+    },
+    {
+      "type": "faq",
+      "q": "Kako sprečiti da gosti vide fotografije drugih?",
+      "a": "U Guestcam galeriji možete da uključite moderaciju — fotografije se prikazuju tek kada ih odobrite. Ili postavite lozinku koju delite samo sa najbližima."
+    },
+    {
+      "type": "faq",
+      "q": "Da li Guestcam košta više od WhatsAppa?",
+      "a": "Besplatan paket je dovoljan za male događaje. Za celo venčanje preporučujemo Plus (49€) ili Premium (79€) — manje od prosečnog venčanog buketa."
+    },
+    {
+      "type": "faq",
+      "q": "Šta se dešava sa WhatsApp grupom posle venčanja?",
+      "a": "Postaje spomenik — poruke se gube, fotografije se brišu kada neko očisti telefon. Guestcam galerija ostaje dostupna do 1 godine i možete je trajno preuzeti."
+    }
+  ]
+}

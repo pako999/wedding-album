@@ -1,0 +1,137 @@
+{
+  "slug": "kako-ustvariti-zasebno-porocno-galerijo",
+  "lang": "sl",
+  "title": "Kako ustvariti zasebno poročno galerijo (brezplačno, brez aplikacije)",
+  "description": "Korak za korakom — od izbire orodja do prenosa vseh fotografij po poroki. Brez Google Photos drame, brez izgubljenih datotek.",
+  "translationKey": "private-wedding-gallery",
+  "publishedAt": "2026-05-22",
+  "updatedAt": "2026-05-22",
+  "author": "Guestcam Team",
+  "category": "vodnik",
+  "readingTime": 5,
+  "tags": [
+    "zasebnost",
+    "galerija",
+    "DIY",
+    "Guestcam"
+  ],
+  "tldr": "Najboljša brezplačna možnost je Guestcam: ustvarite galerijo, dobite QR kodo, gostje skenirajo in nalagajo — vse zasebno, brez aplikacije.",
+  "content": [
+    {
+      "type": "h2",
+      "text": "Kaj naredi dobro poročno galerijo?"
+    },
+    {
+      "type": "ul",
+      "items": [
+        "Zasebna — brez javnih iskalnih rezultatov.",
+        "Brez registracije gostov — vsaka ovira pomeni manj fotografij.",
+        "Polna kakovost — primerno za tisk in dolgoročno hranjenje.",
+        "Skupno mesto — vse fotografije v eni galeriji, ne v 5 različnih klepetih.",
+        "Trajna — galerija ostane vsaj nekaj mesecev, ne se izgubi v zgodovini sporočil."
+      ]
+    },
+    {
+      "type": "h2",
+      "text": "Katere možnosti so na voljo?"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Možnost",
+        "Plusi",
+        "Minusi"
+      ],
+      "rows": [
+        [
+          "Google Photos skupni album",
+          "Brezplačno, znano",
+          "Gostje potrebujejo Google račun. Javni link je tveganje."
+        ],
+        [
+          "Dropbox skupna mapa",
+          "Velik prostor",
+          "Kompliciran za starejše goste."
+        ],
+        [
+          "WhatsApp skupina",
+          "Vsi že znajo",
+          "Stisne na 50%, kaotično."
+        ],
+        [
+          "Guestcam",
+          "QR koda, brez aplikacije, polna kakovost",
+          "Po brezplačnem paketu (20 fotk) plačljivo."
+        ]
+      ]
+    },
+    {
+      "type": "h2",
+      "text": "Kako nastavim galerijo z Guestcam korak za korakom?"
+    },
+    {
+      "type": "ol",
+      "items": [
+        "Pojdite na guestcam.si in kliknite »Ustvari galerijo« — brez kreditne kartice.",
+        "Izpolnite ime para (npr. »Ana & Marko«), datum poroke in lokacijo.",
+        "Po želji nastavite geslo za galerijo (priporočljivo za maksimalno zasebnost).",
+        "Sistem samodejno ustvari edinstven URL in QR kodo.",
+        "Prenesite QR kodo v PDF formatu — z dizajnom, ki se ujema z vašo poroko."
+      ]
+    },
+    {
+      "type": "h2",
+      "text": "Kako delim galerijo z gosti?"
+    },
+    {
+      "type": "p",
+      "text": "Tri preverjene metode:"
+    },
+    {
+      "type": "ul",
+      "items": [
+        "Natisnite QR kartice in jih postavite na vse mize.",
+        "Dodajte QR kodo na poročno mapo ali zahvalo, ki jo izročite gostom.",
+        "Pošljite link gostom prek WhatsAppa ali e-pošte (deluje tudi brez QR)."
+      ]
+    },
+    {
+      "type": "h2",
+      "text": "Kako prenesem vse fotografije po dogodku?"
+    },
+    {
+      "type": "p",
+      "text": "V administratorskem panelu kliknite »Prenesi vse (ZIP)«. Vse fotografije in videoposnetki se prenesejo v eni mapi v polni kakovosti — pripravljeno za varnostno kopijo na vašem računalniku ali zunanjem disku."
+    },
+    {
+      "type": "cta",
+      "text": "Ustvarite svojo brezplačno zasebno galerijo",
+      "href": "/dashboard/new"
+    },
+    {
+      "type": "faq",
+      "q": "Je galerija res zasebna?",
+      "a": "Da. Brez gesla je dostopna samo prek točnega URL/QR — Google in drugi iskalniki je ne morejo indeksirati. Z geslom dodate dodatno plast zaščite."
+    },
+    {
+      "type": "faq",
+      "q": "Lahko izbrišem posamezne fotografije?",
+      "a": "Da, kot administrator galerije lahko izbrišete kateri koli prispevek. Gostje vidijo le svoje fotografije v primeru moderacije."
+    },
+    {
+      "type": "faq",
+      "q": "Kaj če gost naloži video, večji od 50 MB?",
+      "a": "Plus in Premium paket podpirata polne HD videoposnetke. V brezplačnem paketu so videi omejeni na 30 sekund / 50 MB."
+    },
+    {
+      "type": "faq",
+      "q": "Koliko časa fotografije ostanejo?",
+      "a": "Brezplačno: 30 dni. Basic: 3 mesece. Plus in Premium: 1 leto. Vse fotografije lahko kadarkoli prenesete v ZIP."
+    },
+    {
+      "type": "faq",
+      "q": "Lahko delim galerijo na družbenih omrežjih?",
+      "a": "Tehnično da, vendar ne priporočamo. Galerija je zasnovana kot zasebna — bolje je deliti samo z gosti."
+    }
+  ]
+}

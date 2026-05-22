@@ -1,0 +1,137 @@
+{
+  "slug": "como-crear-galeria-fotos-privada-boda",
+  "lang": "es",
+  "title": "Cómo crear una galería de fotos de boda privada (gratis, sin app)",
+  "description": "Paso a paso — desde la elección de la herramienta hasta la descarga de todas las fotos tras la boda. Sin dramas de Google Photos, sin archivos perdidos.",
+  "translationKey": "private-wedding-gallery",
+  "publishedAt": "2026-05-22",
+  "updatedAt": "2026-05-22",
+  "author": "Guestcam Team",
+  "category": "vodnik",
+  "readingTime": 5,
+  "tags": [
+    "privacidad",
+    "galería",
+    "DIY",
+    "Guestcam"
+  ],
+  "tldr": "La mejor opción gratuita es Guestcam: crea la galería, obtén el código QR, los invitados escanean y suben — todo privado, sin app.",
+  "content": [
+    {
+      "type": "h2",
+      "text": "¿Qué hace que una galería de boda sea buena?"
+    },
+    {
+      "type": "ul",
+      "items": [
+        "Privada — sin resultados públicos en buscadores.",
+        "Sin registro de invitados — cada barrera implica menos fotos.",
+        "Calidad completa — apta para imprimir y conservar a largo plazo.",
+        "Un único lugar — todas las fotos en una galería, no en 5 chats distintos.",
+        "Duradera — la galería vive al menos varios meses, no se pierde en el historial."
+      ]
+    },
+    {
+      "type": "h2",
+      "text": "¿Qué opciones existen?"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Opción",
+        "Pros",
+        "Contras"
+      ],
+      "rows": [
+        [
+          "Álbum compartido de Google Photos",
+          "Gratis, conocido",
+          "Los invitados necesitan cuenta de Google. El enlace público es un riesgo."
+        ],
+        [
+          "Carpeta compartida de Dropbox",
+          "Mucho almacenamiento",
+          "Complicado para invitados mayores."
+        ],
+        [
+          "Grupo de WhatsApp",
+          "Todos lo conocen",
+          "Comprime al 50%, caótico."
+        ],
+        [
+          "Guestcam",
+          "QR, sin app, calidad completa",
+          "De pago tras el plan gratuito (20 fotos)."
+        ]
+      ]
+    },
+    {
+      "type": "h2",
+      "text": "¿Cómo configuro la galería con Guestcam paso a paso?"
+    },
+    {
+      "type": "ol",
+      "items": [
+        "Entra en guestcam.si y haz clic en «Crear galería» — sin tarjeta de crédito.",
+        "Rellena los nombres de la pareja (p. ej. «Ana y Marko»), fecha de la boda y lugar.",
+        "Opcional: pon una contraseña a la galería (recomendado para máxima privacidad).",
+        "El sistema genera una URL única y un código QR automáticamente.",
+        "Descarga el QR en PDF — con un diseño que combine con tu boda."
+      ]
+    },
+    {
+      "type": "h2",
+      "text": "¿Cómo comparto la galería con los invitados?"
+    },
+    {
+      "type": "p",
+      "text": "Tres métodos probados:"
+    },
+    {
+      "type": "ul",
+      "items": [
+        "Imprime tarjetas con QR y colócalas en todas las mesas.",
+        "Añade el QR al cuadernillo o tarjeta de agradecimiento que entregas a los invitados.",
+        "Envía el enlace por WhatsApp o email (funciona también sin QR)."
+      ]
+    },
+    {
+      "type": "h2",
+      "text": "¿Cómo descargo todas las fotos tras el evento?"
+    },
+    {
+      "type": "p",
+      "text": "En el panel de administración haz clic en «Descargar todo (ZIP)». Todas las fotos y vídeos se descargan en una sola carpeta en calidad completa — listas para hacer copia en tu ordenador o disco externo."
+    },
+    {
+      "type": "cta",
+      "text": "Crea tu galería privada gratis",
+      "href": "/dashboard/new"
+    },
+    {
+      "type": "faq",
+      "q": "¿De verdad es privada la galería?",
+      "a": "Sí. Sin contraseña solo se accede mediante la URL/QR exactos — Google y otros buscadores no pueden indexarla. Con contraseña añades otra capa de protección."
+    },
+    {
+      "type": "faq",
+      "q": "¿Puedo borrar fotos individuales?",
+      "a": "Sí. Como administrador de la galería puedes borrar cualquier envío. En modo moderación, los invitados solo ven sus propias fotos."
+    },
+    {
+      "type": "faq",
+      "q": "¿Y si un invitado sube un vídeo de más de 50 MB?",
+      "a": "Los planes Plus y Premium soportan vídeo HD completo. En el plan gratuito los vídeos están limitados a 30 segundos / 50 MB."
+    },
+    {
+      "type": "faq",
+      "q": "¿Cuánto tiempo se conservan las fotos?",
+      "a": "Gratis: 30 días. Basic: 3 meses. Plus y Premium: 1 año. Puedes descargar todo en ZIP en cualquier momento."
+    },
+    {
+      "type": "faq",
+      "q": "¿Puedo compartir la galería en redes sociales?",
+      "a": "Técnicamente sí, pero no lo recomendamos. La galería está diseñada para ser privada — mejor compartirla solo con los invitados."
+    }
+  ]
+}

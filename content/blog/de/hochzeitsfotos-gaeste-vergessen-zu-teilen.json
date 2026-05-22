@@ -1,0 +1,98 @@
+{
+  "slug": "hochzeitsfotos-gaeste-vergessen-zu-teilen",
+  "lang": "de",
+  "title": "Warum Gäste ihre Hochzeitsfotos nie teilen (und wie Sie es ändern)",
+  "description": "Gäste vergessen, weil es keinen einfachen Weg gibt. Ein QR-Code auf jedem Tisch beseitigt alle Hürden — Fotos kommen schon während des Events.",
+  "translationKey": "guests-forget-to-share",
+  "publishedAt": "2026-05-22",
+  "updatedAt": "2026-05-22",
+  "author": "Guestcam Team",
+  "category": "nasvet",
+  "readingTime": 6,
+  "tags": [
+    "Psychologie",
+    "Foto-Sharing",
+    "Hochzeitstipps"
+  ],
+  "tldr": "Gäste vergessen, weil es keinen einfachen Weg gibt. Ein QR-Code auf jedem Tisch beseitigt alle Hürden und Fotos kommen schon während des Events.",
+  "content": [
+    {
+      "type": "h2",
+      "text": "Die schmerzhafte Wahrheit nach der Hochzeit"
+    },
+    {
+      "type": "p",
+      "text": "Die Party ist vorbei. Das Zimmer ist still. In Ihrem Handy haben Sie 80 Fotos, der Fotograf schickt seine in drei Wochen. Heute Abend waren aber 200 Handys im Raum und jedes hat einen anderen Winkel, einen anderen Moment, ein anderes Lachen eingefangen. Wo sind sie?"
+    },
+    {
+      "type": "h2",
+      "text": "7 Gründe, warum Gäste keine Fotos teilen"
+    },
+    {
+      "type": "ol",
+      "items": [
+        "Vergesslichkeit — am nächsten Tag geht der Alltag los.",
+        "Reibung — 30 Fotos per WhatsApp zu schicken dauert ewig.",
+        "Dateigröße — Videos sind zu groß fürs Mobilfunknetz.",
+        "Unsicherheit — »Wem schicke ich sie? In die Gruppe? Direkt ans Paar?«",
+        "Scham — »Meine Fotos sind unscharf, nicht der Rede wert.«",
+        "Technik — ältere Gäste wissen nicht, wie Google Photos funktioniert.",
+        "Keine Erinnerung — niemand fragt, also vergessen sie es."
+      ]
+    },
+    {
+      "type": "h2",
+      "text": "Was sagt die Psychologie?"
+    },
+    {
+      "type": "p",
+      "text": "Jede zusätzliche Hürde (klicken, auswählen, schicken, warten) senkt die Handlungswahrscheinlichkeit um etwa 30%. Drei Hürden = 70% weniger Fotos. Deshalb schicken 90% der Gäste die wunderschönen Tanzszenen nie ab."
+    },
+    {
+      "type": "h2",
+      "text": "Der QR-Code auf dem Tisch: Lösung in einer Geste"
+    },
+    {
+      "type": "p",
+      "text": "Mit einem QR-Code gibt es zwischen Gast und Galerie keine Hürde: scannen, auswählen, hochladen. Drei Sekunden vom Foto bis zur Galerie. Deshalb bekommen Paare mit Guestcam im Schnitt 340 Fotos — gegenüber 30 mit traditionellen Methoden."
+    },
+    {
+      "type": "h2",
+      "text": "Echte Geschichte: Ana & Marko"
+    },
+    {
+      "type": "p",
+      "text": "Ana und Marko heirateten im Juli 2025 an der slowenischen Küste. Sie stellten einen QR-Code auf jeden Tisch mit der einfachen Botschaft: »Teilt unsere gemeinsamen Erinnerungen«. Am Ende des Abends: 340 Fotos und 28 Videos von 78 Gästen. Keine WhatsApp-Gruppe, keine verlorenen Nachrichten. Alles in einer Galerie, die sie ein halbes Jahr später mit Tränen in den Augen mit den Eltern durchstöberten."
+    },
+    {
+      "type": "cta",
+      "text": "Beginnen Sie heute, Erinnerungen zu sammeln",
+      "href": "/dashboard/new"
+    },
+    {
+      "type": "faq",
+      "q": "Was, wenn meine Gäste keine QR-Codes scannen können?",
+      "a": "Aktuelle Smartphones (ab 2018) haben den QR-Scanner in der Kamera-App. Einfach Kamera draufhalten und auf die Benachrichtigung tippen. Für sehr ältere Gäste können Sie zusätzlich einen Direktlink (Kurz-URL) drucken."
+    },
+    {
+      "type": "faq",
+      "q": "Woher weiß ich, dass genug Gäste mitmachen?",
+      "a": "Unsere Daten zeigen 65–80% Teilnahme, wenn der QR-Code auf jedem Tisch steht. Das ist 3× so viel wie bei einer WhatsApp-Gruppe (15–25%)."
+    },
+    {
+      "type": "faq",
+      "q": "Können Gäste sehen, wer welches Foto hochgeladen hat?",
+      "a": "Ja, jeder Uploader gibt seinen Namen ein. Das hilft beim Sortieren und gibt der Galerie eine persönliche Note."
+    },
+    {
+      "type": "faq",
+      "q": "Was, wenn ein Gast ein unpassendes Foto hochlädt?",
+      "a": "Aktivieren Sie die Moderation — Fotos warten auf Ihre Freigabe, bevor sie sichtbar werden. Im Plus- und Premium-Paket enthalten."
+    },
+    {
+      "type": "faq",
+      "q": "Wie sage ich meinen Gästen »ladet Fotos hoch«, ohne dass es aufgesetzt klingt?",
+      "a": "Lassen Sie den DJ oder Moderator es im Lauf des Abends erwähnen: »Scannt den QR-Code auf eurem Tisch und teilt eure Abendmomente mit dem Brautpaar.« Natürlich und unaufdringlich."
+    }
+  ]
+}
