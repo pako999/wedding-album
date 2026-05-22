@@ -210,11 +210,13 @@ function gtagConsentUpdate(record: ConsentRecord) {
   if (typeof window === "undefined") return;
   window.dataLayer = window.dataLayer ?? [];
   if (!window.gtag) {
-    window.gtag = function () {
-      window.dataLayer!.push(arguments);
-    } as typeof window.gtag;
+    window.gtag = function (...args: unknown[]) {
+      (window.dataLayer as unknown[]).push(args);
+    };
   }
-  window.gtag("consent", "update", {
+  const gtag = window.gtag;
+  if (!gtag) return;
+  gtag("consent", "update", {
     ad_storage:              record.ad_storage,
     ad_user_data:            record.ad_user_data,
     ad_personalization:      record.ad_personalization,
@@ -248,7 +250,7 @@ export function CookieConsent({ lang }: { lang: LangCode }) {
       setOpen(true);
     };
     return () => {
-      delete window.openCookieConsent;
+      window.openCookieConsent = undefined;
     };
   }, []);
 
