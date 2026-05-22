@@ -1,0 +1,25 @@
+{
+  "_comment": "Auto-blog generation queue. Each Monday + Thursday the GitHub Action consumes one topic from the head of the queue, generates a 6-language post, and removes it from this file. Add new topics to the end of the array at any time.",
+  "topics": [
+    "wedding photo booth ideas 2026",
+    "how to print wedding photos",
+    "best wedding hashtag ideas",
+    "how to organize wedding photos",
+    "wedding photo album vs digital gallery",
+    "how to share wedding photos with elderly guests",
+    "wedding photography trends 2026",
+    "how to get guests to take more photos",
+    "first look vs traditional wedding photos",
+    "wedding videography vs photography",
+    "how to thank guests for sharing photos",
+    "best wedding photo captions",
+    "candid vs posed wedding photos",
+    "how to create a wedding memory book",
+    "wedding photo privacy guide",
+    "how to backup wedding photos",
+    "best time of day for wedding photos",
+    "wedding photo gift ideas for guests",
+    "how much do wedding photographers cost 2026",
+    "wedding photo sharing etiquette"
+  ]
+}

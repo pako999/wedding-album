@@ -1,0 +1,61 @@
+name: Weekly auto-blog
+
+# Runs every Monday and Thursday at 08:00 UTC; consumes one topic
+# from content/blog/topics-queue.json, generates a 6-language post,
+# commits the new files. Vercel auto-deploys from main on push.
+#
+# Manual run via "Run workflow" in the Actions tab is supported.
+
+on:
+  schedule:
+    - cron: "0 8 * * 1"   # Monday 08:00 UTC
+    - cron: "0 8 * * 4"   # Thursday 08:00 UTC
+  workflow_dispatch:
+    inputs:
+      topic:
+        description: "Topic to generate (optional — defaults to head of topics-queue.json)"
+        required: false
+        type: string
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Generate blog post (6 languages)
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          ANTHROPIC_MODEL: ${{ secrets.ANTHROPIC_MODEL }}
+        run: |
+          if [ -n "${{ inputs.topic }}" ]; then
+            npx tsx scripts/generate-blog-post.ts "${{ inputs.topic }}"
+          else
+            npx tsx scripts/generate-blog-post.ts
+          fi
+
+      - name: Commit and push
+        run: |
+          git config user.name  "guestcam-blog-bot"
+          git config user.email "bot@guestcam.si"
+          git add content/blog
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+            exit 0
+          fi
+          # Subject line — derive from first new file's title field for context
+          NEW_FILE=$(git diff --cached --name-only --diff-filter=A | grep '^content/blog/en/' | head -n 1)
+          TITLE=$(node -e "console.log(require('./${NEW_FILE}').title || 'auto')" 2>/dev/null || echo "auto")
+          git commit -m "blog: auto-generate \"$TITLE\""
+          git push

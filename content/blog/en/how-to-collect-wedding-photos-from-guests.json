@@ -1,0 +1,150 @@
+{
+  "slug": "how-to-collect-wedding-photos-from-guests",
+  "lang": "en",
+  "title": "How to Collect All Wedding Photos From Guests [2026]",
+  "description": "5 proven ways to get your guests' photos. No apps, no lost memories.",
+  "translationKey": "how-to-collect-wedding-photos",
+  "publishedAt": "2026-05-22",
+  "updatedAt": "2026-05-22",
+  "author": "Guestcam Team",
+  "category": "vodnik",
+  "readingTime": 7,
+  "tags": [
+    "wedding photos",
+    "QR code",
+    "guests",
+    "Guestcam"
+  ],
+  "tldr": "The easiest way is to create a QR-code album with Guestcam — guests scan and upload directly, no app needed.",
+  "content": [
+    {
+      "type": "h2",
+      "text": "Why do guests (almost) never send their photos?"
+    },
+    {
+      "type": "p",
+      "text": "After the wedding you have the photographer's memories — but what about the 200 phones in the room? In practice, guests share only 5–10% of what they shot. The reason is simple: sending is a chore. Below are 5 ways to fix this — from worst to best."
+    },
+    {
+      "type": "stat",
+      "value": "340",
+      "label": "average photos per wedding (Guestcam data 2025)",
+      "source": "Guestcam internal data, 2025"
+    },
+    {
+      "type": "h2",
+      "text": "Which method actually works?"
+    },
+    {
+      "type": "p",
+      "text": "We compared five approaches. Each has pros and cons:"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Method",
+        "Quality",
+        "Effort",
+        "Risk"
+      ],
+      "rows": [
+        [
+          "WhatsApp group",
+          "50% (compressed)",
+          "Medium",
+          "Mixed dates, chaos"
+        ],
+        [
+          "Shared Google Photos folder",
+          "100%",
+          "Hard",
+          "Guests need an account"
+        ],
+        [
+          "USB stick at the exit",
+          "100%",
+          "Low participation",
+          "Only 1-2 guests join in"
+        ],
+        [
+          "Email everyone",
+          "100%",
+          "Manual",
+          "Huge attachments"
+        ],
+        [
+          "QR code + Guestcam",
+          "100%",
+          "1 scan",
+          "No risk"
+        ]
+      ]
+    },
+    {
+      "type": "h2",
+      "text": "How do I set up a QR-code gallery in 2 minutes?"
+    },
+    {
+      "type": "p",
+      "text": "The easiest path is via Guestcam. Steps:"
+    },
+    {
+      "type": "ol",
+      "items": [
+        "Go to guestcam.si and click Create gallery (free, no card needed).",
+        "Enter the couple's names and the wedding date.",
+        "Download the QR code with a personalised design (PDF).",
+        "Print cards for every table or for the entrance.",
+        "Guests scan with their phone — photos appear live in your private gallery."
+      ]
+    },
+    {
+      "type": "h2",
+      "text": "How do I get more photos from guests?"
+    },
+    {
+      "type": "p",
+      "text": "From analysing 500+ weddings we pulled 5 tips that consistently raise participation:"
+    },
+    {
+      "type": "ul",
+      "items": [
+        "Put a QR card on every table — not just at the entrance.",
+        "Have the DJ or MC mention the gallery: 'Scan the QR code on your table to share photos.'",
+        "Add a personalised line (e.g. 'Ana & Marko — share your memories').",
+        "Send the QR link to guests via WhatsApp/SMS the day after the wedding.",
+        "Drop the card into the favour bag you hand out on the way out."
+      ]
+    },
+    {
+      "type": "cta",
+      "text": "Create a free gallery for your wedding",
+      "href": "/dashboard/new"
+    },
+    {
+      "type": "faq",
+      "q": "Do guests need an app to upload?",
+      "a": "No. They scan the QR code with the phone camera and upload directly via the browser."
+    },
+    {
+      "type": "faq",
+      "q": "Are the photos kept in full quality?",
+      "a": "Yes. Guestcam keeps original resolution and metadata. WhatsApp by comparison compresses to about 50% quality."
+    },
+    {
+      "type": "faq",
+      "q": "How many photos can I collect?",
+      "a": "Up to 20 on the free plan. The Premium plan allows unlimited photos."
+    },
+    {
+      "type": "faq",
+      "q": "Can I see photos live during the wedding?",
+      "a": "Yes. The Premium plan includes Live Gallery — photos update in real time."
+    },
+    {
+      "type": "faq",
+      "q": "What happens to the gallery after the wedding?",
+      "a": "Content stays available according to your plan — from 30 days (Free) to 1 year (Premium). You download everything as a ZIP."
+    }
+  ]
+}

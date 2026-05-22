@@ -1,0 +1,150 @@
+{
+  "slug": "como-recopilar-fotos-de-invitados-en-la-boda",
+  "lang": "es",
+  "title": "Cómo recopilar todas las fotos de los invitados en la boda [2026]",
+  "description": "5 métodos probados para que los invitados compartan sus fotos. Sin apps, sin recuerdos perdidos.",
+  "translationKey": "how-to-collect-wedding-photos",
+  "publishedAt": "2026-05-22",
+  "updatedAt": "2026-05-22",
+  "author": "Guestcam Team",
+  "category": "vodnik",
+  "readingTime": 7,
+  "tags": [
+    "fotos de boda",
+    "código QR",
+    "invitados",
+    "Guestcam"
+  ],
+  "tldr": "Lo más fácil es crear una galería con código QR usando Guestcam — los invitados escanean y suben directamente, sin app.",
+  "content": [
+    {
+      "type": "h2",
+      "text": "¿Por qué los invitados (casi) nunca envían sus fotos?"
+    },
+    {
+      "type": "p",
+      "text": "Después de la boda tienes los recuerdos del fotógrafo — pero ¿qué hay de los 200 móviles que estaban allí? En la práctica, los invitados comparten solo el 5–10 % de lo que captaron. La razón es simple: enviarlas es un fastidio. Estas son 5 formas de arreglarlo — de la peor a la mejor."
+    },
+    {
+      "type": "stat",
+      "value": "340",
+      "label": "fotos por boda en promedio (datos de Guestcam 2025)",
+      "source": "Datos internos de Guestcam, 2025"
+    },
+    {
+      "type": "h2",
+      "text": "¿Qué método funciona de verdad?"
+    },
+    {
+      "type": "p",
+      "text": "Comparamos cinco enfoques. Cada uno tiene pros y contras:"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Método",
+        "Calidad",
+        "Esfuerzo",
+        "Riesgo"
+      ],
+      "rows": [
+        [
+          "Grupo de WhatsApp",
+          "50% (comprimido)",
+          "Medio",
+          "Fechas mezcladas, caos"
+        ],
+        [
+          "Carpeta compartida de Google Photos",
+          "100%",
+          "Difícil",
+          "Los invitados necesitan cuenta"
+        ],
+        [
+          "USB en la salida",
+          "100%",
+          "Baja participación",
+          "Solo 1-2 invitados participan"
+        ],
+        [
+          "Email a cada uno",
+          "100%",
+          "Manual",
+          "Adjuntos enormes"
+        ],
+        [
+          "Código QR + Guestcam",
+          "100%",
+          "1 escaneo",
+          "Sin riesgo"
+        ]
+      ]
+    },
+    {
+      "type": "h2",
+      "text": "¿Cómo configuro una galería con QR en 2 minutos?"
+    },
+    {
+      "type": "p",
+      "text": "La forma más fácil es a través de Guestcam. Pasos:"
+    },
+    {
+      "type": "ol",
+      "items": [
+        "Entra en guestcam.si y haz clic en Crear galería (gratis, sin tarjeta).",
+        "Introduce los nombres de la pareja y la fecha de la boda.",
+        "Descarga el código QR con un diseño personalizado (PDF).",
+        "Imprime tarjetas para todas las mesas o para la entrada.",
+        "Los invitados escanean con el móvil — las fotos aparecen en directo en tu galería privada."
+      ]
+    },
+    {
+      "type": "h2",
+      "text": "¿Cómo consigo más fotos de los invitados?"
+    },
+    {
+      "type": "p",
+      "text": "Tras analizar 500+ bodas, sacamos 5 consejos que aumentan la participación:"
+    },
+    {
+      "type": "ul",
+      "items": [
+        "Coloca una tarjeta con QR en cada mesa — no solo en la entrada.",
+        "Que el DJ o presentador mencione la galería: «Escanea el código QR de tu mesa para compartir fotos».",
+        "Añade un mensaje personalizado (p. ej. «Ana y Marko — comparte tus recuerdos»).",
+        "Envía el QR a los invitados por WhatsApp/SMS al día siguiente.",
+        "Mete la tarjeta en la bolsita de regalo que entregas a la salida."
+      ]
+    },
+    {
+      "type": "cta",
+      "text": "Crea una galería gratuita para tu boda",
+      "href": "/dashboard/new"
+    },
+    {
+      "type": "faq",
+      "q": "¿Necesitan los invitados una app para subir las fotos?",
+      "a": "No. Escanean el código QR con la cámara del móvil y suben las fotos directamente desde el navegador."
+    },
+    {
+      "type": "faq",
+      "q": "¿Se conservan las fotos en calidad completa?",
+      "a": "Sí. Guestcam mantiene la resolución original y los metadatos. WhatsApp, en cambio, comprime a un ~50 % de calidad."
+    },
+    {
+      "type": "faq",
+      "q": "¿Cuántas fotos puedo recopilar?",
+      "a": "Hasta 20 en el plan gratuito. El plan Premium permite fotos ilimitadas."
+    },
+    {
+      "type": "faq",
+      "q": "¿Puedo ver las fotos en directo durante la boda?",
+      "a": "Sí. El plan Premium incluye la Galería en directo — las fotos se actualizan en tiempo real."
+    },
+    {
+      "type": "faq",
+      "q": "¿Qué pasa con la galería después de la boda?",
+      "a": "El contenido permanece disponible según tu plan — de 30 días (Gratis) a 1 año (Premium). Descargas todo en un ZIP."
+    }
+  ]
+}

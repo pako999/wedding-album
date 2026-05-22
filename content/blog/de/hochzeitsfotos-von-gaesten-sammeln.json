@@ -1,0 +1,150 @@
+{
+  "slug": "hochzeitsfotos-von-gaesten-sammeln",
+  "lang": "de",
+  "title": "Hochzeitsfotos der Gäste sammeln: So geht's [2026]",
+  "description": "5 bewährte Methoden, wie Ihre Gäste Fotos mit Ihnen teilen. Keine Apps, keine verlorenen Erinnerungen.",
+  "translationKey": "how-to-collect-wedding-photos",
+  "publishedAt": "2026-05-22",
+  "updatedAt": "2026-05-22",
+  "author": "Guestcam Team",
+  "category": "vodnik",
+  "readingTime": 7,
+  "tags": [
+    "Hochzeitsfotos",
+    "QR-Code",
+    "Gäste",
+    "Guestcam"
+  ],
+  "tldr": "Am einfachsten geht es mit einer QR-Code-Galerie über Guestcam — Gäste scannen und laden direkt hoch, ohne App.",
+  "content": [
+    {
+      "type": "h2",
+      "text": "Warum schicken Gäste (fast) nie ihre Fotos?"
+    },
+    {
+      "type": "p",
+      "text": "Nach der Hochzeit haben Sie die Erinnerungen des Fotografen — aber was ist mit den 200 Handys, die dabei waren? Erfahrungsgemäß teilen Gäste nur 5–10 % der Aufnahmen. Der Grund ist simpel: Verschicken ist umständlich. Hier sind 5 Methoden, wie Sie es vereinfachen — von schlecht bis ideal."
+    },
+    {
+      "type": "stat",
+      "value": "340",
+      "label": "Fotos pro Hochzeit im Durchschnitt (Guestcam Daten 2025)",
+      "source": "Guestcam interne Daten, 2025"
+    },
+    {
+      "type": "h2",
+      "text": "Welche Methode funktioniert wirklich?"
+    },
+    {
+      "type": "p",
+      "text": "Wir haben fünf Ansätze verglichen. Jeder hat Vor- und Nachteile:"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Methode",
+        "Qualität",
+        "Aufwand",
+        "Risiko"
+      ],
+      "rows": [
+        [
+          "WhatsApp-Gruppe",
+          "50% (komprimiert)",
+          "Mittel",
+          "Gemischte Daten, Chaos"
+        ],
+        [
+          "Gemeinsamer Google-Photos-Ordner",
+          "100%",
+          "Schwer",
+          "Gäste brauchen Konto"
+        ],
+        [
+          "USB-Stick am Ausgang",
+          "100%",
+          "Geringe Teilnahme",
+          "Nur 1-2 Gäste machen mit"
+        ],
+        [
+          "E-Mail an jeden einzeln",
+          "100%",
+          "Manuell",
+          "Große Anhänge"
+        ],
+        [
+          "QR-Code + Guestcam",
+          "100%",
+          "1 Scan",
+          "Kein Risiko"
+        ]
+      ]
+    },
+    {
+      "type": "h2",
+      "text": "Wie richte ich eine QR-Code-Galerie in 2 Minuten ein?"
+    },
+    {
+      "type": "p",
+      "text": "Am einfachsten geht es über Guestcam. So funktioniert's:"
+    },
+    {
+      "type": "ol",
+      "items": [
+        "Auf guestcam.si gehen und auf Galerie erstellen klicken (kostenlos, ohne Kreditkarte).",
+        "Namen des Paares und Hochzeitsdatum eingeben.",
+        "QR-Code mit personalisiertem Design herunterladen (PDF).",
+        "Karten für alle Tische oder den Eingang drucken.",
+        "Gäste scannen mit dem Smartphone — Fotos erscheinen live in Ihrer privaten Galerie."
+      ]
+    },
+    {
+      "type": "h2",
+      "text": "Wie bekomme ich noch mehr Fotos von den Gästen?"
+    },
+    {
+      "type": "p",
+      "text": "Aus der Analyse von 500+ Hochzeiten haben wir 5 Tipps gefiltert, die die Teilnahme steigern:"
+    },
+    {
+      "type": "ul",
+      "items": [
+        "QR-Code auf jeden Tisch stellen — nicht nur am Eingang.",
+        "DJ oder Moderator erwähnt die Galerie: »Scannen Sie den QR-Code am Tisch für gemeinsame Fotos.«",
+        "Personalisierten Text hinzufügen (z. B. »Ana & Marko – teilt eure Erinnerungen«).",
+        "QR-Code am Tag nach der Hochzeit zusätzlich per WhatsApp/SMS schicken.",
+        "Karte in die Gastgeschenk-Mappe legen, die beim Abschied überreicht wird."
+      ]
+    },
+    {
+      "type": "cta",
+      "text": "Erstellen Sie eine kostenlose Galerie für Ihre Hochzeit",
+      "href": "/dashboard/new"
+    },
+    {
+      "type": "faq",
+      "q": "Brauchen Gäste eine App zum Hochladen?",
+      "a": "Nein. Sie scannen den QR-Code mit der Handykamera und laden Fotos direkt über den Browser hoch."
+    },
+    {
+      "type": "faq",
+      "q": "Bleiben die Fotos in voller Qualität?",
+      "a": "Ja. Guestcam behält die Originalauflösung und Metadaten bei. WhatsApp komprimiert dagegen auf ~50 % Qualität."
+    },
+    {
+      "type": "faq",
+      "q": "Wie viele Fotos kann ich sammeln?",
+      "a": "Kostenlos bis zu 20 Fotos. Das Premium-Paket erlaubt unbegrenzt viele Fotos."
+    },
+    {
+      "type": "faq",
+      "q": "Kann ich die Fotos live während der Hochzeit sehen?",
+      "a": "Ja. Das Premium-Paket enthält die Live-Galerie — Fotos werden in Echtzeit aktualisiert."
+    },
+    {
+      "type": "faq",
+      "q": "Was passiert mit der Galerie nach der Hochzeit?",
+      "a": "Die Inhalte bleiben je nach Paket verfügbar — von 30 Tagen (kostenlos) bis 1 Jahr (Premium). Alle Fotos laden Sie als ZIP herunter."
+    }
+  ]
+}

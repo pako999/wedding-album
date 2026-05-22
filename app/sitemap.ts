@@ -1,13 +1,43 @@
 import type { MetadataRoute } from "next";
+import fs from "node:fs/promises";
+import path from "node:path";
 
 const SITE_URL = "https://guestcam.si";
+
+async function blogEntries(): Promise<{ path: string; priority: number }[]> {
+  const blogDir = path.join(process.cwd(), "content", "blog");
+  const out: { path: string; priority: number }[] = [];
+  // Index pages
+  out.push({ path: "/blog", priority: 0.7 });
+  for (const lang of ["hr", "sr", "de", "en", "es"]) {
+    out.push({ path: `/${lang}/blog`, priority: 0.65 });
+  }
+  // Per-post URLs
+  for (const lang of ["sl", "hr", "sr", "de", "en", "es"]) {
+    const dir = path.join(blogDir, lang);
+    let files: string[] = [];
+    try {
+      files = await fs.readdir(dir);
+    } catch {
+      continue;
+    }
+    for (const file of files) {
+      if (!file.endsWith(".json")) continue;
+      const slug = file.replace(".json", "");
+      const url = lang === "sl" ? `/blog/${slug}` : `/${lang}/blog/${slug}`;
+      out.push({ path: url, priority: 0.6 });
+    }
+  }
+  return out;
+}
 
 /**
  * Public sitemap. Lists only marketing / content pages — album galleries
  * and the dashboard are private and intentionally excluded.
  */
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
+  const blog = await blogEntries();
   const pages: { path: string; priority: number }[] = [
     { path: "", priority: 1.0 },
     // Localized homepages (one per language other than Slovenian)
@@ -49,6 +79,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
         priority: 0.25,
       })),
     )),
+    // Blog (auto-discovered from content/blog/<lang>/*.json)
+    ...blog,
   ];
 
   return pages.map(({ path, priority }) => ({
