@@ -14,19 +14,45 @@ interface Props {
   searchParams: Promise<{ pw?: string; lang?: string }>;
 }
 
+// Per-event-type share copy. We render this in the share preview when
+// a guest pastes the album link in WhatsApp / iMessage / Slack.
+// Previously every album defaulted to "Poročni album za …" regardless
+// of event type — a baby shower link said "Wedding album for Kim's
+// Baby shower", which is wrong and confusing.
+const EVENT_LABEL_SL: Record<string, string> = {
+  wedding:    "Poročni album za",
+  birthday:   "Album rojstnega dne za",
+  anniversary:"Album obletnice za",
+  party:      "Album zabave za",
+  baptism:    "Album krsta za",
+  graduation: "Maturantski album za",
+  babyshower: "Baby shower album za",
+  other:      "Album dogodka za",
+};
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const album = await db.query.albums.findFirst({
     where: eq(albums.slug, slug),
   });
   if (!album) return { title: "Album not found" };
+
+  const eventLabel = EVENT_LABEL_SL[album.eventType ?? "other"] ?? EVENT_LABEL_SL.other;
+  const description = `${eventLabel} ${album.coupleName}, ${album.weddingDate}`;
+
   return {
     title: `${album.coupleName} — Guestcam`,
-    description: `Poročni album za ${album.coupleName}, ${album.weddingDate}`,
+    description,
     robots: { index: false, follow: false },
     openGraph: {
       title: `${album.coupleName} — Guestcam`,
+      description,
       images: album.coverImageUrl ? [album.coverImageUrl] : [],
+    },
+    twitter: {
+      card: album.coverImageUrl ? "summary_large_image" : "summary",
+      title: `${album.coupleName} — Guestcam`,
+      description,
     },
   };
 }
