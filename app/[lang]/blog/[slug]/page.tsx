@@ -4,7 +4,7 @@ import { BlogPostPage } from "@/components/BlogPostPage";
 import { getAllSlugs, getPost, getTranslationMap, blogUrl } from "@/lib/blog";
 import type { LangCode } from "@/components/LanguageSwitcher";
 
-export const dynamic = "force-static";
+// Per-request dynamic — see app/[lang]/blog/page.tsx for the rationale.
 export const revalidate = 3600;
 
 const VALID: LangCode[] = ["hr", "sr", "de", "en", "es"];

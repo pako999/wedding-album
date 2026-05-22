@@ -146,16 +146,24 @@ export default function HomePage() {
               { href: "#pricing", label: "Cenik" },
               { href: "/blog", label: "Blog" },
               { href: "#faq", label: "FAQ" },
-            ].map((item) => (
-              <a
-                key={item.href}
-                href={item.href}
-                className="relative group py-1 transition-colors hover:text-[#0F1729]"
-              >
-                {item.label}
-                <span className="absolute -bottom-0.5 left-0 h-[2px] w-0 rounded-full bg-[#FFC94D] transition-all duration-300 ease-out group-hover:w-full" />
-              </a>
-            ))}
+            ].map((item) => {
+              const isRoute = !item.href.startsWith("#");
+              const className = "relative group py-1 transition-colors hover:text-[#0F1729]";
+              const inner = (
+                <>
+                  {item.label}
+                  <span className="absolute -bottom-0.5 left-0 h-[2px] w-0 rounded-full bg-[#FFC94D] transition-all duration-300 ease-out group-hover:w-full" />
+                </>
+              );
+              // Hash anchors stay as <a> (smooth scroll, no client transition needed).
+              // Internal routes use <Link> so Next.js prefetches + does an RSC
+              // navigation instead of a full document reload + Clerk re-hydration.
+              return isRoute ? (
+                <Link key={item.href} href={item.href} className={className}>{inner}</Link>
+              ) : (
+                <a key={item.href} href={item.href} className={className}>{inner}</a>
+              );
+            })}
           </div>
           <div className="flex items-center gap-3 sm:gap-5">
             <LanguageSwitcher current="sl" languages={HOME_HREFLANG} ariaLabel="Spremeni jezik" />

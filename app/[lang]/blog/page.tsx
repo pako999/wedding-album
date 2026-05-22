@@ -4,7 +4,12 @@ import { BlogIndexPage } from "@/components/BlogIndexPage";
 import { getAllPosts } from "@/lib/blog";
 import type { LangCode } from "@/components/LanguageSwitcher";
 
-export const dynamic = "force-static";
+// Per-request dynamic so the root layout's detectLang() can read the
+// middleware-supplied x-pathname header. Otherwise `force-static`
+// prerenders this with empty headers and the root layout defaults
+// every /<lang>/blog/* page to lang='sl' — wrong html lang + Slovenian
+// cookie banner served to English/German/Spanish/Croatian/Serbian
+// visitors. ISR cache still applies via `revalidate`.
 export const revalidate = 3600;
 
 const VALID: LangCode[] = ["hr", "sr", "de", "en", "es"];

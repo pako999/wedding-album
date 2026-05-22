@@ -1,26 +1,46 @@
 import { db } from "@/lib/db";
 import { albums, photos } from "@/lib/db/schema";
-import { sql, desc, ne, count, eq } from "drizzle-orm";
+import { sql, desc, and, ne, count, eq, isNotNull, gt, or, like, isNull } from "drizzle-orm";
 
 export const dynamic = "force-dynamic";
 
 const PLAN_PRICES: Record<string, number> = { basic: 39, plus: 49, premium: 79 };
 
 export default async function AdminOverview() {
+  // "Paid" means: plan != free AND a real Stripe checkout session is
+  // attached (cs_…) AND the access window hasn't expired. Excludes
+  // manually-flipped test rows (stripeSessionId starts with "manual_")
+  // and expired paid plans. Keeps the dashboard honest.
+  const now = new Date();
+  const realPaidWhere = and(
+    ne(albums.plan, "free"),
+    like(albums.stripeSessionId, "cs_%"),
+    or(isNull(albums.expiresAt), gt(albums.expiresAt, now)),
+  );
+
   // Headline numbers
   const [{ totalAlbums }] = await db.select({ totalAlbums: count() }).from(albums);
   const [{ paidAlbums }]  = await db
     .select({ paidAlbums: count() })
     .from(albums)
-    .where(ne(albums.plan, "free"));
+    .where(realPaidWhere);
   const [{ totalPhotos }] = await db.select({ totalPhotos: count() }).from(photos);
   const [{ totalUsers }]  = await db
     .select({ totalUsers: sql<number>`COUNT(DISTINCT ${albums.ownerClerkId})` })
     .from(albums);
 
+  // Plan breakdown counts every album by its plan column (for visibility),
+  // but the revenue calc below applies the same realPaidWhere filter so
+  // manual fixes don't inflate revenue.
   const planBreakdown = await db
     .select({ plan: albums.plan, n: count() })
     .from(albums)
+    .groupBy(albums.plan);
+
+  const paidByPlanRaw = await db
+    .select({ plan: albums.plan, n: count() })
+    .from(albums)
+    .where(realPaidWhere)
     .groupBy(albums.plan);
 
   const recent = await db.query.albums.findMany({
@@ -28,11 +48,16 @@ export default async function AdminOverview() {
     limit: 8,
   });
 
-  // Rough lifetime revenue from plan column (snapshot, not Stripe-accurate)
-  const revenueByPlan = planBreakdown
-    .filter((row) => row.plan !== "free")
-    .map((row) => ({ plan: row.plan, count: row.n, revenue: row.n * (PLAN_PRICES[row.plan] ?? 0) }));
+  // Rough lifetime revenue — derived from REAL paid albums only
+  // (Stripe-anchored, non-expired). Manual DB flips and expired plans
+  // are excluded so the dashboard total doesn't drift from Stripe.
+  const revenueByPlan = paidByPlanRaw.map((row) => ({
+    plan: row.plan,
+    count: row.n,
+    revenue: row.n * (PLAN_PRICES[row.plan] ?? 0),
+  }));
   const totalRevenue = revenueByPlan.reduce((a, b) => a + b.revenue, 0);
+  const paidByPlanMap = Object.fromEntries(paidByPlanRaw.map((r) => [r.plan, r.n]));
 
   return (
     <div className="space-y-8">
@@ -51,19 +76,28 @@ export default async function AdminOverview() {
       <section className="bg-white rounded-2xl border border-gray-200 p-6">
         <h2 className="font-semibold text-[#0F1729] mb-4">Paketi</h2>
         <div className="space-y-2">
-          {planBreakdown.map((row) => (
-            <div key={row.plan} className="flex items-center justify-between text-sm">
-              <span className="font-medium capitalize text-gray-700">{row.plan}</span>
-              <span className="text-gray-500">
-                {row.n} galerij{" "}
-                {row.plan !== "free" && (
-                  <span className="ml-2 text-[#C9820A] font-semibold">
-                    {row.n * (PLAN_PRICES[row.plan] ?? 0)}€
-                  </span>
-                )}
-              </span>
-            </div>
-          ))}
+          {planBreakdown.map((row) => {
+            // For paid plans, show the count of REAL paid albums next to
+            // the total (Real / Total) so the dashboard makes clear which
+            // are Stripe-anchored vs manually flipped / expired.
+            const real = paidByPlanMap[row.plan] ?? 0;
+            return (
+              <div key={row.plan} className="flex items-center justify-between text-sm">
+                <span className="font-medium capitalize text-gray-700">{row.plan}</span>
+                <span className="text-gray-500">
+                  {row.n} galerij{" "}
+                  {row.plan !== "free" && (
+                    <>
+                      <span className="text-[10px] text-gray-400">({real} plačanih)</span>{" "}
+                      <span className="ml-1 text-[#C9820A] font-semibold">
+                        {real * (PLAN_PRICES[row.plan] ?? 0)}€
+                      </span>
+                    </>
+                  )}
+                </span>
+              </div>
+            );
+          })}
           <div className="pt-3 mt-3 border-t border-gray-100 flex justify-between text-sm font-semibold">
             <span>Skupni prihodek (ocena)</span>
             <span className="text-[#C9820A]">{totalRevenue}€</span>

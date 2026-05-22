@@ -181,13 +181,23 @@ export async function BlogPostPage({ post }: Props) {
     });
   }
 
-  // HowTo schema — emit when the post contains an ordered list, which is
-  // our convention for step-by-step content. Helps Google + AI engines
-  // identify the post as a procedural guide.
-  const stepsBlock = post.content.find(
-    (b): b is Extract<BlogBlock, { type: "ol" }> => b.type === "ol",
-  );
+  // HowTo schema — emit ONLY when the post is genuinely procedural,
+  // i.e. category === "vodnik" (our "guide / how-to" category).
+  // Posts in other categories may also contain ordered lists, but the
+  // items are reasons, comparisons, or shot-lists — not steps.
+  // Treating those as HowTo confuses Google + AI engines and risks
+  // a "misleading structured data" manual action.
+  const stepsBlock =
+    post.category === "vodnik"
+      ? post.content.find(
+          (b): b is Extract<BlogBlock, { type: "ol" }> => b.type === "ol",
+        )
+      : undefined;
   if (stepsBlock && stepsBlock.items.length >= 3) {
+    // The step `name` is the short title for that step. Split on em-dash
+    // or colon to grab the leading clause. We deliberately do NOT split
+    // on `.` because URLs like guestcam.si inside a step would truncate
+    // the name mid-domain ("Go to guestcam").
     jsonLd.push({
       "@context": "https://schema.org",
       "@type": "HowTo",
@@ -196,7 +206,7 @@ export async function BlogPostPage({ post }: Props) {
       step: stepsBlock.items.map((text, i) => ({
         "@type": "HowToStep",
         position: i + 1,
-        name: text.split(/[—.]/)[0].trim().slice(0, 90),
+        name: text.split(/[—:]/)[0].trim().slice(0, 90),
         text,
       })),
     });
