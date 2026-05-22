@@ -126,5 +126,7 @@
       "q": "Was passiert mit der WhatsApp-Gruppe nach der Hochzeit?",
       "a": "Sie wird zum Denkmal — Nachrichten gehen verloren, Fotos werden gelöscht, sobald jemand sein Handy aufräumt. Die Guestcam-Galerie bleibt bis zu 1 Jahr verfügbar und kann dauerhaft heruntergeladen werden."
     }
-  ]
+  ],
+  "coverImage": "https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?w=1600&h=900&fit=crop&q=80&auto=format",
+  "coverAlt": "Smartphone mit Event-Fotos"
 }

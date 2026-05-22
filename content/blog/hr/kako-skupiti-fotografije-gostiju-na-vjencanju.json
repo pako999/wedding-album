@@ -146,5 +146,7 @@
       "q": "Što se događa s galerijom nakon vjenčanja?",
       "a": "Sadržaj ostaje dostupan prema vašem paketu — od 30 dana (Besplatno) do 1 godine (Premium). Sve fotografije preuzimate u ZIP-u."
     }
-  ]
+  ],
+  "coverImage": "https://images.unsplash.com/photo-1519741497674-611481863552?w=1600&h=900&fit=crop&q=80&auto=format",
+  "coverAlt": "Gosti fotografiraju mobitelima na vjenčanju"
 }

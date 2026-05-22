@@ -126,5 +126,7 @@
       "q": "What happens to the WhatsApp group after the wedding?",
       "a": "It becomes a graveyard — messages get lost, photos disappear when someone clears their phone. A Guestcam gallery stays available for up to a year and can be downloaded permanently."
     }
-  ]
+  ],
+  "coverImage": "https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?w=1600&h=900&fit=crop&q=80&auto=format",
+  "coverAlt": "Smartphone showing photos from an event"
 }

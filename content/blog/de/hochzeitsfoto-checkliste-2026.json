@@ -115,5 +115,7 @@
       "q": "Was, wenn ein Gast nicht auf Fotos sein möchte?",
       "a": "Moderation in der Guestcam-Galerie aktivieren — unerwünschte Aufnahmen löschen oder verbergen. Informieren Sie das Publikum, dass die Galerie privat ist und Gäste sich jederzeit zurückziehen können."
     }
-  ]
+  ],
+  "coverImage": "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=1600&h=900&fit=crop&q=80&auto=format",
+  "coverAlt": "Hochzeitsdekoration bereit für Fotos"
 }

@@ -115,5 +115,7 @@
       "q": "What if a guest doesn't want to be in photos?",
       "a": "Enable moderation in the Guestcam gallery — delete or hide unwanted shots. Let everyone know the gallery is private and guests can opt out at any time."
     }
-  ]
+  ],
+  "coverImage": "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=1600&h=900&fit=crop&q=80&auto=format",
+  "coverAlt": "Wedding decoration ready for photography"
 }

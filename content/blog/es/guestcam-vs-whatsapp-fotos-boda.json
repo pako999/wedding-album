@@ -126,5 +126,7 @@
       "q": "¿Qué pasa con el grupo de WhatsApp después de la boda?",
       "a": "Se convierte en un cementerio — los mensajes se pierden, las fotos desaparecen cuando alguien limpia el móvil. La galería Guestcam sigue disponible hasta 1 año y puedes descargarla permanentemente."
     }
-  ]
+  ],
+  "coverImage": "https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?w=1600&h=900&fit=crop&q=80&auto=format",
+  "coverAlt": "Móvil con fotos del evento"
 }
