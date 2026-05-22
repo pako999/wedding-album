@@ -16,13 +16,29 @@ interface UserRow {
 }
 
 export default async function AdminUsers() {
-  // Aggregate album counts per owner from our DB
+  // Aggregate album counts per owner from our DB.
+  //
+  // "Paid" counts ONLY albums that have a real Stripe checkout session
+  // attached (stripeSessionId starts with "cs_"). This deliberately
+  // excludes:
+  //   • test data manually flipped to a paid plan via direct DB writes
+  //     (we wrote stripeSessionId values like "manual_fix_…" while
+  //     diagnosing webhook issues)
+  //   • expired paid plans where the row still says plus/premium but
+  //     the access window has lapsed (expiresAt < now)
+  // so the Uporabniki stat reflects actual paying customers.
+  const now = new Date();
   const rows = await db
     .select({
       clerkId: albums.ownerClerkId,
       email: sql<string | null>`MAX(${albums.ownerEmail})`,
       albumCount: count(),
-      paidAlbumCount: sql<number>`SUM(CASE WHEN ${albums.plan} <> 'free' THEN 1 ELSE 0 END)`,
+      paidAlbumCount: sql<number>`SUM(CASE
+        WHEN ${albums.plan} <> 'free'
+          AND ${albums.stripeSessionId} LIKE 'cs_%'
+          AND (${albums.expiresAt} IS NULL OR ${albums.expiresAt} > ${now})
+        THEN 1 ELSE 0
+      END)`,
     })
     .from(albums)
     .groupBy(albums.ownerClerkId);

@@ -69,6 +69,7 @@ export default async function AdminAlbums({ searchParams }: PageProps) {
                 filmTier={a.filmTier}
                 maxPhotos={a.maxPhotos}
                 expiresAt={a.expiresAt ? a.expiresAt.toISOString() : null}
+                stripeSessionId={a.stripeSessionId}
               />
             ))}
             {rows.length === 0 && (
