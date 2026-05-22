@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import { BlogIndexPage } from "@/components/BlogIndexPage";
 import { getAllPosts } from "@/lib/blog";
 
-export const dynamic = "force-static";
+// Per-request dynamic so the root layout's detectLang() can read the
+// middleware-supplied x-pathname header. ISR cache still applies via
+// `revalidate`; the route is dynamic-rendered but cached for 1h.
 export const revalidate = 3600;
 
 export const metadata: Metadata = {

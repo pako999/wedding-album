@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { BlogPostPage } from "@/components/BlogPostPage";
 import { getAllSlugs, getPost, getTranslationMap, blogUrl } from "@/lib/blog";
 
-export const dynamic = "force-static";
+// Per-request dynamic — see app/blog/page.tsx for the rationale.
 export const revalidate = 3600;
 
 export async function generateStaticParams() {

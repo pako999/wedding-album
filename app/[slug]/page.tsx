@@ -19,15 +19,23 @@ interface Props {
 // Previously every album defaulted to "Poročni album za …" regardless
 // of event type — a baby shower link said "Wedding album for Kim's
 // Baby shower", which is wrong and confusing.
+//
+// Keys MUST match the eventType values the server actually persists
+// (see ALLOWED_EVENT_TYPES in app/api/albums/[slug]/settings/route.ts):
+// wedding / birthday / anniversary / party / baptism / graduation /
+// baby_shower / business / other. Earlier this map used `babyshower`
+// without the underscore — that key never matched and every baby
+// shower fell through to the generic fallback.
 const EVENT_LABEL_SL: Record<string, string> = {
-  wedding:    "Poročni album za",
-  birthday:   "Album rojstnega dne za",
-  anniversary:"Album obletnice za",
-  party:      "Album zabave za",
-  baptism:    "Album krsta za",
-  graduation: "Maturantski album za",
-  babyshower: "Baby shower album za",
-  other:      "Album dogodka za",
+  wedding:     "Poročni album za",
+  birthday:    "Album rojstnega dne za",
+  anniversary: "Album obletnice za",
+  party:       "Album zabave za",
+  baptism:     "Album krsta za",
+  graduation:  "Maturantski album za",
+  baby_shower: "Baby shower album za",
+  business:    "Poslovni album za",
+  other:       "Album dogodka za",
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
