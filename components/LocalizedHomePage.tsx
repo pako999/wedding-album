@@ -525,6 +525,9 @@ export function LocalizedHomePage({ lang }: { lang: Lang }) {
             <Link href="/dashboard" className="hidden sm:block text-sm font-medium text-gray-600 hover:text-[#0F1729] transition-colors">
               {t.navHome}
             </Link>
+            <Link href={`/${lang}/blog`} className="hidden sm:block text-sm font-medium text-gray-600 hover:text-[#0F1729] transition-colors">
+              Blog
+            </Link>
             <Link href="/dashboard/new" className="inline-flex items-center gap-1.5 px-4 sm:px-5 py-2 sm:py-2.5 rounded-full text-sm font-bold text-[#0F1729] transition-all duration-200 hover:scale-[1.03]"
               style={{ background: "linear-gradient(135deg, #FFD966 0%, #FFC94D 55%, #F0B429 100%)", boxShadow: "0 6px 18px rgba(255,201,77,0.45)" }}>
               {t.navCta}
