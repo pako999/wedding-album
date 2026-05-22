@@ -94,5 +94,7 @@
       "q": "Kako gostima reći »otpremite fotografije«, a da ne bude neprijatno?",
       "a": "Neka DJ ili voditelj pomene galeriju tokom večeri: »Skenirajte QR kod na stolu i podelite večernje uspomene sa mladencima.« Prirodno i nenametljivo."
     }
-  ]
+  ],
+  "coverImage": "https://images.unsplash.com/photo-1525772764200-be829a350797?w=1600&h=900&fit=crop&q=80&auto=format",
+  "coverAlt": "Prazan sto posle venčanja sa fotografijom"
 }

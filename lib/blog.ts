@@ -41,6 +41,12 @@ export interface BlogPost {
   tags: string[];
   /** One-sentence direct answer Perplexity / SGE can quote */
   tldr: string;
+  /** Hero image rendered at the top of the post + in card thumbnails.
+   *  Full absolute URL (we currently use Unsplash for stock wedding
+   *  imagery — swap to first-party photos as we accumulate them). */
+  coverImage?: string;
+  /** Alt text for the cover image — used by screen readers + Google. */
+  coverAlt?: string;
   content: BlogBlock[];
 }
 

@@ -94,5 +94,7 @@
       "q": "Wie sage ich meinen Gästen »ladet Fotos hoch«, ohne dass es aufgesetzt klingt?",
       "a": "Lassen Sie den DJ oder Moderator es im Lauf des Abends erwähnen: »Scannt den QR-Code auf eurem Tisch und teilt eure Abendmomente mit dem Brautpaar.« Natürlich und unaufdringlich."
     }
-  ]
+  ],
+  "coverImage": "https://images.unsplash.com/photo-1525772764200-be829a350797?w=1600&h=900&fit=crop&q=80&auto=format",
+  "coverAlt": "Leerer Tisch nach der Hochzeit mit Foto"
 }

@@ -41,8 +41,14 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
       publishedTime: post.publishedAt,
       modifiedTime: post.updatedAt,
       authors: [post.author],
+      images: post.coverImage ? [{ url: post.coverImage, alt: post.coverAlt ?? post.title }] : undefined,
     },
-    twitter: { card: "summary_large_image", title: post.title, description: post.description },
+    twitter: {
+      card: "summary_large_image",
+      title: post.title,
+      description: post.description,
+      images: post.coverImage ? [post.coverImage] : undefined,
+    },
     robots: { index: true, follow: true },
   };
 }

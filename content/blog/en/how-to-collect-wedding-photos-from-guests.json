@@ -146,5 +146,7 @@
       "q": "What happens to the gallery after the wedding?",
       "a": "Content stays available according to your plan — from 30 days (Free) to 1 year (Premium). You download everything as a ZIP."
     }
-  ]
+  ],
+  "coverImage": "https://images.unsplash.com/photo-1519741497674-611481863552?w=1600&h=900&fit=crop&q=80&auto=format",
+  "coverAlt": "Wedding guests taking photos with their phones"
 }

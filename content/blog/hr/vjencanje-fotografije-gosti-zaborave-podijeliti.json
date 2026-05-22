@@ -94,5 +94,7 @@
       "q": "Kako gostima reći »učitajte fotografije«, a da ne bude nezgodno?",
       "a": "Neka DJ ili voditelj spomene galeriju tijekom večeri: »Skenirajte QR kod na stolu i podijelite večernje uspomene s mladencima.« Prirodno i nenametljivo."
     }
-  ]
+  ],
+  "coverImage": "https://images.unsplash.com/photo-1525772764200-be829a350797?w=1600&h=900&fit=crop&q=80&auto=format",
+  "coverAlt": "Prazni stol nakon vjenčanja s fotografijom"
 }

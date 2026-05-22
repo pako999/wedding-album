@@ -126,5 +126,7 @@
       "q": "Šta se dešava sa WhatsApp grupom posle venčanja?",
       "a": "Postaje spomenik — poruke se gube, fotografije se brišu kada neko očisti telefon. Guestcam galerija ostaje dostupna do 1 godine i možete je trajno preuzeti."
     }
-  ]
+  ],
+  "coverImage": "https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?w=1600&h=900&fit=crop&q=80&auto=format",
+  "coverAlt": "Pametni telefon sa fotografijama sa događaja"
 }

@@ -115,5 +115,7 @@
       "q": "¿Y si un invitado no quiere salir en fotos?",
       "a": "Activa la moderación en la galería Guestcam — borra u oculta las fotos no deseadas. Informa a los invitados de que la galería es privada y de que pueden no participar."
     }
-  ]
+  ],
+  "coverImage": "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=1600&h=900&fit=crop&q=80&auto=format",
+  "coverAlt": "Decoración de boda lista para las fotos"
 }

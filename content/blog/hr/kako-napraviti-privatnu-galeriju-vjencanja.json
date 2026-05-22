@@ -133,5 +133,7 @@
       "q": "Mogu li podijeliti galeriju na društvenim mrežama?",
       "a": "Tehnički da, ali ne preporučujemo. Galerija je zamišljena kao privatna — bolje je dijeliti samo s gostima."
     }
-  ]
+  ],
+  "coverImage": "https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?w=1600&h=900&fit=crop&q=80&auto=format",
+  "coverAlt": "Privatna vjenčana galerija s romantičnom pozadinom"
 }

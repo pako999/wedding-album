@@ -55,13 +55,22 @@ export function BlogIndexPage({ posts, lang }: Props) {
             className="block bg-white border border-gray-200 rounded-3xl overflow-hidden mb-12 hover:border-[#FFC94D] hover:shadow-lg transition-all"
           >
             <div className="grid md:grid-cols-2">
-              <div className="p-8 sm:p-10">
+              <div className="p-8 sm:p-10 order-2 md:order-1">
                 <p className="text-[10px] font-bold uppercase tracking-widest text-[#C9820A] mb-3">{t.featured}</p>
                 <h2 className="font-serif text-3xl font-bold text-[#0F1729] mb-4 leading-tight">{featured.title}</h2>
                 <p className="text-gray-500 mb-5 line-clamp-3">{featured.tldr}</p>
                 <span className="text-sm font-bold text-[#C9820A]">{t.readMore}</span>
               </div>
-              <div className="hidden md:block" style={{ background: "linear-gradient(135deg, #FFF9EC 0%, #FFC94D 100%)" }} />
+              {featured.coverImage ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={featured.coverImage}
+                  alt={featured.coverAlt ?? featured.title}
+                  className="w-full h-56 md:h-full object-cover order-1 md:order-2"
+                />
+              ) : (
+                <div className="hidden md:block order-1 md:order-2" style={{ background: "linear-gradient(135deg, #FFF9EC 0%, #FFC94D 100%)" }} />
+              )}
             </div>
           </Link>
         )}
@@ -73,16 +82,27 @@ export function BlogIndexPage({ posts, lang }: Props) {
               <Link
                 key={p.slug}
                 href={blogUrl(p.lang, p.slug)}
-                className="block bg-white border border-gray-200 rounded-2xl p-6 hover:border-[#FFC94D] hover:shadow-md transition-all"
+                className="block bg-white border border-gray-200 rounded-2xl overflow-hidden hover:border-[#FFC94D] hover:shadow-md transition-all"
               >
-                <span className={`inline-block text-[10px] uppercase font-bold tracking-wide px-2 py-0.5 rounded border ${CATEGORY_COLOR[p.category] ?? CATEGORY_COLOR.novice}`}>
-                  {p.category}
-                </span>
-                <h3 className="font-serif text-xl font-bold text-[#0F1729] mt-4 mb-2 leading-snug">{p.title}</h3>
-                <p className="text-sm text-gray-500 line-clamp-3 mb-4">{p.tldr}</p>
-                <div className="flex items-center justify-between text-xs text-gray-400">
-                  <time dateTime={p.publishedAt}>{new Date(p.publishedAt).toLocaleDateString(p.lang)}</time>
-                  <span>{p.readingTime} min</span>
+                {p.coverImage && (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={p.coverImage}
+                    alt={p.coverAlt ?? p.title}
+                    className="w-full h-40 object-cover"
+                    loading="lazy"
+                  />
+                )}
+                <div className="p-6">
+                  <span className={`inline-block text-[10px] uppercase font-bold tracking-wide px-2 py-0.5 rounded border ${CATEGORY_COLOR[p.category] ?? CATEGORY_COLOR.novice}`}>
+                    {p.category}
+                  </span>
+                  <h3 className="font-serif text-xl font-bold text-[#0F1729] mt-4 mb-2 leading-snug">{p.title}</h3>
+                  <p className="text-sm text-gray-500 line-clamp-3 mb-4">{p.tldr}</p>
+                  <div className="flex items-center justify-between text-xs text-gray-400">
+                    <time dateTime={p.publishedAt}>{new Date(p.publishedAt).toLocaleDateString(p.lang)}</time>
+                    <span>{p.readingTime} min</span>
+                  </div>
                 </div>
               </Link>
             ))}

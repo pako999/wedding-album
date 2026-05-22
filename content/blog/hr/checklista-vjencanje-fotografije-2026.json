@@ -115,5 +115,7 @@
       "q": "Što ako gost ne želi biti na fotografiji?",
       "a": "Uključite moderaciju u Guestcam galeriji — neželjene snimke izbrišete ili sakrijete. Za publiku obavijestite da je galerija privatna i da gosti mogu u svakom trenutku izaći."
     }
-  ]
+  ],
+  "coverImage": "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=1600&h=900&fit=crop&q=80&auto=format",
+  "coverAlt": "Vjenčana dekoracija spremna za fotografiranje"
 }

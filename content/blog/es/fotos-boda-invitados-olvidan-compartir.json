@@ -94,5 +94,7 @@
       "q": "¿Cómo digo a los invitados que suban fotos sin que resulte forzado?",
       "a": "Que el DJ o presentador lo mencione durante la noche: «Escanead el QR de vuestra mesa y compartid vuestros momentos con la pareja». Natural y sin presión."
     }
-  ]
+  ],
+  "coverImage": "https://images.unsplash.com/photo-1525772764200-be829a350797?w=1600&h=900&fit=crop&q=80&auto=format",
+  "coverAlt": "Mesa vacía tras la boda con una fotografía"
 }

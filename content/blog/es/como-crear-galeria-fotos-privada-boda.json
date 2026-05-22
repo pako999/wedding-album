@@ -133,5 +133,7 @@
       "q": "¿Puedo compartir la galería en redes sociales?",
       "a": "Técnicamente sí, pero no lo recomendamos. La galería está diseñada para ser privada — mejor compartirla solo con los invitados."
     }
-  ]
+  ],
+  "coverImage": "https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?w=1600&h=900&fit=crop&q=80&auto=format",
+  "coverAlt": "Galería de boda privada con fondo romántico"
 }

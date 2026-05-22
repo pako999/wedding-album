@@ -133,5 +133,7 @@
       "q": "Lahko delim galerijo na družbenih omrežjih?",
       "a": "Tehnično da, vendar ne priporočamo. Galerija je zasnovana kot zasebna — bolje je deliti samo z gosti."
     }
-  ]
+  ],
+  "coverImage": "https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?w=1600&h=900&fit=crop&q=80&auto=format",
+  "coverAlt": "Zasebna poročna galerija z romantičnim ozadjem"
 }
