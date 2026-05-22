@@ -1,0 +1,137 @@
+{
+  "slug": "how-to-create-private-wedding-photo-gallery",
+  "lang": "en",
+  "title": "How to Create a Private Wedding Photo Gallery (Free, No App Needed)",
+  "description": "Step by step — from picking the tool to downloading every photo after the wedding. No Google Photos drama, no lost files.",
+  "translationKey": "private-wedding-gallery",
+  "publishedAt": "2026-05-22",
+  "updatedAt": "2026-05-22",
+  "author": "Guestcam Team",
+  "category": "vodnik",
+  "readingTime": 5,
+  "tags": [
+    "privacy",
+    "gallery",
+    "DIY",
+    "Guestcam"
+  ],
+  "tldr": "The best free option is Guestcam: create a gallery, get a QR code, guests scan and upload — all private, no app needed.",
+  "content": [
+    {
+      "type": "h2",
+      "text": "What makes a good wedding gallery?"
+    },
+    {
+      "type": "ul",
+      "items": [
+        "Private — no public search results.",
+        "No guest sign-up — every hurdle means fewer photos.",
+        "Full quality — print-ready, suitable for long-term storage.",
+        "One place — all photos in a single gallery, not 5 different chats.",
+        "Persistent — gallery lives at least a few months, doesn't get lost in chat history."
+      ]
+    },
+    {
+      "type": "h2",
+      "text": "What are the options?"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Option",
+        "Pros",
+        "Cons"
+      ],
+      "rows": [
+        [
+          "Google Photos shared album",
+          "Free, familiar",
+          "Guests need a Google account. Public link is a risk."
+        ],
+        [
+          "Shared Dropbox folder",
+          "Large storage",
+          "Hard for older guests."
+        ],
+        [
+          "WhatsApp group",
+          "Everyone knows it",
+          "Compresses to 50%, chaotic."
+        ],
+        [
+          "Guestcam",
+          "QR code, no app, full quality",
+          "Paid after the free plan (20 photos)."
+        ]
+      ]
+    },
+    {
+      "type": "h2",
+      "text": "How do I set up the gallery with Guestcam step by step?"
+    },
+    {
+      "type": "ol",
+      "items": [
+        "Go to guestcam.si and click 'Create gallery' — no credit card.",
+        "Fill in the couple's names (e.g. 'Ana & Marko'), wedding date and location.",
+        "Optionally set a password for the gallery (recommended for maximum privacy).",
+        "The system auto-generates a unique URL and QR code.",
+        "Download the QR code as a PDF — with a design that matches your wedding."
+      ]
+    },
+    {
+      "type": "h2",
+      "text": "How do I share the gallery with guests?"
+    },
+    {
+      "type": "p",
+      "text": "Three proven methods:"
+    },
+    {
+      "type": "ul",
+      "items": [
+        "Print QR cards and place them on every table.",
+        "Add the QR code to the wedding folder or thank-you card you hand out.",
+        "Send the link to guests via WhatsApp or email (works without the QR too)."
+      ]
+    },
+    {
+      "type": "h2",
+      "text": "How do I download all the photos after the event?"
+    },
+    {
+      "type": "p",
+      "text": "In the admin panel click 'Download all (ZIP)'. All photos and videos download in a single folder at full quality — ready to back up on your computer or an external drive."
+    },
+    {
+      "type": "cta",
+      "text": "Create your free private gallery",
+      "href": "/dashboard/new"
+    },
+    {
+      "type": "faq",
+      "q": "Is the gallery really private?",
+      "a": "Yes. Without a password it's only reachable via the exact URL/QR — Google and other search engines can't index it. A password adds an extra layer."
+    },
+    {
+      "type": "faq",
+      "q": "Can I delete individual photos?",
+      "a": "Yes. As gallery admin you can delete any submission. In moderation mode, guests see only their own photos."
+    },
+    {
+      "type": "faq",
+      "q": "What if a guest uploads a video larger than 50 MB?",
+      "a": "Plus and Premium support full-HD video. On the free plan videos are limited to 30 seconds / 50 MB."
+    },
+    {
+      "type": "faq",
+      "q": "How long do the photos stay?",
+      "a": "Free: 30 days. Basic: 3 months. Plus and Premium: 1 year. You can download everything as a ZIP at any time."
+    },
+    {
+      "type": "faq",
+      "q": "Can I share the gallery on social media?",
+      "a": "Technically yes, but we don't recommend it. The gallery is designed to be private — better to share only with guests."
+    }
+  ]
+}

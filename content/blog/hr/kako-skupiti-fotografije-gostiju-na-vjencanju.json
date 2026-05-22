@@ -1,0 +1,150 @@
+{
+  "slug": "kako-skupiti-fotografije-gostiju-na-vjencanju",
+  "lang": "hr",
+  "title": "Kako skupiti sve fotografije gostiju s vjenčanja [2026]",
+  "description": "5 provjerenih načina kako gosti dijele fotografije s vama. Bez aplikacija, bez izgubljenih uspomena.",
+  "translationKey": "how-to-collect-wedding-photos",
+  "publishedAt": "2026-05-22",
+  "updatedAt": "2026-05-22",
+  "author": "Guestcam Team",
+  "category": "vodnik",
+  "readingTime": 7,
+  "tags": [
+    "vjenčanje fotografije",
+    "QR kod",
+    "gosti",
+    "Guestcam"
+  ],
+  "tldr": "Najlakše je kreirati QR kod galeriju s Guestcamom — gosti skeniraju i učitavaju izravno, bez aplikacije.",
+  "content": [
+    {
+      "type": "h2",
+      "text": "Zašto gosti (gotovo) nikad ne pošalju fotografije?"
+    },
+    {
+      "type": "p",
+      "text": "Nakon vjenčanja imate uspomene fotografa — ali što s 200 mobitela koji su bili tu? Iz iskustva, gosti dijele samo 5–10 % snimaka. Razlog je jednostavan: slanje je naporno. U nastavku je 5 načina kako olakšati stvar — od najgorega do najboljeg."
+    },
+    {
+      "type": "stat",
+      "value": "340",
+      "label": "prosječno fotografija po vjenčanju (Guestcam podaci 2025)",
+      "source": "Guestcam interni podaci, 2025"
+    },
+    {
+      "type": "h2",
+      "text": "Koja metoda zapravo radi?"
+    },
+    {
+      "type": "p",
+      "text": "Usporedili smo pet pristupa. Svaki ima dobre i loše strane:"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Metoda",
+        "Kvaliteta",
+        "Težina",
+        "Rizik"
+      ],
+      "rows": [
+        [
+          "WhatsApp grupa",
+          "50% (komprimirano)",
+          "Srednja",
+          "Pomiješani datumi, kaos"
+        ],
+        [
+          "Zajednička Google Photos mapa",
+          "100%",
+          "Teško",
+          "Gosti trebaju račun"
+        ],
+        [
+          "USB ključ kod izlaza",
+          "100%",
+          "Nisko sudjelovanje",
+          "Samo 1-2 gosta sudjeluju"
+        ],
+        [
+          "Email svakome",
+          "100%",
+          "Ručni rad",
+          "Veliki privici"
+        ],
+        [
+          "QR kod + Guestcam",
+          "100%",
+          "1 sken",
+          "Bez rizika"
+        ]
+      ]
+    },
+    {
+      "type": "h2",
+      "text": "Kako postaviti QR kod galeriju za 2 minute?"
+    },
+    {
+      "type": "p",
+      "text": "Najlakši način je putem Guestcama. Postupak:"
+    },
+    {
+      "type": "ol",
+      "items": [
+        "Idite na guestcam.si i kliknite Kreiraj galeriju (besplatno, bez kartice).",
+        "Unesite imena para i datum vjenčanja.",
+        "Preuzmite QR kod s personaliziranim dizajnom (PDF).",
+        "Otisnite kartice za sve stolove ili pred ulaz.",
+        "Gosti skeniraju mobitelom — fotografije se pojavljuju u vašoj privatnoj galeriji uživo."
+      ]
+    },
+    {
+      "type": "h2",
+      "text": "Kako dobiti još više fotografija od gostiju?"
+    },
+    {
+      "type": "p",
+      "text": "Iz analize 500+ vjenčanja izvukli smo 5 savjeta koji povećavaju sudjelovanje:"
+    },
+    {
+      "type": "ul",
+      "items": [
+        "Stavite QR kod na svaki stol — ne samo na ulaz.",
+        "DJ ili voditelj spominje galeriju: »Skenirajte QR kod na stolu za zajedničke fotografije.«",
+        "Dodajte personalizirani tekst (npr. »Ana & Marko – podijelite svoje uspomene«).",
+        "Pošaljite QR kod gostima i preko WhatsAppa/SMS-a dan nakon događaja.",
+        "Uključite karticu u svadbenu mapu koju uručite na odlasku."
+      ]
+    },
+    {
+      "type": "cta",
+      "text": "Kreirajte besplatnu galeriju za vaše vjenčanje",
+      "href": "/dashboard/new"
+    },
+    {
+      "type": "faq",
+      "q": "Trebaju li gosti aplikaciju za učitavanje?",
+      "a": "Ne. Skeniraju QR kod kamerom mobitela i fotografije učitavaju izravno putem preglednika."
+    },
+    {
+      "type": "faq",
+      "q": "Jesu li fotografije u punoj kvaliteti?",
+      "a": "Da. Guestcam zadržava izvornu rezoluciju i metapodatke. WhatsApp u usporedbi komprimira na ~50 % kvalitete."
+    },
+    {
+      "type": "faq",
+      "q": "Koliko fotografija mogu prikupiti?",
+      "a": "Besplatno do 20 fotografija. Premium paket omogućuje neograničen broj fotografija."
+    },
+    {
+      "type": "faq",
+      "q": "Mogu li vidjeti fotografije uživo tijekom vjenčanja?",
+      "a": "Da. Premium paket uključuje Live Galeriju — fotografije se ažuriraju u realnom vremenu."
+    },
+    {
+      "type": "faq",
+      "q": "Što se događa s galerijom nakon vjenčanja?",
+      "a": "Sadržaj ostaje dostupan prema vašem paketu — od 30 dana (Besplatno) do 1 godine (Premium). Sve fotografije preuzimate u ZIP-u."
+    }
+  ]
+}

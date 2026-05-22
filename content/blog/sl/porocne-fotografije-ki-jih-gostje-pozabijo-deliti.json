@@ -1,0 +1,98 @@
+{
+  "slug": "porocne-fotografije-ki-jih-gostje-pozabijo-deliti",
+  "lang": "sl",
+  "title": "Zakaj gostje nikoli ne delijo poročnih fotografij (in kako to popraviti)",
+  "description": "Gostje pozabijo, ker ni enostavnega načina. QR koda na vsaki mizi odpravi vse ovire — fotografije prihajajo med dogodkom.",
+  "translationKey": "guests-forget-to-share",
+  "publishedAt": "2026-05-22",
+  "updatedAt": "2026-05-22",
+  "author": "Guestcam Team",
+  "category": "nasvet",
+  "readingTime": 6,
+  "tags": [
+    "psihologija",
+    "deljenje fotografij",
+    "porocni nasveti"
+  ],
+  "tldr": "Gostje pozabijo, ker ni enostavnega načina. QR koda na vsaki mizi odpravi vse ovire in fotografije prihajajo med dogodkom.",
+  "content": [
+    {
+      "type": "h2",
+      "text": "Boleča resnica po poroki"
+    },
+    {
+      "type": "p",
+      "text": "Zabava je končana. Soba je tiha. V svojem telefonu imate 80 fotografij, fotograf jih bo poslal čez tri tedne. Vendar je nocoj v sobi bilo 200 telefonov in vsak je ujel drugačen kot, drugačen trenutek, drugačen smeh. Kje so?"
+    },
+    {
+      "type": "h2",
+      "text": "7 razlogov, zakaj gostje ne delijo fotografij"
+    },
+    {
+      "type": "ol",
+      "items": [
+        "Pozabljivost — naslednji dan se začnejo z normalnim življenjem.",
+        "Trenje — pošiljanje 30 fotografij prek WhatsAppa je dolgotrajno.",
+        "Velikost datotek — video posnetki so preveliki za mobilne podatke.",
+        "Negotovost — »Komu naj jih pošljem? V skupino? Direktno paru?«",
+        "Sram — »Moje fotografije so zamegljene, ni vredno.«",
+        "Tehnika — starejši gostje ne znajo nalagati v Google Photos.",
+        "Ni opomnika — nihče jih ne vpraša, zato pozabijo."
+      ]
+    },
+    {
+      "type": "h2",
+      "text": "Kaj pravi psihologija?"
+    },
+    {
+      "type": "p",
+      "text": "Vsaka dodatna ovira (klikni, izberi, pošlji, počakaj) zmanjša verjetnost dejanja za približno 30%. Tri ovire = 70% manj fotografij. To je razlog, zakaj 90% gostov nikoli ne pošlje tistih čudovitih plesnih posnetkov."
+    },
+    {
+      "type": "h2",
+      "text": "QR koda na mizi: rešitev z eno potezo"
+    },
+    {
+      "type": "p",
+      "text": "Z QR kodo med gostom in galerijo ni nobenih ovir: skeniraj, izberi, naloži. Tri sekunde od konca posneka do galerije. To je razlog, zakaj pari z Guestcam dobijo povprečno 340 fotografij — proti 30 s tradicionalnimi metodami."
+    },
+    {
+      "type": "h2",
+      "text": "Resnična zgodba: Ana & Marko"
+    },
+    {
+      "type": "p",
+      "text": "Ana in Marko sta se julija 2025 poročila na slovenski obali. Postavila sta QR kodo na vsako mizo s preprostim sporočilom: »Delite naše skupne spomine«. Konec večera: 340 fotografij in 28 videov od 78 gostov. Brez WhatsApp skupine, brez izgubljenih sporočil. Vse v eni galeriji, ki sta jo lahko pol leta kasneje s solzami v očeh pregledovala s starši."
+    },
+    {
+      "type": "cta",
+      "text": "Začnite zbirati spomine danes",
+      "href": "/dashboard/new"
+    },
+    {
+      "type": "faq",
+      "q": "Kaj če moji gostje ne znajo skenirati QR kode?",
+      "a": "Sodobni telefoni (od leta 2018) imajo QR skener vgrajen v kamero. Samo usmerijo kamero v kodo in dotaknejo se obvestila. Za zelo starejše goste lahko dodate tudi neposredno povezavo (kratek link)."
+    },
+    {
+      "type": "faq",
+      "q": "Kako vem, da bo dovolj gostov sodelovalo?",
+      "a": "Po naših podatkih sodeluje povprečno 65–80% gostov, ko je QR koda na vsaki mizi. To je 3× več kot pri WhatsApp skupini, kjer sodeluje le 15–25%."
+    },
+    {
+      "type": "faq",
+      "q": "Ali lahko gostje vidijo, kdo je naložil katero fotografijo?",
+      "a": "Da, vsak naložen pošlje svoje ime (vnese ga ob nalaganju). To pomaga organizirati spomine in dodaja osebno noto galerije."
+    },
+    {
+      "type": "faq",
+      "q": "Kaj če gost naloži neprimerno fotografijo?",
+      "a": "Vključite moderacijo — fotografije čakajo na vašo potrditev pred objavo. Plus in Premium paket vključujeta to funkcijo."
+    },
+    {
+      "type": "faq",
+      "q": "Kako gostom rečem »naložite fotografije«, ne da bi bilo nerodno?",
+      "a": "Naj DJ ali voditelj omeni galerijo med večerom: »Skenirajte QR kodo na mizi in delite večerne spomine z mladoporočencema.« Naravno in nenadležno."
+    }
+  ]
+}

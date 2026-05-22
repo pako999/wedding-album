@@ -1,0 +1,137 @@
+{
+  "slug": "kako-napraviti-privatnu-galeriju-vjencanja",
+  "lang": "hr",
+  "title": "Kako napraviti privatnu galeriju vjenčanja (besplatno, bez aplikacije)",
+  "description": "Korak po korak — od odabira alata do preuzimanja svih fotografija nakon vjenčanja. Bez Google Photos drame, bez izgubljenih datoteka.",
+  "translationKey": "private-wedding-gallery",
+  "publishedAt": "2026-05-22",
+  "updatedAt": "2026-05-22",
+  "author": "Guestcam Team",
+  "category": "vodnik",
+  "readingTime": 5,
+  "tags": [
+    "privatnost",
+    "galerija",
+    "DIY",
+    "Guestcam"
+  ],
+  "tldr": "Najbolja besplatna opcija je Guestcam: kreirajte galeriju, dobijte QR kod, gosti skeniraju i učitavaju — sve privatno, bez aplikacije.",
+  "content": [
+    {
+      "type": "h2",
+      "text": "Što čini dobru galeriju za vjenčanje?"
+    },
+    {
+      "type": "ul",
+      "items": [
+        "Privatna — bez javnih rezultata pretrage.",
+        "Bez registracije gostiju — svaka prepreka znači manje fotografija.",
+        "Puna kvaliteta — prikladno za tisak i dugoročno čuvanje.",
+        "Zajedničko mjesto — sve fotografije u jednoj galeriji, a ne u 5 različitih chatova.",
+        "Trajna — galerija ostaje barem nekoliko mjeseci, ne gubi se u povijesti poruka."
+      ]
+    },
+    {
+      "type": "h2",
+      "text": "Koje su opcije dostupne?"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Opcija",
+        "Prednosti",
+        "Nedostaci"
+      ],
+      "rows": [
+        [
+          "Google Photos zajednički album",
+          "Besplatno, poznato",
+          "Gosti trebaju Google račun. Javni link je rizik."
+        ],
+        [
+          "Dropbox zajednička mapa",
+          "Velik prostor",
+          "Komplicirano za starije goste."
+        ],
+        [
+          "WhatsApp grupa",
+          "Svi već znaju",
+          "Komprimira na 50%, kaotično."
+        ],
+        [
+          "Guestcam",
+          "QR kod, bez aplikacije, puna kvaliteta",
+          "Nakon besplatnog paketa (20 fotki) naplata."
+        ]
+      ]
+    },
+    {
+      "type": "h2",
+      "text": "Kako postaviti galeriju s Guestcamom korak po korak?"
+    },
+    {
+      "type": "ol",
+      "items": [
+        "Idite na guestcam.si i kliknite »Kreiraj galeriju« — bez kreditne kartice.",
+        "Ispunite ime para (npr. »Ana & Marko«), datum vjenčanja i lokaciju.",
+        "Po želji postavite lozinku za galeriju (preporučeno za maksimalnu privatnost).",
+        "Sustav automatski kreira jedinstven URL i QR kod.",
+        "Preuzmite QR kod u PDF formatu — s dizajnom koji se uklapa u vaše vjenčanje."
+      ]
+    },
+    {
+      "type": "h2",
+      "text": "Kako podijeliti galeriju s gostima?"
+    },
+    {
+      "type": "p",
+      "text": "Tri provjerene metode:"
+    },
+    {
+      "type": "ul",
+      "items": [
+        "Otisnite QR kartice i stavite ih na sve stolove.",
+        "Dodajte QR kod na vjenčanu mapu ili zahvalu koju uručujete gostima.",
+        "Pošaljite link gostima preko WhatsAppa ili e-pošte (radi i bez QR-a)."
+      ]
+    },
+    {
+      "type": "h2",
+      "text": "Kako preuzeti sve fotografije nakon događaja?"
+    },
+    {
+      "type": "p",
+      "text": "U administratorskom panelu kliknite »Preuzmi sve (ZIP)«. Sve fotografije i videozapisi preuzimaju se u jednoj mapi u punoj kvaliteti — spremno za sigurnosnu kopiju na vašem računalu ili vanjskom disku."
+    },
+    {
+      "type": "cta",
+      "text": "Kreirajte svoju besplatnu privatnu galeriju",
+      "href": "/dashboard/new"
+    },
+    {
+      "type": "faq",
+      "q": "Je li galerija doista privatna?",
+      "a": "Da. Bez lozinke dostupna je samo preko točnog URL-a/QR-a — Google i drugi pretraživači je ne mogu indeksirati. Lozinkom dodajete dodatni sloj zaštite."
+    },
+    {
+      "type": "faq",
+      "q": "Mogu li izbrisati pojedine fotografije?",
+      "a": "Da, kao administrator galerije možete obrisati bilo koji prilog. Gosti vide samo svoje fotografije u slučaju moderacije."
+    },
+    {
+      "type": "faq",
+      "q": "Što ako gost učita video veći od 50 MB?",
+      "a": "Plus i Premium paket podržavaju pune HD videozapise. U besplatnom paketu videi su ograničeni na 30 sekundi / 50 MB."
+    },
+    {
+      "type": "faq",
+      "q": "Koliko dugo fotografije ostaju?",
+      "a": "Besplatno: 30 dana. Basic: 3 mjeseca. Plus i Premium: 1 godina. Sve fotografije možete u bilo kojem trenutku preuzeti u ZIP-u."
+    },
+    {
+      "type": "faq",
+      "q": "Mogu li podijeliti galeriju na društvenim mrežama?",
+      "a": "Tehnički da, ali ne preporučujemo. Galerija je zamišljena kao privatna — bolje je dijeliti samo s gostima."
+    }
+  ]
+}

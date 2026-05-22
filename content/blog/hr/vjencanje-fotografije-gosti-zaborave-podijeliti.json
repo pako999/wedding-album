@@ -1,0 +1,98 @@
+{
+  "slug": "vjencanje-fotografije-gosti-zaborave-podijeliti",
+  "lang": "hr",
+  "title": "Zašto gosti nikad ne dijele fotografije s vjenčanja (i kako to popraviti)",
+  "description": "Gosti zaborave jer ne postoji jednostavan način. QR kod na svakom stolu uklanja sve prepreke — fotografije pristižu tijekom događaja.",
+  "translationKey": "guests-forget-to-share",
+  "publishedAt": "2026-05-22",
+  "updatedAt": "2026-05-22",
+  "author": "Guestcam Team",
+  "category": "nasvet",
+  "readingTime": 6,
+  "tags": [
+    "psihologija",
+    "dijeljenje fotografija",
+    "vjenčani savjeti"
+  ],
+  "tldr": "Gosti zaborave jer ne postoji jednostavan način. QR kod na svakom stolu uklanja sve prepreke i fotografije pristižu tijekom događaja.",
+  "content": [
+    {
+      "type": "h2",
+      "text": "Bolna istina nakon vjenčanja"
+    },
+    {
+      "type": "p",
+      "text": "Zabava je gotova. Soba je tiha. U svojem telefonu imate 80 fotografija, fotograf će ih poslati za tri tjedna. Ali večeras je u prostoriji bilo 200 mobitela i svaki je uhvatio drugačiji kut, drugačiji trenutak, drugačiji smijeh. Gdje su?"
+    },
+    {
+      "type": "h2",
+      "text": "7 razloga zašto gosti ne dijele fotografije"
+    },
+    {
+      "type": "ol",
+      "items": [
+        "Zaboravljivost — sljedeći dan vraćaju se normalnom životu.",
+        "Trenje — slanje 30 fotografija preko WhatsAppa traje dugo.",
+        "Veličina datoteka — videozapisi su preveliki za mobilne podatke.",
+        "Nesigurnost — »Komu da ih pošaljem? U grupu? Izravno paru?«",
+        "Sram — »Moje fotografije su mutne, nije vrijedno.«",
+        "Tehnika — stariji gosti ne znaju učitavati u Google Photos.",
+        "Nema podsjetnika — nitko ih ne pita, pa zaborave."
+      ]
+    },
+    {
+      "type": "h2",
+      "text": "Što kaže psihologija?"
+    },
+    {
+      "type": "p",
+      "text": "Svaka dodatna prepreka (klik, odabir, slanje, čekanje) smanjuje vjerojatnost akcije za otprilike 30%. Tri prepreke = 70% manje fotografija. To je razlog zašto 90% gostiju nikad ne pošalje one prekrasne plesne snimke."
+    },
+    {
+      "type": "h2",
+      "text": "QR kod na stolu: rješenje u jednom potezu"
+    },
+    {
+      "type": "p",
+      "text": "S QR kodom između gosta i galerije nema prepreka: skeniraj, odaberi, učitaj. Tri sekunde od kraja snimka do galerije. Zato parovi s Guestcamom dobivaju u prosjeku 340 fotografija — naspram 30 s tradicionalnim metodama."
+    },
+    {
+      "type": "h2",
+      "text": "Stvarna priča: Ana & Marko"
+    },
+    {
+      "type": "p",
+      "text": "Ana i Marko vjenčali su se u srpnju 2025. na slovenskoj obali. Postavili su QR kod na svaki stol s jednostavnom porukom: »Podijelite naše zajedničke uspomene«. Kraj večeri: 340 fotografija i 28 videozapisa od 78 gostiju. Bez WhatsApp grupe, bez izgubljenih poruka. Sve u jednoj galeriji koju su pola godine kasnije sa suzama u očima pregledavali s roditeljima."
+    },
+    {
+      "type": "cta",
+      "text": "Počnite prikupljati uspomene danas",
+      "href": "/dashboard/new"
+    },
+    {
+      "type": "faq",
+      "q": "Što ako moji gosti ne znaju skenirati QR kod?",
+      "a": "Suvremeni mobiteli (od 2018.) imaju QR skener ugrađen u kameru. Samo usmjere kameru u kod i dodirnu obavijest. Za vrlo starije goste možete dodati i izravnu poveznicu (kratki link)."
+    },
+    {
+      "type": "faq",
+      "q": "Kako znam da će dovoljno gostiju sudjelovati?",
+      "a": "Prema našim podacima sudjeluje u prosjeku 65–80% gostiju kada je QR kod na svakom stolu. To je 3× više nego u WhatsApp grupi, gdje sudjeluje samo 15–25%."
+    },
+    {
+      "type": "faq",
+      "q": "Mogu li gosti vidjeti tko je učitao koju fotografiju?",
+      "a": "Da, svaki učitavač potpiše svoje ime (unese ga prilikom učitavanja). To pomaže organizirati uspomene i dodaje osobnu notu galeriji."
+    },
+    {
+      "type": "faq",
+      "q": "Što ako gost učita neprimjerenu fotografiju?",
+      "a": "Uključite moderaciju — fotografije čekaju vašu potvrdu prije objave. Plus i Premium paket uključuju ovu funkciju."
+    },
+    {
+      "type": "faq",
+      "q": "Kako gostima reći »učitajte fotografije«, a da ne bude nezgodno?",
+      "a": "Neka DJ ili voditelj spomene galeriju tijekom večeri: »Skenirajte QR kod na stolu i podijelite večernje uspomene s mladencima.« Prirodno i nenametljivo."
+    }
+  ]
+}

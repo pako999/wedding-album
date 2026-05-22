@@ -1,0 +1,150 @@
+{
+  "slug": "kako-zbrati-fotografije-gostov-na-poroki",
+  "lang": "sl",
+  "title": "Kako zbrati vse fotografije gostov na poroki [2026]",
+  "description": "5 preverjenih načinov, kako gostje delijo fotografije z vami. Brez aplikacij, brez izgubljenih spominov.",
+  "translationKey": "how-to-collect-wedding-photos",
+  "publishedAt": "2026-05-22",
+  "updatedAt": "2026-05-22",
+  "author": "Guestcam Team",
+  "category": "vodnik",
+  "readingTime": 7,
+  "tags": [
+    "poročne fotografije",
+    "QR koda",
+    "gostje",
+    "Guestcam"
+  ],
+  "tldr": "Najlažje je ustvariti QR kodo galerijo z Guestcam — gostje skenirajo in naložijo neposredno, brez aplikacije.",
+  "content": [
+    {
+      "type": "h2",
+      "text": "Zakaj gostje (skoraj) nikoli ne pošljejo fotografij?"
+    },
+    {
+      "type": "p",
+      "text": "Po poroki imate spomine fotografa — a kaj pa 200 telefonov, ki so bili tam? Po naših izkušnjah gostje delijo le 5–10 % posnetkov. Razlog je preprost: pošiljanje je nadležno. Spodaj je 5 načinov, kako stvar olajšati — od najslabšega do najboljšega."
+    },
+    {
+      "type": "stat",
+      "value": "340",
+      "label": "povprečno fotografij na poroko (Guestcam podatki 2025)",
+      "source": "Guestcam interni podatki, 2025"
+    },
+    {
+      "type": "h2",
+      "text": "Katera metoda dejansko deluje?"
+    },
+    {
+      "type": "p",
+      "text": "Primerjali smo pet pristopov. Vsak ima slabe in dobre strani:"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Metoda",
+        "Kakovost",
+        "Težavnost",
+        "Tveganje"
+      ],
+      "rows": [
+        [
+          "WhatsApp skupina",
+          "50% (stisnjeno)",
+          "Srednja",
+          "Mešani datumi, kaos"
+        ],
+        [
+          "Skupna Google Photos mapa",
+          "100%",
+          "Težko",
+          "Gostje potrebujejo račun"
+        ],
+        [
+          "USB ključ ob izhodu",
+          "100%",
+          "Nizko sodelovanje",
+          "Le 1-2 gosta sodelujeta"
+        ],
+        [
+          "Email vsakemu",
+          "100%",
+          "Ročno delo",
+          "Velike priloge"
+        ],
+        [
+          "QR koda + Guestcam",
+          "100%",
+          "1 sken",
+          "Brez tveganja"
+        ]
+      ]
+    },
+    {
+      "type": "h2",
+      "text": "Kako nastavim QR kodo galerijo v 2 minutah?"
+    },
+    {
+      "type": "p",
+      "text": "Najlažji način je preko Guestcam. Postopek:"
+    },
+    {
+      "type": "ol",
+      "items": [
+        "Pojdite na guestcam.si in kliknite Ustvari galerijo (brezplačno, brez kartice).",
+        "Vnesite imena para in datum poroke.",
+        "Prenesite QR kodo s personaliziranim dizajnom (PDF).",
+        "Natisnite kartice za vse mize ali pred vhod.",
+        "Gostje skenirajo s telefonom — fotografije se prikažejo v vaši zasebni galeriji v živo."
+      ]
+    },
+    {
+      "type": "h2",
+      "text": "Kako pridobiti še več fotografij od gostov?"
+    },
+    {
+      "type": "p",
+      "text": "Iz analize 500+ porok smo izluščili 5 nasvetov, ki povečajo sodelovanje:"
+    },
+    {
+      "type": "ul",
+      "items": [
+        "Postavite QR kodo na vsako mizo — ne samo na vhod.",
+        "DJ ali voditelj omeni galerijo: »Skenirajte QR kodo na mizi za skupne fotografije.«",
+        "Dodajte personalizirano besedilo (npr. »Ana & Marko – delite svoje spomine«).",
+        "Pošljite QR kodo gostom tudi po WhatsApp/SMS dan po dogodku.",
+        "Vključite kartico v poročno mapo, ki jo izročite ob odhodu."
+      ]
+    },
+    {
+      "type": "cta",
+      "text": "Ustvarite brezplačno galerijo za vašo poroko",
+      "href": "/dashboard/new"
+    },
+    {
+      "type": "faq",
+      "q": "Ali gostje potrebujejo aplikacijo za nalaganje?",
+      "a": "Ne. Skenirajo QR kodo s kamero telefona in fotografije naložijo neposredno prek brskalnika."
+    },
+    {
+      "type": "faq",
+      "q": "So fotografije v polni kakovosti?",
+      "a": "Da. Guestcam ohrani originalno ločljivost in metapodatke. WhatsApp v primerjavi stisne na ~50 % kakovosti."
+    },
+    {
+      "type": "faq",
+      "q": "Koliko fotografij lahko zberem?",
+      "a": "Brezplačno do 20 fotografij. Premium paket omogoča neomejeno število fotografij."
+    },
+    {
+      "type": "faq",
+      "q": "Lahko vidim fotografije v živo med poroko?",
+      "a": "Da. Premium paket vključuje funkcijo Live Galerija — fotografije se posodabljajo v realnem času."
+    },
+    {
+      "type": "faq",
+      "q": "Kaj se zgodi z galerijo po poroki?",
+      "a": "Vsebina ostane na voljo glede na vaš paket — od 30 dni (Brezplačno) do 1 leta (Premium). Vse fotografije prenesete v ZIP."
+    }
+  ]
+}

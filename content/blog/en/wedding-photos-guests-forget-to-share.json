@@ -1,0 +1,98 @@
+{
+  "slug": "wedding-photos-guests-forget-to-share",
+  "lang": "en",
+  "title": "Why Guests Never Share Their Wedding Photos (And How to Fix It)",
+  "description": "Guests forget because there's no easy way. A QR code on every table removes the friction — photos arrive during the event.",
+  "translationKey": "guests-forget-to-share",
+  "publishedAt": "2026-05-22",
+  "updatedAt": "2026-05-22",
+  "author": "Guestcam Team",
+  "category": "nasvet",
+  "readingTime": 6,
+  "tags": [
+    "psychology",
+    "photo sharing",
+    "wedding tips"
+  ],
+  "tldr": "Guests forget because there's no easy way. A QR code on every table removes the friction and photos arrive during the event.",
+  "content": [
+    {
+      "type": "h2",
+      "text": "The painful truth after the wedding"
+    },
+    {
+      "type": "p",
+      "text": "The party is over. The room is quiet. You have 80 photos on your phone, the photographer's will arrive in three weeks. But tonight there were 200 phones in the room, each catching a different angle, a different moment, a different laugh. Where are they?"
+    },
+    {
+      "type": "h2",
+      "text": "7 reasons guests don't share their photos"
+    },
+    {
+      "type": "ol",
+      "items": [
+        "Forgetfulness — the next day life resumes.",
+        "Friction — sending 30 photos over WhatsApp takes forever.",
+        "File size — videos are too big for mobile data.",
+        "Uncertainty — 'Who do I send these to? The group? Directly to the couple?'",
+        "Embarrassment — 'Mine are blurry, not worth sharing.'",
+        "Tech — older guests don't know how to upload to Google Photos.",
+        "No reminder — no one asks, so they forget."
+      ]
+    },
+    {
+      "type": "h2",
+      "text": "What does psychology say?"
+    },
+    {
+      "type": "p",
+      "text": "Every extra hurdle (click, select, send, wait) cuts the probability of action by about 30%. Three hurdles = 70% fewer photos. That's why 90% of guests never send those beautiful dance shots."
+    },
+    {
+      "type": "h2",
+      "text": "QR code on the table: a one-gesture fix"
+    },
+    {
+      "type": "p",
+      "text": "With a QR code there's no obstacle between guest and gallery: scan, pick, upload. Three seconds from the end of the shot to your gallery. That's why couples using Guestcam get an average of 340 photos — versus 30 with traditional methods."
+    },
+    {
+      "type": "h2",
+      "text": "Real story: Ana & Marko"
+    },
+    {
+      "type": "p",
+      "text": "Ana and Marko married in July 2025 on the Slovenian coast. They put a QR card on every table with a simple line: 'Share our memories.' End of the night: 340 photos and 28 videos from 78 guests. No WhatsApp group, no lost messages. Everything in one gallery, which they reviewed six months later with their parents — eyes full of tears."
+    },
+    {
+      "type": "cta",
+      "text": "Start collecting memories today",
+      "href": "/dashboard/new"
+    },
+    {
+      "type": "faq",
+      "q": "What if my guests don't know how to scan a QR code?",
+      "a": "Modern phones (from 2018 onward) have a QR scanner built into the camera. They just point the camera at the code and tap the notification. For very elderly guests you can also include a short direct URL."
+    },
+    {
+      "type": "faq",
+      "q": "How do I know enough guests will participate?",
+      "a": "Our data shows 65–80% participation when there's a QR code on every table. That's 3× the rate of a WhatsApp group (15–25%)."
+    },
+    {
+      "type": "faq",
+      "q": "Can guests see who uploaded which photo?",
+      "a": "Yes — each uploader types their name in. It helps organise the memories and adds a personal touch."
+    },
+    {
+      "type": "faq",
+      "q": "What if a guest uploads something inappropriate?",
+      "a": "Enable moderation — photos wait for your approval before going live. Included in Plus and Premium plans."
+    },
+    {
+      "type": "faq",
+      "q": "How do I tell guests to 'upload photos' without it feeling awkward?",
+      "a": "Have the DJ or MC mention it through the night: 'Scan the QR on your table and share your moments with the couple.' Natural and low-pressure."
+    }
+  ]
+}

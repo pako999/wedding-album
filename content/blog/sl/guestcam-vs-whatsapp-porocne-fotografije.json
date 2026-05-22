@@ -1,0 +1,130 @@
+{
+  "slug": "guestcam-vs-whatsapp-porocne-fotografije",
+  "lang": "sl",
+  "title": "Guestcam vs WhatsApp za poročne fotografije: iskrena primerjava",
+  "description": "WhatsApp stisne fotografije na 50% kakovosti in skupina postane kaotična. Guestcam ohrani polno kakovost v eni zasebni galeriji.",
+  "translationKey": "guestcam-vs-whatsapp",
+  "publishedAt": "2026-05-22",
+  "updatedAt": "2026-05-22",
+  "author": "Guestcam Team",
+  "category": "primerjava",
+  "readingTime": 5,
+  "tags": [
+    "primerjava",
+    "WhatsApp",
+    "QR koda",
+    "Guestcam"
+  ],
+  "tldr": "WhatsApp stisne fotografije na 50% kakovosti in skupina postane kaotična. Guestcam ohrani polno kakovost v eni zasebni galeriji.",
+  "content": [
+    {
+      "type": "h2",
+      "text": "V čem je problem WhatsApp poročnih skupin?"
+    },
+    {
+      "type": "p",
+      "text": "Skoraj vse poroke imajo skupino »Poroka Ane in Marka«. Po dogodku se začne kaos: 200 fotografij brez konteksta, video posnetki, ki jih nihče ne odpre, in fotografije, stisnjene na nizko kakovost, ki jih ne moreš natisniti."
+    },
+    {
+      "type": "h2",
+      "text": "Kako se Guestcam in WhatsApp razlikujeta?"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "",
+        "WhatsApp",
+        "Guestcam"
+      ],
+      "rows": [
+        [
+          "Kakovost fotografij",
+          "~50% (stisnjeno)",
+          "100% (original)"
+        ],
+        [
+          "Videoposnetki",
+          "Limit 16 MB",
+          "Polna kakovost"
+        ],
+        [
+          "Zasebnost",
+          "Vsi v skupini vse vidijo",
+          "Zasebna galerija, samo z linkom"
+        ],
+        [
+          "Sortiranje",
+          "Kronološko & kaotično",
+          "Po dogodku, po osebi"
+        ],
+        [
+          "Prenos vseh fotografij",
+          "Ročno, po eno",
+          "ZIP datoteka, en klik"
+        ],
+        [
+          "Zbiranje od ne-prijateljev",
+          "Težko (nimajo številke)",
+          "Skenirajo QR, dodajo se sami"
+        ],
+        [
+          "Trajanje hrambe",
+          "Lahko se izgubi v zgodovini",
+          "Galerija ostane 30 dni do 1 leto"
+        ]
+      ]
+    },
+    {
+      "type": "h2",
+      "text": "Kdaj WhatsApp dejansko deluje?"
+    },
+    {
+      "type": "p",
+      "text": "WhatsApp je super za majhno družinsko praznovanje s 10 ljudmi, kjer poznate vse številke. Ko gre za 100+ gostov, zna postati neobvladljivo."
+    },
+    {
+      "type": "h2",
+      "text": "Zakaj pari preklapljajo na Guestcam?"
+    },
+    {
+      "type": "ul",
+      "items": [
+        "Polna kakovost fotografij — primerno za tisk poročnega albuma.",
+        "Gostje brez aplikacije: skenirajo QR kodo s kamero in nalagajo.",
+        "En link / ena galerija — brez raztresenih sporočil po WhatsAppu, Viberju, Instagramu.",
+        "Zasebnost: galerijo lahko zaščitite z geslom, brez javnih zapisov.",
+        "Prenos vsega v ZIP po dogodku — brez ročnega shranjevanja."
+      ]
+    },
+    {
+      "type": "cta",
+      "text": "Preizkusite Guestcam brezplačno",
+      "href": "/dashboard/new"
+    },
+    {
+      "type": "faq",
+      "q": "Ali WhatsApp res stisne fotografije?",
+      "a": "Da. Po privzetih nastavitvah WhatsApp stisne fotografije na približno 50% originalne kakovosti, da prihrani podatke. Možnost »Pošlji kot dokument« obide stiskanje, vendar zanjo malokdo ve."
+    },
+    {
+      "type": "faq",
+      "q": "Lahko združim WhatsApp in Guestcam?",
+      "a": "Seveda. Mnogi pari uporabljajo WhatsApp za komunikacijo z gosti pred poroko in Guestcam za zbiranje fotografij med in po dogodku."
+    },
+    {
+      "type": "faq",
+      "q": "Kako preprečim, da gostje vidijo fotografije drugih?",
+      "a": "V Guestcam galeriji lahko nastavite moderacijo — fotografije se prikažejo šele, ko jih potrdite. Ali nastavite geslo, ki ga delite samo z najbližjimi."
+    },
+    {
+      "type": "faq",
+      "q": "Stane Guestcam več kot WhatsApp?",
+      "a": "Brezplačni paket je dovolj za majhne dogodke. Za polno poroko priporočamo Plus (49€) ali Premium (79€) — manj kot povprečen poročni šopek."
+    },
+    {
+      "type": "faq",
+      "q": "Kaj se zgodi z WhatsApp skupino po poroki?",
+      "a": "Postane spomenik — sporočila se izgubljajo, fotografije se brišejo, ko nekdo počisti telefon. Guestcam galerija ostane na voljo do 1 leta in jo lahko trajno prenesete."
+    }
+  ]
+}
