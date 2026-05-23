@@ -18,6 +18,12 @@ export default function robots(): MetadataRoute.Robots {
       // Default rule for every crawler — Google, Bing, Perplexity, ChatGPT,
       // Claude, etc. AI assistants are explicitly welcome on public
       // content (blog/SEO landings) because that's how we get cited.
+      //
+      // Album guest pages (/<slug>) are blocked *additionally* at the
+      // HTTP-header level via X-Robots-Tag in middleware.ts — we can't
+      // list every album slug here (they're dynamic) and a blanket
+      // Disallow: / would block the public marketing pages too. The
+      // per-page noindex meta + middleware header pair handles it.
       {
         userAgent: "*",
         allow: "/",
@@ -30,10 +36,23 @@ export default function robots(): MetadataRoute.Robots {
           "/sign-in",
           "/sign-up",
           "/dev/",
-          // Belt-and-braces: Stripe / WedFlow webhooks are POST-only but
-          // GET-crawls would 405 noisily. Already covered by /api/.
         ],
       },
+      // AI-training crawlers: keep them out of the album guest pages
+      // entirely. Different vendors honour different markers (GPTBot
+      // ignores X-Robots-Tag in practice, robots.txt is its only signal).
+      // We still allow them on /blog and the SEO landings — that's the
+      // public content we WANT cited.
+      ...["GPTBot", "ChatGPT-User", "OAI-SearchBot", "ClaudeBot", "Claude-Web",
+          "PerplexityBot", "Perplexity-User", "Google-Extended", "CCBot",
+          "anthropic-ai", "FacebookBot", "Bytespider", "PetalBot",
+          "ImagesiftBot", "Diffbot", "Omgilibot", "Applebot-Extended"].map(
+        (userAgent) => ({
+          userAgent,
+          allow: ["/blog", "/sl/", "/hr/", "/sr/", "/de/", "/en/", "/es/", "/contact"],
+          disallow: ["/"],
+        }),
+      ),
     ],
     sitemap: "https://guestcam.si/sitemap.xml",
     host: "https://guestcam.si",

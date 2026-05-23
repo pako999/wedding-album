@@ -3,6 +3,34 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 const isProtectedRoute = createRouteMatcher(["/dashboard(.*)"]);
+
+/**
+ * Single-segment paths that are PUBLIC marketing/content (not album guest
+ * pages). Anything else with a one-segment path of the form /<slug> is
+ * treated as an album guest view and gets a full X-Robots-Tag noindex
+ * header so crawlers / AI scrapers / archive bots don't ingest it even
+ * before the HTML <meta robots> tag is parsed.
+ *
+ * We include both top-level reserved roots and the locale prefixes; any
+ * deeper path (more than one segment) is by definition not a /<slug>
+ * album URL because albums live at the root.
+ */
+const PUBLIC_ROOTS = new Set([
+  "", "blog", "contact", "privacy", "terms", "gdpr", "cookies",
+  "admin", "dashboard", "api", "sign-in", "sign-up", "dev",
+  "sl", "hr", "sr", "de", "en", "es",
+  "robots.txt", "sitemap.xml", "favicon.ico", "manifest.json",
+  "opengraph-image", "_next",
+]);
+
+function isAlbumGuestPath(pathname: string): boolean {
+  // Strip leading slash, ignore anything with more than one segment.
+  // Album slugs are flat /<slug>, dashboards are /dashboard/<slug>,
+  // localized homepages are /<lang>, etc.
+  const segments = pathname.split("/").filter(Boolean);
+  if (segments.length !== 1) return false;
+  return !PUBLIC_ROOTS.has(segments[0]);
+}
 // Internal endpoints gated by the x-api-key header. NOTE: the Stripe webhook
 // (/api/webhooks/stripe) is intentionally NOT here — it authenticates via its
 // own `stripe-signature` header, so gating it on x-api-key would block Stripe.
@@ -73,7 +101,23 @@ export default clerkMiddleware(async (auth, req) => {
   // pass the new set through via `request.headers`.
   const requestHeaders = new Headers(req.headers);
   requestHeaders.set("x-pathname", pathname);
-  return NextResponse.next({ request: { headers: requestHeaders } });
+  const res = NextResponse.next({ request: { headers: requestHeaders } });
+
+  // ── Block crawlers from album guest pages via HTTP header ────────────────
+  // Album URLs (/<slug>) are private link-only galleries. The page also
+  // emits a <meta name="robots" content="noindex,…"> tag, but
+  // X-Robots-Tag is honoured by Google/Bing/Yandex BEFORE they parse the
+  // HTML — so we double-belt it here. Notable bots in the noai/noimageai
+  // set are specifically opted out of training-data crawls per the
+  // emerging convention.
+  if (isAlbumGuestPath(pathname)) {
+    res.headers.set(
+      "X-Robots-Tag",
+      "noindex, nofollow, noarchive, nosnippet, noimageindex, notranslate, noai, noimageai",
+    );
+  }
+
+  return res;
 });
 
 export const config = {
