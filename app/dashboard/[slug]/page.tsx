@@ -5,6 +5,29 @@ import { albums, photos } from "@/lib/db/schema";
 import { eq, and, countDistinct } from "drizzle-orm";
 import { AlbumAdminPanel } from "@/components/dashboard/AlbumAdminPanel";
 
+/**
+ * True if the signed-in user is the legitimate owner of the album.
+ * Matches by Clerk userId OR by email (case-insensitive). The email
+ * fallback handles:
+ *   • WedFlow / cross-Clerk-instance albums where the stored ownerClerkId
+ *     comes from a different Clerk environment
+ *   • Cached ownerEmail typos / capitalisation drift
+ *   • Users who recreated their Clerk account against the same email
+ * Without this fallback the user gets a 404 on their own album.
+ */
+function isAlbumOwner(
+  album: { ownerClerkId: string; ownerEmail: string | null },
+  userId: string,
+  userEmail: string | null,
+): boolean {
+  if (album.ownerClerkId === userId) return true;
+  if (userEmail && album.ownerEmail &&
+      album.ownerEmail.toLowerCase() === userEmail.toLowerCase()) {
+    return true;
+  }
+  return false;
+}
+
 export const dynamic = "force-dynamic";
 
 interface Props {
@@ -59,12 +82,23 @@ export default async function AlbumAdminPage({ params, searchParams }: Props) {
   let pendingCount = 0;
   let guestCount = 0;
 
+  // Fetch the current user's email up front so the ownership check can
+  // fall back to email matching (see isAlbumOwner). If Clerk hiccups,
+  // we keep it null and rely on the Clerk-userId match alone.
+  let viewerEmail: string | null = null;
+  try {
+    const u = await currentUser();
+    viewerEmail = u?.emailAddresses?.[0]?.emailAddress ?? null;
+  } catch {
+    // ignore — fall back to ID-only match
+  }
+
   try {
     album = await db.query.albums.findFirst({
       where: eq(albums.slug, slug),
     }) ?? null;
 
-    if (album && album.ownerClerkId === userId) {
+    if (album && isAlbumOwner(album, userId, viewerEmail)) {
       const status =
         tab === "pending"  ? "pending"  :
         tab === "rejected" ? "rejected" :
@@ -104,18 +138,19 @@ export default async function AlbumAdminPage({ params, searchParams }: Props) {
     );
   }
 
-  if (!album || album.ownerClerkId !== userId) {
+  if (!album || !isAlbumOwner(album, userId, viewerEmail)) {
     notFound();
   }
 
   // Surface the owner's Clerk email so the Settings tab can show
-  // "you are signed in as …" — users have asked to easily confirm
-  // which account a given album is on. Best-effort: if Clerk is down
-  // we just pass null and the card renders an em-dash.
-  let ownerEmail: string | null = null;
+  // "you are signed in as …" — already loaded above for the owner
+  // check; reuse it.
+  let ownerEmail: string | null = viewerEmail;
   try {
-    const user = await currentUser();
-    ownerEmail = user?.emailAddresses?.[0]?.emailAddress ?? null;
+    if (!ownerEmail) {
+      const user = await currentUser();
+      ownerEmail = user?.emailAddresses?.[0]?.emailAddress ?? null;
+    }
   } catch {
     ownerEmail = null;
   }
