@@ -16,8 +16,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { albums, photos } from "@/lib/db/schema";
 import { eq, and } from "drizzle-orm";
-import { auth } from "@clerk/nextjs/server";
 import { bunnyOriginalUrl } from "@/lib/storage/bunny";
+import { checkAlbumOwnership } from "@/lib/album-ownership";
 
 export const runtime = "nodejs";
 
@@ -25,13 +25,14 @@ export async function GET(
   _req: NextRequest,
   { params }: { params: Promise<{ slug: string }> },
 ) {
-  const { userId } = await auth();
   const { slug } = await params;
 
   const album = await db.query.albums.findFirst({ where: eq(albums.slug, slug) });
   if (!album) return NextResponse.json({ error: "Not found" }, { status: 404 });
-  if (!userId || userId !== album.ownerClerkId) {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+
+  const owner = await checkAlbumOwnership(album);
+  if (!owner.ok) {
+    return NextResponse.json({ error: owner.error }, { status: owner.status });
   }
 
   const albumPhotos = await db.query.photos.findMany({
