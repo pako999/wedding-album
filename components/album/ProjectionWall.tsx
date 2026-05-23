@@ -19,6 +19,11 @@ import { useState, useEffect, useRef } from "react";
 import type { Album, Photo } from "@/lib/db/schema";
 import { bunnyDisplayUrl } from "@/lib/storage/bunny";
 
+// First N tiles load eagerly (above-the-fold). Everything else gets
+// loading="lazy" so the wall can host hundreds of photos without
+// hammering the CDN on initial paint.
+const EAGER_TILE_COUNT = 16;
+
 /**
  * Rewrite a Bunny Stream embed URL to autoplay-muted-loop for the
  * projection wall. The url stored in `photo.blobUrl` looks like:
@@ -109,11 +114,36 @@ export function ProjectionWall({ album, photos, onClose }: Props) {
     } catch {/* fullscreen not available */}
   };
 
-  // Sort newest-first, take up to 13
-  const sorted  = [...photos].sort((a, b) =>
+  // Sort newest-first; show ALL items. The grid below is vertically
+  // scrollable so even 200+ items work. Previously this was capped at
+  // 13 — users couldn't see the rest of the gallery from the wall.
+  const display = [...photos].sort((a, b) =>
     new Date(b.uploadedAt ?? 0).getTime() - new Date(a.uploadedAt ?? 0).getTime()
   );
-  const display = sorted.slice(0, 13);
+
+  // Lightbox state — clicking a tile opens a full-screen view.
+  const [lightboxIdx, setLightboxIdx] = useState<number | null>(null);
+  const lightboxPhoto = lightboxIdx !== null ? display[lightboxIdx] : null;
+  const closeLightbox = () => setLightboxIdx(null);
+  const lightboxPrev = () => setLightboxIdx((i) =>
+    i === null ? null : (i - 1 + display.length) % display.length,
+  );
+  const lightboxNext = () => setLightboxIdx((i) =>
+    i === null ? null : (i + 1) % display.length,
+  );
+
+  // Keyboard nav for the lightbox
+  useEffect(() => {
+    if (lightboxIdx === null) return;
+    const h = (e: KeyboardEvent) => {
+      if (e.key === "ArrowLeft")  lightboxPrev();
+      if (e.key === "ArrowRight") lightboxNext();
+      if (e.key === "Escape")     closeLightbox();
+    };
+    window.addEventListener("keydown", h);
+    return () => window.removeEventListener("keydown", h);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lightboxIdx]);
 
   const photoCount     = photos.filter(p => !p.mimeType?.startsWith("video/")).length;
   const videoCount     = photos.filter(p =>  p.mimeType?.startsWith("video/")).length;
@@ -253,7 +283,7 @@ export function ProjectionWall({ album, photos, onClose }: Props) {
       </header>
 
       {/* ── Photo grid ──────────────────────────────────────────────────────── */}
-      <div className="relative z-10 flex-1 min-h-0 p-3">
+      <div className="relative z-10 flex-1 min-h-0 overflow-y-auto p-3" style={{ scrollbarGutter: "stable" }}>
         {display.length === 0 ? (
           <div className="h-full flex flex-col items-center justify-center text-center">
             <div className="text-6xl mb-5 opacity-15">📷</div>
@@ -261,11 +291,13 @@ export function ProjectionWall({ album, photos, onClose }: Props) {
           </div>
         ) : (
           <div
-            className="h-full"
             style={{
               display: "grid",
               gridTemplateColumns: "repeat(4, 1fr)",
-              gridAutoRows: "1fr",
+              // Fixed row height (rather than 1fr) so the grid grows to fit
+              // every photo and the parent overflows / scrolls naturally
+              // when there are more than ~16 tiles.
+              gridAutoRows: "minmax(180px, 240px)",
               gap: "8px",
             }}
           >
@@ -277,20 +309,26 @@ export function ProjectionWall({ album, photos, onClose }: Props) {
               // (https://iframe.mediadelivery.net/embed/<lib>/<id>?…), NOT a
               // raw video file. Rendering it inside a <video src> just paints
               // a blank tile. Switch its query params to autoplay+loop+muted
-              // and drop it into an <iframe> instead — same component the
+              // and drop it into an <iframe> instead — same pattern the
               // public VideoCard uses, but tuned for a TV projection.
               const streamProjectionSrc = isStreamVideo
                 ? buildStreamProjectionSrc(photo.blobUrl)
                 : null;
+              // Stagger animation only above the fold; below that we let
+              // tiles snap in as the user scrolls — otherwise the cascade
+              // makes scroll-jank visible.
+              const animationDelay = i < EAGER_TILE_COUNT ? `${i * 0.055}s` : "0s";
+              const loadingAttr: "eager" | "lazy" = i < EAGER_TILE_COUNT ? "eager" : "lazy";
 
               return (
                 <div
                   key={photo.id}
-                  className="relative overflow-hidden rounded-xl bg-black/40"
+                  onClick={() => setLightboxIdx(i)}
+                  className="relative overflow-hidden rounded-xl bg-black/40 cursor-pointer group"
                   style={{
                     gridColumn: isNewest ? "span 2" : undefined,
                     gridRow:    isNewest ? "span 2" : undefined,
-                    animation:  `pwIn 0.5s cubic-bezier(.4,0,.2,1) ${i * 0.055}s both`,
+                    animation:  `pwIn 0.5s cubic-bezier(.4,0,.2,1) ${animationDelay} both`,
                   }}
                 >
                   {/* Media */}
@@ -298,25 +336,25 @@ export function ProjectionWall({ album, photos, onClose }: Props) {
                     <iframe
                       src={streamProjectionSrc}
                       className="absolute inset-0 w-full h-full"
-                      style={{ border: "none" }}
+                      style={{ border: "none", pointerEvents: "none" }}
                       allow="autoplay; encrypted-media; picture-in-picture"
                       title={photo.caption ?? "Video"}
+                      loading={loadingAttr}
                     />
                   ) : isVideo ? (
                     <video
                       src={photo.blobUrl}
                       muted loop autoPlay playsInline
-                      className="absolute inset-0 w-full h-full object-cover"
+                      className="absolute inset-0 w-full h-full object-cover pointer-events-none"
+                      preload={i < EAGER_TILE_COUNT ? "auto" : "metadata"}
                     />
                   ) : (
                     <img
                       src={bunnyDisplayUrl(photo.thumbnailUrl ?? photo.blobUrl, isNewest ? 1200 : 600, 82)}
                       alt={photo.caption ?? ""}
-                      className="absolute inset-0 w-full h-full object-cover"
-                      loading="eager"
+                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                      loading={loadingAttr}
                       onError={(e) => {
-                        // Hide broken-image icon; leave the dark tile +
-                        // uploader strip so the wall stays visually intact.
                         const t = e.currentTarget;
                         t.onerror = null;
                         t.style.display = "none";
@@ -394,6 +432,103 @@ export function ProjectionWall({ album, photos, onClose }: Props) {
         <span>Guestcam · guestcam.si</span>
         <span className="capitalize">{dateStr}</span>
       </footer>
+
+      {/* ── Lightbox ────────────────────────────────────────────────────────── */}
+      {lightboxPhoto && lightboxIdx !== null && (
+        <div
+          className="fixed inset-0 z-[60] bg-black/95 flex items-center justify-center p-4"
+          onClick={closeLightbox}
+        >
+          {/* Close button */}
+          <button
+            onClick={(e) => { e.stopPropagation(); closeLightbox(); }}
+            className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white"
+            aria-label="Zapri"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+
+          {/* Position indicator */}
+          <div className="absolute top-4 left-4 px-3 py-1.5 rounded-full bg-white/10 text-white text-xs font-semibold">
+            {lightboxIdx + 1} / {display.length}
+          </div>
+
+          {/* Prev / Next */}
+          {display.length > 1 && (
+            <>
+              <button
+                onClick={(e) => { e.stopPropagation(); lightboxPrev(); }}
+                className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white"
+                aria-label="Prejšnja"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+                </svg>
+              </button>
+              <button
+                onClick={(e) => { e.stopPropagation(); lightboxNext(); }}
+                className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white"
+                aria-label="Naslednja"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+            </>
+          )}
+
+          {/* The media itself */}
+          <div className="relative max-w-[92vw] max-h-[88vh] w-full h-full flex flex-col items-center justify-center" onClick={(e) => e.stopPropagation()}>
+            {lightboxPhoto.cfStreamVideoId ? (
+              <div className="w-full max-w-[88vw]" style={{ aspectRatio: "16/9" }}>
+                <iframe
+                  src={lightboxPhoto.blobUrl}
+                  className="w-full h-full rounded-2xl"
+                  style={{ border: "none" }}
+                  allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
+                  title={lightboxPhoto.caption ?? "Video"}
+                  allowFullScreen
+                />
+              </div>
+            ) : lightboxPhoto.mimeType?.startsWith("video/") ? (
+              <video
+                src={lightboxPhoto.blobUrl}
+                controls
+                autoPlay
+                playsInline
+                className="max-w-[92vw] max-h-[80vh] rounded-2xl"
+              />
+            ) : (
+              <img
+                src={bunnyDisplayUrl(lightboxPhoto.thumbnailUrl ?? lightboxPhoto.blobUrl, 2000, 90)}
+                alt={lightboxPhoto.caption ?? ""}
+                className="max-w-[92vw] max-h-[80vh] object-contain rounded-2xl"
+              />
+            )}
+            {/* Uploader + time */}
+            {(lightboxPhoto.uploaderName || lightboxPhoto.uploadedAt) && (
+              <div className="mt-4 flex items-center gap-3 text-white">
+                {lightboxPhoto.uploaderName && (
+                  <div
+                    className="w-8 h-8 rounded-full flex items-center justify-center font-bold text-[#0F1729]"
+                    style={{ background: "#FFC94D" }}
+                  >
+                    {lightboxPhoto.uploaderName.charAt(0).toUpperCase()}
+                  </div>
+                )}
+                <div>
+                  {lightboxPhoto.uploaderName && (
+                    <p className="text-sm font-semibold">{lightboxPhoto.uploaderName}</p>
+                  )}
+                  <p className="text-xs text-white/50">{fmtTime(lightboxPhoto.uploadedAt)}</p>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
