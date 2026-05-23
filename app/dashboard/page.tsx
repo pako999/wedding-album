@@ -2,7 +2,7 @@ import { auth, currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
 import { albums } from "@/lib/db/schema";
-import { eq, or, desc } from "drizzle-orm";
+import { eq, or, desc, sql } from "drizzle-orm";
 import Link from "next/link";
 import { DashboardNav } from "@/components/dashboard/DashboardNav";
 
@@ -26,10 +26,16 @@ export default async function DashboardPage() {
   let userAlbums: (typeof albums.$inferSelect)[] = [];
   let dbError = false;
   try {
-    // Match by clerkId OR by email (for albums created via WedFlow integration
-    // where the ownerClerkId comes from a different Clerk instance)
+    // Match by clerkId OR by email (for albums created via WedFlow
+    // integration, or where Clerk userIds drift across environments).
+    // Email comparison is case-insensitive so capitalisation drift in
+    // the cached `ownerEmail` column never silently hides albums from
+    // their legitimate owner.
     const whereClause = userEmail
-      ? or(eq(albums.ownerClerkId, userId!), eq(albums.ownerEmail, userEmail))
+      ? or(
+          eq(albums.ownerClerkId, userId!),
+          sql`LOWER(${albums.ownerEmail}) = LOWER(${userEmail})`,
+        )
       : eq(albums.ownerClerkId, userId!);
 
     userAlbums = await db.query.albums.findMany({
