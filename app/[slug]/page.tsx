@@ -51,7 +51,32 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: `${album.coupleName} — Guestcam`,
     description,
-    robots: { index: false, follow: false },
+    // Every album guest page is private (link-only). Maximum-strength
+    // robots directives so search engines, image search, AI scrapers,
+    // and archive bots all stay out — even if some choose to ignore
+    // one signal we cover the others. Middleware also sets the
+    // X-Robots-Tag HTTP header for an additional layer that crawlers
+    // honour before they ever parse the HTML.
+    robots: {
+      index: false,
+      follow: false,
+      nocache: true,
+      googleBot: {
+        index: false,
+        follow: false,
+        noimageindex: true,
+        "max-image-preview": "none",
+        "max-snippet": -1,
+        "max-video-preview": -1,
+      },
+    },
+    other: {
+      // Belt-and-braces: emit a consolidated robots meta with archive
+      // + snippet + image-index + AI-training opt-outs that the typed
+      // Metadata.robots shape doesn't expose as top-level keys.
+      robots:
+        "noindex, nofollow, noarchive, nosnippet, noimageindex, notranslate, noai, noimageai",
+    },
     openGraph: {
       title: `${album.coupleName} — Guestcam`,
       description,
