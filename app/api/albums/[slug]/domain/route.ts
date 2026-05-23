@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@clerk/nextjs/server";
 import { db } from "@/lib/db";
 import { albums } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
@@ -8,9 +7,11 @@ import {
   getDomainStatus,
   removeProjectDomain,
 } from "@/lib/vercel-domains";
+import { checkAlbumOwnership } from "@/lib/album-ownership";
 
 // Premium-only custom domain management for an album.
-// Owner-only (Clerk auth + album.ownerClerkId === userId) + album.plan === "premium".
+// Owner check: Clerk id OR verified-email match (see checkAlbumOwnership)
+// + album.plan === "premium".
 
 // Bare hostname: lowercase letters/digits/hyphens per label, at least one dot.
 const HOSTNAME_RE =
@@ -28,14 +29,12 @@ function normalizeDomain(input: string): string {
 }
 
 async function loadOwnedPremiumAlbum(slug: string) {
-  const { userId } = await auth();
-  if (!userId) {
-    return { error: NextResponse.json({ error: "Unauthorized" }, { status: 401 }) };
-  }
-
   const album = await db.query.albums.findFirst({ where: eq(albums.slug, slug) });
-
-  if (!album || album.ownerClerkId !== userId) {
+  const owner = await checkAlbumOwnership(album);
+  if (!owner.ok) {
+    return { error: NextResponse.json({ error: owner.error }, { status: owner.status }) };
+  }
+  if (!album) {
     return { error: NextResponse.json({ error: "Forbidden" }, { status: 403 }) };
   }
 

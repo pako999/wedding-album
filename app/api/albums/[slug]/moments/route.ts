@@ -1,18 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@clerk/nextjs/server";
 import { db } from "@/lib/db";
 import { albums, moments } from "@/lib/db/schema";
 import { eq, and, sql } from "drizzle-orm";
+import { checkAlbumOwnership } from "@/lib/album-ownership";
 
 const MAX_NAME_LEN = 60;
 
-/** Resolve the album for this slug and verify the caller owns it. */
+/** Resolve the album for this slug and verify the caller owns it
+ *  (Clerk id OR verified-email match). */
 async function getOwnedAlbum(slug: string) {
-  const { userId } = await auth();
-  if (!userId) return { error: NextResponse.json({ error: "Unauthorized" }, { status: 401 }) };
-
   const album = await db.query.albums.findFirst({ where: eq(albums.slug, slug) });
-  if (!album || album.ownerClerkId !== userId) {
+  const owner = await checkAlbumOwnership(album);
+  if (!owner.ok) {
+    return { error: NextResponse.json({ error: owner.error }, { status: owner.status }) };
+  }
+  if (!album) {
     return { error: NextResponse.json({ error: "Forbidden" }, { status: 403 }) };
   }
   return { album };

@@ -14,11 +14,11 @@
  */
 
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@clerk/nextjs/server";
 import { db } from "@/lib/db";
 import { albums } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { isBunnyStorageConfigured } from "@/lib/storage/bunny";
+import { checkAlbumOwnership } from "@/lib/album-ownership";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -38,11 +38,6 @@ export async function PUT(
   req: NextRequest,
   { params }: { params: Promise<{ slug: string }> },
 ) {
-  // Auth
-  const { userId } = await auth();
-  if (!userId) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
   if (!isBunnyStorageConfigured()) {
     return NextResponse.json({ error: "Storage not configured" }, { status: 501 });
   }
@@ -50,8 +45,10 @@ export async function PUT(
   const { slug } = await params;
   const album = await db.query.albums.findFirst({ where: eq(albums.slug, slug) });
   if (!album) return NextResponse.json({ error: "Album not found" }, { status: 404 });
-  if (album.ownerClerkId !== userId) {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+
+  const owner = await checkAlbumOwnership(album);
+  if (!owner.ok) {
+    return NextResponse.json({ error: owner.error }, { status: owner.status });
   }
 
   // Plan gate — only Plus / Premium can upload a custom cover photo.
@@ -124,14 +121,13 @@ export async function DELETE(
   _req: NextRequest,
   { params }: { params: Promise<{ slug: string }> },
 ) {
-  const { userId } = await auth();
-  if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-
   const { slug } = await params;
   const album = await db.query.albums.findFirst({ where: eq(albums.slug, slug) });
   if (!album) return NextResponse.json({ error: "Album not found" }, { status: 404 });
-  if (album.ownerClerkId !== userId) {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+
+  const owner = await checkAlbumOwnership(album);
+  if (!owner.ok) {
+    return NextResponse.json({ error: owner.error }, { status: owner.status });
   }
 
   await db

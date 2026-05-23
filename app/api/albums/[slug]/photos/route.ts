@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@clerk/nextjs/server";
 import { db } from "@/lib/db";
 import { albums, photos } from "@/lib/db/schema";
 import { eq, and } from "drizzle-orm";
+import { checkAlbumOwnership } from "@/lib/album-ownership";
 
 export const runtime = "nodejs";
 
@@ -16,16 +16,16 @@ export async function GET(
 ) {
   const { slug } = await params;
 
-  let userId: string | null = null;
-  try { userId = (await auth()).userId; } catch { /* */ }
-  if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-
   const album = await db.query.albums
     .findFirst({ where: eq(albums.slug, slug) })
     .catch(() => null);
-  if (!album || album.ownerClerkId !== userId) {
+
+  const owner = await checkAlbumOwnership(album);
+  if (!owner.ok) {
+    // Preserve previous 404 behaviour for non-owners (don't leak existence).
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
+  if (!album) return NextResponse.json({ error: "Not found" }, { status: 404 });
 
   const albumPhotos = await db.query.photos
     .findMany({

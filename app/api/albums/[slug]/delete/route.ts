@@ -7,10 +7,10 @@
  */
 
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@clerk/nextjs/server";
 import { db } from "@/lib/db";
 import { albums } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
+import { checkAlbumOwnership } from "@/lib/album-ownership";
 
 export const dynamic = "force-dynamic";
 
@@ -18,11 +18,6 @@ export async function DELETE(
   req: NextRequest,
   { params }: { params: Promise<{ slug: string }> },
 ) {
-  const { userId } = await auth();
-  if (!userId) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
   const { slug } = await params;
 
   // Body must contain { confirm: "<slug>" }
@@ -44,12 +39,9 @@ export async function DELETE(
     where: eq(albums.slug, slug),
   });
 
-  if (!album) {
-    return NextResponse.json({ error: "Not found" }, { status: 404 });
-  }
-
-  if (album.ownerClerkId !== userId) {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  const owner = await checkAlbumOwnership(album);
+  if (!owner.ok) {
+    return NextResponse.json({ error: owner.error }, { status: owner.status });
   }
 
   // Delete album — photos cascade via FK

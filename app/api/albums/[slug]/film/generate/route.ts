@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@clerk/nextjs/server";
+import { checkAlbumOwnership } from "@/lib/album-ownership";
 import { db } from "@/lib/db";
 import { albums, photos, filmGenerations } from "@/lib/db/schema";
 import { eq, and } from "drizzle-orm";
@@ -26,17 +26,15 @@ export async function POST(
 ) {
   const { slug } = await params;
 
-  // Auth
-  let userId: string | null = null;
-  try { userId = (await auth()).userId; } catch { /* */ }
-  if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-
   const album = await db.query.albums
     .findFirst({ where: eq(albums.slug, slug) })
     .catch(() => null);
-  if (!album || album.ownerClerkId !== userId) {
+
+  const owner = await checkAlbumOwnership(album);
+  if (!owner.ok) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
+  if (!album) return NextResponse.json({ error: "Not found" }, { status: 404 });
 
   // Film creation is a paid feature — the free film tier cannot generate.
   if ((album.filmTier ?? "free") === "free") {

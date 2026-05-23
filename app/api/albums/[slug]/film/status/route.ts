@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@clerk/nextjs/server";
+import { checkAlbumOwnership } from "@/lib/album-ownership";
 import { db } from "@/lib/db";
 import { albums, filmGenerations } from "@/lib/db/schema";
 import { eq, desc } from "drizzle-orm";
@@ -20,16 +20,15 @@ export async function GET(
 ) {
   const { slug } = await params;
 
-  let userId: string | null = null;
-  try { userId = (await auth()).userId; } catch { /* */ }
-  if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-
   const album = await db.query.albums
     .findFirst({ where: eq(albums.slug, slug) })
     .catch(() => null);
-  if (!album || album.ownerClerkId !== userId) {
+
+  const owner = await checkAlbumOwnership(album);
+  if (!owner.ok) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
+  if (!album) return NextResponse.json({ error: "Not found" }, { status: 404 });
 
   // Latest generation for this album
   const [generation] = await db
