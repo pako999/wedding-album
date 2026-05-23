@@ -4,15 +4,44 @@ import path from "node:path";
 
 const SITE_URL = "https://guestcam.si";
 
-async function blogEntries(): Promise<{ path: string; priority: number }[]> {
+type ChangeFreq = "always" | "hourly" | "daily" | "weekly" | "monthly" | "yearly" | "never";
+
+interface PageEntry {
+  path: string;
+  priority: number;
+  changeFrequency: ChangeFreq;
+  /** ISO date string for lastModified — falls back to now if absent. */
+  lastModified?: string;
+}
+
+// Stable last-edited dates for static pages. Bumping these signals real
+// content change to crawlers; leaving them constant when nothing changed
+// avoids the "everything updated today" anti-pattern that Google
+// learns to ignore. Increment when you actually edit the page.
+const LAST_EDITED = {
+  homepage:    "2026-05-23",
+  seoLandings: "2026-05-22",
+  alternatives:"2026-05-22",
+  legalSl:     "2026-01-01",
+  legalIntl:   "2026-01-01",
+  contact:     "2026-05-22",
+};
+
+/**
+ * Walk content/blog/<lang>/*.json and produce one sitemap entry per post
+ * using its real publishedAt/updatedAt timestamps.
+ */
+async function blogEntries(): Promise<PageEntry[]> {
   const blogDir = path.join(process.cwd(), "content", "blog");
-  const out: { path: string; priority: number }[] = [];
-  // Index pages
-  out.push({ path: "/blog", priority: 0.7 });
+  const out: PageEntry[] = [];
+
+  // Index pages — change as new posts arrive
+  out.push({ path: "/blog", priority: 0.7, changeFrequency: "weekly" });
   for (const lang of ["hr", "sr", "de", "en", "es"]) {
-    out.push({ path: `/${lang}/blog`, priority: 0.65 });
+    out.push({ path: `/${lang}/blog`, priority: 0.65, changeFrequency: "weekly" });
   }
-  // Per-post URLs
+
+  // Per-post URLs with real updatedAt timestamps
   for (const lang of ["sl", "hr", "sr", "de", "en", "es"]) {
     const dir = path.join(blogDir, lang);
     let files: string[] = [];
@@ -25,7 +54,21 @@ async function blogEntries(): Promise<{ path: string; priority: number }[]> {
       if (!file.endsWith(".json")) continue;
       const slug = file.replace(".json", "");
       const url = lang === "sl" ? `/blog/${slug}` : `/${lang}/blog/${slug}`;
-      out.push({ path: url, priority: 0.6 });
+      // Read the post just enough to grab its date. Skip silently if malformed.
+      let updated: string | undefined;
+      try {
+        const raw = await fs.readFile(path.join(dir, file), "utf8");
+        const data = JSON.parse(raw) as { updatedAt?: string; publishedAt?: string };
+        updated = data.updatedAt ?? data.publishedAt;
+      } catch {
+        // ignore
+      }
+      out.push({
+        path: url,
+        priority: 0.6,
+        changeFrequency: "monthly",
+        lastModified: updated,
+      });
     }
   }
   return out;
@@ -33,60 +76,71 @@ async function blogEntries(): Promise<{ path: string; priority: number }[]> {
 
 /**
  * Public sitemap. Lists only marketing / content pages — album galleries
- * and the dashboard are private and intentionally excluded.
+ * and the dashboard are private (noindex) and intentionally excluded.
  */
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const now = new Date();
+  const fallback = new Date();
   const blog = await blogEntries();
-  const pages: { path: string; priority: number }[] = [
-    { path: "", priority: 1.0 },
-    // Localized homepages (one per language other than Slovenian)
-    { path: "/hr", priority: 0.9 },
-    { path: "/sr", priority: 0.9 },
-    { path: "/de", priority: 0.9 },
-    { path: "/en", priority: 0.9 },
-    { path: "/es", priority: 0.9 },
-    // Wedding-guide pages (one per language)
-    { path: "/sl/qr-koda-poroka", priority: 0.9 },
-    { path: "/hr/qr-kod-vjencanje", priority: 0.8 },
-    { path: "/sr/qr-kod-vencanje", priority: 0.8 },
-    { path: "/de/hochzeitsfotos-sammeln", priority: 0.8 },
-    { path: "/en/wedding-photo-sharing", priority: 0.8 },
-    { path: "/es/fotos-boda-qr", priority: 0.8 },
-    // Alternatives / comparison pages (one per language)
-    { path: "/sl/alternative-aplikacije", priority: 0.7 },
-    { path: "/hr/alternativne-aplikacije", priority: 0.7 },
-    { path: "/sr/alternativne-aplikacije", priority: 0.7 },
-    { path: "/de/alternativen", priority: 0.7 },
-    { path: "/en/alternatives", priority: 0.7 },
-    { path: "/es/alternativas", priority: 0.7 },
-    // Legal — Slovenian master pages
-    { path: "/privacy", priority: 0.3 },
-    { path: "/terms", priority: 0.3 },
-    { path: "/gdpr", priority: 0.3 },
-    { path: "/cookies", priority: 0.3 },
+
+  const pages: PageEntry[] = [
+    // Homepage — updated whenever the SL master copy changes
+    { path: "",     priority: 1.0, changeFrequency: "weekly", lastModified: LAST_EDITED.homepage },
+
+    // Localized homepages
+    { path: "/hr", priority: 0.9, changeFrequency: "weekly", lastModified: LAST_EDITED.homepage },
+    { path: "/sr", priority: 0.9, changeFrequency: "weekly", lastModified: LAST_EDITED.homepage },
+    { path: "/de", priority: 0.9, changeFrequency: "weekly", lastModified: LAST_EDITED.homepage },
+    { path: "/en", priority: 0.9, changeFrequency: "weekly", lastModified: LAST_EDITED.homepage },
+    { path: "/es", priority: 0.9, changeFrequency: "weekly", lastModified: LAST_EDITED.homepage },
+
+    // SEO wedding-guide landings
+    { path: "/sl/qr-koda-poroka",         priority: 0.9, changeFrequency: "monthly", lastModified: LAST_EDITED.seoLandings },
+    { path: "/hr/qr-kod-vjencanje",       priority: 0.8, changeFrequency: "monthly", lastModified: LAST_EDITED.seoLandings },
+    { path: "/sr/qr-kod-vencanje",        priority: 0.8, changeFrequency: "monthly", lastModified: LAST_EDITED.seoLandings },
+    { path: "/de/hochzeitsfotos-sammeln", priority: 0.8, changeFrequency: "monthly", lastModified: LAST_EDITED.seoLandings },
+    { path: "/en/wedding-photo-sharing",  priority: 0.8, changeFrequency: "monthly", lastModified: LAST_EDITED.seoLandings },
+    { path: "/es/fotos-boda-qr",          priority: 0.8, changeFrequency: "monthly", lastModified: LAST_EDITED.seoLandings },
+
+    // Alternatives / comparison pages
+    { path: "/sl/alternative-aplikacije",  priority: 0.7, changeFrequency: "monthly", lastModified: LAST_EDITED.alternatives },
+    { path: "/hr/alternativne-aplikacije", priority: 0.7, changeFrequency: "monthly", lastModified: LAST_EDITED.alternatives },
+    { path: "/sr/alternativne-aplikacije", priority: 0.7, changeFrequency: "monthly", lastModified: LAST_EDITED.alternatives },
+    { path: "/de/alternativen",            priority: 0.7, changeFrequency: "monthly", lastModified: LAST_EDITED.alternatives },
+    { path: "/en/alternatives",            priority: 0.7, changeFrequency: "monthly", lastModified: LAST_EDITED.alternatives },
+    { path: "/es/alternativas",            priority: 0.7, changeFrequency: "monthly", lastModified: LAST_EDITED.alternatives },
+
+    // Legal — Slovenian master
+    { path: "/privacy", priority: 0.3, changeFrequency: "yearly", lastModified: LAST_EDITED.legalSl },
+    { path: "/terms",   priority: 0.3, changeFrequency: "yearly", lastModified: LAST_EDITED.legalSl },
+    { path: "/gdpr",    priority: 0.3, changeFrequency: "yearly", lastModified: LAST_EDITED.legalSl },
+    { path: "/cookies", priority: 0.3, changeFrequency: "yearly", lastModified: LAST_EDITED.legalSl },
+
     // Contact pages
-    { path: "/contact", priority: 0.5 },
-    { path: "/hr/contact", priority: 0.45 },
-    { path: "/sr/contact", priority: 0.45 },
-    { path: "/de/contact", priority: 0.45 },
-    { path: "/en/contact", priority: 0.45 },
-    { path: "/es/contact", priority: 0.45 },
-    // Legal — localized (HR / SR / DE / EN / ES × privacy/terms/gdpr/cookies)
+    { path: "/contact",    priority: 0.5, changeFrequency: "yearly", lastModified: LAST_EDITED.contact },
+    { path: "/hr/contact", priority: 0.45, changeFrequency: "yearly", lastModified: LAST_EDITED.contact },
+    { path: "/sr/contact", priority: 0.45, changeFrequency: "yearly", lastModified: LAST_EDITED.contact },
+    { path: "/de/contact", priority: 0.45, changeFrequency: "yearly", lastModified: LAST_EDITED.contact },
+    { path: "/en/contact", priority: 0.45, changeFrequency: "yearly", lastModified: LAST_EDITED.contact },
+    { path: "/es/contact", priority: 0.45, changeFrequency: "yearly", lastModified: LAST_EDITED.contact },
+
+    // Legal — localized
     ...(["hr", "sr", "de", "en", "es"].flatMap((lang) =>
       ["privacy", "terms", "gdpr", "cookies"].map((doc) => ({
         path: `/${lang}/${doc}`,
         priority: 0.25,
+        changeFrequency: "yearly" as ChangeFreq,
+        lastModified: LAST_EDITED.legalIntl,
       })),
     )),
-    // Blog (auto-discovered from content/blog/<lang>/*.json)
+
+    // Blog (real updatedAt timestamps per post)
     ...blog,
   ];
 
-  return pages.map(({ path, priority }) => ({
+  return pages.map(({ path, priority, changeFrequency, lastModified }) => ({
     url: `${SITE_URL}${path}`,
-    lastModified: now,
-    changeFrequency: "monthly",
+    lastModified: lastModified ? new Date(lastModified) : fallback,
+    changeFrequency,
     priority,
   }));
 }
