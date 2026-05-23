@@ -1231,7 +1231,7 @@ function AccountInfoCard({ ownerEmail }: { ownerEmail: string | null }) {
   );
 }
 
-function AlbumSettingsForm({ album }: { album: Album }) {
+function AlbumSettingsForm({ album, children }: { album: Album; children?: React.ReactNode }) {
   const router = useRouter();
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -1340,6 +1340,11 @@ function AlbumSettingsForm({ album }: { album: Album }) {
           className={inputClass}
         />
       </div>
+
+      {/* Slot for the cover-photo picker — passed in from AlbumAdminPanel.
+          Sits between the password field and the theme picker so it
+          reads as one continuous "appearance" section in the form. */}
+      {children}
 
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">Tema galerije</label>
