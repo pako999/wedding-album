@@ -9,6 +9,7 @@ import { translations } from "@/lib/i18n/translations";
 import { GuestcamLogo } from "@/components/GuestcamLogo";
 import { bunnyDisplayUrl } from "@/lib/storage/bunny";
 import { ZipDownloader } from "@/components/dashboard/ZipDownloader";
+import { SaveToPhotosButton } from "@/components/dashboard/SaveToPhotosButton";
 import { FilmStudio } from "@/components/dashboard/FilmStudio";
 import { ALBUM_THEMES } from "@/lib/album-themes";
 
@@ -495,10 +496,16 @@ export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activ
             >
               🔗 Poglej kot gost
             </a>
-            <ZipDownloader
+            <SaveToPhotosButton
               albumSlug={album.slug}
               className="flex items-center gap-1.5 px-3 py-2 text-sm text-gray-600 border border-gray-200 rounded-lg hover:border-gray-300 transition-colors bg-white"
             />
+            <ZipDownloader
+              albumSlug={album.slug}
+              className="flex items-center gap-1.5 px-3 py-2 text-sm text-gray-600 border border-gray-200 rounded-lg hover:border-gray-300 transition-colors bg-white"
+            >
+              💻 Prenesi ZIP
+            </ZipDownloader>
             <button
               onClick={handleGoogleDrive}
               disabled={driveClicked}
