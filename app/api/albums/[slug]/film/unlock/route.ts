@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@clerk/nextjs/server";
 import { db } from "@/lib/db";
 import { albums, filmGenerations } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
+import { checkAlbumOwnership } from "@/lib/album-ownership";
 
 export const runtime = "nodejs";
 
@@ -26,16 +26,16 @@ export async function POST(
     return NextResponse.json({ error: "not_demo" }, { status: 403 });
   }
 
-  let userId: string | null = null;
-  try { userId = (await auth()).userId; } catch { /* */ }
-  if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-
   const album = await db.query.albums
     .findFirst({ where: eq(albums.slug, slug) })
     .catch(() => null);
-  if (!album || album.ownerClerkId !== userId) {
+
+  const owner = await checkAlbumOwnership(album);
+  if (!owner.ok) {
+    // Preserve original "Not found" status for non-owners to avoid leaking existence.
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
+  if (!album) return NextResponse.json({ error: "Not found" }, { status: 404 });
 
   // One film only — refuse if a montage already exists for this album.
   const existing = await db
