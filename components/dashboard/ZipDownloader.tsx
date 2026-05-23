@@ -18,7 +18,7 @@
  * buffered in memory first — fine for typical album sizes (< 4 GB).
  */
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { downloadZip } from "client-zip";
 
 interface Props {
@@ -36,8 +36,25 @@ export function ZipDownloader({ albumSlug, className, children }: Props) {
   const [done, setDone]         = useState(0);
   const [errorMsg, setErrorMsg] = useState("");
 
+  // Auto-return to idle so the button is clickable again. Without this,
+  // the modern "showSaveFilePicker" branch leaves the button stuck on
+  // "✓ Prenos končan" forever (no onClick), and the user can't trigger
+  // another download without refreshing the page.
+  useEffect(() => {
+    if (phase !== "done") return;
+    const t = setTimeout(() => {
+      setPhase("idle");
+      setProgress(0);
+      setDone(0);
+      setTotal(0);
+    }, 3000);
+    return () => clearTimeout(t);
+  }, [phase]);
+
   async function startDownload() {
-    if (phase !== "idle" && phase !== "error") return;
+    // Permit a fresh download from idle / error / done — only block while
+    // a fetch/save is genuinely in flight.
+    if (phase === "fetching-list" || phase === "downloading") return;
     setPhase("fetching-list");
     setProgress(0);
     setDone(0);
@@ -114,7 +131,8 @@ export function ZipDownloader({ albumSlug, className, children }: Props) {
       setTimeout(() => URL.revokeObjectURL(url), 60_000);
 
       setPhase("done");
-      setTimeout(() => setPhase("idle"), 4000);
+      // The useEffect on `done` re-arms idle automatically (~3s), so we
+      // don't need a manual reset timer here.
     } catch (err) {
       console.error("[ZipDownloader]", err);
       setErrorMsg(err instanceof Error ? err.message : "Prenos ni uspel");
@@ -158,9 +176,12 @@ export function ZipDownloader({ albumSlug, className, children }: Props) {
   }
 
   if (phase === "done") {
+    // Clickable confirmation — taps re-trigger a fresh download right
+    // away if the user wants another copy, otherwise the useEffect
+    // returns the button to its idle "Prenesi ZIP" state after 3 s.
     return (
-      <button disabled className={className}>
-        ✓ Prenos končan
+      <button onClick={startDownload} className={className} title="Klikni za ponoven prenos">
+        ✓ Prenos končan — klikni za nov prenos
       </button>
     );
   }
