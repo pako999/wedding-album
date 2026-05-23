@@ -19,6 +19,28 @@ import { useState, useEffect, useRef } from "react";
 import type { Album, Photo } from "@/lib/db/schema";
 import { bunnyDisplayUrl } from "@/lib/storage/bunny";
 
+/**
+ * Rewrite a Bunny Stream embed URL to autoplay-muted-loop for the
+ * projection wall. The url stored in `photo.blobUrl` looks like:
+ *   https://iframe.mediadelivery.net/embed/<libId>/<videoId>?autoplay=false&loop=false&muted=false&preload=true&responsive=true
+ * We need autoplay=true, loop=true, muted=true so the iframe plays
+ * silently as a moving thumbnail. Falls back to returning the input
+ * untouched if it's not a parseable URL.
+ */
+function buildStreamProjectionSrc(blobUrl: string): string {
+  try {
+    const u = new URL(blobUrl);
+    u.searchParams.set("autoplay", "true");
+    u.searchParams.set("loop",     "true");
+    u.searchParams.set("muted",    "true");
+    u.searchParams.set("preload",  "true");
+    u.searchParams.set("responsive", "true");
+    return u.toString();
+  } catch {
+    return blobUrl;
+  }
+}
+
 function fmtTime(d: Date | string | null | undefined): string {
   if (!d) return "";
   const dt = typeof d === "string" ? new Date(d) : d;
@@ -248,13 +270,23 @@ export function ProjectionWall({ album, photos, onClose }: Props) {
             }}
           >
             {display.map((photo, i) => {
-              const isNewest = i === 0;
-              const isVideo  = photo.mimeType?.startsWith("video/");
+              const isNewest      = i === 0;
+              const isVideo       = photo.mimeType?.startsWith("video/") || !!photo.cfStreamVideoId;
+              const isStreamVideo = !!photo.cfStreamVideoId;
+              // For Bunny Stream videos the `blobUrl` is an iframe embed URL
+              // (https://iframe.mediadelivery.net/embed/<lib>/<id>?…), NOT a
+              // raw video file. Rendering it inside a <video src> just paints
+              // a blank tile. Switch its query params to autoplay+loop+muted
+              // and drop it into an <iframe> instead — same component the
+              // public VideoCard uses, but tuned for a TV projection.
+              const streamProjectionSrc = isStreamVideo
+                ? buildStreamProjectionSrc(photo.blobUrl)
+                : null;
 
               return (
                 <div
                   key={photo.id}
-                  className="relative overflow-hidden rounded-xl"
+                  className="relative overflow-hidden rounded-xl bg-black/40"
                   style={{
                     gridColumn: isNewest ? "span 2" : undefined,
                     gridRow:    isNewest ? "span 2" : undefined,
@@ -262,7 +294,15 @@ export function ProjectionWall({ album, photos, onClose }: Props) {
                   }}
                 >
                   {/* Media */}
-                  {isVideo ? (
+                  {isStreamVideo && streamProjectionSrc ? (
+                    <iframe
+                      src={streamProjectionSrc}
+                      className="absolute inset-0 w-full h-full"
+                      style={{ border: "none" }}
+                      allow="autoplay; encrypted-media; picture-in-picture"
+                      title={photo.caption ?? "Video"}
+                    />
+                  ) : isVideo ? (
                     <video
                       src={photo.blobUrl}
                       muted loop autoPlay playsInline
@@ -273,6 +313,14 @@ export function ProjectionWall({ album, photos, onClose }: Props) {
                       src={bunnyDisplayUrl(photo.thumbnailUrl ?? photo.blobUrl, isNewest ? 1200 : 600, 82)}
                       alt={photo.caption ?? ""}
                       className="absolute inset-0 w-full h-full object-cover"
+                      loading="eager"
+                      onError={(e) => {
+                        // Hide broken-image icon; leave the dark tile +
+                        // uploader strip so the wall stays visually intact.
+                        const t = e.currentTarget;
+                        t.onerror = null;
+                        t.style.display = "none";
+                      }}
                     />
                   )}
 
