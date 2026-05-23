@@ -616,6 +616,71 @@ export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activ
 
 // ─── Overview Tab ────────────────────────────────────────────────────────────
 
+// Renders a thumbnail tile for a photo OR a video. Videos used to render
+// as a plain <img src={blobUrl}> in the owner dashboard, which produced
+// a broken-image fallback because video blob URLs don't decode as images.
+// The public guest view handled videos correctly with <video>, so owners
+// were the only ones seeing missing videos.
+//
+//   - Photos: <img> with the Bunny thumbnailUrl (or blobUrl as fallback).
+//   - Videos with a thumbnailUrl: <img> on the still + play-icon overlay.
+//   - Videos without a thumbnailUrl: <video preload="metadata" muted
+//     playsInline> which renders the first frame as the poster, plus
+//     the same play-icon overlay so the owner knows it's playable.
+function MediaThumb({
+  photo,
+  heightClass,
+}: {
+  photo: Photo;
+  /** Tailwind height class — e.g. "h-40" for gallery grid, "h-28" for the
+   *  recent-uploads card. Wraps the image so videos and photos line up. */
+  heightClass: string;
+}) {
+  const isVideo = photo.mimeType?.startsWith("video/") ?? false;
+  const onError: React.ReactEventHandler<HTMLImageElement> = (e) => {
+    const t = e.currentTarget;
+    t.onerror = null;
+    t.style.objectFit = "none";
+    t.src =
+      "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 24 24' fill='none' stroke='%23d1d5db' stroke-width='1.5'%3E%3Crect x='2' y='7' width='20' height='14' rx='3'/%3E%3Ccircle cx='12' cy='14' r='3'/%3E%3Cpath d='M8 7V5a2 2 0 0 1 4 0v2'/%3E%3C/svg%3E";
+  };
+
+  // Prefer thumbnailUrl (Bunny generates one for both Storage and Stream
+  // videos). Fall back to the raw blobUrl only when there's no thumb.
+  const thumbSrc = photo.thumbnailUrl ?? photo.blobUrl;
+
+  return (
+    <div className={`relative w-full ${heightClass}`}>
+      {isVideo && !photo.thumbnailUrl ? (
+        <video
+          src={bunnyDisplayUrl(photo.blobUrl)}
+          preload="metadata"
+          muted
+          playsInline
+          className={`w-full ${heightClass} object-cover rounded-xl bg-gray-100 pointer-events-none`}
+        />
+      ) : (
+        <img
+          src={bunnyDisplayUrl(thumbSrc)}
+          alt={photo.caption ?? ""}
+          loading="lazy"
+          onError={onError}
+          className={`w-full ${heightClass} object-cover rounded-xl bg-gray-100`}
+        />
+      )}
+      {isVideo && (
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <span className="w-10 h-10 rounded-full bg-black/55 text-white flex items-center justify-center">
+            <svg className="w-5 h-5 translate-x-[1px]" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M8 5v14l11-7z" />
+            </svg>
+          </span>
+        </div>
+      )}
+    </div>
+  );
+}
+
 function OverviewTab({
   album,
   photos,
@@ -769,19 +834,7 @@ function OverviewTab({
           {last4.length > 0 ? (
             <div className="grid grid-cols-2 gap-2 flex-1">
               {last4.map((photo) => (
-                <img
-                  key={photo.id}
-                  src={bunnyDisplayUrl(photo.thumbnailUrl ?? photo.blobUrl)}
-                  alt={photo.caption ?? ""}
-                  className="w-full h-28 object-cover rounded-xl bg-gray-100"
-                  loading="lazy"
-                  onError={(e) => {
-                    const t = e.currentTarget;
-                    t.onerror = null;
-                    t.style.objectFit = "none";
-                    t.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 24 24' fill='none' stroke='%23d1d5db' stroke-width='1.5'%3E%3Crect x='2' y='7' width='20' height='14' rx='3'/%3E%3Ccircle cx='12' cy='14' r='3'/%3E%3Cpath d='M8 7V5a2 2 0 0 1 4 0v2'/%3E%3C/svg%3E";
-                  }}
-                />
+                <MediaThumb key={photo.id} photo={photo} heightClass="h-28" />
               ))}
             </div>
           ) : (
@@ -836,18 +889,7 @@ function GalleryTab({
                 onClick={() => setViewPhoto(photo)}
                 className="group relative bg-white border border-gray-100 rounded-xl overflow-hidden cursor-pointer"
               >
-                <img
-                  src={bunnyDisplayUrl(photo.thumbnailUrl ?? photo.blobUrl)}
-                  alt={photo.caption ?? ""}
-                  className="w-full h-40 object-cover bg-gray-100"
-                  loading="lazy"
-                  onError={(e) => {
-                    const t = e.currentTarget;
-                    t.onerror = null;
-                    t.style.objectFit = "none";
-                    t.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 24 24' fill='none' stroke='%23d1d5db' stroke-width='1.5'%3E%3Crect x='2' y='7' width='20' height='14' rx='3'/%3E%3Ccircle cx='12' cy='14' r='3'/%3E%3Cpath d='M8 7V5a2 2 0 0 1 4 0v2'/%3E%3C/svg%3E";
-                  }}
-                />
+                <MediaThumb photo={photo} heightClass="h-40" />
                 <div className="px-2 py-1.5">
                   <p className="text-xs text-gray-500 truncate">{photo.uploaderName ?? "Gost"}</p>
                 </div>
