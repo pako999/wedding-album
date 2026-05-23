@@ -10,6 +10,7 @@ import { GuestcamLogo } from "@/components/GuestcamLogo";
 import { bunnyDisplayUrl } from "@/lib/storage/bunny";
 import { ZipDownloader } from "@/components/dashboard/ZipDownloader";
 import { SaveToPhotosButton } from "@/components/dashboard/SaveToPhotosButton";
+import { CoverPhotoSettings } from "@/components/dashboard/CoverPhotoSettings";
 import { FilmStudio } from "@/components/dashboard/FilmStudio";
 import { ALBUM_THEMES } from "@/lib/album-themes";
 
@@ -609,7 +610,12 @@ export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activ
           {activeTab === "settings" && (
             <div className="max-w-lg space-y-6">
               <AccountInfoCard ownerEmail={ownerEmail ?? null} />
-              <AlbumSettingsForm album={album} />
+              <AlbumSettingsForm album={album}>
+                {/* Cover-photo picker injected into the settings form so it
+                    sits inside the same card chrome, between the password
+                    field and the theme picker. */}
+                <CoverPhotoSettings album={album} photos={photos} />
+              </AlbumSettingsForm>
               <MomentsManager album={album} />
               <CustomDomainPanel album={album} />
               <DangerZone album={album} />
