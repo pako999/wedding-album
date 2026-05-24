@@ -281,11 +281,21 @@ export async function getBunnyStreamVideo(
  */
 const RES_ORDER = ["1080p", "720p", "480p", "360p", "240p"];
 
+/** Normalise BUNNY_STREAM_CDN_URL — accept it with or without the
+ *  https:// prefix (people often paste just the hostname from the
+ *  Bunny dashboard) so `fetch()` doesn't throw "Failed to parse URL". */
+function normalizedStreamCdn(): string {
+  let cdn = streamCdnUrl().trim().replace(/\/+$/, "");
+  if (!cdn) return "";
+  if (!/^https?:\/\//i.test(cdn)) cdn = `https://${cdn}`;
+  return cdn;
+}
+
 export function pickBestMp4Url(
   videoId: string,
   availableResolutions: string,
 ): { url: string; res: string } | null {
-  const cdn = streamCdnUrl().replace(/\/+$/, "");
+  const cdn = normalizedStreamCdn();
   if (!cdn) return null;
   const present = new Set(
     availableResolutions.split(",").map((s) => s.trim()).filter(Boolean),

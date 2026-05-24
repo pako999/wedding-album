@@ -123,12 +123,28 @@ export async function GET(
         `[video-download] Bunny CDN ${upstream.status} for ${best.url} — body:`,
         body.slice(0, 200),
       );
+      // Tailored hint when the env var points at a Bunny *Storage*
+      // pull zone (frXXX, fri1, etc. — the photos CDN) instead of
+      // the Stream pull zone (vz-XXXXXXXX-XXX).
+      let hint =
+        "Most common cause: MP4 Fallback is OFF in the library settings " +
+        "(Bunny dashboard → Stream → Libraries → your library → toggle " +
+        "'Enable MP4 Fallback'). Existing videos may need a re-encode.";
+      try {
+        const host = new URL(best.url).hostname;
+        if (!host.startsWith("vz-")) {
+          hint =
+            `BUNNY_STREAM_CDN_URL appears to be set to "${host}" — that ` +
+            "looks like a Bunny Storage pull zone, not a Stream pull zone. " +
+            "Open Bunny dashboard → Stream → Libraries → your library → " +
+            "API → 'CDN Hostname' (starts with 'vz-…') and paste THAT into " +
+            "the BUNNY_STREAM_CDN_URL Vercel env var (e.g. " +
+            "https://vz-XXXXXXXX-XXX.b-cdn.net).";
+        }
+      } catch { /* URL parse failed — keep the default hint */ }
       return NextResponse.json(
         {
-          error: `Bunny CDN returned ${upstream.status} for ${best.res} MP4. ` +
-                 "Most common cause: MP4 Fallback is OFF in the library settings " +
-                 "(Bunny dashboard → Stream → Libraries → your library → toggle " +
-                 "'Enable MP4 Fallback'). Existing videos may need a re-encode.",
+          error: `Bunny CDN returned ${upstream.status} for ${best.res} MP4. ${hint}`,
           url: best.url,
           upstreamBody: body.slice(0, 200),
         },
