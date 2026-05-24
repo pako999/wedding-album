@@ -78,6 +78,30 @@ export const ADMIN_COOKIE_NAME = COOKIE_NAME;
 
 // ─── Public admin gate ──────────────────────────────────────────────────────
 
+/**
+ * Walk every email on the Clerk user (not just emailAddresses[0])
+ * and return the first one that matches the allowlist. Clerk doesn't
+ * guarantee [0] is the primary or verified address — users with two
+ * emails on their account were getting locked out of /admin because
+ * the [0] one wasn't allowlisted.
+ *
+ * Allowlist match is case-insensitive (mirrors the dashboard's
+ * ownership-fallback behaviour added yesterday).
+ */
+function pickAllowlistedEmail(
+  user: Awaited<ReturnType<typeof currentUser>>,
+): string | null {
+  if (!user) return null;
+  const allowed = new Set(adminEmails().map((e) => e.toLowerCase()));
+  const candidates = (user.emailAddresses ?? [])
+    .map((e) => e.emailAddress?.toLowerCase())
+    .filter((e): e is string => !!e);
+  for (const e of candidates) {
+    if (allowed.has(e)) return e;
+  }
+  return null;
+}
+
 /** Returns the current user's email if (and only if) they are an admin
  *  AND have passed the password second factor (when configured). */
 export async function requireAdmin(): Promise<{ email: string; clerkId: string } | null> {
@@ -88,9 +112,8 @@ export async function requireAdmin(): Promise<{ email: string; clerkId: string }
     return null;
   }
   if (!user) return null;
-  const email = user.emailAddresses?.[0]?.emailAddress?.toLowerCase();
+  const email = pickAllowlistedEmail(user);
   if (!email) return null;
-  if (!adminEmails().includes(email)) return null;
   if (!(await hasValidAdminCookie())) return null;
   return { email, clerkId: user.id };
 }
@@ -104,8 +127,7 @@ export async function requireAdminEmail(): Promise<{ email: string; clerkId: str
     return null;
   }
   if (!user) return null;
-  const email = user.emailAddresses?.[0]?.emailAddress?.toLowerCase();
+  const email = pickAllowlistedEmail(user);
   if (!email) return null;
-  if (!adminEmails().includes(email)) return null;
   return { email, clerkId: user.id };
 }
