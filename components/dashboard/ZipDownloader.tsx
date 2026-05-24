@@ -35,6 +35,12 @@ export function ZipDownloader({ albumSlug, className, children }: Props) {
   const [total, setTotal]       = useState(0);
   const [done, setDone]         = useState(0);
   const [errorMsg, setErrorMsg] = useState("");
+  // Server-side hint about videos the API couldn't include (typically
+  // Bunny Stream videos when BUNNY_STREAM_CDN_URL isn't set, or when
+  // MP4 Fallback is disabled in the Bunny library). Shown in a small
+  // amber banner under the "✓ Prenos končan" state so the user knows
+  // why a photos-only ZIP arrived.
+  const [skippedNote, setSkippedNote] = useState<string | null>(null);
 
   // Auto-return to idle so the button is clickable again. Without this,
   // the modern "showSaveFilePicker" branch leaves the button stuck on
@@ -47,6 +53,8 @@ export function ZipDownloader({ albumSlug, className, children }: Props) {
       setProgress(0);
       setDone(0);
       setTotal(0);
+      // Keep skippedNote visible until the user dismisses with another click,
+      // so they don't miss the hint about why videos weren't included.
     }, 3000);
     return () => clearTimeout(t);
   }, [phase]);
@@ -59,15 +67,27 @@ export function ZipDownloader({ albumSlug, className, children }: Props) {
     setProgress(0);
     setDone(0);
     setErrorMsg("");
+    setSkippedNote(null);
 
     try {
       // 1. Fetch the list of file URLs from the server (lightweight JSON)
       const listRes = await fetch(`/api/albums/${albumSlug}/download-urls`);
       if (!listRes.ok) throw new Error("Seznama datotek ni bilo mogoče naložiti");
-      const { files, slug } = await listRes.json() as {
+      const { files, slug, skipped } = await listRes.json() as {
         files: { name: string; url: string }[];
         slug: string;
+        skipped?: { count: number; reason: string }[];
       };
+      if (skipped && skipped.length > 0) {
+        const totalSkipped = skipped.reduce((s, x) => s + x.count, 0);
+        // Friendly translation — the raw server reason names env vars and
+        // would confuse non-technical owners.
+        setSkippedNote(
+          `${totalSkipped} videoposnetkov ni mogoče vključiti v ZIP. ` +
+          `V Bunny Stream knjižnici omogoči "MP4 Fallback" in nastavi ` +
+          `BUNNY_STREAM_CDN_URL v Vercel okolju.`,
+        );
+      }
 
       if (files.length === 0) {
         throw new Error("Galerija nima datotek za prenos");
@@ -180,9 +200,16 @@ export function ZipDownloader({ albumSlug, className, children }: Props) {
     // away if the user wants another copy, otherwise the useEffect
     // returns the button to its idle "Prenesi ZIP" state after 3 s.
     return (
-      <button onClick={startDownload} className={className} title="Klikni za ponoven prenos">
-        ✓ Prenos končan — klikni za nov prenos
-      </button>
+      <div className="flex flex-col gap-1.5 w-full">
+        <button onClick={startDownload} className={className} title="Klikni za ponoven prenos">
+          ✓ Prenos končan — klikni za nov prenos
+        </button>
+        {skippedNote && (
+          <p className="text-[11px] text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-2.5 py-1.5">
+            ⚠ {skippedNote}
+          </p>
+        )}
+      </div>
     );
   }
 
@@ -195,8 +222,15 @@ export function ZipDownloader({ albumSlug, className, children }: Props) {
   }
 
   return (
-    <button onClick={startDownload} className={className}>
-      {children ?? "⬇ Prenesi vse (ZIP)"}
-    </button>
+    <div className="flex flex-col gap-1.5 w-full">
+      <button onClick={startDownload} className={className}>
+        {children ?? "⬇ Prenesi vse (ZIP)"}
+      </button>
+      {skippedNote && (
+        <p className="text-[11px] text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-2.5 py-1.5">
+          ⚠ {skippedNote}
+        </p>
+      )}
+    </div>
   );
 }
