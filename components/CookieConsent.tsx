@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import type { LangCode } from "@/components/LanguageSwitcher";
 
 /**
- * Google Consent Mode v2 + GDPR cookie banner.
+ * Google Consent Mode v2 (Advanced) + GDPR cookie banner.
  *
  * Why this exists:
  * - Google Ads + Google Analytics require Consent Mode v2 for EEA
@@ -15,25 +15,28 @@ import type { LangCode } from "@/components/LanguageSwitcher";
  *   Visitors must be able to Accept, Reject, or customise their choice,
  *   and revisit their choice later.
  *
- * What we ship:
- * - A `gtag('consent', 'default', …)` call inlined as `beforeInteractive`
- *   so it runs BEFORE any Google tag could ever load. All non-necessary
- *   categories default to 'denied'. `security_storage` defaults to
- *   'granted' (strictly necessary by Google's classification).
- * - The banner reads/writes a versioned JSON consent record in
- *   localStorage. On subsequent visits the banner stays hidden but we
- *   re-issue the same `gtag('consent', 'update', …)` so any Google tag
- *   sees the saved choice immediately.
- * - Three primary actions: Accept all, Reject all, Customise (per-
- *   category toggles).
- * - A global `window.openCookieConsent()` so footer "Cookie settings"
- *   links can re-open the banner.
+ * Implementation maps 1:1 to the *Advanced* flow Google documents at
+ * https://developers.google.com/tag-platform/security/guides/consent?consentmode=advanced:
  *
- * What's NOT included here (deferred until you actually wire up GA/Ads):
- * - The Google Tag (gtag.js or GTM) script itself. Once you set up GA4
- *   or Google Ads, drop the tag in app/layout.tsx and it'll
- *   automatically pick up the consent signals from this component.
- * - IAB TCF — Guestcam isn't running an ad auction, so the simple
+ *   1. Defaults declared synchronously BEFORE any Google tag loads
+ *      (Next.js `beforeInteractive` script in <head>). Every storage
+ *      category starts `denied` except `security_storage`.
+ *   2. The SAME inline script then reads our localStorage record (if
+ *      the visitor already chose) and emits `gtag('consent','update')`
+ *      synchronously, so a returning user never has GA/Ads fire one
+ *      "denied" ping before our React useEffect runs. Solves the
+ *      slow-connection race where the React layer hadn't hydrated
+ *      yet when gtag.js sent its first hit.
+ *   3. `url_passthrough: true` so Google can carry conversion linkers
+ *      across redirects when ad_storage is denied (modeling-friendly).
+ *   4. `ads_data_redaction: true` so denied behavioural consent strips
+ *      identifiers from outgoing Ads pings (PII-safe).
+ *   5. `wait_for_update: 1000` ms — wider than Google's 500 ms example;
+ *      gives the inline localStorage read + any tag-manager-driven
+ *      update path enough headroom on 3G/4G mobile.
+ *
+ * What's NOT included here:
+ * - IAB TCF — Guestcam isn't running an ad auction, the lighter
  *   Google Consent Mode integration is enough.
  */
 
@@ -268,15 +271,21 @@ export function CookieConsent({ lang }: { lang: LangCode }) {
 
   return (
     <>
-      {/* Consent Mode v2 default — runs BEFORE any Google tag.
-          beforeInteractive guarantees this is in <head> before gtag.js
-          could load. wait_for_update=500ms lets the saved-choice
-          update arrive before Google sends pings. */}
+      {/* Consent Mode v2 Advanced bootstrap. Runs BEFORE any Google
+          tag — beforeInteractive places this in <head> so gtag.js can
+          never see the page without a `consent` state already on
+          dataLayer. The trailing localStorage read also emits the
+          saved-choice update SYNCHRONOUSLY so a returning user never
+          has a single "denied" ping fire before React hydrates. */}
       <Script id="consent-mode-default" strategy="beforeInteractive">
         {`
           window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}
           window.gtag = gtag;
+
+          // 1. Default-denied state. Wider wait_for_update (1000ms vs
+          //    Google's 500ms example) so the localStorage read below
+          //    + any GTM async update path has headroom on slow links.
           gtag('consent', 'default', {
             ad_storage: 'denied',
             ad_user_data: 'denied',
@@ -285,8 +294,38 @@ export function CookieConsent({ lang }: { lang: LangCode }) {
             functionality_storage: 'denied',
             personalization_storage: 'denied',
             security_storage: 'granted',
-            wait_for_update: 500
+            wait_for_update: 1000
           });
+
+          // 2. Advanced-mode flags. url_passthrough carries the
+          //    gclid/dclid linker across redirects when ad_storage is
+          //    denied (lets modeled conversions still attribute).
+          //    ads_data_redaction strips identifiers from Ads pings
+          //    once consent is denied, so we never leak PII to Google.
+          gtag('set', 'url_passthrough', true);
+          gtag('set', 'ads_data_redaction', true);
+
+          // 3. Synchronous saved-choice update. If the visitor has
+          //    been here before and the React layer hasn't hydrated
+          //    yet, emit the update here so the first gtag.js hit
+          //    already sees the right consent state.
+          try {
+            var raw = localStorage.getItem('${COOKIE_KEY}');
+            if (raw) {
+              var p = JSON.parse(raw);
+              if (p && p._v === 2) {
+                gtag('consent', 'update', {
+                  ad_storage:               p.ad_storage,
+                  ad_user_data:             p.ad_user_data,
+                  ad_personalization:       p.ad_personalization,
+                  analytics_storage:        p.analytics_storage,
+                  functionality_storage:    p.functionality_storage,
+                  personalization_storage:  p.personalization_storage,
+                  security_storage:         p.security_storage,
+                });
+              }
+            }
+          } catch (e) { /* localStorage blocked / corrupt JSON — keep defaults */ }
         `}
       </Script>
 
