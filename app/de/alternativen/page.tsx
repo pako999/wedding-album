@@ -4,6 +4,7 @@ import { ALTERNATIVES_HREFLANG, LanguageSwitcher } from "@/components/LanguageSw
 import { GuestcamLogo } from "@/components/GuestcamLogo";
 import { SeoFooter } from "@/components/SeoFooter";
 import { SiteHeader } from "@/components/SiteHeader";
+import { OG_IMAGE_URL, ogImage } from "@/lib/og";
 
 export const metadata: Metadata = {
   title: "Beste Apps zum Teilen von Hochzeitsfotos 2025 | Guestcam",
@@ -14,6 +15,13 @@ export const metadata: Metadata = {
     description:
       "Ehrlicher Vergleich der Lösungen für Hochzeitsfotos. Qualität, Datenschutz, Preis — alles auf einen Blick.",
     type: "article",
+    images: [ogImage("Beste Apps zum Teilen von Hochzeitsfotos")],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Beste Apps zum Teilen von Hochzeitsfotos 2025",
+    description: "Ehrlicher Vergleich der Lösungen für Hochzeitsfotos.",
+    images: [OG_IMAGE_URL],
   },
   alternates: {
     canonical: "https://guestcam.si/de/alternativen",

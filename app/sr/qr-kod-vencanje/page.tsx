@@ -4,6 +4,7 @@ import { GUIDE_HREFLANG, LanguageSwitcher } from "@/components/LanguageSwitcher"
 import { GuestcamLogo } from "@/components/GuestcamLogo";
 import { SeoFooter } from "@/components/SeoFooter";
 import { SiteHeader } from "@/components/SiteHeader";
+import { OG_IMAGE_URL, ogImage } from "@/lib/og";
 
 export const metadata: Metadata = {
   title: "QR kod za venčanje — Potpuni vodič 2025 | Guestcam",
@@ -14,6 +15,13 @@ export const metadata: Metadata = {
     description:
       "Sakupite sve fotografije gostiju jednim QR kodom. Bez aplikacije, u punom kvalitetu.",
     type: "article",
+    images: [ogImage("QR kod za venčanje — Potpuni vodič")],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "QR kod za venčanje — Potpuni vodič 2025",
+    description: "Sakupite sve fotografije gostiju jednim QR kodom.",
+    images: [OG_IMAGE_URL],
   },
   alternates: {
     canonical: "https://guestcam.si/sr/qr-kod-vencanje",

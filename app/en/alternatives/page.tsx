@@ -4,6 +4,7 @@ import { ALTERNATIVES_HREFLANG, LanguageSwitcher } from "@/components/LanguageSw
 import { GuestcamLogo } from "@/components/GuestcamLogo";
 import { SeoFooter } from "@/components/SeoFooter";
 import { SiteHeader } from "@/components/SiteHeader";
+import { OG_IMAGE_URL, ogImage } from "@/lib/og";
 
 export const metadata: Metadata = {
   title: "Best Wedding Photo Sharing App Alternatives 2025 | Guestcam",
@@ -14,6 +15,13 @@ export const metadata: Metadata = {
     description:
       "Honest comparison of wedding photo sharing solutions. See which app wins on quality, ease of use, privacy and price.",
     type: "article",
+    images: [ogImage("Best Wedding Photo Sharing App Alternatives")],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Best Wedding Photo Sharing App Alternatives 2025",
+    description: "Honest comparison of wedding photo sharing solutions.",
+    images: [OG_IMAGE_URL],
   },
   alternates: {
     canonical: "https://guestcam.si/en/alternatives",

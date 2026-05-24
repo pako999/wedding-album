@@ -4,6 +4,7 @@ import { GUIDE_HREFLANG, LanguageSwitcher } from "@/components/LanguageSwitcher"
 import { GuestcamLogo } from "@/components/GuestcamLogo";
 import { SeoFooter } from "@/components/SeoFooter";
 import { SiteHeader } from "@/components/SiteHeader";
+import { OG_IMAGE_URL, ogImage } from "@/lib/og";
 
 export const metadata: Metadata = {
   title: "Wedding Photo Sharing App — Complete Guide 2025 | Guestcam",
@@ -14,6 +15,13 @@ export const metadata: Metadata = {
     description:
       "Collect all your guests' photos with one QR code. No app needed, full resolution, private and secure.",
     type: "article",
+    images: [ogImage("Wedding Photo Sharing App — Complete Guide 2025")],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Wedding Photo Sharing App — Complete Guide 2025",
+    description: "Collect all your guests' photos with one QR code.",
+    images: [OG_IMAGE_URL],
   },
   alternates: {
     canonical: "https://guestcam.si/en/wedding-photo-sharing",

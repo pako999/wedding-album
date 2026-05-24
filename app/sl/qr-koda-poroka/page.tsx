@@ -4,6 +4,7 @@ import { GUIDE_HREFLANG, LanguageSwitcher } from "@/components/LanguageSwitcher"
 import { GuestcamLogo } from "@/components/GuestcamLogo";
 import { SeoFooter } from "@/components/SeoFooter";
 import { SiteHeader } from "@/components/SiteHeader";
+import { OG_IMAGE_URL, ogImage } from "@/lib/og";
 
 export const metadata: Metadata = {
   title: "QR koda za poroko — Popoln vodnik 2025 | Guestcam",
@@ -14,6 +15,13 @@ export const metadata: Metadata = {
     description:
       "Zberi vse fotografije gostov z eno samo QR kodo. Brez aplikacije, v polni kakovosti.",
     type: "article",
+    images: [ogImage("QR koda za poroko — Popoln vodnik 2025")],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "QR koda za poroko — Popoln vodnik 2025",
+    description: "Zberi vse fotografije gostov z eno samo QR kodo.",
+    images: [OG_IMAGE_URL],
   },
   alternates: {
     canonical: "https://guestcam.si/sl/qr-koda-poroka",
