@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { auth } from "@clerk/nextjs/server";
 import { LanguageSwitcher, HOME_HREFLANG, type LangCode } from "@/components/LanguageSwitcher";
 import { SeoFooter } from "@/components/SeoFooter";
 import { GuestcamLogo } from "@/components/GuestcamLogo";
@@ -501,8 +502,15 @@ const COPY: Record<Lang, Copy> = {
 };
 
 // ─── Component ───────────────────────────────────────────────────────────────
-export function LocalizedHomePage({ lang }: { lang: Lang }) {
+export async function LocalizedHomePage({ lang }: { lang: Lang }) {
   const t = COPY[lang];
+  // Hide the "create gallery" CTA for signed-in visitors — they already
+  // have galleries; Nadzorna plošča + avatar are their entry points.
+  let signedIn = false;
+  try {
+    const session = await auth();
+    signedIn = !!session.userId;
+  } catch { /* Clerk hiccup — render signed-out */ }
 
   const featuresIcons = [IconPhone, IconGlobe, IconLock, IconCamera, IconBolt, IconQR];
 
@@ -527,11 +535,13 @@ export function LocalizedHomePage({ lang }: { lang: Lang }) {
               Blog
             </Link>
             <HeaderAuthButtons lang={lang} />
-            <Link href="/dashboard/new" className="inline-flex items-center gap-1.5 px-4 sm:px-5 py-2 sm:py-2.5 rounded-full text-sm font-bold text-[#0F1729] transition-all duration-200 hover:scale-[1.03]"
-              style={{ background: "linear-gradient(135deg, #FFD966 0%, #FFC94D 55%, #F0B429 100%)", boxShadow: "0 6px 18px rgba(255,201,77,0.45)" }}>
-              {t.navCta}
-              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>
-            </Link>
+            {!signedIn && (
+              <Link href="/dashboard/new" className="inline-flex items-center gap-1.5 px-4 sm:px-5 py-2 sm:py-2.5 rounded-full text-sm font-bold text-[#0F1729] transition-all duration-200 hover:scale-[1.03]"
+                style={{ background: "linear-gradient(135deg, #FFD966 0%, #FFC94D 55%, #F0B429 100%)", boxShadow: "0 6px 18px rgba(255,201,77,0.45)" }}>
+                {t.navCta}
+                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>
+              </Link>
+            )}
           </div>
         </nav>
       </header>

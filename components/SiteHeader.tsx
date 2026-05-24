@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { auth } from "@clerk/nextjs/server";
 import { GuestcamLogo } from "@/components/GuestcamLogo";
 import {
   LanguageSwitcher,
@@ -36,7 +37,7 @@ const NAV_COPY: Record<LangCode, NavLinkSet> = {
  * which is right for legal pages. Guide / alternatives pages pass
  * GUIDE_HREFLANG / ALTERNATIVES_HREFLANG.
  */
-export function SiteHeader({
+export async function SiteHeader({
   lang,
   hreflang = HOME_HREFLANG,
   /** Path to link the logo to. Default: homepage for the given language. */
@@ -48,6 +49,13 @@ export function SiteHeader({
 }) {
   const copy = NAV_COPY[lang];
   const resolvedHome = homeHref ?? (lang === "sl" ? "/" : `/${lang}`);
+  // Hide the "Create gallery" CTA for signed-in visitors — repeated
+  // CTAs on every page are noise once they're already a customer.
+  let signedIn = false;
+  try {
+    const session = await auth();
+    signedIn = !!session.userId;
+  } catch { /* Clerk hiccup — render signed-out */ }
 
   return (
     <header className="sticky top-0 z-40 border-b border-[#FFC94D]/30 bg-white/85 backdrop-blur-md">
@@ -74,17 +82,19 @@ export function SiteHeader({
             {copy.blog}
           </Link>
           <HeaderAuthButtons lang={lang} />
-          <Link
-            href="/dashboard/new"
-            className="inline-flex items-center gap-1.5 px-4 sm:px-5 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-bold transition-all duration-200 hover:scale-[1.03]"
-            style={{
-              background: "linear-gradient(135deg, #FFD966 0%, #FFC94D 55%, #F0B429 100%)",
-              boxShadow: "0 6px 18px rgba(255,201,77,0.45)",
-              color: "#0F1729",
-            }}
-          >
-            {copy.cta} →
-          </Link>
+          {!signedIn && (
+            <Link
+              href="/dashboard/new"
+              className="inline-flex items-center gap-1.5 px-4 sm:px-5 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-bold transition-all duration-200 hover:scale-[1.03]"
+              style={{
+                background: "linear-gradient(135deg, #FFD966 0%, #FFC94D 55%, #F0B429 100%)",
+                boxShadow: "0 6px 18px rgba(255,201,77,0.45)",
+                color: "#0F1729",
+              }}
+            >
+              {copy.cta} →
+            </Link>
+          )}
         </div>
       </nav>
     </header>
