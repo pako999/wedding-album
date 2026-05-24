@@ -1,11 +1,19 @@
 import type { Metadata, Viewport } from "next";
 import { headers } from "next/headers";
 import { DM_Sans, Cormorant_Garamond } from "next/font/google";
+import Script from "next/script";
 import { ClerkProvider } from "@clerk/nextjs";
 import { clerkLocaleFor } from "@/lib/clerk-locales";
 import { CookieConsent } from "@/components/CookieConsent";
 import type { LangCode } from "@/components/LanguageSwitcher";
 import "./globals.css";
+
+/**
+ * Google Analytics 4 measurement ID. Hardcoded fallback for prod;
+ * overridable via NEXT_PUBLIC_GA_MEASUREMENT_ID if we ever spin up
+ * a separate property (staging, beta).
+ */
+const GA_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID ?? "G-NCHGTBTWPF";
 
 const SUPPORTED_LANGS: LangCode[] = ["sl", "hr", "sr", "de", "en", "es"];
 
@@ -120,6 +128,34 @@ export default async function RootLayout({
         <body className="font-sans antialiased bg-[#F2F4F8] text-[#0F1729] min-h-screen">
           {children}
           <CookieConsent lang={lang} />
+          {/*
+            Google Analytics 4. Loaded with `afterInteractive` so the
+            Consent Mode v2 default (declared `beforeInteractive` inside
+            CookieConsent) is already on the page when gtag.js loads —
+            otherwise GA would briefly send unconsented pings before our
+            denied-by-default state is applied.
+            CookieConsent.tsx fires `gtag('consent','update',…)` once
+            the user accepts the banner; analytics_storage='granted'
+            then unlocks the analytics_storage events GA queued.
+          */}
+          {GA_ID && (
+            <>
+              <Script
+                id="ga-loader"
+                src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
+                strategy="afterInteractive"
+              />
+              <Script id="ga-init" strategy="afterInteractive">
+                {`
+                  window.dataLayer = window.dataLayer || [];
+                  function gtag(){dataLayer.push(arguments);}
+                  window.gtag = gtag;
+                  gtag('js', new Date());
+                  gtag('config', '${GA_ID}', { anonymize_ip: true });
+                `}
+              </Script>
+            </>
+          )}
         </body>
       </html>
     </ClerkProvider>
