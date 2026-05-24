@@ -1,18 +1,28 @@
 import { NextRequest, NextResponse } from "next/server";
-import Stripe from "stripe";
 import { requireAdmin } from "@/lib/admin";
 
 export const dynamic = "force-dynamic";
 
 /**
  * Create a Stripe coupon + promotion code in one shot.
+ *
  * Body: { code: string, type: "percent" | "amount", amount: number,
  *         maxRedemptions: number | null, expiresInDays: number | null }
  *
- * Uses the official Stripe SDK (rather than raw HTTP) so parameter
- * names track whatever Stripe-Version the SDK pins. A previous raw
- * HTTP version hit "parameter_unknown: coupon" because the default
- * API version the account was on didn't accept the bare /v1 params.
+ * Implementation note — why raw REST instead of the Stripe SDK:
+ *
+ * The Stripe Node SDK at v22 wraps the coupon reference under a
+ * `promotion: { type: "coupon", coupon }` object on PromotionCode
+ * create — that shape only lands on the wire if the account's
+ * default API version is recent enough. Older accounts (most of
+ * ours pre-2025) reject it with `parameter_unknown: promotion`
+ * and the create silently fails from the admin UI.
+ *
+ * The documented stable form-encoded params (`coupon=<id>`) work on
+ * every Stripe account regardless of pinned API version. So we
+ * post them directly, leaving the SDK out of this hot path. We
+ * still surface Stripe's error message back to the admin so any
+ * future surprise is visible in the UI, not lost in a console.
  */
 export async function POST(req: NextRequest) {
   const admin = await requireAdmin();
@@ -32,45 +42,76 @@ export async function POST(req: NextRequest) {
     ? null
     : Number(body.expiresInDays);
 
-  if (code.length < 3) return NextResponse.json({ error: "Koda mora imeti vsaj 3 znake" }, { status: 400 });
+  // Stripe requires promotion-code strings to be 3..500 chars, alnum + `-`.
+  if (!/^[A-Z0-9-]{3,500}$/.test(code)) {
+    return NextResponse.json(
+      { error: "Koda mora imeti vsaj 3 znake (A–Z, 0–9, −)" },
+      { status: 400 },
+    );
+  }
   if (!Number.isFinite(amount) || amount <= 0) {
     return NextResponse.json({ error: "Neveljaven znesek" }, { status: 400 });
   }
-
-  const stripe = new Stripe(key);
-
-  // 1) Create the underlying coupon
-  let coupon: Stripe.Coupon;
-  try {
-    const couponParams: Stripe.CouponCreateParams = {
-      duration: "once",
-      name: code,
-      ...(type === "percent"
-        ? { percent_off: amount }
-        : { amount_off: Math.round(amount * 100), currency: "eur" }),
-    };
-    coupon = await stripe.coupons.create(couponParams);
-  } catch (err) {
-    const msg = err instanceof Error ? err.message : String(err);
-    return NextResponse.json({ error: `Stripe coupon: ${msg.slice(0, 200)}` }, { status: 502 });
+  if (type === "percent" && amount > 100) {
+    return NextResponse.json({ error: "Odstotek ne sme presegati 100" }, { status: 400 });
   }
 
-  // 2) Create the promotion code (the human-readable string customers type).
-  //    Newer Stripe SDK wraps the coupon reference under a `promotion`
-  //    object; the old top-level `coupon` shorthand is gone.
-  try {
-    const promoParams: Stripe.PromotionCodeCreateParams = {
-      promotion: { type: "coupon", coupon: coupon.id },
-      code,
-      ...(maxRedemptions ? { max_redemptions: maxRedemptions } : {}),
-      ...(expiresInDays
-        ? { expires_at: Math.floor((Date.now() + expiresInDays * 86_400_000) / 1000) }
-        : {}),
-    };
-    const promo = await stripe.promotionCodes.create(promoParams);
-    return NextResponse.json({ id: promo.id, code: promo.code });
-  } catch (err) {
-    const msg = err instanceof Error ? err.message : String(err);
-    return NextResponse.json({ error: `Stripe promotion code: ${msg.slice(0, 200)}` }, { status: 502 });
+  const headers = {
+    Authorization: `Bearer ${key}`,
+    "Content-Type": "application/x-www-form-urlencoded",
+  };
+
+  // ── 1) Coupon ─────────────────────────────────────────────────────────
+  const couponForm = new URLSearchParams();
+  couponForm.set("duration", "once");
+  couponForm.set("name", code);
+  if (type === "percent") {
+    couponForm.set("percent_off", String(amount));
+  } else {
+    couponForm.set("amount_off", String(Math.round(amount * 100)));
+    couponForm.set("currency", "eur");
   }
+
+  const couponRes = await fetch("https://api.stripe.com/v1/coupons", {
+    method: "POST",
+    headers,
+    body: couponForm.toString(),
+  });
+  const couponJson = await couponRes.json().catch(() => null);
+  if (!couponRes.ok || !couponJson?.id) {
+    const msg = couponJson?.error?.message ?? `HTTP ${couponRes.status}`;
+    console.error("[admin/discounts] coupon create failed:", couponJson);
+    return NextResponse.json({ error: `Stripe coupon: ${String(msg).slice(0, 200)}` }, { status: 502 });
+  }
+
+  // ── 2) Promotion code (customer-facing string) ────────────────────────
+  // Documented stable form: top-level `coupon` parameter. This is what
+  // every Stripe API version since 2019 accepts.
+  const promoForm = new URLSearchParams();
+  promoForm.set("coupon", couponJson.id);
+  promoForm.set("code", code);
+  if (maxRedemptions && maxRedemptions > 0) {
+    promoForm.set("max_redemptions", String(maxRedemptions));
+  }
+  if (expiresInDays && expiresInDays > 0) {
+    const exp = Math.floor((Date.now() + expiresInDays * 86_400_000) / 1000);
+    promoForm.set("expires_at", String(exp));
+  }
+
+  const promoRes = await fetch("https://api.stripe.com/v1/promotion_codes", {
+    method: "POST",
+    headers,
+    body: promoForm.toString(),
+  });
+  const promoJson = await promoRes.json().catch(() => null);
+  if (!promoRes.ok || !promoJson?.id) {
+    const msg = promoJson?.error?.message ?? `HTTP ${promoRes.status}`;
+    console.error("[admin/discounts] promo create failed:", promoJson);
+    return NextResponse.json(
+      { error: `Stripe promotion code: ${String(msg).slice(0, 200)}` },
+      { status: 502 },
+    );
+  }
+
+  return NextResponse.json({ id: promoJson.id, code: promoJson.code });
 }
