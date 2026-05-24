@@ -178,6 +178,10 @@ export default async function HomePage() {
           <div className="flex items-center gap-3 sm:gap-5">
             <LanguageSwitcher current="sl" languages={HOME_HREFLANG} ariaLabel="Spremeni jezik" />
             <HeaderAuthButtons lang="sl" />
+            {/* Hide the "create new gallery" CTA when the visitor is
+                already signed in — UserButton + Nadzorna plošča link
+                are the right entry points for an existing customer. */}
+            {!signedIn && (
             <Link
               href="/dashboard/new"
               className="group hidden sm:inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full text-sm font-bold text-white transition-all duration-200 hover:scale-[1.03]"
@@ -198,6 +202,7 @@ export default async function HomePage() {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
               </svg>
             </Link>
+            )}
             <HomeMobileMenu signedIn={signedIn} />
           </div>
         </nav>

@@ -117,21 +117,23 @@ export function HomeMobileMenu({ signedIn = false }: { signedIn?: boolean }) {
                   Prijava
                 </Link>
               )}
-              <Link
-                href="/dashboard/new"
-                onClick={() => setOpen(false)}
-                role="menuitem"
-                className="mt-1 inline-flex items-center justify-center gap-1.5 px-5 py-3 rounded-full text-sm font-bold text-[#0F1729]"
-                style={{
-                  background: "linear-gradient(135deg, #FFD966 0%, #FFC94D 55%, #F0B429 100%)",
-                  boxShadow: "0 6px 18px rgba(255,201,77,0.45)",
-                }}
-              >
-                Začni brezplačno
-                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                </svg>
-              </Link>
+              {!signedIn && (
+                <Link
+                  href="/dashboard/new"
+                  onClick={() => setOpen(false)}
+                  role="menuitem"
+                  className="mt-1 inline-flex items-center justify-center gap-1.5 px-5 py-3 rounded-full text-sm font-bold text-[#0F1729]"
+                  style={{
+                    background: "linear-gradient(135deg, #FFD966 0%, #FFC94D 55%, #F0B429 100%)",
+                    boxShadow: "0 6px 18px rgba(255,201,77,0.45)",
+                  }}
+                >
+                  Začni brezplačno
+                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                  </svg>
+                </Link>
+              )}
             </div>
           </div>
         </>

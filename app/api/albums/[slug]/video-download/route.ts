@@ -39,102 +39,139 @@ export async function GET(
   req: NextRequest,
   { params }: { params: Promise<{ slug: string }> },
 ) {
-  if (!isBunnyStreamConfigured()) {
+  // Belt-and-braces: every code path inside must return a JSON-bodied
+  // response so the ZIP downloader sees a real `error` field instead
+  // of an HTTP/2 empty statusText (which would just render as "500: ").
+  try {
+    if (!isBunnyStreamConfigured()) {
+      return NextResponse.json(
+        { error: "BUNNY_STREAM_API_KEY / BUNNY_STREAM_LIBRARY_ID not configured" },
+        { status: 503 },
+      );
+    }
+
+    const { slug } = await params;
+    const vid = req.nextUrl.searchParams.get("vid");
+    if (!vid) return NextResponse.json({ error: "Missing vid" }, { status: 400 });
+
+    // Auth — album owner or platform admin only. We don't want the proxy
+    // to be a free unauthenticated CDN egress for every guest.
+    const album = await db.query.albums.findFirst({ where: eq(albums.slug, slug) });
+    if (!album) return NextResponse.json({ error: "Not found" }, { status: 404 });
+    const owner = await checkAlbumOwnership(album);
+    if (!owner.ok) return NextResponse.json({ error: owner.error }, { status: owner.status });
+
+    // Confirm this videoId actually belongs to this album — otherwise an
+    // admin could be tricked into proxying any video in our Bunny library.
+    const photo = await db.query.photos.findFirst({
+      where: and(eq(photos.albumId, album.id), eq(photos.cfStreamVideoId, vid)),
+    });
+    if (!photo) {
+      return NextResponse.json({ error: "Video not in this album" }, { status: 404 });
+    }
+
+    // Find which MP4 resolutions Bunny actually transcoded.
+    const meta = await getBunnyStreamVideo(vid);
+    if (!meta) {
+      return NextResponse.json(
+        { error: "Bunny Stream metadata fetch failed (check BUNNY_STREAM_API_KEY)" },
+        { status: 502 },
+      );
+    }
+    if (meta.status !== 4) {
+      return NextResponse.json(
+        { error: `Video still processing (Bunny status ${meta.status})` },
+        { status: 425 },
+      );
+    }
+
+    const best = pickBestMp4Url(vid, meta.availableResolutions);
+    if (!best) {
+      return NextResponse.json(
+        {
+          error:
+            "No MP4 fallback URL available. Either BUNNY_STREAM_CDN_URL is unset " +
+            "or Bunny Stream library has no `mp4Fallback` resolutions (enable " +
+            "'MP4 Fallback' in the Bunny library settings; existing videos may " +
+            "need to be reprocessed).",
+          availableResolutions: meta.availableResolutions,
+        },
+        { status: 502 },
+      );
+    }
+
+    // Fetch the CDN MP4. Wrap separately so a fetch-level throw
+    // (DNS, TLS, ECONNRESET, etc.) still surfaces with a real reason.
+    let upstream: Response;
+    try {
+      const upstreamHeaders: Record<string, string> = {};
+      const range = req.headers.get("range");
+      if (range) upstreamHeaders.range = range;
+      upstream = await fetch(best.url, { headers: upstreamHeaders });
+    } catch (err) {
+      const detail = err instanceof Error ? err.message : String(err);
+      console.error(`[video-download] upstream fetch threw for ${best.url}:`, detail);
+      return NextResponse.json(
+        { error: `Bunny CDN fetch failed: ${detail.slice(0, 200)}`, url: best.url },
+        { status: 502 },
+      );
+    }
+
+    if (!upstream.ok && upstream.status !== 206) {
+      const body = await upstream.text().catch(() => "");
+      console.error(
+        `[video-download] Bunny CDN ${upstream.status} for ${best.url} — body:`,
+        body.slice(0, 200),
+      );
+      return NextResponse.json(
+        {
+          error: `Bunny CDN returned ${upstream.status} for ${best.res} MP4. ` +
+                 "Most common cause: MP4 Fallback is OFF in the library settings " +
+                 "(Bunny dashboard → Stream → Libraries → your library → toggle " +
+                 "'Enable MP4 Fallback'). Existing videos may need a re-encode.",
+          url: best.url,
+          upstreamBody: body.slice(0, 200),
+        },
+        { status: 502 },
+      );
+    }
+
+    if (!upstream.body) {
+      return NextResponse.json(
+        { error: "Bunny CDN returned 200 with no body", url: best.url },
+        { status: 502 },
+      );
+    }
+
+    // Filename — Content-Disposition so browsers + client-zip both pick it up.
+    const downloadName =
+      (photo.originalFilename ?? `video-${vid}`).replace(/\.[^.]+$/, "") + ".mp4";
+
+    const outHeaders = new Headers();
+    outHeaders.set("Content-Type", "video/mp4");
+    outHeaders.set(
+      "Content-Disposition",
+      `attachment; filename="${downloadName.replace(/[^\w.\-]+/g, "_")}"`,
+    );
+    const len = upstream.headers.get("content-length");
+    if (len) outHeaders.set("Content-Length", len);
+    const cr = upstream.headers.get("content-range");
+    if (cr) outHeaders.set("Content-Range", cr);
+    const ar = upstream.headers.get("accept-ranges");
+    if (ar) outHeaders.set("Accept-Ranges", ar);
+
+    return new Response(upstream.body, {
+      status: upstream.status,
+      headers: outHeaders,
+    });
+  } catch (err) {
+    // Catch-all so the client never sees a bare 500 with empty body.
+    // The Vercel runtime logs the stack via console.error.
+    const detail = err instanceof Error ? `${err.name}: ${err.message}` : String(err);
+    console.error("[video-download] unhandled error:", detail, err);
     return NextResponse.json(
-      { error: "BUNNY_STREAM_API_KEY / BUNNY_STREAM_LIBRARY_ID not configured" },
-      { status: 503 },
+      { error: `Video proxy crashed: ${detail.slice(0, 300)}` },
+      { status: 500 },
     );
   }
-
-  const { slug } = await params;
-  const vid = req.nextUrl.searchParams.get("vid");
-  if (!vid) return NextResponse.json({ error: "Missing vid" }, { status: 400 });
-
-  // Auth — album owner or platform admin only. We don't want the proxy
-  // to be a free unauthenticated CDN egress for every guest.
-  const album = await db.query.albums.findFirst({ where: eq(albums.slug, slug) });
-  if (!album) return NextResponse.json({ error: "Not found" }, { status: 404 });
-  const owner = await checkAlbumOwnership(album);
-  if (!owner.ok) return NextResponse.json({ error: owner.error }, { status: owner.status });
-
-  // Confirm this videoId actually belongs to this album — otherwise an
-  // admin could be tricked into proxying any video in our Bunny library.
-  const photo = await db.query.photos.findFirst({
-    where: and(eq(photos.albumId, album.id), eq(photos.cfStreamVideoId, vid)),
-  });
-  if (!photo) {
-    return NextResponse.json({ error: "Video not in this album" }, { status: 404 });
-  }
-
-  // Find which MP4 resolutions Bunny actually transcoded.
-  const meta = await getBunnyStreamVideo(vid);
-  if (!meta) {
-    return NextResponse.json(
-      { error: "Bunny Stream metadata fetch failed (check BUNNY_STREAM_API_KEY)" },
-      { status: 502 },
-    );
-  }
-  if (meta.status !== 4) {
-    return NextResponse.json(
-      { error: `Video still processing (Bunny status ${meta.status})` },
-      { status: 425 },
-    );
-  }
-
-  const best = pickBestMp4Url(vid, meta.availableResolutions);
-  if (!best) {
-    return NextResponse.json(
-      {
-        error:
-          "No MP4 fallback URL available. Either BUNNY_STREAM_CDN_URL is unset " +
-          "or Bunny Stream library has no `mp4Fallback` resolutions (enable " +
-          "'MP4 Fallback' in the Bunny library settings; existing videos may " +
-          "need to be reprocessed).",
-        availableResolutions: meta.availableResolutions,
-      },
-      { status: 502 },
-    );
-  }
-
-  // Stream the file back. We pass through the Range header so clients
-  // that resume downloads still work.
-  const upstreamHeaders: Record<string, string> = {};
-  const range = req.headers.get("range");
-  if (range) upstreamHeaders.range = range;
-
-  const upstream = await fetch(best.url, { headers: upstreamHeaders });
-  if (!upstream.ok && upstream.status !== 206) {
-    return NextResponse.json(
-      {
-        error: `Bunny CDN returned ${upstream.status} for ${best.res} MP4. ` +
-               "Most common cause: MP4 Fallback is OFF in the library settings " +
-               "(Bunny dashboard → Stream → Libraries → your library → toggle " +
-               "'Enable MP4 Fallback'). Existing videos may need a re-encode.",
-        url: best.url,
-      },
-      { status: 502 },
-    );
-  }
-
-  // Filename — Content-Disposition so browsers + client-zip both pick it up.
-  const downloadName =
-    (photo.originalFilename ?? `video-${vid}`).replace(/\.[^.]+$/, "") + ".mp4";
-
-  const outHeaders = new Headers();
-  outHeaders.set("Content-Type", "video/mp4");
-  outHeaders.set(
-    "Content-Disposition",
-    `attachment; filename="${downloadName.replace(/[^\w.\-]+/g, "_")}"`,
-  );
-  const len = upstream.headers.get("content-length");
-  if (len) outHeaders.set("Content-Length", len);
-  const cr = upstream.headers.get("content-range");
-  if (cr) outHeaders.set("Content-Range", cr);
-  const ar = upstream.headers.get("accept-ranges");
-  if (ar) outHeaders.set("Accept-Ranges", ar);
-
-  return new Response(upstream.body, {
-    status: upstream.status,
-    headers: outHeaders,
-  });
 }
