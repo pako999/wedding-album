@@ -235,6 +235,66 @@ export function bunnyStreamThumbnailUrl(videoId: string): string | undefined {
   return cdn ? `${cdn}/${videoId}/thumbnail.jpg` : undefined;
 }
 
+// ── Stream: video metadata + best-available MP4 picker ────────────────────────
+
+/**
+ * Subset of fields we care about from GET /library/<lib>/videos/<id>.
+ * `availableResolutions` is a CSV like "240p,360p,480p,720p" — only the
+ * resolutions Bunny actually transcoded. `length` is in seconds.
+ */
+export interface BunnyStreamVideoMeta {
+  guid: string;
+  status: number;                  // 4 = ready
+  availableResolutions: string;    // CSV
+  length: number;                  // seconds
+  mp4Fallback?: boolean;           // present on newer accounts
+}
+
+/** Fetch one Bunny Stream video's metadata. Returns null on any error. */
+export async function getBunnyStreamVideo(
+  videoId: string,
+): Promise<BunnyStreamVideoMeta | null> {
+  const libraryId = streamLibrary();
+  if (!libraryId || !streamApiKey()) return null;
+  try {
+    const res = await fetch(
+      `https://video.bunnycdn.com/library/${libraryId}/videos/${videoId}`,
+      { headers: { AccessKey: streamApiKey() }, cache: "no-store" },
+    );
+    if (!res.ok) return null;
+    return (await res.json()) as BunnyStreamVideoMeta;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Pick the highest-resolution MP4 the video has actually been transcoded
+ * to. Bunny only generates `play_<res>.mp4` files for resolutions listed
+ * in availableResolutions (and only if MP4 Fallback is on in the
+ * library), so blindly asking for 720p 404s on a low-res phone clip OR
+ * on libraries where MP4 Fallback is off.
+ *
+ * Returns the CDN URL when the configured BUNNY_STREAM_CDN_URL is set,
+ * or null when we can't safely build one (caller should fall back to
+ * the authenticated /api/.../video-download proxy in that case).
+ */
+const RES_ORDER = ["1080p", "720p", "480p", "360p", "240p"];
+
+export function pickBestMp4Url(
+  videoId: string,
+  availableResolutions: string,
+): { url: string; res: string } | null {
+  const cdn = streamCdnUrl().replace(/\/+$/, "");
+  if (!cdn) return null;
+  const present = new Set(
+    availableResolutions.split(",").map((s) => s.trim()).filter(Boolean),
+  );
+  const chosen = RES_ORDER.find((r) => present.has(r));
+  if (!chosen) return null;
+  return { url: `${cdn}/${videoId}/play_${chosen}.mp4`, res: chosen };
+}
+
 /**
  * Embed-player iframe URL for Bunny Stream.
  * Stored in `photos.blob_url` so the player works without knowing the library ID at render time.

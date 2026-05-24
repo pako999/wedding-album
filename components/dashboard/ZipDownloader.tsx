@@ -102,12 +102,38 @@ export function ZipDownloader({ albumSlug, className, children }: Props) {
       let localDone = 0;
       const total = files.length;
 
+      // Track per-file failures so we can surface a clear hint instead of
+      // just delivering a quietly-incomplete ZIP. The server-side proxy
+      // returns a JSON body explaining WHY a video can't be served (e.g.
+      // "MP4 Fallback off in Bunny library"), which we capture and show.
+      const failures: { name: string; status: number; detail: string }[] = [];
+
       async function* fileIterator() {
         for (const file of files) {
-          const res = await fetch(file.url);
+          let res: Response;
+          try {
+            res = await fetch(file.url);
+          } catch (e) {
+            localDone++;
+            failures.push({
+              name: file.name,
+              status: 0,
+              detail: e instanceof Error ? e.message : "network error",
+            });
+            setDone(localDone);
+            setProgress(Math.round((localDone / total) * 100));
+            continue;
+          }
           localDone++;
           if (!res.ok) {
-            // Skip failed files silently — count them in progress anyway
+            // Try to pull the proxy's JSON error so the user sees the
+            // real cause (and not "missing" with no explanation).
+            let detail = res.statusText;
+            try {
+              const body = await res.clone().json() as { error?: string };
+              if (body.error) detail = body.error;
+            } catch { /* not JSON */ }
+            failures.push({ name: file.name, status: res.status, detail });
             setDone(localDone);
             setProgress(Math.round((localDone / total) * 100));
             continue;
@@ -115,6 +141,22 @@ export function ZipDownloader({ albumSlug, className, children }: Props) {
           yield { name: file.name, input: res };
           setDone(localDone);
           setProgress(Math.round((localDone / total) * 100));
+        }
+
+        // After the loop, lift failures into the skipped banner. The
+        // closure captures `setSkippedNote` from the outer scope.
+        if (failures.length > 0) {
+          // Group duplicates (same status+detail) for readability.
+          const grouped = new Map<string, number>();
+          for (const f of failures) {
+            const key = `${f.status}: ${f.detail}`;
+            grouped.set(key, (grouped.get(key) ?? 0) + 1);
+          }
+          const lines = [...grouped.entries()].map(([k, n]) => `• ${n}× ${k}`);
+          setSkippedNote(
+            `${failures.length} datotek(e) ni bilo mogoče prenesti:\n` +
+            lines.join("\n"),
+          );
         }
       }
 
@@ -205,9 +247,9 @@ export function ZipDownloader({ albumSlug, className, children }: Props) {
           ✓ Prenos končan — klikni za nov prenos
         </button>
         {skippedNote && (
-          <p className="text-[11px] text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-2.5 py-1.5">
+          <pre className="text-[11px] text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-2.5 py-1.5 whitespace-pre-wrap font-sans">
             ⚠ {skippedNote}
-          </p>
+          </pre>
         )}
       </div>
     );
@@ -227,9 +269,9 @@ export function ZipDownloader({ albumSlug, className, children }: Props) {
         {children ?? "⬇ Prenesi vse (ZIP)"}
       </button>
       {skippedNote && (
-        <p className="text-[11px] text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-2.5 py-1.5">
+        <pre className="text-[11px] text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-2.5 py-1.5 whitespace-pre-wrap font-sans">
           ⚠ {skippedNote}
-        </p>
+        </pre>
       )}
     </div>
   );
