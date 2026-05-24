@@ -38,14 +38,21 @@ export default function robots(): MetadataRoute.Robots {
           "/dev/",
         ],
       },
-      // AI-training crawlers: keep them out of the album guest pages
+      // AI-training crawlers: keep them out of album guest pages
       // entirely. Different vendors honour different markers (GPTBot
       // ignores X-Robots-Tag in practice, robots.txt is its only signal).
-      // We still allow them on /blog and the SEO landings — that's the
-      // public content we WANT cited.
+      // We still allow them on /blog and the SEO landings — that's
+      // the public content we WANT cited.
+      //
+      // NB: deliberately EXCLUDED from this list are the social
+      // link-preview scrapers (FacebookBot / facebookexternalhit,
+      // Twitterbot, LinkedInBot, Slackbot, TelegramBot, WhatsApp,
+      // Discordbot, Applebot). Blocking those breaks OG link previews
+      // when someone shares guestcam.si on social — exactly the bug
+      // the user just reported.
       ...["GPTBot", "ChatGPT-User", "OAI-SearchBot", "ClaudeBot", "Claude-Web",
           "PerplexityBot", "Perplexity-User", "Google-Extended", "CCBot",
-          "anthropic-ai", "FacebookBot", "Bytespider", "PetalBot",
+          "anthropic-ai", "Bytespider", "PetalBot",
           "ImagesiftBot", "Diffbot", "Omgilibot", "Applebot-Extended"].map(
         (userAgent) => ({
           userAgent,
