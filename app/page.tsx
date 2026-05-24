@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
+import { auth } from "@clerk/nextjs/server";
 import { GuestcamLogo } from "@/components/GuestcamLogo";
 import { DemoButton } from "@/components/DemoButton";
 import { HomeMobileMenu } from "@/components/HomeMobileMenu";
 import { LanguageSwitcher, HOME_HREFLANG } from "@/components/LanguageSwitcher";
+import { HeaderAuthButtons } from "@/components/HeaderAuthButtons";
 
 export const metadata: Metadata = {
   alternates: { canonical: "https://guestcam.si" },
@@ -119,7 +121,15 @@ function QRPattern() {
   );
 }
 
-export default function HomePage() {
+export default async function HomePage() {
+  // Server-side auth check so the mobile menu doesn't flash "Prijava"
+  // while Clerk's client SDK is still booting. Desktop nav uses the
+  // server-async HeaderAuthButtons component for the same reason.
+  let signedIn = false;
+  try {
+    const session = await auth();
+    signedIn = !!session.userId;
+  } catch { /* Clerk hiccup — render as signed-out */ }
   return (
     <div className="min-h-screen bg-white text-[#0F1729] font-sans">
       <script
@@ -167,12 +177,7 @@ export default function HomePage() {
           </div>
           <div className="flex items-center gap-3 sm:gap-5">
             <LanguageSwitcher current="sl" languages={HOME_HREFLANG} ariaLabel="Spremeni jezik" />
-            <Link
-              href="/dashboard"
-              className="hidden sm:block text-sm font-medium text-gray-600 hover:text-[#0F1729] transition-colors"
-            >
-              Prijava
-            </Link>
+            <HeaderAuthButtons lang="sl" />
             <Link
               href="/dashboard/new"
               className="group hidden sm:inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full text-sm font-bold text-white transition-all duration-200 hover:scale-[1.03]"
@@ -193,7 +198,7 @@ export default function HomePage() {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
               </svg>
             </Link>
-            <HomeMobileMenu />
+            <HomeMobileMenu signedIn={signedIn} />
           </div>
         </nav>
       </header>
