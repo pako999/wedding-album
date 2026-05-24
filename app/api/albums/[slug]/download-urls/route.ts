@@ -56,6 +56,12 @@ export async function GET(
   // iterates sequentially and photos are typically smaller, so the ZIP starts
   // assembling fast and the user sees progress).
   const files: { name: string; url: string }[] = [];
+  // Surface why videos got skipped so the UI can show a clear hint instead
+  // of silently delivering a photos-only ZIP. The single most common cause
+  // (when the user has actual Bunny Stream videos in their album) is
+  // BUNNY_STREAM_CDN_URL not being set in Vercel.
+  const skipped: { count: number; reason: string }[] = [];
+  let streamSkipMissingCdn = 0;
 
   for (const photo of albumPhotos) {
     const isStreamVideo = !!photo.cfStreamVideoId;
@@ -75,6 +81,7 @@ export async function GET(
         extOverride = "mp4";
       } else {
         // No stream CDN configured — can't include this video.
+        streamSkipMissingCdn++;
         continue;
       }
     } else {
@@ -104,5 +111,17 @@ export async function GET(
     });
   }
 
-  return NextResponse.json({ files, albumName: album.coupleName, slug: album.slug });
+  if (streamSkipMissingCdn > 0) {
+    const reason = "BUNNY_STREAM_CDN_URL is not configured (Vercel env). Bunny Stream videos cannot be included in ZIP downloads.";
+    console.warn(`[download-urls] ${streamSkipMissingCdn} stream video(s) skipped — ${reason}`);
+    skipped.push({ count: streamSkipMissingCdn, reason });
+  }
+
+  return NextResponse.json({
+    files,
+    albumName: album.coupleName,
+    slug: album.slug,
+    // Empty array when nothing was skipped; client can show a banner when not empty.
+    skipped,
+  });
 }

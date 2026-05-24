@@ -41,11 +41,26 @@ const ALL_ACCEPTED = [...ACCEPTED_IMAGES, ...ACCEPTED_VIDEOS];
 const MAX_IMAGE_MB = 50;
 const MAX_VIDEO_MB = 500;
 
-// Vercel proxy hard-caps request bodies at 4.5 MB regardless of runtime config.
-// We compress any image above this before sending so uploads never hit 413.
-const COMPRESS_THRESHOLD_BYTES = 3.8 * 1024 * 1024; // 3.8 MB → target well under 4.5 MB
-const COMPRESS_MAX_PX = 3840;   // 4 K — more than enough for any screen
-const COMPRESS_QUALITY = 0.88;  // JPEG quality — visually lossless for photos
+// Vercel's serverless proxy hard-caps request bodies at 4.5 MB regardless of
+// runtime config, and the bunny-upload Node route is the bottleneck. We have
+// to keep the OUTPUT under ~4.2 MB (with a safety margin for HTTP overhead).
+//
+// Strategy:
+//   • Don't touch anything ≤ TARGET_OUTPUT_BYTES — already small enough.
+//   • Above that, resize to MAX_PX on the long edge and re-encode JPEG at
+//     QUALITY_HIGH (0.95). For most iPhone shots this lands at 2.5–4 MB —
+//     visually indistinguishable from the original.
+//   • If the high-quality re-encode is still over the cap (very high-megapixel
+//     phones, e.g. Samsung 200 MP), step down to QUALITY_FALLBACK (0.85)
+//     rather than 413ing the whole upload.
+//
+// 4096 px on the long edge is the max useful resolution for screen viewing
+// AND for printing up to ~13" wide at 300 dpi (standard photobook size).
+// Anything above that is invisible detail on every realistic output.
+const TARGET_OUTPUT_BYTES = 3.8 * 1024 * 1024; // 3.8 MB — well under the 4.5 MB Vercel cap
+const COMPRESS_MAX_PX     = 4096;              // 4 K (was 3840) — slightly higher ceiling
+const QUALITY_HIGH        = 0.95;              // visually indistinguishable (was 0.88)
+const QUALITY_FALLBACK    = 0.85;              // used only if HIGH still over cap
 
 /**
  * Resize + re-encode a large image using canvas before it's uploaded.
@@ -55,7 +70,7 @@ const COMPRESS_QUALITY = 0.88;  // JPEG quality — visually lossless for photos
  *  - the browser can't decode it (e.g. HEIC on non-Safari — caught and ignored)
  */
 async function maybeCompress(file: File): Promise<File> {
-  if (file.size <= COMPRESS_THRESHOLD_BYTES) return file;
+  if (file.size <= TARGET_OUTPUT_BYTES) return file;
   if (file.type.startsWith("video/") || file.type === "image/gif") return file;
 
   return new Promise<File>((resolve) => {
@@ -83,14 +98,35 @@ async function maybeCompress(file: File): Promise<File> {
       const ctx = canvas.getContext("2d")!;
       ctx.drawImage(img, 0, 0, width, height);
 
+      const toFile = (blob: Blob | null, q: number) => {
+        if (!blob) return null;
+        const name = file.name.replace(/\.[^.]+$/, "") + ".jpg";
+        const f = new File([blob], name, { type: "image/jpeg", lastModified: file.lastModified });
+        // Tag with the quality used — handy for debugging "why is this so big/small"
+        // via the browser dev tools without re-running the encode.
+        Object.defineProperty(f, "__compressQuality", { value: q, enumerable: false });
+        return f;
+      };
+
+      // Try high quality first. If it lands over the Vercel cap, re-encode at
+      // the fallback quality. Two passes is cheap on the same canvas.
       canvas.toBlob(
         (blob) => {
-          if (!blob) { resolve(file); return; } // fallback to original
-          const ext = file.name.replace(/\.[^.]+$/, "") + ".jpg";
-          resolve(new File([blob], ext, { type: "image/jpeg", lastModified: file.lastModified }));
+          const high = toFile(blob, QUALITY_HIGH);
+          if (!high) { resolve(file); return; }
+          if (high.size <= TARGET_OUTPUT_BYTES) { resolve(high); return; }
+
+          canvas.toBlob(
+            (b2) => {
+              const fb = toFile(b2, QUALITY_FALLBACK);
+              resolve(fb ?? high);
+            },
+            "image/jpeg",
+            QUALITY_FALLBACK,
+          );
         },
         "image/jpeg",
-        COMPRESS_QUALITY,
+        QUALITY_HIGH,
       );
     };
 
@@ -478,7 +514,7 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
       if (f.status === "done" || f.status === "skipped") continue;
 
       // Show "Optimizira…" if this image is large enough to need compression
-      const needsCompress = !f.isVideo && f.file.size > COMPRESS_THRESHOLD_BYTES;
+      const needsCompress = !f.isVideo && f.file.size > TARGET_OUTPUT_BYTES;
       if (needsCompress) updateFile(f.id, { status: "compressing", progress: 0 });
       else updateFile(f.id, { status: "uploading", progress: 5 });
 
