@@ -5,22 +5,24 @@ import {
   HOME_HREFLANG,
   type LangCode,
 } from "@/components/LanguageSwitcher";
+import { HeaderAuthButtons } from "@/components/HeaderAuthButtons";
 
 interface NavLinkSet {
   home: string;          // label for the "back to home" link
   blog: string;          // label for the blog link
-  login: string;         // label for "Sign in"
   cta: string;           // label for the primary "Create gallery" button
   switcherAria: string;  // a11y label for the language picker
 }
 
+// Login / Dashboard labels are owned by HeaderAuthButtons so we don't
+// have to maintain the same copy in two places.
 const NAV_COPY: Record<LangCode, NavLinkSet> = {
-  sl: { home: "Domov",   blog: "Blog", login: "Prijava",  cta: "Ustvari galerijo", switcherAria: "Spremeni jezik" },
-  hr: { home: "Početna", blog: "Blog", login: "Prijava",  cta: "Kreiraj galeriju", switcherAria: "Promijeni jezik" },
-  sr: { home: "Početna", blog: "Blog", login: "Prijava",  cta: "Napravi galeriju", switcherAria: "Promeni jezik" },
-  de: { home: "Start",   blog: "Blog", login: "Anmelden", cta: "Galerie erstellen", switcherAria: "Sprache wechseln" },
-  en: { home: "Home",    blog: "Blog", login: "Sign in",  cta: "Create gallery",   switcherAria: "Change language" },
-  es: { home: "Inicio",  blog: "Blog", login: "Iniciar sesión", cta: "Crear galería", switcherAria: "Cambiar idioma" },
+  sl: { home: "Domov",   blog: "Blog", cta: "Ustvari galerijo",  switcherAria: "Spremeni jezik" },
+  hr: { home: "Početna", blog: "Blog", cta: "Kreiraj galeriju",  switcherAria: "Promijeni jezik" },
+  sr: { home: "Početna", blog: "Blog", cta: "Napravi galeriju",  switcherAria: "Promeni jezik" },
+  de: { home: "Start",   blog: "Blog", cta: "Galerie erstellen", switcherAria: "Sprache wechseln" },
+  en: { home: "Home",    blog: "Blog", cta: "Create gallery",    switcherAria: "Change language" },
+  es: { home: "Inicio",  blog: "Blog", cta: "Crear galería",     switcherAria: "Cambiar idioma" },
 };
 
 /**
@@ -71,12 +73,7 @@ export function SiteHeader({
           >
             {copy.blog}
           </Link>
-          <Link
-            href="/dashboard"
-            className="hidden sm:inline text-sm font-medium text-gray-600 hover:text-[#0F1729] transition-colors"
-          >
-            {copy.login}
-          </Link>
+          <HeaderAuthButtons lang={lang} />
           <Link
             href="/dashboard/new"
             className="inline-flex items-center gap-1.5 px-4 sm:px-5 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-bold transition-all duration-200 hover:scale-[1.03]"

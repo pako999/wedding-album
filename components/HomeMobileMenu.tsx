@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { LanguageSwitcher, HOME_HREFLANG } from "./LanguageSwitcher";
+import { UserButton } from "@clerk/nextjs";
 
 const LINKS = [
   { href: "#how",       label: "Kako deluje" },
@@ -13,10 +14,16 @@ const LINKS = [
 
 /**
  * Hamburger menu for the homepage navbar — visible only below `md`.
- * Opens a backdrop + sheet that exposes section anchors and the Prijava
- * link, both of which are hidden in the desktop layout.
+ * Opens a backdrop + sheet that exposes section anchors and the
+ * Prijava / Nadzorna plošča link, both of which are hidden in the
+ * desktop layout.
+ *
+ * `signedIn` comes from the SERVER-rendered homepage (which calls
+ * Clerk's auth() during SSR) so the menu doesn't flash the "Prijava"
+ * link while Clerk's client SDK boots. UserButton itself is still a
+ * client component but can render directly here.
  */
-export function HomeMobileMenu() {
+export function HomeMobileMenu({ signedIn = false }: { signedIn?: boolean }) {
   const [open, setOpen] = useState(false);
 
   // Close on route change-ish behaviour: also close when Escape is pressed.
@@ -83,14 +90,33 @@ export function HomeMobileMenu() {
                 </a>
               ))}
               <div className="my-2 h-px bg-gray-100" />
-              <Link
-                href="/dashboard"
-                onClick={() => setOpen(false)}
-                role="menuitem"
-                className="px-3 py-3 rounded-lg text-base font-medium text-gray-600 hover:bg-gray-50 transition-colors"
-              >
-                Prijava
-              </Link>
+              {/* Auth-aware row — signed out: "Prijava"; signed in:
+                  "Nadzorna plošča" + avatar. The `signedIn` flag is
+                  resolved server-side so this never flashes the wrong
+                  state during Clerk hydration. */}
+              {signedIn ? (
+                <div className="px-3 py-2 flex items-center justify-between gap-3" role="menuitem">
+                  <Link
+                    href="/dashboard"
+                    onClick={() => setOpen(false)}
+                    className="text-base font-medium text-gray-700 hover:text-[#0F1729] transition-colors"
+                  >
+                    Nadzorna plošča
+                  </Link>
+                  <UserButton
+                    appearance={{ elements: { userButtonAvatarBox: { width: 30, height: 30 } } }}
+                  />
+                </div>
+              ) : (
+                <Link
+                  href="/sign-in"
+                  onClick={() => setOpen(false)}
+                  role="menuitem"
+                  className="px-3 py-3 rounded-lg text-base font-medium text-gray-600 hover:bg-gray-50 transition-colors"
+                >
+                  Prijava
+                </Link>
+              )}
               <Link
                 href="/dashboard/new"
                 onClick={() => setOpen(false)}
