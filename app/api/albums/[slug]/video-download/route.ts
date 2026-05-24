@@ -28,6 +28,7 @@ import {
   getBunnyStreamVideo,
   pickBestMp4Url,
   isBunnyStreamConfigured,
+  signBunnyStreamUrl,
 } from "@/lib/storage/bunny";
 import { checkAlbumOwnership } from "@/lib/album-ownership";
 
@@ -100,6 +101,13 @@ export async function GET(
       );
     }
 
+    // If Token Authentication is enabled on the Bunny Stream library
+    // (recommended for security), sign the URL so the CDN accepts the
+    // request. Falls through to the unsigned URL when the security
+    // key env var isn't set — the resulting 403 is then surfaced with
+    // a clear "set BUNNY_STREAM_SECURITY_KEY" hint below.
+    const fetchUrl = await signBunnyStreamUrl(best.url);
+
     // Fetch the CDN MP4. Wrap separately so a fetch-level throw
     // (DNS, TLS, ECONNRESET, etc.) still surfaces with a real reason.
     let upstream: Response;
@@ -107,7 +115,7 @@ export async function GET(
       const upstreamHeaders: Record<string, string> = {};
       const range = req.headers.get("range");
       if (range) upstreamHeaders.range = range;
-      upstream = await fetch(best.url, { headers: upstreamHeaders });
+      upstream = await fetch(fetchUrl, { headers: upstreamHeaders });
     } catch (err) {
       const detail = err instanceof Error ? err.message : String(err);
       console.error(`[video-download] upstream fetch threw for ${best.url}:`, detail);
@@ -123,9 +131,7 @@ export async function GET(
         `[video-download] Bunny CDN ${upstream.status} for ${best.url} — body:`,
         body.slice(0, 200),
       );
-      // Tailored hint when the env var points at a Bunny *Storage*
-      // pull zone (frXXX, fri1, etc. — the photos CDN) instead of
-      // the Stream pull zone (vz-XXXXXXXX-XXX).
+      // Status-specific hints — 403 vs 404 mean very different things.
       let hint =
         "Most common cause: MP4 Fallback is OFF in the library settings " +
         "(Bunny dashboard → Stream → Libraries → your library → toggle " +
@@ -140,6 +146,23 @@ export async function GET(
             "API → 'CDN Hostname' (starts with 'vz-…') and paste THAT into " +
             "the BUNNY_STREAM_CDN_URL Vercel env var (e.g. " +
             "https://vz-XXXXXXXX-XXX.b-cdn.net).";
+        } else if (upstream.status === 403) {
+          if (!process.env.BUNNY_STREAM_SECURITY_KEY) {
+            hint =
+              "Token Authentication is ON in the Bunny Stream library, but " +
+              "BUNNY_STREAM_SECURITY_KEY is not set in Vercel. Open Bunny " +
+              "dashboard → Stream → Libraries → your library → Security tab " +
+              "→ copy the 'Token authentication key' → paste it into a new " +
+              "Vercel env var named BUNNY_STREAM_SECURITY_KEY and redeploy.";
+          } else {
+            hint =
+              "Token Authentication is ON and signing IS happening, but the " +
+              "key didn't match. Re-copy the 'Token authentication key' from " +
+              "Bunny dashboard → Stream → Libraries → your library → Security " +
+              "tab into BUNNY_STREAM_SECURITY_KEY (no whitespace, no quotes). " +
+              "If you have Referrer / IP / Geo restrictions ON, the request " +
+              "is also coming from Vercel — relax those rules or disable them.";
+          }
         }
       } catch { /* URL parse failed — keep the default hint */ }
       return NextResponse.json(
