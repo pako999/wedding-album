@@ -31,6 +31,11 @@ interface Props {
   /** Logged-in user's primary email — shown in the Settings tab so the
    *  owner can confirm which account this album is attached to. */
   ownerEmail?: string | null;
+  /** True when a platform admin is opening someone else's album from
+   *  /admin/albums. Renders a persistent banner so the admin can never
+   *  forget they're viewing a customer's gallery and any destructive
+   *  action they take applies to that customer's data. */
+  viewingAsAdmin?: boolean;
 }
 
 // ─── Success Screen ───────────────────────────────────────────────────────────
@@ -204,7 +209,7 @@ function NewAlbumSuccess({ album, paidPlan }: { album: Album; paidPlan?: "basic"
 
 // ─── Main Panel ───────────────────────────────────────────────────────────────
 
-export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activeTab, isNew, isUpgraded, paidPlan, ownerEmail }: Props) {
+export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activeTab, isNew, isUpgraded, paidPlan, ownerEmail, viewingAsAdmin }: Props) {
   const router = useRouter();
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://guestcam.si";
   const albumUrl = `${appUrl}/${album.slug}`;
@@ -315,6 +320,32 @@ export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activ
 
   return (
     <div className="flex min-h-screen" style={{ background: "#f9fafb" }}>
+      {/* Admin impersonation banner — sticky strip at the very top so it
+         survives scroll. Only renders when an allowlisted platform admin
+         opens another user's album via /admin/albums. */}
+      {viewingAsAdmin && (
+        <div
+          className="fixed top-0 inset-x-0 z-[60] flex items-center justify-between gap-3 px-4 py-2 text-sm font-semibold text-white shadow-md"
+          style={{ background: "#0F1729" }}
+          role="status"
+          aria-live="polite"
+        >
+          <div className="flex items-center gap-2 min-w-0">
+            <span className="text-base leading-none">🛡️</span>
+            <span className="truncate">
+              Admin pogled — galerija lastnika{ownerEmail ? `: ${ownerEmail}` : ""}
+            </span>
+          </div>
+          <Link
+            href="/admin/albums"
+            className="shrink-0 inline-flex items-center gap-1 rounded-md bg-[#FFC94D] text-[#0F1729] px-2.5 py-1 text-xs font-bold hover:opacity-90"
+          >
+            ← Nazaj na admin
+          </Link>
+        </div>
+      )}
+      {viewingAsAdmin && <div aria-hidden="true" style={{ height: 36 }} />}
+
       {/* Backdrop — covers the page while the mobile drawer is open. */}
       {sidebarOpen && (
         <div

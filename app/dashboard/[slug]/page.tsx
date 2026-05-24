@@ -4,29 +4,7 @@ import { db } from "@/lib/db";
 import { albums, photos } from "@/lib/db/schema";
 import { eq, and, countDistinct } from "drizzle-orm";
 import { AlbumAdminPanel } from "@/components/dashboard/AlbumAdminPanel";
-
-/**
- * True if the signed-in user is the legitimate owner of the album.
- * Matches by Clerk userId OR by email (case-insensitive). The email
- * fallback handles:
- *   • WedFlow / cross-Clerk-instance albums where the stored ownerClerkId
- *     comes from a different Clerk environment
- *   • Cached ownerEmail typos / capitalisation drift
- *   • Users who recreated their Clerk account against the same email
- * Without this fallback the user gets a 404 on their own album.
- */
-function isAlbumOwner(
-  album: { ownerClerkId: string; ownerEmail: string | null },
-  userId: string,
-  userEmail: string | null,
-): boolean {
-  if (album.ownerClerkId === userId) return true;
-  if (userEmail && album.ownerEmail &&
-      album.ownerEmail.toLowerCase() === userEmail.toLowerCase()) {
-    return true;
-  }
-  return false;
-}
+import { requireAdmin } from "@/lib/admin";
 
 export const dynamic = "force-dynamic";
 
@@ -82,23 +60,47 @@ export default async function AlbumAdminPage({ params, searchParams }: Props) {
   let pendingCount = 0;
   let guestCount = 0;
 
-  // Fetch the current user's email up front so the ownership check can
-  // fall back to email matching (see isAlbumOwner). If Clerk hiccups,
-  // we keep it null and rely on the Clerk-userId match alone.
-  let viewerEmail: string | null = null;
+  // Fetch the current user's emails up front so the ownership check
+  // can fall back to email matching. We walk ALL verified addresses
+  // on the Clerk user — not just [0] — because Clerk doesn't
+  // guarantee that the first email is the primary or the sign-in one.
+  // The /admin gate (lib/admin.ts → pickAllowlistedEmail) and the
+  // shared mutation helper (lib/album-ownership.ts) both walk the
+  // full list; keep this in sync so the dashboard read path matches
+  // every mutation path.
+  let viewerEmails: string[] = [];
   try {
     const u = await currentUser();
-    viewerEmail = u?.emailAddresses?.[0]?.emailAddress ?? null;
+    viewerEmails = (u?.emailAddresses ?? [])
+      .map((e) => e.emailAddress?.toLowerCase())
+      .filter((e): e is string => !!e);
   } catch {
     // ignore — fall back to ID-only match
   }
+  const viewerEmail = viewerEmails[0] ?? null;
+  const isOwnerOfAlbum = (
+    a: { ownerClerkId: string; ownerEmail: string | null },
+  ): boolean => {
+    if (a.ownerClerkId === userId) return true;
+    if (!a.ownerEmail) return false;
+    const wanted = a.ownerEmail.toLowerCase();
+    return viewerEmails.some((e) => e === wanted);
+  };
+
+  // Platform-admin override: an allowlisted + password-cookie'd admin
+  // can open ANY album from /admin/albums → "Admin" button. Computed
+  // once so the same gate applies to a 404'd slug and any subsequent
+  // data fetches. Banner in AlbumAdminPanel keeps the admin aware
+  // they're not on their own gallery.
+  const platformAdmin = await requireAdmin();
+  const isPlatformAdmin = !!platformAdmin;
 
   try {
     album = await db.query.albums.findFirst({
       where: eq(albums.slug, slug),
     }) ?? null;
 
-    if (album && isAlbumOwner(album, userId, viewerEmail)) {
+    if (album && (isOwnerOfAlbum(album) || isPlatformAdmin)) {
       const status =
         tab === "pending"  ? "pending"  :
         tab === "rejected" ? "rejected" :
@@ -138,22 +140,19 @@ export default async function AlbumAdminPage({ params, searchParams }: Props) {
     );
   }
 
-  if (!album || !isAlbumOwner(album, userId, viewerEmail)) {
+  if (!album || (!isOwnerOfAlbum(album) && !isPlatformAdmin)) {
     notFound();
   }
 
-  // Surface the owner's Clerk email so the Settings tab can show
-  // "you are signed in as …" — already loaded above for the owner
-  // check; reuse it.
-  let ownerEmail: string | null = viewerEmail;
-  try {
-    if (!ownerEmail) {
-      const user = await currentUser();
-      ownerEmail = user?.emailAddresses?.[0]?.emailAddress ?? null;
-    }
-  } catch {
-    ownerEmail = null;
-  }
+  // Settings tab shows "you're signed in as …". When admin-impersonating
+  // we want it to show the ALBUM'S owner email (so the admin knows
+  // whose account they're touching), not the admin's own. Otherwise
+  // the viewer is the owner — their email is the right one to show.
+  const isOwner = isOwnerOfAlbum(album);
+  const viewingAsAdmin = isPlatformAdmin && !isOwner;
+  const ownerEmail: string | null = viewingAsAdmin
+    ? album.ownerEmail ?? null
+    : viewerEmail;
 
   return (
     <AlbumAdminPanel
@@ -166,6 +165,7 @@ export default async function AlbumAdminPage({ params, searchParams }: Props) {
       isUpgraded={isUpgraded}
       paidPlan={paidPlan}
       ownerEmail={ownerEmail}
+      viewingAsAdmin={viewingAsAdmin}
     />
   );
 }
