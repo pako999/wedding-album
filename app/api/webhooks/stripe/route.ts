@@ -3,6 +3,7 @@ import Stripe from "stripe";
 import { db } from "@/lib/db";
 import { albums } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
+import { htmlEscape, notifyTelegram } from "@/lib/telegram";
 
 export const dynamic = "force-dynamic";
 
@@ -53,6 +54,14 @@ export async function POST(req: NextRequest) {
         console.error("[stripe webhook] DB update failed:", err);
         return NextResponse.json({ error: "DB update failed" }, { status: 500 });
       }
+      // Ops ping. Stripe amounts are in cents.
+      const amount = ((session.amount_total ?? 0) / 100).toFixed(2);
+      const email = session.customer_details?.email ?? "(no email)";
+      await notifyTelegram(
+        `🎬 <b>Plačilo: Film Studio ${filmTier === "premium" ? "Premium" : "Pro"}</b>\n` +
+        `${htmlEscape(email)} · ${amount} €\n` +
+        `Album: <code>${htmlEscape(albumSlug)}</code>`,
+      );
       return NextResponse.json({ received: true });
     }
 
@@ -88,6 +97,20 @@ export async function POST(req: NextRequest) {
       console.error("[stripe webhook] DB update failed:", err);
       return NextResponse.json({ error: "DB update failed" }, { status: 500 });
     }
+
+    // Ops ping — fire AFTER the DB update succeeds so we don't notify
+    // about a payment that didn't actually apply.
+    const amount = ((session.amount_total ?? 0) / 100).toFixed(2);
+    const email = session.customer_details?.email ?? "(no email)";
+    const planLabel =
+      planId === "premium" ? "Premium" :
+      planId === "plus"    ? "Plus"    :
+      "Basic";
+    await notifyTelegram(
+      `💸 <b>Plačilo: ${planLabel}</b>\n` +
+      `${htmlEscape(email)} · ${amount} €\n` +
+      `Album: <code>${htmlEscape(albumSlug)}</code>`,
+    );
   }
 
   return NextResponse.json({ received: true });
