@@ -305,6 +305,57 @@ export function pickBestMp4Url(
   return { url: `${cdn}/${videoId}/play_${chosen}.mp4`, res: chosen };
 }
 
+// ── Stream: token-auth URL signing ───────────────────────────────────────────
+
+/**
+ * Sign a Bunny Stream CDN URL with the pull-zone token-authentication
+ * key so it's accepted when Token Authentication is ON in the library's
+ * Security settings.
+ *
+ * Bunny's "Standard URL token" scheme:
+ *   1. Compute SHA-256(securityKey + url_path + expires_unix).
+ *   2. Base64-encode (URL-safe: `+`→`-`, `/`→`_`, strip `=` padding).
+ *   3. Append `?token=<base64>&expires=<unix>` to the URL.
+ *
+ * `url_path` is the path component of the URL, including the leading
+ * slash, with any existing query string stripped. We sign on the
+ * SERVER (this function only runs in the Node.js runtime of the
+ * video-download proxy) so the security key never reaches the browser.
+ *
+ * Returns the original URL unchanged if BUNNY_STREAM_SECURITY_KEY is
+ * not set — the caller's request will then 403 with the existing
+ * "Token Authentication is enabled" hint, which is the right
+ * diagnostic for an operator who forgot to set the env var.
+ *
+ * @param expiresInSeconds  How long the signature should remain valid.
+ *                          Default 1h — long enough for a multi-GB
+ *                          ZIP download on a slow connection.
+ */
+export async function signBunnyStreamUrl(
+  url: string,
+  expiresInSeconds = 3600,
+): Promise<string> {
+  const securityKey = process.env.BUNNY_STREAM_SECURITY_KEY;
+  if (!securityKey) return url;
+
+  const u = new URL(url);
+  const path = u.pathname; // already begins with "/"
+  const expires = Math.floor(Date.now() / 1000) + expiresInSeconds;
+
+  // SHA-256(securityKey + path + expires) → URL-safe base64
+  const enc = new TextEncoder().encode(`${securityKey}${path}${expires}`);
+  const digest = await crypto.subtle.digest("SHA-256", enc);
+  const token = Buffer.from(digest)
+    .toString("base64")
+    .replace(/\+/g, "-")
+    .replace(/\//g, "_")
+    .replace(/=+$/, "");
+
+  u.searchParams.set("token", token);
+  u.searchParams.set("expires", String(expires));
+  return u.toString();
+}
+
 /**
  * Embed-player iframe URL for Bunny Stream.
  * Stored in `photos.blob_url` so the player works without knowing the library ID at render time.
