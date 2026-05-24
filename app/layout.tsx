@@ -76,15 +76,33 @@ export const metadata: Metadata = {
     type: "website",
     siteName: "Guestcam",
     locale: "sl_SI",
+    url: SITE_URL,
     title: "Guestcam — Zberite fotografije gostov z eno QR kodo",
     description:
       "Z eno QR kodo zberite vse fotografije in videe gostov v eni zasebni galeriji. Brez aplikacije, v polni kakovosti.",
+    // Social link-preview image. iMessage, WhatsApp, Slack, Facebook,
+    // LinkedIn and Telegram all read OG image tags; without an
+    // `images:` entry they render a text-only card (which is what
+    // the user's iMessage screenshot showed). Versioned filename
+    // (?v=) busts the Facebook/Twitter scrape cache when we update
+    // the image; without it, the old "no image" version sticks for
+    // weeks because crawlers cache aggressively.
+    images: [
+      {
+        url: "/og-image.png?v=2",
+        width: 910,
+        height: 1200,
+        alt: "Guestcam — Zberite fotografije gostov z eno QR kodo",
+        type: "image/png",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "Guestcam — Zberite fotografije gostov z eno QR kodo",
     description:
       "Z eno QR kodo zberite vse fotografije in videe gostov v eni zasebni galeriji.",
+    images: ["/og-image.png?v=2"],
   },
 };
 

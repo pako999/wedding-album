@@ -21,14 +21,26 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_GB",
     siteName: "Guestcam",
+    url: "https://guestcam.si/en",
     title: "Guestcam — Collect every guest photo with a single QR code",
     description:
       "Collect all your guests' photos and videos in one private gallery. No app, full quality.",
+    // See app/sr/page.tsx for the per-locale image rationale.
+    images: [
+      {
+        url: "https://guestcam.si/og-image.png?v=2",
+        width: 910,
+        height: 1200,
+        alt: "Guestcam — Collect every guest photo with a single QR code",
+        type: "image/png",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "Guestcam — Collect every guest photo with a single QR code",
     description: "Collect all your guests' photos and videos in one private gallery. No app, full quality — for weddings, birthdays and events.",
+    images: ["https://guestcam.si/og-image.png?v=2"],
   },
 };
 

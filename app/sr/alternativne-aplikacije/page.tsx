@@ -4,6 +4,7 @@ import { ALTERNATIVES_HREFLANG, LanguageSwitcher } from "@/components/LanguageSw
 import { GuestcamLogo } from "@/components/GuestcamLogo";
 import { SeoFooter } from "@/components/SeoFooter";
 import { SiteHeader } from "@/components/SiteHeader";
+import { OG_IMAGE_URL, ogImage } from "@/lib/og";
 
 export const metadata: Metadata = {
   title: "Najbolje aplikacije za deljenje fotografija sa venčanja 2025 | Guestcam",
@@ -14,6 +15,13 @@ export const metadata: Metadata = {
     description:
       "Iskreno poređenje rešenja za sakupljanje fotografija sa venčanja. Kvalitet, privatnost, cena — sve na jednom mestu.",
     type: "article",
+    images: [ogImage("Najbolje aplikacije za deljenje fotografija sa venčanja")],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Najbolje aplikacije za deljenje fotografija sa venčanja 2025",
+    description: "Iskreno poređenje rešenja za sakupljanje fotografija sa venčanja.",
+    images: [OG_IMAGE_URL],
   },
   alternates: {
     canonical: "https://guestcam.si/sr/alternativne-aplikacije",

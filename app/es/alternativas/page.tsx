@@ -4,6 +4,7 @@ import { ALTERNATIVES_HREFLANG, LanguageSwitcher } from "@/components/LanguageSw
 import { GuestcamLogo } from "@/components/GuestcamLogo";
 import { SeoFooter } from "@/components/SeoFooter";
 import { SiteHeader } from "@/components/SiteHeader";
+import { OG_IMAGE_URL, ogImage } from "@/lib/og";
 
 export const metadata: Metadata = {
   title: "Mejores Apps para Compartir Fotos de Boda 2025 | Guestcam",
@@ -14,6 +15,13 @@ export const metadata: Metadata = {
     description:
       "Comparativa honesta de soluciones para recopilar fotos de boda. Calidad, privacidad, precio — todo en un solo lugar.",
     type: "article",
+    images: [ogImage("Mejores Apps para Compartir Fotos de Boda")],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Mejores Apps para Compartir Fotos de Boda 2025",
+    description: "Comparativa honesta de soluciones para recopilar fotos de boda.",
+    images: [OG_IMAGE_URL],
   },
   alternates: {
     canonical: "https://guestcam.si/es/alternativas",

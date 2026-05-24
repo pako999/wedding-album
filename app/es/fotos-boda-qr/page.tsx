@@ -4,6 +4,7 @@ import { GUIDE_HREFLANG, LanguageSwitcher } from "@/components/LanguageSwitcher"
 import { GuestcamLogo } from "@/components/GuestcamLogo";
 import { SeoFooter } from "@/components/SeoFooter";
 import { SiteHeader } from "@/components/SiteHeader";
+import { OG_IMAGE_URL, ogImage } from "@/lib/og";
 
 export const metadata: Metadata = {
   title: "Fotos de Boda con QR — Guía Completa 2025 | Guestcam",
@@ -14,6 +15,13 @@ export const metadata: Metadata = {
     description:
       "Recopila todas las fotos de tus invitados con un solo código QR. Sin app, resolución completa, privado y seguro.",
     type: "article",
+    images: [ogImage("Fotos de Boda con QR — Guía Completa")],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Fotos de Boda con QR — Guía Completa 2025",
+    description: "Recopila todas las fotos de tus invitados con un código QR.",
+    images: [OG_IMAGE_URL],
   },
   alternates: {
     canonical: "https://guestcam.si/es/fotos-boda-qr",

@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { BlogIndexPage } from "@/components/BlogIndexPage";
 import { getAllPosts } from "@/lib/blog";
 import type { LangCode } from "@/components/LanguageSwitcher";
+import { OG_IMAGE_URL, ogImage } from "@/lib/og";
 
 // Per-request dynamic so the root layout's detectLang() can read the
 // middleware-supplied x-pathname header. Otherwise `force-static`
@@ -46,7 +47,19 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
         ALL_LANGS.map((l) => [l, l === "sl" ? "https://guestcam.si/blog" : `https://guestcam.si/${l}/blog`]),
       ),
     },
-    openGraph: { type: "website", locale: langCode, title: titles[langCode], description: descriptions[langCode] },
+    openGraph: {
+      type: "website",
+      locale: langCode,
+      title: titles[langCode],
+      description: descriptions[langCode],
+      images: [ogImage(titles[langCode])],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: titles[langCode],
+      description: descriptions[langCode],
+      images: [OG_IMAGE_URL],
+    },
     robots: { index: true, follow: true },
   };
 }

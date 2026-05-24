@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { BlogPostPage } from "@/components/BlogPostPage";
 import { getAllSlugs, getPost, getTranslationMap, blogUrl } from "@/lib/blog";
+import { OG_IMAGE_URL, ogImage } from "@/lib/og";
 
 // Per-request dynamic — see app/blog/page.tsx for the rationale.
 export const revalidate = 3600;
@@ -31,13 +32,17 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       publishedTime: post.publishedAt,
       modifiedTime: post.updatedAt,
       authors: [post.author],
-      images: post.coverImage ? [{ url: post.coverImage, alt: post.coverAlt ?? post.title }] : undefined,
+      // Per-post cover wins, otherwise the brand promo image keeps
+      // the share card on-brand instead of falling back to text-only.
+      images: post.coverImage
+        ? [{ url: post.coverImage, alt: post.coverAlt ?? post.title }]
+        : [ogImage(post.title)],
     },
     twitter: {
       card: "summary_large_image",
       title: post.title,
       description: post.description,
-      images: post.coverImage ? [post.coverImage] : undefined,
+      images: post.coverImage ? [post.coverImage] : [OG_IMAGE_URL],
     },
     robots: { index: true, follow: true },
   };

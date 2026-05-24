@@ -4,6 +4,7 @@ import { GUIDE_HREFLANG, LanguageSwitcher } from "@/components/LanguageSwitcher"
 import { GuestcamLogo } from "@/components/GuestcamLogo";
 import { SeoFooter } from "@/components/SeoFooter";
 import { SiteHeader } from "@/components/SiteHeader";
+import { OG_IMAGE_URL, ogImage } from "@/lib/og";
 
 export const metadata: Metadata = {
   title: "Hochzeitsfotos sammeln mit QR-Code — Vollständiger Leitfaden 2025 | Guestcam",
@@ -14,6 +15,13 @@ export const metadata: Metadata = {
     description:
       "Sammeln Sie alle Fotos Ihrer Gäste mit einem QR-Code. Keine App erforderlich, volle Auflösung, privat und sicher.",
     type: "article",
+    images: [ogImage("Hochzeitsfotos sammeln mit QR-Code")],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Hochzeitsfotos sammeln mit QR-Code — Leitfaden 2025",
+    description: "Sammeln Sie alle Fotos Ihrer Gäste mit einem QR-Code.",
+    images: [OG_IMAGE_URL],
   },
   alternates: {
     canonical: "https://guestcam.si/de/hochzeitsfotos-sammeln",
