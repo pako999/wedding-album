@@ -5,7 +5,7 @@
   "description": "Step by step — from picking the tool to downloading every photo after the wedding. No Google Photos drama, no lost files.",
   "translationKey": "private-wedding-gallery",
   "publishedAt": "2026-05-22",
-  "updatedAt": "2026-05-22",
+  "updatedAt": "2026-05-25",
   "author": "Guestcam Team",
   "category": "vodnik",
   "readingTime": 5,
@@ -30,6 +30,13 @@
         "One place — all photos in a single gallery, not 5 different chats.",
         "Persistent — gallery lives at least a few months, doesn't get lost in chat history."
       ]
+    },
+    {
+      "type": "image",
+      "src": "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=1200&h=720&fit=crop&q=82&auto=format",
+      "alt": "Wedding reception under fairy lights at golden hour",
+      "caption": "A private gallery preserves the atmosphere — no prying eyes.",
+      "credit": "Foto: Unsplash"
     },
     {
       "type": "h2",
@@ -64,6 +71,13 @@
           "Paid after the free plan (20 photos)."
         ]
       ]
+    },
+    {
+      "type": "image",
+      "src": "https://images.unsplash.com/photo-1606216794074-735e91aa2c92?w=1200&h=720&fit=crop&q=82&auto=format",
+      "alt": "QR code for a wedding gallery on an elegantly set table",
+      "caption": "One code per table — guests scan and share within seconds.",
+      "credit": "Foto: Unsplash"
     },
     {
       "type": "h2",

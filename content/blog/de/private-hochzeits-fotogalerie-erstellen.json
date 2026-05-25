@@ -5,7 +5,7 @@
   "description": "Schritt für Schritt — vom Tool-Auswahl bis zum Download aller Fotos nach der Hochzeit. Kein Google-Photos-Chaos, keine verlorenen Dateien.",
   "translationKey": "private-wedding-gallery",
   "publishedAt": "2026-05-22",
-  "updatedAt": "2026-05-22",
+  "updatedAt": "2026-05-25",
   "author": "Guestcam Team",
   "category": "vodnik",
   "readingTime": 5,
@@ -30,6 +30,13 @@
         "Gemeinsamer Ort — alle Fotos in einer Galerie, nicht in 5 verschiedenen Chats.",
         "Beständig — Galerie bleibt mindestens einige Monate, geht nicht im Chatverlauf verloren."
       ]
+    },
+    {
+      "type": "image",
+      "src": "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=1200&h=720&fit=crop&q=82&auto=format",
+      "alt": "Hochzeitsempfang unter Lichterketten in der goldenen Stunde",
+      "caption": "Eine private Galerie bewahrt die Stimmung — ohne fremde Blicke.",
+      "credit": "Foto: Unsplash"
     },
     {
       "type": "h2",
@@ -64,6 +71,13 @@
           "Nach dem kostenlosen Paket (20 Fotos) kostenpflichtig."
         ]
       ]
+    },
+    {
+      "type": "image",
+      "src": "https://images.unsplash.com/photo-1606216794074-735e91aa2c92?w=1200&h=720&fit=crop&q=82&auto=format",
+      "alt": "QR-Code für die Hochzeitsgalerie auf einem elegant gedeckten Tisch",
+      "caption": "Ein Code pro Tisch — Gäste scannen und teilen in Sekunden.",
+      "credit": "Foto: Unsplash"
     },
     {
       "type": "h2",

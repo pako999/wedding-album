@@ -23,7 +23,18 @@ export type BlogBlock =
   | { type: "stat"; value: string; label: string; source?: string }
   | { type: "faq"; q: string; a: string }
   | { type: "cta"; text: string; href: string }
-  | { type: "table"; headers: string[]; rows: string[][] };
+  | { type: "table"; headers: string[]; rows: string[][] }
+  /**
+   * In-content image. `src` is a full absolute URL (we use Unsplash
+   * stock keyed off the post's translationKey so all 6 language
+   * variants share imagery). `alt` is mandatory — drives accessibility
+   * AND Google Image search ranking, which is a meaningful long-tail
+   * traffic source for wedding-photo queries. `caption` is optional
+   * italic text shown under the image (good for crediting source or
+   * adding context); `credit` shows in small grey type at the
+   * bottom-right and is intended for photographer attribution.
+   */
+  | { type: "image"; src: string; alt: string; caption?: string; credit?: string };
 
 export interface BlogPost {
   slug: string;

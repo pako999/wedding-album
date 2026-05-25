@@ -5,7 +5,7 @@
   "description": "Gäste vergessen, weil es keinen einfachen Weg gibt. Ein QR-Code auf jedem Tisch beseitigt alle Hürden — Fotos kommen schon während des Events.",
   "translationKey": "guests-forget-to-share",
   "publishedAt": "2026-05-22",
-  "updatedAt": "2026-05-22",
+  "updatedAt": "2026-05-25",
   "author": "Guestcam Team",
   "category": "nasvet",
   "readingTime": 6,
@@ -25,6 +25,13 @@
       "text": "Die Party ist vorbei. Das Zimmer ist still. In Ihrem Handy haben Sie 80 Fotos, der Fotograf schickt seine in drei Wochen. Heute Abend waren aber 200 Handys im Raum und jedes hat einen anderen Winkel, einen anderen Moment, ein anderes Lachen eingefangen. Wo sind sie?"
     },
     {
+      "type": "image",
+      "src": "https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?w=1200&h=720&fit=crop&q=82&auto=format",
+      "alt": "Hochzeitsgäste am Tisch mit Smartphones in der Hand",
+      "caption": "Gäste fotografieren — aber 95 % der Aufnahmen bleiben auf ihren Smartphones.",
+      "credit": "Foto: Unsplash"
+    },
+    {
       "type": "h2",
       "text": "7 Gründe, warum Gäste keine Fotos teilen"
     },
@@ -39,6 +46,13 @@
         "Technik — ältere Gäste wissen nicht, wie Google Photos funktioniert.",
         "Keine Erinnerung — niemand fragt, also vergessen sie es."
       ]
+    },
+    {
+      "type": "image",
+      "src": "https://images.unsplash.com/photo-1525772764200-be829a350797?w=1200&h=720&fit=crop&q=82&auto=format",
+      "alt": "Ein ehrlicher Moment Lachen während des Hochzeitsempfangs",
+      "caption": "Die besten Aufnahmen sind immer ehrlich — und fast immer auf dem Smartphone eines Gastes.",
+      "credit": "Foto: Unsplash"
     },
     {
       "type": "h2",

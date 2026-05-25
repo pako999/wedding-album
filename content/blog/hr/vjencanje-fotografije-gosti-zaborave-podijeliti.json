@@ -5,7 +5,7 @@
   "description": "Gosti zaborave jer ne postoji jednostavan način. QR kod na svakom stolu uklanja sve prepreke — fotografije pristižu tijekom događaja.",
   "translationKey": "guests-forget-to-share",
   "publishedAt": "2026-05-22",
-  "updatedAt": "2026-05-22",
+  "updatedAt": "2026-05-25",
   "author": "Guestcam Team",
   "category": "nasvet",
   "readingTime": 6,
@@ -25,6 +25,13 @@
       "text": "Zabava je gotova. Soba je tiha. U svojem telefonu imate 80 fotografija, fotograf će ih poslati za tri tjedna. Ali večeras je u prostoriji bilo 200 mobitela i svaki je uhvatio drugačiji kut, drugačiji trenutak, drugačiji smijeh. Gdje su?"
     },
     {
+      "type": "image",
+      "src": "https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?w=1200&h=720&fit=crop&q=82&auto=format",
+      "alt": "Gosti za stolom na vjenčanju s mobitelima u rukama",
+      "caption": "Gosti fotografiraju — ali 95 % snimki ostane na njihovim mobitelima.",
+      "credit": "Foto: Unsplash"
+    },
+    {
       "type": "h2",
       "text": "7 razloga zašto gosti ne dijele fotografije"
     },
@@ -39,6 +46,13 @@
         "Tehnika — stariji gosti ne znaju učitavati u Google Photos.",
         "Nema podsjetnika — nitko ih ne pita, pa zaborave."
       ]
+    },
+    {
+      "type": "image",
+      "src": "https://images.unsplash.com/photo-1525772764200-be829a350797?w=1200&h=720&fit=crop&q=82&auto=format",
+      "alt": "Iskren trenutak smijeha tijekom vjenčane večere",
+      "caption": "Najbolji kadrovi su uvijek iskreni — i gotovo uvijek na mobitelu gosta.",
+      "credit": "Foto: Unsplash"
     },
     {
       "type": "h2",

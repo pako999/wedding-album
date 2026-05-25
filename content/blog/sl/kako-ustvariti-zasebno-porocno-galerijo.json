@@ -5,7 +5,7 @@
   "description": "Korak za korakom — od izbire orodja do prenosa vseh fotografij po poroki. Brez Google Photos drame, brez izgubljenih datotek.",
   "translationKey": "private-wedding-gallery",
   "publishedAt": "2026-05-22",
-  "updatedAt": "2026-05-22",
+  "updatedAt": "2026-05-25",
   "author": "Guestcam Team",
   "category": "vodnik",
   "readingTime": 5,
@@ -30,6 +30,13 @@
         "Skupno mesto — vse fotografije v eni galeriji, ne v 5 različnih klepetih.",
         "Trajna — galerija ostane vsaj nekaj mesecev, ne se izgubi v zgodovini sporočil."
       ]
+    },
+    {
+      "type": "image",
+      "src": "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=1200&h=720&fit=crop&q=82&auto=format",
+      "alt": "Poročna pojedina pod lučkami v zlati uri",
+      "caption": "Zasebna galerija ohrani vzdušje dogodka — brez tujih oči.",
+      "credit": "Foto: Unsplash"
     },
     {
       "type": "h2",
@@ -64,6 +71,13 @@
           "Po brezplačnem paketu (20 fotk) plačljivo."
         ]
       ]
+    },
+    {
+      "type": "image",
+      "src": "https://images.unsplash.com/photo-1606216794074-735e91aa2c92?w=1200&h=720&fit=crop&q=82&auto=format",
+      "alt": "QR koda za poročno galerijo na elegantni mizi",
+      "caption": "Ena koda na vsako mizo — gostje skenirajo in delijo v sekundah.",
+      "credit": "Foto: Unsplash"
     },
     {
       "type": "h2",

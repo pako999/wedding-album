@@ -5,7 +5,7 @@
   "description": "5 proverenih načina kako gosti dele fotografije sa vama. Bez aplikacija, bez izgubljenih uspomena.",
   "translationKey": "how-to-collect-wedding-photos",
   "publishedAt": "2026-05-22",
-  "updatedAt": "2026-05-22",
+  "updatedAt": "2026-05-25",
   "author": "Guestcam Team",
   "category": "vodnik",
   "readingTime": 7,
@@ -30,6 +30,13 @@
       "value": "340",
       "label": "prosečno fotografija po venčanju (Guestcam podaci 2025)",
       "source": "Guestcam interni podaci, 2025"
+    },
+    {
+      "type": "image",
+      "src": "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=1200&h=720&fit=crop&q=82&auto=format",
+      "alt": "Mladenci u zagrljaju na dan venčanja",
+      "caption": "Najlepši trenuci događaju se među gostima — Guestcam ih hvata sve.",
+      "credit": "Foto: Unsplash"
     },
     {
       "type": "h2",
@@ -79,6 +86,13 @@
           "Bez rizika"
         ]
       ]
+    },
+    {
+      "type": "image",
+      "src": "https://images.unsplash.com/photo-1531058020387-3be344556be6?w=1200&h=720&fit=crop&q=82&auto=format",
+      "alt": "Gošća fotografiše mladence telefonom",
+      "caption": "200 telefona, 200 uglova — sa jednim QR kodom završe u jednoj galeriji.",
+      "credit": "Foto: Unsplash"
     },
     {
       "type": "h2",

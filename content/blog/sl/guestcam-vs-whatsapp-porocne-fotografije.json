@@ -5,7 +5,7 @@
   "description": "WhatsApp stisne fotografije na 50% kakovosti in skupina postane kaotična. Guestcam ohrani polno kakovost v eni zasebni galeriji.",
   "translationKey": "guestcam-vs-whatsapp",
   "publishedAt": "2026-05-22",
-  "updatedAt": "2026-05-22",
+  "updatedAt": "2026-05-25",
   "author": "Guestcam Team",
   "category": "primerjava",
   "readingTime": 5,
@@ -24,6 +24,13 @@
     {
       "type": "p",
       "text": "Skoraj vse poroke imajo skupino »Poroka Ane in Marka«. Po dogodku se začne kaos: 200 fotografij brez konteksta, video posnetki, ki jih nihče ne odpre, in fotografije, stisnjene na nizko kakovost, ki jih ne moreš natisniti."
+    },
+    {
+      "type": "image",
+      "src": "https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?w=1200&h=720&fit=crop&q=82&auto=format",
+      "alt": "Pametni telefon z aplikacijo za sporočila na poročni mizi",
+      "caption": "WhatsApp stisne fotografije do 70 %. Guestcam ohrani polno kakovost.",
+      "credit": "Foto: Unsplash"
     },
     {
       "type": "h2",
@@ -73,6 +80,13 @@
           "Galerija ostane 30 dni do 1 leto"
         ]
       ]
+    },
+    {
+      "type": "image",
+      "src": "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=1200&h=720&fit=crop&q=82&auto=format",
+      "alt": "Skupinska fotografija svatov med poročno slovesnostjo",
+      "caption": "Ena galerija, vsi gostje, polna ločljivost — namesto razpršenih skupinskih klepetov.",
+      "credit": "Foto: Unsplash"
     },
     {
       "type": "h2",

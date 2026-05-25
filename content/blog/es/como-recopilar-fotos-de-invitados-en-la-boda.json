@@ -5,7 +5,7 @@
   "description": "5 métodos probados para que los invitados compartan sus fotos. Sin apps, sin recuerdos perdidos.",
   "translationKey": "how-to-collect-wedding-photos",
   "publishedAt": "2026-05-22",
-  "updatedAt": "2026-05-22",
+  "updatedAt": "2026-05-25",
   "author": "Guestcam Team",
   "category": "vodnik",
   "readingTime": 7,
@@ -30,6 +30,13 @@
       "value": "340",
       "label": "fotos por boda en promedio (datos de Guestcam 2025)",
       "source": "Datos internos de Guestcam, 2025"
+    },
+    {
+      "type": "image",
+      "src": "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=1200&h=720&fit=crop&q=82&auto=format",
+      "alt": "Pareja de novios abrazándose el día de su boda",
+      "caption": "Los momentos más preciados ocurren entre los invitados — Guestcam los captura todos.",
+      "credit": "Foto: Unsplash"
     },
     {
       "type": "h2",
@@ -79,6 +86,13 @@
           "Sin riesgo"
         ]
       ]
+    },
+    {
+      "type": "image",
+      "src": "https://images.unsplash.com/photo-1531058020387-3be344556be6?w=1200&h=720&fit=crop&q=82&auto=format",
+      "alt": "Invitada fotografía a los novios con su teléfono móvil",
+      "caption": "200 teléfonos, 200 ángulos — un solo código QR los reúne en una galería.",
+      "credit": "Foto: Unsplash"
     },
     {
       "type": "h2",

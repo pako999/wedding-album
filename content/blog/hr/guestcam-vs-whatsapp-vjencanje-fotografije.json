@@ -5,7 +5,7 @@
   "description": "WhatsApp komprimira fotografije na 50% kvalitete i grupa postaje kaotična. Guestcam zadržava punu kvalitetu u jednoj privatnoj galeriji.",
   "translationKey": "guestcam-vs-whatsapp",
   "publishedAt": "2026-05-22",
-  "updatedAt": "2026-05-22",
+  "updatedAt": "2026-05-25",
   "author": "Guestcam Team",
   "category": "primerjava",
   "readingTime": 5,
@@ -24,6 +24,13 @@
     {
       "type": "p",
       "text": "Gotovo sva vjenčanja imaju grupu »Vjenčanje Ane i Marka«. Nakon događaja počinje kaos: 200 fotografija bez konteksta, videozapisi koje nitko ne otvori, i fotografije komprimirane na nisku kvalitetu, koje se ne mogu otisnuti."
+    },
+    {
+      "type": "image",
+      "src": "https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?w=1200&h=720&fit=crop&q=82&auto=format",
+      "alt": "Pametni telefon s aplikacijom za poruke na svadbenom stolu",
+      "caption": "WhatsApp komprimira fotografije i do 70 %. Guestcam čuva punu kvalitetu.",
+      "credit": "Foto: Unsplash"
     },
     {
       "type": "h2",
@@ -73,6 +80,13 @@
           "Galerija traje 30 dana do 1 godine"
         ]
       ]
+    },
+    {
+      "type": "image",
+      "src": "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=1200&h=720&fit=crop&q=82&auto=format",
+      "alt": "Skupna fotografija svadbenih gostiju tijekom vjenčanja",
+      "caption": "Jedna galerija, svi gosti, puna rezolucija — umjesto razasutih grupnih chatova.",
+      "credit": "Foto: Unsplash"
     },
     {
       "type": "h2",

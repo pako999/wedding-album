@@ -5,7 +5,7 @@
   "description": "The complete photo checklist for 2026 weddings — from prep to party. What the photographer and QR code need to capture.",
   "translationKey": "wedding-photo-checklist-2026",
   "publishedAt": "2026-05-22",
-  "updatedAt": "2026-05-22",
+  "updatedAt": "2026-05-25",
   "author": "Guestcam Team",
   "category": "kontrolni-seznam",
   "readingTime": 6,
@@ -32,6 +32,13 @@
       ]
     },
     {
+      "type": "image",
+      "src": "https://images.unsplash.com/photo-1606216794074-735e91aa2c92?w=1200&h=720&fit=crop&q=82&auto=format",
+      "alt": "Wedding details: rings and the bride's bouquet",
+      "caption": "Details the photographer might miss — guests almost never do.",
+      "credit": "Foto: Unsplash"
+    },
+    {
       "type": "h2",
       "text": "During the ceremony: what shots do you need?"
     },
@@ -44,6 +51,13 @@
         "Signing at the registrar.",
         "Family group photos (plan the order)."
       ]
+    },
+    {
+      "type": "image",
+      "src": "https://images.unsplash.com/photo-1519741497674-611481863552?w=1200&h=720&fit=crop&q=82&auto=format",
+      "alt": "Wedding ceremony — bride and groom at the altar",
+      "caption": "Every key moment — from the vows to the first dance — belongs on the list.",
+      "credit": "Foto: Unsplash"
     },
     {
       "type": "h2",

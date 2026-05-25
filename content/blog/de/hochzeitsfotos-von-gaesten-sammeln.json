@@ -5,7 +5,7 @@
   "description": "5 bewährte Methoden, wie Ihre Gäste Fotos mit Ihnen teilen. Keine Apps, keine verlorenen Erinnerungen.",
   "translationKey": "how-to-collect-wedding-photos",
   "publishedAt": "2026-05-22",
-  "updatedAt": "2026-05-22",
+  "updatedAt": "2026-05-25",
   "author": "Guestcam Team",
   "category": "vodnik",
   "readingTime": 7,
@@ -30,6 +30,13 @@
       "value": "340",
       "label": "Fotos pro Hochzeit im Durchschnitt (Guestcam Daten 2025)",
       "source": "Guestcam interne Daten, 2025"
+    },
+    {
+      "type": "image",
+      "src": "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=1200&h=720&fit=crop&q=82&auto=format",
+      "alt": "Brautpaar in inniger Umarmung am Hochzeitstag",
+      "caption": "Die schönsten Momente passieren unter den Gästen — Guestcam fängt sie alle ein.",
+      "credit": "Foto: Unsplash"
     },
     {
       "type": "h2",
@@ -79,6 +86,13 @@
           "Kein Risiko"
         ]
       ]
+    },
+    {
+      "type": "image",
+      "src": "https://images.unsplash.com/photo-1531058020387-3be344556be6?w=1200&h=720&fit=crop&q=82&auto=format",
+      "alt": "Gast fotografiert das Brautpaar mit dem Smartphone",
+      "caption": "200 Smartphones, 200 Perspektiven — mit einem QR-Code in einer Galerie vereint.",
+      "credit": "Foto: Unsplash"
     },
     {
       "type": "h2",

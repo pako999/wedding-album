@@ -5,7 +5,7 @@
   "description": "WhatsApp komprimiert Fotos auf 50% Qualität und die Gruppe wird chaotisch. Guestcam behält die volle Qualität in einer privaten Galerie.",
   "translationKey": "guestcam-vs-whatsapp",
   "publishedAt": "2026-05-22",
-  "updatedAt": "2026-05-22",
+  "updatedAt": "2026-05-25",
   "author": "Guestcam Team",
   "category": "primerjava",
   "readingTime": 5,
@@ -24,6 +24,13 @@
     {
       "type": "p",
       "text": "Fast jede Hochzeit hat eine Gruppe »Hochzeit Ana und Marko«. Nach dem Tag beginnt das Chaos: 200 Fotos ohne Kontext, Videos, die keiner öffnet, und Fotos in geringer Qualität, die nicht druckbar sind."
+    },
+    {
+      "type": "image",
+      "src": "https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?w=1200&h=720&fit=crop&q=82&auto=format",
+      "alt": "Smartphone mit Messaging-App auf einem Hochzeitstisch",
+      "caption": "WhatsApp komprimiert Fotos um bis zu 70 %. Guestcam bewahrt die volle Qualität.",
+      "credit": "Foto: Unsplash"
     },
     {
       "type": "h2",
@@ -73,6 +80,13 @@
           "Galerie 30 Tage bis 1 Jahr verfügbar"
         ]
       ]
+    },
+    {
+      "type": "image",
+      "src": "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=1200&h=720&fit=crop&q=82&auto=format",
+      "alt": "Gruppenfoto der Hochzeitsgäste während der Feier",
+      "caption": "Eine Galerie, alle Gäste, volle Auflösung — statt verstreuter Gruppenchats.",
+      "credit": "Foto: Unsplash"
     },
     {
       "type": "h2",

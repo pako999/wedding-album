@@ -5,7 +5,7 @@
   "description": "Popoln kontrolni seznam fotografij za poroko 2026 — od priprav do zabave. Kaj fotograf in QR koda morata ujeti.",
   "translationKey": "wedding-photo-checklist-2026",
   "publishedAt": "2026-05-22",
-  "updatedAt": "2026-05-22",
+  "updatedAt": "2026-05-25",
   "author": "Guestcam Team",
   "category": "kontrolni-seznam",
   "readingTime": 6,
@@ -32,6 +32,13 @@
       ]
     },
     {
+      "type": "image",
+      "src": "https://images.unsplash.com/photo-1606216794074-735e91aa2c92?w=1200&h=720&fit=crop&q=82&auto=format",
+      "alt": "Detajli poroke: prstana in šopek nevest",
+      "caption": "Detajli, ki jih fotograf morda spregleda — gostje pa skoraj nikoli.",
+      "credit": "Foto: Unsplash"
+    },
+    {
       "type": "h2",
       "text": "Med ceremonijo: katere posnetke morate imeti?"
     },
@@ -44,6 +51,13 @@
         "Podpis pri matičarju.",
         "Skupinske fotografije z družino (organizirajte zaporedje)."
       ]
+    },
+    {
+      "type": "image",
+      "src": "https://images.unsplash.com/photo-1519741497674-611481863552?w=1200&h=720&fit=crop&q=82&auto=format",
+      "alt": "Poročna slovesnost — nevesta in ženin pred oltarjem",
+      "caption": "Vsak ključni trenutek — od »da« do prvega plesa — naj bo na seznamu.",
+      "credit": "Foto: Unsplash"
     },
     {
       "type": "h2",
