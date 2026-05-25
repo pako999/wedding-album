@@ -5,7 +5,7 @@
   "description": "Korak po korak — od izbora alata do preuzimanja svih fotografija posle venčanja. Bez Google Photos drame, bez izgubljenih datoteka.",
   "translationKey": "private-wedding-gallery",
   "publishedAt": "2026-05-22",
-  "updatedAt": "2026-05-22",
+  "updatedAt": "2026-05-25",
   "author": "Guestcam Team",
   "category": "vodnik",
   "readingTime": 5,
@@ -30,6 +30,13 @@
         "Zajedničko mesto — sve fotografije u jednoj galeriji, a ne u 5 različitih četova.",
         "Trajna — galerija ostaje bar nekoliko meseci, ne gubi se u istoriji poruka."
       ]
+    },
+    {
+      "type": "image",
+      "src": "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=1200&h=720&fit=crop&q=82&auto=format",
+      "alt": "Venčana večera pod svetlima u zlatnom času",
+      "caption": "Privatna galerija čuva atmosferu događaja — bez stranih očiju.",
+      "credit": "Foto: Unsplash"
     },
     {
       "type": "h2",
@@ -64,6 +71,13 @@
           "Posle besplatnog paketa (20 fotki) plaćanje."
         ]
       ]
+    },
+    {
+      "type": "image",
+      "src": "https://images.unsplash.com/photo-1606216794074-735e91aa2c92?w=1200&h=720&fit=crop&q=82&auto=format",
+      "alt": "QR kod za galeriju venčanja na elegantnom stolu",
+      "caption": "Jedan kod na svakom stolu — gosti skeniraju i dele u sekundi.",
+      "credit": "Foto: Unsplash"
     },
     {
       "type": "h2",

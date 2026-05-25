@@ -122,6 +122,39 @@ function RenderBlock({ block }: { block: BlogBlock }) {
           </Link>
         </div>
       );
+    case "image":
+      // Inline image block. `loading="lazy"` so images below the fold
+      // don't block initial paint; `decoding="async"` lets the browser
+      // skip them off the critical thread. The alt text is what
+      // Google Image search indexes — we never ship a blog image
+      // without one (schema requires it). Caption + credit are
+      // optional and only render when present.
+      return (
+        <figure className="my-7">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={block.src}
+            alt={block.alt}
+            loading="lazy"
+            decoding="async"
+            className="w-full h-auto rounded-2xl shadow-sm border border-gray-100"
+          />
+          {(block.caption || block.credit) && (
+            <figcaption className="flex items-baseline justify-between gap-3 mt-2">
+              {block.caption && (
+                <span className="text-xs italic text-gray-500 leading-relaxed">
+                  {block.caption}
+                </span>
+              )}
+              {block.credit && (
+                <span className="text-[10px] text-gray-400 shrink-0 ml-auto">
+                  {block.credit}
+                </span>
+              )}
+            </figcaption>
+          )}
+        </figure>
+      );
     case "faq":
       // FAQ is rendered at the end in its own section — skip inline
       return null;

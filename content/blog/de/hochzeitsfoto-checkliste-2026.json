@@ -5,7 +5,7 @@
   "description": "Vollständige Foto-Checkliste für Hochzeiten 2026 — von der Vorbereitung bis zur Party. Was Fotograf und QR-Code einfangen müssen.",
   "translationKey": "wedding-photo-checklist-2026",
   "publishedAt": "2026-05-22",
-  "updatedAt": "2026-05-22",
+  "updatedAt": "2026-05-25",
   "author": "Guestcam Team",
   "category": "kontrolni-seznam",
   "readingTime": 6,
@@ -32,6 +32,13 @@
       ]
     },
     {
+      "type": "image",
+      "src": "https://images.unsplash.com/photo-1606216794074-735e91aa2c92?w=1200&h=720&fit=crop&q=82&auto=format",
+      "alt": "Hochzeitsdetails: Eheringe und Brautstrauß",
+      "caption": "Details, die der Fotograf vielleicht übersieht — Gäste fast nie.",
+      "credit": "Foto: Unsplash"
+    },
+    {
       "type": "h2",
       "text": "Während der Zeremonie: welche Aufnahmen brauchen Sie?"
     },
@@ -44,6 +51,13 @@
         "Unterschrift beim Standesbeamten.",
         "Gruppenfotos mit der Familie (Reihenfolge organisieren)."
       ]
+    },
+    {
+      "type": "image",
+      "src": "https://images.unsplash.com/photo-1519741497674-611481863552?w=1200&h=720&fit=crop&q=82&auto=format",
+      "alt": "Trauzeremonie — Braut und Bräutigam vor dem Altar",
+      "caption": "Jeder Schlüsselmoment — vom Ja-Wort bis zum ersten Tanz — gehört auf die Liste.",
+      "credit": "Foto: Unsplash"
     },
     {
       "type": "h2",

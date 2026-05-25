@@ -5,7 +5,7 @@
   "description": "5 proven ways to get your guests' photos. No apps, no lost memories.",
   "translationKey": "how-to-collect-wedding-photos",
   "publishedAt": "2026-05-22",
-  "updatedAt": "2026-05-22",
+  "updatedAt": "2026-05-25",
   "author": "Guestcam Team",
   "category": "vodnik",
   "readingTime": 7,
@@ -30,6 +30,13 @@
       "value": "340",
       "label": "average photos per wedding (Guestcam data 2025)",
       "source": "Guestcam internal data, 2025"
+    },
+    {
+      "type": "image",
+      "src": "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=1200&h=720&fit=crop&q=82&auto=format",
+      "alt": "Bride and groom embracing on their wedding day",
+      "caption": "The most precious moments happen among the guests — Guestcam captures them all.",
+      "credit": "Foto: Unsplash"
     },
     {
       "type": "h2",
@@ -79,6 +86,13 @@
           "No risk"
         ]
       ]
+    },
+    {
+      "type": "image",
+      "src": "https://images.unsplash.com/photo-1531058020387-3be344556be6?w=1200&h=720&fit=crop&q=82&auto=format",
+      "alt": "Guest taking a photo of the bride and groom with their phone",
+      "caption": "200 phones, 200 angles — one QR code brings them all into a single gallery.",
+      "credit": "Foto: Unsplash"
     },
     {
       "type": "h2",

@@ -5,7 +5,7 @@
   "description": "Kompletan kontrolni spisak fotografija za venčanje 2026 — od priprema do zabave. Šta fotograf i QR kod moraju da uhvate.",
   "translationKey": "wedding-photo-checklist-2026",
   "publishedAt": "2026-05-22",
-  "updatedAt": "2026-05-22",
+  "updatedAt": "2026-05-25",
   "author": "Guestcam Team",
   "category": "kontrolni-seznam",
   "readingTime": 6,
@@ -32,6 +32,13 @@
       ]
     },
     {
+      "type": "image",
+      "src": "https://images.unsplash.com/photo-1606216794074-735e91aa2c92?w=1200&h=720&fit=crop&q=82&auto=format",
+      "alt": "Detalji venčanja: prstenje i mladin buket",
+      "caption": "Detalji koje fotograf možda propusti — gosti gotovo nikad.",
+      "credit": "Foto: Unsplash"
+    },
+    {
       "type": "h2",
       "text": "Tokom ceremonije: koje snimke morate da imate?"
     },
@@ -44,6 +51,13 @@
         "Potpis kod matičara.",
         "Grupne fotografije sa porodicom (organizujte redosled)."
       ]
+    },
+    {
+      "type": "image",
+      "src": "https://images.unsplash.com/photo-1519741497674-611481863552?w=1200&h=720&fit=crop&q=82&auto=format",
+      "alt": "Venčana ceremonija — mlada i mladoženja ispred oltara",
+      "caption": "Svaki ključni trenutak — od »da« do prvog plesa — neka bude na spisku.",
+      "credit": "Foto: Unsplash"
     },
     {
       "type": "h2",

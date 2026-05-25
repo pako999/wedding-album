@@ -5,7 +5,7 @@
   "description": "Paso a paso — desde la elección de la herramienta hasta la descarga de todas las fotos tras la boda. Sin dramas de Google Photos, sin archivos perdidos.",
   "translationKey": "private-wedding-gallery",
   "publishedAt": "2026-05-22",
-  "updatedAt": "2026-05-22",
+  "updatedAt": "2026-05-25",
   "author": "Guestcam Team",
   "category": "vodnik",
   "readingTime": 5,
@@ -30,6 +30,13 @@
         "Un único lugar — todas las fotos en una galería, no en 5 chats distintos.",
         "Duradera — la galería vive al menos varios meses, no se pierde en el historial."
       ]
+    },
+    {
+      "type": "image",
+      "src": "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=1200&h=720&fit=crop&q=82&auto=format",
+      "alt": "Banquete de boda bajo guirnaldas de luces en hora dorada",
+      "caption": "Una galería privada preserva el ambiente — sin miradas ajenas.",
+      "credit": "Foto: Unsplash"
     },
     {
       "type": "h2",
@@ -64,6 +71,13 @@
           "De pago tras el plan gratuito (20 fotos)."
         ]
       ]
+    },
+    {
+      "type": "image",
+      "src": "https://images.unsplash.com/photo-1606216794074-735e91aa2c92?w=1200&h=720&fit=crop&q=82&auto=format",
+      "alt": "Código QR para la galería de boda en una mesa elegantemente decorada",
+      "caption": "Un código por mesa — los invitados escanean y comparten en segundos.",
+      "credit": "Foto: Unsplash"
     },
     {
       "type": "h2",

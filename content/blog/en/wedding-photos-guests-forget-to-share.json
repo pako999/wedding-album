@@ -5,7 +5,7 @@
   "description": "Guests forget because there's no easy way. A QR code on every table removes the friction — photos arrive during the event.",
   "translationKey": "guests-forget-to-share",
   "publishedAt": "2026-05-22",
-  "updatedAt": "2026-05-22",
+  "updatedAt": "2026-05-25",
   "author": "Guestcam Team",
   "category": "nasvet",
   "readingTime": 6,
@@ -25,6 +25,13 @@
       "text": "The party is over. The room is quiet. You have 80 photos on your phone, the photographer's will arrive in three weeks. But tonight there were 200 phones in the room, each catching a different angle, a different moment, a different laugh. Where are they?"
     },
     {
+      "type": "image",
+      "src": "https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?w=1200&h=720&fit=crop&q=82&auto=format",
+      "alt": "Wedding guests at the reception table with phones in hand",
+      "caption": "Guests are taking photos — but 95% of those shots stay on their phones.",
+      "credit": "Foto: Unsplash"
+    },
+    {
       "type": "h2",
       "text": "7 reasons guests don't share their photos"
     },
@@ -39,6 +46,13 @@
         "Tech — older guests don't know how to upload to Google Photos.",
         "No reminder — no one asks, so they forget."
       ]
+    },
+    {
+      "type": "image",
+      "src": "https://images.unsplash.com/photo-1525772764200-be829a350797?w=1200&h=720&fit=crop&q=82&auto=format",
+      "alt": "A candid moment of laughter during the wedding reception",
+      "caption": "The best shots are always candid — and almost always on a guest's phone.",
+      "credit": "Foto: Unsplash"
     },
     {
       "type": "h2",

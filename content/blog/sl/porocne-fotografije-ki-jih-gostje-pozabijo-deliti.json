@@ -5,7 +5,7 @@
   "description": "Gostje pozabijo, ker ni enostavnega načina. QR koda na vsaki mizi odpravi vse ovire — fotografije prihajajo med dogodkom.",
   "translationKey": "guests-forget-to-share",
   "publishedAt": "2026-05-22",
-  "updatedAt": "2026-05-22",
+  "updatedAt": "2026-05-25",
   "author": "Guestcam Team",
   "category": "nasvet",
   "readingTime": 6,
@@ -25,6 +25,13 @@
       "text": "Zabava je končana. Soba je tiha. V svojem telefonu imate 80 fotografij, fotograf jih bo poslal čez tri tedne. Vendar je nocoj v sobi bilo 200 telefonov in vsak je ujel drugačen kot, drugačen trenutek, drugačen smeh. Kje so?"
     },
     {
+      "type": "image",
+      "src": "https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?w=1200&h=720&fit=crop&q=82&auto=format",
+      "alt": "Gostje za poročno mizo s telefoni v rokah",
+      "caption": "Gostje fotografirajo — a 95 % posnetkov ostane na njihovih telefonih.",
+      "credit": "Foto: Unsplash"
+    },
+    {
       "type": "h2",
       "text": "7 razlogov, zakaj gostje ne delijo fotografij"
     },
@@ -39,6 +46,13 @@
         "Tehnika — starejši gostje ne znajo nalagati v Google Photos.",
         "Ni opomnika — nihče jih ne vpraša, zato pozabijo."
       ]
+    },
+    {
+      "type": "image",
+      "src": "https://images.unsplash.com/photo-1525772764200-be829a350797?w=1200&h=720&fit=crop&q=82&auto=format",
+      "alt": "Iskren trenutek smeha med poročno pojedino",
+      "caption": "Najboljši kadri so vedno iskreni — in skoraj vedno na gostovem telefonu.",
+      "credit": "Foto: Unsplash"
     },
     {
       "type": "h2",

@@ -5,7 +5,7 @@
   "description": "Los invitados se olvidan porque no hay una forma fácil. Un código QR en cada mesa elimina la fricción — las fotos llegan durante el evento.",
   "translationKey": "guests-forget-to-share",
   "publishedAt": "2026-05-22",
-  "updatedAt": "2026-05-22",
+  "updatedAt": "2026-05-25",
   "author": "Guestcam Team",
   "category": "nasvet",
   "readingTime": 6,
@@ -25,6 +25,13 @@
       "text": "La fiesta terminó. La sala está en silencio. Tienes 80 fotos en el móvil, las del fotógrafo llegarán en tres semanas. Pero esta noche había 200 móviles en la sala y cada uno captó un ángulo distinto, un momento distinto, una risa distinta. ¿Dónde están?"
     },
     {
+      "type": "image",
+      "src": "https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?w=1200&h=720&fit=crop&q=82&auto=format",
+      "alt": "Invitados de boda en la mesa del banquete con sus móviles",
+      "caption": "Los invitados toman fotos — pero el 95 % se queda en sus teléfonos.",
+      "credit": "Foto: Unsplash"
+    },
+    {
       "type": "h2",
       "text": "7 razones por las que los invitados no comparten sus fotos"
     },
@@ -39,6 +46,13 @@
         "Tecnología — los invitados mayores no saben subir a Google Photos.",
         "Sin recordatorio — nadie les pregunta, así que se olvidan."
       ]
+    },
+    {
+      "type": "image",
+      "src": "https://images.unsplash.com/photo-1525772764200-be829a350797?w=1200&h=720&fit=crop&q=82&auto=format",
+      "alt": "Un momento espontáneo de risas durante el banquete de boda",
+      "caption": "Las mejores fotos son siempre espontáneas — y casi siempre en el móvil de un invitado.",
+      "credit": "Foto: Unsplash"
     },
     {
       "type": "h2",
