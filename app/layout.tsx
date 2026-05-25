@@ -61,11 +61,17 @@ const SITE_URL = "https://guestcam.si";
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "Guestcam — Zberite fotografije gostov z eno QR kodo",
+    // Optimized against the SL SERP for "QR koda za poroko" — there's
+    // no clear competitor on that query, so leading with the exact
+    // phrase puts us in the strongest position for cold organic.
+    // Template applies to child routes that set their own string title
+    // (blog posts, legal pages); the homepage uses `default` directly,
+    // which is NOT wrapped by the template.
+    default: "QR koda za poroko · Fotografije gostov v živo | Guestcam",
     template: "%s | Guestcam",
   },
   description:
-    "Z eno QR kodo zberite vse fotografije in videe gostov v eni zasebni galeriji. Brez aplikacije, v polni kakovosti.",
+    "Z eno QR kodo zberite vse fotografije in videe gostov v zasebni galeriji. Brez aplikacije, polna kakovost, brezplačen začetek. Za poroke in dogodke.",
   applicationName: "Guestcam",
   keywords: [
     "QR koda za poroko",
@@ -85,9 +91,9 @@ export const metadata: Metadata = {
     siteName: "Guestcam",
     locale: "sl_SI",
     url: SITE_URL,
-    title: "Guestcam — Zberite fotografije gostov z eno QR kodo",
+    title: "QR koda za poroko · Fotografije gostov v živo | Guestcam",
     description:
-      "Z eno QR kodo zberite vse fotografije in videe gostov v eni zasebni galeriji. Brez aplikacije, v polni kakovosti.",
+      "Z eno QR kodo zberite vse fotografije in videe gostov v zasebni galeriji. Brez aplikacije, polna kakovost, brezplačen začetek. Za poroke in dogodke.",
     // Social link-preview image. iMessage, WhatsApp, Slack, Facebook,
     // LinkedIn and Telegram all read OG image tags; without an
     // `images:` entry they render a text-only card (which is what
@@ -100,16 +106,16 @@ export const metadata: Metadata = {
         url: "/og-image.png?v=2",
         width: 910,
         height: 1200,
-        alt: "Guestcam — Zberite fotografije gostov z eno QR kodo",
+        alt: "QR koda za poroko · Fotografije gostov v živo | Guestcam",
         type: "image/png",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Guestcam — Zberite fotografije gostov z eno QR kodo",
+    title: "QR koda za poroko · Fotografije gostov v živo | Guestcam",
     description:
-      "Z eno QR kodo zberite vse fotografije in videe gostov v eni zasebni galeriji.",
+      "Z eno QR kodo zberite vse fotografije in videe gostov v zasebni galeriji. Brez aplikacije, polna kakovost, brezplačen začetek.",
     images: ["/og-image.png?v=2"],
   },
 };

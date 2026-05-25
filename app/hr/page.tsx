@@ -2,9 +2,12 @@ import type { Metadata } from "next";
 import { LocalizedHomePage } from "@/components/LocalizedHomePage";
 
 export const metadata: Metadata = {
-  title: "Guestcam — Skupite sve fotografije gostiju jednim QR kodom",
+  // Optimized against the HR SERP for "QR kod za vjenčanje" — top
+  // competitors (weddingcamera.app, qrfoto.net, qrmemories.photo) all
+  // use this exact phrase. `absolute` bypasses the root template.
+  title: { absolute: "QR kod za vjenčanje · Fotografije gostiju uživo | Guestcam" },
   description:
-    "Sakupite sve fotografije i videozapise gostiju u jednoj privatnoj galeriji. Bez aplikacije, u punoj kvaliteti — za vjenčanja, rođendane i događaje.",
+    "Skupite sve fotografije i videozapise gostiju s vjenčanja preko QR koda u privatnoj galeriji. Bez aplikacije, puna kvaliteta, besplatno za isprobati.",
   alternates: {
     canonical: "https://guestcam.si/hr",
     languages: {
@@ -22,24 +25,24 @@ export const metadata: Metadata = {
     locale: "hr_HR",
     siteName: "Guestcam",
     url: "https://guestcam.si/hr",
-    title: "Guestcam — Skupite sve fotografije gostiju jednim QR kodom",
+    title: "QR kod za vjenčanje · Fotografije gostiju uživo | Guestcam",
     description:
-      "Sakupite sve fotografije i videozapise gostiju u jednoj privatnoj galeriji. Bez aplikacije, u punoj kvaliteti.",
+      "Skupite sve fotografije i videozapise gostiju s vjenčanja preko QR koda u privatnoj galeriji. Bez aplikacije, puna kvaliteta, besplatno za isprobati.",
     // See app/sr/page.tsx for the per-locale image rationale.
     images: [
       {
         url: "https://guestcam.si/og-image.png?v=2",
         width: 910,
         height: 1200,
-        alt: "Guestcam — Skupite sve fotografije gostiju jednim QR kodom",
+        alt: "QR kod za vjenčanje · Fotografije gostiju uživo | Guestcam",
         type: "image/png",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Guestcam — Skupite sve fotografije gostiju jednim QR kodom",
-    description: "Sakupite sve fotografije i videozapise gostiju u jednoj privatnoj galeriji. Bez aplikacije, u punoj kvaliteti — za vjenčanja, rođendane i događaje.",
+    title: "QR kod za vjenčanje · Fotografije gostiju uživo | Guestcam",
+    description: "Skupite sve fotografije i videozapise gostiju s vjenčanja preko QR koda u privatnoj galeriji. Bez aplikacije, puna kvaliteta, besplatno za isprobati.",
     images: ["https://guestcam.si/og-image.png?v=2"],
   },
 };
