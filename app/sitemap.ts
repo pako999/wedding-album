@@ -19,7 +19,12 @@ interface PageEntry {
 // avoids the "everything updated today" anti-pattern that Google
 // learns to ignore. Increment when you actually edit the page.
 const LAST_EDITED = {
-  homepage:    "2026-05-23",
+  // Bumped 2026-05-25 — keyword-first meta titles + descriptions
+  // rewritten across all 6 locale homepages (PR #66, commit fb8c02c).
+  // The lastmod signal tells crawlers "re-fetch me" so the new SERP
+  // copy lands in Google's index within a day or two instead of the
+  // usual ~weekly homepage re-crawl interval.
+  homepage:    "2026-05-25",
   seoLandings: "2026-05-22",
   alternatives:"2026-05-22",
   legalSl:     "2026-01-01",
