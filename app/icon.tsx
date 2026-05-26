@@ -1,18 +1,23 @@
 import { ImageResponse } from "next/og";
 
 /**
- * PWA manifest icon (512×512). Referenced from public/manifest.json
- * for high-res Android launchers + the maskable-icon fallback. Lives
- * at the literal path `/icon-512.png` because manifest.json points
- * at that exact URL.
+ * Browser tab + Google SERP favicon.
  *
- * Color was historically pink (#C4738A) — off-brand. Now matches
- * public/icon.svg exactly (#FFC94D yellow + #C9820A amber).
+ * Next.js auto-routes this to `/icon` and emits the right
+ * `<link rel="icon">` tags in HTML. Replaces the old `app/favicon.ico`
+ * (which was rendering an off-brand pink camera) with the same
+ * yellow design as `public/icon.svg` and the rest of the brand.
+ *
+ * 32×32 is the size Google scrapes for the SERP favicon. Higher
+ * sizes (apple-icon for iOS, icon-192/512 for the PWA manifest)
+ * live in their own routes.
  */
 
 export const runtime = "edge";
+export const size = { width: 32, height: 32 };
+export const contentType = "image/png";
 
-export function GET() {
+export default function Icon() {
   return new ImageResponse(
     (
       <div
@@ -20,13 +25,15 @@ export function GET() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          width: 512,
-          height: 512,
+          width: "100%",
+          height: "100%",
         }}
       >
+        {/* Mirrors public/icon.svg exactly — brand yellow #FFC94D
+            background with a white camera + amber lens. */}
         <svg
-          width="512"
-          height="512"
+          width="32"
+          height="32"
           viewBox="0 0 512 512"
           xmlns="http://www.w3.org/2000/svg"
         >
@@ -39,6 +46,6 @@ export function GET() {
         </svg>
       </div>
     ),
-    { width: 512, height: 512 },
+    size,
   );
 }

@@ -1,18 +1,17 @@
 import { ImageResponse } from "next/og";
 
 /**
- * PWA manifest icon (512×512). Referenced from public/manifest.json
- * for high-res Android launchers + the maskable-icon fallback. Lives
- * at the literal path `/icon-512.png` because manifest.json points
- * at that exact URL.
+ * Apple touch icon for iOS Home Screen + Safari pinned tabs.
  *
- * Color was historically pink (#C4738A) — off-brand. Now matches
- * public/icon.svg exactly (#FFC94D yellow + #C9820A amber).
+ * 180×180 is Apple's current recommended size. Next.js emits
+ * `<link rel="apple-touch-icon" sizes="180x180">` automatically.
  */
 
 export const runtime = "edge";
+export const size = { width: 180, height: 180 };
+export const contentType = "image/png";
 
-export function GET() {
+export default function AppleIcon() {
   return new ImageResponse(
     (
       <div
@@ -20,13 +19,13 @@ export function GET() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          width: 512,
-          height: 512,
+          width: "100%",
+          height: "100%",
         }}
       >
         <svg
-          width="512"
-          height="512"
+          width="180"
+          height="180"
           viewBox="0 0 512 512"
           xmlns="http://www.w3.org/2000/svg"
         >
@@ -39,6 +38,6 @@ export function GET() {
         </svg>
       </div>
     ),
-    { width: 512, height: 512 },
+    size,
   );
 }
