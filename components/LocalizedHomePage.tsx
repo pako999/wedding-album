@@ -132,7 +132,7 @@ const COPY: Record<Lang, Copy> = {
   hr: {
     switcherAria: "Promijeni jezik", navHome: "Početna", navCta: "Kreiraj galeriju",
     announce: "Kreirajte galeriju danas — besplatno zauvijek! 🎉", announceLink: "Započni odmah →",
-    heroEyebrow: "QR kod za vjenčanja · rođendane · obljetnice · baby tuš",
+    heroEyebrow: "QR kod za vjenčanja · rođendane · obljetnice · baby shower",
     heroHead: { lead: "Fotografije koje", accent: "inače nikada ne biste vidjeli", trail: "." },
     heroLead: "Skupite sve fotografije i videozapise svojih gostiju u jednoj privatnoj galeriji. Gosti samo skeniraju QR kod i u nekoliko sekundi dijele svoje trenutke.",
     heroPrimary: "Započni besplatno", heroDemoBtn: "Pogledaj demo", heroNote: "Bez kreditne kartice • Spremno za manje od 2 minute",
@@ -206,7 +206,7 @@ const COPY: Record<Lang, Copy> = {
   sr: {
     switcherAria: "Promeni jezik", navHome: "Početna", navCta: "Napravi galeriju",
     announce: "Napravite galeriju danas — besplatno zauvek! 🎉", announceLink: "Započni odmah →",
-    heroEyebrow: "QR kod za venčanja · rođendane · godišnjice · baby tuš",
+    heroEyebrow: "QR kod za venčanja · rođendane · godišnjice · baby shower",
     heroHead: { lead: "Fotografije koje", accent: "inače nikada ne biste videli", trail: "." },
     heroLead: "Sakupite sve fotografije i video snimke svojih gostiju u jednoj privatnoj galeriji. Gosti samo skeniraju QR kod i za nekoliko sekundi dele svoje trenutke.",
     heroPrimary: "Započni besplatno", heroDemoBtn: "Pogledaj demo", heroNote: "Bez kreditne kartice • Spremno za manje od 2 minuta",
