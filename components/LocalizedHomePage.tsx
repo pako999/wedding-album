@@ -548,40 +548,29 @@ export async function LocalizedHomePage({ lang }: { lang: Lang }) {
 
       {/* Hero */}
       <section style={{ background: "#F2F4F8" }}>
-        <div className="max-w-7xl mx-auto px-6 sm:px-8 py-16 xl:py-24">
-          <div className="grid lg:grid-cols-2 gap-12 xl:gap-20 items-center">
-            <div>
-              <div className="flex items-center gap-3 mb-7">
-                <div className="flex -space-x-2.5">
-                  {["#FFC94D", "#F0B429", "#E8A800", "#FFD966", "#C9820A"].map((bg, i) => (
-                    <div key={i} className="w-9 h-9 rounded-full border-[2.5px] flex items-center justify-center text-[11px] font-bold text-[#0F1729] shrink-0" style={{ background: bg, borderColor: "#F2F4F8" }}>
-                      {["T", "A", "S", "D", "M"][i]}
-                    </div>
-                  ))}
-                </div>
-                <p className="text-sm text-gray-600">{t.trustText} <span className="font-bold text-[#0F1729]">{t.trust500}</span></p>
-              </div>
-              <p className="text-xs font-bold uppercase tracking-[0.18em] text-gray-400 mb-5">{t.heroEyebrow}</p>
-              <h1 className="font-extrabold leading-[1.15] tracking-tight text-[#0F1729] mb-8" style={{ fontSize: "clamp(1.9rem, 3.6vw, 3.15rem)" }}>
-                {t.heroHead.lead}{" "}<span style={{ color: "#C9820A" }}>{t.heroHead.accent}</span>{t.heroHead.trail}
-              </h1>
-              <p className="text-lg text-gray-500 leading-relaxed mb-8 max-w-[500px]">{t.heroLead}</p>
-
-              {/* 3-step mini icons */}
-              <div className="flex items-start gap-10 mb-12">
-                {[
-                  { label: t.threeStep.takePhoto, icon: <IconCamera /> },
-                  { label: t.threeStep.scanQr, icon: <IconQR /> },
-                  { label: t.threeStep.upload, icon: <IconBolt /> },
-                ].map(({ label, icon }) => (
-                  <div key={label} className="flex flex-col items-center gap-2.5">
-                    <div className="w-14 h-14 rounded-2xl flex items-center justify-center" style={{ background: "rgba(255,201,77,0.18)", color: "#C9820A" }}>{icon}</div>
-                    <span className="text-xs font-semibold text-gray-500 text-center leading-tight">{label}</span>
-                  </div>
-                ))}
-              </div>
-
-              <div className="flex flex-wrap items-center gap-4">
+        {lang === "en" ? (
+          // English: edge-to-edge hero image (desktop landscape + mobile portrait via <picture>).
+          // Visible headline, 3-step story, and trust badges live inside the artwork.
+          <div className="w-full">
+            <h1 className="sr-only">
+              Your best moments. All in one place. — Guestcam QR photo album for weddings and events
+            </h1>
+            <div className="overflow-hidden bg-white">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <picture>
+                <source media="(max-width: 640px)" srcSet="/hero/guestcam-hero-en-mobile.webp" />
+                <img
+                  src="/hero/guestcam-hero-en.webp"
+                  alt="Your best moments all in one place — guests scan a QR code on the wedding table and share photos to a shared album"
+                  className="block w-full h-auto"
+                  width={1448}
+                  height={1086}
+                  fetchPriority="high"
+                />
+              </picture>
+            </div>
+            <div className="flex flex-col items-center text-center px-4 py-10 sm:py-16">
+              <div className="flex flex-wrap items-center justify-center gap-4">
                 <Link href="/dashboard/new" className="inline-flex items-center gap-3 px-10 py-5 rounded-full text-[#0F1729] font-bold text-lg transition-all duration-200 hover:scale-[1.02]"
                   style={{ background: "linear-gradient(135deg, #FFD966 0%, #FFC94D 55%, #F0B429 100%)", boxShadow: "0 14px 40px rgba(255,201,77,0.42)" }}>
                   {t.heroPrimary}
@@ -590,24 +579,69 @@ export async function LocalizedHomePage({ lang }: { lang: Lang }) {
               </div>
               <p className="mt-4 text-sm text-gray-400">{t.heroNote}</p>
             </div>
+          </div>
+        ) : (
+          <div className="max-w-7xl mx-auto px-6 sm:px-8 py-16 xl:py-24">
+            <div className="grid lg:grid-cols-2 gap-12 xl:gap-20 items-center">
+              <div>
+                <div className="flex items-center gap-3 mb-7">
+                  <div className="flex -space-x-2.5">
+                    {["#FFC94D", "#F0B429", "#E8A800", "#FFD966", "#C9820A"].map((bg, i) => (
+                      <div key={i} className="w-9 h-9 rounded-full border-[2.5px] flex items-center justify-center text-[11px] font-bold text-[#0F1729] shrink-0" style={{ background: bg, borderColor: "#F2F4F8" }}>
+                        {["T", "A", "S", "D", "M"][i]}
+                      </div>
+                    ))}
+                  </div>
+                  <p className="text-sm text-gray-600">{t.trustText} <span className="font-bold text-[#0F1729]">{t.trust500}</span></p>
+                </div>
+                <p className="text-xs font-bold uppercase tracking-[0.18em] text-gray-400 mb-5">{t.heroEyebrow}</p>
+                <h1 className="font-extrabold leading-[1.15] tracking-tight text-[#0F1729] mb-8" style={{ fontSize: "clamp(1.9rem, 3.6vw, 3.15rem)" }}>
+                  {t.heroHead.lead}{" "}<span style={{ color: "#C9820A" }}>{t.heroHead.accent}</span>{t.heroHead.trail}
+                </h1>
+                <p className="text-lg text-gray-500 leading-relaxed mb-8 max-w-[500px]">{t.heroLead}</p>
 
-            {/* Hero collage (reuses the same images as the homepage) */}
-            <div className="hidden lg:block relative select-none" style={{ height: 600 }}>
-              <div className="absolute rounded-3xl overflow-hidden shadow-2xl" style={{ top: 56, left: 0, width: 372, height: 466, transform: "rotate(-5deg)", zIndex: 20 }}>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/hero/scan.webp" alt="" className="w-full h-full object-cover" />
+                {/* 3-step mini icons */}
+                <div className="flex items-start gap-10 mb-12">
+                  {[
+                    { label: t.threeStep.takePhoto, icon: <IconCamera /> },
+                    { label: t.threeStep.scanQr, icon: <IconQR /> },
+                    { label: t.threeStep.upload, icon: <IconBolt /> },
+                  ].map(({ label, icon }) => (
+                    <div key={label} className="flex flex-col items-center gap-2.5">
+                      <div className="w-14 h-14 rounded-2xl flex items-center justify-center" style={{ background: "rgba(255,201,77,0.18)", color: "#C9820A" }}>{icon}</div>
+                      <span className="text-xs font-semibold text-gray-500 text-center leading-tight">{label}</span>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="flex flex-wrap items-center gap-4">
+                  <Link href="/dashboard/new" className="inline-flex items-center gap-3 px-10 py-5 rounded-full text-[#0F1729] font-bold text-lg transition-all duration-200 hover:scale-[1.02]"
+                    style={{ background: "linear-gradient(135deg, #FFD966 0%, #FFC94D 55%, #F0B429 100%)", boxShadow: "0 14px 40px rgba(255,201,77,0.42)" }}>
+                    {t.heroPrimary}
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>
+                  </Link>
+                </div>
+                <p className="mt-4 text-sm text-gray-400">{t.heroNote}</p>
               </div>
-              <div className="absolute rounded-2xl overflow-hidden shadow-xl" style={{ top: 0, right: 0, width: 244, height: 304, transform: "rotate(5deg)", zIndex: 30 }}>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/hero/gallery.webp" alt="" className="w-full h-full object-cover" />
-              </div>
-              <div className="absolute rounded-2xl overflow-hidden shadow-2xl" style={{ bottom: 20, right: 24, width: 252, height: 252, transform: "rotate(4deg)", zIndex: 30 }}>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/hero/cards.webp" alt="" className="w-full h-full object-cover" />
+
+              {/* Hero collage (reuses the same images as the homepage) */}
+              <div className="hidden lg:block relative select-none" style={{ height: 600 }}>
+                <div className="absolute rounded-3xl overflow-hidden shadow-2xl" style={{ top: 56, left: 0, width: 372, height: 466, transform: "rotate(-5deg)", zIndex: 20 }}>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src="/hero/scan.webp" alt="" className="w-full h-full object-cover" />
+                </div>
+                <div className="absolute rounded-2xl overflow-hidden shadow-xl" style={{ top: 0, right: 0, width: 244, height: 304, transform: "rotate(5deg)", zIndex: 30 }}>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src="/hero/gallery.webp" alt="" className="w-full h-full object-cover" />
+                </div>
+                <div className="absolute rounded-2xl overflow-hidden shadow-2xl" style={{ bottom: 20, right: 24, width: 252, height: 252, transform: "rotate(4deg)", zIndex: 30 }}>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src="/hero/cards.webp" alt="" className="w-full h-full object-cover" />
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        )}
       </section>
 
       {/* Stats */}
