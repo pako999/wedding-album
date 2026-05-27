@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import Image from "next/image";
 import { auth } from "@clerk/nextjs/server";
 import { GuestcamLogo } from "@/components/GuestcamLogo";
 import { DemoButton } from "@/components/DemoButton";
@@ -210,174 +209,46 @@ export default async function HomePage() {
 
       {/* ── Hero ────────────────────────────────────────────────────────────── */}
       <section style={{ background: '#F2F4F8' }}>
-        <div className="max-w-7xl mx-auto px-8 py-16 xl:py-24">
-          <div className="grid lg:grid-cols-2 gap-12 xl:gap-20 items-center">
+        <div className="w-full">
 
-            {/* ── LEFT: Text content ─────────────────────────────────────── */}
-            <div>
+          {/* H1 kept for SEO / screen readers — visible headline lives inside the hero image */}
+          <h1 className="sr-only">
+            Vaši najboljši trenutki. Na enem mestu. — Guestcam QR foto album za poroke in dogodke
+          </h1>
 
-              {/* Avatar stack + social proof */}
-              <div className="flex items-center gap-3 mb-7">
-                <div className="flex -space-x-2.5">
-                  {['#FFC94D','#F0B429','#E8A800','#FFD966','#C9820A'].map((bg, i) => (
-                    <div key={i} className="w-9 h-9 rounded-full border-[2.5px] flex items-center justify-center text-[11px] font-bold text-[#0F1729] shrink-0" style={{ background: bg, borderColor: '#F2F4F8' }}>
-                      {['T','A','S','D','M'][i]}
-                    </div>
-                  ))}
-                </div>
-                <p className="text-sm text-gray-600">Zaupalo nam <span className="font-bold text-[#0F1729]">500+</span> parov &amp; organizatorjev</p>
-              </div>
+          {/* Edge-to-edge hero image — desktop landscape, mobile portrait variant via <picture>.
+              Contains the visible headline, 3-step story, and trust badges. */}
+          <div className="overflow-hidden bg-white">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <picture>
+              <source media="(max-width: 640px)" srcSet="/hero/guestcam-hero-mobile.webp" />
+              <img
+                src="/hero/guestcam-hero.webp"
+                alt="Vaši najboljši trenutki na enem mestu — gostje skenirajo QR kodo na poročni mizi in delijo fotografije v skupni album"
+                className="block w-full h-auto"
+                width={1672}
+                height={941}
+                fetchPriority="high"
+              />
+            </picture>
+          </div>
 
-              {/* Small eyebrow label */}
-              <p className="text-xs font-bold uppercase tracking-[0.18em] text-gray-400 mb-5">
-                QR koda za poroke · rojstne dneve · obletnice · baby shower
-              </p>
-
-              {/* Headline */}
-              <h1 className="font-extrabold leading-[1.15] tracking-tight text-[#0F1729] mb-8" style={{ fontSize: 'clamp(1.9rem, 3.6vw, 3.15rem)' }}>
-                Fotografije, ki jih sicer{' '}
-                <span style={{ color: '#C9820A' }}>nikoli ne bi videli</span>.
-              </h1>
-
-              {/* Subtitle */}
-              <p className="text-lg text-gray-500 leading-relaxed mb-8 max-w-[500px]">
-                Zberite vse fotografije in videe svojih gostov v eni zasebni galeriji.
-                Gostje samo skenirajo QR kodo in delijo svoje utrinke v nekaj sekundah.
-              </p>
-
-              {/* Mobile hero collage — desktop shows the full collage on the right;
-                  mobile gets this compact version of the same 3-image story. */}
-              <div className="lg:hidden relative mx-auto mb-10 select-none" style={{ height: 330, maxWidth: 380 }}>
-                {/* scan — main */}
-                <div className="absolute rounded-2xl overflow-hidden shadow-xl" style={{ top: 18, left: 0, width: "58%", aspectRatio: "4 / 5", transform: "rotate(-4deg)", zIndex: 20 }}>
-                  <img src="/hero/scan.webp" alt="Skeniranje QR kartice s telefonom" className="w-full h-full object-cover" />
-                  <div className="absolute bottom-2.5 left-2.5 bg-white rounded-xl shadow-md px-2.5 py-1.5 flex items-center gap-1.5">
-                    <svg className="w-3 h-3 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    <p className="text-[10px] font-bold text-[#0F1729]">Polna kakovost</p>
-                  </div>
-                </div>
-                {/* gallery — top right */}
-                <div className="absolute rounded-2xl overflow-hidden shadow-lg" style={{ top: 0, right: 0, width: "43%", aspectRatio: "4 / 5", transform: "rotate(5deg)", zIndex: 30 }}>
-                  <img src="/hero/gallery.webp" alt="Galerija fotografij v živo" className="w-full h-full object-cover" />
-                </div>
-                {/* cards — bottom right */}
-                <div className="absolute rounded-2xl overflow-hidden shadow-xl" style={{ bottom: 0, right: 8, width: "46%", aspectRatio: "1 / 1", transform: "rotate(4deg)", zIndex: 30 }}>
-                  <img src="/hero/cards.webp" alt="Natisnjene QR kartice na poročni mizi" className="w-full h-full object-cover" />
-                  <div className="absolute top-2.5 left-2.5 bg-white rounded-xl shadow-md px-2.5 py-1.5 flex items-center gap-1.5">
-                    <svg className="w-3 h-3" style={{ color: "#C9820A" }} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3" />
-                    </svg>
-                    <p className="text-[10px] font-bold text-[#0F1729]">Brez aplikacije</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* 3-step mini icons — wedtrove style */}
-              <div className="flex items-start gap-10 mb-12">
-                {[
-                  {
-                    label: 'Gostje slikajo',
-                    icon: (
-                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.8}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z" />
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0zM18.75 10.5h.008v.008h-.008V10.5z" />
-                      </svg>
-                    ),
-                  },
-                  {
-                    label: 'Skenirajo QR',
-                    icon: (
-                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.8}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 013.75 9.375v-4.5zM3.75 14.625c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5a1.125 1.125 0 01-1.125-1.125v-4.5zM13.5 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 0113.5 9.375v-4.5z" />
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 6.75h.75v.75h-.75v-.75zM6.75 16.5h.75v.75h-.75v-.75zM16.5 6.75h.75v.75h-.75v-.75zM13.5 13.5h.75v.75h-.75v-.75zM13.5 19.5h.75v.75h-.75v-.75zM19.5 13.5h.75v.75h-.75v-.75zM19.5 19.5h.75v.75h-.75v-.75zM16.5 16.5h.75v.75h-.75v-.75z" />
-                      </svg>
-                    ),
-                  },
-                  {
-                    label: 'Naložijo fotografije',
-                    icon: (
-                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.8}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
-                      </svg>
-                    ),
-                  },
-                ].map(({ label, icon }) => (
-                  <div key={label} className="flex flex-col items-center gap-2.5">
-                    <div className="w-14 h-14 rounded-2xl flex items-center justify-center" style={{ background: 'rgba(255,201,77,0.18)', color: '#C9820A' }}>
-                      {icon}
-                    </div>
-                    <span className="text-xs font-semibold text-gray-500 text-center leading-tight">{label}</span>
-                  </div>
-                ))}
-              </div>
-
-              {/* Large pill CTA + demo */}
-              <div className="flex flex-wrap items-center gap-4">
-                <Link
-                  href="/dashboard/new"
-                  className="inline-flex items-center gap-3 px-10 py-5 rounded-full text-[#0F1729] font-bold text-lg transition-all duration-200 hover:scale-[1.02]"
-                  style={{ background: '#FFC94D', boxShadow: '0 14px 40px rgba(255,201,77,0.45)' }}
-                >
-                  Začni brezplačno zdaj
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                  </svg>
-                </Link>
-                <DemoButton variant="hero" />
-              </div>
-              <p className="mt-4 text-sm text-gray-400">Brez kreditne kartice • Pripravljeno v manj kot 2 minutah</p>
+          {/* CTA + note */}
+          <div className="flex flex-col items-center text-center px-4 py-10 sm:py-16">
+            <div className="flex flex-wrap items-center justify-center gap-4">
+              <Link
+                href="/dashboard/new"
+                className="inline-flex items-center gap-3 px-10 py-5 rounded-full text-[#0F1729] font-bold text-lg transition-all duration-200 hover:scale-[1.02]"
+                style={{ background: '#FFC94D', boxShadow: '0 14px 40px rgba(255,201,77,0.45)' }}
+              >
+                Začni brezplačno zdaj
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                </svg>
+              </Link>
+              <DemoButton variant="hero" />
             </div>
-
-            {/* ── RIGHT: Hero image story — scan → live gallery → printed cards ──
-                 Images live in public/hero/ (WebP): scan.webp (4:5),
-                 gallery.webp (4:5), cards.webp (1:1). ─────────────────────────── */}
-            <div className="hidden lg:block relative select-none" style={{ height: 600 }}>
-
-              {/* 1 — Scan moment (dominant, biggest) */}
-              <div className="absolute rounded-3xl overflow-hidden shadow-2xl" style={{ top: 56, left: 0, width: 372, height: 466, transform: 'rotate(-5deg)', zIndex: 20 }}>
-                <img src="/hero/scan.webp" alt="Skeniranje QR kartice s telefonom" className="w-full h-full object-cover" />
-                {/* Polna kakovost — labels the scan/photo quality */}
-                <div className="absolute bottom-4 left-4 bg-white rounded-2xl shadow-lg px-4 py-2.5 flex items-center gap-2">
-                  <svg className="w-3.5 h-3.5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                  <p className="text-xs font-bold text-[#0F1729]">Polna kakovost</p>
-                </div>
-              </div>
-
-              {/* 2 — Live gallery (top-right, smaller) */}
-              <div className="absolute rounded-2xl overflow-hidden shadow-xl" style={{ top: 0, right: 0, width: 244, height: 304, transform: 'rotate(5deg)', zIndex: 30 }}>
-                <img src="/hero/gallery.webp" alt="Galerija fotografij v živo" className="w-full h-full object-cover" />
-              </div>
-
-              {/* +183 fotografij — labels the live gallery */}
-              <div className="absolute bg-white rounded-2xl shadow-xl px-4 py-3 flex items-center gap-3" style={{ top: 264, right: 150, zIndex: 40 }}>
-                <div className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0" style={{ background: 'rgba(255,201,77,0.18)' }}>
-                  <svg className="w-4 h-4" style={{ color: '#C9820A' }} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5z" />
-                  </svg>
-                </div>
-                <div>
-                  <p className="text-xs font-bold text-[#0F1729]">+183 fotografij</p>
-                  <p className="text-[10px] text-gray-400">v živo · danes</p>
-                </div>
-              </div>
-
-              {/* 3 — Printed cards (bottom-right, smaller) */}
-              <div className="absolute rounded-2xl overflow-hidden shadow-2xl" style={{ bottom: 20, right: 24, width: 252, height: 252, transform: 'rotate(4deg)', zIndex: 30 }}>
-                <img src="/hero/cards.webp" alt="Natisnjene QR kartice na poročni mizi" className="w-full h-full object-cover" />
-                {/* Brez aplikacije — labels the printed cards */}
-                <div className="absolute top-4 left-4 bg-white rounded-2xl shadow-lg px-3.5 py-2 flex items-center gap-2">
-                  <svg className="w-3.5 h-3.5" style={{ color: '#C9820A' }} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3" />
-                  </svg>
-                  <p className="text-xs font-bold text-[#0F1729]">Brez aplikacije</p>
-                </div>
-              </div>
-
-            </div>
+            <p className="mt-4 text-sm text-gray-400">Brez kreditne kartice • Pripravljeno v manj kot 2 minutah</p>
           </div>
         </div>
       </section>
