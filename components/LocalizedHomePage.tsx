@@ -546,6 +546,14 @@ const HERO_IMAGE: Partial<Record<Lang, {
     alt: "Tus mejores momentos en un solo lugar — los invitados escanean un código QR en la mesa y comparten sus fotos en un álbum compartido",
     srOnlyH1: "Tus mejores momentos. En un solo lugar. — Guestcam álbum QR de fotos para bodas y eventos",
   },
+  de: {
+    desktop: "/hero/guestcam-hero-de.webp",
+    mobile: "/hero/guestcam-hero-de-mobile.webp",
+    width: 1448,
+    height: 1086,
+    alt: "Eure schönsten Momente an einem Ort — Gäste scannen den QR-Code auf dem Tisch und teilen ihre Fotos in einem gemeinsamen Album",
+    srOnlyH1: "Eure schönsten Momente. Alle an einem Ort. — Guestcam QR-Fotoalbum für Hochzeiten und Events",
+  },
 };
 
 // ─── Component ───────────────────────────────────────────────────────────────
