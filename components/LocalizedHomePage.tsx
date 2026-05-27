@@ -538,6 +538,14 @@ const HERO_IMAGE: Partial<Record<Lang, {
     alt: "Vaši najlepši trenuci na jednom mestu — gosti skeniraju QR kod na stolu i dele fotografije u zajednički album",
     srOnlyH1: "Vaši najlepši trenuci. Na jednom mestu. — Guestcam QR foto album za venčanja i događaje",
   },
+  es: {
+    desktop: "/hero/guestcam-hero-es.webp",
+    mobile: "/hero/guestcam-hero-es-mobile.webp",
+    width: 1448,
+    height: 1086,
+    alt: "Tus mejores momentos en un solo lugar — los invitados escanean un código QR en la mesa y comparten sus fotos en un álbum compartido",
+    srOnlyH1: "Tus mejores momentos. En un solo lugar. — Guestcam álbum QR de fotos para bodas y eventos",
+  },
 };
 
 // ─── Component ───────────────────────────────────────────────────────────────
