@@ -501,9 +501,41 @@ const COPY: Record<Lang, Copy> = {
   },
 };
 
+// ─── Per-locale full-bleed hero image ────────────────────────────────────────
+// When a locale has an entry here, its homepage renders a single edge-to-edge
+// hero image (desktop landscape + mobile portrait via <picture>) instead of
+// the text+collage hero. Headline, 3-step story, and trust badges live inside
+// the artwork; the CTA pill + note are still rendered below it.
+const HERO_IMAGE: Partial<Record<Lang, {
+  desktop: string;
+  mobile: string;
+  width: number;
+  height: number;
+  alt: string;
+  srOnlyH1: string;
+}>> = {
+  en: {
+    desktop: "/hero/guestcam-hero-en.webp",
+    mobile: "/hero/guestcam-hero-en-mobile.webp",
+    width: 1448,
+    height: 1086,
+    alt: "Your best moments all in one place — guests scan a QR code on the wedding table and share photos to a shared album",
+    srOnlyH1: "Your best moments. All in one place. — Guestcam QR photo album for weddings and events",
+  },
+  hr: {
+    desktop: "/hero/guestcam-hero-hr.webp",
+    mobile: "/hero/guestcam-hero-hr-mobile.webp",
+    width: 1448,
+    height: 1086,
+    alt: "Vaši najljepši trenuci na jednom mjestu — gosti skeniraju QR kod na stolu i dijele fotografije u zajednički album",
+    srOnlyH1: "Vaši najljepši trenuci. Na jednom mjestu. — Guestcam QR foto album za vjenčanja i događaje",
+  },
+};
+
 // ─── Component ───────────────────────────────────────────────────────────────
 export async function LocalizedHomePage({ lang }: { lang: Lang }) {
   const t = COPY[lang];
+  const heroImage = HERO_IMAGE[lang];
   // Hide the "create gallery" CTA for signed-in visitors — they already
   // have galleries; Nadzorna plošča + avatar are their entry points.
   let signedIn = false;
@@ -548,23 +580,19 @@ export async function LocalizedHomePage({ lang }: { lang: Lang }) {
 
       {/* Hero */}
       <section style={{ background: "#F2F4F8" }}>
-        {lang === "en" ? (
-          // English: edge-to-edge hero image (desktop landscape + mobile portrait via <picture>).
-          // Visible headline, 3-step story, and trust badges live inside the artwork.
+        {heroImage ? (
           <div className="w-full">
-            <h1 className="sr-only">
-              Your best moments. All in one place. — Guestcam QR photo album for weddings and events
-            </h1>
+            <h1 className="sr-only">{heroImage.srOnlyH1}</h1>
             <div className="overflow-hidden bg-white">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <picture>
-                <source media="(max-width: 640px)" srcSet="/hero/guestcam-hero-en-mobile.webp" />
+                <source media="(max-width: 640px)" srcSet={heroImage.mobile} />
                 <img
-                  src="/hero/guestcam-hero-en.webp"
-                  alt="Your best moments all in one place — guests scan a QR code on the wedding table and share photos to a shared album"
+                  src={heroImage.desktop}
+                  alt={heroImage.alt}
                   className="block w-full h-auto"
-                  width={1448}
-                  height={1086}
+                  width={heroImage.width}
+                  height={heroImage.height}
                   fetchPriority="high"
                 />
               </picture>
