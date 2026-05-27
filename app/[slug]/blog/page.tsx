@@ -16,12 +16,14 @@ export const revalidate = 3600;
 const VALID: LangCode[] = ["hr", "sr", "de", "en", "es"];
 const ALL_LANGS: LangCode[] = ["sl", "hr", "sr", "de", "en", "es"];
 
+// Outer dynamic segment is named `[slug]` because it's shared with the
+// album route at /<slug>; here it's interpreted as a language code.
 export async function generateStaticParams() {
-  return VALID.map((lang) => ({ lang }));
+  return VALID.map((slug) => ({ slug }));
 }
 
-export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
-  const { lang } = await params;
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug: lang } = await params;
   if (!(VALID as string[]).includes(lang)) return {};
   const langCode = lang as LangCode;
 
@@ -64,8 +66,8 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
   };
 }
 
-export default async function LangBlogIndex({ params }: { params: Promise<{ lang: string }> }) {
-  const { lang } = await params;
+export default async function LangBlogIndex({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug: lang } = await params;
   if (!(VALID as string[]).includes(lang)) notFound();
   const langCode = lang as LangCode;
   const posts = await getAllPosts(langCode);
