@@ -2,31 +2,36 @@
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { LanguageSwitcher, HOME_HREFLANG } from "./LanguageSwitcher";
+import { LanguageSwitcher, HOME_HREFLANG, type LangCode } from "./LanguageSwitcher";
 import { UserButton } from "@clerk/nextjs";
 
-const LINKS = [
-  { href: "#how",       label: "Kako deluje" },
-  { href: "#templates", label: "Predloge" },
-  { href: "#pricing",   label: "Cenik" },
-  { href: "#faq",       label: "FAQ" },
-];
+export interface HomeMobileMenuLabels {
+  open: string;
+  close: string;
+  language: string;
+  languageAria: string;
+  signIn: string;
+  dashboard: string;
+  cta: string;
+}
+
+export interface HomeMobileMenuProps {
+  signedIn?: boolean;
+  lang: LangCode;
+  links: { href: string; label: string }[];
+  labels: HomeMobileMenuLabels;
+}
 
 /**
  * Hamburger menu for the homepage navbar — visible only below `md`.
- * Opens a backdrop + sheet that exposes section anchors and the
- * Prijava / Nadzorna plošča link, both of which are hidden in the
- * desktop layout.
  *
- * `signedIn` comes from the SERVER-rendered homepage (which calls
- * Clerk's auth() during SSR) so the menu doesn't flash the "Prijava"
- * link while Clerk's client SDK boots. UserButton itself is still a
- * client component but can render directly here.
+ * `signedIn` is resolved server-side on each homepage (Clerk's auth() in SSR)
+ * so the menu doesn't flash the wrong auth state during Clerk hydration.
+ * Labels + links are passed in so the same component drives every locale.
  */
-export function HomeMobileMenu({ signedIn = false }: { signedIn?: boolean }) {
+export function HomeMobileMenu({ signedIn = false, lang, links, labels }: HomeMobileMenuProps) {
   const [open, setOpen] = useState(false);
 
-  // Close on route change-ish behaviour: also close when Escape is pressed.
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setOpen(false); };
@@ -34,7 +39,6 @@ export function HomeMobileMenu({ signedIn = false }: { signedIn?: boolean }) {
     return () => document.removeEventListener("keydown", onKey);
   }, [open]);
 
-  // Lock body scroll while the sheet is open.
   useEffect(() => {
     if (!open) return;
     const prev = document.body.style.overflow;
@@ -47,7 +51,7 @@ export function HomeMobileMenu({ signedIn = false }: { signedIn?: boolean }) {
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
-        aria-label={open ? "Zapri meni" : "Odpri meni"}
+        aria-label={open ? labels.close : labels.open}
         aria-expanded={open}
         className="md:hidden inline-flex items-center justify-center w-10 h-10 -mr-2 rounded-lg hover:bg-gray-100 text-[#0F1729] transition-colors"
       >
@@ -74,26 +78,26 @@ export function HomeMobileMenu({ signedIn = false }: { signedIn?: boolean }) {
             <div className="max-w-7xl mx-auto px-6 py-4 flex flex-col gap-1">
               <div className="px-3 pb-3 mb-2 border-b border-gray-100 flex items-center justify-between gap-3">
                 <span className="text-xs font-semibold uppercase tracking-wider text-gray-400">
-                  Jezik
+                  {labels.language}
                 </span>
-                <LanguageSwitcher current="sl" languages={HOME_HREFLANG} ariaLabel="Spremeni jezik" />
+                <LanguageSwitcher current={lang} languages={HOME_HREFLANG} ariaLabel={labels.languageAria} />
               </div>
-              {LINKS.map((l) => (
-                <a
-                  key={l.href}
-                  href={l.href}
-                  role="menuitem"
-                  onClick={() => setOpen(false)}
-                  className="px-3 py-3 rounded-lg text-base font-semibold text-[#0F1729] hover:bg-[#FFF9EC] transition-colors"
-                >
-                  {l.label}
-                </a>
-              ))}
+              {links.map((l) => {
+                const isAnchor = l.href.startsWith("#");
+                const className = "px-3 py-3 rounded-lg text-base font-semibold text-[#0F1729] hover:bg-[#FFF9EC] transition-colors";
+                return isAnchor ? (
+                  <a key={l.href} href={l.href} role="menuitem" onClick={() => setOpen(false)} className={className}>
+                    {l.label}
+                  </a>
+                ) : (
+                  <Link key={l.href} href={l.href} role="menuitem" onClick={() => setOpen(false)} className={className}>
+                    {l.label}
+                  </Link>
+                );
+              })}
               <div className="my-2 h-px bg-gray-100" />
-              {/* Auth-aware row — signed out: "Prijava"; signed in:
-                  "Nadzorna plošča" + avatar. The `signedIn` flag is
-                  resolved server-side so this never flashes the wrong
-                  state during Clerk hydration. */}
+              {/* Auth-aware row — signed out: sign-in; signed in:
+                  dashboard + avatar. */}
               {signedIn ? (
                 <div className="px-3 py-2 flex items-center justify-between gap-3" role="menuitem">
                   <Link
@@ -101,7 +105,7 @@ export function HomeMobileMenu({ signedIn = false }: { signedIn?: boolean }) {
                     onClick={() => setOpen(false)}
                     className="text-base font-medium text-gray-700 hover:text-[#0F1729] transition-colors"
                   >
-                    Nadzorna plošča
+                    {labels.dashboard}
                   </Link>
                   <UserButton
                     appearance={{ elements: { userButtonAvatarBox: { width: 30, height: 30 } } }}
@@ -114,7 +118,7 @@ export function HomeMobileMenu({ signedIn = false }: { signedIn?: boolean }) {
                   role="menuitem"
                   className="px-3 py-3 rounded-lg text-base font-medium text-gray-600 hover:bg-gray-50 transition-colors"
                 >
-                  Prijava
+                  {labels.signIn}
                 </Link>
               )}
               {!signedIn && (
@@ -128,7 +132,7 @@ export function HomeMobileMenu({ signedIn = false }: { signedIn?: boolean }) {
                     boxShadow: "0 6px 18px rgba(255,201,77,0.45)",
                   }}
                 >
-                  Začni brezplačno
+                  {labels.cta}
                   <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
                   </svg>

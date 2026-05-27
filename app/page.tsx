@@ -202,7 +202,26 @@ export default async function HomePage() {
               </svg>
             </Link>
             )}
-            <HomeMobileMenu signedIn={signedIn} />
+            <HomeMobileMenu
+              signedIn={signedIn}
+              lang="sl"
+              links={[
+                { href: "#how", label: "Kako deluje" },
+                { href: "#templates", label: "Predloge" },
+                { href: "#pricing", label: "Cenik" },
+                { href: "#faq", label: "FAQ" },
+                { href: "/contact", label: "Kontakt" },
+              ]}
+              labels={{
+                open: "Odpri meni",
+                close: "Zapri meni",
+                language: "Jezik",
+                languageAria: "Spremeni jezik",
+                signIn: "Prijava",
+                dashboard: "Nadzorna plošča",
+                cta: "Začni brezplačno",
+              }}
+            />
           </div>
         </nav>
       </header>

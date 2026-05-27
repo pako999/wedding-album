@@ -4,6 +4,7 @@ import { LanguageSwitcher, HOME_HREFLANG, type LangCode } from "@/components/Lan
 import { SeoFooter } from "@/components/SeoFooter";
 import { GuestcamLogo } from "@/components/GuestcamLogo";
 import { HeaderAuthButtons } from "@/components/HeaderAuthButtons";
+import { HomeMobileMenu } from "@/components/HomeMobileMenu";
 
 type Lang = Exclude<LangCode, "sl">;
 
@@ -78,6 +79,13 @@ interface Copy {
   switcherAria: string;
   navHome: string;
   navCta: string;
+  navBlog: string;
+  navContact: string;
+  navSignIn: string;
+  navDashboard: string;
+  navLanguage: string;
+  navOpenMenu: string;
+  navCloseMenu: string;
   announce: string;
   announceLink: string;
   heroEyebrow: string;
@@ -131,6 +139,8 @@ interface Copy {
 const COPY: Record<Lang, Copy> = {
   hr: {
     switcherAria: "Promijeni jezik", navHome: "Početna", navCta: "Kreiraj galeriju",
+    navBlog: "Blog", navContact: "Kontakt", navSignIn: "Prijava", navDashboard: "Kontrolna ploča",
+    navLanguage: "Jezik", navOpenMenu: "Otvori izbornik", navCloseMenu: "Zatvori izbornik",
     announce: "Kreirajte galeriju danas — besplatno zauvijek! 🎉", announceLink: "Započni odmah →",
     heroEyebrow: "QR kod za vjenčanja · rođendane · obljetnice · baby tuš",
     heroHead: { lead: "Fotografije s vjenčanja koje", accent: "inače nikada ne biste vidjeli", trail: "." },
@@ -205,6 +215,8 @@ const COPY: Record<Lang, Copy> = {
   },
   sr: {
     switcherAria: "Promeni jezik", navHome: "Početna", navCta: "Napravi galeriju",
+    navBlog: "Blog", navContact: "Kontakt", navSignIn: "Prijava", navDashboard: "Kontrolna tabla",
+    navLanguage: "Jezik", navOpenMenu: "Otvori meni", navCloseMenu: "Zatvori meni",
     announce: "Napravite galeriju danas — besplatno zauvek! 🎉", announceLink: "Započni odmah →",
     heroEyebrow: "QR kod za venčanja · rođendane · godišnjice · baby tuš",
     heroHead: { lead: "Fotografije sa venčanja koje", accent: "inače nikada ne biste videli", trail: "." },
@@ -279,6 +291,8 @@ const COPY: Record<Lang, Copy> = {
   },
   de: {
     switcherAria: "Sprache ändern", navHome: "Startseite", navCta: "Album erstellen",
+    navBlog: "Blog", navContact: "Kontakt", navSignIn: "Anmelden", navDashboard: "Übersicht",
+    navLanguage: "Sprache", navOpenMenu: "Menü öffnen", navCloseMenu: "Menü schließen",
     announce: "Erstellen Sie heute eine Galerie — für immer kostenlos! 🎉", announceLink: "Jetzt starten →",
     heroEyebrow: "QR-Code für Hochzeiten · Geburtstage · Jubiläen · Babyparty",
     heroHead: { lead: "Hochzeitsfotos, die Sie sonst", accent: "nie zu sehen bekommen würden", trail: "." },
@@ -353,6 +367,8 @@ const COPY: Record<Lang, Copy> = {
   },
   en: {
     switcherAria: "Change language", navHome: "Home", navCta: "Create gallery",
+    navBlog: "Blog", navContact: "Contact", navSignIn: "Sign in", navDashboard: "Dashboard",
+    navLanguage: "Language", navOpenMenu: "Open menu", navCloseMenu: "Close menu",
     announce: "Create a gallery today — free forever! 🎉", announceLink: "Start now →",
     heroEyebrow: "QR codes for weddings · birthdays · anniversaries · baby showers",
     heroHead: { lead: "The wedding photos you", accent: "would otherwise never see", trail: "." },
@@ -427,6 +443,8 @@ const COPY: Record<Lang, Copy> = {
   },
   es: {
     switcherAria: "Cambiar idioma", navHome: "Inicio", navCta: "Crear galería",
+    navBlog: "Blog", navContact: "Contacto", navSignIn: "Iniciar sesión", navDashboard: "Panel",
+    navLanguage: "Idioma", navOpenMenu: "Abrir menú", navCloseMenu: "Cerrar menú",
     announce: "Crea tu galería hoy — gratis para siempre 🎉", announceLink: "Empieza ahora →",
     heroEyebrow: "QR para bodas · cumpleaños · aniversarios · baby showers",
     heroHead: { lead: "Las fotos de tu boda que", accent: "de otra forma nunca verías", trail: "." },
@@ -592,12 +610,29 @@ export async function LocalizedHomePage({ lang }: { lang: Lang }) {
             </Link>
             <HeaderAuthButtons lang={lang} />
             {!signedIn && (
-              <Link href="/dashboard/new" className="inline-flex items-center gap-1.5 px-4 sm:px-5 py-2 sm:py-2.5 rounded-full text-sm font-bold text-[#0F1729] transition-all duration-200 hover:scale-[1.03]"
+              <Link href="/dashboard/new" className="hidden sm:inline-flex items-center gap-1.5 px-4 sm:px-5 py-2 sm:py-2.5 rounded-full text-sm font-bold text-[#0F1729] transition-all duration-200 hover:scale-[1.03]"
                 style={{ background: "linear-gradient(135deg, #FFD966 0%, #FFC94D 55%, #F0B429 100%)", boxShadow: "0 6px 18px rgba(255,201,77,0.45)" }}>
                 {t.navCta}
                 <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>
               </Link>
             )}
+            <HomeMobileMenu
+              signedIn={signedIn}
+              lang={lang}
+              links={[
+                { href: `/${lang}/blog`, label: t.navBlog },
+                { href: `/${lang}/contact`, label: t.navContact },
+              ]}
+              labels={{
+                open: t.navOpenMenu,
+                close: t.navCloseMenu,
+                language: t.navLanguage,
+                languageAria: t.switcherAria,
+                signIn: t.navSignIn,
+                dashboard: t.navDashboard,
+                cta: t.navCta,
+              }}
+            />
           </div>
         </nav>
       </header>
