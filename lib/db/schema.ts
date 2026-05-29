@@ -44,7 +44,9 @@ export const albums = pgTable(
     // Film generation tier (separate add-on from album plan)
     filmTier: text("film_tier", { enum: ["free", "pro", "premium"] }).notNull().default("free"),
 
-    // Stripe
+    // Payment reference — holds the Paddle transaction id (txn_…) for new
+    // purchases, plus historical Stripe sessions (cs_…) and admin sentinels
+    // (comp:… / manual_…). Column name kept for migration stability.
     stripeSessionId: text("stripe_session_id"),
 
     // Limits

@@ -40,7 +40,7 @@ export const termsDoc: Record<LangCode, LegalDoc> = {
       ] },
       { title: "5. Plačila in vračila", blocks: [
         { type: "ul", items: [
-          "Plačila procesiramo prek storitve Stripe (kartice, Apple Pay, Google Pay).",
+          "Plačila in izdajo računov izvaja naš preprodajalec Paddle (Paddle.com Market Ltd) kot pogodbeni prodajalec (Merchant of Record), ki obračuna tudi DDV. Paddle sprejema kartice, Apple Pay, Google Pay in PayPal.",
           "Cene so navedene v EUR brez DDV (DDV se obračuna v skladu z veljavno zakonodajo).",
           "Ponujamo 30-dnevno garancijo vračila denarja za prvi nakup paketa. Vračilo lahko zahtevate prek e-pošte hello@guestcam.si.",
         ] },
@@ -111,7 +111,7 @@ export const termsDoc: Record<LangCode, LegalDoc> = {
       ] },
       { title: "5. Plaćanja i povrati", blocks: [
         { type: "ul", items: [
-          "Plaćanja procesiramo putem usluge Stripe (kartice, Apple Pay, Google Pay).",
+          "Plaćanja i izdavanje računa obavlja naš preprodavač Paddle (Paddle.com Market Ltd) kao ugovorni prodavatelj (Merchant of Record), koji obračunava i PDV. Paddle prihvaća kartice, Apple Pay, Google Pay i PayPal.",
           "Cijene su navedene u EUR bez PDV-a (PDV se obračunava sukladno važećem zakonodavstvu).",
           "Nudimo 30-dnevno jamstvo povrata novca za prvu kupnju paketa. Povrat zatražite e-poštom na hello@guestcam.si.",
         ] },
@@ -182,7 +182,7 @@ export const termsDoc: Record<LangCode, LegalDoc> = {
       ] },
       { title: "5. Plaćanja i povraćaji", blocks: [
         { type: "ul", items: [
-          "Plaćanja procesiramo putem usluge Stripe (kartice, Apple Pay, Google Pay).",
+          "Plaćanja i izdavanje računa obavlja naš preprodavač Paddle (Paddle.com Market Ltd) kao ugovorni prodavatelj (Merchant of Record), koji obračunava i PDV. Paddle prihvaća kartice, Apple Pay, Google Pay i PayPal.",
           "Cene su navedene u EUR bez PDV-a (PDV se obračunava u skladu sa važećim zakonodavstvom).",
           "Nudimo 30-dnevnu garanciju povraćaja novca za prvu kupovinu paketa. Povraćaj zatražite e-poštom na hello@guestcam.si.",
         ] },
@@ -253,7 +253,7 @@ export const termsDoc: Record<LangCode, LegalDoc> = {
       ] },
       { title: "5. Zahlungen und Rückerstattungen", blocks: [
         { type: "ul", items: [
-          "Zahlungen verarbeiten wir über Stripe (Karten, Apple Pay, Google Pay).",
+          "Zahlungen und Rechnungsstellung erfolgen über unseren Reseller Paddle (Paddle.com Market Ltd), der als Verkäufer (Merchant of Record) auftritt und auch die USt. abführt. Paddle akzeptiert Karten, Apple Pay, Google Pay und PayPal.",
           "Preise sind in EUR ohne MwSt. angegeben (MwSt. wird gemäß geltendem Recht berechnet).",
           "Wir gewähren eine 30-tägige Geld-zurück-Garantie für den ersten Paketkauf. Die Rückerstattung können Sie per E-Mail an hello@guestcam.si anfordern.",
         ] },
@@ -324,7 +324,7 @@ export const termsDoc: Record<LangCode, LegalDoc> = {
       ] },
       { title: "5. Payments and refunds", blocks: [
         { type: "ul", items: [
-          "Payments are processed via Stripe (cards, Apple Pay, Google Pay).",
+          "Payments and invoicing are handled by our reseller Paddle (Paddle.com Market Ltd), which acts as the Merchant of Record and is responsible for charging VAT. Paddle accepts cards, Apple Pay, Google Pay and PayPal.",
           "Prices are stated in EUR excluding VAT (VAT is charged according to applicable law).",
           "We offer a 30-day money-back guarantee for the first plan purchase. Request a refund by emailing hello@guestcam.si.",
         ] },
@@ -395,7 +395,7 @@ export const termsDoc: Record<LangCode, LegalDoc> = {
       ] },
       { title: "5. Pagos y reembolsos", blocks: [
         { type: "ul", items: [
-          "Procesamos los pagos a través de Stripe (tarjetas, Apple Pay, Google Pay).",
+          "Los pagos y la facturación los gestiona nuestro revendedor Paddle (Paddle.com Market Ltd), que actúa como vendedor oficial (Merchant of Record) y se encarga de aplicar el IVA. Paddle acepta tarjetas, Apple Pay, Google Pay y PayPal.",
           "Los precios se indican en EUR sin IVA (el IVA se aplica según la legislación vigente).",
           "Ofrecemos garantía de devolución de 30 días en la primera compra de un plan. Solicita el reembolso por email a hello@guestcam.si.",
         ] },

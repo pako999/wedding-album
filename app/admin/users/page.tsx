@@ -18,12 +18,11 @@ interface UserRow {
 export default async function AdminUsers() {
   // Aggregate album counts per owner from our DB.
   //
-  // "Paid" counts ONLY albums that have a real Stripe checkout session
-  // attached (stripeSessionId starts with "cs_"). This deliberately
-  // excludes:
+  // "Paid" counts ONLY albums with a real payment reference attached —
+  // a Paddle transaction (txn_…) or a historical Stripe session (cs_…).
+  // This deliberately excludes:
   //   • test data manually flipped to a paid plan via direct DB writes
-  //     (we wrote stripeSessionId values like "manual_fix_…" while
-  //     diagnosing webhook issues)
+  //     (we wrote stripeSessionId values like "manual_fix_…" / "comp:…")
   //   • expired paid plans where the row still says plus/premium but
   //     the access window has lapsed (expiresAt < now)
   // so the Uporabniki stat reflects actual paying customers.
@@ -35,7 +34,7 @@ export default async function AdminUsers() {
       albumCount: count(),
       paidAlbumCount: sql<number>`SUM(CASE
         WHEN ${albums.plan} <> 'free'
-          AND ${albums.stripeSessionId} LIKE 'cs_%'
+          AND (${albums.stripeSessionId} LIKE 'txn_%' OR ${albums.stripeSessionId} LIKE 'cs_%')
           AND (${albums.expiresAt} IS NULL OR ${albums.expiresAt} > ${now})
         THEN 1 ELSE 0
       END)`,

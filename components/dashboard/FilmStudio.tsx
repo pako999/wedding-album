@@ -50,7 +50,7 @@ export function FilmStudio({ album }: { album: Album }) {
   const rawFilmTier = (album.filmTier ?? "free") as "free" | "pro" | "premium";
   // Premium plan owners get full Film Studio access even if the filmTier
   // column is still "free" (e.g. paid for the plan, not the standalone film
-  // unlock). The Stripe webhook *should* also flip filmTier when a plan
+  // unlock). The Paddle webhook *should* also flip filmTier when a plan
   // is purchased, but treat the plan as the source of truth at render time
   // so a missed webhook never leaves a paying customer locked out.
   const effectiveFilmTier: "free" | "pro" | "premium" =

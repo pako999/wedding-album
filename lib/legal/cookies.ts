@@ -16,7 +16,7 @@ export const cookiesDoc: Record<LangCode, LegalDoc> = {
           "guestcam_consent — vaš izbor o piškotkih, da vas ne sprašujemo vedno znova. Neobvezen.",
         ] },
         { type: "h3", text: "1.2 Piškotki tretjih oseb" },
-        { type: "p", text: "Stripe lahko ob plačilu nastavi lastne piškotke za preprečevanje zlorab. Ti piškotki niso nameščeni na guestcam.si samem — pojavijo se le na strani checkout.stripe.com med dejansko transakcijo." },
+        { type: "p", text: "Paddle (naš preprodajalec za plačila) lahko ob plačilu nastavi lastne piškotke za preprečevanje zlorab. Ti piškotki niso nameščeni na guestcam.si samem — pojavijo se le v Paddlovem postopku plačila med dejansko transakcijo." },
       ] },
       { title: "2. Kaj NE uporabljamo", blocks: [
         { type: "ul", items: [
@@ -52,7 +52,7 @@ export const cookiesDoc: Record<LangCode, LegalDoc> = {
           "guestcam_consent — vaš odabir o kolačićima, da vas ne pitamo svaki put. Neobvezni.",
         ] },
         { type: "h3", text: "1.2 Kolačići trećih strana" },
-        { type: "p", text: "Stripe može tijekom plaćanja postaviti vlastite kolačiće radi sprječavanja zlouporabe. Ti se kolačići ne postavljaju na guestcam.si — pojavljuju se isključivo na stranici checkout.stripe.com tijekom stvarne transakcije." },
+        { type: "p", text: "Paddle (naš preprodavač za plaćanja) može tijekom plaćanja postaviti vlastite kolačiće radi sprječavanja zlouporabe. Ti se kolačići ne postavljaju na guestcam.si — pojavljuju se isključivo u Paddleovom postupku plaćanja tijekom stvarne transakcije." },
       ] },
       { title: "2. Što NE koristimo", blocks: [
         { type: "ul", items: [
@@ -88,7 +88,7 @@ export const cookiesDoc: Record<LangCode, LegalDoc> = {
           "guestcam_consent — vaš izbor o kolačićima, da vas ne pitamo svaki put. Neobavezni.",
         ] },
         { type: "h3", text: "1.2 Kolačići trećih strana" },
-        { type: "p", text: "Stripe može tokom plaćanja postaviti sopstvene kolačiće radi sprečavanja zloupotreba. Ti kolačići se ne postavljaju na guestcam.si — pojavljuju se isključivo na stranici checkout.stripe.com tokom stvarne transakcije." },
+        { type: "p", text: "Paddle (naš preprodavac za plaćanja) može tokom plaćanja postaviti sopstvene kolačiće radi sprečavanja zloupotreba. Ti kolačići se ne postavljaju na guestcam.si — pojavljuju se isključivo u Paddleovom postupku plaćanja tokom stvarne transakcije." },
       ] },
       { title: "2. Šta NE koristimo", blocks: [
         { type: "ul", items: [
@@ -124,7 +124,7 @@ export const cookiesDoc: Record<LangCode, LegalDoc> = {
           "guestcam_consent — Ihre Cookie-Auswahl, damit wir nicht jedes Mal nachfragen. Optional.",
         ] },
         { type: "h3", text: "1.2 Cookies von Drittanbietern" },
-        { type: "p", text: "Stripe kann während des Zahlungsvorgangs eigene Cookies zur Betrugsprävention setzen. Diese Cookies werden nicht auf guestcam.si selbst gesetzt — sie erscheinen ausschließlich auf checkout.stripe.com während der eigentlichen Transaktion." },
+        { type: "p", text: "Paddle (unser Zahlungs-Reseller) kann während des Zahlungsvorgangs eigene Cookies zur Betrugsprävention setzen. Diese Cookies werden nicht auf guestcam.si selbst gesetzt — sie erscheinen ausschließlich im Paddle-Checkout während der eigentlichen Transaktion." },
       ] },
       { title: "2. Was wir NICHT verwenden", blocks: [
         { type: "ul", items: [
@@ -160,7 +160,7 @@ export const cookiesDoc: Record<LangCode, LegalDoc> = {
           "guestcam_consent — your cookie choice, so we don't ask again. Optional.",
         ] },
         { type: "h3", text: "1.2 Third-party cookies" },
-        { type: "p", text: "Stripe may set its own cookies during payment for fraud prevention. These cookies are not set on guestcam.si itself — they only appear on checkout.stripe.com during the actual transaction." },
+        { type: "p", text: "Paddle (our payments reseller) may set its own cookies during payment for fraud prevention. These cookies are not set on guestcam.si itself — they only appear in the Paddle checkout during the actual transaction." },
       ] },
       { title: "2. What we do NOT use", blocks: [
         { type: "ul", items: [
@@ -196,7 +196,7 @@ export const cookiesDoc: Record<LangCode, LegalDoc> = {
           "guestcam_consent — tu elección sobre cookies, para no volver a preguntarte. Opcional.",
         ] },
         { type: "h3", text: "1.2 Cookies de terceros" },
-        { type: "p", text: "Stripe puede establecer sus propias cookies durante el pago para prevenir fraudes. Estas cookies no se instalan en guestcam.si — solo aparecen en checkout.stripe.com durante la transacción real." },
+        { type: "p", text: "Paddle (nuestro revendedor de pagos) puede establecer sus propias cookies durante el pago para prevenir fraudes. Estas cookies no se instalan en guestcam.si — solo aparecen en el proceso de pago de Paddle durante la transacción real." },
       ] },
       { title: "2. Lo que NO utilizamos", blocks: [
         { type: "ul", items: [

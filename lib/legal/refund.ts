@@ -17,7 +17,7 @@ export const refundDoc: Record<LangCode, LegalDoc> = {
         { type: "ul", items: [
           "Zahtevo oddate v 30 dneh od datuma plačila.",
           "Gre za prvi nakup plačljivega paketa na vašem računu.",
-          "Plačilo je bilo izvedeno prek našega ponudnika Stripe.",
+          "Plačilo je bilo izvedeno prek našega preprodajalca Paddle.",
         ] },
         { type: "p", text: "Po odobritvi vračila se dostop do funkcij plačljivega paketa zaključi, album pa preide nazaj na pogoje brezplačnega paketa." },
       ] },
@@ -76,7 +76,7 @@ export const refundDoc: Record<LangCode, LegalDoc> = {
         { type: "ul", items: [
           "Zahtjev podnosite u roku od 30 dana od datuma plaćanja.",
           "Riječ je o prvoj kupnji plaćenog paketa na vašem računu.",
-          "Plaćanje je izvršeno putem našeg pružatelja Stripe.",
+          "Plaćanje je izvršeno putem našeg preprodavača Paddle.",
         ] },
         { type: "p", text: "Nakon odobrenja povrata pristup značajkama plaćenog paketa prestaje, a album se vraća na uvjete besplatnog paketa." },
       ] },
@@ -135,7 +135,7 @@ export const refundDoc: Record<LangCode, LegalDoc> = {
         { type: "ul", items: [
           "Zahtev podnosite u roku od 30 dana od datuma plaćanja.",
           "Reč je o prvoj kupovini plaćenog paketa na vašem nalogu.",
-          "Plaćanje je izvršeno preko našeg pružaoca Stripe.",
+          "Plaćanje je izvršeno preko našeg preprodavca Paddle.",
         ] },
         { type: "p", text: "Nakon odobrenja povraćaja pristup funkcijama plaćenog paketa prestaje, a album se vraća na uslove besplatnog paketa." },
       ] },
@@ -194,7 +194,7 @@ export const refundDoc: Record<LangCode, LegalDoc> = {
         { type: "ul", items: [
           "Sie stellen den Antrag innerhalb von 30 Tagen nach dem Zahlungsdatum.",
           "Es handelt sich um den ersten Kauf eines kostenpflichtigen Pakets in Ihrem Konto.",
-          "Die Zahlung wurde über unseren Anbieter Stripe abgewickelt.",
+          "Die Zahlung wurde über unseren Reseller Paddle abgewickelt.",
         ] },
         { type: "p", text: "Nach Genehmigung der Rückerstattung endet der Zugriff auf die Funktionen des kostenpflichtigen Pakets und das Album kehrt zu den Bedingungen des kostenlosen Pakets zurück." },
       ] },
@@ -253,7 +253,7 @@ export const refundDoc: Record<LangCode, LegalDoc> = {
         { type: "ul", items: [
           "You submit the request within 30 days of the payment date.",
           "It is the first purchase of a paid plan on your account.",
-          "The payment was processed through our provider, Stripe.",
+          "The payment was processed through our reseller, Paddle.",
         ] },
         { type: "p", text: "Once a refund is approved, access to paid-plan features ends and the album reverts to the free-plan terms." },
       ] },
@@ -312,7 +312,7 @@ export const refundDoc: Record<LangCode, LegalDoc> = {
         { type: "ul", items: [
           "Presentas la solicitud dentro de los 30 días desde la fecha de pago.",
           "Se trata de la primera compra de un plan de pago en tu cuenta.",
-          "El pago se procesó a través de nuestro proveedor, Stripe.",
+          "El pago se procesó a través de nuestro revendedor, Paddle.",
         ] },
         { type: "p", text: "Una vez aprobado el reembolso, finaliza el acceso a las funciones del plan de pago y el álbum vuelve a las condiciones del plan gratuito." },
       ] },

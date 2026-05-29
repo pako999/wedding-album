@@ -1,12 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import Stripe from "stripe";
 import { auth } from "@clerk/nextjs/server";
 import { db } from "@/lib/db";
 import { albums } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
+import { createTransaction, paddleConfigured, PaddleError, type AdHocLineItem } from "@/lib/paddle";
 
-const APP_URL =
-  process.env.NEXT_PUBLIC_APP_URL ?? "https://guestcam.si";
+export const runtime = "nodejs";
 
 const PLAN_CONFIG: Record<string, { name: string; amount: number }> = {
   basic:      { name: "Guestcam Basic",         amount: 3900 },
@@ -19,11 +18,9 @@ const PLAN_CONFIG: Record<string, { name: string; amount: number }> = {
 type PlanId = "basic" | "plus" | "premium" | "film_pro" | "film_premium";
 
 export async function POST(req: NextRequest) {
-  const stripeKey = process.env.STRIPE_SECRET_KEY;
-  if (!stripeKey) {
+  if (!paddleConfigured()) {
     return NextResponse.json({ error: "Payments not configured" }, { status: 503 });
   }
-  const stripe = new Stripe(stripeKey);
 
   // Auth — verify the caller is logged in
   let userId: string | null = null;
@@ -60,43 +57,26 @@ export async function POST(req: NextRequest) {
 
   const plan = PLAN_CONFIG[planId];
 
-  const lineItems: Stripe.Checkout.SessionCreateParams["line_items"] = [
-    {
-      quantity: 1,
-      price_data: {
-        currency: "eur",
-        unit_amount: plan.amount,
-        product_data: { name: plan.name },
-      },
-    },
-  ];
-
+  const items: AdHocLineItem[] = [{ name: plan.name, amountCents: plan.amount }];
   if (tableStands) {
-    lineItems!.push({
-      quantity: 1,
-      price_data: {
-        currency: "eur",
-        unit_amount: 900,
-        product_data: { name: "Guestcam Podstavki za mizo" },
-      },
-    });
+    items.push({ name: "Guestcam Podstavki za mizo", amountCents: 900 });
   }
 
-  const session = await stripe.checkout.sessions.create({
-    mode: "payment",
-    payment_method_types: ["card", "link"],
-    line_items: lineItems,
-    // session_id is filled in by Stripe; the dashboard page uses it
-    // to reconcile the upgrade if the webhook didn't fire (e.g. apex
-    // domain redirect drops Stripe's POST). Belt-and-braces.
-    success_url: `${APP_URL}/dashboard/${albumSlug}?upgraded=1&session_id={CHECKOUT_SESSION_ID}`,
-    cancel_url: `${APP_URL}/dashboard/${albumSlug}/upgrade`,
-    allow_promotion_codes: true,
-    metadata: {
-      albumSlug,
-      planId,
-    },
-  });
-
-  return NextResponse.json({ url: session.url });
+  // Create a Paddle transaction with ad-hoc prices. The client opens the
+  // Paddle.js overlay with the returned transaction id; both the webhook
+  // (transaction.completed) and the success-URL reconcile read planId/albumSlug
+  // back from custom_data.
+  try {
+    const txn = await createTransaction({
+      items,
+      currency: "EUR",
+      customData: { albumSlug, planId },
+    });
+    return NextResponse.json({ transactionId: txn.id });
+  } catch (err) {
+    const status = err instanceof PaddleError ? err.status : 500;
+    const detail = err instanceof PaddleError ? err.message : "Checkout failed";
+    console.error("[paddle checkout] create transaction failed:", err);
+    return NextResponse.json({ error: detail }, { status: status >= 400 && status < 600 ? status : 500 });
+  }
 }

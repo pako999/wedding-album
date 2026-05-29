@@ -34,7 +34,7 @@ export async function createAlbum(formData: FormData) {
   const password   = (formData.get("password")     as string ?? "").trim() || null;
   // Optional: when the owner came from a pricing card (homepage → wizard),
   // remember which paid plan they picked so we can route them straight to
-  // the Stripe checkout step after the onboarding wizard.
+  // the Paddle checkout step after the onboarding wizard.
   const planRaw    = (formData.get("plan")         as string ?? "").trim();
   const plan       = (planRaw === "basic" || planRaw === "plus" || planRaw === "premium") ? planRaw : null;
 
