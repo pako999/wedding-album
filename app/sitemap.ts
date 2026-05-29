@@ -119,6 +119,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { path: "/terms",   priority: 0.3, changeFrequency: "yearly", lastModified: LAST_EDITED.legalSl },
     { path: "/gdpr",    priority: 0.3, changeFrequency: "yearly", lastModified: LAST_EDITED.legalSl },
     { path: "/cookies", priority: 0.3, changeFrequency: "yearly", lastModified: LAST_EDITED.legalSl },
+    { path: "/refund",  priority: 0.3, changeFrequency: "yearly", lastModified: LAST_EDITED.legalSl },
 
     // Contact pages
     { path: "/contact",    priority: 0.5, changeFrequency: "yearly", lastModified: LAST_EDITED.contact },
@@ -130,7 +131,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
     // Legal — localized
     ...(["hr", "sr", "de", "en", "es"].flatMap((lang) =>
-      ["privacy", "terms", "gdpr", "cookies"].map((doc) => ({
+      ["privacy", "terms", "gdpr", "cookies", "refund"].map((doc) => ({
         path: `/${lang}/${doc}`,
         priority: 0.25,
         changeFrequency: "yearly" as ChangeFreq,

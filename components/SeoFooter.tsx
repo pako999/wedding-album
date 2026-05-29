@@ -30,6 +30,7 @@ interface FooterCopy {
   terms: string;
   cookies: string;
   gdpr: string;
+  refund: string;
   contact: string;
 }
 
@@ -40,7 +41,7 @@ const COPY: Record<Lang, FooterCopy> = {
     blog: "Blog", guides: "Vodniki",
     guideLabel: "QR koda za poroko", guideUrl: "/sl/qr-koda-poroka",
     altLabel: "Primerjava aplikacij", altUrl: "/sl/alternative-aplikacije",
-    legal: "Pravno", privacy: "Zasebnost", terms: "Pogoji uporabe", cookies: "Piškotki", gdpr: "GDPR", contact: "Kontakt",
+    legal: "Pravno", privacy: "Zasebnost", terms: "Pogoji uporabe", cookies: "Piškotki", gdpr: "GDPR", refund: "Vračilo denarja", contact: "Kontakt",
   },
   hr: {
     brandDesc: "Vjenčana galerija s QR kodom — bez aplikacije. Gosti fotografiraju, vi skupljate uspomene.",
@@ -48,7 +49,7 @@ const COPY: Record<Lang, FooterCopy> = {
     blog: "Blog", guides: "Vodiči",
     guideLabel: "QR kod za vjenčanje", guideUrl: "/hr/qr-kod-vjencanje",
     altLabel: "Usporedba aplikacija", altUrl: "/hr/alternativne-aplikacije",
-    legal: "Pravno", privacy: "Privatnost", terms: "Uvjeti", cookies: "Kolačići", gdpr: "GDPR", contact: "Kontakt",
+    legal: "Pravno", privacy: "Privatnost", terms: "Uvjeti", cookies: "Kolačići", gdpr: "GDPR", refund: "Povrat novca", contact: "Kontakt",
   },
   sr: {
     brandDesc: "Galerija sa venčanja sa QR kodom — bez aplikacije. Gosti fotografišu, vi skupljate uspomene.",
@@ -56,7 +57,7 @@ const COPY: Record<Lang, FooterCopy> = {
     blog: "Blog", guides: "Vodiči",
     guideLabel: "QR kod za venčanje", guideUrl: "/sr/qr-kod-vencanje",
     altLabel: "Poređenje aplikacija", altUrl: "/sr/alternativne-aplikacije",
-    legal: "Pravno", privacy: "Privatnost", terms: "Uslovi", cookies: "Kolačići", gdpr: "GDPR", contact: "Kontakt",
+    legal: "Pravno", privacy: "Privatnost", terms: "Uslovi", cookies: "Kolačići", gdpr: "GDPR", refund: "Povraćaj novca", contact: "Kontakt",
   },
   de: {
     brandDesc: "Hochzeitsgalerie mit QR-Code — keine App nötig. Gäste fotografieren, Sie sammeln Erinnerungen.",
@@ -64,7 +65,7 @@ const COPY: Record<Lang, FooterCopy> = {
     blog: "Blog", guides: "Anleitungen",
     guideLabel: "Hochzeitsfotos sammeln", guideUrl: "/de/hochzeitsfotos-sammeln",
     altLabel: "App-Vergleich", altUrl: "/de/alternativen",
-    legal: "Rechtliches", privacy: "Datenschutz", terms: "AGB", cookies: "Cookies", gdpr: "DSGVO", contact: "Kontakt",
+    legal: "Rechtliches", privacy: "Datenschutz", terms: "AGB", cookies: "Cookies", gdpr: "DSGVO", refund: "Rückerstattung", contact: "Kontakt",
   },
   en: {
     brandDesc: "Wedding gallery with a QR code — no app required. Guests snap, you collect the memories.",
@@ -72,7 +73,7 @@ const COPY: Record<Lang, FooterCopy> = {
     blog: "Blog", guides: "Guides",
     guideLabel: "Wedding photo sharing", guideUrl: "/en/wedding-photo-sharing",
     altLabel: "App alternatives", altUrl: "/en/alternatives",
-    legal: "Legal", privacy: "Privacy", terms: "Terms", cookies: "Cookies", gdpr: "GDPR", contact: "Contact",
+    legal: "Legal", privacy: "Privacy", terms: "Terms", cookies: "Cookies", gdpr: "GDPR", refund: "Refunds", contact: "Contact",
   },
   es: {
     brandDesc: "Galería de boda con código QR — sin app. Los invitados fotografían, tú recopilas los recuerdos.",
@@ -80,7 +81,7 @@ const COPY: Record<Lang, FooterCopy> = {
     blog: "Blog", guides: "Guías",
     guideLabel: "Fotos boda QR", guideUrl: "/es/fotos-boda-qr",
     altLabel: "Comparativa de apps", altUrl: "/es/alternativas",
-    legal: "Legal", privacy: "Privacidad", terms: "Términos", cookies: "Cookies", gdpr: "RGPD", contact: "Contacto",
+    legal: "Legal", privacy: "Privacidad", terms: "Términos", cookies: "Cookies", gdpr: "RGPD", refund: "Reembolsos", contact: "Contacto",
   },
 };
 
@@ -145,6 +146,7 @@ export function SeoFooter({ lang }: { lang: Lang }) {
               <li><Link href={lang === "sl" ? "/terms"   : `/${lang}/terms`}   className="hover:text-white transition-colors">{t.terms}</Link></li>
               <li><Link href={lang === "sl" ? "/cookies" : `/${lang}/cookies`} className="hover:text-white transition-colors">{t.cookies}</Link></li>
               <li><Link href={lang === "sl" ? "/gdpr"    : `/${lang}/gdpr`}    className="hover:text-white transition-colors">{t.gdpr}</Link></li>
+              <li><Link href={lang === "sl" ? "/refund"  : `/${lang}/refund`}  className="hover:text-white transition-colors">{t.refund}</Link></li>
               <li><Link href={lang === "sl" ? "/contact" : `/${lang}/contact`} className="hover:text-white transition-colors">{t.contact}</Link></li>
             </ul>
           </div>
