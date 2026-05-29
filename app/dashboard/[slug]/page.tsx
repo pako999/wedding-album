@@ -10,7 +10,7 @@ export const dynamic = "force-dynamic";
 
 interface Props {
   params: Promise<{ slug: string }>;
-  searchParams: Promise<{ tab?: string; new?: string; upgraded?: string; plan?: string; session_id?: string }>;
+  searchParams: Promise<{ tab?: string; new?: string; upgraded?: string; plan?: string; txn?: string }>;
 }
 
 export default async function AlbumAdminPage({ params, searchParams }: Props) {
@@ -30,7 +30,7 @@ export default async function AlbumAdminPage({ params, searchParams }: Props) {
     new: isNewParam,
     upgraded: isUpgradedParam,
     plan: planParam,
-    session_id: stripeSessionId,
+    txn: paddleTxnId,
   } = await searchParams;
   const isNew = isNewParam === "1";
   const isUpgraded = isUpgradedParam === "1";
@@ -39,17 +39,17 @@ export default async function AlbumAdminPage({ params, searchParams }: Props) {
       ? planParam
       : undefined;
 
-  // Webhook backstop: if the user arrived from Stripe Checkout with a
-  // session_id, reconcile the upgrade *before* loading the album so the
-  // page they see already reflects the new plan. Stripe webhooks can
-  // fail to deliver (e.g. apex->www redirect drops the POST), but the
-  // customer always hits this page after a successful payment, so this
-  // gives us a hard guarantee that paid albums actually flip.
-  if (isUpgraded && stripeSessionId) {
-    const { reconcileStripeSession } = await import("@/lib/stripe-reconcile");
-    const result = await reconcileStripeSession(stripeSessionId, slug);
+  // Webhook backstop: if the user arrived from the Paddle.js checkout with a
+  // transaction id, reconcile the upgrade *before* loading the album so the
+  // page they see already reflects the new plan. Paddle webhooks can fail to
+  // deliver (e.g. apex->www redirect drops the POST), but the customer always
+  // hits this page after a successful payment, so this gives us a hard
+  // guarantee that paid albums actually flip.
+  if (isUpgraded && paddleTxnId) {
+    const { reconcilePaddleTransaction } = await import("@/lib/paddle-reconcile");
+    const result = await reconcilePaddleTransaction(paddleTxnId, slug);
     if (!result.ok) {
-      console.warn("[reconcile] session", stripeSessionId, "→", result.reason);
+      console.warn("[reconcile] txn", paddleTxnId, "→", result.reason);
     } else {
       console.log("[reconcile] applied", result.plan, "to", slug, `(${result.status})`);
     }

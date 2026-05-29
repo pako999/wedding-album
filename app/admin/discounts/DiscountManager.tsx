@@ -3,29 +3,25 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 
-interface PromotionCode {
+export interface DiscountRow {
   id: string;
   code: string;
   active: boolean;
-  coupon: {
-    id: string;
-    percent_off: number | null;
-    amount_off: number | null;
-    currency: string | null;
-    duration: string;
-    name: string | null;
-  };
-  max_redemptions: number | null;
-  times_redeemed: number;
-  expires_at: number | null;
+  type: "percent" | "amount";
+  /** percent → the percentage (e.g. 10); amount → cents (e.g. 500 = €5). */
+  amount: number;
+  currency: string;
+  maxRedemptions: number | null;
+  timesUsed: number;
+  expiresAt: string | null;
 }
 
 interface Props {
-  initialCodes: PromotionCode[];
-  stripeConfigured: boolean;
+  initialCodes: DiscountRow[];
+  configured: boolean;
 }
 
-export function DiscountManager({ initialCodes, stripeConfigured }: Props) {
+export function DiscountManager({ initialCodes, configured }: Props) {
   const router = useRouter();
   const [busy, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
@@ -63,7 +59,7 @@ export function DiscountManager({ initialCodes, stripeConfigured }: Props) {
   };
 
   const disable = (id: string) => {
-    if (!confirm("Onemogočiti to kodo? Stripe je trajno deaktivira.")) return;
+    if (!confirm("Onemogočiti to kodo? Paddle jo arhivira.")) return;
     startTransition(async () => {
       const res = await fetch(`/api/admin/discounts/${id}/disable`, { method: "POST" });
       if (!res.ok) {
@@ -139,7 +135,7 @@ export function DiscountManager({ initialCodes, stripeConfigured }: Props) {
           <div className="md:col-span-3 flex items-end">
             <button
               onClick={create}
-              disabled={busy || !stripeConfigured || code.length < 3}
+              disabled={busy || !configured || code.length < 3}
               className="w-full px-4 py-2 bg-[#FFC94D] text-[#0F1729] font-semibold text-sm rounded-lg hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed"
             >
               {busy ? "Ustvarjam…" : "Ustvari kodo"}
@@ -148,7 +144,7 @@ export function DiscountManager({ initialCodes, stripeConfigured }: Props) {
         </div>
         {error && <p className="text-xs text-red-500 mt-3">{error}</p>}
         <p className="text-xs text-gray-400 mt-3">
-          Stripe ustvari kupon + promotion code. Koda velja za vse pakete (Basic / Plus / Premium).
+          Paddle ustvari popust s kodo. Koda velja za vse pakete (Basic / Plus / Premium).
         </p>
       </section>
 
@@ -170,17 +166,15 @@ export function DiscountManager({ initialCodes, stripeConfigured }: Props) {
               <tr key={c.id} className="border-b border-gray-50 last:border-0">
                 <td className="px-4 py-3 font-mono font-semibold text-[#0F1729]">{c.code}</td>
                 <td className="px-4 py-3 text-gray-700">
-                  {c.coupon.percent_off
-                    ? `${c.coupon.percent_off}%`
-                    : c.coupon.amount_off
-                      ? `${(c.coupon.amount_off / 100).toFixed(0)}${(c.coupon.currency || "eur").toUpperCase() === "EUR" ? "€" : c.coupon.currency}`
-                      : "—"}
+                  {c.type === "percent"
+                    ? `${c.amount}%`
+                    : `${(c.amount / 100).toFixed(0)}${c.currency.toUpperCase() === "EUR" ? "€" : " " + c.currency.toUpperCase()}`}
                 </td>
                 <td className="px-4 py-3 text-gray-500">
-                  {c.times_redeemed} / {c.max_redemptions ?? "∞"}
+                  {c.timesUsed} / {c.maxRedemptions ?? "∞"}
                 </td>
                 <td className="px-4 py-3 text-gray-500">
-                  {c.expires_at ? new Date(c.expires_at * 1000).toLocaleDateString("sl-SI") : "—"}
+                  {c.expiresAt ? new Date(c.expiresAt).toLocaleDateString("sl-SI") : "—"}
                 </td>
                 <td className="px-4 py-3">
                   <span className={`text-[10px] uppercase font-bold tracking-wide px-2 py-0.5 rounded ${

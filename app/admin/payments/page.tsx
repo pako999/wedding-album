@@ -1,48 +1,48 @@
+import { listTransactions, paddleConfigured, PADDLE_ENV, isPaidStatus, type PaddleTransaction } from "@/lib/paddle";
+
 export const dynamic = "force-dynamic";
 
-interface CheckoutSession {
-  id: string;
-  amount_total: number | null;
-  currency: string | null;
-  payment_status: string;
-  status: string | null;
-  created: number;
-  customer_details: { email: string | null; name: string | null } | null;
-  metadata: Record<string, string> | null;
+async function safeList(): Promise<PaddleTransaction[]> {
+  if (!paddleConfigured()) return [];
+  try {
+    return await listTransactions(50);
+  } catch (err) {
+    console.error("[admin payments] paddle list failed:", err);
+    return [];
+  }
 }
 
-async function listSessions(): Promise<CheckoutSession[]> {
-  const key = process.env.STRIPE_SECRET_KEY;
-  if (!key) return [];
-  const res = await fetch("https://api.stripe.com/v1/checkout/sessions?limit=50", {
-    headers: { Authorization: `Bearer ${key}` },
-    cache: "no-store",
-  });
-  if (!res.ok) return [];
-  const data = await res.json();
-  return data.data ?? [];
+const DASHBOARD_BASE =
+  PADDLE_ENV === "live"
+    ? "https://vendors.paddle.com/transactions-v2"
+    : "https://sandbox-vendors.paddle.com/transactions-v2";
+
+function eur(cents: number, currency: string): string {
+  const amount = (cents / 100).toFixed(2);
+  return currency.toUpperCase() === "EUR" ? `${amount}€` : `${amount} ${currency.toUpperCase()}`;
 }
 
 export default async function AdminPayments() {
-  const sessions = await listSessions();
-  const stripeConfigured = !!process.env.STRIPE_SECRET_KEY;
+  const txns = await safeList();
+  const configured = paddleConfigured();
 
-  const totalEur = sessions
-    .filter((s) => s.payment_status === "paid")
-    .reduce((sum, s) => sum + ((s.amount_total ?? 0) / 100), 0);
+  const totalEur = txns
+    .filter((t) => isPaidStatus(t.status) && (t.details?.totals?.currency_code ?? "EUR").toUpperCase() === "EUR")
+    .reduce((sum, t) => sum + Number(t.details?.totals?.grand_total ?? "0") / 100, 0);
 
   return (
     <div className="space-y-6">
       <header>
         <h1 className="font-serif text-3xl text-[#0F1729]">Plačila</h1>
         <p className="text-sm text-gray-500 mt-1">
-          Zadnjih {sessions.length} sej iz Stripe Checkout · skupaj plačano {totalEur.toFixed(2)}€
+          Zadnjih {txns.length} transakcij iz Paddle · skupaj plačano {totalEur.toFixed(2)}€
+          {PADDLE_ENV === "sandbox" && " · sandbox"}
         </p>
       </header>
 
-      {!stripeConfigured && (
+      {!configured && (
         <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 text-sm text-amber-800">
-          <strong>STRIPE_SECRET_KEY ni nastavljen.</strong> Lokalno ne morem brati sej.
+          <strong>PADDLE_API_KEY ni nastavljen.</strong> Lokalno ne morem brati transakcij.
         </div>
       )}
 
@@ -56,49 +56,50 @@ export default async function AdminPayments() {
               <th className="px-4 py-3 font-medium">Znesek</th>
               <th className="px-4 py-3 font-medium">Status</th>
               <th className="px-4 py-3 font-medium">Datum</th>
-              <th className="px-4 py-3 font-medium text-right">Stripe</th>
+              <th className="px-4 py-3 font-medium text-right">Paddle</th>
             </tr>
           </thead>
           <tbody>
-            {sessions.map((s) => (
-              <tr key={s.id} className="border-b border-gray-50 last:border-0">
-                <td className="px-4 py-3">
-                  <p className="font-medium text-[#0F1729]">{s.customer_details?.name ?? "—"}</p>
-                  <p className="text-xs text-gray-400">{s.customer_details?.email ?? "—"}</p>
-                </td>
-                <td className="px-4 py-3 font-mono text-xs text-gray-600">{s.metadata?.albumSlug ?? "—"}</td>
-                <td className="px-4 py-3 text-xs uppercase font-semibold text-gray-700">{s.metadata?.planId ?? "—"}</td>
-                <td className="px-4 py-3 font-semibold text-[#0F1729]">
-                  {s.amount_total != null ? `${(s.amount_total / 100).toFixed(2)}${(s.currency || "eur").toUpperCase() === "EUR" ? "€" : " " + (s.currency || "").toUpperCase()}` : "—"}
-                </td>
-                <td className="px-4 py-3">
-                  <span className={`text-[10px] uppercase font-bold tracking-wide px-2 py-0.5 rounded ${
-                    s.payment_status === "paid"
-                      ? "bg-green-50 text-green-700"
-                      : s.payment_status === "unpaid"
-                        ? "bg-gray-100 text-gray-500"
-                        : "bg-amber-50 text-amber-700"
-                  }`}>
-                    {s.payment_status}
-                  </span>
-                </td>
-                <td className="px-4 py-3 text-xs text-gray-500">{new Date(s.created * 1000).toLocaleString("sl-SI")}</td>
-                <td className="px-4 py-3 text-right">
-                  <a
-                    href={`https://dashboard.stripe.com/test/checkout/sessions/${s.id}`}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="text-xs font-semibold text-[#C9820A] hover:underline"
-                  >
-                    Odpri →
-                  </a>
-                </td>
-              </tr>
-            ))}
-            {sessions.length === 0 && (
+            {txns.map((t) => {
+              const cents = Number(t.details?.totals?.grand_total ?? "0");
+              const currency = t.details?.totals?.currency_code ?? "EUR";
+              return (
+                <tr key={t.id} className="border-b border-gray-50 last:border-0">
+                  <td className="px-4 py-3">
+                    <p className="text-xs text-gray-400">{t.customer?.email ?? "—"}</p>
+                  </td>
+                  <td className="px-4 py-3 font-mono text-xs text-gray-600">{t.custom_data?.albumSlug ?? "—"}</td>
+                  <td className="px-4 py-3 text-xs uppercase font-semibold text-gray-700">{t.custom_data?.planId ?? "—"}</td>
+                  <td className="px-4 py-3 font-semibold text-[#0F1729]">{eur(cents, currency)}</td>
+                  <td className="px-4 py-3">
+                    <span className={`text-[10px] uppercase font-bold tracking-wide px-2 py-0.5 rounded ${
+                      isPaidStatus(t.status)
+                        ? "bg-green-50 text-green-700"
+                        : t.status === "canceled"
+                          ? "bg-gray-100 text-gray-500"
+                          : "bg-amber-50 text-amber-700"
+                    }`}>
+                      {t.status}
+                    </span>
+                  </td>
+                  <td className="px-4 py-3 text-xs text-gray-500">{t.created_at ? new Date(t.created_at).toLocaleString("sl-SI") : "—"}</td>
+                  <td className="px-4 py-3 text-right">
+                    <a
+                      href={`${DASHBOARD_BASE}/${t.id}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-xs font-semibold text-[#C9820A] hover:underline"
+                    >
+                      Odpri →
+                    </a>
+                  </td>
+                </tr>
+              );
+            })}
+            {txns.length === 0 && (
               <tr>
                 <td colSpan={7} className="px-4 py-12 text-center text-sm text-gray-400">
-                  Ni Stripe sej.
+                  Ni Paddle transakcij.
                 </td>
               </tr>
             )}

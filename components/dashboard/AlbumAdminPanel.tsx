@@ -26,7 +26,7 @@ interface Props {
   isUpgraded?: boolean;
   /** When the owner came from a homepage pricing card, this is the plan
    *  they picked. The onboarding success screen finishes by routing them
-   *  straight into Stripe checkout for that plan. */
+   *  straight into Paddle checkout for that plan. */
   paidPlan?: "basic" | "plus" | "premium";
   /** Logged-in user's primary email — shown in the Settings tab so the
    *  owner can confirm which account this album is attached to. */
@@ -45,7 +45,7 @@ function NewAlbumSuccess({ album, paidPlan }: { album: Album; paidPlan?: "basic"
   const albumUrl = `${appUrl}/${album.slug}`;
   // When the owner picked a paid plan on the pricing card, finish the
   // onboarding wizard by routing into the upgrade screen with that plan
-  // pre-selected so they can hit Stripe checkout in one click.
+  // pre-selected so they can hit Paddle checkout in one click.
   const dashboardUrl = paidPlan
     ? `/dashboard/${album.slug}/upgrade?plan=${paidPlan}`
     : `/dashboard/${album.slug}`;

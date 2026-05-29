@@ -4,6 +4,54 @@ import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import type { Album } from "@/lib/db/schema";
 
+// ── Paddle.js loader ──────────────────────────────────────────────────────────
+// Loaded from the CDN on demand (no npm dep). Initialized once with the public
+// client token; the eventCallback fires our redirect on checkout.completed.
+interface PaddleCheckout {
+  Checkout: { open: (opts: { transactionId: string }) => void };
+  Environment: { set: (env: string) => void };
+  Initialize: (opts: { token: string; eventCallback?: (ev: { name?: string }) => void }) => void;
+}
+declare global {
+  interface Window { Paddle?: PaddleCheckout }
+}
+
+let paddleReady: Promise<PaddleCheckout> | null = null;
+let paddleInitialized = false;
+let onCheckoutComplete: (() => void) | null = null;
+
+function loadPaddle(): Promise<PaddleCheckout> {
+  if (paddleReady) return paddleReady;
+  paddleReady = new Promise<PaddleCheckout>((resolve, reject) => {
+    if (typeof window === "undefined") return reject(new Error("no window"));
+    if (window.Paddle) return resolve(window.Paddle);
+    const s = document.createElement("script");
+    s.src = "https://cdn.paddle.com/paddle/v2/paddle.js";
+    s.async = true;
+    s.onload = () => (window.Paddle ? resolve(window.Paddle) : reject(new Error("Paddle.js missing")));
+    s.onerror = () => reject(new Error("Failed to load Paddle.js"));
+    document.head.appendChild(s);
+  });
+  return paddleReady;
+}
+
+async function ensurePaddle(): Promise<PaddleCheckout> {
+  const Paddle = await loadPaddle();
+  if (!paddleInitialized) {
+    const token = process.env.NEXT_PUBLIC_PADDLE_CLIENT_TOKEN;
+    if (!token) throw new Error("Paddle client token not configured");
+    if (process.env.NEXT_PUBLIC_PADDLE_ENV !== "live") Paddle.Environment.set("sandbox");
+    Paddle.Initialize({
+      token,
+      eventCallback: (ev) => {
+        if (ev?.name === "checkout.completed") onCheckoutComplete?.();
+      },
+    });
+    paddleInitialized = true;
+  }
+  return Paddle;
+}
+
 type PlanId = "free" | "basic" | "plus" | "premium";
 
 interface Plan {
@@ -304,7 +352,7 @@ export function UpgradePage({ album }: Props) {
             <div className="text-blue-500 text-xl">🔒</div>
             <div>
               <p className="text-xs font-semibold text-gray-800">100% varno plačilo</p>
-              <p className="text-xs text-gray-400">Zavarovano z Stripe</p>
+              <p className="text-xs text-gray-400">Zavarovano s Paddle</p>
             </div>
           </div>
         </div>
@@ -331,9 +379,9 @@ export function UpgradePage({ album }: Props) {
             <span className="text-xs text-gray-400 line-through">{chosen.originalPrice}€</span>
           </div>
 
-          {/* Discount code lives on the Stripe Checkout page now
-              (allow_promotion_codes=true). Keeping it off this screen
-              avoids two places to enter the same code and stops us from
+          {/* Discount code is entered inside the Paddle checkout overlay
+              (Paddle Discounts with enabled_for_checkout). Keeping it off this
+              screen avoids two places to enter the same code and stops us from
               having to validate codes twice. */}
           <div className="flex items-center justify-between">
             <span className="font-semibold text-gray-900">Skupaj za plačilo</span>
@@ -354,10 +402,20 @@ export function UpgradePage({ album }: Props) {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ planId: selectedPlan, albumSlug: album.slug, tableStands: tableStandsSelected }),
               });
-              const { url, error } = await res.json();
-              if (error) throw new Error(error);
-              window.location.href = url;
+              const { transactionId, error } = await res.json();
+              if (error || !transactionId) throw new Error(error || "no transaction");
+              const Paddle = await ensurePaddle();
+              // On a completed payment, land on the dashboard with the txn id so
+              // the server-side reconcile applies the upgrade immediately (the
+              // webhook is the primary path; this is the backstop).
+              onCheckoutComplete = () => {
+                window.location.href = `/dashboard/${album.slug}?upgraded=1&txn=${transactionId}`;
+              };
+              Paddle.Checkout.open({ transactionId });
+              // The overlay now owns the screen — reset the button.
+              setIsLoading(false);
             } catch (err) {
+              console.error("[checkout]", err);
               alert("Napaka pri plačilu. Prosimo, poskusite znova ali nas kontaktirajte na hello@guestcam.si");
               setIsLoading(false);
             }

@@ -16,7 +16,7 @@ const isProtectedRoute = createRouteMatcher(["/dashboard(.*)"]);
  * album URL because albums live at the root.
  */
 const PUBLIC_ROOTS = new Set([
-  "", "blog", "contact", "privacy", "terms", "gdpr", "cookies",
+  "", "blog", "contact", "privacy", "terms", "gdpr", "cookies", "refund",
   "admin", "dashboard", "api", "sign-in", "sign-up", "dev",
   "sl", "hr", "sr", "de", "en", "es",
   "robots.txt", "sitemap.xml", "favicon.ico", "manifest.json",
@@ -31,9 +31,9 @@ function isAlbumGuestPath(pathname: string): boolean {
   if (segments.length !== 1) return false;
   return !PUBLIC_ROOTS.has(segments[0]);
 }
-// Internal endpoints gated by the x-api-key header. NOTE: the Stripe webhook
-// (/api/webhooks/stripe) is intentionally NOT here — it authenticates via its
-// own `stripe-signature` header, so gating it on x-api-key would block Stripe.
+// Internal endpoints gated by the x-api-key header. NOTE: the Paddle webhook
+// (/api/webhooks/paddle) is intentionally NOT here — it authenticates via its
+// own `Paddle-Signature` HMAC header, so gating it on x-api-key would block Paddle.
 const isInternalApi = createRouteMatcher([
   "/api/integrations(.*)",
   "/api/webhooks/wedflow(.*)",
