@@ -71,6 +71,11 @@ export async function POST(req: NextRequest) {
       console.error("[paddle webhook] unknown planId:", planId);
       return NextResponse.json({ error: "Unknown plan" }, { status: 400 });
     }
+    // Duplicate / replayed delivery for a txn we already applied — ack without
+    // re-pinging ops or re-extending access.
+    if (applied.status === "already_applied") {
+      return NextResponse.json({ received: true });
+    }
 
     // Ops ping — fire AFTER the DB update so we don't notify about a payment
     // that didn't apply. grand_total is a string in the smallest unit.

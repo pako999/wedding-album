@@ -15,23 +15,32 @@ const PLAN_CONFIG: Record<string, { maxPhotos: number; daysAccess: number }> = {
  *
  * `paymentRef` (the Paddle txn id) is stored in the `stripe_session_id` column,
  * which is now a *generic* payment reference (also holds Stripe `cs_…` history
- * and `comp:` / `manual_` admin sentinels). Setting the same fields twice is a
- * no-op, so this is safe to call from both the webhook and the reconcile.
+ * and `comp:` / `manual_` admin sentinels).
  *
- * Returns the applied plan label, or null when planId is unknown.
+ * Idempotent: if the album already carries this exact payment ref, it returns
+ * "already_applied" without writing — so a duplicate or replayed webhook can't
+ * push `expiresAt` forward again or trigger a second ops ping. Returns null
+ * when planId is unknown, or { plan, status } otherwise.
  */
 export async function applyPlanToAlbum(
   albumSlug: string,
   planId: string,
   paymentRef: string,
-): Promise<{ plan: string } | null> {
+): Promise<{ plan: string; status: "applied" | "already_applied" } | null> {
+  const existing = await db.query.albums.findFirst({
+    where: eq(albums.slug, albumSlug),
+  });
+  if (existing && existing.stripeSessionId === paymentRef) {
+    return { plan: existing.plan, status: "already_applied" };
+  }
+
   if (planId === "film_pro" || planId === "film_premium") {
     const filmTier = planId === "film_pro" ? "pro" : "premium";
     await db
       .update(albums)
       .set({ filmTier: filmTier as "pro" | "premium", stripeSessionId: paymentRef })
       .where(eq(albums.slug, albumSlug));
-    return { plan: filmTier };
+    return { plan: filmTier, status: "applied" };
   }
 
   const config = PLAN_CONFIG[planId];
@@ -52,7 +61,7 @@ export async function applyPlanToAlbum(
     })
     .where(eq(albums.slug, albumSlug));
 
-  return { plan: planId };
+  return { plan: planId, status: "applied" };
 }
 
 /**
@@ -93,17 +102,15 @@ export async function reconcilePaddleTransaction(
     return { ok: false, reason: "metadata-mismatch" };
   }
 
-  // Idempotency: if the album already carries this exact txn id, we're done.
+  // applyPlanToAlbum is idempotent on the stored payment ref, so a replayed
+  // success-URL hit returns "already_applied" without re-extending access.
   const existing = await db.query.albums.findFirst({
     where: eq(albums.slug, expectedAlbumSlug),
   });
   if (!existing) return { ok: false, reason: "album-not-found" };
-  if (existing.stripeSessionId === transactionId) {
-    return { ok: true, plan: existing.plan, status: "already_applied" };
-  }
 
   const applied = await applyPlanToAlbum(expectedAlbumSlug, planId, transactionId);
   if (!applied) return { ok: false, reason: `unknown-plan:${planId}` };
 
-  return { ok: true, plan: applied.plan, status: "applied" };
+  return { ok: true, plan: applied.plan, status: applied.status };
 }

@@ -199,11 +199,16 @@ export async function archiveDiscount(id: string): Promise<void> {
  * Verify a Paddle webhook. The `Paddle-Signature` header looks like
  * "ts=1700000000;h1=<hex>". The signed payload is `${ts}:${rawBody}` HMAC-SHA256
  * with the destination's secret. Constant-time compared.
+ *
+ * The timestamp is also checked against a tolerance window (default 5 min, per
+ * Paddle's guidance) so a captured request can't be replayed later. The webhook
+ * handler is additionally idempotent on the transaction id as a second layer.
  */
 export function verifyPaddleSignature(
   rawBody: string,
   signatureHeader: string | null,
   secret: string,
+  maxAgeSeconds = 5 * 60,
 ): boolean {
   if (!signatureHeader || !secret) return false;
 
@@ -216,6 +221,11 @@ export function verifyPaddleSignature(
   const ts = parts.ts;
   const h1 = parts.h1;
   if (!ts || !h1) return false;
+
+  // Reject stale (replayed) or future-dated timestamps before doing any crypto.
+  const tsNum = Number(ts);
+  if (!Number.isFinite(tsNum)) return false;
+  if (Math.abs(Date.now() / 1000 - tsNum) > maxAgeSeconds) return false;
 
   const computed = crypto
     .createHmac("sha256", secret)
