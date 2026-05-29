@@ -6,7 +6,7 @@
  * parity with the Slovenian master design across the whole site.
  */
 
-export type LegalKind = "privacy" | "terms" | "gdpr" | "cookies";
+export type LegalKind = "privacy" | "terms" | "gdpr" | "cookies" | "refund";
 
 export type Block =
   | { type: "p"; text: string }

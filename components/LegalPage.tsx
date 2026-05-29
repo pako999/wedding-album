@@ -7,6 +7,7 @@ import { privacyDoc } from "@/lib/legal/privacy";
 import { termsDoc }   from "@/lib/legal/terms";
 import { gdprDoc }    from "@/lib/legal/gdpr";
 import { cookiesDoc } from "@/lib/legal/cookies";
+import { refundDoc }  from "@/lib/legal/refund";
 
 export type { LegalKind } from "@/lib/legal/types";
 export type LegalLang = LangCode;
@@ -16,6 +17,7 @@ const DOCS: Record<LegalKind, Record<LangCode, LegalDoc>> = {
   terms:   termsDoc,
   gdpr:    gdprDoc,
   cookies: cookiesDoc,
+  refund:  refundDoc,
 };
 
 // ─── Block renderers ─────────────────────────────────────────────────────────
