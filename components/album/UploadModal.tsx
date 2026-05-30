@@ -417,6 +417,7 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
   const [allDone, setAllDone] = useState(false);
   const [dragOver, setDragOver] = useState(false);
   const [momentId, setMomentId] = useState<string>(defaultMomentId ?? "");
+  const [droppedCount, setDroppedCount] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
   const remaining = Math.max(0, maxPhotos - currentCount);
   const isDemo = albumSlug === "ana-marko-13ka";
@@ -430,14 +431,16 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
 
   const addFiles = useCallback((raw: FileList | File[]) => {
     const toAdd: UploadFile[] = [];
+    let dropped = 0;
     for (const f of Array.from(raw)) {
-      if (files.length + toAdd.length >= remaining) break;
       if (!ALL_ACCEPTED.includes(f.type)) continue;
       const isVideo = ACCEPTED_VIDEOS.includes(f.type);
       const maxMB = isVideo ? MAX_VIDEO_MB : MAX_IMAGE_MB;
       if (f.size > maxMB * 1024 * 1024) continue;
+      if (files.length + toAdd.length >= remaining) { dropped++; continue; }
       toAdd.push({ id: crypto.randomUUID(), file: f, preview: isVideo ? null : URL.createObjectURL(f), status: "idle", progress: 0, isVideo });
     }
+    if (dropped > 0) setDroppedCount(n => n + dropped);
     setFiles(p => [...p, ...toAdd]);
   }, [files.length, remaining]);
 
@@ -578,6 +581,16 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
             </svg>
           </button>
         </div>
+
+        {droppedCount > 0 && (
+          <div className="flex items-start gap-2 px-4 py-3 bg-amber-50 border-b border-amber-200 text-amber-800 text-xs shrink-0">
+            <svg className="w-4 h-4 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+            </svg>
+            <span>{t.filesDropped(droppedCount)}</span>
+            <button onClick={() => setDroppedCount(0)} className="ml-auto shrink-0 opacity-60 hover:opacity-100">✕</button>
+          </div>
+        )}
 
         <div className="flex-1 overflow-y-auto p-6 space-y-4">
           {allDone ? (

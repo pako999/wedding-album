@@ -65,6 +65,7 @@ export interface Translations {
 
   // Limit warning
   limitReached: string;         // "Album photo limit reached"
+  filesDropped: (n: number) => string; // "3 files not added — album limit reached"
 
   // Footer
   footerCredit: string;         // "Guestcam"
@@ -232,6 +233,7 @@ const sl: Translations = {
   alreadyUploaded: "Že v albumu",
   fileNetworkError: "Omrežna napaka",
   limitReached: "Omejitev albuma je dosežena.",
+  filesDropped: (n) => `${n} ${n === 1 ? "datoteka ni bila dodana" : "datotek ni bilo dodano"} — dosežena je omejitev albuma.`,
   footerCredit: "Guestcam",
   eventLabel: (type) => ({
     baby_shower: "Baby Shower",
@@ -356,6 +358,7 @@ const hr: Translations = {
   dropzone: "Povuci ili klikni za odabir",
   dropzoneHint: (r) => `JPG, PNG, WEBP · max 20 MB · još ${r} dostupnih`,
   dropzoneActive: "Ispusti fotografije ovdje",
+  filesDropped: (n) => `${n} ${n === 1 ? "datoteka nije dodana" : "datoteka nije dodano"} — dostignut je limit albuma.`,
   uploading: "Učitavanje…",
   uploadBtn: (n) => `Učitaj${n > 0 ? ` (${n})` : ""}`,
   cancel: "Otkaži",
@@ -494,6 +497,7 @@ const sr: Translations = {
   dropzone: "Prevuci ili klikni za izbor",
   dropzoneHint: (r) => `JPG, PNG, WEBP · max 20 MB · još ${r} dostupnih`,
   dropzoneActive: "Ispusti fotografije ovde",
+  filesDropped: (n) => `${n} ${n === 1 ? "datoteka nije dodata" : "datoteka nije dodato"} — dostignut je limit albuma.`,
   uploading: "Otpremanje…",
   uploadBtn: (n) => `Otpremi${n > 0 ? ` (${n})` : ""}`,
   cancel: "Otkaži",
@@ -646,6 +650,7 @@ const en: Translations = {
   alreadyUploaded: "Already in album",
   fileNetworkError: "Network error",
   limitReached: "Album photo limit reached.",
+  filesDropped: (n) => `${n} ${n === 1 ? "file" : "files"} not added — album limit reached.`,
   footerCredit: "Guestcam",
   eventLabel: (type) => ({
     baby_shower: "Baby Shower",
@@ -784,6 +789,7 @@ const de: Translations = {
   alreadyUploaded: "Bereits im Album",
   fileNetworkError: "Netzwerkfehler",
   limitReached: "Foto-Limit des Albums erreicht.",
+  filesDropped: (n) => `${n} ${n === 1 ? "Datei nicht hinzugefügt" : "Dateien nicht hinzugefügt"} — Album-Limit erreicht.`,
   footerCredit: "Guestcam",
   eventLabel: (type) => ({
     baby_shower: "Baby Shower",
@@ -922,6 +928,7 @@ const es: Translations = {
   alreadyUploaded: "Ya en el álbum",
   fileNetworkError: "Error de red",
   limitReached: "Límite de fotos del álbum alcanzado.",
+  filesDropped: (n) => `${n} ${n === 1 ? "archivo no añadido" : "archivos no añadidos"} — límite del álbum alcanzado.`,
   footerCredit: "Guestcam",
   eventLabel: (type) => ({
     baby_shower: "Baby Shower",
