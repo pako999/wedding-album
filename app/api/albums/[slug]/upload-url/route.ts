@@ -30,7 +30,7 @@ const ALLOWED_IMAGE_TYPES = new Set([
 ]);
 const ALLOWED_VIDEO_TYPES = new Set([
   "video/mp4", "video/quicktime", "video/mov",
-  "video/webm", "video/mpeg", "video/3gpp",
+  "video/webm", "video/mpeg", "video/3gpp", "video/avi",
 ]);
 
 export async function POST(
