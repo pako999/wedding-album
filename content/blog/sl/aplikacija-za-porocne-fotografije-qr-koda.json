@@ -1,0 +1,121 @@
+{
+  "slug": "aplikacija-za-porocne-fotografije-qr-koda",
+  "lang": "sl",
+  "title": "Aplikacija za poročne fotografije s QR kodo: zberite vse slike gostov",
+  "description": "Z eno QR kodo zberite vse fotografije in videe gostov v zasebni galeriji. Brez aplikacije, v polni kakovosti, brezplačen začetek.",
+  "translationKey": "wedding-photo-app-qr-code",
+  "publishedAt": "2026-05-30",
+  "updatedAt": "2026-05-30",
+  "author": "Guestcam Team",
+  "category": "vodnik",
+  "readingTime": 6,
+  "tags": [
+    "poročne fotografije",
+    "QR koda",
+    "aplikacija za goste",
+    "Guestcam"
+  ],
+  "tldr": "Na vsako mizo postavite QR kodo — gostje skenirajo in naložijo fotografije v vašo zasebno galerijo, brez aplikacije in prijave.",
+  "coverImage": "https://images.unsplash.com/photo-1519741497674-611481863552?w=1200&h=720&fit=crop&q=82&auto=format",
+  "coverAlt": "Svatje s telefoni fotografirajo med poročnim slavjem",
+  "content": [
+    {
+      "type": "h2",
+      "text": "Zakaj večine fotografij gostov nikoli ne vidite"
+    },
+    {
+      "type": "p",
+      "text": "Gostje na poroki posnamejo na stotine fotografij, a večina jih nikoli ne pride do vas — ostanejo na telefonih in v WhatsApp skupinah. Aplikacija za poročne fotografije s QR kodo to reši: gostje skenirajo, naložijo, vse pa pristane v eni zasebni galeriji."
+    },
+    {
+      "type": "image",
+      "src": "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=1200&h=720&fit=crop&q=82&auto=format",
+      "alt": "Gost skenira QR kodo na poročni mizi za nalaganje fotografij",
+      "caption": "Eno skeniranje in gost naloži fotografije v polni kakovosti — brez aplikacije.",
+      "credit": "Foto: Unsplash"
+    },
+    {
+      "type": "h2",
+      "text": "Kako deluje QR koda za poroko"
+    },
+    {
+      "type": "ol",
+      "items": [
+        "V Guestcamu v nekaj klikih ustvarite zasebno galerijo.",
+        "Izberite predlogo QR kartice, dodajte imena in datum ter jo natisnite za mize.",
+        "Gostje skenirajo kodo, galerija se odpre v brskalniku, fotografije in videe naložijo v nekaj sekundah.",
+        "Vse zbirate v živo in po dogodku prenesete kot ZIP."
+      ]
+    },
+    {
+      "type": "h2",
+      "text": "Zakaj je boljša od WhatsApp skupine"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Način",
+        "Kakovost",
+        "Aplikacija",
+        "Sodelovanje"
+      ],
+      "rows": [
+        [
+          "WhatsApp skupina",
+          "Stisnjena",
+          "Ne",
+          "Srednje"
+        ],
+        [
+          "Google/iCloud album",
+          "Visoka",
+          "Potreben račun",
+          "Nizko"
+        ],
+        [
+          "QR galerija (Guestcam)",
+          "Polna originalna",
+          "Ne",
+          "Visoko"
+        ]
+      ]
+    },
+    {
+      "type": "p",
+      "text": "WhatsApp stiska fotografije in pogosto zavrne videe; skupni albumi zahtevajo pravi račun. QR galerija odpravi ovire in vse shrani v originalni kakovosti, zasebno."
+    },
+    {
+      "type": "h2",
+      "text": "Zasebno in v polni kakovosti"
+    },
+    {
+      "type": "p",
+      "text": "Galerija je dostopna samo prek vaše QR kode ali povezave, po želji z geslom. Vsaka fotografija in video se shrani v polni ločljivosti — spontana fotografija prijatelja je tako ostra kot fotografova."
+    },
+    {
+      "type": "cta",
+      "text": "Ustvarite brezplačno poročno galerijo",
+      "href": "https://www.guestcam.si/dashboard/new"
+    },
+    {
+      "type": "faq",
+      "q": "Ali morajo gostje prenesti aplikacijo?",
+      "a": "Ne. Vse poteka v brskalniku telefona — gostje skenirajo QR kodo in takoj naložijo, brez namestitve in prijave."
+    },
+    {
+      "type": "faq",
+      "q": "Ali so fotografije zasebne?",
+      "a": "Da. Galerija je dostopna samo prek vaše QR kode ali povezave, po želji z geslom. Nič ni javno."
+    },
+    {
+      "type": "faq",
+      "q": "V kakšni kakovosti se shranijo fotografije?",
+      "a": "V polni originalni ločljivosti, brez stiskanja — za fotografije in videe."
+    },
+    {
+      "type": "faq",
+      "q": "Kaj se zgodi po poroki?",
+      "a": "Galerija ostane aktivna ves čas vašega paketa, vse pa prenesete kot ZIP ali shranite v Google Drive."
+    }
+  ]
+}

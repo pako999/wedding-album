@@ -1,0 +1,121 @@
+{
+  "slug": "wedding-photo-app-qr-code",
+  "lang": "en",
+  "title": "Wedding Photo App With QR Code: Collect Every Guest Photo (No App)",
+  "description": "Use one QR code to collect every guest photo and video in a private gallery. No app, full quality, free to start.",
+  "translationKey": "wedding-photo-app-qr-code",
+  "publishedAt": "2026-05-30",
+  "updatedAt": "2026-05-30",
+  "author": "Guestcam Team",
+  "category": "vodnik",
+  "readingTime": 6,
+  "tags": [
+    "wedding photos",
+    "QR code",
+    "guest photo app",
+    "Guestcam"
+  ],
+  "tldr": "Put a QR code on each table — guests scan and upload photos straight to your private gallery, no app or login needed.",
+  "coverImage": "https://images.unsplash.com/photo-1519741497674-611481863552?w=1200&h=720&fit=crop&q=82&auto=format",
+  "coverAlt": "Wedding guests raising phones to take photos during the celebration",
+  "content": [
+    {
+      "type": "h2",
+      "text": "Why you never see most of your guests' photos"
+    },
+    {
+      "type": "p",
+      "text": "Your guests will shoot hundreds of photos on your wedding day, but most never reach you — they stay buried in camera rolls and WhatsApp threads. A wedding photo app built around a QR code fixes this: guests scan, upload, and everything lands in one private gallery you actually keep."
+    },
+    {
+      "type": "image",
+      "src": "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=1200&h=720&fit=crop&q=82&auto=format",
+      "alt": "Guest scanning a QR code on a wedding table to upload photos",
+      "caption": "One scan and a guest uploads photos in full quality — no app needed.",
+      "credit": "Foto: Unsplash"
+    },
+    {
+      "type": "h2",
+      "text": "How a wedding QR code works"
+    },
+    {
+      "type": "ol",
+      "items": [
+        "Create a private gallery in Guestcam in a few clicks.",
+        "Pick a QR card template, add your names and date, and print it for the tables.",
+        "Guests scan the code, the gallery opens in their browser, and they upload photos and videos in seconds.",
+        "You collect everything live and download it all as a ZIP afterwards."
+      ]
+    },
+    {
+      "type": "h2",
+      "text": "Why it beats a WhatsApp group"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Method",
+        "Quality",
+        "App required",
+        "Participation"
+      ],
+      "rows": [
+        [
+          "WhatsApp group",
+          "Compressed",
+          "No",
+          "Medium"
+        ],
+        [
+          "Google/iCloud album",
+          "High",
+          "Account needed",
+          "Low"
+        ],
+        [
+          "QR code gallery (Guestcam)",
+          "Full original",
+          "No",
+          "High"
+        ]
+      ]
+    },
+    {
+      "type": "p",
+      "text": "WhatsApp compresses photos and often refuses videos; shared cloud albums need the right account. A QR-code gallery removes the friction and keeps everything in original resolution, privately."
+    },
+    {
+      "type": "h2",
+      "text": "Private and full quality by default"
+    },
+    {
+      "type": "p",
+      "text": "Your gallery is reachable only through your QR code or link, with optional password protection. Every photo and video is stored at full resolution — so the candid shot a friend grabbed is as sharp as the professional's."
+    },
+    {
+      "type": "cta",
+      "text": "Create your free wedding gallery",
+      "href": "https://www.guestcam.si/dashboard/new"
+    },
+    {
+      "type": "faq",
+      "q": "Do guests need to download an app?",
+      "a": "No. Everything runs in the phone's browser — guests scan the QR code and upload immediately, with no installation or login."
+    },
+    {
+      "type": "faq",
+      "q": "Are the photos private?",
+      "a": "Yes. The gallery is only accessible via your QR code or link, with optional password protection. Nothing is public."
+    },
+    {
+      "type": "faq",
+      "q": "What quality are photos stored in?",
+      "a": "Full original resolution, with no compression — for both photos and videos."
+    },
+    {
+      "type": "faq",
+      "q": "What happens after the wedding?",
+      "a": "The gallery stays active for the length of your plan and you can download everything as a ZIP or save it to Google Drive."
+    }
+  ]
+}
