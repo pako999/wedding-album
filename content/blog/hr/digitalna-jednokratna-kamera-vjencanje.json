@@ -1,0 +1,116 @@
+{
+  "slug": "digitalna-jednokratna-kamera-vjencanje",
+  "lang": "hr",
+  "title": "Digitalna jednokratna kamera za vjenčanje: bolja od prave",
+  "description": "Sviđa vam se izgled jednokratnih kamera, ali ne i trošak i izgubljeni kadrovi? QR galerija nudi istu zabavu u punoj kvaliteti — bez aplikacije.",
+  "translationKey": "digital-disposable-camera-wedding",
+  "publishedAt": "2026-05-31",
+  "updatedAt": "2026-05-31",
+  "author": "Guestcam Team",
+  "category": "primerjava",
+  "readingTime": 6,
+  "tags": [
+    "jednokratna kamera",
+    "fotografije vjenčanja",
+    "QR kod",
+    "Guestcam"
+  ],
+  "tldr": "Digitalna jednokratna kamera je QR galerija: gosti slikaju i učitavaju s mobitela te zadržavaju spontanu zabavu bez troška i mutnih, izgubljenih kadrova.",
+  "coverImage": "https://images.unsplash.com/photo-1452587925148-ce544e77e70d?w=1200&h=720&fit=crop&q=82&auto=format",
+  "coverAlt": "Jednokratne kamere na stolu na svadbenoj zabavi",
+  "content": [
+    {
+      "type": "h2",
+      "text": "Zašto jednokratne kamere razočaraju"
+    },
+    {
+      "type": "p",
+      "text": "Jednokratne kamere na stolovima izgledaju šarmantno, ali stvarnost zaboli: kupite ih desetak, platite razvijanje, a polovica kadrova vrati se mutna, tamna ili prazna. Digitalna inačica zadržava razigranost i uklanja sve mane."
+    },
+    {
+      "type": "image",
+      "src": "https://images.unsplash.com/photo-1452587925148-ce544e77e70d?w=1200&h=720&fit=crop&q=82&auto=format",
+      "alt": "Jednokratne kamere na stolu na svadbenoj zabavi",
+      "caption": "Izgled jednokratne kamere — bez troška, mutnoće i tjedana čekanja.",
+      "credit": "Foto: Unsplash"
+    },
+    {
+      "type": "h2",
+      "text": "Prava kamera vs digitalna"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "",
+        "Prava jednokratna",
+        "Digitalna (QR galerija)"
+      ],
+      "rows": [
+        [
+          "Trošak",
+          "Visok (kupnja + razvijanje)",
+          "Nizak / besplatan početak"
+        ],
+        [
+          "Kvaliteta",
+          "Nepouzdana",
+          "Puna rezolucija"
+        ],
+        [
+          "Izgubljeni kadrovi",
+          "Česti",
+          "Nema"
+        ],
+        [
+          "Pregled",
+          "Nakon tjedana",
+          "Uživo, odmah"
+        ],
+        [
+          "Video",
+          "Ne",
+          "Da"
+        ]
+      ]
+    },
+    {
+      "type": "p",
+      "text": "Umjesto fizičke kamere gosti skeniraju QR kod i slikaju ili učitaju izravno s mobitela u zajedničku galeriju. Ista zabava, ništa izgubljeno."
+    },
+    {
+      "type": "image",
+      "src": "https://images.unsplash.com/photo-1606800052052-a08af7148866?w=1200&h=720&fit=crop&q=82&auto=format",
+      "alt": "Gosti mobitelima fotografiraju svadbenu proslavu",
+      "caption": "Mobitel svakog gosta postaje kamera — a svaki kadar završi u jednoj galeriji.",
+      "credit": "Foto: Unsplash"
+    },
+    {
+      "type": "h2",
+      "text": "Sačuvajte iznenađenje"
+    },
+    {
+      "type": "p",
+      "text": "Želite osjećaj otkrivanja filma? Tijekom događaja jednostavno ne otvarajte galeriju uživo — pogledajte je poslije i proživite večer kroz oči svih, u punoj kvaliteti."
+    },
+    {
+      "type": "cta",
+      "text": "Izradite besplatnu digitalnu kameru",
+      "href": "https://www.guestcam.si/dashboard/new"
+    },
+    {
+      "type": "faq",
+      "q": "Je li digitalna kamera jeftinija od pravih?",
+      "a": "Da — izbjegavate kupnju i razvijanje fizičkih kamera, a možete započeti besplatno."
+    },
+    {
+      "type": "faq",
+      "q": "Trebaju li gosti aplikaciju?",
+      "a": "Ne. Skeniraju QR kod i učitavaju putem preglednika — bez aplikacije i prijave."
+    },
+    {
+      "type": "faq",
+      "q": "Možemo li zadržati iznenađenje pri otkrivanju?",
+      "a": "Da. Sakrijte galeriju tijekom događaja i otvorite je poslije za isti osjećaj otkrivanja, u punoj kvaliteti."
+    }
+  ]
+}

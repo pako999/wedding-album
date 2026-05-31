@@ -1,0 +1,116 @@
+{
+  "slug": "digitale-einwegkamera-hochzeit",
+  "lang": "de",
+  "title": "Digitale Einwegkamera für die Hochzeit: besser als das Original",
+  "description": "Ihr mögt den Einwegkamera-Look, aber nicht die Kosten und verlorenen Aufnahmen? Eine QR-Galerie bietet denselben Spaß in voller Qualität — ohne App.",
+  "translationKey": "digital-disposable-camera-wedding",
+  "publishedAt": "2026-05-31",
+  "updatedAt": "2026-05-31",
+  "author": "Guestcam Team",
+  "category": "primerjava",
+  "readingTime": 6,
+  "tags": [
+    "Einwegkamera",
+    "Hochzeitsfotos",
+    "QR-Code",
+    "Guestcam"
+  ],
+  "tldr": "Eine digitale Einwegkamera ist eine QR-Galerie: Gäste knipsen und laden vom Handy hoch und behalten den spontanen Spaß ohne Kosten und unscharfe, verlorene Aufnahmen.",
+  "coverImage": "https://images.unsplash.com/photo-1452587925148-ce544e77e70d?w=1200&h=720&fit=crop&q=82&auto=format",
+  "coverAlt": "Einwegkameras auf einem Tisch bei der Hochzeitsfeier",
+  "content": [
+    {
+      "type": "h2",
+      "text": "Warum Einwegkameras enttäuschen"
+    },
+    {
+      "type": "p",
+      "text": "Einwegkameras auf den Tischen sehen charmant aus, doch die Realität schmerzt: Ihr kauft ein Dutzend, zahlt fürs Entwickeln, und die Hälfte der Bilder kommt unscharf, dunkel oder leer zurück. Die digitale Variante behält den verspielten Charakter und behebt jeden Nachteil."
+    },
+    {
+      "type": "image",
+      "src": "https://images.unsplash.com/photo-1452587925148-ce544e77e70d?w=1200&h=720&fit=crop&q=82&auto=format",
+      "alt": "Einwegkameras auf einem Tisch bei der Hochzeitsfeier",
+      "caption": "Der Einwegkamera-Look — ohne Kosten, Unschärfe und wochenlanges Warten.",
+      "credit": "Foto: Unsplash"
+    },
+    {
+      "type": "h2",
+      "text": "Echte Einwegkamera vs. digital"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "",
+        "Echte Einwegkamera",
+        "Digital (QR-Galerie)"
+      ],
+      "rows": [
+        [
+          "Kosten",
+          "Hoch (Kauf + Entwicklung)",
+          "Niedrig / kostenlos starten"
+        ],
+        [
+          "Qualität",
+          "Glückssache",
+          "Volle Auflösung"
+        ],
+        [
+          "Verlorene Bilder",
+          "Häufig",
+          "Keine"
+        ],
+        [
+          "Fotos sehen",
+          "Wochen später",
+          "Live, sofort"
+        ],
+        [
+          "Video",
+          "Nein",
+          "Ja"
+        ]
+      ]
+    },
+    {
+      "type": "p",
+      "text": "Statt einer physischen Kamera scannen Gäste einen QR-Code und knipsen oder laden direkt vom Handy in eure gemeinsame Galerie. Gleicher Spaß, nichts geht verloren."
+    },
+    {
+      "type": "image",
+      "src": "https://images.unsplash.com/photo-1606800052052-a08af7148866?w=1200&h=720&fit=crop&q=82&auto=format",
+      "alt": "Gäste fotografieren mit ihren Handys die Hochzeitsfeier",
+      "caption": "Jedes Gäste-Handy wird zur Kamera — und jede Aufnahme landet in einer Galerie.",
+      "credit": "Foto: Unsplash"
+    },
+    {
+      "type": "h2",
+      "text": "Bewahrt die Überraschung"
+    },
+    {
+      "type": "p",
+      "text": "Wollt ihr das Film-Enthüllungsgefühl? Öffnet die Live-Galerie einfach nicht während der Feier — schaut sie danach an und erlebt den Abend durch die Augen aller, in voller Qualität."
+    },
+    {
+      "type": "cta",
+      "text": "Erstellt eure kostenlose digitale Einwegkamera",
+      "href": "https://www.guestcam.si/dashboard/new"
+    },
+    {
+      "type": "faq",
+      "q": "Ist eine digitale Einwegkamera günstiger als echte?",
+      "a": "Ja — ihr spart Kauf und Entwicklung physischer Kameras und könnt kostenlos starten."
+    },
+    {
+      "type": "faq",
+      "q": "Brauchen Gäste eine App?",
+      "a": "Nein. Sie scannen einen QR-Code und laden im Handy-Browser hoch — ohne App, ohne Anmeldung."
+    },
+    {
+      "type": "faq",
+      "q": "Können wir die Überraschung beim Enthüllen behalten?",
+      "a": "Ja. Haltet die Galerie während der Feier verborgen und öffnet sie danach für dasselbe Enthüllungsgefühl, in voller Qualität."
+    }
+  ]
+}

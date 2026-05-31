@@ -5,7 +5,7 @@
   "description": "Mit einem QR-Code alle Fotos und Videos eurer Gäste in einer privaten Galerie sammeln. Ohne App, in voller Qualität, kostenlos starten.",
   "translationKey": "wedding-photo-app-qr-code",
   "publishedAt": "2026-05-30",
-  "updatedAt": "2026-05-30",
+  "updatedAt": "2026-05-31",
   "author": "Guestcam Team",
   "category": "vodnik",
   "readingTime": 6,
@@ -96,6 +96,13 @@
       "type": "cta",
       "text": "Erstellt eure kostenlose Hochzeitsgalerie",
       "href": "https://www.guestcam.si/dashboard/new"
+    },
+    {
+      "type": "image",
+      "src": "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=1200&h=720&fit=crop&q=82&auto=format",
+      "alt": "Brautpaar mit Gästen auf der Tanzfläche",
+      "caption": "Gästefotos fangen die spontanen Momente ein — Tanzfläche, Reden, Lachen.",
+      "credit": "Foto: Unsplash"
     },
     {
       "type": "faq",

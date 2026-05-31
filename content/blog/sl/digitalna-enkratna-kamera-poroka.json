@@ -1,0 +1,116 @@
+{
+  "slug": "digitalna-enkratna-kamera-poroka",
+  "lang": "sl",
+  "title": "Digitalna kamera za enkratno uporabo na poroki: boljša od prave",
+  "description": "Vam je všeč videz kamer za enkratno uporabo, a ne stroški in izgubljeni posnetki? QR galerija ponuja enako zabavo v polni kakovosti — brez aplikacije.",
+  "translationKey": "digital-disposable-camera-wedding",
+  "publishedAt": "2026-05-31",
+  "updatedAt": "2026-05-31",
+  "author": "Guestcam Team",
+  "category": "primerjava",
+  "readingTime": 6,
+  "tags": [
+    "kamera za enkratno uporabo",
+    "poročne fotografije",
+    "QR koda",
+    "Guestcam"
+  ],
+  "tldr": "Digitalna kamera za enkratno uporabo je QR galerija: gostje slikajo in nalagajo s telefonov ter ohranijo spontano zabavo brez stroškov in zamegljenih, izgubljenih posnetkov.",
+  "coverImage": "https://images.unsplash.com/photo-1452587925148-ce544e77e70d?w=1200&h=720&fit=crop&q=82&auto=format",
+  "coverAlt": "Kamere za enkratno uporabo na mizi na poročni zabavi",
+  "content": [
+    {
+      "type": "h2",
+      "text": "Zakaj kamere za enkratno uporabo razočarajo"
+    },
+    {
+      "type": "p",
+      "text": "Kamere za enkratno uporabo na mizah izgledajo prikupno, a resničnost zaboli: kupite jih deset, plačate razvijanje, polovica posnetkov pa je zamegljenih, temnih ali praznih. Digitalna različica ohrani igrivost in odpravi vse slabosti."
+    },
+    {
+      "type": "image",
+      "src": "https://images.unsplash.com/photo-1452587925148-ce544e77e70d?w=1200&h=720&fit=crop&q=82&auto=format",
+      "alt": "Kamere za enkratno uporabo na mizi na poročni zabavi",
+      "caption": "Videz kamere za enkratno uporabo — brez stroškov, zameglitve in čakanja.",
+      "credit": "Foto: Unsplash"
+    },
+    {
+      "type": "h2",
+      "text": "Prava kamera proti digitalni"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "",
+        "Prava enkratna",
+        "Digitalna (QR galerija)"
+      ],
+      "rows": [
+        [
+          "Strošek",
+          "Visok (nakup + razvijanje)",
+          "Nizek / brezplačen začetek"
+        ],
+        [
+          "Kakovost",
+          "Nezanesljiva",
+          "Polna ločljivost"
+        ],
+        [
+          "Izgubljeni posnetki",
+          "Pogosti",
+          "Brez"
+        ],
+        [
+          "Ogled",
+          "Čez tedne",
+          "V živo, takoj"
+        ],
+        [
+          "Video",
+          "Ne",
+          "Da"
+        ]
+      ]
+    },
+    {
+      "type": "p",
+      "text": "Namesto fizične kamere gostje skenirajo QR kodo in slikajo ali naložijo neposredno s telefona v skupno galerijo. Enaka zabava, nič izgubljenega."
+    },
+    {
+      "type": "image",
+      "src": "https://images.unsplash.com/photo-1606800052052-a08af7148866?w=1200&h=720&fit=crop&q=82&auto=format",
+      "alt": "Gostje s telefoni fotografirajo poročno slavje",
+      "caption": "Telefon vsakega gosta postane kamera — vsak posnetek pa pristane v eni galeriji.",
+      "credit": "Foto: Unsplash"
+    },
+    {
+      "type": "h2",
+      "text": "Ohranite presenečenje"
+    },
+    {
+      "type": "p",
+      "text": "Želite občutek razkritja filma? Med dogodkom preprosto ne odpirajte galerije v živo — oglejte si jo pozneje in podoživite večer skozi oči vseh, v polni kakovosti."
+    },
+    {
+      "type": "cta",
+      "text": "Ustvarite brezplačno digitalno kamero",
+      "href": "https://www.guestcam.si/dashboard/new"
+    },
+    {
+      "type": "faq",
+      "q": "Je digitalna kamera cenejša od pravih?",
+      "a": "Da — izognete se nakupu in razvijanju fizičnih kamer, začnete pa lahko brezplačno."
+    },
+    {
+      "type": "faq",
+      "q": "Ali gostje potrebujejo aplikacijo?",
+      "a": "Ne. Skenirajo QR kodo in naložijo prek brskalnika — brez aplikacije in prijave."
+    },
+    {
+      "type": "faq",
+      "q": "Lahko ohranimo presenečenje ob razkritju?",
+      "a": "Da. Galerijo med dogodkom skrijte in jo odprite pozneje za enak občutek razkritja, v polni kakovosti."
+    }
+  ]
+}

@@ -5,7 +5,7 @@
   "description": "Jednim QR kodom skupite sve fotografije i videe gostiju u privatnoj galeriji. Bez aplikacije, u punoj kvaliteti, besplatan početak.",
   "translationKey": "wedding-photo-app-qr-code",
   "publishedAt": "2026-05-30",
-  "updatedAt": "2026-05-30",
+  "updatedAt": "2026-05-31",
   "author": "Guestcam Team",
   "category": "vodnik",
   "readingTime": 6,
@@ -96,6 +96,13 @@
       "type": "cta",
       "text": "Izradite besplatnu galeriju za vjenčanje",
       "href": "https://www.guestcam.si/dashboard/new"
+    },
+    {
+      "type": "image",
+      "src": "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=1200&h=720&fit=crop&q=82&auto=format",
+      "alt": "Mladenci s gostima na plesnom podiju",
+      "caption": "Fotografije gostiju hvataju spontane trenutke — ples, govore, smijeh.",
+      "credit": "Foto: Unsplash"
     },
     {
       "type": "faq",

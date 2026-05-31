@@ -1,0 +1,116 @@
+{
+  "slug": "digital-disposable-camera-wedding",
+  "lang": "en",
+  "title": "Digital Disposable Camera for Weddings: Better Than the Real Thing",
+  "description": "Love the disposable-camera look but hate the cost and lost film? A QR-code gallery gives the same fun in full quality — no app.",
+  "translationKey": "digital-disposable-camera-wedding",
+  "publishedAt": "2026-05-31",
+  "updatedAt": "2026-05-31",
+  "author": "Guestcam Team",
+  "category": "primerjava",
+  "readingTime": 6,
+  "tags": [
+    "disposable camera",
+    "wedding photos",
+    "QR code",
+    "Guestcam"
+  ],
+  "tldr": "A digital disposable camera is a QR-code gallery: guests snap and upload from their phones, keeping the candid fun without the cost or blurry, lost shots.",
+  "coverImage": "https://images.unsplash.com/photo-1452587925148-ce544e77e70d?w=1200&h=720&fit=crop&q=82&auto=format",
+  "coverAlt": "Disposable film cameras scattered on a wedding reception table",
+  "content": [
+    {
+      "type": "h2",
+      "text": "Why disposable cameras disappoint"
+    },
+    {
+      "type": "p",
+      "text": "Disposable cameras on the tables look charming, but the reality stings: you buy a dozen, pay to develop them, and half the frames come back blurry, dark or empty. A digital disposable camera keeps the playful, candid spirit and fixes every downside."
+    },
+    {
+      "type": "image",
+      "src": "https://images.unsplash.com/photo-1452587925148-ce544e77e70d?w=1200&h=720&fit=crop&q=82&auto=format",
+      "alt": "Disposable film cameras scattered on a wedding reception table",
+      "caption": "The disposable-camera look — without the cost, the blur, or the weeks of waiting.",
+      "credit": "Foto: Unsplash"
+    },
+    {
+      "type": "h2",
+      "text": "Real disposable vs digital"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "",
+        "Physical disposable",
+        "Digital (QR gallery)"
+      ],
+      "rows": [
+        [
+          "Cost",
+          "High (buy + develop)",
+          "Low / free to start"
+        ],
+        [
+          "Quality",
+          "Hit or miss",
+          "Full resolution"
+        ],
+        [
+          "Lost shots",
+          "Common",
+          "None"
+        ],
+        [
+          "See photos",
+          "Weeks later",
+          "Live, instantly"
+        ],
+        [
+          "Video",
+          "No",
+          "Yes"
+        ]
+      ]
+    },
+    {
+      "type": "p",
+      "text": "Instead of a physical camera, guests scan a QR code and shoot or upload straight from their phone into your shared gallery. Same fun, nothing lost."
+    },
+    {
+      "type": "image",
+      "src": "https://images.unsplash.com/photo-1606800052052-a08af7148866?w=1200&h=720&fit=crop&q=82&auto=format",
+      "alt": "Guests using their phones to photograph a wedding celebration",
+      "caption": "Every guest's phone becomes the camera — and every shot lands in one gallery.",
+      "credit": "Foto: Unsplash"
+    },
+    {
+      "type": "h2",
+      "text": "Keep the surprise"
+    },
+    {
+      "type": "p",
+      "text": "Want the film-reveal feel? Just don't open the live gallery during the event — view it yourself afterwards and relive the night through everyone's eyes, in full quality."
+    },
+    {
+      "type": "cta",
+      "text": "Create your free digital disposable camera",
+      "href": "https://www.guestcam.si/dashboard/new"
+    },
+    {
+      "type": "faq",
+      "q": "Is a digital disposable camera cheaper than real ones?",
+      "a": "Yes — you avoid buying and developing physical cameras, and you can start free instead of paying per camera."
+    },
+    {
+      "type": "faq",
+      "q": "Do guests need an app?",
+      "a": "No. They scan a QR code and upload from the phone browser — no app, no login."
+    },
+    {
+      "type": "faq",
+      "q": "Can we still get the surprise reveal?",
+      "a": "Yes. Keep the gallery hidden during the event and open it afterwards for the same film-reveal feeling, in full quality."
+    }
+  ]
+}

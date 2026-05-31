@@ -5,7 +5,7 @@
   "description": "Con un código QR reúne todas las fotos y vídeos de tus invitados en una galería privada. Sin app, en calidad original, gratis para empezar.",
   "translationKey": "wedding-photo-app-qr-code",
   "publishedAt": "2026-05-30",
-  "updatedAt": "2026-05-30",
+  "updatedAt": "2026-05-31",
   "author": "Guestcam Team",
   "category": "vodnik",
   "readingTime": 6,
@@ -96,6 +96,13 @@
       "type": "cta",
       "text": "Crea tu galería de boda gratis",
       "href": "https://www.guestcam.si/dashboard/new"
+    },
+    {
+      "type": "image",
+      "src": "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=1200&h=720&fit=crop&q=82&auto=format",
+      "alt": "Los novios con los invitados en la pista de baile",
+      "caption": "Las fotos de los invitados capturan los momentos espontáneos — baile, discursos, risas.",
+      "credit": "Foto: Unsplash"
     },
     {
       "type": "faq",

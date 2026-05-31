@@ -1,0 +1,116 @@
+{
+  "slug": "camara-desechable-digital-boda",
+  "lang": "es",
+  "title": "Cámara desechable digital para bodas: mejor que la de verdad",
+  "description": "¿Te gusta el look de las cámaras desechables pero no el coste ni las fotos perdidas? Una galería QR ofrece la misma diversión en calidad completa — sin app.",
+  "translationKey": "digital-disposable-camera-wedding",
+  "publishedAt": "2026-05-31",
+  "updatedAt": "2026-05-31",
+  "author": "Guestcam Team",
+  "category": "primerjava",
+  "readingTime": 6,
+  "tags": [
+    "cámara desechable",
+    "fotos de boda",
+    "código QR",
+    "Guestcam"
+  ],
+  "tldr": "Una cámara desechable digital es una galería QR: los invitados disparan y suben desde el móvil, conservando la diversión espontánea sin coste ni fotos borrosas o perdidas.",
+  "coverImage": "https://images.unsplash.com/photo-1452587925148-ce544e77e70d?w=1200&h=720&fit=crop&q=82&auto=format",
+  "coverAlt": "Cámaras desechables sobre una mesa en una celebración de boda",
+  "content": [
+    {
+      "type": "h2",
+      "text": "Por qué decepcionan las cámaras desechables"
+    },
+    {
+      "type": "p",
+      "text": "Las cámaras desechables en las mesas quedan encantadoras, pero la realidad duele: compras una docena, pagas el revelado y la mitad de las fotos salen borrosas, oscuras o vacías. La versión digital conserva el espíritu divertido y arregla todos los inconvenientes."
+    },
+    {
+      "type": "image",
+      "src": "https://images.unsplash.com/photo-1452587925148-ce544e77e70d?w=1200&h=720&fit=crop&q=82&auto=format",
+      "alt": "Cámaras desechables sobre una mesa en una celebración de boda",
+      "caption": "El look de la cámara desechable — sin coste, sin fotos borrosas ni semanas de espera.",
+      "credit": "Foto: Unsplash"
+    },
+    {
+      "type": "h2",
+      "text": "Desechable real vs digital"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "",
+        "Desechable física",
+        "Digital (galería QR)"
+      ],
+      "rows": [
+        [
+          "Coste",
+          "Alto (comprar + revelar)",
+          "Bajo / gratis para empezar"
+        ],
+        [
+          "Calidad",
+          "Incierta",
+          "Resolución completa"
+        ],
+        [
+          "Fotos perdidas",
+          "Frecuentes",
+          "Ninguna"
+        ],
+        [
+          "Ver fotos",
+          "Semanas después",
+          "En directo, al instante"
+        ],
+        [
+          "Vídeo",
+          "No",
+          "Sí"
+        ]
+      ]
+    },
+    {
+      "type": "p",
+      "text": "En lugar de una cámara física, los invitados escanean un código QR y disparan o suben directamente desde el móvil a tu galería común. La misma diversión, sin perder nada."
+    },
+    {
+      "type": "image",
+      "src": "https://images.unsplash.com/photo-1606800052052-a08af7148866?w=1200&h=720&fit=crop&q=82&auto=format",
+      "alt": "Invitados fotografiando la celebración de boda con sus móviles",
+      "caption": "El móvil de cada invitado se convierte en la cámara — y cada foto llega a una galería.",
+      "credit": "Foto: Unsplash"
+    },
+    {
+      "type": "h2",
+      "text": "Conserva la sorpresa"
+    },
+    {
+      "type": "p",
+      "text": "¿Quieres la sensación de revelar el carrete? Simplemente no abras la galería en directo durante el evento — míralo después y revive la noche a través de los ojos de todos, en calidad completa."
+    },
+    {
+      "type": "cta",
+      "text": "Crea tu cámara desechable digital gratis",
+      "href": "https://www.guestcam.si/dashboard/new"
+    },
+    {
+      "type": "faq",
+      "q": "¿Una cámara desechable digital es más barata que las reales?",
+      "a": "Sí — evitas comprar y revelar cámaras físicas, y puedes empezar gratis."
+    },
+    {
+      "type": "faq",
+      "q": "¿Los invitados necesitan una app?",
+      "a": "No. Escanean un código QR y suben desde el navegador del móvil — sin app ni registro."
+    },
+    {
+      "type": "faq",
+      "q": "¿Podemos conservar la sorpresa al revelar?",
+      "a": "Sí. Mantén la galería oculta durante el evento y ábrela después para la misma sensación de revelado, en calidad completa."
+    }
+  ]
+}

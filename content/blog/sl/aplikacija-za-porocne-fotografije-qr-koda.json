@@ -5,7 +5,7 @@
   "description": "Z eno QR kodo zberite vse fotografije in videe gostov v zasebni galeriji. Brez aplikacije, v polni kakovosti, brezplačen začetek.",
   "translationKey": "wedding-photo-app-qr-code",
   "publishedAt": "2026-05-30",
-  "updatedAt": "2026-05-30",
+  "updatedAt": "2026-05-31",
   "author": "Guestcam Team",
   "category": "vodnik",
   "readingTime": 6,
@@ -96,6 +96,13 @@
       "type": "cta",
       "text": "Ustvarite brezplačno poročno galerijo",
       "href": "https://www.guestcam.si/dashboard/new"
+    },
+    {
+      "type": "image",
+      "src": "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=1200&h=720&fit=crop&q=82&auto=format",
+      "alt": "Nevesta in ženin z gosti na plesišču",
+      "caption": "Fotografije gostov ujamejo spontane trenutke — ples, govore, smeh.",
+      "credit": "Foto: Unsplash"
     },
     {
       "type": "faq",
