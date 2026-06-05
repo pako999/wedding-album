@@ -802,16 +802,43 @@ export async function LocalizedHomePage({ lang }: { lang: Lang }) {
       </section>
 
       {/* Event types */}
-      <section className="max-w-3xl mx-auto px-6 pb-20 text-center">
+      <section className="max-w-5xl mx-auto px-6 pb-20 text-center">
         <h2 className="text-3xl sm:text-4xl font-extrabold text-[#0F1729] mb-4 leading-tight">{t.eventsTitle}</h2>
         <p className="text-gray-400 max-w-xl mx-auto leading-relaxed mb-10">{t.eventsSubtitle}</p>
-        <div className="flex flex-wrap justify-center gap-3">
-          {t.eventsList.map(({ emoji, label }) => (
-            <span key={label} className="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl text-sm font-semibold text-[#0F1729] border border-[#FFC94D]/60 bg-[#FFF9EC] hover:bg-[#FFC94D]/20 transition-colors">
-              <span className="text-base">{emoji}</span>
-              {label}
-            </span>
-          ))}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+          {t.eventsList.map(({ label }, i) => {
+            const imgKeys = ["wedding","birthday","babyshower","anniversary","party","business","baptism","graduation"];
+            const imgBgs  = [
+              "linear-gradient(135deg,#fce7e9,#f9cdd2)",
+              "linear-gradient(135deg,#fef3c7,#fde68a)",
+              "linear-gradient(135deg,#fce7f3,#f9a8d4)",
+              "linear-gradient(135deg,#fef9ec,#fde68a)",
+              "linear-gradient(135deg,#f3e8ff,#d8b4fe)",
+              "linear-gradient(135deg,#f1f5f9,#cbd5e1)",
+              "linear-gradient(135deg,#e0f2fe,#7dd3fc)",
+              "linear-gradient(135deg,#dcfce7,#86efac)",
+            ];
+            return (
+              <div
+                key={label}
+                className="relative rounded-2xl overflow-hidden aspect-[3/4] group shadow-sm hover:shadow-md transition-shadow"
+                style={{ background: imgBgs[i] ?? imgBgs[0] }}
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={`/events/${imgKeys[i] ?? "wedding"}.webp`}
+                  alt={label}
+                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
+                  loading="lazy"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-transparent to-transparent" />
+                <p className="absolute bottom-0 left-0 right-0 px-3 pb-4 text-center text-white font-bold text-sm leading-snug drop-shadow-sm">
+                  {label}
+                </p>
+              </div>
+            );
+          })}
         </div>
       </section>
 

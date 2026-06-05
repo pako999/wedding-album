@@ -300,26 +300,40 @@ export default async function HomePage() {
       </section>
 
       {/* ── Event types ─────────────────────────────────────────────────────── */}
-      <section className="max-w-3xl mx-auto px-6 pb-20 text-center">
+      <section className="max-w-5xl mx-auto px-6 pb-20 text-center">
         <h2 className="text-3xl sm:text-4xl font-extrabold text-[#0F1729] mb-4 leading-tight">Za vsak poseben trenutek</h2>
         <p className="text-gray-400 max-w-xl mx-auto leading-relaxed mb-10">
           Guestcam zbira fotografije vaših gostov — za poroke, rojstne dneve, baby shower, obletnice, poslovne zabave in vsak dogodek, ki si zasluži spomin.
         </p>
-        <div className="flex flex-wrap justify-center gap-3">
-          {[
-            { emoji: "💍", label: "Poroka" },
-            { emoji: "🎂", label: "Rojstni dan" },
-            { emoji: "👶", label: "Baby shower" },
-            { emoji: "🥂", label: "Obletnica" },
-            { emoji: "🎉", label: "Zabava" },
-            { emoji: "💼", label: "Poslovna zabava" },
-            { emoji: "✝️", label: "Krst" },
-            { emoji: "🎓", label: "Matura" },
-          ].map(({ emoji, label }) => (
-            <span key={label} className="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl text-sm font-semibold text-[#0F1729] border border-[#FFC94D]/60 bg-[#FFF9EC] hover:bg-[#FFC94D]/20 transition-colors">
-              <span className="text-base">{emoji}</span>
-              {label}
-            </span>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+          {([
+            { key: "wedding",     label: "Poroka",          bg: "linear-gradient(135deg,#fce7e9,#f9cdd2)" },
+            { key: "birthday",    label: "Rojstni dan",     bg: "linear-gradient(135deg,#fef3c7,#fde68a)" },
+            { key: "babyshower",  label: "Baby shower",     bg: "linear-gradient(135deg,#fce7f3,#f9a8d4)" },
+            { key: "anniversary", label: "Obletnica",       bg: "linear-gradient(135deg,#fef9ec,#fde68a)" },
+            { key: "party",       label: "Zabava",          bg: "linear-gradient(135deg,#f3e8ff,#d8b4fe)" },
+            { key: "business",    label: "Poslovna zabava", bg: "linear-gradient(135deg,#f1f5f9,#cbd5e1)" },
+            { key: "baptism",     label: "Krst",            bg: "linear-gradient(135deg,#e0f2fe,#7dd3fc)" },
+            { key: "graduation",  label: "Matura",          bg: "linear-gradient(135deg,#dcfce7,#86efac)" },
+          ] as const).map(({ key, label, bg }) => (
+            <div
+              key={key}
+              className="relative rounded-2xl overflow-hidden aspect-[3/4] group shadow-sm hover:shadow-md transition-shadow"
+              style={{ background: bg }}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={`/events/${key}.webp`}
+                alt={label}
+                className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
+                loading="lazy"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-transparent to-transparent" />
+              <p className="absolute bottom-0 left-0 right-0 px-3 pb-4 text-center text-white font-bold text-sm leading-snug drop-shadow-sm">
+                {label}
+              </p>
+            </div>
           ))}
         </div>
       </section>
