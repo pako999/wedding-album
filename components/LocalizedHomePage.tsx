@@ -808,7 +808,7 @@ export async function LocalizedHomePage({ lang }: { lang: Lang }) {
         <p className="text-gray-400 max-w-xl mx-auto leading-relaxed mb-10">{t.eventsSubtitle}</p>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
           {t.eventsList.map(({ label }, i) => {
-            const imgKeys = ["wedding","birthday","babyshower","gromparty","party","business","baptism","graduation"];
+            const imgKeys = ["wedding","birthday","babyshower","gromparty","party","business","krst","matura"];
             const imgBgs  = [
               "linear-gradient(135deg,#fce7e9,#f9cdd2)",
               "linear-gradient(135deg,#fef3c7,#fde68a)",

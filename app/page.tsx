@@ -314,8 +314,8 @@ export default async function HomePage() {
             { key: "gromparty",   label: "Fantovščina",     bg: "linear-gradient(135deg,#1e2a3a,#2d3f55)" },
             { key: "party",       label: "Zabava",          bg: "linear-gradient(135deg,#f3e8ff,#d8b4fe)" },
             { key: "business",    label: "Poslovna zabava", bg: "linear-gradient(135deg,#f1f5f9,#cbd5e1)" },
-            { key: "baptism",     label: "Krst",            bg: "linear-gradient(135deg,#e0f2fe,#7dd3fc)" },
-            { key: "graduation",  label: "Matura",          bg: "linear-gradient(135deg,#dcfce7,#86efac)" },
+            { key: "krst",        label: "Krst",            bg: "linear-gradient(135deg,#e0f2fe,#7dd3fc)" },
+            { key: "matura",      label: "Matura",          bg: "linear-gradient(135deg,#dcfce7,#86efac)" },
           ] as const).map(({ key, label, bg }) => (
             <EventCard key={key} imgKey={key} label={label} bg={bg} />
           ))}
