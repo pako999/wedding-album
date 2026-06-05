@@ -162,6 +162,8 @@ export function UpgradePage({ album }: Props) {
   const [expandedPlan, setExpandedPlan] = useState<PlanId>(initialPlan);
   const [tableStandsSelected, setTableStandsSelected] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState<"card" | "invoice">("card");
+  const [invoiceDone, setInvoiceDone] = useState(false);
 
   const chosen = PLANS.find((p) => p.id === selectedPlan)!;
 
@@ -304,8 +306,47 @@ export function UpgradePage({ album }: Props) {
             <div className="text-blue-500 text-xl">🔒</div>
             <div>
               <p className="text-xs font-semibold text-gray-800">100% varno plačilo</p>
-              <p className="text-xs text-gray-400">Zavarovano z Stripe</p>
+              <p className="text-xs text-gray-400">Zavarovano s Paddle</p>
             </div>
+          </div>
+        </div>
+
+        {/* Payment method toggle */}
+        <div className="bg-white rounded-xl border mb-5 overflow-hidden" style={{ borderColor: "#e5e7eb" }}>
+          <p className="text-xs font-semibold text-gray-500 px-4 pt-4 pb-2 uppercase tracking-widest">Način plačila</p>
+          <div className="px-4 pb-4 space-y-2">
+            {/* Card */}
+            <button
+              type="button"
+              onClick={() => setPaymentMethod("card")}
+              className="w-full flex items-center gap-3 p-3 rounded-xl border-2 transition-all text-left"
+              style={{ borderColor: paymentMethod === "card" ? "#FFC94D" : "#e5e7eb", background: paymentMethod === "card" ? "#FFFBF0" : "white" }}
+            >
+              <div className="w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0"
+                style={{ borderColor: paymentMethod === "card" ? "#FFC94D" : "#d1d5db", background: paymentMethod === "card" ? "#FFC94D" : "white" }}>
+                {paymentMethod === "card" && <div className="w-2 h-2 rounded-full bg-white" />}
+              </div>
+              <div className="flex-1">
+                <p className="text-sm font-semibold text-gray-900">💳 Plačilo s kartico</p>
+                <p className="text-xs text-gray-400">Visa, Mastercard — takojšnja aktivacija</p>
+              </div>
+            </button>
+            {/* Invoice */}
+            <button
+              type="button"
+              onClick={() => setPaymentMethod("invoice")}
+              className="w-full flex items-center gap-3 p-3 rounded-xl border-2 transition-all text-left"
+              style={{ borderColor: paymentMethod === "invoice" ? "#FFC94D" : "#e5e7eb", background: paymentMethod === "invoice" ? "#FFFBF0" : "white" }}
+            >
+              <div className="w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0"
+                style={{ borderColor: paymentMethod === "invoice" ? "#FFC94D" : "#d1d5db", background: paymentMethod === "invoice" ? "#FFC94D" : "white" }}>
+                {paymentMethod === "invoice" && <div className="w-2 h-2 rounded-full bg-white" />}
+              </div>
+              <div className="flex-1">
+                <p className="text-sm font-semibold text-gray-900">🏦 Plačilo po predračunu</p>
+                <p className="text-xs text-gray-400">Bančno nakazilo — predračun prejmete v 24 urah</p>
+              </div>
+            </button>
           </div>
         </div>
 
@@ -342,39 +383,62 @@ export function UpgradePage({ album }: Props) {
         </div>
 
         {/* CTA */}
-        <button
-          className="w-full py-4 rounded-xl text-white font-bold text-base transition-opacity hover:opacity-90 mb-4 flex items-center justify-center gap-2 disabled:opacity-60"
-          style={{ background: "#FFC94D" }}
-          disabled={isLoading}
-          onClick={async () => {
-            setIsLoading(true);
-            try {
-              const res = await fetch("/api/checkout", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ planId: selectedPlan, albumSlug: album.slug, tableStands: tableStandsSelected }),
-              });
-              const { url, error } = await res.json();
-              if (error) throw new Error(error);
-              window.location.href = url;
-            } catch (err) {
-              alert("Napaka pri plačilu. Prosimo, poskusite znova ali nas kontaktirajte na hello@guestcam.si");
-              setIsLoading(false);
-            }
-          }}
-        >
-          {isLoading ? (
-            <>
-              <svg className="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-              </svg>
-              Preusmeritev…
-            </>
-          ) : (
-            <>Nadgradi na {chosen.name} za {chosen.price}€ →</>
-          )}
-        </button>
+        {invoiceDone ? (
+          <div className="w-full rounded-xl p-5 mb-4 text-center" style={{ background: "#F0FDF4", border: "2px solid #86EFAC" }}>
+            <div className="text-3xl mb-2">✅</div>
+            <p className="font-bold text-green-800 text-base mb-1">Naročilo prejeto!</p>
+            <p className="text-sm text-green-700">Predračun vam pošljemo v 24 urah na vaš e-poštni naslov. Po plačilu bo paket <strong>{chosen.name}</strong> takoj aktiviran.</p>
+          </div>
+        ) : (
+          <button
+            className="w-full py-4 rounded-xl font-bold text-base transition-opacity hover:opacity-90 mb-4 flex items-center justify-center gap-2 disabled:opacity-60"
+            style={{ background: "#FFC94D", color: "#0F1729" }}
+            disabled={isLoading}
+            onClick={async () => {
+              setIsLoading(true);
+              try {
+                if (paymentMethod === "invoice") {
+                  const res = await fetch("/api/bank-order", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ planId: selectedPlan, albumSlug: album.slug }),
+                  });
+                  const data = await res.json() as { success?: boolean; error?: string };
+                  if (!res.ok || !data.success) throw new Error(data.error ?? "Napaka");
+                  setInvoiceDone(true);
+                } else {
+                  const res = await fetch("/api/checkout", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ planId: selectedPlan, albumSlug: album.slug, tableStands: tableStandsSelected }),
+                  });
+                  const { url, error } = await res.json() as { url?: string; error?: string };
+                  if (error) throw new Error(error);
+                  window.location.href = url!;
+                }
+              } catch (err) {
+                alert(paymentMethod === "invoice"
+                  ? "Napaka pri oddaji naročila. Prosimo, pišite na hello@guestcam.si"
+                  : "Napaka pri plačilu. Prosimo, poskusite znova ali nas kontaktirajte na hello@guestcam.si");
+                setIsLoading(false);
+              }
+            }}
+          >
+            {isLoading ? (
+              <>
+                <svg className="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                </svg>
+                {paymentMethod === "invoice" ? "Pošiljanje…" : "Preusmeritev…"}
+              </>
+            ) : paymentMethod === "invoice" ? (
+              <>🏦 Oddaj naročilo po predračunu — {chosen.price}€</>
+            ) : (
+              <>Nadgradi na {chosen.name} za {chosen.price}€ →</>
+            )}
+          </button>
+        )}
 
         <p className="text-center text-xs text-gray-400">
           Z nakupom se strinjate s{" "}
