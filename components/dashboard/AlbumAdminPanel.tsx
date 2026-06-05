@@ -43,12 +43,8 @@ interface Props {
 function NewAlbumSuccess({ album, paidPlan }: { album: Album; paidPlan?: "basic" | "plus" | "premium" }) {
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://guestcam.si";
   const albumUrl = `${appUrl}/${album.slug}`;
-  // When the owner picked a paid plan on the pricing card, finish the
-  // onboarding wizard by routing into the upgrade screen with that plan
-  // pre-selected so they can hit Stripe checkout in one click.
-  const dashboardUrl = paidPlan
-    ? `/dashboard/${album.slug}/upgrade?plan=${paidPlan}`
-    : `/dashboard/${album.slug}`;
+  // Always route to the dashboard — the upgrade page is a separate flow.
+  const dashboardUrl = `/dashboard/${album.slug}`;
   const qrPreview =
     `https://api.qrserver.com/v1/create-qr-code/?size=320x320&qzone=2&format=png` +
     `&bgcolor=ffffff&color=0F1729&data=${encodeURIComponent(albumUrl)}`;
