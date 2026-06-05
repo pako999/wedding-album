@@ -100,6 +100,9 @@ interface Copy {
   statsCreated: string;
   statsRating: string;
   statsPhotos: string;
+  eventsTitle: string;
+  eventsSubtitle: string;
+  eventsList: { emoji: string; label: string }[];
   printEyebrow: string;
   printTitle: string;
   printSubtitle: string;
@@ -149,6 +152,14 @@ const COPY: Record<Lang, Copy> = {
     trustText: "Povjerenje", trust500: "500+ parova i organizatora",
     threeStep: { takePhoto: "Gosti fotografiraju", scanQr: "Skeniraju QR", upload: "Učitavaju fotografije" },
     statsCreated: "kreiranih galerija", statsRating: "na temelju prvih ocjena", statsPhotos: "prikupljenih fotografija",
+    eventsTitle: "Za svaki poseban trenutak",
+    eventsSubtitle: "Guestcam prikuplja fotografije vaših gostiju — za vjenčanja, rođendane, baby showere, godišnjice, poslovne zabave i svaki događaj vrijedan uspomene.",
+    eventsList: [
+      { emoji: "💍", label: "Vjenčanje" }, { emoji: "🎂", label: "Rođendan" },
+      { emoji: "👶", label: "Baby shower" }, { emoji: "🥂", label: "Godišnjica" },
+      { emoji: "🎉", label: "Zabava" }, { emoji: "💼", label: "Poslovni event" },
+      { emoji: "✝️", label: "Krštenje" }, { emoji: "🎓", label: "Matura" },
+    ],
     printEyebrow: "Predlošci za tisak", printTitle: "Kartice koje potiču goste na dijeljenje fotografija",
     printSubtitle: "Odaberite dizajn, dodajte svoj QR kod i ispišite. Više gostiju sudjeluje, više nezaboravnih trenutaka u vašoj galeriji.",
     printNote: "Svaki predložak uključuje vaše ime, datum i personalizirani QR kod",
@@ -225,6 +236,14 @@ const COPY: Record<Lang, Copy> = {
     trustText: "Poverenje", trust500: "500+ parova i organizatora",
     threeStep: { takePhoto: "Gosti fotografišu", scanQr: "Skeniraju QR", upload: "Otpremaju fotografije" },
     statsCreated: "napravljenih galerija", statsRating: "na osnovu prvih ocena", statsPhotos: "sakupljenih fotografija",
+    eventsTitle: "Za svaki poseban trenutak",
+    eventsSubtitle: "Guestcam prikuplja fotografije vaših gostiju — za venčanja, rođendane, baby showere, godišnjice, poslovne zabave i svaki događaj vredan sećanja.",
+    eventsList: [
+      { emoji: "💍", label: "Venčanje" }, { emoji: "🎂", label: "Rođendan" },
+      { emoji: "👶", label: "Baby shower" }, { emoji: "🥂", label: "Godišnjica" },
+      { emoji: "🎉", label: "Zabava" }, { emoji: "💼", label: "Poslovni event" },
+      { emoji: "✝️", label: "Krštenje" }, { emoji: "🎓", label: "Matura" },
+    ],
     printEyebrow: "Šabloni za štampu", printTitle: "Kartice koje podstiču goste na deljenje fotografija",
     printSubtitle: "Izaberite dizajn, dodajte svoj QR kod i odštampajte. Više gostiju učestvuje, više nezaboravnih trenutaka u vašoj galeriji.",
     printNote: "Svaki šablon uključuje vaše ime, datum i personalizovani QR kod",
@@ -301,6 +320,14 @@ const COPY: Record<Lang, Copy> = {
     trustText: "Vertrauen von", trust500: "500+ Paaren und Veranstaltern",
     threeStep: { takePhoto: "Gäste fotografieren", scanQr: "QR scannen", upload: "Fotos hochladen" },
     statsCreated: "erstellte Galerien", statsRating: "auf Basis erster Bewertungen", statsPhotos: "gesammelte Fotos",
+    eventsTitle: "Für jeden besonderen Moment",
+    eventsSubtitle: "Guestcam sammelt Fotos Ihrer Gäste — für Hochzeiten, Geburtstage, Babypartys, Jubiläen, Firmenfeiern und jedes Ereignis, das Erinnerungen verdient.",
+    eventsList: [
+      { emoji: "💍", label: "Hochzeit" }, { emoji: "🎂", label: "Geburtstag" },
+      { emoji: "👶", label: "Babyparty" }, { emoji: "🥂", label: "Jubiläum" },
+      { emoji: "🎉", label: "Feier" }, { emoji: "💼", label: "Firmenveranstaltung" },
+      { emoji: "✝️", label: "Taufe" }, { emoji: "🎓", label: "Abitur" },
+    ],
     printEyebrow: "Druckvorlagen", printTitle: "Karten, die Gäste zum Teilen motivieren",
     printSubtitle: "Wählen Sie ein Design, fügen Sie Ihren QR-Code hinzu und drucken Sie. Je mehr Gäste mitmachen, desto mehr Erinnerungen in Ihrer Galerie.",
     printNote: "Jede Vorlage enthält Ihren Namen, Datum und personalisierten QR-Code",
@@ -377,6 +404,14 @@ const COPY: Record<Lang, Copy> = {
     trustText: "Trusted by", trust500: "500+ couples & event planners",
     threeStep: { takePhoto: "Guests snap", scanQr: "Scan QR", upload: "Upload photos" },
     statsCreated: "galleries created", statsRating: "based on early reviews", statsPhotos: "photos collected",
+    eventsTitle: "For every special moment",
+    eventsSubtitle: "Guestcam collects photos from your guests — for weddings, birthdays, baby showers, anniversaries, corporate events, and every celebration worth remembering.",
+    eventsList: [
+      { emoji: "💍", label: "Wedding" }, { emoji: "🎂", label: "Birthday" },
+      { emoji: "👶", label: "Baby Shower" }, { emoji: "🥂", label: "Anniversary" },
+      { emoji: "🎉", label: "Party" }, { emoji: "💼", label: "Corporate Event" },
+      { emoji: "✝️", label: "Baptism" }, { emoji: "🎓", label: "Graduation" },
+    ],
     printEyebrow: "Print templates", printTitle: "Cards that get guests to share photos",
     printSubtitle: "Pick a design, add your QR code and print. The more guests join in, the more unforgettable moments end up in your gallery.",
     printNote: "Every template includes your name, date and personalised QR code",
@@ -453,6 +488,14 @@ const COPY: Record<Lang, Copy> = {
     trustText: "Confianza de", trust500: "+500 parejas y organizadores",
     threeStep: { takePhoto: "Los invitados fotografían", scanQr: "Escanean QR", upload: "Suben fotos" },
     statsCreated: "galerías creadas", statsRating: "según primeras valoraciones", statsPhotos: "fotos recopiladas",
+    eventsTitle: "Para cada momento especial",
+    eventsSubtitle: "Guestcam recopila fotos de tus invitados — para bodas, cumpleaños, baby showers, aniversarios, celebraciones empresariales y cualquier evento que merezca ser recordado.",
+    eventsList: [
+      { emoji: "💍", label: "Boda" }, { emoji: "🎂", label: "Cumpleaños" },
+      { emoji: "👶", label: "Baby Shower" }, { emoji: "🥂", label: "Aniversario" },
+      { emoji: "🎉", label: "Fiesta" }, { emoji: "💼", label: "Evento empresarial" },
+      { emoji: "✝️", label: "Bautizo" }, { emoji: "🎓", label: "Graduación" },
+    ],
     printEyebrow: "Plantillas para imprimir", printTitle: "Tarjetas que invitan a tus invitados a compartir fotos",
     printSubtitle: "Elige un diseño, añade tu QR e imprime. Cuantos más invitados participen, más recuerdos llegarán a tu galería.",
     printNote: "Cada plantilla incluye tu nombre, fecha y código QR personalizado",
@@ -755,6 +798,20 @@ export async function LocalizedHomePage({ lang }: { lang: Lang }) {
               <p className="text-xs text-gray-400 max-w-[90px] leading-snug">{t.statsPhotos}</p>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* Event types */}
+      <section className="max-w-3xl mx-auto px-6 pb-20 text-center">
+        <h2 className="text-3xl sm:text-4xl font-extrabold text-[#0F1729] mb-4 leading-tight">{t.eventsTitle}</h2>
+        <p className="text-gray-400 max-w-xl mx-auto leading-relaxed mb-10">{t.eventsSubtitle}</p>
+        <div className="flex flex-wrap justify-center gap-3">
+          {t.eventsList.map(({ emoji, label }) => (
+            <span key={label} className="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl text-sm font-semibold text-[#0F1729] border border-[#FFC94D]/60 bg-[#FFF9EC] hover:bg-[#FFC94D]/20 transition-colors">
+              <span className="text-base">{emoji}</span>
+              {label}
+            </span>
+          ))}
         </div>
       </section>
 
