@@ -3,6 +3,7 @@ import { auth } from "@clerk/nextjs/server";
 import { LanguageSwitcher, HOME_HREFLANG, type LangCode } from "@/components/LanguageSwitcher";
 import { SeoFooter } from "@/components/SeoFooter";
 import { GuestcamLogo } from "@/components/GuestcamLogo";
+import { EventCard } from "@/components/EventCard";
 import { HeaderAuthButtons } from "@/components/HeaderAuthButtons";
 import { HomeMobileMenu } from "@/components/HomeMobileMenu";
 
@@ -812,31 +813,19 @@ export async function LocalizedHomePage({ lang }: { lang: Lang }) {
               "linear-gradient(135deg,#fce7e9,#f9cdd2)",
               "linear-gradient(135deg,#fef3c7,#fde68a)",
               "linear-gradient(135deg,#fce7f3,#f9a8d4)",
-              "linear-gradient(135deg,#fef9ec,#fde68a)",
+              "linear-gradient(135deg,#1e2a3a,#2d3f55)",
               "linear-gradient(135deg,#f3e8ff,#d8b4fe)",
               "linear-gradient(135deg,#f1f5f9,#cbd5e1)",
               "linear-gradient(135deg,#e0f2fe,#7dd3fc)",
               "linear-gradient(135deg,#dcfce7,#86efac)",
             ];
             return (
-              <div
+              <EventCard
                 key={label}
-                className="relative rounded-2xl overflow-hidden aspect-[3/4] group shadow-sm hover:shadow-md transition-shadow"
-                style={{ background: imgBgs[i] ?? imgBgs[0] }}
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={`/events/${imgKeys[i] ?? "wedding"}.webp`}
-                  alt={label}
-                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                  onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
-                  loading="lazy"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-transparent to-transparent" />
-                <p className="absolute bottom-0 left-0 right-0 px-3 pb-4 text-center text-white font-bold text-sm leading-snug drop-shadow-sm">
-                  {label}
-                </p>
-              </div>
+                imgKey={imgKeys[i] ?? "wedding"}
+                label={label}
+                bg={imgBgs[i] ?? imgBgs[0]}
+              />
             );
           })}
         </div>
