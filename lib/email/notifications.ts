@@ -100,8 +100,8 @@ export function welcomeEmailHtml({ ownerName, coupleName, weddingDate, albumSlug
           <table width="100%" cellpadding="0" cellspacing="0" style="background:#0F1729;border-radius:14px;">
             <tr><td style="padding:22px 24px;color:#ffffff;">
               <p style="margin:0 0 6px;font-size:11px;letter-spacing:2px;color:#FFC94D;font-weight:700;">💎 PREMIUM</p>
-              <p style="margin:0 0 10px;font-size:16px;font-weight:700;">Več fotografij, svoja domena, Film Studio</p>
-              <p style="margin:0 0 14px;font-size:13px;line-height:1.55;color:rgba(255,255,255,0.7);">Z nadgradnjo dobite do 500 fotografij, svojo domeno (npr. foto.vase-ime.si), kinematografski film iz fotografij gostov in več.</p>
+              <p style="margin:0 0 10px;font-size:16px;font-weight:700;">Neomejene fotografije, do 100 videoposnetkov in več</p>
+              <p style="margin:0 0 14px;font-size:13px;line-height:1.55;color:rgba(255,255,255,0.7);">Z nadgradnjo na Premium dobite neomejeno fotografij, do 100 videoposnetkov, live galerijo, personalizirano stran, premium predloge in prioritetno podporo.</p>
               <a href="${upgradeUrl}" style="display:inline-block;padding:11px 22px;background:#FFC94D;color:#0F1729;text-decoration:none;border-radius:10px;font-weight:700;font-size:13px;">Nadgradi paket →</a>
             </td></tr>
           </table>
