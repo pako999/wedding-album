@@ -284,10 +284,103 @@ export async function sendUploadReminder({
         <tr>
           <td style="padding:20px 32px;border-top:1px solid rgba(201,169,110,0.2);text-align:center;">
             <p style="margin:0;font-size:11px;color:#0F1729;opacity:0.4;">
-              Guestcam · <a href="${APP_URL}" style="color:#3551A8;text-decoration:none;">guestcam.si</a>
+              Guestcam · <a href="${APP_URL}" style="color:#C9820A;text-decoration:none;">guestcam.si</a>
             </p>
           </td>
         </tr>
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>`,
+  });
+}
+
+// ─── Bank order confirmation — sent when owner chooses "pay by invoice" ───────
+
+interface BankOrderConfirmationParams {
+  to: string;
+  coupleName: string;
+  planName: string;
+  planPrice: number;
+  albumSlug: string;
+}
+
+export async function sendBankOrderConfirmation({
+  to,
+  coupleName,
+  planName,
+  planPrice,
+  albumSlug,
+}: BankOrderConfirmationParams) {
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) {
+    console.warn("[email] RESEND_API_KEY not set — skipping bank order email");
+    return;
+  }
+  const resend = new Resend(apiKey);
+  const dashboardUrl = `${APP_URL}/dashboard/${albumSlug}`;
+  const safe = { coupleName: escapeHtml(coupleName), planName: escapeHtml(planName) };
+
+  await resend.emails.send({
+    from: `Guestcam <${FROM}>`,
+    to,
+    subject: `✅ Naročilo prejeto — ${safe.coupleName} (${safe.planName})`,
+    html: `<!DOCTYPE html>
+<html lang="sl">
+<head><meta charset="utf-8" /><title>Naročilo prejeto</title></head>
+<body style="margin:0;padding:0;background:#F2F4F8;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;color:#0F1729;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#F2F4F8;padding:32px 16px;">
+    <tr><td align="center">
+      <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;background:#ffffff;border-radius:18px;overflow:hidden;box-shadow:0 4px 24px rgba(15,23,41,0.06);">
+        <tr><td style="background:linear-gradient(135deg,#FFC94D 0%,#FFD966 100%);padding:36px 36px 28px;">
+          <p style="margin:0 0 8px;font-size:12px;letter-spacing:3px;font-weight:700;color:#0F1729;">GUESTCAM</p>
+          <h1 style="margin:0;font-size:24px;line-height:1.25;color:#0F1729;font-weight:800;">Vase narocilo je prejeto!</h1>
+        </td></tr>
+        <tr><td style="padding:32px 36px;">
+          <p style="margin:0 0 16px;font-size:16px;line-height:1.55;color:#0F1729;">
+            Hvala za vase narocilo za album <strong>${safe.coupleName}</strong>.
+          </p>
+          <p style="margin:0 0 24px;font-size:15px;line-height:1.65;color:#475569;">
+            Prejeli smo vaso zahtevo za placilo po predracunu. V kratkem vam bomo poslali predracun na ta e-postni naslov. Po prejemu placila bo vas paket takoj aktiviran.
+          </p>
+          <table width="100%" cellpadding="0" cellspacing="0" style="background:#FFF9EC;border-radius:12px;border:1px solid #FFC94D;margin-bottom:28px;">
+            <tr><td style="padding:20px 24px;">
+              <p style="margin:0 0 4px;font-size:11px;font-weight:700;letter-spacing:2px;color:#C9820A;text-transform:uppercase;">Povzetek narocila</p>
+              <table width="100%" cellpadding="0" cellspacing="0" style="margin-top:12px;">
+                <tr>
+                  <td style="font-size:14px;color:#475569;padding:4px 0;">Paket</td>
+                  <td align="right" style="font-size:14px;font-weight:700;color:#0F1729;padding:4px 0;">Guestcam ${safe.planName}</td>
+                </tr>
+                <tr><td colspan="2" style="padding:6px 0;"><hr style="border:none;border-top:1px solid rgba(255,201,77,0.3);margin:0;" /></td></tr>
+                <tr>
+                  <td style="font-size:14px;font-weight:700;color:#0F1729;padding:4px 0;">Skupaj za placilo</td>
+                  <td align="right" style="font-size:18px;font-weight:800;color:#0F1729;padding:4px 0;">${planPrice}&euro;</td>
+                </tr>
+              </table>
+            </td></tr>
+          </table>
+          <p style="margin:0 0 12px;font-size:15px;font-weight:700;color:#0F1729;">Kaj sledi?</p>
+          <ol style="margin:0 0 28px;padding-left:20px;font-size:14px;line-height:1.9;color:#475569;">
+            <li>V naslednjih 24 urah prejmete predracun za placilo.</li>
+            <li>Poravnajte znesek na nas bancni racun (podatki so v predracunu).</li>
+            <li>Po potrditvi placila bo vas paket <strong>${safe.planName}</strong> takoj aktiviran.</li>
+          </ol>
+          <a href="${dashboardUrl}" style="display:inline-block;background:#FFC94D;color:#0F1729;font-weight:700;font-size:15px;padding:14px 28px;border-radius:12px;text-decoration:none;">
+            Odpri nadzorno plosco &rarr;
+          </a>
+        </td></tr>
+        <tr><td style="padding:0 36px 28px;">
+          <p style="margin:0;font-size:13px;color:#94a3b8;line-height:1.6;">
+            Vprasanja? Pisite nam na
+            <a href="mailto:hello@guestcam.si" style="color:#C9820A;text-decoration:none;">hello@guestcam.si</a> - odgovorimo v 24 urah.
+          </p>
+        </td></tr>
+        <tr><td style="padding:20px 36px;border-top:1px solid #f1f5f9;text-align:center;">
+          <p style="margin:0;font-size:11px;color:#0F1729;opacity:0.4;">
+            Guestcam &middot; <a href="${APP_URL}" style="color:#C9820A;text-decoration:none;">guestcam.si</a>
+          </p>
+        </td></tr>
       </table>
     </td></tr>
   </table>
