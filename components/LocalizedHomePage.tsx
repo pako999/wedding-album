@@ -156,7 +156,7 @@ const COPY: Record<Lang, Copy> = {
     eventsSubtitle: "Guestcam prikuplja fotografije vaših gostiju — za vjenčanja, rođendane, baby showere, godišnjice, poslovne zabave i svaki događaj vrijedan uspomene.",
     eventsList: [
       { emoji: "💍", label: "Vjenčanje" }, { emoji: "🎂", label: "Rođendan" },
-      { emoji: "👶", label: "Baby shower" }, { emoji: "🥂", label: "Godišnjica" },
+      { emoji: "👶", label: "Baby shower" }, { emoji: "🎩", label: "Momačka večer" },
       { emoji: "🎉", label: "Zabava" }, { emoji: "💼", label: "Poslovni event" },
       { emoji: "✝️", label: "Krštenje" }, { emoji: "🎓", label: "Matura" },
     ],
@@ -240,7 +240,7 @@ const COPY: Record<Lang, Copy> = {
     eventsSubtitle: "Guestcam prikuplja fotografije vaših gostiju — za venčanja, rođendane, baby showere, godišnjice, poslovne zabave i svaki događaj vredan sećanja.",
     eventsList: [
       { emoji: "💍", label: "Venčanje" }, { emoji: "🎂", label: "Rođendan" },
-      { emoji: "👶", label: "Baby shower" }, { emoji: "🥂", label: "Godišnjica" },
+      { emoji: "👶", label: "Baby shower" }, { emoji: "🎩", label: "Momačka večer" },
       { emoji: "🎉", label: "Zabava" }, { emoji: "💼", label: "Poslovni event" },
       { emoji: "✝️", label: "Krštenje" }, { emoji: "🎓", label: "Matura" },
     ],
@@ -324,7 +324,7 @@ const COPY: Record<Lang, Copy> = {
     eventsSubtitle: "Guestcam sammelt Fotos Ihrer Gäste — für Hochzeiten, Geburtstage, Babypartys, Jubiläen, Firmenfeiern und jedes Ereignis, das Erinnerungen verdient.",
     eventsList: [
       { emoji: "💍", label: "Hochzeit" }, { emoji: "🎂", label: "Geburtstag" },
-      { emoji: "👶", label: "Babyparty" }, { emoji: "🥂", label: "Jubiläum" },
+      { emoji: "👶", label: "Babyparty" }, { emoji: "🎩", label: "Junggesellenabschied" },
       { emoji: "🎉", label: "Feier" }, { emoji: "💼", label: "Firmenveranstaltung" },
       { emoji: "✝️", label: "Taufe" }, { emoji: "🎓", label: "Abitur" },
     ],
@@ -408,7 +408,7 @@ const COPY: Record<Lang, Copy> = {
     eventsSubtitle: "Guestcam collects photos from your guests — for weddings, birthdays, baby showers, anniversaries, corporate events, and every celebration worth remembering.",
     eventsList: [
       { emoji: "💍", label: "Wedding" }, { emoji: "🎂", label: "Birthday" },
-      { emoji: "👶", label: "Baby Shower" }, { emoji: "🥂", label: "Anniversary" },
+      { emoji: "👶", label: "Baby Shower" }, { emoji: "🎩", label: "Bachelor Party" },
       { emoji: "🎉", label: "Party" }, { emoji: "💼", label: "Corporate Event" },
       { emoji: "✝️", label: "Baptism" }, { emoji: "🎓", label: "Graduation" },
     ],
@@ -492,7 +492,7 @@ const COPY: Record<Lang, Copy> = {
     eventsSubtitle: "Guestcam recopila fotos de tus invitados — para bodas, cumpleaños, baby showers, aniversarios, celebraciones empresariales y cualquier evento que merezca ser recordado.",
     eventsList: [
       { emoji: "💍", label: "Boda" }, { emoji: "🎂", label: "Cumpleaños" },
-      { emoji: "👶", label: "Baby Shower" }, { emoji: "🥂", label: "Aniversario" },
+      { emoji: "👶", label: "Baby Shower" }, { emoji: "🎩", label: "Despedida de soltero" },
       { emoji: "🎉", label: "Fiesta" }, { emoji: "💼", label: "Evento empresarial" },
       { emoji: "✝️", label: "Bautizo" }, { emoji: "🎓", label: "Graduación" },
     ],
@@ -807,7 +807,7 @@ export async function LocalizedHomePage({ lang }: { lang: Lang }) {
         <p className="text-gray-400 max-w-xl mx-auto leading-relaxed mb-10">{t.eventsSubtitle}</p>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
           {t.eventsList.map(({ label }, i) => {
-            const imgKeys = ["wedding","birthday","babyshower","anniversary","party","business","baptism","graduation"];
+            const imgKeys = ["wedding","birthday","babyshower","gromparty","party","business","baptism","graduation"];
             const imgBgs  = [
               "linear-gradient(135deg,#fce7e9,#f9cdd2)",
               "linear-gradient(135deg,#fef3c7,#fde68a)",

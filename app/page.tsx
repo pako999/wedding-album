@@ -310,7 +310,7 @@ export default async function HomePage() {
             { key: "wedding",     label: "Poroka",          bg: "linear-gradient(135deg,#fce7e9,#f9cdd2)" },
             { key: "birthday",    label: "Rojstni dan",     bg: "linear-gradient(135deg,#fef3c7,#fde68a)" },
             { key: "babyshower",  label: "Baby shower",     bg: "linear-gradient(135deg,#fce7f3,#f9a8d4)" },
-            { key: "anniversary", label: "Obletnica",       bg: "linear-gradient(135deg,#fef9ec,#fde68a)" },
+            { key: "gromparty",   label: "Fantovščina",     bg: "linear-gradient(135deg,#1e2a3a,#2d3f55)" },
             { key: "party",       label: "Zabava",          bg: "linear-gradient(135deg,#f3e8ff,#d8b4fe)" },
             { key: "business",    label: "Poslovna zabava", bg: "linear-gradient(135deg,#f1f5f9,#cbd5e1)" },
             { key: "baptism",     label: "Krst",            bg: "linear-gradient(135deg,#e0f2fe,#7dd3fc)" },
