@@ -1003,7 +1003,7 @@ export async function LocalizedHomePage({ lang }: { lang: Lang }) {
           <p className="text-center text-gray-400 mb-14">{t.pricingSubtitle}</p>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 items-start">
             {([
-              { label: t.free.label,    tagline: t.free.tagline,    price: t.free.price,    was: undefined as string | undefined, features: t.free.features,    cta: t.free.cta,    ribbon: undefined as string | undefined, highlighted: false, dimmed: true },
+              { label: t.free.label,    tagline: t.free.tagline,    price: t.free.price,    was: undefined as string | undefined, features: t.free.features,    cta: t.free.cta,    ribbon: undefined as string | undefined, highlighted: false, dimmed: false },
               { label: t.basic.label,   tagline: t.basic.tagline,   price: t.basic.price,   was: t.basic.was,   features: t.basic.features,   cta: t.basic.cta,   ribbon: undefined as string | undefined, highlighted: false, dimmed: false },
               { label: t.plus.label,    tagline: t.plus.tagline,    price: t.plus.price,    was: t.plus.was,    features: t.plus.features,    cta: t.plus.cta,    ribbon: t.plus.ribbon as string | undefined,    highlighted: true,  dimmed: false },
               { label: t.premium.label, tagline: t.premium.tagline, price: t.premium.price, was: t.premium.was, features: t.premium.features, cta: t.premium.cta, ribbon: undefined as string | undefined, highlighted: false, dimmed: false },
