@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { auth, currentUser } from "@clerk/nextjs/server";
 import { db } from "@/lib/db";
 import { albums } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
@@ -25,9 +26,20 @@ export async function POST(req: NextRequest) {
 
   if (!album) return NextResponse.json({ error: "Album not found" }, { status: 404 });
 
-  const email = album.notifyEmail ?? album.ownerEmail;
+  // Resolve email: album notifyEmail → album ownerEmail → Clerk current user
+  let email = album.notifyEmail ?? album.ownerEmail ?? null;
   if (!email) {
-    return NextResponse.json({ error: "No email on file for this album. Please contact hello@guestcam.si" }, { status: 400 });
+    try {
+      const user = await currentUser();
+      email = user?.emailAddresses?.[0]?.emailAddress ?? null;
+    } catch { /* Clerk unavailable */ }
+  }
+
+  if (!email) {
+    return NextResponse.json(
+      { error: "Ni e-poštnega naslova za ta album. Pišite nam na hello@guestcam.si" },
+      { status: 400 },
+    );
   }
 
   const plan = PLAN_LABELS[planId] ?? { name: planId, price: 0 };
