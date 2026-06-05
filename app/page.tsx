@@ -279,6 +279,31 @@ export default async function HomePage() {
         </div>
       </section>
 
+      {/* ── Event types ─────────────────────────────────────────────────────── */}
+      <section className="max-w-3xl mx-auto px-6 pb-20 text-center">
+        <h2 className="text-3xl sm:text-4xl font-extrabold text-[#0F1729] mb-4 leading-tight">Za vsak poseben trenutek</h2>
+        <p className="text-gray-400 max-w-xl mx-auto leading-relaxed mb-10">
+          Guestcam zbira fotografije vaših gostov — za poroke, rojstne dneve, baby shower, obletnice, poslovne zabave in vsak dogodek, ki si zasluži spomin.
+        </p>
+        <div className="flex flex-wrap justify-center gap-3">
+          {[
+            { emoji: "💍", label: "Poroka" },
+            { emoji: "🎂", label: "Rojstni dan" },
+            { emoji: "👶", label: "Baby shower" },
+            { emoji: "🥂", label: "Obletnica" },
+            { emoji: "🎉", label: "Zabava" },
+            { emoji: "💼", label: "Poslovna zabava" },
+            { emoji: "✝️", label: "Krst" },
+            { emoji: "🎓", label: "Matura" },
+          ].map(({ emoji, label }) => (
+            <span key={label} className="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl text-sm font-semibold text-[#0F1729] border border-[#FFC94D]/60 bg-[#FFF9EC] hover:bg-[#FFC94D]/20 transition-colors">
+              <span className="text-base">{emoji}</span>
+              {label}
+            </span>
+          ))}
+        </div>
+      </section>
+
       {/* ── Print Templates ─────────────────────────────────────────────────── */}
       <section id="templates" className="py-24 bg-white">
         <div className="max-w-6xl mx-auto px-6">
