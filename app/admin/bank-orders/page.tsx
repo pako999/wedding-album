@@ -1,6 +1,8 @@
 import { db } from "@/lib/db";
 import { bankOrders } from "@/lib/db/schema";
 import { desc } from "drizzle-orm";
+import { AddOrderForm } from "./AddOrderForm";
+import { StatusButton } from "./StatusButton";
 
 export const dynamic = "force-dynamic";
 
@@ -32,11 +34,14 @@ export default async function AdminBankOrders() {
 
   return (
     <div className="space-y-6">
-      <header>
-        <h1 className="font-serif text-3xl text-[#0F1729]">Naročila po predračunu</h1>
-        <p className="text-sm text-gray-500 mt-1">
-          {orders.length} naročil · čaka plačilo: {totalPending}€ · plačano: {totalPaid}€
-        </p>
+      <header className="flex items-start justify-between gap-4">
+        <div>
+          <h1 className="font-serif text-3xl text-[#0F1729]">Naročila po predračunu</h1>
+          <p className="text-sm text-gray-500 mt-1">
+            {orders.length} naročil · čaka plačilo: {totalPending}€ · plačano: {totalPaid}€
+          </p>
+        </div>
+        <AddOrderForm />
       </header>
 
       <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
@@ -79,13 +84,14 @@ export default async function AdminBankOrders() {
                   <span className={`text-[10px] uppercase font-bold tracking-wide px-2 py-0.5 rounded ${STATUS_STYLE[o.status] ?? "bg-gray-100 text-gray-500"}`}>
                     {STATUS_LABEL[o.status] ?? o.status}
                   </span>
+                  <StatusButton id={o.id} status={o.status} />
                 </td>
               </tr>
             ))}
             {orders.length === 0 && (
               <tr>
                 <td colSpan={6} className="px-4 py-12 text-center text-sm text-gray-400">
-                  Še ni naročil po predračunu.
+                  Še ni naročil po predračunu. Kliknite "+ Dodaj ročno" za vnos.
                 </td>
               </tr>
             )}
