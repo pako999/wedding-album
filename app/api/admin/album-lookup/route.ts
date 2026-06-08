@@ -3,6 +3,7 @@ import { db } from "@/lib/db";
 import { albums } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { requireAdmin } from "@/lib/admin";
+import { clerkClient } from "@clerk/nextjs/server";
 
 export const runtime = "nodejs";
 
@@ -19,8 +20,24 @@ export async function GET(req: NextRequest) {
 
   if (!album) return NextResponse.json({ error: "not found" }, { status: 404 });
 
+  // Try album email first, then fall back to Clerk account email
+  let email = album.notifyEmail ?? album.ownerEmail ?? null;
+  let clerkName: string | null = null;
+
+  if (!email && album.ownerClerkId) {
+    try {
+      const clerk = await clerkClient();
+      const user = await clerk.users.getUser(album.ownerClerkId);
+      email = user.emailAddresses?.[0]?.emailAddress ?? null;
+      const first = user.firstName ?? "";
+      const last = user.lastName ?? "";
+      if (first || last) clerkName = `${first} ${last}`.trim();
+    } catch { /* Clerk unavailable */ }
+  }
+
   return NextResponse.json({
-    email: album.notifyEmail ?? album.ownerEmail ?? null,
+    email,
+    clerkName,
     coupleName: album.coupleName,
     plan: album.plan,
   });

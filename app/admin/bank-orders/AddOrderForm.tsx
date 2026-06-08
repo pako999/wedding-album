@@ -6,12 +6,13 @@ import { addManualOrder } from "./actions";
 const PLAN_PRICES: Record<string, number> = { basic: 39, plus: 49, premium: 79 };
 
 export function AddOrderForm() {
-  const [open, setOpen]       = useState(false);
-  const [saving, setSaving]   = useState(false);
-  const [looking, setLooking] = useState(false);
-  const [email, setEmail]     = useState("");
-  const [planId, setPlanId]   = useState("premium");
-  const [hint, setHint]       = useState<string | null>(null);
+  const [open, setOpen]           = useState(false);
+  const [saving, setSaving]       = useState(false);
+  const [looking, setLooking]     = useState(false);
+  const [email, setEmail]         = useState("");
+  const [billingName, setBillingName] = useState("");
+  const [planId, setPlanId]       = useState("premium");
+  const [hint, setHint]           = useState<string | null>(null);
 
   async function lookupAlbum(slug: string) {
     if (!slug.trim()) return;
@@ -20,10 +21,11 @@ export function AddOrderForm() {
     try {
       const res = await fetch(`/api/admin/album-lookup?slug=${encodeURIComponent(slug.trim())}`);
       if (res.ok) {
-        const data = await res.json() as { email: string | null; coupleName: string; plan: string };
+        const data = await res.json() as { email: string | null; clerkName: string | null; coupleName: string; plan: string };
         if (data.email) setEmail(data.email);
+        if (data.clerkName) setBillingName(data.clerkName);
         if (data.plan && data.plan !== "free") setPlanId(data.plan);
-        setHint(`${data.coupleName}${data.email ? ` · ${data.email}` : " · email ni nastavljen"}`);
+        setHint(`${data.coupleName}${data.email ? ` · ${data.email}` : " · email ni najden v Clerk"}`);
       } else {
         setHint("Galerija ni najdena");
       }
@@ -37,6 +39,7 @@ export function AddOrderForm() {
   function reset() {
     setOpen(false);
     setEmail("");
+    setBillingName("");
     setPlanId("premium");
     setHint(null);
   }
@@ -120,6 +123,7 @@ export function AddOrderForm() {
         <div>
           <label className="block text-xs font-medium text-gray-500 mb-1">Ime in priimek</label>
           <input name="billingName" placeholder="Ana Novak"
+            value={billingName} onChange={(e) => setBillingName(e.target.value)}
             className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#C9820A]" />
         </div>
         <div>
