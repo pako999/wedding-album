@@ -2,6 +2,7 @@ import { db } from "@/lib/db";
 import { albums } from "@/lib/db/schema";
 import { desc, or, like } from "drizzle-orm";
 import { AdminAlbumRow } from "./AdminAlbumRow";
+import { clerkClient } from "@clerk/nextjs/server";
 
 export const dynamic = "force-dynamic";
 
@@ -24,6 +25,23 @@ export default async function AdminAlbums({ searchParams }: PageProps) {
     orderBy: [desc(albums.createdAt)],
     limit: 200,
   });
+
+  // Enrich albums that have no ownerEmail stored by looking up Clerk
+  const missingEmailIds = rows
+    .filter((r) => !r.ownerEmail && r.ownerClerkId)
+    .map((r) => r.ownerClerkId);
+
+  const clerkEmailMap = new Map<string, string>();
+  if (missingEmailIds.length > 0) {
+    try {
+      const clerk = await clerkClient();
+      const users = await clerk.users.getUserList({ userId: missingEmailIds, limit: 200 });
+      for (const u of users.data) {
+        const email = u.emailAddresses?.[0]?.emailAddress;
+        if (email) clerkEmailMap.set(u.id, email);
+      }
+    } catch { /* Clerk unavailable */ }
+  }
 
   return (
     <div className="space-y-6">
@@ -64,7 +82,7 @@ export default async function AdminAlbums({ searchParams }: PageProps) {
                 key={a.id}
                 slug={a.slug}
                 coupleName={a.coupleName}
-                ownerEmail={a.ownerEmail ?? null}
+                ownerEmail={a.ownerEmail ?? clerkEmailMap.get(a.ownerClerkId) ?? null}
                 plan={a.plan}
                 filmTier={a.filmTier}
                 maxPhotos={a.maxPhotos}
