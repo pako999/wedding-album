@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth, currentUser } from "@clerk/nextjs/server";
+import { currentUser } from "@clerk/nextjs/server";
 import { db } from "@/lib/db";
 import { albums } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { sendBankOrderConfirmation } from "@/lib/email/notifications";
+import { notifyTelegram, htmlEscape } from "@/lib/telegram";
 
 export const runtime = "nodejs";
 
@@ -64,22 +65,22 @@ export async function POST(req: NextRequest) {
     billing,
   });
 
-  // Internal Telegram notification — include all billing details for invoicing
-  const token = process.env.TELEGRAM_BOT_TOKEN;
-  const chatId = process.env.TELEGRAM_CHAT_ID;
-  if (token && chatId) {
-    const billingLines = billing
-      ? `\n👤 <b>Podatki za predračun:</b>\nIme: ${billing.name}\nNaslov: ${billing.address}\nKraj: ${billing.city}${billing.taxId ? `\nDavčna: ${billing.taxId}` : ""}`
-      : "";
-    await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        chat_id: chatId,
-        text: `🏦 <b>Novo naročilo po predračunu</b>\nAlbum: <code>${albumSlug}</code>\nPaket: ${plan.name} — ${plan.price}€\nEmail: ${email}${billingLines}\nDatum: ${new Date().toLocaleString("sl-SI")}`,
-        parse_mode: "HTML",
-      }),
-    }).catch(() => {});
+  // Telegram notification — all billing details included for invoice creation
+  const billingLines = billing
+    ? `\n👤 <b>Podatki za predračun:</b>\nIme: ${htmlEscape(billing.name)}\nNaslov: ${htmlEscape(billing.address)}\nKraj: ${htmlEscape(billing.city)}${billing.taxId ? `\nDavčna: ${htmlEscape(billing.taxId)}` : ""}`
+    : "";
+
+  const sent = await notifyTelegram(
+    `🏦 <b>Novo naročilo po predračunu</b>\n` +
+    `Album: <code>${htmlEscape(albumSlug)}</code>\n` +
+    `Paket: ${htmlEscape(plan.name)} — ${plan.price}€\n` +
+    `Email: ${htmlEscape(email)}` +
+    billingLines +
+    `\nDatum: ${new Date().toLocaleString("sl-SI")}`,
+  );
+
+  if (!sent) {
+    console.error("[bank-order] Telegram notification failed for", albumSlug);
   }
 
   return NextResponse.json({ success: true });
