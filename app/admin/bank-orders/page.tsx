@@ -72,9 +72,11 @@ export default async function AdminBankOrders() {
                   {o.billingName ? (
                     <div>
                       <p className="font-semibold">{o.billingName}</p>
-                      {o.billingAddress && <p>{o.billingAddress}</p>}
-                      {o.billingCity   && <p>{o.billingCity}</p>}
-                      {o.billingTaxId  && <p className="text-gray-500">Davčna: {o.billingTaxId}</p>}
+                      {o.billingCompanyName && <p className="text-gray-500">{o.billingCompanyName}</p>}
+                      {o.billingEmail      && <p className="text-blue-600">{o.billingEmail}</p>}
+                      {o.billingAddress    && <p>{o.billingAddress}</p>}
+                      {o.billingCity       && <p>{o.billingCity}</p>}
+                      {o.billingTaxId      && <p className="text-gray-500">Davčna: {o.billingTaxId}</p>}
                     </div>
                   ) : (
                     <span className="text-gray-400 italic">Brez podatkov</span>

@@ -303,6 +303,8 @@ export const bankOrders = pgTable(
     planName: text("plan_name").notNull(),
     planPrice: integer("plan_price").notNull(),
     billingName: text("billing_name"),
+    billingCompanyName: text("billing_company_name"),
+    billingEmail: text("billing_email"),
     billingAddress: text("billing_address"),
     billingCity: text("billing_city"),
     billingTaxId: text("billing_tax_id"),

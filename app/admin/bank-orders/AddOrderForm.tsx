@@ -118,8 +118,18 @@ export function AddOrderForm() {
         </div>
 
         <div>
-          <label className="block text-xs font-medium text-gray-500 mb-1">Ime / naziv podjetja</label>
+          <label className="block text-xs font-medium text-gray-500 mb-1">Ime in priimek</label>
           <input name="billingName" placeholder="Ana Novak"
+            className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#C9820A]" />
+        </div>
+        <div>
+          <label className="block text-xs font-medium text-gray-500 mb-1">Naziv podjetja (neobvezno)</label>
+          <input name="billingCompanyName" placeholder="d.o.o. / s.p."
+            className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#C9820A]" />
+        </div>
+        <div>
+          <label className="block text-xs font-medium text-gray-500 mb-1">Email za račun</label>
+          <input name="billingEmail" type="email" placeholder="racuni@podjetje.si"
             className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#C9820A]" />
         </div>
 

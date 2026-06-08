@@ -212,7 +212,7 @@ export function UpgradePage({ album }: Props) {
   const [isLoading, setIsLoading] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState<"card" | "invoice">("card");
   const [invoiceDone, setInvoiceDone] = useState(false);
-  const [billing, setBilling] = useState({ name: "", address: "", city: "", taxId: "" });
+  const [billing, setBilling] = useState({ name: "", companyName: "", email: "", address: "", city: "", taxId: "" });
 
   const chosen = PLANS.find((p) => p.id === selectedPlan)!;
 
@@ -406,9 +406,25 @@ export function UpgradePage({ album }: Props) {
             <div className="px-4 pb-4 space-y-2.5">
               <input
                 type="text"
-                placeholder="Ime in priimek ali naziv podjetja *"
+                placeholder="Ime in priimek *"
                 value={billing.name}
                 onChange={e => setBilling(b => ({ ...b, name: e.target.value }))}
+                className="w-full px-3 py-2.5 text-sm border rounded-lg focus:outline-none focus:border-[#FFC94D] focus:ring-1 focus:ring-[#FFC94D]"
+                style={{ borderColor: "#e5e7eb" }}
+              />
+              <input
+                type="text"
+                placeholder="Naziv podjetja (neobvezno)"
+                value={billing.companyName}
+                onChange={e => setBilling(b => ({ ...b, companyName: e.target.value }))}
+                className="w-full px-3 py-2.5 text-sm border rounded-lg focus:outline-none focus:border-[#FFC94D] focus:ring-1 focus:ring-[#FFC94D]"
+                style={{ borderColor: "#e5e7eb" }}
+              />
+              <input
+                type="email"
+                placeholder="E-poštni naslov *"
+                value={billing.email}
+                onChange={e => setBilling(b => ({ ...b, email: e.target.value }))}
                 className="w-full px-3 py-2.5 text-sm border rounded-lg focus:outline-none focus:border-[#FFC94D] focus:ring-1 focus:ring-[#FFC94D]"
                 style={{ borderColor: "#e5e7eb" }}
               />
@@ -488,8 +504,8 @@ export function UpgradePage({ album }: Props) {
               setIsLoading(true);
               try {
                 if (paymentMethod === "invoice") {
-                  if (!billing.name.trim() || !billing.address.trim() || !billing.city.trim()) {
-                    alert("Prosimo izpolnite vse obvezne podatke za predračun (ime, naslov, kraj).");
+                  if (!billing.name.trim() || !billing.email.trim() || !billing.address.trim() || !billing.city.trim()) {
+                    alert("Prosimo izpolnite vse obvezne podatke za predračun (ime, e-pošta, naslov, kraj).");
                     setIsLoading(false);
                     return;
                   }
@@ -501,6 +517,8 @@ export function UpgradePage({ album }: Props) {
                       albumSlug: album.slug,
                       billing: {
                         name: billing.name.trim(),
+                        companyName: billing.companyName.trim() || undefined,
+                        email: billing.email.trim(),
                         address: billing.address.trim(),
                         city: billing.city.trim(),
                         taxId: billing.taxId.trim() || undefined,

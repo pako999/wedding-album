@@ -20,16 +20,18 @@ export async function addManualOrder(formData: FormData) {
   const plan = PLAN_LABELS[planId] ?? { name: planId, price: 0 };
 
   await db.insert(bankOrders).values({
-    albumSlug:      (formData.get("albumSlug") as string).trim(),
-    email:          (formData.get("email") as string).trim(),
+    albumSlug:          (formData.get("albumSlug") as string).trim(),
+    email:              (formData.get("email") as string).trim(),
     planId,
-    planName:       plan.name,
-    planPrice:      plan.price,
-    billingName:    (formData.get("billingName") as string)?.trim() || null,
-    billingAddress: (formData.get("billingAddress") as string)?.trim() || null,
-    billingCity:    (formData.get("billingCity") as string)?.trim() || null,
-    billingTaxId:   (formData.get("billingTaxId") as string)?.trim() || null,
-    status:         "pending",
+    planName:           plan.name,
+    planPrice:          plan.price,
+    billingName:        (formData.get("billingName") as string)?.trim() || null,
+    billingCompanyName: (formData.get("billingCompanyName") as string)?.trim() || null,
+    billingEmail:       (formData.get("billingEmail") as string)?.trim() || null,
+    billingAddress:     (formData.get("billingAddress") as string)?.trim() || null,
+    billingCity:        (formData.get("billingCity") as string)?.trim() || null,
+    billingTaxId:       (formData.get("billingTaxId") as string)?.trim() || null,
+    status:             "pending",
   });
 
   revalidatePath("/admin/bank-orders");

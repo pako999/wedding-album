@@ -207,6 +207,8 @@ export async function runMigrations() {
       )
     `;
     await sql`CREATE INDEX IF NOT EXISTS bank_orders_slug_idx ON bank_orders (album_slug)`;
+    await sql`ALTER TABLE bank_orders ADD COLUMN IF NOT EXISTS billing_company_name TEXT`;
+    await sql`ALTER TABLE bank_orders ADD COLUMN IF NOT EXISTS billing_email TEXT`;
 
     console.log("[migrations] ✓ DB schema up to date");
   } catch (err) {
