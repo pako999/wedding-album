@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { currentUser } from "@clerk/nextjs/server";
 import { db } from "@/lib/db";
-import { albums } from "@/lib/db/schema";
+import { albums, bankOrders } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { sendBankOrderConfirmation } from "@/lib/email/notifications";
 import { notifyTelegram, htmlEscape } from "@/lib/telegram";
@@ -16,6 +16,8 @@ const PLAN_LABELS: Record<string, { name: string; price: number }> = {
 
 interface BillingDetails {
   name: string;
+  companyName?: string;
+  email?: string;
   address: string;
   city: string;
   taxId?: string;
@@ -56,6 +58,21 @@ export async function POST(req: NextRequest) {
 
   const plan = PLAN_LABELS[planId] ?? { name: planId, price: 0 };
 
+  // Persist the order so admin can see it and issue an invoice
+  await db.insert(bankOrders).values({
+    albumSlug,
+    email,
+    planId,
+    planName: plan.name,
+    planPrice: plan.price,
+    billingName: billing?.name ?? null,
+    billingCompanyName: billing?.companyName ?? null,
+    billingEmail: billing?.email ?? null,
+    billingAddress: billing?.address ?? null,
+    billingCity: billing?.city ?? null,
+    billingTaxId: billing?.taxId ?? null,
+  }).catch((err) => console.error("[bank-order] DB insert failed:", err));
+
   await sendBankOrderConfirmation({
     to: email,
     coupleName: album.coupleName,
@@ -67,7 +84,7 @@ export async function POST(req: NextRequest) {
 
   // Telegram notification — all billing details included for invoice creation
   const billingLines = billing
-    ? `\n👤 <b>Podatki za predračun:</b>\nIme: ${htmlEscape(billing.name)}\nNaslov: ${htmlEscape(billing.address)}\nKraj: ${htmlEscape(billing.city)}${billing.taxId ? `\nDavčna: ${htmlEscape(billing.taxId)}` : ""}`
+    ? `\n👤 <b>Podatki za predračun:</b>\nIme: ${htmlEscape(billing.name)}${billing.companyName ? `\nPodjetje: ${htmlEscape(billing.companyName)}` : ""}${billing.email ? `\nEmail za račun: ${htmlEscape(billing.email)}` : ""}\nNaslov: ${htmlEscape(billing.address)}\nKraj: ${htmlEscape(billing.city)}${billing.taxId ? `\nDavčna: ${htmlEscape(billing.taxId)}` : ""}`
     : "";
 
   const sent = await notifyTelegram(
