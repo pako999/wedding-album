@@ -212,6 +212,7 @@ export function UpgradePage({ album }: Props) {
   const [isLoading, setIsLoading] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState<"card" | "invoice">("card");
   const [invoiceDone, setInvoiceDone] = useState(false);
+  const [billing, setBilling] = useState({ name: "", address: "", city: "", taxId: "" });
 
   const chosen = PLANS.find((p) => p.id === selectedPlan)!;
 
@@ -398,6 +399,47 @@ export function UpgradePage({ album }: Props) {
           </div>
         </div>
 
+        {/* Billing details — shown only for invoice payment */}
+        {paymentMethod === "invoice" && (
+          <div className="bg-white rounded-xl border mb-5 overflow-hidden" style={{ borderColor: "#e5e7eb" }}>
+            <p className="text-xs font-semibold text-gray-500 px-4 pt-4 pb-3 uppercase tracking-widest">Podatki za predračun</p>
+            <div className="px-4 pb-4 space-y-2.5">
+              <input
+                type="text"
+                placeholder="Ime in priimek ali naziv podjetja *"
+                value={billing.name}
+                onChange={e => setBilling(b => ({ ...b, name: e.target.value }))}
+                className="w-full px-3 py-2.5 text-sm border rounded-lg focus:outline-none focus:border-[#FFC94D] focus:ring-1 focus:ring-[#FFC94D]"
+                style={{ borderColor: "#e5e7eb" }}
+              />
+              <input
+                type="text"
+                placeholder="Ulica in hišna številka *"
+                value={billing.address}
+                onChange={e => setBilling(b => ({ ...b, address: e.target.value }))}
+                className="w-full px-3 py-2.5 text-sm border rounded-lg focus:outline-none focus:border-[#FFC94D] focus:ring-1 focus:ring-[#FFC94D]"
+                style={{ borderColor: "#e5e7eb" }}
+              />
+              <input
+                type="text"
+                placeholder="Poštna številka in kraj *"
+                value={billing.city}
+                onChange={e => setBilling(b => ({ ...b, city: e.target.value }))}
+                className="w-full px-3 py-2.5 text-sm border rounded-lg focus:outline-none focus:border-[#FFC94D] focus:ring-1 focus:ring-[#FFC94D]"
+                style={{ borderColor: "#e5e7eb" }}
+              />
+              <input
+                type="text"
+                placeholder="Davčna številka (neobvezno)"
+                value={billing.taxId}
+                onChange={e => setBilling(b => ({ ...b, taxId: e.target.value }))}
+                className="w-full px-3 py-2.5 text-sm border rounded-lg focus:outline-none focus:border-[#FFC94D] focus:ring-1 focus:ring-[#FFC94D]"
+                style={{ borderColor: "#e5e7eb" }}
+              />
+            </div>
+          </div>
+        )}
+
         {/* Testimonial */}
         <div className="bg-white rounded-xl border p-5 mb-5" style={{ borderColor: "#e5e7eb" }}>
           <p className="text-sm text-gray-600 italic mb-3">
@@ -446,10 +488,24 @@ export function UpgradePage({ album }: Props) {
               setIsLoading(true);
               try {
                 if (paymentMethod === "invoice") {
+                  if (!billing.name.trim() || !billing.address.trim() || !billing.city.trim()) {
+                    alert("Prosimo izpolnite vse obvezne podatke za predračun (ime, naslov, kraj).");
+                    setIsLoading(false);
+                    return;
+                  }
                   const res = await fetch("/api/bank-order", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ planId: selectedPlan, albumSlug: album.slug }),
+                    body: JSON.stringify({
+                      planId: selectedPlan,
+                      albumSlug: album.slug,
+                      billing: {
+                        name: billing.name.trim(),
+                        address: billing.address.trim(),
+                        city: billing.city.trim(),
+                        taxId: billing.taxId.trim() || undefined,
+                      },
+                    }),
                   });
                   const data = await res.json() as { success?: boolean; error?: string };
                   if (!res.ok || !data.success) throw new Error(data.error ?? "Napaka");

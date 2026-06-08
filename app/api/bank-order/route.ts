@@ -13,8 +13,19 @@ const PLAN_LABELS: Record<string, { name: string; price: number }> = {
   premium: { name: "Premium", price: 79 },
 };
 
+interface BillingDetails {
+  name: string;
+  address: string;
+  city: string;
+  taxId?: string;
+}
+
 export async function POST(req: NextRequest) {
-  const { planId, albumSlug } = await req.json() as { planId: string; albumSlug: string };
+  const { planId, albumSlug, billing } = await req.json() as {
+    planId: string;
+    albumSlug: string;
+    billing?: BillingDetails;
+  };
 
   if (!planId || !albumSlug) {
     return NextResponse.json({ error: "planId and albumSlug required" }, { status: 400 });
@@ -50,18 +61,22 @@ export async function POST(req: NextRequest) {
     planName: plan.name,
     planPrice: plan.price,
     albumSlug,
+    billing,
   });
 
-  // Internal Telegram notification
+  // Internal Telegram notification — include all billing details for invoicing
   const token = process.env.TELEGRAM_BOT_TOKEN;
   const chatId = process.env.TELEGRAM_CHAT_ID;
   if (token && chatId) {
+    const billingLines = billing
+      ? `\n👤 <b>Podatki za predračun:</b>\nIme: ${billing.name}\nNaslov: ${billing.address}\nKraj: ${billing.city}${billing.taxId ? `\nDavčna: ${billing.taxId}` : ""}`
+      : "";
     await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         chat_id: chatId,
-        text: `🏦 <b>Novo naročilo po predračunu</b>\nAlbum: <code>${albumSlug}</code>\nPaket: ${plan.name} — ${plan.price}€\nEmail: ${email}\nDatum: ${new Date().toLocaleString("sl-SI")}`,
+        text: `🏦 <b>Novo naročilo po predračunu</b>\nAlbum: <code>${albumSlug}</code>\nPaket: ${plan.name} — ${plan.price}€\nEmail: ${email}${billingLines}\nDatum: ${new Date().toLocaleString("sl-SI")}`,
         parse_mode: "HTML",
       }),
     }).catch(() => {});
