@@ -189,6 +189,25 @@ export async function runMigrations() {
     `;
     await sql`CREATE INDEX IF NOT EXISTS upload_reminders_due_idx ON upload_reminders (sent, send_at)`;
 
+    // ── Bank orders ───────────────────────────────────────────────────────────
+    await sql`
+      CREATE TABLE IF NOT EXISTS bank_orders (
+        id               TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
+        album_slug       VARCHAR(80) NOT NULL,
+        email            TEXT NOT NULL,
+        plan_id          TEXT NOT NULL,
+        plan_name        TEXT NOT NULL,
+        plan_price       INTEGER NOT NULL,
+        billing_name     TEXT,
+        billing_address  TEXT,
+        billing_city     TEXT,
+        billing_tax_id   TEXT,
+        status           TEXT NOT NULL DEFAULT 'pending',
+        created_at       TIMESTAMPTZ NOT NULL DEFAULT NOW()
+      )
+    `;
+    await sql`CREATE INDEX IF NOT EXISTS bank_orders_slug_idx ON bank_orders (album_slug)`;
+
     console.log("[migrations] ✓ DB schema up to date");
   } catch (err) {
     console.error("[migrations] Migration error:", err);
