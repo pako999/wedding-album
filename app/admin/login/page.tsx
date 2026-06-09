@@ -2,14 +2,13 @@ import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 import { auth } from "@clerk/nextjs/server";
 import {
-
-export const metadata = { robots: { index: false, follow: false } };
-
   requireAdminEmail,
   buildAdminCookie,
   hasValidAdminCookie,
   ADMIN_COOKIE_NAME,
 } from "@/lib/admin";
+
+export const metadata = { robots: { index: false, follow: false } };
 
 export const dynamic = "force-dynamic";
 
