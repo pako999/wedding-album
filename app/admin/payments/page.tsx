@@ -1,5 +1,8 @@
 import { listTransactions, paddleConfigured, PADDLE_ENV, isPaidStatus, type PaddleTransaction } from "@/lib/paddle";
 
+export const metadata = { robots: { index: false, follow: false } };
+
+
 export const dynamic = "force-dynamic";
 
 async function safeList(): Promise<PaddleTransaction[]> {
@@ -109,3 +112,4 @@ export default async function AdminPayments() {
     </div>
   );
 }
+

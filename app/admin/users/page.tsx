@@ -3,6 +3,9 @@ import { albums } from "@/lib/db/schema";
 import { count, sql } from "drizzle-orm";
 import { clerkClient } from "@clerk/nextjs/server";
 
+export const metadata = { robots: { index: false, follow: false } };
+
+
 export const dynamic = "force-dynamic";
 
 interface UserRow {
@@ -127,3 +130,4 @@ export default async function AdminUsers() {
     </div>
   );
 }
+

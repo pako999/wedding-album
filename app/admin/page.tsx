@@ -2,6 +2,9 @@ import { db } from "@/lib/db";
 import { albums, photos } from "@/lib/db/schema";
 import { sql, desc, and, ne, count, eq, isNotNull, gt, or, like, isNull } from "drizzle-orm";
 
+export const metadata = { robots: { index: false, follow: false } };
+
+
 export const dynamic = "force-dynamic";
 
 const PLAN_PRICES: Record<string, number> = { basic: 39, plus: 49, premium: 79 };
@@ -164,3 +167,4 @@ export function PlanPill({ plan }: { plan: string }) {
     </span>
   );
 }
+

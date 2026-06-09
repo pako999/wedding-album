@@ -1,5 +1,10 @@
 import { SignUp } from "@clerk/nextjs";
 import { GuestcamLogo } from "@/components/GuestcamLogo";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  robots: { index: false, follow: false },
+};
 
 export default function SignUpPage() {
   return (

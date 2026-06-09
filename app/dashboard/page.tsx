@@ -6,6 +6,9 @@ import { eq, or, desc, sql } from "drizzle-orm";
 import Link from "next/link";
 import { DashboardNav } from "@/components/dashboard/DashboardNav";
 
+export const metadata = { robots: { index: false, follow: false } };
+
+
 export const dynamic = "force-dynamic";
 
 export default async function DashboardPage() {
@@ -216,3 +219,4 @@ export default async function DashboardPage() {
     </div>
   );
 }
+

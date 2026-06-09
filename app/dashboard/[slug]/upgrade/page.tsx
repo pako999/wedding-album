@@ -5,6 +5,9 @@ import { albums } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { UpgradePage } from "@/components/dashboard/UpgradePage";
 
+export const metadata = { robots: { index: false, follow: false } };
+
+
 export const dynamic = "force-dynamic";
 
 interface Props {
@@ -31,3 +34,4 @@ export default async function UpgradePageRoute({ params }: Props) {
 
   return <UpgradePage album={album} />;
 }
+

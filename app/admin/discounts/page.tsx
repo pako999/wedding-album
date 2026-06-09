@@ -1,6 +1,9 @@
 import { DiscountManager, type DiscountRow } from "./DiscountManager";
 import { listDiscounts, paddleConfigured } from "@/lib/paddle";
 
+export const metadata = { robots: { index: false, follow: false } };
+
+
 export const dynamic = "force-dynamic";
 
 async function safeList(): Promise<DiscountRow[]> {
@@ -47,3 +50,4 @@ export default async function AdminDiscounts() {
     </div>
   );
 }
+

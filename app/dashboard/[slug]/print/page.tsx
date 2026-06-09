@@ -5,6 +5,9 @@ import { albums } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { PrintPageClient } from "@/components/dashboard/PrintPageClient";
 
+export const metadata = { robots: { index: false, follow: false } };
+
+
 export const dynamic = "force-dynamic";
 
 interface Props {
@@ -53,3 +56,4 @@ export default async function PrintPage({ params }: Props) {
     />
   );
 }
+

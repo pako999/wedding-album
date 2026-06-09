@@ -7,6 +7,9 @@ import { eq, desc } from "drizzle-orm";
 import { DashboardNav } from "@/components/dashboard/DashboardNav";
 import { CreateEventWizard } from "@/components/dashboard/CreateEventWizard";
 
+export const metadata = { robots: { index: false, follow: false } };
+
+
 export const dynamic = "force-dynamic";
 
 export default async function NewAlbumPage({ searchParams }: { searchParams: Promise<{ plan?: string }> }) {
@@ -65,3 +68,4 @@ export default async function NewAlbumPage({ searchParams }: { searchParams: Pro
     </div>
   );
 }
+

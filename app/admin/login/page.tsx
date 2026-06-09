@@ -2,6 +2,9 @@ import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 import { auth } from "@clerk/nextjs/server";
 import {
+
+export const metadata = { robots: { index: false, follow: false } };
+
   requireAdminEmail,
   buildAdminCookie,
   hasValidAdminCookie,
@@ -92,3 +95,4 @@ export default async function AdminLoginPage({
     </div>
   );
 }
+

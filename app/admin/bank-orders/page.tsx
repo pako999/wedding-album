@@ -4,6 +4,9 @@ import { desc } from "drizzle-orm";
 import { AddOrderForm } from "./AddOrderForm";
 import { StatusButton } from "./StatusButton";
 
+export const metadata = { robots: { index: false, follow: false } };
+
+
 export const dynamic = "force-dynamic";
 
 async function loadOrders() {
@@ -103,3 +106,4 @@ export default async function AdminBankOrders() {
     </div>
   );
 }
+

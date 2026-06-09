@@ -6,6 +6,9 @@ import { eq, and, countDistinct } from "drizzle-orm";
 import { AlbumAdminPanel } from "@/components/dashboard/AlbumAdminPanel";
 import { requireAdmin } from "@/lib/admin";
 
+export const metadata = { robots: { index: false, follow: false } };
+
+
 export const dynamic = "force-dynamic";
 
 interface Props {
@@ -169,3 +172,4 @@ export default async function AlbumAdminPage({ params, searchParams }: Props) {
     />
   );
 }
+

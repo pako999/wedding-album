@@ -4,6 +4,9 @@ import { desc, or, like } from "drizzle-orm";
 import { AdminAlbumRow } from "./AdminAlbumRow";
 import { clerkClient } from "@clerk/nextjs/server";
 
+export const metadata = { robots: { index: false, follow: false } };
+
+
 export const dynamic = "force-dynamic";
 
 interface PageProps {
@@ -103,3 +106,4 @@ export default async function AdminAlbums({ searchParams }: PageProps) {
     </div>
   );
 }
+
