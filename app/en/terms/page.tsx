@@ -3,7 +3,18 @@ import { LegalPage } from "@/components/LegalPage";
 
 export const metadata: Metadata = {
   title: "Terms of Service | Guestcam",
-  alternates: { canonical: "https://guestcam.si/en/terms" },
+  alternates: {
+    canonical: "https://guestcam.si/en/terms",
+    languages: {
+      "sl": "https://guestcam.si/terms",
+      "hr": "https://guestcam.si/hr/terms",
+      "sr": "https://guestcam.si/sr/terms",
+      "de": "https://guestcam.si/de/terms",
+      "en": "https://guestcam.si/en/terms",
+      "es": "https://guestcam.si/es/terms",
+      "x-default": "https://guestcam.si/terms",
+    },
+  },
   robots: { index: true, follow: true },
 };
 

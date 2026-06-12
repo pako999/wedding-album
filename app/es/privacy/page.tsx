@@ -3,7 +3,18 @@ import { LegalPage } from "@/components/LegalPage";
 
 export const metadata: Metadata = {
   title: "Política de privacidad | Guestcam",
-  alternates: { canonical: "https://guestcam.si/es/privacy" },
+  alternates: {
+    canonical: "https://guestcam.si/es/privacy",
+    languages: {
+      "sl": "https://guestcam.si/privacy",
+      "hr": "https://guestcam.si/hr/privacy",
+      "sr": "https://guestcam.si/sr/privacy",
+      "de": "https://guestcam.si/de/privacy",
+      "en": "https://guestcam.si/en/privacy",
+      "es": "https://guestcam.si/es/privacy",
+      "x-default": "https://guestcam.si/privacy",
+    },
+  },
   robots: { index: true, follow: true },
 };
 
