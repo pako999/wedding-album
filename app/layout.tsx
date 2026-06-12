@@ -83,6 +83,13 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: "Guestcam" }],
   manifest: "/manifest.json",
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/icon", type: "image/png" },
+    ],
+    apple: [{ url: "/apple-icon", type: "image/png" }],
+  },
   // Site is live — individual private routes (albums, dashboard, etc.) override
   // this with their own noindex where appropriate.
   robots: { index: true, follow: true },
