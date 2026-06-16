@@ -52,6 +52,36 @@ const jsonLd = {
         "Z eno QR kodo zberite vse fotografije in videe gostov v eni zasebni galeriji.",
       offers: { "@type": "Offer", price: "0", priceCurrency: "EUR" },
     },
+    {
+      "@type": "FAQPage",
+      mainEntity: [
+        {
+          "@type": "Question",
+          name: "Ali morajo gosti prenesti aplikacijo?",
+          acceptedAnswer: { "@type": "Answer", text: "Ne. Gosti odprejo album direktno v brskalniku telefona — brez namestitve, brez prijave. Enostavno skenirajo QR kodo in takoj naložijo fotografijo." },
+        },
+        {
+          "@type": "Question",
+          name: "Ali so fotografije zasebne?",
+          acceptedAnswer: { "@type": "Answer", text: "Da. Album je dostopen samo z vašo QR kodo ali povezavo. Po želji ga zaščitite z geslom za dodatno varnost." },
+        },
+        {
+          "@type": "Question",
+          name: "V kakšni kakovosti se shranjujejo fotografije?",
+          acceptedAnswer: { "@type": "Answer", text: "V polni originalni ločljivosti, brez kakršnega koli stiskanja ali zmanjšanja kakovosti." },
+        },
+        {
+          "@type": "Question",
+          name: "Ali podpirate videe?",
+          acceptedAnswer: { "@type": "Answer", text: "Pro in Premium paket podpirata nalaganje videov do 500 MB na posnetek." },
+        },
+        {
+          "@type": "Question",
+          name: "Kaj se zgodi po dogodku?",
+          acceptedAnswer: { "@type": "Answer", text: "Album ostane aktiven toliko časa, kolikor traja vaš paket. Vse fotografije in videe lahko kadar koli prenesete kot ZIP arhiv ali jih shranite neposredno v Google Drive." },
+        },
+      ],
+    },
   ],
 };
 
