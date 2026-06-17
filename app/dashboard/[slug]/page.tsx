@@ -83,6 +83,23 @@ export default async function AlbumAdminPage({ params, searchParams }: Props) {
       where: eq(albums.slug, slug),
     }) ?? null;
 
+    // Mollie backstop: if the user arrived from checkout but the plan is still
+    // free, the webhook may not have fired yet. Try to reconcile via the
+    // payment ID stored at checkout time.
+    if (isUpgraded && album && album.plan === "free" && album.stripeSessionId?.startsWith("tr_")) {
+      try {
+        const { getPayment, isPaidStatus } = await import("@/lib/mollie");
+        const { applyPlanToAlbum } = await import("@/lib/paddle-reconcile");
+        const payment = await getPayment(album.stripeSessionId);
+        if (isPaidStatus(payment.status) && payment.metadata?.planId) {
+          await applyPlanToAlbum(slug, payment.metadata.planId, album.stripeSessionId);
+          album = await db.query.albums.findFirst({ where: eq(albums.slug, slug) }) ?? null;
+        }
+      } catch (err) {
+        console.error("[dashboard] mollie reconcile failed:", err);
+      }
+    }
+
     if (album && (isOwnerOfAlbum(album) || isPlatformAdmin)) {
       const status =
         tab === "pending"  ? "pending"  :
@@ -145,7 +162,7 @@ export default async function AlbumAdminPage({ params, searchParams }: Props) {
       guestCount={guestCount}
       activeTab={tab as "overview" | "gallery" | "qr" | "settings" | "pending" | "film"}
       isNew={isNew}
-      isUpgraded={isUpgraded}
+      isUpgraded={isUpgraded && album?.plan !== "free"}
       paidPlan={paidPlan}
       ownerEmail={ownerEmail}
       viewingAsAdmin={viewingAsAdmin}
