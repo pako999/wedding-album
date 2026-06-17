@@ -9,7 +9,6 @@ import { translations } from "@/lib/i18n/translations";
 import { GuestcamLogo } from "@/components/GuestcamLogo";
 import { bunnyDisplayUrl } from "@/lib/storage/bunny";
 import { ZipDownloader } from "@/components/dashboard/ZipDownloader";
-import { SaveToPhotosButton } from "@/components/dashboard/SaveToPhotosButton";
 import { CoverPhotoSettings } from "@/components/dashboard/CoverPhotoSettings";
 import { FilmStudio } from "@/components/dashboard/FilmStudio";
 import { ALBUM_THEMES } from "@/lib/album-themes";
@@ -209,30 +208,16 @@ export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activ
   const router = useRouter();
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://guestcam.si";
   const albumUrl = `${appUrl}/${album.slug}`;
-  const [driveClicked, setDriveClicked] = useState(false);
   // Mobile sidebar drawer — hidden by default on small screens.
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [linkCopied, setLinkCopied] = useState(false);
 
-  const handleGoogleDrive = () => {
-    // Start the Google Drive OAuth flow — the callback uploads the album
-    // straight into the owner's Drive.
-    setDriveClicked(true);
-    window.location.href = `/api/google-drive/auth?slug=${album.slug}`;
+  const handleCopyLink = () => {
+    navigator.clipboard.writeText(albumUrl).then(() => {
+      setLinkCopied(true);
+      setTimeout(() => setLinkCopied(false), 2000);
+    });
   };
-
-  // Result banner after returning from the Google Drive OAuth flow.
-  const [driveResult, setDriveResult] = useState<{ status: string; count: number } | null>(null);
-  useEffect(() => {
-    const sp = new URLSearchParams(window.location.search);
-    const d = sp.get("drive");
-    if (!d) return;
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setDriveResult({ status: d, count: Number(sp.get("n") ?? 0) });
-    sp.delete("drive");
-    sp.delete("n");
-    const qs = sp.toString();
-    window.history.replaceState(null, "", `/dashboard/${album.slug}${qs ? `?${qs}` : ""}`);
-  }, [album.slug]);
 
   // Show success screen if just created
   if (isNew) {
@@ -516,85 +501,55 @@ export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activ
             </div>
           </div>
           <div className="flex flex-wrap items-center gap-2">
+            <button
+              onClick={handleCopyLink}
+              className="flex items-center gap-1.5 px-3 py-2 text-sm border rounded-lg transition-all"
+              style={linkCopied
+                ? { background: "#f0fdf4", borderColor: "#86efac", color: "#15803d" }
+                : { background: "white", borderColor: "#e5e7eb", color: "#4b5563" }
+              }
+              title="Kopiraj povezavo za goste"
+            >
+              {linkCopied ? (
+                <>
+                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                  Kopirano!
+                </>
+              ) : (
+                <>
+                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+                  </svg>
+                  Kopiraj povezavo
+                </>
+              )}
+            </button>
             <a
               href={albumUrl}
               target="_blank"
               rel="noreferrer"
               className="flex items-center gap-1.5 px-3 py-2 text-sm text-gray-600 border border-gray-200 rounded-lg hover:border-gray-300 transition-colors bg-white"
             >
-              🔗 Poglej kot gost
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+              </svg>
+              Poglej kot gost
             </a>
-            <SaveToPhotosButton
-              albumSlug={album.slug}
-              className="flex items-center gap-1.5 px-3 py-2 text-sm text-gray-600 border border-gray-200 rounded-lg hover:border-gray-300 transition-colors bg-white"
-            />
             <ZipDownloader
               albumSlug={album.slug}
               className="flex items-center gap-1.5 px-3 py-2 text-sm text-gray-600 border border-gray-200 rounded-lg hover:border-gray-300 transition-colors bg-white"
             >
-              💻 Prenesi ZIP
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+              </svg>
+              Prenesi ZIP
             </ZipDownloader>
-            <button
-              onClick={handleGoogleDrive}
-              disabled={driveClicked}
-              title="Shrani vse fotografije galerije v svoj Google Drive"
-              className="flex items-center gap-1.5 px-3 py-2 text-sm border rounded-lg transition-all"
-              style={driveClicked
-                ? { background: "#e8f5e9", borderColor: "#81c784", color: "#2e7d32" }
-                : { background: "white", borderColor: "#e5e7eb", color: "#4b5563" }
-              }
-            >
-              {driveClicked ? (
-                <>
-                  <svg className="w-3.5 h-3.5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                  </svg>
-                  Odpiranje Google Drive…
-                </>
-              ) : (
-                <>
-                  <svg className="w-3.5 h-3.5" viewBox="0 0 87.3 78" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M6.6 66.85l3.85 6.65c.8 1.4 1.95 2.5 3.3 3.3L27.5 53H0c0 1.55.4 3.1 1.2 4.5z" fill="#0066DA"/>
-                    <path d="M43.65 25L29.9 1.2C28.55 2 27.4 3.1 26.6 4.5L1.2 48.5C.4 49.9 0 51.45 0 53h27.5z" fill="#00AC47"/>
-                    <path d="M73.55 76.8c1.35-.8 2.5-1.9 3.3-3.3l1.6-2.75L86.1 57.5c.8-1.4 1.2-2.95 1.2-4.5H59.8L73.55 76.8z" fill="#EA4335"/>
-                    <path d="M43.65 25L57.4 1.2C56.05.4 54.5 0 52.9 0H34.4c-1.6 0-3.1.45-4.5 1.2z" fill="#00832D"/>
-                    <path d="M59.8 53H27.5L13.75 76.8c1.35.8 2.9 1.2 4.5 1.2h50.8c1.6 0 3.1-.45 4.5-1.2z" fill="#2684FC"/>
-                    <path d="M73.4 26.5l-12.7-22c-.8-1.4-1.95-2.5-3.3-3.3L43.65 25 59.8 53h26.45c0-1.55-.4-3.1-1.2-4.5z" fill="#FFBA00"/>
-                  </svg>
-                  Google Drive
-                </>
-              )}
-            </button>
           </div>
         </div>
 
-        {/* Google Drive result banner */}
-        {driveResult && (() => {
-          const map: Record<string, { bg: string; border: string; color: string; text: string }> = {
-            ok:            { bg: "#e8f5e9", border: "#81c784", color: "#2e7d32", text: `✅ ${driveResult.count} datotek shranjenih v Google Drive.` },
-            partial:       { bg: "#fff8e1", border: "#ffd54f", color: "#a06b00", text: `⚠️ Shranjeno v Google Drive — ${driveResult.count} datotek uspešnih, nekatere niso uspele.` },
-            empty:         { bg: "#eef2f7", border: "#cbd5e1", color: "#475569", text: "V galeriji ni fotografij za shranjevanje." },
-            denied:        { bg: "#eef2f7", border: "#cbd5e1", color: "#475569", text: "Dostop do Google Drive je bil zavrnjen." },
-            notconfigured: { bg: "#fff8e1", border: "#ffd54f", color: "#a06b00", text: "Google Drive ni nastavljen — manjkajo OAuth poverilnice." },
-            error:         { bg: "#fdecea", border: "#f5a097", color: "#b3261e", text: "❌ Shranjevanje v Google Drive ni uspelo. Poskusite znova." },
-          };
-          const s = map[driveResult.status] ?? map.error;
-          return (
-            <div
-              className="mx-4 sm:mx-8 mb-4 flex items-center gap-3 rounded-xl border px-4 py-3"
-              style={{ background: s.bg, borderColor: s.border, color: s.color }}
-            >
-              <p className="text-sm font-medium">{s.text}</p>
-              <button
-                onClick={() => setDriveResult(null)}
-                className="ml-auto text-lg leading-none opacity-60 hover:opacity-100"
-                aria-label="Zapri"
-              >
-                ×
-              </button>
-            </div>
-          );
-        })()}
 
         {/* ── TAB CONTENT ── */}
         <div className="flex-1 px-4 sm:px-8 pb-8">
