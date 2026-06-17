@@ -1,6 +1,16 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  async redirects() {
+    return [
+      // Slovenian-language URL aliases for legal pages
+      { source: "/pogoji",     destination: "/terms",   permanent: false },
+      { source: "/zasebnost",  destination: "/privacy", permanent: false },
+      { source: "/piskotki",   destination: "/cookies", permanent: false },
+      { source: "/vracilo",    destination: "/refund",  permanent: false },
+      { source: "/gdpr",       destination: "/gdpr",    permanent: false },
+    ];
+  },
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "*.public.blob.vercel-storage.com" },
