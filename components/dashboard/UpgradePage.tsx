@@ -219,6 +219,62 @@ export function UpgradePage({ album }: Props) {
             </div>
           </div>
 
+          {/* ── Support card ─────────────────────────────────────────── */}
+          <div className="bg-white rounded-2xl border border-gray-100 p-5 mb-4 flex items-center gap-4">
+            {/* Person avatar */}
+            <div className="flex-shrink-0 w-14 h-14 rounded-full overflow-hidden" style={{ background: "linear-gradient(135deg,#FFF3CC,#FFC94D)" }}>
+              <svg viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
+                {/* Head */}
+                <circle cx="28" cy="20" r="10" fill="#C9820A" opacity="0.85" />
+                {/* Body */}
+                <ellipse cx="28" cy="44" rx="14" ry="10" fill="#C9820A" opacity="0.85" />
+                {/* Face highlight */}
+                <circle cx="25" cy="18" r="2" fill="white" opacity="0.4" />
+              </svg>
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-semibold text-gray-900 mb-0.5">Imate vprašanje?</p>
+              <p className="text-xs text-gray-500 mb-3">Pišite nam na Viber ali WhatsApp — odgovorimo v nekaj minutah.</p>
+              <div className="flex gap-2 flex-wrap">
+                <a
+                  href="viber://chat?number=38641580250"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-white transition-opacity hover:opacity-90"
+                  style={{ background: "#7360F2" }}
+                >
+                  {/* Viber icon */}
+                  <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M11.4 0C5.5 0 1 4.3 1 9.6c0 3 1.5 5.7 3.9 7.5v3.7l3.5-1.9c1 .3 2 .4 3.1.4 5.9 0 10.4-4.3 10.4-9.6S17.3 0 11.4 0zm1 13l-2.5-2.7-4.9 2.7 5.4-5.7 2.5 2.7 4.9-2.7L12.4 13z"/>
+                  </svg>
+                  Viber
+                </a>
+                <a
+                  href="https://wa.me/38641580250"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-white transition-opacity hover:opacity-90"
+                  style={{ background: "#25D366" }}
+                >
+                  {/* WhatsApp icon */}
+                  <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+                    <path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.555 4.118 1.528 5.847L0 24l6.302-1.504A11.946 11.946 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.886 0-3.652-.49-5.186-1.349l-.371-.22-3.742.893.942-3.628-.242-.385A9.96 9.96 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/>
+                  </svg>
+                  WhatsApp
+                </a>
+                <a
+                  href="tel:+38641580250"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors"
+                  style={{ background: "#F3F4F6", color: "#374151" }}
+                >
+                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 6.75z" />
+                  </svg>
+                  +386 41 580 250
+                </a>
+              </div>
+            </div>
+          </div>
+
           {/* ── Payment method ────────────────────────────────────────── */}
           <div className="bg-white rounded-2xl border border-gray-100 p-5 mb-4">
             <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-3">Način plačila</p>
