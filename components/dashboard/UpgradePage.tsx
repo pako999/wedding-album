@@ -370,8 +370,8 @@ export function UpgradePage({ album }: Props) {
                   } catch (err) {
                     console.error("[checkout]", err);
                     alert(paymentMethod === "invoice"
-                      ? "Napaka pri oddaji naročila. Pišite na hello@guestcam.si"
-                      : "Napaka pri plačilu. Poskusite znova ali nas kontaktirajte na hello@guestcam.si");
+                      ? "Napaka pri oddaji naročila. Pišite na info@guestcam.si"
+                      : "Napaka pri plačilu. Poskusite znova ali nas kontaktirajte na info@guestcam.si");
                     setIsLoading(false);
                   }
                 }}

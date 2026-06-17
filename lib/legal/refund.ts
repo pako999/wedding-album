@@ -34,7 +34,7 @@ export const refundDoc: Record<LangCode, LegalDoc> = {
         { type: "p", text: "Naša 30-dnevna garancija vračila denarja je velikodušnejša od zakonsko predpisanega minimuma in vaših zakonskih pravic ne omejuje." },
       ] },
       { title: "5. Kako zahtevate vračilo", blocks: [
-        { type: "p", text: "Pišite nam na hello@guestcam.si in navedite:" },
+        { type: "p", text: "Pišite nam na info@guestcam.si in navedite:" },
         { type: "ul", items: [
           "e-poštni naslov, povezan z vašim računom Guestcam,",
           "datum nakupa in paket, ki ste ga kupili,",
@@ -56,7 +56,7 @@ export const refundDoc: Record<LangCode, LegalDoc> = {
         { type: "p", text: "To politiko lahko občasno posodobimo. O bistvenih spremembah vas obvestimo po e-pošti ali z obvestilom v storitvi. Datum zadnje posodobitve je vedno naveden na vrhu tega dokumenta." },
       ] },
       { title: "10. Kontakt", blocks: [
-        { type: "contactCard", lines: ["Sport group d.o.o.", "E-pošta: hello@guestcam.si", "Davčna številka: SI72133449"] },
+        { type: "contactCard", lines: ["Sport group d.o.o.", "E-pošta: info@guestcam.si", "Davčna številka: SI72133449"] },
       ] },
     ],
   },
@@ -93,7 +93,7 @@ export const refundDoc: Record<LangCode, LegalDoc> = {
         { type: "p", text: "Naša 30-dnevna garancija povrata novca velikodušnija je od zakonskog minimuma i ne ograničava vaša zakonska prava." },
       ] },
       { title: "5. Kako zatražiti povrat", blocks: [
-        { type: "p", text: "Pišite nam na hello@guestcam.si i navedite:" },
+        { type: "p", text: "Pišite nam na info@guestcam.si i navedite:" },
         { type: "ul", items: [
           "e-mail adresu povezanu s vašim Guestcam računom,",
           "datum kupnje i paket koji ste kupili,",
@@ -115,7 +115,7 @@ export const refundDoc: Record<LangCode, LegalDoc> = {
         { type: "p", text: "Ovu politiku možemo povremeno ažurirati. O bitnim izmjenama obavještavamo vas e-poštom ili obaviješću u usluzi. Datum zadnjeg ažuriranja uvijek je naveden na vrhu ovog dokumenta." },
       ] },
       { title: "10. Kontakt", blocks: [
-        { type: "contactCard", lines: ["Sport group d.o.o.", "E-pošta: hello@guestcam.si", "OIB / PDV: SI72133449"] },
+        { type: "contactCard", lines: ["Sport group d.o.o.", "E-pošta: info@guestcam.si", "OIB / PDV: SI72133449"] },
       ] },
     ],
   },
@@ -152,7 +152,7 @@ export const refundDoc: Record<LangCode, LegalDoc> = {
         { type: "p", text: "Naša 30-dnevna garancija povraćaja novca velikodušnija je od zakonskog minimuma i ne ograničava vaša zakonska prava." },
       ] },
       { title: "5. Kako zatražiti povraćaj", blocks: [
-        { type: "p", text: "Pišite nam na hello@guestcam.si i navedite:" },
+        { type: "p", text: "Pišite nam na info@guestcam.si i navedite:" },
         { type: "ul", items: [
           "e-mail adresu povezanu sa vašim Guestcam nalogom,",
           "datum kupovine i paket koji ste kupili,",
@@ -174,7 +174,7 @@ export const refundDoc: Record<LangCode, LegalDoc> = {
         { type: "p", text: "Ovu politiku možemo povremeno ažurirati. O bitnim izmenama obaveštavamo vas e-poštom ili obaveštenjem u usluzi. Datum poslednjeg ažuriranja uvek je naveden na vrhu ovog dokumenta." },
       ] },
       { title: "10. Kontakt", blocks: [
-        { type: "contactCard", lines: ["Sport group d.o.o.", "E-pošta: hello@guestcam.si", "PIB / PDV: SI72133449"] },
+        { type: "contactCard", lines: ["Sport group d.o.o.", "E-pošta: info@guestcam.si", "PIB / PDV: SI72133449"] },
       ] },
     ],
   },
@@ -211,7 +211,7 @@ export const refundDoc: Record<LangCode, LegalDoc> = {
         { type: "p", text: "Unsere 30-tägige Geld-zurück-Garantie ist großzügiger als das gesetzliche Minimum und schränkt Ihre gesetzlichen Rechte nicht ein." },
       ] },
       { title: "5. So beantragen Sie eine Rückerstattung", blocks: [
-        { type: "p", text: "Schreiben Sie uns an hello@guestcam.si und geben Sie an:" },
+        { type: "p", text: "Schreiben Sie uns an info@guestcam.si und geben Sie an:" },
         { type: "ul", items: [
           "die mit Ihrem Guestcam-Konto verknüpfte E-Mail-Adresse,",
           "das Kaufdatum und das gekaufte Paket,",
@@ -233,7 +233,7 @@ export const refundDoc: Record<LangCode, LegalDoc> = {
         { type: "p", text: "Wir können diese Richtlinie gelegentlich aktualisieren. Über wesentliche Änderungen informieren wir Sie per E-Mail oder durch einen Hinweis im Dienst. Das Datum der letzten Aktualisierung steht stets oben in diesem Dokument." },
       ] },
       { title: "10. Kontakt", blocks: [
-        { type: "contactCard", lines: ["Sport group d.o.o.", "E-Mail: hello@guestcam.si", "USt-IdNr.: SI72133449"] },
+        { type: "contactCard", lines: ["Sport group d.o.o.", "E-Mail: info@guestcam.si", "USt-IdNr.: SI72133449"] },
       ] },
     ],
   },
@@ -270,7 +270,7 @@ export const refundDoc: Record<LangCode, LegalDoc> = {
         { type: "p", text: "Our 30-day money-back guarantee is more generous than the statutory minimum and does not limit your statutory rights." },
       ] },
       { title: "5. How to request a refund", blocks: [
-        { type: "p", text: "Email us at hello@guestcam.si and include:" },
+        { type: "p", text: "Email us at info@guestcam.si and include:" },
         { type: "ul", items: [
           "the email address linked to your Guestcam account,",
           "the date of purchase and the plan you bought,",
@@ -292,7 +292,7 @@ export const refundDoc: Record<LangCode, LegalDoc> = {
         { type: "p", text: "We may update this policy from time to time. We'll notify you of material changes by email or with a notice in the service. The last-updated date is always shown at the top of this document." },
       ] },
       { title: "10. Contact", blocks: [
-        { type: "contactCard", lines: ["Sport group d.o.o.", "Email: hello@guestcam.si", "VAT ID: SI72133449"] },
+        { type: "contactCard", lines: ["Sport group d.o.o.", "Email: info@guestcam.si", "VAT ID: SI72133449"] },
       ] },
     ],
   },
@@ -329,7 +329,7 @@ export const refundDoc: Record<LangCode, LegalDoc> = {
         { type: "p", text: "Nuestra garantía de devolución de 30 días es más generosa que el mínimo legal y no limita tus derechos legales." },
       ] },
       { title: "5. Cómo solicitar un reembolso", blocks: [
-        { type: "p", text: "Escríbenos a hello@guestcam.si e indica:" },
+        { type: "p", text: "Escríbenos a info@guestcam.si e indica:" },
         { type: "ul", items: [
           "el correo electrónico vinculado a tu cuenta de Guestcam,",
           "la fecha de compra y el plan que compraste,",
@@ -351,7 +351,7 @@ export const refundDoc: Record<LangCode, LegalDoc> = {
         { type: "p", text: "Podemos actualizar esta política de vez en cuando. Te notificaremos los cambios importantes por correo electrónico o mediante un aviso en el servicio. La fecha de la última actualización siempre aparece en la parte superior de este documento." },
       ] },
       { title: "10. Contacto", blocks: [
-        { type: "contactCard", lines: ["Sport group d.o.o.", "Email: hello@guestcam.si", "NIF / IVA: SI72133449"] },
+        { type: "contactCard", lines: ["Sport group d.o.o.", "Email: info@guestcam.si", "NIF / IVA: SI72133449"] },
       ] },
     ],
   },

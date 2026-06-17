@@ -51,7 +51,7 @@ function SiteFooter() {
             Uvjeti
           </Link>
           <a
-            href="mailto:hello@guestcam.si"
+            href="mailto:info@guestcam.si"
             className="hover:text-white transition-colors"
           >
             Kontakt
