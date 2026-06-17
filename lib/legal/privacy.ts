@@ -128,7 +128,7 @@ export const privacyDoc: Record<LangCode, LegalDoc> = {
       {
         title: "1. Upravljavec podatkov",
         blocks: [
-          { type: "contactCard", lines: ["Sport group d.o.o.", "Davčna številka: SI72133449", "E-pošta: hello@guestcam.si"] },
+          { type: "contactCard", lines: ["Sport group d.o.o.", "Davčna številka: SI72133449", "E-pošta: info@guestcam.si"] },
         ],
       },
       {
@@ -179,7 +179,7 @@ export const privacyDoc: Record<LangCode, LegalDoc> = {
         blocks: [
           { type: "p", text: "V skladu z GDPR imate naslednje pravice:" },
           { type: "cards", items: gdprRightsCards.sl },
-          { type: "p", text: "Svojo pravico uveljavljate prek e-pošte hello@guestcam.si. Odgovorimo v 30 dneh." },
+          { type: "p", text: "Svojo pravico uveljavljate prek e-pošte info@guestcam.si. Odgovorimo v 30 dneh." },
         ],
       },
       {
@@ -200,7 +200,7 @@ export const privacyDoc: Record<LangCode, LegalDoc> = {
         title: "10. Kontakt",
         blocks: [
           { type: "p", text: "Za vse vprašanja glede zasebnosti nas kontaktirajte:" },
-          { type: "contactCard", lines: ["Sport group d.o.o.", "E-pošta: hello@guestcam.si", "Davčna številka: SI72133449"] },
+          { type: "contactCard", lines: ["Sport group d.o.o.", "E-pošta: info@guestcam.si", "Davčna številka: SI72133449"] },
         ],
       },
     ],
@@ -213,7 +213,7 @@ export const privacyDoc: Record<LangCode, LegalDoc> = {
       "Sport group d.o.o. (u nastavku: “mi”, “naše”, “Guestcam”) poštuje vašu privatnost i štiti osobne podatke u skladu s Uredbom (EU) 2016/679 (GDPR) i važećim hrvatskim zakonodavstvom. Ova politika opisuje koje podatke prikupljamo, kako ih koristimo i koja su vaša prava.",
     sections: [
       { title: "1. Voditelj obrade podataka", blocks: [
-        { type: "contactCard", lines: ["Sport group d.o.o.", "OIB: SI72133449", "E-pošta: hello@guestcam.si"] },
+        { type: "contactCard", lines: ["Sport group d.o.o.", "OIB: SI72133449", "E-pošta: info@guestcam.si"] },
       ] },
       { title: "2. Koje podatke prikupljamo", blocks: [
         { type: "h3", text: "2.1 Podaci koje sami unosite" },
@@ -249,7 +249,7 @@ export const privacyDoc: Record<LangCode, LegalDoc> = {
       { title: "6. Vaša prava (GDPR)", blocks: [
         { type: "p", text: "U skladu s GDPR-om imate sljedeća prava:" },
         { type: "cards", items: gdprRightsCards.hr },
-        { type: "p", text: "Svoje pravo ostvarujete putem e-pošte hello@guestcam.si. Odgovaramo u roku od 30 dana." },
+        { type: "p", text: "Svoje pravo ostvarujete putem e-pošte info@guestcam.si. Odgovaramo u roku od 30 dana." },
       ] },
       { title: "7. Sigurnost podataka", blocks: [
         { type: "p", text: "Sve veze su zaštićene protokolom HTTPS (TLS 1.3). Pristup galerijama moguć je isključivo putem jedinstvenog QR koda ili URL-a koji vi dijelite. Nijedna javna tražilica ne može indeksirati sadržaj vaše galerije. Interni pristup podacima imaju samo ovlašteni zaposlenici, i to samo kada je to nužno za podršku." },
@@ -258,7 +258,7 @@ export const privacyDoc: Record<LangCode, LegalDoc> = {
       { title: "9. Izmjene politike privatnosti", blocks: [{ type: "p", text: "O bitnim izmjenama obavještavamo vas putem e-pošte (organizatore) ili obavijesti u usluzi. Datum zadnjeg ažuriranja uvijek je naveden na vrhu ovog dokumenta." }] },
       { title: "10. Kontakt", blocks: [
         { type: "p", text: "Za sva pitanja o privatnosti kontaktirajte nas:" },
-        { type: "contactCard", lines: ["Sport group d.o.o.", "E-pošta: hello@guestcam.si", "OIB: SI72133449"] },
+        { type: "contactCard", lines: ["Sport group d.o.o.", "E-pošta: info@guestcam.si", "OIB: SI72133449"] },
       ] },
     ],
   },
@@ -270,7 +270,7 @@ export const privacyDoc: Record<LangCode, LegalDoc> = {
       "Sport group d.o.o. (u daljem tekstu: “mi”, “naše”, “Guestcam”) poštuje vašu privatnost i štiti lične podatke u skladu sa Uredbom (EU) 2016/679 (GDPR) i važećim zakonodavstvom. Ova politika opisuje koje podatke prikupljamo, kako ih koristimo i koja su vaša prava.",
     sections: [
       { title: "1. Rukovalac podataka", blocks: [
-        { type: "contactCard", lines: ["Sport group d.o.o.", "PIB: SI72133449", "E-pošta: hello@guestcam.si"] },
+        { type: "contactCard", lines: ["Sport group d.o.o.", "PIB: SI72133449", "E-pošta: info@guestcam.si"] },
       ] },
       { title: "2. Koje podatke prikupljamo", blocks: [
         { type: "h3", text: "2.1 Podaci koje sami unosite" },
@@ -306,7 +306,7 @@ export const privacyDoc: Record<LangCode, LegalDoc> = {
       { title: "6. Vaša prava (GDPR)", blocks: [
         { type: "p", text: "U skladu sa GDPR-om imate sledeća prava:" },
         { type: "cards", items: gdprRightsCards.sr },
-        { type: "p", text: "Svoje pravo ostvarujete putem e-pošte hello@guestcam.si. Odgovaramo u roku od 30 dana." },
+        { type: "p", text: "Svoje pravo ostvarujete putem e-pošte info@guestcam.si. Odgovaramo u roku od 30 dana." },
       ] },
       { title: "7. Bezbednost podataka", blocks: [
         { type: "p", text: "Sve veze su zaštićene protokolom HTTPS (TLS 1.3). Pristup galerijama moguć je isključivo putem jedinstvenog QR koda ili URL-a koji vi delite. Nijedan javni pretraživač ne može indeksirati sadržaj vaše galerije. Interni pristup podacima imaju samo ovlašćeni zaposleni, i to samo kada je neophodno za podršku." },
@@ -315,7 +315,7 @@ export const privacyDoc: Record<LangCode, LegalDoc> = {
       { title: "9. Izmene politike privatnosti", blocks: [{ type: "p", text: "O bitnim izmenama obaveštavamo vas putem e-pošte (organizatore) ili obaveštenja u usluzi. Datum poslednjeg ažuriranja uvek je naveden na vrhu ovog dokumenta." }] },
       { title: "10. Kontakt", blocks: [
         { type: "p", text: "Za sva pitanja o privatnosti kontaktirajte nas:" },
-        { type: "contactCard", lines: ["Sport group d.o.o.", "E-pošta: hello@guestcam.si", "PIB: SI72133449"] },
+        { type: "contactCard", lines: ["Sport group d.o.o.", "E-pošta: info@guestcam.si", "PIB: SI72133449"] },
       ] },
     ],
   },
@@ -327,7 +327,7 @@ export const privacyDoc: Record<LangCode, LegalDoc> = {
       "Sport group d.o.o. (im Folgenden: “wir”, “uns”, “Guestcam”) respektiert Ihre Privatsphäre und schützt personenbezogene Daten im Einklang mit der Verordnung (EU) 2016/679 (DSGVO) sowie geltendem Recht. Diese Erklärung beschreibt, welche Daten wir erheben, wie wir sie verwenden und welche Rechte Sie haben.",
     sections: [
       { title: "1. Verantwortlicher", blocks: [
-        { type: "contactCard", lines: ["Sport group d.o.o.", "USt-IdNr.: SI72133449", "E-Mail: hello@guestcam.si"] },
+        { type: "contactCard", lines: ["Sport group d.o.o.", "USt-IdNr.: SI72133449", "E-Mail: info@guestcam.si"] },
       ] },
       { title: "2. Welche Daten wir erheben", blocks: [
         { type: "h3", text: "2.1 Von Ihnen eingegebene Daten" },
@@ -363,7 +363,7 @@ export const privacyDoc: Record<LangCode, LegalDoc> = {
       { title: "6. Ihre Rechte (DSGVO)", blocks: [
         { type: "p", text: "Gemäß DSGVO haben Sie folgende Rechte:" },
         { type: "cards", items: gdprRightsCards.de },
-        { type: "p", text: "Ihre Rechte machen Sie per E-Mail an hello@guestcam.si geltend. Wir antworten innerhalb von 30 Tagen." },
+        { type: "p", text: "Ihre Rechte machen Sie per E-Mail an info@guestcam.si geltend. Wir antworten innerhalb von 30 Tagen." },
       ] },
       { title: "7. Datensicherheit", blocks: [
         { type: "p", text: "Alle Verbindungen sind mit HTTPS (TLS 1.3) gesichert. Der Zugriff auf Galerien ist ausschließlich über den eindeutigen QR-Code bzw. die von Ihnen geteilte URL möglich. Keine öffentliche Suchmaschine kann den Inhalt Ihrer Galerie indexieren. Internen Zugriff auf Daten haben nur autorisierte Mitarbeiter, und nur wenn dies für den Support erforderlich ist." },
@@ -372,7 +372,7 @@ export const privacyDoc: Record<LangCode, LegalDoc> = {
       { title: "9. Änderungen dieser Datenschutzerklärung", blocks: [{ type: "p", text: "Über wesentliche Änderungen informieren wir Sie per E-Mail (Organisatoren) oder über einen Hinweis im Dienst. Das Datum der letzten Aktualisierung ist stets am Anfang dieses Dokuments angegeben." }] },
       { title: "10. Kontakt", blocks: [
         { type: "p", text: "Bei allen Fragen zum Datenschutz kontaktieren Sie uns:" },
-        { type: "contactCard", lines: ["Sport group d.o.o.", "E-Mail: hello@guestcam.si", "USt-IdNr.: SI72133449"] },
+        { type: "contactCard", lines: ["Sport group d.o.o.", "E-Mail: info@guestcam.si", "USt-IdNr.: SI72133449"] },
       ] },
     ],
   },
@@ -384,7 +384,7 @@ export const privacyDoc: Record<LangCode, LegalDoc> = {
       "Sport group d.o.o. (“we”, “our”, “Guestcam”) respects your privacy and protects personal data in accordance with Regulation (EU) 2016/679 (GDPR) and applicable law. This policy describes what data we collect, how we use it, and what your rights are.",
     sections: [
       { title: "1. Data controller", blocks: [
-        { type: "contactCard", lines: ["Sport group d.o.o.", "VAT ID: SI72133449", "Email: hello@guestcam.si"] },
+        { type: "contactCard", lines: ["Sport group d.o.o.", "VAT ID: SI72133449", "Email: info@guestcam.si"] },
       ] },
       { title: "2. What data we collect", blocks: [
         { type: "h3", text: "2.1 Data you provide" },
@@ -420,7 +420,7 @@ export const privacyDoc: Record<LangCode, LegalDoc> = {
       { title: "6. Your rights (GDPR)", blocks: [
         { type: "p", text: "Under the GDPR you have the following rights:" },
         { type: "cards", items: gdprRightsCards.en },
-        { type: "p", text: "Exercise your rights by emailing hello@guestcam.si. We respond within 30 days." },
+        { type: "p", text: "Exercise your rights by emailing info@guestcam.si. We respond within 30 days." },
       ] },
       { title: "7. Security", blocks: [
         { type: "p", text: "All connections are secured with HTTPS (TLS 1.3). Galleries are accessible only via the unique QR code or URL you share. No public search engine can index your gallery content. Internal access to data is limited to authorised staff, only when necessary for support." },
@@ -429,7 +429,7 @@ export const privacyDoc: Record<LangCode, LegalDoc> = {
       { title: "9. Changes to this policy", blocks: [{ type: "p", text: "We notify you of material changes by email (organisers) or via a notice inside the service. The last-updated date is always shown at the top of this document." }] },
       { title: "10. Contact", blocks: [
         { type: "p", text: "For any privacy questions, contact us:" },
-        { type: "contactCard", lines: ["Sport group d.o.o.", "Email: hello@guestcam.si", "VAT ID: SI72133449"] },
+        { type: "contactCard", lines: ["Sport group d.o.o.", "Email: info@guestcam.si", "VAT ID: SI72133449"] },
       ] },
     ],
   },
@@ -441,7 +441,7 @@ export const privacyDoc: Record<LangCode, LegalDoc> = {
       "Sport group d.o.o. (en adelante, “nosotros”, “nuestro”, “Guestcam”) respeta tu privacidad y protege los datos personales conforme al Reglamento (UE) 2016/679 (RGPD) y la legislación aplicable. Esta política describe qué datos recopilamos, cómo los usamos y cuáles son tus derechos.",
     sections: [
       { title: "1. Responsable del tratamiento", blocks: [
-        { type: "contactCard", lines: ["Sport group d.o.o.", "CIF: SI72133449", "Email: hello@guestcam.si"] },
+        { type: "contactCard", lines: ["Sport group d.o.o.", "CIF: SI72133449", "Email: info@guestcam.si"] },
       ] },
       { title: "2. Qué datos recopilamos", blocks: [
         { type: "h3", text: "2.1 Datos que proporcionas tú" },
@@ -477,7 +477,7 @@ export const privacyDoc: Record<LangCode, LegalDoc> = {
       { title: "6. Tus derechos (RGPD)", blocks: [
         { type: "p", text: "Conforme al RGPD tienes los siguientes derechos:" },
         { type: "cards", items: gdprRightsCards.es },
-        { type: "p", text: "Ejerce tus derechos por email a hello@guestcam.si. Respondemos en 30 días." },
+        { type: "p", text: "Ejerce tus derechos por email a info@guestcam.si. Respondemos en 30 días." },
       ] },
       { title: "7. Seguridad de los datos", blocks: [
         { type: "p", text: "Todas las conexiones están protegidas con HTTPS (TLS 1.3). El acceso a las galerías solo es posible mediante el código QR único o la URL que tú compartas. Ningún buscador público puede indexar el contenido de tu galería. El acceso interno a los datos está limitado al personal autorizado y solo cuando sea necesario para soporte." },
@@ -486,7 +486,7 @@ export const privacyDoc: Record<LangCode, LegalDoc> = {
       { title: "9. Cambios en esta política", blocks: [{ type: "p", text: "Te notificaremos los cambios importantes por email (organizadores) o mediante un aviso dentro del servicio. La fecha de la última actualización siempre se muestra en la parte superior de este documento." }] },
       { title: "10. Contacto", blocks: [
         { type: "p", text: "Para cualquier consulta sobre privacidad, contáctanos:" },
-        { type: "contactCard", lines: ["Sport group d.o.o.", "Email: hello@guestcam.si", "CIF: SI72133449"] },
+        { type: "contactCard", lines: ["Sport group d.o.o.", "Email: info@guestcam.si", "CIF: SI72133449"] },
       ] },
     ],
   },

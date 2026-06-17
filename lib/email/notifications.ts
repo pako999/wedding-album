@@ -393,7 +393,7 @@ export async function sendBankOrderConfirmation({
         <tr><td style="padding:0 36px 28px;">
           <p style="margin:0;font-size:13px;color:#94a3b8;line-height:1.6;">
             Vprasanja? Pisite nam na
-            <a href="mailto:hello@guestcam.si" style="color:#C9820A;text-decoration:none;">hello@guestcam.si</a> - odgovorimo v 24 urah.
+            <a href="mailto:info@guestcam.si" style="color:#C9820A;text-decoration:none;">info@guestcam.si</a> - odgovorimo v 24 urah.
           </p>
         </td></tr>
         <tr><td style="padding:20px 36px;border-top:1px solid #f1f5f9;text-align:center;">

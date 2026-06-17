@@ -63,7 +63,7 @@ function SiteFooter() {
           <Link href="/privacy" className="hover:text-white transition-colors">Zasebnost</Link>
           <Link href="/terms" className="hover:text-white transition-colors">Pogoji</Link>
           <Link href="/cookies" className="hover:text-white transition-colors">Piškotki</Link>
-          <a href="mailto:hello@guestcam.si" className="hover:text-white transition-colors">Kontakt</a>
+          <a href="mailto:info@guestcam.si" className="hover:text-white transition-colors">Kontakt</a>
         </div>
       </div>
     </footer>

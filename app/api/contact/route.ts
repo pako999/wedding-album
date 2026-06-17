@@ -5,7 +5,7 @@ export const dynamic = "force-dynamic";
 
 /**
  * Receives the Contact page form, verifies the Cloudflare Turnstile
- * token (anti-bot), and emails the message to hello@guestcam.si via
+ * token (anti-bot), and emails the message to info@guestcam.si via
  * Resend. Replies are routed by setting Resend's `reply_to` so the
  * recipient can hit "Reply" directly to the visitor.
  *
@@ -86,7 +86,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Email not configured" }, { status: 503 });
   }
   const from = process.env.RESEND_FROM_EMAIL ?? "noreply@guestcam.si";
-  const to = process.env.CONTACT_RECIPIENT_EMAIL ?? "hello@guestcam.si";
+  const to = process.env.CONTACT_RECIPIENT_EMAIL ?? "info@guestcam.si";
 
   const safeName    = escapeHtml(name);
   const safeEmail   = escapeHtml(email);

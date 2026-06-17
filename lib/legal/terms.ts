@@ -42,7 +42,7 @@ export const termsDoc: Record<LangCode, LegalDoc> = {
         { type: "ul", items: [
           "Plačila in izdajo računov izvaja naš preprodajalec Paddle (Paddle.com Market Ltd) kot pogodbeni prodajalec (Merchant of Record), ki obračuna tudi DDV. Paddle sprejema kartice, Apple Pay, Google Pay in PayPal.",
           "Cene so navedene v EUR brez DDV (DDV se obračuna v skladu z veljavno zakonodajo).",
-          "Ponujamo 30-dnevno garancijo vračila denarja za prvi nakup paketa. Vračilo lahko zahtevate prek e-pošte hello@guestcam.si.",
+          "Ponujamo 30-dnevno garancijo vračila denarja za prvi nakup paketa. Vračilo lahko zahtevate prek e-pošte info@guestcam.si.",
         ] },
       ] },
       { title: "6. Dovoljene vsebine (Acceptable Use)", blocks: [
@@ -69,7 +69,7 @@ export const termsDoc: Record<LangCode, LegalDoc> = {
         { type: "p", text: "Za te pogoje velja slovensko pravo. Vsi spori se rešujejo pred pristojnim sodiščem v Ljubljani, Slovenija." },
       ] },
       { title: "11. Kontakt", blocks: [
-        { type: "contactCard", lines: ["Sport group d.o.o.", "E-pošta: hello@guestcam.si", "Davčna številka: SI72133449"] },
+        { type: "contactCard", lines: ["Sport group d.o.o.", "E-pošta: info@guestcam.si", "Davčna številka: SI72133449"] },
       ] },
     ],
   },
@@ -113,7 +113,7 @@ export const termsDoc: Record<LangCode, LegalDoc> = {
         { type: "ul", items: [
           "Plaćanja i izdavanje računa obavlja naš preprodavač Paddle (Paddle.com Market Ltd) kao ugovorni prodavatelj (Merchant of Record), koji obračunava i PDV. Paddle prihvaća kartice, Apple Pay, Google Pay i PayPal.",
           "Cijene su navedene u EUR bez PDV-a (PDV se obračunava sukladno važećem zakonodavstvu).",
-          "Nudimo 30-dnevno jamstvo povrata novca za prvu kupnju paketa. Povrat zatražite e-poštom na hello@guestcam.si.",
+          "Nudimo 30-dnevno jamstvo povrata novca za prvu kupnju paketa. Povrat zatražite e-poštom na info@guestcam.si.",
         ] },
       ] },
       { title: "6. Dopušteni sadržaj", blocks: [
@@ -140,7 +140,7 @@ export const termsDoc: Record<LangCode, LegalDoc> = {
         { type: "p", text: "Na ove uvjete primjenjuje se slovensko pravo. Svi sporovi rješavaju se pred nadležnim sudom u Ljubljani, Slovenija." },
       ] },
       { title: "11. Kontakt", blocks: [
-        { type: "contactCard", lines: ["Sport group d.o.o.", "E-pošta: hello@guestcam.si", "OIB: SI72133449"] },
+        { type: "contactCard", lines: ["Sport group d.o.o.", "E-pošta: info@guestcam.si", "OIB: SI72133449"] },
       ] },
     ],
   },
@@ -184,7 +184,7 @@ export const termsDoc: Record<LangCode, LegalDoc> = {
         { type: "ul", items: [
           "Plaćanja i izdavanje računa obavlja naš preprodavač Paddle (Paddle.com Market Ltd) kao ugovorni prodavatelj (Merchant of Record), koji obračunava i PDV. Paddle prihvaća kartice, Apple Pay, Google Pay i PayPal.",
           "Cene su navedene u EUR bez PDV-a (PDV se obračunava u skladu sa važećim zakonodavstvom).",
-          "Nudimo 30-dnevnu garanciju povraćaja novca za prvu kupovinu paketa. Povraćaj zatražite e-poštom na hello@guestcam.si.",
+          "Nudimo 30-dnevnu garanciju povraćaja novca za prvu kupovinu paketa. Povraćaj zatražite e-poštom na info@guestcam.si.",
         ] },
       ] },
       { title: "6. Dozvoljen sadržaj", blocks: [
@@ -211,7 +211,7 @@ export const termsDoc: Record<LangCode, LegalDoc> = {
         { type: "p", text: "Za ove uslove važi slovenačko pravo. Svi sporovi rešavaju se pred nadležnim sudom u Ljubljani, Slovenija." },
       ] },
       { title: "11. Kontakt", blocks: [
-        { type: "contactCard", lines: ["Sport group d.o.o.", "E-pošta: hello@guestcam.si", "PIB: SI72133449"] },
+        { type: "contactCard", lines: ["Sport group d.o.o.", "E-pošta: info@guestcam.si", "PIB: SI72133449"] },
       ] },
     ],
   },
@@ -255,7 +255,7 @@ export const termsDoc: Record<LangCode, LegalDoc> = {
         { type: "ul", items: [
           "Zahlungen und Rechnungsstellung erfolgen über unseren Reseller Paddle (Paddle.com Market Ltd), der als Verkäufer (Merchant of Record) auftritt und auch die USt. abführt. Paddle akzeptiert Karten, Apple Pay, Google Pay und PayPal.",
           "Preise sind in EUR ohne MwSt. angegeben (MwSt. wird gemäß geltendem Recht berechnet).",
-          "Wir gewähren eine 30-tägige Geld-zurück-Garantie für den ersten Paketkauf. Die Rückerstattung können Sie per E-Mail an hello@guestcam.si anfordern.",
+          "Wir gewähren eine 30-tägige Geld-zurück-Garantie für den ersten Paketkauf. Die Rückerstattung können Sie per E-Mail an info@guestcam.si anfordern.",
         ] },
       ] },
       { title: "6. Zulässige Inhalte (Acceptable Use)", blocks: [
@@ -282,7 +282,7 @@ export const termsDoc: Record<LangCode, LegalDoc> = {
         { type: "p", text: "Für diese Bedingungen gilt slowenisches Recht. Alle Streitigkeiten werden vor dem zuständigen Gericht in Ljubljana, Slowenien beigelegt." },
       ] },
       { title: "11. Kontakt", blocks: [
-        { type: "contactCard", lines: ["Sport group d.o.o.", "E-Mail: hello@guestcam.si", "USt-IdNr.: SI72133449"] },
+        { type: "contactCard", lines: ["Sport group d.o.o.", "E-Mail: info@guestcam.si", "USt-IdNr.: SI72133449"] },
       ] },
     ],
   },
@@ -326,7 +326,7 @@ export const termsDoc: Record<LangCode, LegalDoc> = {
         { type: "ul", items: [
           "Payments and invoicing are handled by our reseller Paddle (Paddle.com Market Ltd), which acts as the Merchant of Record and is responsible for charging VAT. Paddle accepts cards, Apple Pay, Google Pay and PayPal.",
           "Prices are stated in EUR excluding VAT (VAT is charged according to applicable law).",
-          "We offer a 30-day money-back guarantee for the first plan purchase. Request a refund by emailing hello@guestcam.si.",
+          "We offer a 30-day money-back guarantee for the first plan purchase. Request a refund by emailing info@guestcam.si.",
         ] },
       ] },
       { title: "6. Acceptable use", blocks: [
@@ -353,7 +353,7 @@ export const termsDoc: Record<LangCode, LegalDoc> = {
         { type: "p", text: "These terms are governed by Slovenian law. All disputes are subject to the exclusive jurisdiction of the courts of Ljubljana, Slovenia." },
       ] },
       { title: "11. Contact", blocks: [
-        { type: "contactCard", lines: ["Sport group d.o.o.", "Email: hello@guestcam.si", "VAT ID: SI72133449"] },
+        { type: "contactCard", lines: ["Sport group d.o.o.", "Email: info@guestcam.si", "VAT ID: SI72133449"] },
       ] },
     ],
   },
@@ -397,7 +397,7 @@ export const termsDoc: Record<LangCode, LegalDoc> = {
         { type: "ul", items: [
           "Los pagos y la facturación los gestiona nuestro revendedor Paddle (Paddle.com Market Ltd), que actúa como vendedor oficial (Merchant of Record) y se encarga de aplicar el IVA. Paddle acepta tarjetas, Apple Pay, Google Pay y PayPal.",
           "Los precios se indican en EUR sin IVA (el IVA se aplica según la legislación vigente).",
-          "Ofrecemos garantía de devolución de 30 días en la primera compra de un plan. Solicita el reembolso por email a hello@guestcam.si.",
+          "Ofrecemos garantía de devolución de 30 días en la primera compra de un plan. Solicita el reembolso por email a info@guestcam.si.",
         ] },
       ] },
       { title: "6. Uso aceptable", blocks: [
@@ -424,7 +424,7 @@ export const termsDoc: Record<LangCode, LegalDoc> = {
         { type: "p", text: "Estos términos se rigen por la legislación eslovena. Todas las disputas se someten a la jurisdicción exclusiva de los tribunales de Liubliana, Eslovenia." },
       ] },
       { title: "11. Contacto", blocks: [
-        { type: "contactCard", lines: ["Sport group d.o.o.", "Email: hello@guestcam.si", "CIF: SI72133449"] },
+        { type: "contactCard", lines: ["Sport group d.o.o.", "Email: info@guestcam.si", "CIF: SI72133449"] },
       ] },
     ],
   },

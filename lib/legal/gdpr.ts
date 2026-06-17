@@ -28,8 +28,8 @@ export const gdprDoc: Record<LangCode, LegalDoc> = {
         { type: "p", text: "Pri pristojnem nadzornem organu za varstvo osebnih podatkov lahko vložite pritožbo. V Sloveniji je to Informacijski pooblaščenec RS (ip-rs.si). V drugih državah EU pritožbo vložite pri lokalnem nadzornem organu." },
       ] },
       { title: "7. Kako uveljavljate svoje pravice", blocks: [
-        { type: "p", text: "Pravice uveljavljate prek e-pošte z elektronskega naslova, vezanega na vaš Guestcam račun. Pošljite zahtevek na hello@guestcam.si in v zadevi navedite vrsto zahteve (npr. “GDPR — Pravica do dostopa”). Odgovorimo v 30 dneh in nikoli ne zaračunamo stroškov." },
-        { type: "contactCard", lines: ["Kontakt za GDPR vprašanja:", "Sport group d.o.o.", "E-pošta: hello@guestcam.si"] },
+        { type: "p", text: "Pravice uveljavljate prek e-pošte z elektronskega naslova, vezanega na vaš Guestcam račun. Pošljite zahtevek na info@guestcam.si in v zadevi navedite vrsto zahteve (npr. “GDPR — Pravica do dostopa”). Odgovorimo v 30 dneh in nikoli ne zaračunamo stroškov." },
+        { type: "contactCard", lines: ["Kontakt za GDPR vprašanja:", "Sport group d.o.o.", "E-pošta: info@guestcam.si"] },
       ] },
       { title: "8. Avtomatsko odločanje in profiliranje", blocks: [
         { type: "p", text: "Guestcam ne uporablja avtomatskega odločanja, ki bi pomembno vplivalo na vaše pravice ali interese (npr. odobritev/zavrnitev na podlagi algoritma). Ne izvajamo profiliranja v komercialne namene." },
@@ -62,8 +62,8 @@ export const gdprDoc: Record<LangCode, LegalDoc> = {
         { type: "p", text: "Možete podnijeti pritužbu nadležnom nadzornom tijelu za zaštitu osobnih podataka. U Hrvatskoj je to Agencija za zaštitu osobnih podataka — AZOP (azop.hr). U drugim zemljama EU pritužbu podnesite lokalnom nadzornom tijelu." },
       ] },
       { title: "7. Kako ostvariti svoja prava", blocks: [
-        { type: "p", text: "Prava ostvarujete e-poštom s adrese povezane s vašim Guestcam računom. Zahtjev pošaljite na hello@guestcam.si i u predmetu navedite vrstu zahtjeva (npr. “GDPR — pravo na pristup”). Odgovaramo u roku od 30 dana i nikad ne naplaćujemo troškove." },
-        { type: "contactCard", lines: ["Kontakt za GDPR upite:", "Sport group d.o.o.", "E-pošta: hello@guestcam.si"] },
+        { type: "p", text: "Prava ostvarujete e-poštom s adrese povezane s vašim Guestcam računom. Zahtjev pošaljite na info@guestcam.si i u predmetu navedite vrstu zahtjeva (npr. “GDPR — pravo na pristup”). Odgovaramo u roku od 30 dana i nikad ne naplaćujemo troškove." },
+        { type: "contactCard", lines: ["Kontakt za GDPR upite:", "Sport group d.o.o.", "E-pošta: info@guestcam.si"] },
       ] },
       { title: "8. Automatizirano odlučivanje i profiliranje", blocks: [
         { type: "p", text: "Guestcam ne koristi automatizirano odlučivanje koje bi značajno utjecalo na vaša prava ili interese (npr. odobrenje/odbijanje na temelju algoritma). Ne provodimo profiliranje u komercijalne svrhe." },
@@ -96,8 +96,8 @@ export const gdprDoc: Record<LangCode, LegalDoc> = {
         { type: "p", text: "Možete podneti pritužbu nadležnom nadzornom telu za zaštitu ličnih podataka. U Srbiji je to Poverenik za informacije od javnog značaja i zaštitu podataka o ličnosti (poverenik.rs). U drugim zemljama EU pritužbu podnesite lokalnom nadzornom telu." },
       ] },
       { title: "7. Kako da ostvarite svoja prava", blocks: [
-        { type: "p", text: "Prava ostvarujete e-poštom sa adrese povezane sa vašim Guestcam nalogom. Zahtev pošaljite na hello@guestcam.si i u temi navedite vrstu zahteva (npr. “GDPR — pravo na pristup”). Odgovaramo u roku od 30 dana i nikada ne naplaćujemo troškove." },
-        { type: "contactCard", lines: ["Kontakt za GDPR pitanja:", "Sport group d.o.o.", "E-pošta: hello@guestcam.si"] },
+        { type: "p", text: "Prava ostvarujete e-poštom sa adrese povezane sa vašim Guestcam nalogom. Zahtev pošaljite na info@guestcam.si i u temi navedite vrstu zahteva (npr. “GDPR — pravo na pristup”). Odgovaramo u roku od 30 dana i nikada ne naplaćujemo troškove." },
+        { type: "contactCard", lines: ["Kontakt za GDPR pitanja:", "Sport group d.o.o.", "E-pošta: info@guestcam.si"] },
       ] },
       { title: "8. Automatizovano odlučivanje i profilisanje", blocks: [
         { type: "p", text: "Guestcam ne koristi automatizovano odlučivanje koje bi značajno uticalo na vaša prava ili interese (npr. odobrenje/odbijanje na osnovu algoritma). Ne sprovodimo profilisanje u komercijalne svrhe." },
@@ -130,8 +130,8 @@ export const gdprDoc: Record<LangCode, LegalDoc> = {
         { type: "p", text: "Sie können bei der zuständigen Datenschutzaufsichtsbehörde Beschwerde einlegen. In Deutschland ist dies die Landesdatenschutzbehörde Ihres Bundeslandes, in Österreich die Datenschutzbehörde (dsb.gv.at). In anderen EU-Staaten wenden Sie sich an die lokale Aufsichtsbehörde." },
       ] },
       { title: "7. So machen Sie Ihre Rechte geltend", blocks: [
-        { type: "p", text: "Ihre Rechte machen Sie per E-Mail von der mit Ihrem Guestcam-Konto verknüpften Adresse geltend. Senden Sie Ihren Antrag an hello@guestcam.si und geben Sie im Betreff die Art des Antrags an (z. B. “DSGVO — Auskunftsrecht”). Wir antworten innerhalb von 30 Tagen und berechnen niemals Kosten." },
-        { type: "contactCard", lines: ["Kontakt für DSGVO-Anfragen:", "Sport group d.o.o.", "E-Mail: hello@guestcam.si"] },
+        { type: "p", text: "Ihre Rechte machen Sie per E-Mail von der mit Ihrem Guestcam-Konto verknüpften Adresse geltend. Senden Sie Ihren Antrag an info@guestcam.si und geben Sie im Betreff die Art des Antrags an (z. B. “DSGVO — Auskunftsrecht”). Wir antworten innerhalb von 30 Tagen und berechnen niemals Kosten." },
+        { type: "contactCard", lines: ["Kontakt für DSGVO-Anfragen:", "Sport group d.o.o.", "E-Mail: info@guestcam.si"] },
       ] },
       { title: "8. Automatisierte Entscheidungen und Profiling", blocks: [
         { type: "p", text: "Guestcam verwendet keine automatisierten Entscheidungen, die Ihre Rechte oder Interessen erheblich beeinträchtigen würden (z. B. Genehmigung/Ablehnung auf Basis eines Algorithmus). Wir führen kein Profiling zu kommerziellen Zwecken durch." },
@@ -164,8 +164,8 @@ export const gdprDoc: Record<LangCode, LegalDoc> = {
         { type: "p", text: "You can file a complaint with the competent data protection supervisory authority. In Slovenia this is the Information Commissioner (ip-rs.si). In other EU countries, file the complaint with your local authority." },
       ] },
       { title: "7. How to exercise your rights", blocks: [
-        { type: "p", text: "Exercise your rights by emailing us from the address tied to your Guestcam account. Send your request to hello@guestcam.si and indicate the type of request in the subject line (e.g. “GDPR — Right of access”). We respond within 30 days and never charge a fee." },
-        { type: "contactCard", lines: ["GDPR contact:", "Sport group d.o.o.", "Email: hello@guestcam.si"] },
+        { type: "p", text: "Exercise your rights by emailing us from the address tied to your Guestcam account. Send your request to info@guestcam.si and indicate the type of request in the subject line (e.g. “GDPR — Right of access”). We respond within 30 days and never charge a fee." },
+        { type: "contactCard", lines: ["GDPR contact:", "Sport group d.o.o.", "Email: info@guestcam.si"] },
       ] },
       { title: "8. Automated decision-making and profiling", blocks: [
         { type: "p", text: "Guestcam does not use automated decision-making that would significantly affect your rights or interests (e.g. approval/rejection based on an algorithm). We do not perform profiling for commercial purposes." },
@@ -198,8 +198,8 @@ export const gdprDoc: Record<LangCode, LegalDoc> = {
         { type: "p", text: "Puedes presentar una reclamación ante la autoridad de control de protección de datos competente. En España es la Agencia Española de Protección de Datos (aepd.es). En otros países de la UE, presenta la reclamación ante la autoridad local." },
       ] },
       { title: "7. Cómo ejercer tus derechos", blocks: [
-        { type: "p", text: "Ejerces tus derechos por email desde la dirección vinculada a tu cuenta Guestcam. Envía tu solicitud a hello@guestcam.si e indica el tipo de solicitud en el asunto (p. ej. “RGPD — derecho de acceso”). Respondemos en 30 días y nunca cobramos." },
-        { type: "contactCard", lines: ["Contacto para asuntos RGPD:", "Sport group d.o.o.", "Email: hello@guestcam.si"] },
+        { type: "p", text: "Ejerces tus derechos por email desde la dirección vinculada a tu cuenta Guestcam. Envía tu solicitud a info@guestcam.si e indica el tipo de solicitud en el asunto (p. ej. “RGPD — derecho de acceso”). Respondemos en 30 días y nunca cobramos." },
+        { type: "contactCard", lines: ["Contacto para asuntos RGPD:", "Sport group d.o.o.", "Email: info@guestcam.si"] },
       ] },
       { title: "8. Decisiones automatizadas y elaboración de perfiles", blocks: [
         { type: "p", text: "Guestcam no utiliza decisiones automatizadas que puedan afectar significativamente a tus derechos o intereses (p. ej. aprobación/rechazo basado en algoritmo). No realizamos elaboración de perfiles con fines comerciales." },

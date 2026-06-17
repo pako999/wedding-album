@@ -34,7 +34,7 @@ export const cookiesDoc: Record<LangCode, LegalDoc> = {
         { type: "p", text: "O bistvenih spremembah te politike vas obvestimo z obvestilom v storitvi. Datum zadnje posodobitve je vedno naveden na vrhu tega dokumenta." },
       ] },
       { title: "5. Kontakt", blocks: [
-        { type: "contactCard", lines: ["Sport group d.o.o.", "E-pošta: hello@guestcam.si", "Davčna številka: SI72133449"] },
+        { type: "contactCard", lines: ["Sport group d.o.o.", "E-pošta: info@guestcam.si", "Davčna številka: SI72133449"] },
       ] },
     ],
   },
@@ -70,7 +70,7 @@ export const cookiesDoc: Record<LangCode, LegalDoc> = {
         { type: "p", text: "O bitnim izmjenama ove politike obavještavamo vas obavijesti u usluzi. Datum zadnjeg ažuriranja uvijek je naveden na vrhu ovog dokumenta." },
       ] },
       { title: "5. Kontakt", blocks: [
-        { type: "contactCard", lines: ["Sport group d.o.o.", "E-pošta: hello@guestcam.si", "OIB: SI72133449"] },
+        { type: "contactCard", lines: ["Sport group d.o.o.", "E-pošta: info@guestcam.si", "OIB: SI72133449"] },
       ] },
     ],
   },
@@ -106,7 +106,7 @@ export const cookiesDoc: Record<LangCode, LegalDoc> = {
         { type: "p", text: "O bitnim izmenama ove politike obaveštavamo vas obaveštenjem u usluzi. Datum poslednjeg ažuriranja uvek je naveden na vrhu ovog dokumenta." },
       ] },
       { title: "5. Kontakt", blocks: [
-        { type: "contactCard", lines: ["Sport group d.o.o.", "E-pošta: hello@guestcam.si", "PIB: SI72133449"] },
+        { type: "contactCard", lines: ["Sport group d.o.o.", "E-pošta: info@guestcam.si", "PIB: SI72133449"] },
       ] },
     ],
   },
@@ -142,7 +142,7 @@ export const cookiesDoc: Record<LangCode, LegalDoc> = {
         { type: "p", text: "Über wesentliche Änderungen dieser Richtlinie informieren wir Sie mit einem Hinweis im Dienst. Das Datum der letzten Aktualisierung ist stets am Anfang dieses Dokuments angegeben." },
       ] },
       { title: "5. Kontakt", blocks: [
-        { type: "contactCard", lines: ["Sport group d.o.o.", "E-Mail: hello@guestcam.si", "USt-IdNr.: SI72133449"] },
+        { type: "contactCard", lines: ["Sport group d.o.o.", "E-Mail: info@guestcam.si", "USt-IdNr.: SI72133449"] },
       ] },
     ],
   },
@@ -178,7 +178,7 @@ export const cookiesDoc: Record<LangCode, LegalDoc> = {
         { type: "p", text: "We will notify you of material changes to this policy with a notice inside the service. The last-updated date is always shown at the top of this document." },
       ] },
       { title: "5. Contact", blocks: [
-        { type: "contactCard", lines: ["Sport group d.o.o.", "Email: hello@guestcam.si", "VAT ID: SI72133449"] },
+        { type: "contactCard", lines: ["Sport group d.o.o.", "Email: info@guestcam.si", "VAT ID: SI72133449"] },
       ] },
     ],
   },
@@ -214,7 +214,7 @@ export const cookiesDoc: Record<LangCode, LegalDoc> = {
         { type: "p", text: "Te notificaremos los cambios importantes de esta política mediante un aviso dentro del servicio. La fecha de la última actualización aparece siempre en la parte superior de este documento." },
       ] },
       { title: "5. Contacto", blocks: [
-        { type: "contactCard", lines: ["Sport group d.o.o.", "Email: hello@guestcam.si", "CIF: SI72133449"] },
+        { type: "contactCard", lines: ["Sport group d.o.o.", "Email: info@guestcam.si", "CIF: SI72133449"] },
       ] },
     ],
   },
