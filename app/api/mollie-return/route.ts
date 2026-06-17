@@ -10,8 +10,9 @@ export const dynamic = "force-dynamic";
 
 /**
  * Mollie redirects here after the customer completes (or abandons) the payment.
- * We reconcile the payment server-side and bounce to the dashboard.
- * This is a backstop — the primary reconcile happens in the webhook.
+ * We retry the payment status check several times to avoid the race condition
+ * where Mollie redirects the browser before the payment is marked "paid" on
+ * their servers. Then we apply the plan and bounce to the dashboard.
  */
 export async function GET(req: NextRequest) {
   const { searchParams } = req.nextUrl;
@@ -27,12 +28,27 @@ export async function GET(req: NextRequest) {
     const paymentId = album?.stripeSessionId;
 
     if (paymentId?.startsWith("tr_")) {
-      const payment = await getPayment(paymentId);
-      if (isPaidStatus(payment.status)) {
-        const planId = payment.metadata?.planId;
-        if (planId) {
-          await applyPlanToAlbum(slug, planId, paymentId);
+      // Retry up to 5× with 1 s delay — Mollie may redirect before the payment
+      // status flips to "paid" on their side (race condition).
+      let paid = false;
+      for (let attempt = 0; attempt < 5; attempt++) {
+        if (attempt > 0) await new Promise((r) => setTimeout(r, 1000));
+        try {
+          const payment = await getPayment(paymentId);
+          if (isPaidStatus(payment.status)) {
+            const planId = payment.metadata?.planId;
+            if (planId) {
+              await applyPlanToAlbum(slug, planId, paymentId);
+              paid = true;
+            }
+            break;
+          }
+        } catch {
+          // transient error — try again
         }
+      }
+      if (!paid) {
+        console.warn("[mollie-return] payment not paid after retries:", paymentId);
       }
     }
   } catch (err) {

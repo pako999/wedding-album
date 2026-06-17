@@ -55,7 +55,7 @@ export async function POST(req: NextRequest) {
   const totalCents = plan.amount + (tableStands ? 900 : 0);
   const description = plan.name + (tableStands ? " + Podstavki za mizo" : "");
 
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://guestcam.si";
+  const baseUrl = req.nextUrl.origin;
   // Mollie redirects back to /api/mollie-return which does reconcile then bounces to dashboard.
   const redirectUrl = `${baseUrl}/api/mollie-return?slug=${encodeURIComponent(albumSlug)}`;
   const webhookUrl = `${baseUrl}/api/webhooks/mollie`;
