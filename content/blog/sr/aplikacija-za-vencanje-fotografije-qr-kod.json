@@ -1,0 +1,121 @@
+{
+  "slug": "aplikacija-za-vencanje-fotografije-qr-kod",
+  "lang": "sr",
+  "title": "Aplikacija za fotografije sa svadbe sa QR kodom: sakupite sve slike gostiju",
+  "description": "Jednim QR kodom sakupite sve fotografije i snimke gostiju u privatnoj galeriji. Bez aplikacije, u punom kvalitetu, besplatan početak.",
+  "translationKey": "wedding-photo-app-qr-code",
+  "publishedAt": "2026-05-30",
+  "updatedAt": "2026-05-30",
+  "author": "Guestcam Team",
+  "category": "vodnik",
+  "readingTime": 6,
+  "tags": [
+    "fotografije svadbe",
+    "QR kod",
+    "aplikacija za goste",
+    "Guestcam"
+  ],
+  "tldr": "Stavite QR kod na svaki sto — gosti skeniraju i otpremaju fotografije u vašu privatnu galeriju, bez aplikacije i prijave.",
+  "coverImage": "https://images.unsplash.com/photo-1519741497674-611481863552?w=1200&h=720&fit=crop&q=82&auto=format",
+  "coverAlt": "Gosti na svadbi podižu telefone i slikaju tokom proslave",
+  "content": [
+    {
+      "type": "h2",
+      "text": "Zašto većinu fotografija gostiju nikada ne vidite"
+    },
+    {
+      "type": "p",
+      "text": "Gosti na svadbi naprave stotine fotografija, ali većina nikada ne dođe do vas — ostaju na telefonima i u WhatsApp grupama. Aplikacija za fotografije sa QR kodom to rešava: gosti skeniraju, otpreme, a sve završi u jednoj privatnoj galeriji."
+    },
+    {
+      "type": "image",
+      "src": "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=1200&h=720&fit=crop&q=82&auto=format",
+      "alt": "Gost skenira QR kod na stolu za svadbu za otpremanje fotografija",
+      "caption": "Jedno skeniranje i gost otprema fotografije u punom kvalitetu — bez aplikacije.",
+      "credit": "Foto: Unsplash"
+    },
+    {
+      "type": "h2",
+      "text": "Kako QR kod za svadbu funkcioniše"
+    },
+    {
+      "type": "ol",
+      "items": [
+        "U Guestcamu u nekoliko klikova napravite privatnu galeriju.",
+        "Izaberite šablon QR kartice, dodajte imena i datum i odštampajte ga za stolove.",
+        "Gosti skeniraju kod, galerija se otvori u pregledaču, fotografije i snimke otpreme za nekoliko sekundi.",
+        "Sve prikupljate uživo i posle događaja preuzmete kao ZIP."
+      ]
+    },
+    {
+      "type": "h2",
+      "text": "Zašto je bolja od WhatsApp grupe"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Način",
+        "Kvalitet",
+        "Aplikacija",
+        "Učešće"
+      ],
+      "rows": [
+        [
+          "WhatsApp grupa",
+          "Smanjen",
+          "Ne",
+          "Srednje"
+        ],
+        [
+          "Google/iCloud album",
+          "Visok",
+          "Potreban nalog",
+          "Nisko"
+        ],
+        [
+          "QR galerija (Guestcam)",
+          "Pun originalni",
+          "Ne",
+          "Visoko"
+        ]
+      ]
+    },
+    {
+      "type": "p",
+      "text": "WhatsApp smanjuje kvalitet i često odbija snimke; zajednički albumi traže odgovarajući nalog. QR galerija uklanja prepreke i sve čuva u originalnom kvalitetu, privatno."
+    },
+    {
+      "type": "h2",
+      "text": "Privatno i u punom kvalitetu"
+    },
+    {
+      "type": "p",
+      "text": "Galerija je dostupna samo preko vašeg QR koda ili linka, uz opcionu lozinku. Svaka fotografija i snimak čuva se u punoj rezoluciji — spontana fotografija prijatelja jednako je oštra kao fotografova."
+    },
+    {
+      "type": "cta",
+      "text": "Napravite besplatnu galeriju za svadbu",
+      "href": "https://www.guestcam.si/dashboard/new"
+    },
+    {
+      "type": "faq",
+      "q": "Da li gosti moraju da preuzmu aplikaciju?",
+      "a": "Ne. Sve se odvija u pregledaču telefona — gosti skeniraju QR kod i odmah otpremaju, bez instalacije i prijave."
+    },
+    {
+      "type": "faq",
+      "q": "Da li su fotografije privatne?",
+      "a": "Da. Galerija je dostupna samo preko vašeg QR koda ili linka, uz opcionu lozinku. Ništa nije javno."
+    },
+    {
+      "type": "faq",
+      "q": "U kom kvalitetu se čuvaju fotografije?",
+      "a": "U punoj originalnoj rezoluciji, bez kompresije — za fotografije i snimke."
+    },
+    {
+      "type": "faq",
+      "q": "Šta se dešava posle svadbe?",
+      "a": "Galerija ostaje aktivna za vreme trajanja vašeg paketa, a sve preuzmete kao ZIP ili sačuvate na Google Drive."
+    }
+  ]
+}

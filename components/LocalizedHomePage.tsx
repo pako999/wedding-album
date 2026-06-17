@@ -3,7 +3,9 @@ import { auth } from "@clerk/nextjs/server";
 import { LanguageSwitcher, HOME_HREFLANG, type LangCode } from "@/components/LanguageSwitcher";
 import { SeoFooter } from "@/components/SeoFooter";
 import { GuestcamLogo } from "@/components/GuestcamLogo";
+import { EventCard } from "@/components/EventCard";
 import { HeaderAuthButtons } from "@/components/HeaderAuthButtons";
+import { HomeMobileMenu } from "@/components/HomeMobileMenu";
 
 type Lang = Exclude<LangCode, "sl">;
 
@@ -78,6 +80,13 @@ interface Copy {
   switcherAria: string;
   navHome: string;
   navCta: string;
+  navBlog: string;
+  navContact: string;
+  navSignIn: string;
+  navDashboard: string;
+  navLanguage: string;
+  navOpenMenu: string;
+  navCloseMenu: string;
   announce: string;
   announceLink: string;
   heroEyebrow: string;
@@ -134,9 +143,11 @@ interface Copy {
 const COPY: Record<Lang, Copy> = {
   hr: {
     switcherAria: "Promijeni jezik", navHome: "Početna", navCta: "Kreiraj galeriju",
+    navBlog: "Blog", navContact: "Kontakt", navSignIn: "Prijava", navDashboard: "Kontrolna ploča",
+    navLanguage: "Jezik", navOpenMenu: "Otvori izbornik", navCloseMenu: "Zatvori izbornik",
     announce: "Kreirajte galeriju danas — besplatno zauvijek! 🎉", announceLink: "Započni odmah →",
-    heroEyebrow: "QR kod za vjenčanja · rođendane · obljetnice · baby shower",
-    heroHead: { lead: "Fotografije koje", accent: "inače nikada ne biste vidjeli", trail: "." },
+    heroEyebrow: "QR kod za vjenčanja · rođendane · obljetnice · baby tuš",
+    heroHead: { lead: "Fotografije s vjenčanja koje", accent: "inače nikada ne biste vidjeli", trail: "." },
     heroLead: "Skupite sve fotografije i videozapise svojih gostiju u jednoj privatnoj galeriji. Gosti samo skeniraju QR kod i u nekoliko sekundi dijele svoje trenutke.",
     heroPrimary: "Započni besplatno", heroDemoBtn: "Pogledaj demo", heroNote: "Bez kreditne kartice • Spremno za manje od 2 minute",
     trustText: "Povjerenje", trust500: "500+ parova i organizatora",
@@ -146,7 +157,7 @@ const COPY: Record<Lang, Copy> = {
     eventsSubtitle: "Guestcam prikuplja fotografije vaših gostiju — za vjenčanja, rođendane, baby showere, godišnjice, poslovne zabave i svaki događaj vrijedan uspomene.",
     eventsList: [
       { emoji: "💍", label: "Vjenčanje" }, { emoji: "🎂", label: "Rođendan" },
-      { emoji: "👶", label: "Baby shower" }, { emoji: "🥂", label: "Godišnjica" },
+      { emoji: "👶", label: "Baby shower" }, { emoji: "🎩", label: "Momačka večer" },
       { emoji: "🎉", label: "Zabava" }, { emoji: "💼", label: "Poslovni event" },
       { emoji: "✝️", label: "Krštenje" }, { emoji: "🎓", label: "Matura" },
     ],
@@ -216,9 +227,11 @@ const COPY: Record<Lang, Copy> = {
   },
   sr: {
     switcherAria: "Promeni jezik", navHome: "Početna", navCta: "Napravi galeriju",
+    navBlog: "Blog", navContact: "Kontakt", navSignIn: "Prijava", navDashboard: "Kontrolna tabla",
+    navLanguage: "Jezik", navOpenMenu: "Otvori meni", navCloseMenu: "Zatvori meni",
     announce: "Napravite galeriju danas — besplatno zauvek! 🎉", announceLink: "Započni odmah →",
-    heroEyebrow: "QR kod za venčanja · rođendane · godišnjice · baby shower",
-    heroHead: { lead: "Fotografije koje", accent: "inače nikada ne biste videli", trail: "." },
+    heroEyebrow: "QR kod za venčanja · rođendane · godišnjice · baby tuš",
+    heroHead: { lead: "Fotografije sa venčanja koje", accent: "inače nikada ne biste videli", trail: "." },
     heroLead: "Sakupite sve fotografije i video snimke svojih gostiju u jednoj privatnoj galeriji. Gosti samo skeniraju QR kod i za nekoliko sekundi dele svoje trenutke.",
     heroPrimary: "Započni besplatno", heroDemoBtn: "Pogledaj demo", heroNote: "Bez kreditne kartice • Spremno za manje od 2 minuta",
     trustText: "Poverenje", trust500: "500+ parova i organizatora",
@@ -228,7 +241,7 @@ const COPY: Record<Lang, Copy> = {
     eventsSubtitle: "Guestcam prikuplja fotografije vaših gostiju — za venčanja, rođendane, baby showere, godišnjice, poslovne zabave i svaki događaj vredan sećanja.",
     eventsList: [
       { emoji: "💍", label: "Venčanje" }, { emoji: "🎂", label: "Rođendan" },
-      { emoji: "👶", label: "Baby shower" }, { emoji: "🥂", label: "Godišnjica" },
+      { emoji: "👶", label: "Baby shower" }, { emoji: "🎩", label: "Momačka večer" },
       { emoji: "🎉", label: "Zabava" }, { emoji: "💼", label: "Poslovni event" },
       { emoji: "✝️", label: "Krštenje" }, { emoji: "🎓", label: "Matura" },
     ],
@@ -298,9 +311,11 @@ const COPY: Record<Lang, Copy> = {
   },
   de: {
     switcherAria: "Sprache ändern", navHome: "Startseite", navCta: "Album erstellen",
+    navBlog: "Blog", navContact: "Kontakt", navSignIn: "Anmelden", navDashboard: "Übersicht",
+    navLanguage: "Sprache", navOpenMenu: "Menü öffnen", navCloseMenu: "Menü schließen",
     announce: "Erstellen Sie heute eine Galerie — für immer kostenlos! 🎉", announceLink: "Jetzt starten →",
     heroEyebrow: "QR-Code für Hochzeiten · Geburtstage · Jubiläen · Babyparty",
-    heroHead: { lead: "Fotos, die Sie sonst", accent: "nie zu sehen bekommen würden", trail: "." },
+    heroHead: { lead: "Hochzeitsfotos, die Sie sonst", accent: "nie zu sehen bekommen würden", trail: "." },
     heroLead: "Sammeln Sie alle Fotos und Videos Ihrer Gäste in einer privaten Galerie. Gäste scannen einfach den QR-Code und teilen ihre Momente in Sekunden.",
     heroPrimary: "Kostenlos starten", heroDemoBtn: "Demo ansehen", heroNote: "Keine Kreditkarte • Bereit in unter 2 Minuten",
     trustText: "Vertrauen von", trust500: "500+ Paaren und Veranstaltern",
@@ -310,7 +325,7 @@ const COPY: Record<Lang, Copy> = {
     eventsSubtitle: "Guestcam sammelt Fotos Ihrer Gäste — für Hochzeiten, Geburtstage, Babypartys, Jubiläen, Firmenfeiern und jedes Ereignis, das Erinnerungen verdient.",
     eventsList: [
       { emoji: "💍", label: "Hochzeit" }, { emoji: "🎂", label: "Geburtstag" },
-      { emoji: "👶", label: "Babyparty" }, { emoji: "🥂", label: "Jubiläum" },
+      { emoji: "👶", label: "Babyparty" }, { emoji: "🎩", label: "Junggesellenabschied" },
       { emoji: "🎉", label: "Feier" }, { emoji: "💼", label: "Firmenveranstaltung" },
       { emoji: "✝️", label: "Taufe" }, { emoji: "🎓", label: "Abitur" },
     ],
@@ -380,9 +395,11 @@ const COPY: Record<Lang, Copy> = {
   },
   en: {
     switcherAria: "Change language", navHome: "Home", navCta: "Create gallery",
+    navBlog: "Blog", navContact: "Contact", navSignIn: "Sign in", navDashboard: "Dashboard",
+    navLanguage: "Language", navOpenMenu: "Open menu", navCloseMenu: "Close menu",
     announce: "Create a gallery today — free forever! 🎉", announceLink: "Start now →",
     heroEyebrow: "QR codes for weddings · birthdays · anniversaries · baby showers",
-    heroHead: { lead: "The photos you", accent: "would otherwise never see", trail: "." },
+    heroHead: { lead: "The wedding photos you", accent: "would otherwise never see", trail: "." },
     heroLead: "Collect every photo and video your guests take into a single private gallery. Guests scan a QR code and share their moments in seconds.",
     heroPrimary: "Start for free", heroDemoBtn: "See live demo", heroNote: "No credit card • Ready in under 2 minutes",
     trustText: "Trusted by", trust500: "500+ couples & event planners",
@@ -392,7 +409,7 @@ const COPY: Record<Lang, Copy> = {
     eventsSubtitle: "Guestcam collects photos from your guests — for weddings, birthdays, baby showers, anniversaries, corporate events, and every celebration worth remembering.",
     eventsList: [
       { emoji: "💍", label: "Wedding" }, { emoji: "🎂", label: "Birthday" },
-      { emoji: "👶", label: "Baby Shower" }, { emoji: "🥂", label: "Anniversary" },
+      { emoji: "👶", label: "Baby Shower" }, { emoji: "🎩", label: "Bachelor Party" },
       { emoji: "🎉", label: "Party" }, { emoji: "💼", label: "Corporate Event" },
       { emoji: "✝️", label: "Baptism" }, { emoji: "🎓", label: "Graduation" },
     ],
@@ -462,9 +479,11 @@ const COPY: Record<Lang, Copy> = {
   },
   es: {
     switcherAria: "Cambiar idioma", navHome: "Inicio", navCta: "Crear galería",
+    navBlog: "Blog", navContact: "Contacto", navSignIn: "Iniciar sesión", navDashboard: "Panel",
+    navLanguage: "Idioma", navOpenMenu: "Abrir menú", navCloseMenu: "Cerrar menú",
     announce: "Crea tu galería hoy — gratis para siempre 🎉", announceLink: "Empieza ahora →",
     heroEyebrow: "QR para bodas · cumpleaños · aniversarios · baby showers",
-    heroHead: { lead: "Las fotos que", accent: "de otra forma nunca verías", trail: "." },
+    heroHead: { lead: "Las fotos de tu boda que", accent: "de otra forma nunca verías", trail: "." },
     heroLead: "Reúne todas las fotos y vídeos de tus invitados en una sola galería privada. Tus invitados escanean un QR y comparten sus momentos en segundos.",
     heroPrimary: "Empezar gratis", heroDemoBtn: "Ver demo", heroNote: "Sin tarjeta • Listo en menos de 2 minutos",
     trustText: "Confianza de", trust500: "+500 parejas y organizadores",
@@ -474,7 +493,7 @@ const COPY: Record<Lang, Copy> = {
     eventsSubtitle: "Guestcam recopila fotos de tus invitados — para bodas, cumpleaños, baby showers, aniversarios, celebraciones empresariales y cualquier evento que merezca ser recordado.",
     eventsList: [
       { emoji: "💍", label: "Boda" }, { emoji: "🎂", label: "Cumpleaños" },
-      { emoji: "👶", label: "Baby Shower" }, { emoji: "🥂", label: "Aniversario" },
+      { emoji: "👶", label: "Baby Shower" }, { emoji: "🎩", label: "Despedida de soltero" },
       { emoji: "🎉", label: "Fiesta" }, { emoji: "💼", label: "Evento empresarial" },
       { emoji: "✝️", label: "Bautizo" }, { emoji: "🎓", label: "Graduación" },
     ],
@@ -544,9 +563,65 @@ const COPY: Record<Lang, Copy> = {
   },
 };
 
+// ─── Per-locale full-bleed hero image ────────────────────────────────────────
+// When a locale has an entry here, its homepage renders a single edge-to-edge
+// hero image (desktop landscape + mobile portrait via <picture>) instead of
+// the text+collage hero. Headline, 3-step story, and trust badges live inside
+// the artwork; the CTA pill + note are still rendered below it.
+const HERO_IMAGE: Partial<Record<Lang, {
+  desktop: string;
+  mobile: string;
+  width: number;
+  height: number;
+  alt: string;
+  srOnlyH1: string;
+}>> = {
+  en: {
+    desktop: "/hero/guestcam-hero-en.webp",
+    mobile: "/hero/guestcam-hero-en-mobile.webp",
+    width: 1448,
+    height: 1086,
+    alt: "Your best moments all in one place — guests scan a QR code on the wedding table and share photos to a shared album",
+    srOnlyH1: "Your best moments. All in one place. — Guestcam QR photo album for weddings and events",
+  },
+  hr: {
+    desktop: "/hero/guestcam-hero-hr.webp",
+    mobile: "/hero/guestcam-hero-hr-mobile.webp",
+    width: 1448,
+    height: 1086,
+    alt: "Vaši najljepši trenuci na jednom mjestu — gosti skeniraju QR kod na stolu i dijele fotografije u zajednički album",
+    srOnlyH1: "Vaši najljepši trenuci. Na jednom mjestu. — Guestcam QR foto album za vjenčanja i događaje",
+  },
+  sr: {
+    desktop: "/hero/guestcam-hero-sr.webp",
+    mobile: "/hero/guestcam-hero-sr-mobile.webp",
+    width: 1448,
+    height: 1086,
+    alt: "Vaši najlepši trenuci na jednom mestu — gosti skeniraju QR kod na stolu i dele fotografije u zajednički album",
+    srOnlyH1: "Vaši najlepši trenuci. Na jednom mestu. — Guestcam QR foto album za venčanja i događaje",
+  },
+  es: {
+    desktop: "/hero/guestcam-hero-es.webp",
+    mobile: "/hero/guestcam-hero-es-mobile.webp",
+    width: 1448,
+    height: 1086,
+    alt: "Tus mejores momentos en un solo lugar — los invitados escanean un código QR en la mesa y comparten sus fotos en un álbum compartido",
+    srOnlyH1: "Tus mejores momentos. En un solo lugar. — Guestcam álbum QR de fotos para bodas y eventos",
+  },
+  de: {
+    desktop: "/hero/guestcam-hero-de.webp",
+    mobile: "/hero/guestcam-hero-de-mobile.webp",
+    width: 1448,
+    height: 1086,
+    alt: "Eure schönsten Momente an einem Ort — Gäste scannen den QR-Code auf dem Tisch und teilen ihre Fotos in einem gemeinsamen Album",
+    srOnlyH1: "Eure schönsten Momente. Alle an einem Ort. — Guestcam QR-Fotoalbum für Hochzeiten und Events",
+  },
+};
+
 // ─── Component ───────────────────────────────────────────────────────────────
 export async function LocalizedHomePage({ lang }: { lang: Lang }) {
   const t = COPY[lang];
+  const heroImage = HERO_IMAGE[lang];
   // Hide the "create gallery" CTA for signed-in visitors — they already
   // have galleries; Nadzorna plošča + avatar are their entry points.
   let signedIn = false;
@@ -579,52 +654,54 @@ export async function LocalizedHomePage({ lang }: { lang: Lang }) {
             </Link>
             <HeaderAuthButtons lang={lang} />
             {!signedIn && (
-              <Link href="/dashboard/new" className="inline-flex items-center gap-1.5 px-4 sm:px-5 py-2 sm:py-2.5 rounded-full text-sm font-bold text-[#0F1729] transition-all duration-200 hover:scale-[1.03]"
+              <Link href="/dashboard/new" className="hidden sm:inline-flex items-center gap-1.5 px-4 sm:px-5 py-2 sm:py-2.5 rounded-full text-sm font-bold text-[#0F1729] transition-all duration-200 hover:scale-[1.03]"
                 style={{ background: "linear-gradient(135deg, #FFD966 0%, #FFC94D 55%, #F0B429 100%)", boxShadow: "0 6px 18px rgba(255,201,77,0.45)" }}>
                 {t.navCta}
                 <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>
               </Link>
             )}
+            <HomeMobileMenu
+              signedIn={signedIn}
+              lang={lang}
+              links={[
+                { href: `/${lang}/blog`, label: t.navBlog },
+                { href: `/${lang}/contact`, label: t.navContact },
+              ]}
+              labels={{
+                open: t.navOpenMenu,
+                close: t.navCloseMenu,
+                language: t.navLanguage,
+                languageAria: t.switcherAria,
+                signIn: t.navSignIn,
+                dashboard: t.navDashboard,
+                cta: t.navCta,
+              }}
+            />
           </div>
         </nav>
       </header>
 
       {/* Hero */}
       <section style={{ background: "#F2F4F8" }}>
-        <div className="max-w-7xl mx-auto px-6 sm:px-8 py-16 xl:py-24">
-          <div className="grid lg:grid-cols-2 gap-12 xl:gap-20 items-center">
-            <div>
-              <div className="flex items-center gap-3 mb-7">
-                <div className="flex -space-x-2.5">
-                  {["#FFC94D", "#F0B429", "#E8A800", "#FFD966", "#C9820A"].map((bg, i) => (
-                    <div key={i} className="w-9 h-9 rounded-full border-[2.5px] flex items-center justify-center text-[11px] font-bold text-[#0F1729] shrink-0" style={{ background: bg, borderColor: "#F2F4F8" }}>
-                      {["T", "A", "S", "D", "M"][i]}
-                    </div>
-                  ))}
-                </div>
-                <p className="text-sm text-gray-600">{t.trustText} <span className="font-bold text-[#0F1729]">{t.trust500}</span></p>
-              </div>
-              <p className="text-xs font-bold uppercase tracking-[0.18em] text-gray-400 mb-5">{t.heroEyebrow}</p>
-              <h1 className="font-extrabold leading-[1.15] tracking-tight text-[#0F1729] mb-8" style={{ fontSize: "clamp(1.9rem, 3.6vw, 3.15rem)" }}>
-                {t.heroHead.lead}{" "}<span style={{ color: "#C9820A" }}>{t.heroHead.accent}</span>{t.heroHead.trail}
-              </h1>
-              <p className="text-lg text-gray-500 leading-relaxed mb-8 max-w-[500px]">{t.heroLead}</p>
-
-              {/* 3-step mini icons */}
-              <div className="flex items-start gap-10 mb-12">
-                {[
-                  { label: t.threeStep.takePhoto, icon: <IconCamera /> },
-                  { label: t.threeStep.scanQr, icon: <IconQR /> },
-                  { label: t.threeStep.upload, icon: <IconBolt /> },
-                ].map(({ label, icon }) => (
-                  <div key={label} className="flex flex-col items-center gap-2.5">
-                    <div className="w-14 h-14 rounded-2xl flex items-center justify-center" style={{ background: "rgba(255,201,77,0.18)", color: "#C9820A" }}>{icon}</div>
-                    <span className="text-xs font-semibold text-gray-500 text-center leading-tight">{label}</span>
-                  </div>
-                ))}
-              </div>
-
-              <div className="flex flex-wrap items-center gap-4">
+        {heroImage ? (
+          <div className="w-full">
+            <h1 className="sr-only">{heroImage.srOnlyH1}</h1>
+            <div className="overflow-hidden bg-white">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <picture>
+                <source media="(max-width: 640px)" srcSet={heroImage.mobile} />
+                <img
+                  src={heroImage.desktop}
+                  alt={heroImage.alt}
+                  className="block w-full h-auto"
+                  width={heroImage.width}
+                  height={heroImage.height}
+                  fetchPriority="high"
+                />
+              </picture>
+            </div>
+            <div className="flex flex-col items-center text-center px-4 py-10 sm:py-16">
+              <div className="flex flex-wrap items-center justify-center gap-4">
                 <Link href="/dashboard/new" className="inline-flex items-center gap-3 px-10 py-5 rounded-full text-[#0F1729] font-bold text-lg transition-all duration-200 hover:scale-[1.02]"
                   style={{ background: "linear-gradient(135deg, #FFD966 0%, #FFC94D 55%, #F0B429 100%)", boxShadow: "0 14px 40px rgba(255,201,77,0.42)" }}>
                   {t.heroPrimary}
@@ -633,24 +710,69 @@ export async function LocalizedHomePage({ lang }: { lang: Lang }) {
               </div>
               <p className="mt-4 text-sm text-gray-400">{t.heroNote}</p>
             </div>
+          </div>
+        ) : (
+          <div className="max-w-7xl mx-auto px-6 sm:px-8 py-16 xl:py-24">
+            <div className="grid lg:grid-cols-2 gap-12 xl:gap-20 items-center">
+              <div>
+                <div className="flex items-center gap-3 mb-7">
+                  <div className="flex -space-x-2.5">
+                    {["#FFC94D", "#F0B429", "#E8A800", "#FFD966", "#C9820A"].map((bg, i) => (
+                      <div key={i} className="w-9 h-9 rounded-full border-[2.5px] flex items-center justify-center text-[11px] font-bold text-[#0F1729] shrink-0" style={{ background: bg, borderColor: "#F2F4F8" }}>
+                        {["T", "A", "S", "D", "M"][i]}
+                      </div>
+                    ))}
+                  </div>
+                  <p className="text-sm text-gray-600">{t.trustText} <span className="font-bold text-[#0F1729]">{t.trust500}</span></p>
+                </div>
+                <p className="text-xs font-bold uppercase tracking-[0.18em] text-gray-400 mb-5">{t.heroEyebrow}</p>
+                <h1 className="font-extrabold leading-[1.15] tracking-tight text-[#0F1729] mb-8" style={{ fontSize: "clamp(1.9rem, 3.6vw, 3.15rem)" }}>
+                  {t.heroHead.lead}{" "}<span style={{ color: "#C9820A" }}>{t.heroHead.accent}</span>{t.heroHead.trail}
+                </h1>
+                <p className="text-lg text-gray-500 leading-relaxed mb-8 max-w-[500px]">{t.heroLead}</p>
 
-            {/* Hero collage (reuses the same images as the homepage) */}
-            <div className="hidden lg:block relative select-none" style={{ height: 600 }}>
-              <div className="absolute rounded-3xl overflow-hidden shadow-2xl" style={{ top: 56, left: 0, width: 372, height: 466, transform: "rotate(-5deg)", zIndex: 20 }}>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/hero/scan.webp" alt="" className="w-full h-full object-cover" />
+                {/* 3-step mini icons */}
+                <div className="flex items-start gap-10 mb-12">
+                  {[
+                    { label: t.threeStep.takePhoto, icon: <IconCamera /> },
+                    { label: t.threeStep.scanQr, icon: <IconQR /> },
+                    { label: t.threeStep.upload, icon: <IconBolt /> },
+                  ].map(({ label, icon }) => (
+                    <div key={label} className="flex flex-col items-center gap-2.5">
+                      <div className="w-14 h-14 rounded-2xl flex items-center justify-center" style={{ background: "rgba(255,201,77,0.18)", color: "#C9820A" }}>{icon}</div>
+                      <span className="text-xs font-semibold text-gray-500 text-center leading-tight">{label}</span>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="flex flex-wrap items-center gap-4">
+                  <Link href="/dashboard/new" className="inline-flex items-center gap-3 px-10 py-5 rounded-full text-[#0F1729] font-bold text-lg transition-all duration-200 hover:scale-[1.02]"
+                    style={{ background: "linear-gradient(135deg, #FFD966 0%, #FFC94D 55%, #F0B429 100%)", boxShadow: "0 14px 40px rgba(255,201,77,0.42)" }}>
+                    {t.heroPrimary}
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>
+                  </Link>
+                </div>
+                <p className="mt-4 text-sm text-gray-400">{t.heroNote}</p>
               </div>
-              <div className="absolute rounded-2xl overflow-hidden shadow-xl" style={{ top: 0, right: 0, width: 244, height: 304, transform: "rotate(5deg)", zIndex: 30 }}>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/hero/gallery.webp" alt="" className="w-full h-full object-cover" />
-              </div>
-              <div className="absolute rounded-2xl overflow-hidden shadow-2xl" style={{ bottom: 20, right: 24, width: 252, height: 252, transform: "rotate(4deg)", zIndex: 30 }}>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/hero/cards.webp" alt="" className="w-full h-full object-cover" />
+
+              {/* Hero collage (reuses the same images as the homepage) */}
+              <div className="hidden lg:block relative select-none" style={{ height: 600 }}>
+                <div className="absolute rounded-3xl overflow-hidden shadow-2xl" style={{ top: 56, left: 0, width: 372, height: 466, transform: "rotate(-5deg)", zIndex: 20 }}>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src="/hero/scan.webp" alt="" className="w-full h-full object-cover" />
+                </div>
+                <div className="absolute rounded-2xl overflow-hidden shadow-xl" style={{ top: 0, right: 0, width: 244, height: 304, transform: "rotate(5deg)", zIndex: 30 }}>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src="/hero/gallery.webp" alt="" className="w-full h-full object-cover" />
+                </div>
+                <div className="absolute rounded-2xl overflow-hidden shadow-2xl" style={{ bottom: 20, right: 24, width: 252, height: 252, transform: "rotate(4deg)", zIndex: 30 }}>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src="/hero/cards.webp" alt="" className="w-full h-full object-cover" />
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        )}
       </section>
 
       {/* Stats */}
@@ -681,16 +803,31 @@ export async function LocalizedHomePage({ lang }: { lang: Lang }) {
       </section>
 
       {/* Event types */}
-      <section className="max-w-3xl mx-auto px-6 pb-20 text-center">
+      <section className="max-w-5xl mx-auto px-6 pb-20 text-center">
         <h2 className="text-3xl sm:text-4xl font-extrabold text-[#0F1729] mb-4 leading-tight">{t.eventsTitle}</h2>
         <p className="text-gray-400 max-w-xl mx-auto leading-relaxed mb-10">{t.eventsSubtitle}</p>
-        <div className="flex flex-wrap justify-center gap-3">
-          {t.eventsList.map(({ emoji, label }) => (
-            <span key={label} className="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl text-sm font-semibold text-[#0F1729] border border-[#FFC94D]/60 bg-[#FFF9EC] hover:bg-[#FFC94D]/20 transition-colors">
-              <span className="text-base">{emoji}</span>
-              {label}
-            </span>
-          ))}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+          {t.eventsList.map(({ label }, i) => {
+            const imgKeys = ["wedding","birthday","babyshower","gromparty","party","business","krst","matura"];
+            const imgBgs  = [
+              "linear-gradient(135deg,#fce7e9,#f9cdd2)",
+              "linear-gradient(135deg,#fef3c7,#fde68a)",
+              "linear-gradient(135deg,#fce7f3,#f9a8d4)",
+              "linear-gradient(135deg,#1e2a3a,#2d3f55)",
+              "linear-gradient(135deg,#f3e8ff,#d8b4fe)",
+              "linear-gradient(135deg,#f1f5f9,#cbd5e1)",
+              "linear-gradient(135deg,#e0f2fe,#7dd3fc)",
+              "linear-gradient(135deg,#dcfce7,#86efac)",
+            ];
+            return (
+              <EventCard
+                key={label}
+                imgKey={imgKeys[i] ?? "wedding"}
+                label={label}
+                bg={imgBgs[i] ?? imgBgs[0]}
+              />
+            );
+          })}
         </div>
       </section>
 
@@ -866,7 +1003,7 @@ export async function LocalizedHomePage({ lang }: { lang: Lang }) {
           <p className="text-center text-gray-400 mb-14">{t.pricingSubtitle}</p>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 items-start">
             {([
-              { label: t.free.label,    tagline: t.free.tagline,    price: t.free.price,    was: undefined as string | undefined, features: t.free.features,    cta: t.free.cta,    ribbon: undefined as string | undefined, highlighted: false, dimmed: true },
+              { label: t.free.label,    tagline: t.free.tagline,    price: t.free.price,    was: undefined as string | undefined, features: t.free.features,    cta: t.free.cta,    ribbon: undefined as string | undefined, highlighted: false, dimmed: false },
               { label: t.basic.label,   tagline: t.basic.tagline,   price: t.basic.price,   was: t.basic.was,   features: t.basic.features,   cta: t.basic.cta,   ribbon: undefined as string | undefined, highlighted: false, dimmed: false },
               { label: t.plus.label,    tagline: t.plus.tagline,    price: t.plus.price,    was: t.plus.was,    features: t.plus.features,    cta: t.plus.cta,    ribbon: t.plus.ribbon as string | undefined,    highlighted: true,  dimmed: false },
               { label: t.premium.label, tagline: t.premium.tagline, price: t.premium.price, was: t.premium.was, features: t.premium.features, cta: t.premium.cta, ribbon: undefined as string | undefined, highlighted: false, dimmed: false },

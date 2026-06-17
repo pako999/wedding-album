@@ -26,7 +26,7 @@ interface Props {
   isUpgraded?: boolean;
   /** When the owner came from a homepage pricing card, this is the plan
    *  they picked. The onboarding success screen finishes by routing them
-   *  straight into Stripe checkout for that plan. */
+   *  straight into Paddle checkout for that plan. */
   paidPlan?: "basic" | "plus" | "premium";
   /** Logged-in user's primary email — shown in the Settings tab so the
    *  owner can confirm which account this album is attached to. */

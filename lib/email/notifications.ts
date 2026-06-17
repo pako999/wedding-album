@@ -100,8 +100,8 @@ export function welcomeEmailHtml({ ownerName, coupleName, weddingDate, albumSlug
           <table width="100%" cellpadding="0" cellspacing="0" style="background:#0F1729;border-radius:14px;">
             <tr><td style="padding:22px 24px;color:#ffffff;">
               <p style="margin:0 0 6px;font-size:11px;letter-spacing:2px;color:#FFC94D;font-weight:700;">💎 PREMIUM</p>
-              <p style="margin:0 0 10px;font-size:16px;font-weight:700;">Več fotografij, svoja domena, Film Studio</p>
-              <p style="margin:0 0 14px;font-size:13px;line-height:1.55;color:rgba(255,255,255,0.7);">Z nadgradnjo dobite do 500 fotografij, svojo domeno (npr. foto.vase-ime.si), kinematografski film iz fotografij gostov in več.</p>
+              <p style="margin:0 0 10px;font-size:16px;font-weight:700;">Neomejene fotografije, do 100 videoposnetkov in več</p>
+              <p style="margin:0 0 14px;font-size:13px;line-height:1.55;color:rgba(255,255,255,0.7);">Z nadgradnjo na Premium dobite neomejeno fotografij, do 100 videoposnetkov, live galerijo, personalizirano stran, premium predloge in prioritetno podporo.</p>
               <a href="${upgradeUrl}" style="display:inline-block;padding:11px 22px;background:#FFC94D;color:#0F1729;text-decoration:none;border-radius:10px;font-weight:700;font-size:13px;">Nadgradi paket →</a>
             </td></tr>
           </table>
@@ -298,12 +298,20 @@ export async function sendUploadReminder({
 
 // ─── Bank order confirmation — sent when owner chooses "pay by invoice" ───────
 
+interface BillingDetails {
+  name: string;
+  address: string;
+  city: string;
+  taxId?: string;
+}
+
 interface BankOrderConfirmationParams {
   to: string;
   coupleName: string;
   planName: string;
   planPrice: number;
   albumSlug: string;
+  billing?: BillingDetails;
 }
 
 export async function sendBankOrderConfirmation({
@@ -312,6 +320,7 @@ export async function sendBankOrderConfirmation({
   planName,
   planPrice,
   albumSlug,
+  billing,
 }: BankOrderConfirmationParams) {
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) {
@@ -321,6 +330,16 @@ export async function sendBankOrderConfirmation({
   const resend = new Resend(apiKey);
   const dashboardUrl = `${APP_URL}/dashboard/${albumSlug}`;
   const safe = { coupleName: escapeHtml(coupleName), planName: escapeHtml(planName) };
+  const billingHtml = billing ? `
+          <table width="100%" cellpadding="0" cellspacing="0" style="background:#F8FAFC;border-radius:12px;border:1px solid #E2E8F0;margin-bottom:28px;">
+            <tr><td style="padding:18px 22px;">
+              <p style="margin:0 0 10px;font-size:11px;font-weight:700;letter-spacing:2px;color:#64748B;text-transform:uppercase;">Podatki za predračun</p>
+              <p style="margin:0 0 4px;font-size:14px;font-weight:700;color:#0F1729;">${escapeHtml(billing.name)}</p>
+              <p style="margin:0 0 2px;font-size:13px;color:#475569;">${escapeHtml(billing.address)}</p>
+              <p style="margin:0 0 2px;font-size:13px;color:#475569;">${escapeHtml(billing.city)}</p>
+              ${billing.taxId ? `<p style="margin:6px 0 0;font-size:12px;color:#94A3B8;">Davčna: ${escapeHtml(billing.taxId)}</p>` : ""}
+            </td></tr>
+          </table>` : "";
 
   await resend.emails.send({
     from: `Guestcam <${FROM}>`,
@@ -344,6 +363,7 @@ export async function sendBankOrderConfirmation({
           <p style="margin:0 0 24px;font-size:15px;line-height:1.65;color:#475569;">
             Prejeli smo vaso zahtevo za placilo po predracunu. V kratkem vam bomo poslali predracun na ta e-postni naslov. Po prejemu placila bo vas paket takoj aktiviran.
           </p>
+          ${billingHtml}
           <table width="100%" cellpadding="0" cellspacing="0" style="background:#FFF9EC;border-radius:12px;border:1px solid #FFC94D;margin-bottom:28px;">
             <tr><td style="padding:20px 24px;">
               <p style="margin:0 0 4px;font-size:11px;font-weight:700;letter-spacing:2px;color:#C9820A;text-transform:uppercase;">Povzetek narocila</p>

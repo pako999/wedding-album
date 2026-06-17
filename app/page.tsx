@@ -6,6 +6,7 @@ import { DemoButton } from "@/components/DemoButton";
 import { HomeMobileMenu } from "@/components/HomeMobileMenu";
 import { LanguageSwitcher, HOME_HREFLANG } from "@/components/LanguageSwitcher";
 import { HeaderAuthButtons } from "@/components/HeaderAuthButtons";
+import { EventCard } from "@/components/EventCard";
 
 export const metadata: Metadata = {
   alternates: { canonical: "https://guestcam.si" },
@@ -202,7 +203,26 @@ export default async function HomePage() {
               </svg>
             </Link>
             )}
-            <HomeMobileMenu signedIn={signedIn} />
+            <HomeMobileMenu
+              signedIn={signedIn}
+              lang="sl"
+              links={[
+                { href: "#how", label: "Kako deluje" },
+                { href: "#templates", label: "Predloge" },
+                { href: "#pricing", label: "Cenik" },
+                { href: "#faq", label: "FAQ" },
+                { href: "/contact", label: "Kontakt" },
+              ]}
+              labels={{
+                open: "Odpri meni",
+                close: "Zapri meni",
+                language: "Jezik",
+                languageAria: "Spremeni jezik",
+                signIn: "Prijava",
+                dashboard: "Nadzorna plošča",
+                cta: "Začni brezplačno",
+              }}
+            />
           </div>
         </nav>
       </header>
@@ -216,7 +236,8 @@ export default async function HomePage() {
             Vaši najboljši trenutki. Na enem mestu. — Guestcam QR foto album za poroke in dogodke
           </h1>
 
-          {/* Hero image — contains headline, 3-step, and trust badges */}
+          {/* Edge-to-edge hero image — desktop landscape, mobile portrait variant via <picture>.
+              Contains the visible headline, 3-step story, and trust badges. */}
           <div className="overflow-hidden bg-white">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <picture>
@@ -225,8 +246,8 @@ export default async function HomePage() {
                 src="/hero/guestcam-hero.webp"
                 alt="Vaši najboljši trenutki na enem mestu — gostje skenirajo QR kodo na poročni mizi in delijo fotografije v skupni album"
                 className="block w-full h-auto"
-                width={1600}
-                height={900}
+                width={1672}
+                height={941}
                 fetchPriority="high"
               />
             </picture>
@@ -280,26 +301,23 @@ export default async function HomePage() {
       </section>
 
       {/* ── Event types ─────────────────────────────────────────────────────── */}
-      <section className="max-w-3xl mx-auto px-6 pb-20 text-center">
+      <section className="max-w-5xl mx-auto px-6 pb-20 text-center">
         <h2 className="text-3xl sm:text-4xl font-extrabold text-[#0F1729] mb-4 leading-tight">Za vsak poseben trenutek</h2>
         <p className="text-gray-400 max-w-xl mx-auto leading-relaxed mb-10">
           Guestcam zbira fotografije vaših gostov — za poroke, rojstne dneve, baby shower, obletnice, poslovne zabave in vsak dogodek, ki si zasluži spomin.
         </p>
-        <div className="flex flex-wrap justify-center gap-3">
-          {[
-            { emoji: "💍", label: "Poroka" },
-            { emoji: "🎂", label: "Rojstni dan" },
-            { emoji: "👶", label: "Baby shower" },
-            { emoji: "🥂", label: "Obletnica" },
-            { emoji: "🎉", label: "Zabava" },
-            { emoji: "💼", label: "Poslovna zabava" },
-            { emoji: "✝️", label: "Krst" },
-            { emoji: "🎓", label: "Matura" },
-          ].map(({ emoji, label }) => (
-            <span key={label} className="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl text-sm font-semibold text-[#0F1729] border border-[#FFC94D]/60 bg-[#FFF9EC] hover:bg-[#FFC94D]/20 transition-colors">
-              <span className="text-base">{emoji}</span>
-              {label}
-            </span>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+          {([
+            { key: "wedding",     label: "Poroka",          bg: "linear-gradient(135deg,#fce7e9,#f9cdd2)" },
+            { key: "birthday",    label: "Rojstni dan",     bg: "linear-gradient(135deg,#fef3c7,#fde68a)" },
+            { key: "babyshower",  label: "Baby shower",     bg: "linear-gradient(135deg,#fce7f3,#f9a8d4)" },
+            { key: "gromparty",   label: "Fantovščina",     bg: "linear-gradient(135deg,#1e2a3a,#2d3f55)" },
+            { key: "party",       label: "Zabava",          bg: "linear-gradient(135deg,#f3e8ff,#d8b4fe)" },
+            { key: "business",    label: "Poslovna zabava", bg: "linear-gradient(135deg,#f1f5f9,#cbd5e1)" },
+            { key: "krst",        label: "Krst",            bg: "linear-gradient(135deg,#e0f2fe,#7dd3fc)" },
+            { key: "matura",      label: "Matura",          bg: "linear-gradient(135deg,#dcfce7,#86efac)" },
+          ] as const).map(({ key, label, bg }) => (
+            <EventCard key={key} imgKey={key} label={label} bg={bg} />
           ))}
         </div>
       </section>
@@ -863,6 +881,7 @@ export default async function HomePage() {
                 <li><Link href="/terms" className="hover:text-white transition-colors">Pogoji uporabe</Link></li>
                 <li><Link href="/cookies" className="hover:text-white transition-colors">Piškotki</Link></li>
                 <li><Link href="/gdpr" className="hover:text-white transition-colors">GDPR</Link></li>
+                <li><Link href="/refund" className="hover:text-white transition-colors">Vračilo denarja</Link></li>
                 <li><Link href="/contact" className="hover:text-white transition-colors">Kontakt</Link></li>
               </ul>
             </div>

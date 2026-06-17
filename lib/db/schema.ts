@@ -44,7 +44,9 @@ export const albums = pgTable(
     // Film generation tier (separate add-on from album plan)
     filmTier: text("film_tier", { enum: ["free", "pro", "premium"] }).notNull().default("free"),
 
-    // Stripe
+    // Payment reference — holds the Paddle transaction id (txn_…) for new
+    // purchases, plus historical Stripe sessions (cs_…) and admin sentinels
+    // (comp:… / manual_…). Column name kept for migration stability.
     stripeSessionId: text("stripe_session_id"),
 
     // Limits
@@ -288,6 +290,33 @@ export const uploadReminders = pgTable(
   },
   (t) => [index("upload_reminders_due_idx").on(t.sent, t.sendAt)]
 );
+
+// ─── Bank Orders ─────────────────────────────────────────────────────────────
+
+export const bankOrders = pgTable(
+  "bank_orders",
+  {
+    id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+    albumSlug: varchar("album_slug", { length: 80 }).notNull(),
+    email: text("email").notNull(),
+    planId: text("plan_id").notNull(),
+    planName: text("plan_name").notNull(),
+    planPrice: integer("plan_price").notNull(),
+    billingName: text("billing_name"),
+    billingCompanyName: text("billing_company_name"),
+    billingEmail: text("billing_email"),
+    billingAddress: text("billing_address"),
+    billingCity: text("billing_city"),
+    billingTaxId: text("billing_tax_id"),
+    // pending = waiting for payment, paid = payment confirmed, cancelled = abandoned
+    status: text("status", { enum: ["pending", "paid", "cancelled"] }).notNull().default("pending"),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+  },
+  (t) => [index("bank_orders_slug_idx").on(t.albumSlug)]
+);
+
+export type BankOrder = typeof bankOrders.$inferSelect;
+export type NewBankOrder = typeof bankOrders.$inferInsert;
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 

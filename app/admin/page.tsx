@@ -7,14 +7,15 @@ export const dynamic = "force-dynamic";
 const PLAN_PRICES: Record<string, number> = { basic: 39, plus: 49, premium: 79 };
 
 export default async function AdminOverview() {
-  // "Paid" means: plan != free AND a real Stripe checkout session is
-  // attached (cs_…) AND the access window hasn't expired. Excludes
-  // manually-flipped test rows (stripeSessionId starts with "manual_")
-  // and expired paid plans. Keeps the dashboard honest.
+  // "Paid" means: plan != free AND a real payment reference is attached —
+  // a Paddle transaction (txn_…) or a historical Stripe session (cs_…) —
+  // AND the access window hasn't expired. Excludes manually-flipped test
+  // rows (stripeSessionId starts with "manual_" / "comp:") and expired paid
+  // plans. Keeps the dashboard honest.
   const now = new Date();
   const realPaidWhere = and(
     ne(albums.plan, "free"),
-    like(albums.stripeSessionId, "cs_%"),
+    or(like(albums.stripeSessionId, "txn_%"), like(albums.stripeSessionId, "cs_%")),
     or(isNull(albums.expiresAt), gt(albums.expiresAt, now)),
   );
 

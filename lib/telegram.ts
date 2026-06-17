@@ -13,10 +13,10 @@
  * Behaviour:
  *   • If either env var is missing, `notifyTelegram` is a no-op so
  *     local dev and partially-configured environments don't break
- *     the calling code path (Stripe webhooks, Clerk webhooks).
+ *     the calling code path (Paddle webhooks, Clerk webhooks).
  *   • Telegram API errors are caught and logged — they never throw.
  *     A webhook that 500s because Telegram is down would force
- *     Stripe / Clerk to retry the delivery indefinitely, which is
+ *     Paddle / Clerk to retry the delivery indefinitely, which is
  *     worse than missing one ops ping.
  */
 

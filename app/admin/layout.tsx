@@ -13,7 +13,8 @@ const NAV = [
   { href: "/admin/albums",     label: "Galerije",      icon: "🖼️" },
   { href: "/admin/users",      label: "Uporabniki",    icon: "👥" },
   { href: "/admin/discounts",  label: "Kode za popust", icon: "🏷️" },
-  { href: "/admin/payments",   label: "Plačila",       icon: "💳" },
+  { href: "/admin/payments",     label: "Plačila",           icon: "💳" },
+  { href: "/admin/bank-orders",  label: "Predračuni",         icon: "🏦" },
 ];
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {

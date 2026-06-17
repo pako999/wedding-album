@@ -1,0 +1,121 @@
+{
+  "slug": "app-fotos-boda-qr-codigo",
+  "lang": "es",
+  "title": "App de fotos de boda con código QR: reúne todas las fotos de invitados",
+  "description": "Con un código QR reúne todas las fotos y vídeos de tus invitados en una galería privada. Sin app, en calidad original, gratis para empezar.",
+  "translationKey": "wedding-photo-app-qr-code",
+  "publishedAt": "2026-05-30",
+  "updatedAt": "2026-05-30",
+  "author": "Guestcam Team",
+  "category": "vodnik",
+  "readingTime": 6,
+  "tags": [
+    "fotos de boda",
+    "código QR",
+    "app para invitados",
+    "Guestcam"
+  ],
+  "tldr": "Pon un código QR en cada mesa — los invitados escanean y suben fotos a tu galería privada, sin app ni registro.",
+  "coverImage": "https://images.unsplash.com/photo-1519741497674-611481863552?w=1200&h=720&fit=crop&q=82&auto=format",
+  "coverAlt": "Invitados de boda levantando sus móviles para hacer fotos durante la celebración",
+  "content": [
+    {
+      "type": "h2",
+      "text": "Por qué nunca ves la mayoría de las fotos de tus invitados"
+    },
+    {
+      "type": "p",
+      "text": "Tus invitados harán cientos de fotos el día de tu boda, pero la mayoría nunca te llegan — se quedan en los carretes y en los grupos de WhatsApp. Una app de fotos de boda con código QR lo soluciona: los invitados escanean, suben, y todo acaba en una galería privada."
+    },
+    {
+      "type": "image",
+      "src": "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=1200&h=720&fit=crop&q=82&auto=format",
+      "alt": "Invitado escaneando un código QR en la mesa de la boda para subir fotos",
+      "caption": "Un escaneo y el invitado sube fotos en calidad completa — sin app.",
+      "credit": "Foto: Unsplash"
+    },
+    {
+      "type": "h2",
+      "text": "Cómo funciona el código QR para bodas"
+    },
+    {
+      "type": "ol",
+      "items": [
+        "Crea una galería privada en Guestcam en unos clics.",
+        "Elige una plantilla de tarjeta QR, añade vuestros nombres y la fecha e imprímela para las mesas.",
+        "Los invitados escanean el código, la galería se abre en el navegador y suben fotos y vídeos en segundos.",
+        "Lo reúnes todo en directo y lo descargas en un ZIP al terminar."
+      ]
+    },
+    {
+      "type": "h2",
+      "text": "Por qué es mejor que un grupo de WhatsApp"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Método",
+        "Calidad",
+        "App necesaria",
+        "Participación"
+      ],
+      "rows": [
+        [
+          "Grupo de WhatsApp",
+          "Comprimida",
+          "No",
+          "Media"
+        ],
+        [
+          "Álbum Google/iCloud",
+          "Alta",
+          "Cuenta necesaria",
+          "Baja"
+        ],
+        [
+          "Galería QR (Guestcam)",
+          "Original completa",
+          "No",
+          "Alta"
+        ]
+      ]
+    },
+    {
+      "type": "p",
+      "text": "WhatsApp comprime las fotos y a menudo rechaza los vídeos; los álbumes compartidos exigen la cuenta correcta. Una galería QR elimina la fricción y lo guarda todo en resolución original, en privado."
+    },
+    {
+      "type": "h2",
+      "text": "Privada y en calidad completa"
+    },
+    {
+      "type": "p",
+      "text": "Tu galería solo es accesible con tu código QR o enlace, con contraseña opcional. Cada foto y vídeo se guarda en resolución completa — la foto espontánea de un amigo es tan nítida como la del profesional."
+    },
+    {
+      "type": "cta",
+      "text": "Crea tu galería de boda gratis",
+      "href": "https://www.guestcam.si/dashboard/new"
+    },
+    {
+      "type": "faq",
+      "q": "¿Los invitados necesitan descargar una app?",
+      "a": "No. Todo funciona en el navegador del móvil — los invitados escanean el código QR y suben al instante, sin instalación ni registro."
+    },
+    {
+      "type": "faq",
+      "q": "¿Las fotos son privadas?",
+      "a": "Sí. La galería solo es accesible con tu código QR o enlace, con contraseña opcional. Nada es público."
+    },
+    {
+      "type": "faq",
+      "q": "¿En qué calidad se guardan las fotos?",
+      "a": "En resolución original completa, sin compresión — para fotos y vídeos."
+    },
+    {
+      "type": "faq",
+      "q": "¿Qué pasa después de la boda?",
+      "a": "La galería sigue activa durante tu plan y puedes descargar todo en un ZIP o guardarlo en Google Drive."
+    }
+  ]
+}

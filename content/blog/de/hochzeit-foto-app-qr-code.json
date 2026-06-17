@@ -1,0 +1,121 @@
+{
+  "slug": "hochzeit-foto-app-qr-code",
+  "lang": "de",
+  "title": "Hochzeit Foto-App mit QR-Code: alle Gästefotos sammeln (ohne App)",
+  "description": "Mit einem QR-Code alle Fotos und Videos eurer Gäste in einer privaten Galerie sammeln. Ohne App, in voller Qualität, kostenlos starten.",
+  "translationKey": "wedding-photo-app-qr-code",
+  "publishedAt": "2026-05-30",
+  "updatedAt": "2026-05-30",
+  "author": "Guestcam Team",
+  "category": "vodnik",
+  "readingTime": 6,
+  "tags": [
+    "Hochzeitsfotos",
+    "QR-Code",
+    "Gäste-Foto-App",
+    "Guestcam"
+  ],
+  "tldr": "Stellt einen QR-Code auf jeden Tisch — Gäste scannen und laden Fotos direkt in eure private Galerie, ohne App und Anmeldung.",
+  "coverImage": "https://images.unsplash.com/photo-1519741497674-611481863552?w=1200&h=720&fit=crop&q=82&auto=format",
+  "coverAlt": "Hochzeitsgäste heben ihre Handys und fotografieren während der Feier",
+  "content": [
+    {
+      "type": "h2",
+      "text": "Warum ihr die meisten Gästefotos nie seht"
+    },
+    {
+      "type": "p",
+      "text": "Eure Gäste machen am Hochzeitstag Hunderte Fotos, aber die meisten erreichen euch nie — sie verschwinden in Kamera-Rollen und WhatsApp-Gruppen. Eine Hochzeits-Foto-App mit QR-Code löst das: Gäste scannen, laden hoch, und alles landet in einer privaten Galerie."
+    },
+    {
+      "type": "image",
+      "src": "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=1200&h=720&fit=crop&q=82&auto=format",
+      "alt": "Gast scannt einen QR-Code auf dem Hochzeitstisch zum Hochladen von Fotos",
+      "caption": "Ein Scan und der Gast lädt Fotos in voller Qualität hoch — ohne App.",
+      "credit": "Foto: Unsplash"
+    },
+    {
+      "type": "h2",
+      "text": "So funktioniert der QR-Code zur Hochzeit"
+    },
+    {
+      "type": "ol",
+      "items": [
+        "Erstellt in wenigen Klicks eine private Galerie bei Guestcam.",
+        "Wählt eine QR-Karten-Vorlage, ergänzt Namen und Datum und druckt sie für die Tische.",
+        "Gäste scannen den Code, die Galerie öffnet sich im Browser, Fotos und Videos sind in Sekunden hochgeladen.",
+        "Ihr sammelt alles live und ladet es danach als ZIP herunter."
+      ]
+    },
+    {
+      "type": "h2",
+      "text": "Warum besser als eine WhatsApp-Gruppe"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Methode",
+        "Qualität",
+        "App nötig",
+        "Teilnahme"
+      ],
+      "rows": [
+        [
+          "WhatsApp-Gruppe",
+          "Komprimiert",
+          "Nein",
+          "Mittel"
+        ],
+        [
+          "Google/iCloud-Album",
+          "Hoch",
+          "Konto nötig",
+          "Gering"
+        ],
+        [
+          "QR-Galerie (Guestcam)",
+          "Volle Auflösung",
+          "Nein",
+          "Hoch"
+        ]
+      ]
+    },
+    {
+      "type": "p",
+      "text": "WhatsApp komprimiert Fotos und verweigert oft Videos; geteilte Alben brauchen das richtige Konto. Eine QR-Galerie nimmt die Hürden weg und speichert alles in Originalauflösung, privat."
+    },
+    {
+      "type": "h2",
+      "text": "Privat und in voller Qualität"
+    },
+    {
+      "type": "p",
+      "text": "Eure Galerie ist nur über euren QR-Code oder Link erreichbar, optional mit Passwort. Jedes Foto und Video wird in voller Auflösung gespeichert — der Schnappschuss einer Freundin ist so scharf wie das Bild des Profis."
+    },
+    {
+      "type": "cta",
+      "text": "Erstellt eure kostenlose Hochzeitsgalerie",
+      "href": "https://www.guestcam.si/dashboard/new"
+    },
+    {
+      "type": "faq",
+      "q": "Müssen Gäste eine App herunterladen?",
+      "a": "Nein. Alles läuft im Handy-Browser — Gäste scannen den QR-Code und laden sofort hoch, ohne Installation und Anmeldung."
+    },
+    {
+      "type": "faq",
+      "q": "Sind die Fotos privat?",
+      "a": "Ja. Die Galerie ist nur über euren QR-Code oder Link erreichbar, optional mit Passwort. Nichts ist öffentlich."
+    },
+    {
+      "type": "faq",
+      "q": "In welcher Qualität werden Fotos gespeichert?",
+      "a": "In voller Originalauflösung, ohne Komprimierung — für Fotos und Videos."
+    },
+    {
+      "type": "faq",
+      "q": "Was passiert nach der Hochzeit?",
+      "a": "Die Galerie bleibt für die Laufzeit eures Tarifs aktiv, und ihr ladet alles als ZIP herunter oder speichert es in Google Drive."
+    }
+  ]
+}
