@@ -4,54 +4,6 @@ import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import type { Album } from "@/lib/db/schema";
 
-// ── Paddle.js loader ──────────────────────────────────────────────────────────
-// Loaded from the CDN on demand (no npm dep). Initialized once with the public
-// client token; the eventCallback fires our redirect on checkout.completed.
-interface PaddleCheckout {
-  Checkout: { open: (opts: { transactionId: string }) => void };
-  Environment: { set: (env: string) => void };
-  Initialize: (opts: { token: string; eventCallback?: (ev: { name?: string }) => void }) => void;
-}
-declare global {
-  interface Window { Paddle?: PaddleCheckout }
-}
-
-let paddleReady: Promise<PaddleCheckout> | null = null;
-let paddleInitialized = false;
-let onCheckoutComplete: (() => void) | null = null;
-
-function loadPaddle(): Promise<PaddleCheckout> {
-  if (paddleReady) return paddleReady;
-  paddleReady = new Promise<PaddleCheckout>((resolve, reject) => {
-    if (typeof window === "undefined") return reject(new Error("no window"));
-    if (window.Paddle) return resolve(window.Paddle);
-    const s = document.createElement("script");
-    s.src = "https://cdn.paddle.com/paddle/v2/paddle.js";
-    s.async = true;
-    s.onload = () => (window.Paddle ? resolve(window.Paddle) : reject(new Error("Paddle.js missing")));
-    s.onerror = () => reject(new Error("Failed to load Paddle.js"));
-    document.head.appendChild(s);
-  });
-  return paddleReady;
-}
-
-async function ensurePaddle(): Promise<PaddleCheckout> {
-  const Paddle = await loadPaddle();
-  if (!paddleInitialized) {
-    const token = process.env.NEXT_PUBLIC_PADDLE_CLIENT_TOKEN;
-    if (!token) throw new Error("Paddle client token not configured");
-    if (process.env.NEXT_PUBLIC_PADDLE_ENV !== "live") Paddle.Environment.set("sandbox");
-    Paddle.Initialize({
-      token,
-      eventCallback: (ev) => {
-        if (ev?.name === "checkout.completed") onCheckoutComplete?.();
-      },
-    });
-    paddleInitialized = true;
-  }
-  return Paddle;
-}
-
 type PlanId = "free" | "basic" | "plus" | "premium";
 
 interface Plan {
@@ -199,8 +151,6 @@ interface Props {
 export function UpgradePage({ album }: Props) {
   const router = useRouter();
   const copy = getEventCopy(album.eventType ?? "wedding");
-  // Honour a ?plan=... query param so a click on a homepage pricing card
-  // lands on the upgrade screen with that plan already chosen and expanded.
   const searchParams = useSearchParams();
   const initialPlan: PlanId = (() => {
     const p = searchParams.get("plan");
@@ -248,7 +198,6 @@ export function UpgradePage({ album }: Props) {
         {/* Free plan display (current / comparison) */}
         <div className="bg-white rounded-xl border-2 border-gray-200 mb-3 opacity-70">
           <div className="flex items-center gap-3 p-4">
-            {/* Inactive radio */}
             <div className="w-5 h-5 rounded-full border-2 border-gray-300 flex-shrink-0" />
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2">
@@ -260,7 +209,6 @@ export function UpgradePage({ album }: Props) {
               <span className="font-bold text-gray-400">0€</span>
             </div>
           </div>
-          {/* Features */}
           <div className="px-4 pb-4 pt-0">
             <div className="border-t border-gray-100 pt-3 space-y-2">
               {FREE_FEATURES.map((feature) => (
@@ -291,7 +239,6 @@ export function UpgradePage({ album }: Props) {
                 }}
               >
                 <div className="flex items-center gap-3 p-4">
-                  {/* Radio */}
                   <div
                     className="w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0"
                     style={{
@@ -301,23 +248,18 @@ export function UpgradePage({ album }: Props) {
                   >
                     {isSelected && <div className="w-2 h-2 rounded-full bg-white" />}
                   </div>
-
-                  {/* Plan info */}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
                       <span className="font-bold text-sm text-gray-900">{plan.name}</span>
                       <span className="text-xs text-gray-400">{plan.tagline}</span>
                     </div>
                   </div>
-
-                  {/* Price */}
                   <div className="text-right flex-shrink-0">
                     <span className="font-bold text-gray-900">{plan.price}€</span>
                     <span className="ml-1.5 text-xs text-gray-400 line-through">{plan.originalPrice}€</span>
                   </div>
                 </div>
 
-                {/* Expanded features */}
                 {isExpanded && (
                   <div className="px-4 pb-4 pt-0">
                     <div className="border-t border-gray-100 pt-3 space-y-2">
@@ -355,7 +297,7 @@ export function UpgradePage({ album }: Props) {
             <div className="text-blue-500 text-xl">🔒</div>
             <div>
               <p className="text-xs font-semibold text-gray-800">100% varno plačilo</p>
-              <p className="text-xs text-gray-400">Zavarovano s Paddle</p>
+              <p className="text-xs text-gray-400">Zavarovano z Mollie</p>
             </div>
           </div>
         </div>
@@ -364,7 +306,6 @@ export function UpgradePage({ album }: Props) {
         <div className="bg-white rounded-xl border mb-5 overflow-hidden" style={{ borderColor: "#e5e7eb" }}>
           <p className="text-xs font-semibold text-gray-500 px-4 pt-4 pb-2 uppercase tracking-widest">Način plačila</p>
           <div className="px-4 pb-4 space-y-2">
-            {/* Card */}
             <button
               type="button"
               onClick={() => setPaymentMethod("card")}
@@ -377,10 +318,9 @@ export function UpgradePage({ album }: Props) {
               </div>
               <div className="flex-1">
                 <p className="text-sm font-semibold text-gray-900">💳 Plačilo s kartico</p>
-                <p className="text-xs text-gray-400">Visa, Mastercard — takojšnja aktivacija</p>
+                <p className="text-xs text-gray-400">Visa, Mastercard, iDEAL — takojšnja aktivacija</p>
               </div>
             </button>
-            {/* Invoice */}
             <button
               type="button"
               onClick={() => setPaymentMethod("invoice")}
@@ -468,7 +408,6 @@ export function UpgradePage({ album }: Props) {
         {/* Order summary */}
         <div className="bg-white rounded-xl border p-5 mb-5" style={{ borderColor: "#e5e7eb" }}>
           <h3 className="font-semibold text-gray-900 text-sm mb-4">Povzetek naročila</h3>
-
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm text-gray-600">Paket {chosen.name}</span>
             <span className="text-sm font-semibold text-gray-900">{chosen.price}€</span>
@@ -477,11 +416,6 @@ export function UpgradePage({ album }: Props) {
             <span className="text-xs text-gray-400 line-through">Redna cena</span>
             <span className="text-xs text-gray-400 line-through">{chosen.originalPrice}€</span>
           </div>
-
-          {/* Discount code is entered inside the Paddle checkout overlay
-              (Paddle Discounts with enabled_for_checkout). Keeping it off this
-              screen avoids two places to enter the same code and stops us from
-              having to validate codes twice. */}
           <div className="flex items-center justify-between">
             <span className="font-semibold text-gray-900">Skupaj za plačilo</span>
             <span className="font-bold text-xl text-gray-900">{chosen.price}€</span>
@@ -530,19 +464,20 @@ export function UpgradePage({ album }: Props) {
                   setInvoiceDone(true);
                   setIsLoading(false);
                 } else {
+                  // Card payment via Mollie — POST to /api/checkout, redirect to Mollie checkout page
                   const res = await fetch("/api/checkout", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ planId: selectedPlan, albumSlug: album.slug, tableStands: tableStandsSelected }),
+                    body: JSON.stringify({
+                      planId: selectedPlan,
+                      albumSlug: album.slug,
+                      tableStands: tableStandsSelected,
+                    }),
                   });
-                  const { transactionId, error } = await res.json() as { transactionId?: string; error?: string };
-                  if (error || !transactionId) throw new Error(error ?? "no transaction");
-                  const Paddle = await ensurePaddle();
-                  onCheckoutComplete = () => {
-                    window.location.href = `/dashboard/${album.slug}?upgraded=1&txn=${transactionId}`;
-                  };
-                  Paddle.Checkout.open({ transactionId });
-                  setIsLoading(false);
+                  const data = await res.json() as { paymentUrl?: string; error?: string };
+                  if (!res.ok || !data.paymentUrl) throw new Error(data.error ?? "no payment URL");
+                  window.location.href = data.paymentUrl;
+                  // keep isLoading = true while redirecting
                 }
               } catch (err) {
                 console.error("[checkout]", err);
@@ -564,7 +499,7 @@ export function UpgradePage({ album }: Props) {
             ) : paymentMethod === "invoice" ? (
               <>🏦 Oddaj naročilo po predračunu — {chosen.price}€</>
             ) : (
-              <>Nadgradi na {chosen.name} za {chosen.price}€ →</>
+              <>💳 Nadgradi na {chosen.name} za {chosen.price}€ →</>
             )}
           </button>
         )}

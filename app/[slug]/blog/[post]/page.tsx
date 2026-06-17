@@ -5,25 +5,28 @@ import { getAllSlugs, getPost, getTranslationMap, blogUrl } from "@/lib/blog";
 import type { LangCode } from "@/components/LanguageSwitcher";
 import { OG_IMAGE_URL, ogImage } from "@/lib/og";
 
-// Per-request dynamic — see app/[lang]/blog/page.tsx for the rationale.
+// Per-request dynamic — see app/[slug]/blog/page.tsx for the rationale.
 export const revalidate = 3600;
 
 const VALID: LangCode[] = ["hr", "sr", "de", "en", "es"];
 
+// Outer segment is `[slug]` (interpreted as a lang); inner segment is
+// `[post]` (the blog post slug). Renamed from the original `[lang]/[slug]`
+// because Next.js forbids two sibling/nested dynamic segments named `slug`.
 export async function generateStaticParams() {
-  const out: { lang: string; slug: string }[] = [];
+  const out: { slug: string; post: string }[] = [];
   for (const lang of VALID) {
     const slugs = await getAllSlugs(lang);
-    for (const slug of slugs) out.push({ lang, slug });
+    for (const post of slugs) out.push({ slug: lang, post });
   }
   return out;
 }
 
-export async function generateMetadata({ params }: { params: Promise<{ lang: string; slug: string }> }): Promise<Metadata> {
-  const { lang, slug } = await params;
+export async function generateMetadata({ params }: { params: Promise<{ slug: string; post: string }> }): Promise<Metadata> {
+  const { slug: lang, post: postSlug } = await params;
   if (!(VALID as string[]).includes(lang)) return {};
   const langCode = lang as LangCode;
-  const post = await getPost(langCode, slug);
+  const post = await getPost(langCode, postSlug);
   if (!post) return {};
   const languages = await getTranslationMap(post.translationKey);
   const canonical = `https://guestcam.si${blogUrl(langCode, post.slug)}`;
@@ -58,11 +61,11 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
   };
 }
 
-export default async function LangBlogPost({ params }: { params: Promise<{ lang: string; slug: string }> }) {
-  const { lang, slug } = await params;
+export default async function LangBlogPost({ params }: { params: Promise<{ slug: string; post: string }> }) {
+  const { slug: lang, post: postSlug } = await params;
   if (!(VALID as string[]).includes(lang)) notFound();
   const langCode = lang as LangCode;
-  const post = await getPost(langCode, slug);
+  const post = await getPost(langCode, postSlug);
   if (!post) notFound();
   return <BlogPostPage post={post} />;
 }

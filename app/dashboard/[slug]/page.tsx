@@ -10,7 +10,7 @@ export const dynamic = "force-dynamic";
 
 interface Props {
   params: Promise<{ slug: string }>;
-  searchParams: Promise<{ tab?: string; new?: string; upgraded?: string; plan?: string; txn?: string }>;
+  searchParams: Promise<{ tab?: string; new?: string; upgraded?: string; plan?: string }>;
 }
 
 export default async function AlbumAdminPage({ params, searchParams }: Props) {
@@ -30,7 +30,6 @@ export default async function AlbumAdminPage({ params, searchParams }: Props) {
     new: isNewParam,
     upgraded: isUpgradedParam,
     plan: planParam,
-    txn: paddleTxnId,
   } = await searchParams;
   const isNew = isNewParam === "1";
   const isUpgraded = isUpgradedParam === "1";
@@ -38,22 +37,6 @@ export default async function AlbumAdminPage({ params, searchParams }: Props) {
     planParam === "basic" || planParam === "plus" || planParam === "premium"
       ? planParam
       : undefined;
-
-  // Webhook backstop: if the user arrived from the Paddle.js checkout with a
-  // transaction id, reconcile the upgrade *before* loading the album so the
-  // page they see already reflects the new plan. Paddle webhooks can fail to
-  // deliver (e.g. apex->www redirect drops the POST), but the customer always
-  // hits this page after a successful payment, so this gives us a hard
-  // guarantee that paid albums actually flip.
-  if (isUpgraded && paddleTxnId) {
-    const { reconcilePaddleTransaction } = await import("@/lib/paddle-reconcile");
-    const result = await reconcilePaddleTransaction(paddleTxnId, slug);
-    if (!result.ok) {
-      console.warn("[reconcile] txn", paddleTxnId, "→", result.reason);
-    } else {
-      console.log("[reconcile] applied", result.plan, "to", slug, `(${result.status})`);
-    }
-  }
 
   let album: (typeof albums.$inferSelect) | null = null;
   let albumPhotos: (typeof photos.$inferSelect)[] = [];
