@@ -124,14 +124,17 @@ export default async function DashboardPage() {
         ) : (
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {userAlbums.map((album) => (
-              <Link
+              <div
                 key={album.id}
-                href={`/dashboard/${album.slug}`}
-                className="group block bg-white rounded-2xl overflow-hidden transition-all duration-200 hover:shadow-sm hover:border-[#C9820A]/40"
+                className="group bg-white rounded-2xl overflow-hidden flex flex-col"
                 style={{ border: "1px solid #E5E7EB" }}
               >
-                {/* Cover */}
-                <div className="h-44 relative overflow-hidden" style={{ background: "#EAEEF6" }}>
+                {/* Cover — clicking goes to the guest/public gallery view */}
+                <Link
+                  href={`/${album.slug}`}
+                  className="block relative h-44 overflow-hidden"
+                  style={{ background: "#EAEEF6" }}
+                >
                   {album.coverImageUrl ? (
                     <img
                       src={album.coverImageUrl}
@@ -170,15 +173,15 @@ export default async function DashboardPage() {
                       {album.plan === "free" ? "Free" : album.plan === "basic" ? "Basic" : album.plan === "plus" ? "Plus" : "Premium"}
                     </span>
                   </div>
-                </div>
+                </Link>
 
                 {/* Info */}
-                <div className="p-5">
+                <div className="p-5 flex flex-col flex-1">
                   <h3 className="font-serif text-lg font-light text-[#0F1729] mb-0.5">{album.coupleName}</h3>
-                  <p className="text-xs text-[#0F1729]/45 mb-4">
+                  <p className="text-xs text-[#0F1729]/45 mb-3">
                     {album.weddingDate}{album.location ? ` · ${album.location}` : ""}
                   </p>
-                  <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-4 mb-4">
                     <div className="flex items-center gap-1.5">
                       <svg className="w-3.5 h-3.5" style={{ color: "#C9820A" }} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5z" />
@@ -193,8 +196,25 @@ export default async function DashboardPage() {
                     )}
                     <span className="ml-auto text-xs text-[#0F1729]/30">{album.photoCount}/{album.maxPhotos}</span>
                   </div>
+                  {/* Action buttons */}
+                  <div className="flex gap-2 mt-auto">
+                    <Link
+                      href={`/${album.slug}`}
+                      className="flex-1 py-2 text-center text-xs font-medium rounded-lg border transition-colors"
+                      style={{ borderColor: "#E5E7EB", color: "#4B5563" }}
+                    >
+                      Odpri galerijo
+                    </Link>
+                    <Link
+                      href={`/dashboard/${album.slug}`}
+                      className="flex-1 py-2 text-center text-xs font-bold rounded-lg text-white transition-opacity hover:opacity-90"
+                      style={{ background: "#FFC94D", color: "#0F1729" }}
+                    >
+                      Upravljaj →
+                    </Link>
+                  </div>
                 </div>
-              </Link>
+              </div>
             ))}
 
             {/* + New album card */}
