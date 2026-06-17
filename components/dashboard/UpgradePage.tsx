@@ -151,8 +151,6 @@ interface Props {
 export function UpgradePage({ album }: Props) {
   const router = useRouter();
   const copy = getEventCopy(album.eventType ?? "wedding");
-  // Honour a ?plan=... query param so a click on a homepage pricing card
-  // lands on the upgrade screen with that plan already chosen and expanded.
   const searchParams = useSearchParams();
   const initialPlan: PlanId = (() => {
     const p = searchParams.get("plan");
@@ -164,6 +162,7 @@ export function UpgradePage({ album }: Props) {
   const [isLoading, setIsLoading] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState<"card" | "invoice">("card");
   const [invoiceDone, setInvoiceDone] = useState(false);
+  const [billing, setBilling] = useState({ name: "", companyName: "", email: "", address: "", city: "", taxId: "" });
 
   const chosen = PLANS.find((p) => p.id === selectedPlan)!;
 
@@ -199,7 +198,6 @@ export function UpgradePage({ album }: Props) {
         {/* Free plan display (current / comparison) */}
         <div className="bg-white rounded-xl border-2 border-gray-200 mb-3 opacity-70">
           <div className="flex items-center gap-3 p-4">
-            {/* Inactive radio */}
             <div className="w-5 h-5 rounded-full border-2 border-gray-300 flex-shrink-0" />
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2">
@@ -211,7 +209,6 @@ export function UpgradePage({ album }: Props) {
               <span className="font-bold text-gray-400">0€</span>
             </div>
           </div>
-          {/* Features */}
           <div className="px-4 pb-4 pt-0">
             <div className="border-t border-gray-100 pt-3 space-y-2">
               {FREE_FEATURES.map((feature) => (
@@ -242,7 +239,6 @@ export function UpgradePage({ album }: Props) {
                 }}
               >
                 <div className="flex items-center gap-3 p-4">
-                  {/* Radio */}
                   <div
                     className="w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0"
                     style={{
@@ -252,23 +248,18 @@ export function UpgradePage({ album }: Props) {
                   >
                     {isSelected && <div className="w-2 h-2 rounded-full bg-white" />}
                   </div>
-
-                  {/* Plan info */}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
                       <span className="font-bold text-sm text-gray-900">{plan.name}</span>
                       <span className="text-xs text-gray-400">{plan.tagline}</span>
                     </div>
                   </div>
-
-                  {/* Price */}
                   <div className="text-right flex-shrink-0">
                     <span className="font-bold text-gray-900">{plan.price}€</span>
                     <span className="ml-1.5 text-xs text-gray-400 line-through">{plan.originalPrice}€</span>
                   </div>
                 </div>
 
-                {/* Expanded features */}
                 {isExpanded && (
                   <div className="px-4 pb-4 pt-0">
                     <div className="border-t border-gray-100 pt-3 space-y-2">
@@ -306,7 +297,7 @@ export function UpgradePage({ album }: Props) {
             <div className="text-blue-500 text-xl">🔒</div>
             <div>
               <p className="text-xs font-semibold text-gray-800">100% varno plačilo</p>
-              <p className="text-xs text-gray-400">Zavarovano s Paddle</p>
+              <p className="text-xs text-gray-400">Zavarovano z Mollie</p>
             </div>
           </div>
         </div>
@@ -315,7 +306,6 @@ export function UpgradePage({ album }: Props) {
         <div className="bg-white rounded-xl border mb-5 overflow-hidden" style={{ borderColor: "#e5e7eb" }}>
           <p className="text-xs font-semibold text-gray-500 px-4 pt-4 pb-2 uppercase tracking-widest">Način plačila</p>
           <div className="px-4 pb-4 space-y-2">
-            {/* Card */}
             <button
               type="button"
               onClick={() => setPaymentMethod("card")}
@@ -328,10 +318,9 @@ export function UpgradePage({ album }: Props) {
               </div>
               <div className="flex-1">
                 <p className="text-sm font-semibold text-gray-900">💳 Plačilo s kartico</p>
-                <p className="text-xs text-gray-400">Visa, Mastercard — takojšnja aktivacija</p>
+                <p className="text-xs text-gray-400">Visa, Mastercard, iDEAL — takojšnja aktivacija</p>
               </div>
             </button>
-            {/* Invoice */}
             <button
               type="button"
               onClick={() => setPaymentMethod("invoice")}
@@ -350,6 +339,63 @@ export function UpgradePage({ album }: Props) {
           </div>
         </div>
 
+        {/* Billing details — shown only for invoice payment */}
+        {paymentMethod === "invoice" && (
+          <div className="bg-white rounded-xl border mb-5 overflow-hidden" style={{ borderColor: "#e5e7eb" }}>
+            <p className="text-xs font-semibold text-gray-500 px-4 pt-4 pb-3 uppercase tracking-widest">Podatki za predračun</p>
+            <div className="px-4 pb-4 space-y-2.5">
+              <input
+                type="text"
+                placeholder="Ime in priimek *"
+                value={billing.name}
+                onChange={e => setBilling(b => ({ ...b, name: e.target.value }))}
+                className="w-full px-3 py-2.5 text-sm border rounded-lg focus:outline-none focus:border-[#FFC94D] focus:ring-1 focus:ring-[#FFC94D]"
+                style={{ borderColor: "#e5e7eb" }}
+              />
+              <input
+                type="text"
+                placeholder="Naziv podjetja (neobvezno)"
+                value={billing.companyName}
+                onChange={e => setBilling(b => ({ ...b, companyName: e.target.value }))}
+                className="w-full px-3 py-2.5 text-sm border rounded-lg focus:outline-none focus:border-[#FFC94D] focus:ring-1 focus:ring-[#FFC94D]"
+                style={{ borderColor: "#e5e7eb" }}
+              />
+              <input
+                type="email"
+                placeholder="E-poštni naslov *"
+                value={billing.email}
+                onChange={e => setBilling(b => ({ ...b, email: e.target.value }))}
+                className="w-full px-3 py-2.5 text-sm border rounded-lg focus:outline-none focus:border-[#FFC94D] focus:ring-1 focus:ring-[#FFC94D]"
+                style={{ borderColor: "#e5e7eb" }}
+              />
+              <input
+                type="text"
+                placeholder="Ulica in hišna številka *"
+                value={billing.address}
+                onChange={e => setBilling(b => ({ ...b, address: e.target.value }))}
+                className="w-full px-3 py-2.5 text-sm border rounded-lg focus:outline-none focus:border-[#FFC94D] focus:ring-1 focus:ring-[#FFC94D]"
+                style={{ borderColor: "#e5e7eb" }}
+              />
+              <input
+                type="text"
+                placeholder="Poštna številka in kraj *"
+                value={billing.city}
+                onChange={e => setBilling(b => ({ ...b, city: e.target.value }))}
+                className="w-full px-3 py-2.5 text-sm border rounded-lg focus:outline-none focus:border-[#FFC94D] focus:ring-1 focus:ring-[#FFC94D]"
+                style={{ borderColor: "#e5e7eb" }}
+              />
+              <input
+                type="text"
+                placeholder="Davčna številka (neobvezno)"
+                value={billing.taxId}
+                onChange={e => setBilling(b => ({ ...b, taxId: e.target.value }))}
+                className="w-full px-3 py-2.5 text-sm border rounded-lg focus:outline-none focus:border-[#FFC94D] focus:ring-1 focus:ring-[#FFC94D]"
+                style={{ borderColor: "#e5e7eb" }}
+              />
+            </div>
+          </div>
+        )}
+
         {/* Testimonial */}
         <div className="bg-white rounded-xl border p-5 mb-5" style={{ borderColor: "#e5e7eb" }}>
           <p className="text-sm text-gray-600 italic mb-3">
@@ -362,7 +408,6 @@ export function UpgradePage({ album }: Props) {
         {/* Order summary */}
         <div className="bg-white rounded-xl border p-5 mb-5" style={{ borderColor: "#e5e7eb" }}>
           <h3 className="font-semibold text-gray-900 text-sm mb-4">Povzetek naročila</h3>
-
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm text-gray-600">Paket {chosen.name}</span>
             <span className="text-sm font-semibold text-gray-900">{chosen.price}€</span>
@@ -371,11 +416,6 @@ export function UpgradePage({ album }: Props) {
             <span className="text-xs text-gray-400 line-through">Redna cena</span>
             <span className="text-xs text-gray-400 line-through">{chosen.originalPrice}€</span>
           </div>
-
-          {/* Discount code lives on the Stripe Checkout page now
-              (allow_promotion_codes=true). Keeping it off this screen
-              avoids two places to enter the same code and stops us from
-              having to validate codes twice. */}
           <div className="flex items-center justify-between">
             <span className="font-semibold text-gray-900">Skupaj za plačilo</span>
             <span className="font-bold text-xl text-gray-900">{chosen.price}€</span>
@@ -398,25 +438,49 @@ export function UpgradePage({ album }: Props) {
               setIsLoading(true);
               try {
                 if (paymentMethod === "invoice") {
+                  if (!billing.name.trim() || !billing.email.trim() || !billing.address.trim() || !billing.city.trim()) {
+                    alert("Prosimo izpolnite vse obvezne podatke za predračun (ime, e-pošta, naslov, kraj).");
+                    setIsLoading(false);
+                    return;
+                  }
                   const res = await fetch("/api/bank-order", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ planId: selectedPlan, albumSlug: album.slug }),
+                    body: JSON.stringify({
+                      planId: selectedPlan,
+                      albumSlug: album.slug,
+                      billing: {
+                        name: billing.name.trim(),
+                        companyName: billing.companyName.trim() || undefined,
+                        email: billing.email.trim(),
+                        address: billing.address.trim(),
+                        city: billing.city.trim(),
+                        taxId: billing.taxId.trim() || undefined,
+                      },
+                    }),
                   });
                   const data = await res.json() as { success?: boolean; error?: string };
                   if (!res.ok || !data.success) throw new Error(data.error ?? "Napaka");
                   setInvoiceDone(true);
+                  setIsLoading(false);
                 } else {
+                  // Card payment via Mollie — POST to /api/checkout, redirect to Mollie checkout page
                   const res = await fetch("/api/checkout", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ planId: selectedPlan, albumSlug: album.slug, tableStands: tableStandsSelected }),
+                    body: JSON.stringify({
+                      planId: selectedPlan,
+                      albumSlug: album.slug,
+                      tableStands: tableStandsSelected,
+                    }),
                   });
-                  const { url, error } = await res.json() as { url?: string; error?: string };
-                  if (error) throw new Error(error);
-                  window.location.href = url!;
+                  const data = await res.json() as { paymentUrl?: string; error?: string };
+                  if (!res.ok || !data.paymentUrl) throw new Error(data.error ?? "no payment URL");
+                  window.location.href = data.paymentUrl;
+                  // keep isLoading = true while redirecting
                 }
               } catch (err) {
+                console.error("[checkout]", err);
                 alert(paymentMethod === "invoice"
                   ? "Napaka pri oddaji naročila. Prosimo, pišite na hello@guestcam.si"
                   : "Napaka pri plačilu. Prosimo, poskusite znova ali nas kontaktirajte na hello@guestcam.si");
@@ -435,7 +499,7 @@ export function UpgradePage({ album }: Props) {
             ) : paymentMethod === "invoice" ? (
               <>🏦 Oddaj naročilo po predračunu — {chosen.price}€</>
             ) : (
-              <>Nadgradi na {chosen.name} za {chosen.price}€ →</>
+              <>💳 Nadgradi na {chosen.name} za {chosen.price}€ →</>
             )}
           </button>
         )}

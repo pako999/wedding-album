@@ -1,31 +1,27 @@
 import { NextRequest, NextResponse } from "next/server";
-import Stripe from "stripe";
 import { auth } from "@clerk/nextjs/server";
 import { db } from "@/lib/db";
 import { albums } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
+import { createPayment, mollieConfigured, MollieError } from "@/lib/mollie";
 
-const APP_URL =
-  process.env.NEXT_PUBLIC_APP_URL ?? "https://guestcam.si";
+export const runtime = "nodejs";
 
 const PLAN_CONFIG: Record<string, { name: string; amount: number }> = {
-  basic:      { name: "Guestcam Basic",         amount: 3900 },
-  plus:       { name: "Guestcam Plus",           amount: 4900 },
-  premium:    { name: "Guestcam Premium",        amount: 7900 },
-  film_pro:   { name: "Film Studio Pro (100 foto)",     amount: 1000 }, // €10
-  film_premium: { name: "Film Studio Premium (300 foto)", amount: 2000 }, // €20
+  basic:        { name: "Guestcam Basic",                   amount: 3900 },
+  plus:         { name: "Guestcam Plus",                    amount: 4900 },
+  premium:      { name: "Guestcam Premium",                 amount: 7900 },
+  film_pro:     { name: "Film Studio Pro (100 foto)",        amount: 1000 },
+  film_premium: { name: "Film Studio Premium (300 foto)",    amount: 2000 },
 };
 
 type PlanId = "basic" | "plus" | "premium" | "film_pro" | "film_premium";
 
 export async function POST(req: NextRequest) {
-  const stripeKey = process.env.STRIPE_SECRET_KEY;
-  if (!stripeKey) {
+  if (!mollieConfigured()) {
     return NextResponse.json({ error: "Payments not configured" }, { status: 503 });
   }
-  const stripe = new Stripe(stripeKey);
 
-  // Auth — verify the caller is logged in
   let userId: string | null = null;
   try {
     const session = await auth();
@@ -42,61 +38,47 @@ export async function POST(req: NextRequest) {
     albumSlug: string;
     tableStands?: boolean;
   };
-
   const { planId, albumSlug, tableStands } = body;
 
   if (!planId || !albumSlug || !(planId in PLAN_CONFIG)) {
     return NextResponse.json({ error: "Invalid request" }, { status: 400 });
   }
 
-  // Verify the user owns this album
   const album = await db.query.albums.findFirst({
     where: eq(albums.slug, albumSlug),
   });
-
   if (!album || album.ownerClerkId !== userId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   const plan = PLAN_CONFIG[planId];
+  const totalCents = plan.amount + (tableStands ? 900 : 0);
+  const description = plan.name + (tableStands ? " + Podstavki za mizo" : "");
 
-  const lineItems: Stripe.Checkout.SessionCreateParams["line_items"] = [
-    {
-      quantity: 1,
-      price_data: {
-        currency: "eur",
-        unit_amount: plan.amount,
-        product_data: { name: plan.name },
-      },
-    },
-  ];
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://guestcam.si";
+  // Mollie redirects back to /api/mollie-return which does reconcile then bounces to dashboard.
+  const redirectUrl = `${baseUrl}/api/mollie-return?slug=${encodeURIComponent(albumSlug)}`;
+  const webhookUrl = `${baseUrl}/api/webhooks/mollie`;
 
-  if (tableStands) {
-    lineItems!.push({
-      quantity: 1,
-      price_data: {
-        currency: "eur",
-        unit_amount: 900,
-        product_data: { name: "Guestcam Podstavki za mizo" },
-      },
+  try {
+    const { id, checkoutUrl } = await createPayment({
+      amountCents: totalCents,
+      description,
+      redirectUrl,
+      webhookUrl,
+      metadata: { albumSlug, planId },
     });
+
+    // Persist payment ID so /api/mollie-return can reconcile if webhook hasn't fired yet.
+    await db.update(albums)
+      .set({ stripeSessionId: id })
+      .where(eq(albums.slug, albumSlug));
+
+    return NextResponse.json({ paymentUrl: checkoutUrl });
+  } catch (err) {
+    const status = err instanceof MollieError ? err.status : 500;
+    const detail = err instanceof MollieError ? err.message : "Checkout failed";
+    console.error("[mollie checkout] create payment failed:", err);
+    return NextResponse.json({ error: detail }, { status: status >= 400 && status < 600 ? status : 500 });
   }
-
-  const session = await stripe.checkout.sessions.create({
-    mode: "payment",
-    payment_method_types: ["card", "link"],
-    line_items: lineItems,
-    // session_id is filled in by Stripe; the dashboard page uses it
-    // to reconcile the upgrade if the webhook didn't fire (e.g. apex
-    // domain redirect drops Stripe's POST). Belt-and-braces.
-    success_url: `${APP_URL}/dashboard/${albumSlug}?upgraded=1&session_id={CHECKOUT_SESSION_ID}`,
-    cancel_url: `${APP_URL}/dashboard/${albumSlug}/upgrade`,
-    allow_promotion_codes: true,
-    metadata: {
-      albumSlug,
-      planId,
-    },
-  });
-
-  return NextResponse.json({ url: session.url });
 }
