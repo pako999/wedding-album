@@ -293,7 +293,7 @@ export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activ
 
   const navItems: { id: Tab; label: string; icon: string }[] = [
     { id: "overview",  label: "Pregled",    icon: "🕐" },
-    { id: "gallery",   label: "Galerija",   icon: "🖼" },
+    { id: "gallery",   label: "Fotografije",   icon: "🖼" },
     { id: "film",      label: "Film Studio", icon: "🎬" },
     { id: "qr",        label: "QR koda",    icon: "📱" },
     { id: "settings",  label: "Nastavitve", icon: "⚙️" },
@@ -506,7 +506,7 @@ export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activ
             <div className="min-w-0">
               <h1 className="text-xl font-bold text-gray-900 truncate">
                 {activeTab === "overview"  && "Pregled galerije"}
-                {activeTab === "gallery"   && "Galerija"}
+                {activeTab === "gallery"   && "Fotografije"}
                 {activeTab === "film"      && "🎬 Film Studio"}
                 {activeTab === "qr"        && "QR koda"}
                 {activeTab === "settings"  && "Nastavitve"}
