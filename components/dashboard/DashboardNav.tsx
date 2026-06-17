@@ -16,16 +16,6 @@ export function DashboardNav() {
         </Link>
 
         <div className="flex items-center gap-3">
-          <Link
-            href="/dashboard/new"
-            className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 text-white text-xs font-bold rounded-xl"
-            style={{ background: "#FFC94D" }}
-          >
-            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-            </svg>
-            Nova galerija
-          </Link>
           <UserButton />
         </div>
       </div>
