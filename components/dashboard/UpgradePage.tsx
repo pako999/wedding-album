@@ -83,6 +83,7 @@ export function UpgradePage({ album }: Props) {
   const [paymentMethod, setPaymentMethod] = useState<"card" | "invoice">("card");
   const [invoiceDone, setInvoiceDone] = useState(false);
   const [billing, setBilling] = useState({ name: "", companyName: "", email: "", address: "", city: "", taxId: "" });
+  const [termsAccepted, setTermsAccepted] = useState(false);
 
   const chosen = PLANS.find((p) => p.id === selectedPlan)!;
 
@@ -175,7 +176,7 @@ export function UpgradePage({ album }: Props) {
                     {/* Price */}
                     <div className="text-right flex-shrink-0">
                       <span className="text-xl font-bold text-gray-900">{plan.price}€</span>
-                      <p className="text-xs text-gray-400">enkratno</p>
+                      <p className="text-xs text-gray-400">vključen 22% DDV</p>
                     </div>
                   </div>
                 </button>
@@ -313,9 +314,27 @@ export function UpgradePage({ album }: Props) {
               <span className="text-2xl font-bold text-gray-900">{chosen.price}€</span>
             </div>
             <div className="flex items-center justify-between text-xs text-gray-400 mb-4">
-              <span>DDV ni vključen</span>
+              <span>vključen 22% DDV</span>
               <span>Enkratno plačilo · brez naročnine</span>
             </div>
+
+            {/* Terms acceptance checkbox */}
+            {!invoiceDone && (
+              <label className="flex items-start gap-2.5 mb-4 cursor-pointer group">
+                <input
+                  type="checkbox"
+                  checked={termsAccepted}
+                  onChange={(e) => setTermsAccepted(e.target.checked)}
+                  className="mt-0.5 w-4 h-4 rounded accent-[#FFC94D] flex-shrink-0 cursor-pointer"
+                />
+                <span className="text-xs text-gray-500 leading-relaxed">
+                  Z nakupom se strinjate s{" "}
+                  <Link href="/terms" target="_blank" className="underline hover:text-gray-800">pogoji uporabe</Link>
+                  {". "}
+                  30-dnevna garancija vračila denarja.
+                </span>
+              </label>
+            )}
 
             {invoiceDone ? (
               <div className="rounded-xl p-5 text-center" style={{ background: "#F0FDF4", border: "2px solid #86EFAC" }}>
@@ -327,7 +346,7 @@ export function UpgradePage({ album }: Props) {
               <button
                 className="w-full py-4 rounded-xl font-bold text-base transition-all hover:opacity-90 flex items-center justify-center gap-2 disabled:opacity-60 shadow-sm"
                 style={{ background: "#FFC94D", color: "#0F1729" }}
-                disabled={isLoading}
+                disabled={isLoading || !termsAccepted}
                 onClick={async () => {
                   setIsLoading(true);
                   try {
