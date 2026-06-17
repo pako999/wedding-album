@@ -412,12 +412,6 @@ export function UpgradePage({ album }: Props) {
             )}
           </div>
 
-          <p className="text-center text-xs text-gray-400 mb-8">
-            Z nakupom se strinjate s{" "}
-            <a href="/pogoji" className="underline hover:text-gray-600">pogoji uporabe</a>.
-            {" "}30-dnevna garancija vračila denarja.
-          </p>
-
         </div>
       </main>
 
