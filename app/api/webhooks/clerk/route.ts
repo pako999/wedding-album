@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createHmac, timingSafeEqual } from "node:crypto";
 import { htmlEscape, notifyTelegram } from "@/lib/telegram";
+import { sendAdminNewUserEmail } from "@/lib/email/notifications";
 
 export const dynamic = "force-dynamic";
 
@@ -79,7 +80,10 @@ export async function POST(req: NextRequest) {
       `🎉 <b>Nov uporabnik</b>\n` +
       `${htmlEscape(name)} — <code>${htmlEscape(email)}</code>\n` +
       `Clerk ID: <code>${htmlEscape(u.id ?? "?")}</code>`;
-    await notifyTelegram(msg);
+    await Promise.all([
+      notifyTelegram(msg),
+      sendAdminNewUserEmail({ name, email, clerkId: u.id ?? "" }),
+    ]);
   }
 
   return NextResponse.json({ received: true });

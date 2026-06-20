@@ -3,7 +3,7 @@ import { currentUser } from "@clerk/nextjs/server";
 import { db } from "@/lib/db";
 import { albums, bankOrders } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
-import { sendBankOrderConfirmation } from "@/lib/email/notifications";
+import { sendBankOrderConfirmation, sendAdminBankOrderEmail } from "@/lib/email/notifications";
 import { notifyTelegram, htmlEscape } from "@/lib/telegram";
 
 export const runtime = "nodejs";
@@ -86,6 +86,15 @@ export async function POST(req: NextRequest) {
   const billingLines = billing
     ? `\n👤 <b>Podatki za predračun:</b>\nIme: ${htmlEscape(billing.name)}${billing.companyName ? `\nPodjetje: ${htmlEscape(billing.companyName)}` : ""}${billing.email ? `\nEmail za račun: ${htmlEscape(billing.email)}` : ""}\nNaslov: ${htmlEscape(billing.address)}\nKraj: ${htmlEscape(billing.city)}${billing.taxId ? `\nDavčna: ${htmlEscape(billing.taxId)}` : ""}`
     : "";
+
+  // Admin email — contains all billing details needed to issue an invoice
+  await sendAdminBankOrderEmail({
+    albumSlug,
+    planName: plan.name,
+    planPrice: plan.price,
+    customerEmail: email,
+    billing,
+  });
 
   const sent = await notifyTelegram(
     `🏦 <b>Novo naročilo po predračunu</b>\n` +

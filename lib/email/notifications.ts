@@ -408,3 +408,138 @@ export async function sendBankOrderConfirmation({
 </html>`,
   });
 }
+
+// ─── Admin internal notifications ─────────────────────────────────────────────
+
+const ADMIN_EMAIL = "info@guestcam.si";
+
+function adminEmailShell(subject: string, bodyRows: string): string {
+  return `<!DOCTYPE html>
+<html lang="sl">
+<head><meta charset="utf-8" /><title>${escapeHtml(subject)}</title></head>
+<body style="margin:0;padding:0;background:#F2F4F8;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;color:#0F1729;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#F2F4F8;padding:24px 16px;">
+    <tr><td align="center">
+      <table width="560" cellpadding="0" cellspacing="0" style="max-width:560px;background:#ffffff;border-radius:14px;overflow:hidden;border:1px solid #E2E8F0;">
+        <tr><td style="background:#0F1729;padding:18px 24px;">
+          <p style="margin:0;font-size:11px;letter-spacing:3px;color:#FFC94D;font-weight:700;">GUESTCAM · ADMIN</p>
+        </td></tr>
+        <tr><td style="padding:24px;">
+          ${bodyRows}
+        </td></tr>
+        <tr><td style="padding:14px 24px;border-top:1px solid #F1F5F9;text-align:center;">
+          <p style="margin:0;font-size:11px;color:#94A3B8;">Guestcam · <a href="${APP_URL}" style="color:#C9820A;text-decoration:none;">guestcam.si</a></p>
+        </td></tr>
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>`;
+}
+
+async function sendAdminEmail(subject: string, html: string) {
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) return;
+  try {
+    const resend = new Resend(apiKey);
+    await resend.emails.send({ from: `Guestcam <${FROM}>`, to: ADMIN_EMAIL, subject, html });
+  } catch (err) {
+    console.error("[admin email] failed to send:", err);
+  }
+}
+
+// ─── 1. New user registered ───────────────────────────────────────────────────
+
+export async function sendAdminNewUserEmail(params: {
+  name: string;
+  email: string;
+  clerkId: string;
+}) {
+  const { name, email, clerkId } = params;
+  const html = adminEmailShell(
+    `🆕 Nov uporabnik — ${name}`,
+    `<h2 style="margin:0 0 16px;font-size:18px;font-weight:800;color:#0F1729;">🆕 Nov uporabnik</h2>
+     <table cellpadding="0" cellspacing="0" style="font-size:14px;line-height:2;color:#475569;width:100%;">
+       <tr><td style="width:110px;font-weight:700;color:#0F1729;">Ime:</td><td>${escapeHtml(name)}</td></tr>
+       <tr><td style="font-weight:700;color:#0F1729;">Email:</td><td><a href="mailto:${escapeHtml(email)}" style="color:#1E3A8A;">${escapeHtml(email)}</a></td></tr>
+       <tr><td style="font-weight:700;color:#0F1729;">Clerk ID:</td><td style="font-family:monospace;font-size:12px;">${escapeHtml(clerkId)}</td></tr>
+       <tr><td style="font-weight:700;color:#0F1729;">Čas:</td><td>${new Date().toLocaleString("sl-SI")}</td></tr>
+     </table>`,
+  );
+  await sendAdminEmail(`🆕 Nov uporabnik — ${name} (${email})`, html);
+}
+
+// ─── 2. Mollie payment received ───────────────────────────────────────────────
+
+export async function sendAdminPaymentEmail(params: {
+  albumSlug: string;
+  planId: string;
+  amount: string;
+  currency: string;
+  paymentId: string;
+  method: string | null;
+}) {
+  const { albumSlug, planId, amount, currency, paymentId, method } = params;
+  const methodLabel = method ?? "neznano";
+  const html = adminEmailShell(
+    `💳 Plačilo — ${albumSlug} — ${planId}`,
+    `<h2 style="margin:0 0 16px;font-size:18px;font-weight:800;color:#0F1729;">💳 Novo plačilo</h2>
+     <table cellpadding="0" cellspacing="0" style="font-size:14px;line-height:2;color:#475569;width:100%;">
+       <tr><td style="width:130px;font-weight:700;color:#0F1729;">Album:</td><td style="font-family:monospace;">${escapeHtml(albumSlug)}</td></tr>
+       <tr><td style="font-weight:700;color:#0F1729;">Paket:</td><td>${escapeHtml(planId)}</td></tr>
+       <tr><td style="font-weight:700;color:#0F1729;">Znesek:</td><td style="font-weight:800;font-size:16px;color:#0F1729;">${escapeHtml(amount)} ${escapeHtml(currency)}</td></tr>
+       <tr><td style="font-weight:700;color:#0F1729;">Način plačila:</td><td>${escapeHtml(methodLabel)}</td></tr>
+       <tr><td style="font-weight:700;color:#0F1729;">Mollie ID:</td><td style="font-family:monospace;font-size:12px;">${escapeHtml(paymentId)}</td></tr>
+       <tr><td style="font-weight:700;color:#0F1729;">Čas:</td><td>${new Date().toLocaleString("sl-SI")}</td></tr>
+     </table>
+     <p style="margin:16px 0 0;font-size:13px;color:#64748B;">
+       Preverite <a href="${APP_URL}/admin/payments" style="color:#1E3A8A;">admin/payments</a> za podrobnosti.
+     </p>`,
+  );
+  await sendAdminEmail(`💳 Plačilo ${amount}${currency} — ${albumSlug} (${planId})`, html);
+}
+
+// ─── 3. Bank order (predračun) — all billing details for invoice ──────────────
+
+export async function sendAdminBankOrderEmail(params: {
+  albumSlug: string;
+  planName: string;
+  planPrice: number;
+  customerEmail: string;
+  billing?: {
+    name?: string;
+    companyName?: string;
+    email?: string;
+    address?: string;
+    city?: string;
+    taxId?: string;
+  };
+}) {
+  const { albumSlug, planName, planPrice, customerEmail, billing } = params;
+  const billingRows = billing ? `
+     <tr><td colspan="2" style="padding-top:12px;font-weight:700;color:#0F1729;font-size:13px;letter-spacing:1px;text-transform:uppercase;">Podatki za račun:</td></tr>
+     ${billing.name ? `<tr><td style="width:130px;font-weight:700;color:#0F1729;">Ime / Firma:</td><td>${escapeHtml(billing.name)}${billing.companyName ? ` / ${escapeHtml(billing.companyName)}` : ""}</td></tr>` : ""}
+     ${billing.email ? `<tr><td style="font-weight:700;color:#0F1729;">Email za račun:</td><td><a href="mailto:${escapeHtml(billing.email)}" style="color:#1E3A8A;">${escapeHtml(billing.email)}</a></td></tr>` : ""}
+     ${billing.address ? `<tr><td style="font-weight:700;color:#0F1729;">Naslov:</td><td>${escapeHtml(billing.address)}</td></tr>` : ""}
+     ${billing.city ? `<tr><td style="font-weight:700;color:#0F1729;">Kraj:</td><td>${escapeHtml(billing.city)}</td></tr>` : ""}
+     ${billing.taxId ? `<tr><td style="font-weight:700;color:#0F1729;">Davčna št.:</td><td>${escapeHtml(billing.taxId)}</td></tr>` : ""}
+  ` : "";
+
+  const html = adminEmailShell(
+    `🏦 Predračun — ${albumSlug} — ${planName}`,
+    `<h2 style="margin:0 0 16px;font-size:18px;font-weight:800;color:#0F1729;">🏦 Zahteva za predračun</h2>
+     <table cellpadding="0" cellspacing="0" style="font-size:14px;line-height:2;color:#475569;width:100%;">
+       <tr><td style="width:130px;font-weight:700;color:#0F1729;">Album:</td><td style="font-family:monospace;">${escapeHtml(albumSlug)}</td></tr>
+       <tr><td style="font-weight:700;color:#0F1729;">Paket:</td><td>${escapeHtml(planName)}</td></tr>
+       <tr><td style="font-weight:700;color:#0F1729;">Znesek:</td><td style="font-weight:800;font-size:16px;color:#0F1729;">${planPrice}€</td></tr>
+       <tr><td style="font-weight:700;color:#0F1729;">Email stranke:</td><td><a href="mailto:${escapeHtml(customerEmail)}" style="color:#1E3A8A;">${escapeHtml(customerEmail)}</a></td></tr>
+       ${billingRows}
+       <tr><td style="font-weight:700;color:#0F1729;">Čas:</td><td>${new Date().toLocaleString("sl-SI")}</td></tr>
+     </table>
+     <p style="margin:16px 0 0;font-size:13px;color:#64748B;">
+       Pošljite predračun na email stranke in aktivirajte paket po plačilu prek
+       <a href="${APP_URL}/admin/bank-orders" style="color:#1E3A8A;">admin/bank-orders</a>.
+     </p>`,
+  );
+  await sendAdminEmail(`🏦 Predračun ${planPrice}€ — ${albumSlug} (${planName})`, html);
+}
