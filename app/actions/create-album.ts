@@ -2,7 +2,7 @@
 
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
-import { eq } from "drizzle-orm";
+import { and, desc, eq, gt, ne } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { albums } from "@/lib/db/schema";
 import { sendWelcomeEmail } from "@/lib/email/notifications";
@@ -46,7 +46,24 @@ export async function createAlbum(formData: FormData) {
   const suffix = Math.random().toString(36).slice(2, 6);
   const slug   = `${slugify(coupleName)}-${suffix}`;
 
-  const freeExpiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // 30 days
+  // Inherit the active paid plan from any existing album owned by this user.
+  // If the user already paid for basic/plus/premium, every new gallery they
+  // create gets the same plan, limits, and expiry — no extra payment needed.
+  const activePaidAlbum = await db.query.albums.findFirst({
+    where: and(
+      eq(albums.ownerClerkId, userId),
+      ne(albums.plan, "free"),
+      gt(albums.expiresAt, new Date()),
+    ),
+    orderBy: [desc(albums.expiresAt)],
+  });
+
+  const inheritedPlan  = activePaidAlbum?.plan      ?? "free";
+  const inheritedMax   = activePaidAlbum?.maxPhotos  ?? 20;
+  const inheritedFilm  = activePaidAlbum?.filmTier   ?? "free";
+  const inheritedExpiry = activePaidAlbum
+    ? activePaidAlbum.expiresAt
+    : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // free = 30 days
 
   await db.insert(albums).values({
     slug,
@@ -57,10 +74,16 @@ export async function createAlbum(formData: FormData) {
     location,
     password,
     isPublished:       true,
-    plan:              "free",
-    maxPhotos:         20,
+    plan:              inheritedPlan,
+    maxPhotos:         inheritedMax,
+    filmTier:          inheritedFilm,
     moderationEnabled: false,
-    expiresAt:         freeExpiresAt,
+    expiresAt:         inheritedExpiry,
+    // Mark that this plan was inherited (not a direct payment) so the
+    // Paddle idempotency check in applyPlanToAlbum doesn't confuse it.
+    stripeSessionId: activePaidAlbum
+      ? `inherit:${activePaidAlbum.slug}`
+      : undefined,
   });
 
   // Send a welcome email on the owner's *first* album. Best-effort — if
