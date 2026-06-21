@@ -2,15 +2,22 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { discountCodes } from "@/lib/db/schema";
 import { desc } from "drizzle-orm";
+import { requireAdmin } from "@/lib/admin";
 
 export const dynamic = "force-dynamic";
 
 export async function GET() {
+  const admin = await requireAdmin();
+  if (!admin) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
   const rows = await db.select().from(discountCodes).orderBy(desc(discountCodes.createdAt));
   return NextResponse.json(rows);
 }
 
 export async function POST(req: NextRequest) {
+  const admin = await requireAdmin();
+  if (!admin) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
   const body = await req.json() as {
     code?: string;
     percentOff?: number;

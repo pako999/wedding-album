@@ -1,6 +1,6 @@
 import { db } from "@/lib/db";
 import { discountCodes } from "@/lib/db/schema";
-import { eq, sql } from "drizzle-orm";
+import { and, eq, isNull, or, sql } from "drizzle-orm";
 
 export const PLAN_PRICES: Record<string, number> = {
   basic:   39,
@@ -57,5 +57,10 @@ export async function incrementDiscountUsage(discountCodeId: string) {
   await db
     .update(discountCodes)
     .set({ usedCount: sql`${discountCodes.usedCount} + 1` })
-    .where(eq(discountCodes.id, discountCodeId));
+    .where(
+      and(
+        eq(discountCodes.id, discountCodeId),
+        or(isNull(discountCodes.maxUses), sql`${discountCodes.usedCount} < ${discountCodes.maxUses}`),
+      ),
+    );
 }

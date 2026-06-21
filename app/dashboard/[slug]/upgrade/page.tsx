@@ -25,9 +25,11 @@ export default async function UpgradePageRoute({ params, searchParams }: Props) 
   const { slug } = await params;
   const sp = await searchParams;
 
-  // Prefer explicit ?lang= param, fall back to Accept-Language header
   const h = await headers();
-  const lang: Lang = (sp.lang as Lang | undefined) ?? detectLang(h.get("accept-language"));
+  const VALID_LANGS: Lang[] = ["sl", "hr", "sr", "en", "de", "es"];
+  const lang: Lang = (sp.lang && VALID_LANGS.includes(sp.lang as Lang))
+    ? (sp.lang as Lang)
+    : detectLang(h.get("accept-language"));
 
   let album: typeof albums.$inferSelect | null = null;
   try {
