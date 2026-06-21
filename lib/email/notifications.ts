@@ -1188,3 +1188,86 @@ export async function sendAffiliateCommissionApprovedEmail({
     console.error("[affiliate approved email] send failed:", err);
   }
 }
+
+// ─── Organizer agreement confirmation ────────────────────────────────────────
+
+/**
+ * Sent to the organizer every time they create a new gallery, confirming the
+ * data-processing responsibility they accepted via the checkbox in the wizard.
+ */
+export async function sendOrganizerAgreementEmail({
+  to,
+  ownerName,
+  coupleName,
+  albumSlug,
+}: {
+  to: string;
+  ownerName?: string;
+  coupleName: string;
+  albumSlug: string;
+}) {
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) return;
+
+  const albumUrl    = `${APP_URL}/${albumSlug}`;
+  const privacyUrl  = `${APP_URL}/gdpr`;
+  const greeting    = ownerName ? ` <strong>${escapeHtml(ownerName)}</strong>` : "";
+
+  const html = `<!DOCTYPE html>
+<html lang="sl">
+<head><meta charset="utf-8" /><title>Potrditev zasebnosti – Guestcam</title></head>
+<body style="margin:0;padding:0;background:#F2F4F8;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;color:#0F1729;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#F2F4F8;padding:32px 16px;">
+    <tr><td align="center">
+      <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;background:#ffffff;border-radius:18px;overflow:hidden;box-shadow:0 4px 24px rgba(15,23,41,0.06);">
+        <tr><td style="background:#0F1729;padding:28px 32px;">
+          <p style="margin:0 0 6px;font-size:11px;letter-spacing:3px;font-weight:700;color:#FFC94D;">GUESTCAM</p>
+          <h1 style="margin:0;font-size:20px;color:#ffffff;font-weight:800;">✅ Galerija ustvarjena – potrditev obveznosti</h1>
+        </td></tr>
+        <tr><td style="padding:32px;">
+          <p style="margin:0 0 16px;font-size:15px;line-height:1.6;color:#0F1729;">Pozdravljeni${greeting},</p>
+          <p style="margin:0 0 20px;font-size:14px;line-height:1.7;color:#475569;">
+            Uspešno ste ustvarili galerijo <strong style="color:#0F1729;">${escapeHtml(coupleName)}</strong>.
+            S potrditvijo ob ustvarjanju ste sprejeli naslednje obveznosti kot organizator dogodka:
+          </p>
+          <table width="100%" cellpadding="0" cellspacing="0" style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:12px;margin:0 0 24px;">
+            <tr><td style="padding:20px 22px;">
+              <p style="margin:0 0 10px;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:#94A3B8;font-weight:700;">Vaše obveznosti</p>
+              <ul style="margin:0;padding:0 0 0 18px;font-size:14px;line-height:1.8;color:#475569;">
+                <li>Goste in udeležence boste obvestili o uporabi Guestcam galerije.</li>
+                <li>Zagotovili boste ustrezno pravno podlago za obdelavo fotografij in videov.</li>
+                <li>Odgovarjali boste na zahteve udeležencev v zvezi z vsebino galerije.</li>
+              </ul>
+            </td></tr>
+          </table>
+          <p style="margin:0 0 24px;font-size:14px;line-height:1.7;color:#475569;">
+            Celotna politika zasebnosti, ki opisuje vloge organizatorja in Guestcam, je dostopna na
+            <a href="${privacyUrl}" style="color:#C9820A;text-decoration:none;font-weight:600;">guestcam.si/gdpr</a>.
+          </p>
+          <p style="text-align:center;margin:0 0 8px;">
+            <a href="${albumUrl}" style="display:inline-block;padding:14px 28px;background:#FFC94D;color:#0F1729;text-decoration:none;border-radius:10px;font-weight:800;font-size:14px;">Odpri galerijo →</a>
+          </p>
+        </td></tr>
+        <tr><td style="padding:16px 32px 24px;border-top:1px solid #F2F4F8;">
+          <p style="margin:0;font-size:11px;color:#94A3B8;text-align:center;">
+            Guestcam · <a href="mailto:info@guestcam.si" style="color:#94A3B8;">info@guestcam.si</a> ·
+            Sport Group d.o.o., Osojnikova 4a, 2000 Maribor, Slovenija
+          </p>
+        </td></tr>
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>`;
+
+  try {
+    await new Resend(apiKey).emails.send({
+      from: `Guestcam <${FROM}>`,
+      to,
+      subject: `✅ Galerija "${escapeHtml(coupleName)}" ustvarjena – potrditev zasebnosti`,
+      html,
+    });
+  } catch (err) {
+    console.error("[organizer agreement email] send failed:", err);
+  }
+}

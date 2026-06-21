@@ -3,36 +3,123 @@ import type { LegalDoc } from "./types";
 
 export const gdprDoc: Record<LangCode, LegalDoc> = {
   sl: {
-    heading: "Pravice po GDPR",
-    eyebrow: "Pravni dokument",
-    lastUpdated: "Zadnja posodobitev: 1. januar 2026 · Sport group d.o.o.",
+    heading: “Politika zasebnosti in varstva osebnih podatkov”,
+    eyebrow: “Pravni dokument”,
+    lastUpdated: “Zadnja posodobitev: 1. maj 2026 · Sport Group d.o.o.”,
     intro:
-      "Splošna uredba o varstvu podatkov (GDPR — Uredba EU 2016/679) daje vsakemu posamezniku v EU sklop pravic glede njegovih osebnih podatkov. Spodaj je povzetek, kako te pravice uveljavljate pri storitvi Guestcam.",
+      “Ta politika zasebnosti pojasnjuje, kako Guestcam obdeluje osebne podatke pri uporabi spletne platforme Guestcam, ki organizatorjem dogodkov omogoča ustvarjanje zasebnih galerij za nalaganje, ogled in prenos fotografij ter videov z dogodkov.”,
     sections: [
-      { title: "1. Pravica do dostopa (čl. 15)", blocks: [
-        { type: "p", text: "Kadar koli lahko zahtevate kopijo vseh osebnih podatkov, ki jih o vas hranimo. Odgovorimo v 30 dneh. Odgovor vključuje izvozno datoteko (JSON), seznam fotografij in metapodatkov ter informacije o tem, s katerimi obdelovalci podatke delimo." },
+      { title: “1. Kdo smo”, blocks: [
+        { type: “p”, text: “Guestcam je spletna storitev za zasebno zbiranje fotografij in videov z dogodkov prek QR kode ali zasebne povezave.” },
+        { type: “contactCard”, lines: [“Upravljavec platforme:”, “Sport Group d.o.o.”, “Osojnikova 4a”, “2000 Maribor”, “Slovenija”, “E-pošta: info@guestcam.si”] },
+        { type: “p”, text: “Za vprašanja glede zasebnosti nas lahko kontaktirate na: info@guestcam.si” },
       ] },
-      { title: "2. Pravica do popravka (čl. 16)", blocks: [
-        { type: "p", text: "Če so kateri od vaših osebnih podatkov nepravilni ali nepopolni, zahtevajte popravek. Večino podatkov organizatorja lahko sami uredite v nastavitvah galerije; za ostalo nas kontaktirajte." },
+      { title: “2. Vloga Guestcam in organizatorja dogodka”, blocks: [
+        { type: “p”, text: “Pri uporabi Guestcam obstajata dve različni vlogi.” },
+        { type: “p”, text: “Za podatke, ki jih obdelujemo za upravljanje platforme, naročila, plačila, uporabniške račune, podporo in komunikacijo, je Guestcam praviloma upravljavec osebnih podatkov.” },
+        { type: “p”, text: “Za fotografije, videe in drugo vsebino, ki jo gostje naložijo v galerijo določenega dogodka, je praviloma upravljavec organizator dogodka. Organizator odloča, zakaj se galerija uporablja, kdo ima dostop, koliko časa bo galerija aktivna in kako bo goste obvestil o obdelavi. Guestcam v tem primeru deluje kot obdelovalec, ki zagotavlja tehnično platformo za nalaganje, shranjevanje, prikaz in prenos vsebin po navodilih organizatorja.” },
       ] },
-      { title: "3. Pravica do izbrisa (čl. 17)", blocks: [
-        { type: "p", text: "Zahtevate lahko trajni izbris vašega računa in vseh povezanih podatkov. To vključuje galerije, ki ste jih ustvarili, in fotografije, naložene pod vašim računom. Izbris izvedemo v 30 dneh, razen kjer nas k hrambi obvezuje zakon (npr. računovodski zapisi — 10 let)." },
+      { title: “3. Katere osebne podatke obdelujemo”, blocks: [
+        { type: “p”, text: “Obdelujemo lahko naslednje vrste podatkov:” },
+        { type: “h3”, text: “Podatki organizatorja:” },
+        { type: “p”, text: “ime in priimek, e-poštni naslov, telefonska številka, podatki o podjetju, podatki za račun, podatki o naročilu, komunikacija s podporo.” },
+        { type: “h3”, text: “Podatki gostov:” },
+        { type: “p”, text: “fotografije, videi, ime ali vzdevek, če ga gost vnese, čas nalaganja, tehnični podatki o uporabi storitve, IP naslov in podatki o napravi.” },
+        { type: “h3”, text: “Fotografije in videi:” },
+        { type: “p”, text: “Fotografije in videi lahko vsebujejo podobe oseb. Če je oseba na fotografiji ali videu prepoznavna, se takšna vsebina lahko šteje za osebni podatek.” },
+        { type: “h3”, text: “Tehnični podatki:” },
+        { type: “p”, text: “IP naslov, vrsta naprave, brskalnik, čas dostopa, dnevniške datoteke, piškotki in podobne tehnologije, potrebne za delovanje in varnost platforme.” },
       ] },
-      { title: "4. Pravica do omejitve obdelave (čl. 18) in ugovora (čl. 21)", blocks: [
-        { type: "p", text: "Obdelavo svojih podatkov lahko omejite ali ji ugovarjate, kadar temelji na našem legitimnem interesu (npr. analitika, obvestila o sistemu). V tem primeru obdelavo prekinemo, razen če imamo prepričljive zakonske razloge za nadaljevanje." },
+      { title: “4. Namen obdelave osebnih podatkov”, blocks: [
+        { type: “p”, text: “Osebne podatke obdelujemo za naslednje namene:” },
+        { type: “ul”, items: [
+          “ustvarjanje in upravljanje dogodkov;”,
+          “omogočanje nalaganja fotografij in videov;”,
+          “prikaz zasebne galerije organizatorju in osebam s povezavo;”,
+          “omogočanje prenosa fotografij in videov;”,
+          “obdelava naročil, plačil in računov;”,
+          “zagotavljanje tehnične podpore;”,
+          “preprečevanje zlorab, neželene vsebine in varnostnih incidentov;”,
+          “izboljševanje delovanja platforme;”,
+          “izpolnjevanje zakonskih obveznosti;”,
+          “komunikacija z organizatorji in uporabniki.”,
+        ] },
       ] },
-      { title: "5. Pravica do prenosljivosti (čl. 20)", blocks: [
-        { type: "p", text: "Zahtevate lahko izvoz svojih podatkov v strojno berljivem formatu. Ponujamo JSON izvoz strukturiranih podatkov (galerije, metapodatki) in ZIP izvoz vseh fotografij/videov v polni kakovosti." },
+      { title: “5. Pravna podlaga za obdelavo”, blocks: [
+        { type: “p”, text: “Osebne podatke obdelujemo na podlagi ene ali več naslednjih pravnih podlag:” },
+        { type: “ul”, items: [
+          “izvedba pogodbe ali storitve;”,
+          “privolitev posameznika;”,
+          “zakoniti interes, na primer zagotavljanje varnosti, preprečevanje zlorab in izboljšanje storitve;”,
+          “izpolnjevanje zakonskih obveznosti, na primer računovodske in davčne obveznosti;”,
+          “navodila organizatorja dogodka, kadar Guestcam deluje kot obdelovalec.”,
+        ] },
+        { type: “p”, text: “Organizator dogodka je odgovoren, da za uporabo fotografij in videov v galeriji zagotovi ustrezno pravno podlago in da goste jasno obvesti o uporabi Guestcam galerije.” },
       ] },
-      { title: "6. Pravica do pritožbe", blocks: [
-        { type: "p", text: "Pri pristojnem nadzornem organu za varstvo osebnih podatkov lahko vložite pritožbo. V Sloveniji je to Informacijski pooblaščenec RS (ip-rs.si). V drugih državah EU pritožbo vložite pri lokalnem nadzornem organu." },
+      { title: “6. Fotografije in videi dogodkov”, blocks: [
+        { type: “p”, text: “Guestcam omogoča organizatorjem dogodkov, da ustvarijo zasebno spletno galerijo, v katero lahko gostje prostovoljno nalagajo fotografije in videe z dogodka.” },
+        { type: “p”, text: “Guestcam ni organizator dogodka in ne odloča, katere fotografije ali videi bodo naloženi. Organizator dogodka je odgovoren za obveščanje gostov in drugih udeležencev o uporabi galerije, namenu obdelave, obdobju hrambe in njihovih pravicah.” },
+        { type: “p”, text: “Gostje naj ne nalagajo fotografij ali videov oseb, ki očitno ne želijo biti fotografirane ali prikazane v galeriji. Posebna previdnost je potrebna pri fotografijah otrok, zaposlenih, občutljivih situacijah ali vsebinah, ki bi lahko razkrivale zdravstvene podatke, verska prepričanja ali druge občutljive informacije.” },
       ] },
-      { title: "7. Kako uveljavljate svoje pravice", blocks: [
-        { type: "p", text: "Pravice uveljavljate prek e-pošte z elektronskega naslova, vezanega na vaš Guestcam račun. Pošljite zahtevek na info@guestcam.si in v zadevi navedite vrsto zahteve (npr. “GDPR — Pravica do dostopa”). Odgovorimo v 30 dneh in nikoli ne zaračunamo stroškov." },
-        { type: "contactCard", lines: ["Kontakt za GDPR vprašanja:", "Sport group d.o.o.", "E-pošta: info@guestcam.si"] },
+      { title: “7. Otroci”, blocks: [
+        { type: “p”, text: “Guestcam ni namenjen neposredni uporabi otrok brez nadzora odrasle osebe. Če dogodek vključuje otroke, mora organizator zagotoviti ustrezno pravno podlago in, kadar je potrebno, soglasje staršev ali zakonitih zastopnikov.” },
+        { type: “p”, text: “Če prejmete zahtevo za izbris fotografije otroka, jo bomo obravnavali prednostno v sodelovanju z organizatorjem dogodka.” },
       ] },
-      { title: "8. Avtomatsko odločanje in profiliranje", blocks: [
-        { type: "p", text: "Guestcam ne uporablja avtomatskega odločanja, ki bi pomembno vplivalo na vaše pravice ali interese (npr. odobritev/zavrnitev na podlagi algoritma). Ne izvajamo profiliranja v komercialne namene." },
+      { title: “8. Dostop do galerije”, blocks: [
+        { type: “p”, text: “Galerije niso javno objavljene. Dostop je omogočen prek zasebne povezave ali QR kode, ki jo zagotovi organizator.” },
+        { type: “p”, text: “Vsaka oseba, ki ima povezavo ali QR kodo, lahko potencialno dostopa do galerije, če organizator ne nastavi dodatnih omejitev. Organizator je odgovoren za varno deljenje povezave in odločitev, komu omogoči dostop.” },
+      ] },
+      { title: “9. Hramba podatkov”, blocks: [
+        { type: “p”, text: “Fotografije, videi in galerije se hranijo toliko časa, kot je potrebno za izvedbo storitve oziroma toliko časa, kot je dogovorjeno z organizatorjem.” },
+        { type: “p”, text: “Po izteku obdobja hrambe se vsebine izbrišejo ali anonimizirajo, razen če je daljša hramba potrebna zaradi zakonskih obveznosti, reševanja sporov, preprečevanja zlorab ali varnostnih razlogov.” },
+        { type: “p”, text: “Računovodski in poslovni podatki se hranijo skladno z veljavno zakonodajo.” },
+      ] },
+      { title: “10. Deljenje podatkov s tretjimi osebami”, blocks: [
+        { type: “p”, text: “Osebnih podatkov ne prodajamo.” },
+        { type: “p”, text: “Podatke lahko delimo z zaupanja vrednimi ponudniki storitev, ki nam pomagajo pri delovanju platforme, na primer:” },
+        { type: “ul”, items: [
+          “ponudniki gostovanja in strežniške infrastrukture;”,
+          “ponudniki e-poštnih storitev;”,
+          “ponudniki plačilnih storitev;”,
+          “analitična in varnostna orodja;”,
+          “računovodski in pravni svetovalci;”,
+          “organi, kadar to zahteva zakon.”,
+        ] },
+        { type: “p”, text: “S ponudniki storitev sklenemo ustrezne pogodbe in od njih zahtevamo ustrezno varstvo osebnih podatkov.” },
+      ] },
+      { title: “11. Prenosi podatkov izven EU/EGP”, blocks: [
+        { type: “p”, text: “Kadar se osebni podatki prenašajo izven Evropske unije ali Evropskega gospodarskega prostora, zagotovimo ustrezne zaščitne ukrepe, kot so standardne pogodbene klavzule, ustrezne odločitve Evropske komisije ali drugi zakoniti mehanizmi prenosa.” },
+      ] },
+      { title: “12. Varnost”, blocks: [
+        { type: “p”, text: “Uporabljamo razumne tehnične in organizacijske ukrepe za zaščito osebnih podatkov pred nepooblaščenim dostopom, izgubo, zlorabo, spremembo ali razkritjem.” },
+        { type: “p”, text: “Kljub temu noben sistem ni popolnoma varen. Organizatorji morajo povezave do galerij deliti previdno in samo z osebami, ki jim želijo omogočiti dostop.” },
+      ] },
+      { title: “13. Pravice posameznikov”, blocks: [
+        { type: “p”, text: “Posamezniki imajo lahko naslednje pravice:” },
+        { type: “ul”, items: [
+          “pravica do dostopa do osebnih podatkov;”,
+          “pravica do popravka;”,
+          “pravica do izbrisa;”,
+          “pravica do omejitve obdelave;”,
+          “pravica do ugovora;”,
+          “pravica do prenosljivosti podatkov;”,
+          “pravica do umika privolitve, kadar obdelava temelji na privolitvi;”,
+          “pravica do pritožbe pri nadzornem organu.”,
+        ] },
+        { type: “p”, text: “V Sloveniji je nadzorni organ Informacijski pooblaščenec Republike Slovenije.” },
+        { type: “p”, text: “Če želite odstranitev fotografije ali videa iz galerije, se najprej obrnite na organizatorja dogodka. Lahko se obrnete tudi na Guestcam podporo na info@guestcam.si, mi pa bomo zahtevo obravnavali v razumnem roku in po potrebi v sodelovanju z organizatorjem.” },
+      ] },
+      { title: “14. Piškotki”, blocks: [
+        { type: “p”, text: “Guestcam lahko uporablja nujne piškotke za delovanje spletne strani, varnost, prijavo in osnovne funkcije platforme.” },
+        { type: “p”, text: “Če uporabljamo analitične ali marketinške piškotke, jih uporabimo samo v skladu z veljavno zakonodajo in, kadar je potrebno, po pridobitvi privolitve.” },
+      ] },
+      { title: “15. Odgovornost organizatorja”, blocks: [
+        { type: “p”, text: “Organizator dogodka potrjuje, da bo goste in udeležence dogodka obvestil o uporabi Guestcam galerije, zagotovil ustrezno pravno podlago za obdelavo fotografij in videov ter odgovarjal na zahteve udeležencev v zvezi z vsebino galerije.” },
+        { type: “p”, text: “Organizator je odgovoren za vsebino, ki jo deli, prenaša, objavlja ali uporablja izven platforme Guestcam.” },
+      ] },
+      { title: “16. Kontakt”, blocks: [
+        { type: “p”, text: “Za vprašanja glede zasebnosti, varstva osebnih podatkov ali zahteve za izbris nas kontaktirajte:” },
+        { type: “contactCard”, lines: [“Guestcam”, “E-pošta: info@guestcam.si”, “Upravljavec platforme: Sport Group d.o.o., Osojnikova 4a, 2000 Maribor, Slovenija”] },
       ] },
     ],
   },

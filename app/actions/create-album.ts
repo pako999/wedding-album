@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 import { and, desc, eq, gt, ne } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { albums } from "@/lib/db/schema";
-import { sendWelcomeEmail } from "@/lib/email/notifications";
+import { sendWelcomeEmail, sendOrganizerAgreementEmail } from "@/lib/email/notifications";
 
 function slugify(text: string): string {
   return text
@@ -108,6 +108,22 @@ export async function createAlbum(formData: FormData) {
     }
   } catch (err) {
     console.error("[create-album] welcome email error:", err);
+  }
+
+  // Send privacy agreement confirmation on every gallery creation. Best-effort.
+  try {
+    const agreementUser = await currentUser();
+    const agreementEmail = agreementUser?.emailAddresses?.[0]?.emailAddress;
+    if (agreementEmail) {
+      await sendOrganizerAgreementEmail({
+        to: agreementEmail,
+        ownerName: agreementUser?.firstName ?? undefined,
+        coupleName,
+        albumSlug: slug,
+      });
+    }
+  } catch (err) {
+    console.error("[create-album] agreement email error:", err);
   }
 
   const redirectUrl = plan
