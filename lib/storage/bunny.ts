@@ -66,29 +66,28 @@ function extractBunnyKey(url: string): string | null {
 }
 
 /**
- * Returns a proxy URL that fetches the image through /api/img.
+ * Returns a direct Bunny CDN URL for gallery display.
  *
- * The proxy pulls the file directly from Bunny Storage using the API key,
- * bypassing the CDN Pull Zone entirely.  Vercel's CDN + browser both cache
- * the response (Cache-Control: immutable) so per-request cost is minimal.
+ * Serves from the CDN edge (frfr1.b-cdn.net) instead of the /api/img proxy,
+ * which eliminates the Vercel serverless hop and avoids streaming 5–30 MB
+ * originals on every first view.
  *
- * The `width` / `quality` params are accepted for API compatibility but are
- * no-ops until server-side resizing is wired up — the full-quality file is
- * always returned.
+ * Appends Bunny Image Optimizer params (?width=&quality=). If the pull zone
+ * has Image Optimizer enabled these resize the image server-side; if not,
+ * the params are silently ignored and the full-size file is served from
+ * the CDN edge — still much faster than the proxy path.
  *
  * Non-Bunny URLs (e.g. Vercel Blob) are returned unchanged.
  */
 export function bunnyDisplayUrl(
   url: string | null | undefined,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  _width = 800,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  _quality = 82,
+  width = 800,
+  quality = 82,
 ): string {
   if (!url) return "";
   const key = extractBunnyKey(url);
   if (!key) return url; // Non-Bunny URL — return as-is
-  return `/api/img?key=${encodeURIComponent(key)}`;
+  return `${cdnUrl()}/${key}?width=${width}&quality=${quality}`;
 }
 
 /**
