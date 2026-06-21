@@ -85,7 +85,53 @@ export function UpgradePage({ album }: Props) {
   const [billing, setBilling] = useState({ name: "", companyName: "", email: "", address: "", city: "", taxId: "" });
   const [termsAccepted, setTermsAccepted] = useState(false);
 
+  // Discount code state
+  const [discountInput, setDiscountInput] = useState("");
+  const [discountStatus, setDiscountStatus] = useState<"idle" | "checking" | "valid" | "invalid">("idle");
+  const [discountPercent, setDiscountPercent] = useState<number>(0);
+  const [discountCodeId, setDiscountCodeId] = useState<string>("");
+  const [appliedCode, setAppliedCode] = useState<string>("");
+
   const chosen = PLANS.find((p) => p.id === selectedPlan)!;
+
+  // Reset discount when plan changes
+  const selectPlan = (id: PlanId) => {
+    setSelectedPlan(id);
+    setDiscountStatus("idle");
+    setDiscountPercent(0);
+    setDiscountCodeId("");
+    setAppliedCode("");
+    setDiscountInput("");
+  };
+
+  const discountedPrice = discountStatus === "valid"
+    ? Math.round(chosen.price * (1 - discountPercent / 100))
+    : chosen.price;
+
+  async function applyDiscount() {
+    if (!discountInput.trim()) return;
+    setDiscountStatus("checking");
+    try {
+      const res = await fetch("/api/discount/validate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code: discountInput.trim(), planId: selectedPlan }),
+      });
+      const data = await res.json() as {
+        valid: boolean; percentOff?: number; discountCodeId?: string; error?: string;
+      };
+      if (data.valid && data.percentOff && data.discountCodeId) {
+        setDiscountStatus("valid");
+        setDiscountPercent(data.percentOff);
+        setDiscountCodeId(data.discountCodeId);
+        setAppliedCode(discountInput.trim().toUpperCase());
+      } else {
+        setDiscountStatus("invalid");
+      }
+    } catch {
+      setDiscountStatus("invalid");
+    }
+  }
 
   return (
     <div className="min-h-screen flex flex-col" style={{ background: "#F5F5F7" }}>
@@ -133,7 +179,7 @@ export function UpgradePage({ album }: Props) {
                     borderColor: isSelected ? "#FFC94D" : "#e5e7eb",
                     boxShadow: isSelected ? "0 0 0 3px rgba(255,201,77,0.15)" : "none",
                   }}
-                  onClick={() => setSelectedPlan(plan.id)}
+                  onClick={() => selectPlan(plan.id)}
                 >
                   <div className="p-4 flex items-start gap-4">
                     {/* Radio */}
@@ -275,6 +321,58 @@ export function UpgradePage({ album }: Props) {
             </div>
           </div>
 
+          {/* ── Discount code ────────────────────────────────────────── */}
+          <div className="bg-white rounded-2xl border border-gray-100 p-5 mb-4">
+            <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-3">Koda za popust</p>
+            {discountStatus === "valid" ? (
+              <div className="flex items-center gap-3">
+                <div className="flex-1 px-3 py-2 rounded-xl bg-green-50 border border-green-200 text-sm font-mono font-bold text-green-800 tracking-wider">
+                  {appliedCode}
+                </div>
+                <span className="text-sm font-bold text-green-700">−{discountPercent}%</span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setDiscountStatus("idle");
+                    setDiscountPercent(0);
+                    setDiscountCodeId("");
+                    setAppliedCode("");
+                    setDiscountInput("");
+                  }}
+                  className="text-xs text-gray-400 hover:text-gray-600 underline"
+                >
+                  Odstrani
+                </button>
+              </div>
+            ) : (
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  placeholder="Vnesite kodo…"
+                  value={discountInput}
+                  onChange={(e) => {
+                    setDiscountInput(e.target.value.toUpperCase());
+                    if (discountStatus === "invalid") setDiscountStatus("idle");
+                  }}
+                  onKeyDown={(e) => e.key === "Enter" && applyDiscount()}
+                  className="flex-1 px-3 py-2 text-sm border rounded-xl focus:outline-none focus:border-[#FFC94D] font-mono uppercase tracking-wider"
+                  style={{ borderColor: discountStatus === "invalid" ? "#ef4444" : "#e5e7eb" }}
+                />
+                <button
+                  type="button"
+                  onClick={applyDiscount}
+                  disabled={discountStatus === "checking" || !discountInput.trim()}
+                  className="px-4 py-2 rounded-xl bg-gray-100 text-gray-700 text-sm font-semibold hover:bg-gray-200 transition-colors disabled:opacity-50"
+                >
+                  {discountStatus === "checking" ? "…" : "Uveljavi"}
+                </button>
+              </div>
+            )}
+            {discountStatus === "invalid" && (
+              <p className="text-xs text-red-500 mt-1.5">Koda ni veljavna ali je potekla.</p>
+            )}
+          </div>
+
           {/* ── Payment method ────────────────────────────────────────── */}
           <div className="bg-white rounded-2xl border border-gray-100 p-5 mb-4">
             <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-3">Način plačila</p>
@@ -367,7 +465,15 @@ export function UpgradePage({ album }: Props) {
                 <p className="font-semibold text-gray-900">Paket {chosen.name}</p>
                 <p className="text-xs text-gray-400">{chosen.tagline}</p>
               </div>
-              <span className="text-2xl font-bold text-gray-900">{chosen.price}€</span>
+              <div className="text-right">
+                {discountStatus === "valid" && (
+                  <p className="text-sm text-gray-400 line-through">{chosen.price}€</p>
+                )}
+                <span className="text-2xl font-bold text-gray-900">{discountedPrice}€</span>
+                {discountStatus === "valid" && (
+                  <p className="text-xs font-bold text-green-700">−{discountPercent}% popust</p>
+                )}
+              </div>
             </div>
             <div className="flex items-center justify-between text-xs text-gray-400 mb-4">
               <span>vključen 22% DDV</span>
@@ -418,6 +524,7 @@ export function UpgradePage({ album }: Props) {
                         body: JSON.stringify({
                           planId: selectedPlan,
                           albumSlug: album.slug,
+                          discountCode: discountStatus === "valid" ? appliedCode : undefined,
                           billing: {
                             name: billing.name.trim(),
                             companyName: billing.companyName.trim() || undefined,
@@ -436,7 +543,11 @@ export function UpgradePage({ album }: Props) {
                       const res = await fetch("/api/checkout", {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ planId: selectedPlan, albumSlug: album.slug }),
+                        body: JSON.stringify({
+                          planId: selectedPlan,
+                          albumSlug: album.slug,
+                          discountCode: discountStatus === "valid" ? appliedCode : undefined,
+                        }),
                       });
                       const data = await res.json() as { paymentUrl?: string; error?: string };
                       if (!res.ok || !data.paymentUrl) throw new Error(data.error ?? "no payment URL");
@@ -460,9 +571,9 @@ export function UpgradePage({ album }: Props) {
                     {paymentMethod === "invoice" ? "Pošiljanje…" : "Preusmeritev na plačilo…"}
                   </>
                 ) : paymentMethod === "invoice" ? (
-                  `Oddaj naročilo po predračunu — ${chosen.price}€`
+                  `Oddaj naročilo po predračunu — ${discountedPrice}€`
                 ) : (
-                  `Nadgradi na ${chosen.name} — ${chosen.price}€ →`
+                  `Nadgradi na ${chosen.name} — ${discountedPrice}€ →`
                 )}
               </button>
             )}

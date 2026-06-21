@@ -4,6 +4,7 @@ import { db } from "@/lib/db";
 import { albums } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { createPayment, mollieConfigured, MollieError } from "@/lib/mollie";
+import { validateDiscount } from "@/lib/discount";
 
 export const runtime = "nodejs";
 
@@ -37,8 +38,9 @@ export async function POST(req: NextRequest) {
     planId: PlanId;
     albumSlug: string;
     tableStands?: boolean;
+    discountCode?: string;
   };
-  const { planId, albumSlug, tableStands } = body;
+  const { planId, albumSlug, tableStands, discountCode } = body;
 
   if (!planId || !albumSlug || !(planId in PLAN_CONFIG)) {
     return NextResponse.json({ error: "Invalid request" }, { status: 400 });
@@ -52,7 +54,18 @@ export async function POST(req: NextRequest) {
   }
 
   const plan = PLAN_CONFIG[planId];
-  const totalCents = plan.amount + (tableStands ? 900 : 0);
+  let baseCents = plan.amount;
+  let discountCodeId: string | undefined;
+
+  if (discountCode) {
+    const disc = await validateDiscount(discountCode, planId);
+    if (disc.valid) {
+      baseCents = disc.finalCents;
+      discountCodeId = disc.discountCodeId;
+    }
+  }
+
+  const totalCents = baseCents + (tableStands ? 900 : 0);
   const description = plan.name + (tableStands ? " + Podstavki za mizo" : "");
 
   const baseUrl = req.nextUrl.origin;
@@ -66,7 +79,7 @@ export async function POST(req: NextRequest) {
       description,
       redirectUrl,
       webhookUrl,
-      metadata: { albumSlug, planId },
+      metadata: { albumSlug, planId, ...(discountCodeId ? { discountCodeId } : {}) },
     });
 
     // Persist payment ID so /api/mollie-return can reconcile if webhook hasn't fired yet.

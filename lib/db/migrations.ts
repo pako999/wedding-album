@@ -225,6 +225,21 @@ export async function runMigrations() {
   await run("bank_orders.company_name", (q) => q`ALTER TABLE bank_orders ADD COLUMN IF NOT EXISTS billing_company_name TEXT`);
   await run("bank_orders.email",        (q) => q`ALTER TABLE bank_orders ADD COLUMN IF NOT EXISTS billing_email TEXT`);
 
+  // ── Discount codes ────────────────────────────────────────────────────────
+  await run("create discount_codes", (q) => q`
+    CREATE TABLE IF NOT EXISTS discount_codes (
+      id          TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
+      code        VARCHAR(50) NOT NULL UNIQUE,
+      percent_off INTEGER NOT NULL,
+      max_uses    INTEGER,
+      used_count  INTEGER NOT NULL DEFAULT 0,
+      expires_at  TIMESTAMPTZ,
+      is_active   BOOLEAN NOT NULL DEFAULT true,
+      created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )
+  `);
+  await run("discount_codes idx", (q) => q`CREATE INDEX IF NOT EXISTS discount_codes_code_idx ON discount_codes (code)`);
+
   if (failures === 0) {
     console.log("[migrations] ✓ DB schema up to date");
   } else {

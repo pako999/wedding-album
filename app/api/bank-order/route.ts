@@ -5,6 +5,7 @@ import { albums, bankOrders } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { sendBankOrderConfirmation, sendAdminBankOrderEmail } from "@/lib/email/notifications";
 import { notifyTelegram, htmlEscape } from "@/lib/telegram";
+import { validateDiscount, incrementDiscountUsage } from "@/lib/discount";
 
 export const runtime = "nodejs";
 
@@ -24,10 +25,11 @@ interface BillingDetails {
 }
 
 export async function POST(req: NextRequest) {
-  const { planId, albumSlug, billing } = await req.json() as {
+  const { planId, albumSlug, billing, discountCode } = await req.json() as {
     planId: string;
     albumSlug: string;
     billing?: BillingDetails;
+    discountCode?: string;
   };
 
   if (!planId || !albumSlug) {
@@ -56,7 +58,21 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const plan = PLAN_LABELS[planId] ?? { name: planId, price: 0 };
+  const planBase = PLAN_LABELS[planId] ?? { name: planId, price: 0 };
+  let finalPrice = planBase.price;
+  let discountCodeId: string | undefined;
+  let discountPercent: number | undefined;
+
+  if (discountCode) {
+    const disc = await validateDiscount(discountCode, planId);
+    if (disc.valid) {
+      finalPrice = disc.finalPrice;
+      discountCodeId = disc.discountCodeId;
+      discountPercent = disc.percentOff;
+    }
+  }
+
+  const plan = { name: planBase.name, price: finalPrice };
 
   // Persist the order so admin can see it and issue an invoice
   await db.insert(bankOrders).values({
@@ -87,6 +103,11 @@ export async function POST(req: NextRequest) {
     ? `\n👤 <b>Podatki za predračun:</b>\nIme: ${htmlEscape(billing.name)}${billing.companyName ? `\nPodjetje: ${htmlEscape(billing.companyName)}` : ""}${billing.email ? `\nEmail za račun: ${htmlEscape(billing.email)}` : ""}\nNaslov: ${htmlEscape(billing.address)}\nKraj: ${htmlEscape(billing.city)}${billing.taxId ? `\nDavčna: ${htmlEscape(billing.taxId)}` : ""}`
     : "";
 
+  // Increment discount usage immediately (invoice is committed)
+  if (discountCodeId) {
+    await incrementDiscountUsage(discountCodeId).catch(() => {});
+  }
+
   // Admin email — contains all billing details needed to issue an invoice
   await sendAdminBankOrderEmail({
     albumSlug,
@@ -96,11 +117,16 @@ export async function POST(req: NextRequest) {
     billing,
   });
 
+  const discountLine = discountPercent
+    ? `\nPopust: ${discountPercent}% (koda: ${htmlEscape(discountCode ?? "")})`
+    : "";
+
   const sent = await notifyTelegram(
     `🏦 <b>Novo naročilo po predračunu</b>\n` +
     `Album: <code>${htmlEscape(albumSlug)}</code>\n` +
-    `Paket: ${htmlEscape(plan.name)} — ${plan.price}€\n` +
-    `Email: ${htmlEscape(email)}` +
+    `Paket: ${htmlEscape(plan.name)} — ${plan.price}€` +
+    discountLine +
+    `\nEmail: ${htmlEscape(email)}` +
     billingLines +
     `\nDatum: ${new Date().toLocaleString("sl-SI")}`,
   );
