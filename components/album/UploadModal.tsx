@@ -492,7 +492,11 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
     const goOnline = () => {
       setIsOffline(false);
       setFiles(prev =>
-        prev.map(f => f.status === "queued" ? { ...f, status: "idle", error: undefined } : f),
+        prev.map(f =>
+          f.status === "queued" || f.status === "error"
+            ? { ...f, status: "idle", error: undefined }
+            : f,
+        ),
       );
     };
     window.addEventListener("offline", goOffline);
