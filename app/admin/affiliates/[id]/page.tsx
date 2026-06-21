@@ -72,9 +72,13 @@ export default async function AdminAffiliateDetailPage({
           <Field label="Status" value={affiliate.status} />
           <Field label="Provizija" value={`${affiliate.commissionRate}%`} />
           <Field label="Veljavnost piškotka" value={`${affiliate.cookieDays} dni`} />
-          <Field label="Spletna stran" value={affiliate.website ?? "—"} />
+          <Field label="Spletna stran" value={affiliate.website ? <a href={affiliate.website} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline break-all">{affiliate.website}</a> : "—"} />
           <Field label="PayPal" value={affiliate.paypalEmail ?? "—"} />
           <Field label="IBAN" value={affiliate.bankIban ?? "—"} />
+          <Field label="Instagram" value={affiliate.instagramUrl ? <a href={affiliate.instagramUrl} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline break-all">{affiliate.instagramUrl}</a> : "—"} />
+          <Field label="Facebook" value={affiliate.facebookUrl ? <a href={affiliate.facebookUrl} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline break-all">{affiliate.facebookUrl}</a> : "—"} />
+          <Field label="X (Twitter)" value={affiliate.xUrl ? <a href={affiliate.xUrl} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline break-all">{affiliate.xUrl}</a> : "—"} />
+          <Field label="TikTok" value={affiliate.tiktokUrl ? <a href={affiliate.tiktokUrl} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline break-all">{affiliate.tiktokUrl}</a> : "—"} />
           <Field label="Jezik obvestil" value={affiliate.preferredLocale} />
           <Field label="Prijavljen" value={fmtDate(affiliate.createdAt)} />
           <Field label="Odobren" value={fmtDate(affiliate.approvedAt)} />

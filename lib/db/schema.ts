@@ -374,6 +374,11 @@ export const affiliates = pgTable(
     // Free-form text from the affiliate's application explaining promotion plan.
     promotionPlan: text("promotion_plan"),
     notes: text("notes"),
+    // Optional social media profile URLs collected at application time.
+    instagramUrl: text("instagram_url"),
+    facebookUrl: text("facebook_url"),
+    xUrl: text("x_url"),
+    tiktokUrl: text("tiktok_url"),
     // Stats cache — updated whenever a commission is created / approved / cancelled.
     totalClicks: integer("total_clicks").notNull().default(0),
     totalConversions: integer("total_conversions").notNull().default(0),

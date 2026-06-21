@@ -275,6 +275,10 @@ export async function runMigrations() {
   await run("affiliates clerk idx", (q) => q`CREATE INDEX IF NOT EXISTS affiliates_clerk_idx ON affiliates (clerk_user_id)`);
   await run("affiliates code idx", (q) => q`CREATE INDEX IF NOT EXISTS affiliates_code_idx ON affiliates (referral_code)`);
   await run("affiliates status idx", (q) => q`CREATE INDEX IF NOT EXISTS affiliates_status_idx ON affiliates (status)`);
+  await run("affiliates.instagram_url", (q) => q`ALTER TABLE affiliates ADD COLUMN IF NOT EXISTS instagram_url TEXT`);
+  await run("affiliates.facebook_url",  (q) => q`ALTER TABLE affiliates ADD COLUMN IF NOT EXISTS facebook_url TEXT`);
+  await run("affiliates.x_url",         (q) => q`ALTER TABLE affiliates ADD COLUMN IF NOT EXISTS x_url TEXT`);
+  await run("affiliates.tiktok_url",    (q) => q`ALTER TABLE affiliates ADD COLUMN IF NOT EXISTS tiktok_url TEXT`);
 
   await run("create affiliate_clicks", (q) => q`
     CREATE TABLE IF NOT EXISTS affiliate_clicks (
