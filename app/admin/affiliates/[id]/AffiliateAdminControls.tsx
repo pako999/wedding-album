@@ -7,7 +7,10 @@ import type { Affiliate } from "@/lib/db/schema";
 export function AffiliateAdminControls({ affiliate }: { affiliate: Affiliate }) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
-  const [rate, setRate] = useState(affiliate.commissionRate);
+  // Keep rate as a string so the user can freely clear the field and retype.
+  // We parse + validate at save time. `type="number"` controlled inputs with
+  // a numeric value forbid the empty state, which made "20" un-editable.
+  const [rate, setRate] = useState(String(affiliate.commissionRate));
   const [notes, setNotes] = useState(affiliate.notes ?? "");
   const [error, setError] = useState<string | null>(null);
 
