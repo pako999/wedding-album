@@ -9,7 +9,18 @@ import { HeaderAuthButtons } from "@/components/HeaderAuthButtons";
 import { EventCard } from "@/components/EventCard";
 
 export const metadata: Metadata = {
-  alternates: { canonical: "https://guestcam.si" },
+  alternates: {
+    canonical: "https://guestcam.si",
+    languages: {
+      sl: "https://guestcam.si/",
+      hr: "https://guestcam.si/hr",
+      sr: "https://guestcam.si/sr",
+      de: "https://guestcam.si/de",
+      en: "https://guestcam.si/en",
+      es: "https://guestcam.si/es",
+      "x-default": "https://guestcam.si/",
+    },
+  },
 };
 
 // Structured data — helps search engines understand the brand & product.
