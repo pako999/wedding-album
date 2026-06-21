@@ -18,7 +18,7 @@ interface Body {
   email?: string;
   website?: string;
   promotionPlan?: string;
-  paypalEmail?: string;
+  bankIban?: string;
   preferredLocale?: string;
 }
 
@@ -29,7 +29,8 @@ export async function POST(req: NextRequest) {
   const email = (body.email ?? "").trim().toLowerCase();
   const website = (body.website ?? "").trim() || null;
   const promotionPlan = (body.promotionPlan ?? "").trim();
-  const paypalEmail = (body.paypalEmail ?? "").trim().toLowerCase() || null;
+  // Normalise IBAN: uppercase, strip spaces. Keep null if not provided.
+  const bankIban = (body.bankIban ?? "").replace(/\s+/g, "").toUpperCase() || null;
   const preferredLocale: Locale = LOCALES.includes(body.preferredLocale as Locale)
     ? (body.preferredLocale as Locale)
     : "sl";
@@ -65,7 +66,7 @@ export async function POST(req: NextRequest) {
       email,
       name,
       website,
-      paypalEmail,
+      bankIban,
       promotionPlan,
       referralCode,
       preferredLocale,

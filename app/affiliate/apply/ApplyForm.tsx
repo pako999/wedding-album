@@ -17,7 +17,7 @@ export function ApplyForm() {
     email: "",
     website: "",
     promotionPlan: "",
-    paypalEmail: "",
+    bankIban: "",
     preferredLocale: "sl",
   });
   const [submitting, setSubmitting] = useState(false);
@@ -109,11 +109,12 @@ export function ApplyForm() {
         />
       </div>
       <div>
-        <label className="block text-xs font-semibold text-gray-600 mb-1.5">PayPal e-pošta za izplačila (neobvezno)</label>
+        <label className="block text-xs font-semibold text-gray-600 mb-1.5">Transakcijski račun (IBAN) za izplačila (neobvezno)</label>
         <input
-          type="email"
-          value={form.paypalEmail}
-          onChange={(e) => setForm({ ...form, paypalEmail: e.target.value })}
+          type="text"
+          placeholder="SI56 0000 0000 0000 000"
+          value={form.bankIban}
+          onChange={(e) => setForm({ ...form, bankIban: e.target.value })}
           className={inputClass}
           style={{ borderColor: "#E5E7EB" }}
         />
