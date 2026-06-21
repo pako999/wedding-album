@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { GuestcamLogo } from "@/components/GuestcamLogo";
 import type { Album } from "@/lib/db/schema";
+import { translations, type Lang } from "@/lib/i18n/translations";
 
 type PlanId = "free" | "basic" | "plus" | "premium";
 
@@ -70,9 +71,11 @@ const PLANS: Plan[] = [
 
 interface Props {
   album: Album;
+  lang?: Lang;
 }
 
-export function UpgradePage({ album }: Props) {
+export function UpgradePage({ album, lang = "sl" }: Props) {
+  const t = translations[lang];
   const searchParams = useSearchParams();
   const initialPlan: PlanId = (() => {
     const p = searchParams.get("plan");
@@ -323,13 +326,13 @@ export function UpgradePage({ album }: Props) {
 
           {/* ── Discount code ────────────────────────────────────────── */}
           <div className="bg-white rounded-2xl border border-gray-100 p-5 mb-4">
-            <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-3">Koda za popust</p>
+            <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-3">{t.discountCode}</p>
             {discountStatus === "valid" ? (
               <div className="flex items-center gap-3">
                 <div className="flex-1 px-3 py-2 rounded-xl bg-green-50 border border-green-200 text-sm font-mono font-bold text-green-800 tracking-wider">
                   {appliedCode}
                 </div>
-                <span className="text-sm font-bold text-green-700">−{discountPercent}%</span>
+                <span className="text-sm font-bold text-green-700">{t.discountOff(discountPercent)}</span>
                 <button
                   type="button"
                   onClick={() => {
@@ -341,14 +344,14 @@ export function UpgradePage({ album }: Props) {
                   }}
                   className="text-xs text-gray-400 hover:text-gray-600 underline"
                 >
-                  Odstrani
+                  {t.discountRemove}
                 </button>
               </div>
             ) : (
               <div className="flex gap-2">
                 <input
                   type="text"
-                  placeholder="Vnesite kodo…"
+                  placeholder={t.discountPlaceholder}
                   value={discountInput}
                   onChange={(e) => {
                     setDiscountInput(e.target.value.toUpperCase());
@@ -364,12 +367,12 @@ export function UpgradePage({ album }: Props) {
                   disabled={discountStatus === "checking" || !discountInput.trim()}
                   className="px-4 py-2 rounded-xl bg-gray-100 text-gray-700 text-sm font-semibold hover:bg-gray-200 transition-colors disabled:opacity-50"
                 >
-                  {discountStatus === "checking" ? "…" : "Uveljavi"}
+                  {discountStatus === "checking" ? "…" : t.discountApply}
                 </button>
               </div>
             )}
             {discountStatus === "invalid" && (
-              <p className="text-xs text-red-500 mt-1.5">Koda ni veljavna ali je potekla.</p>
+              <p className="text-xs text-red-500 mt-1.5">{t.discountInvalid}</p>
             )}
           </div>
 
@@ -471,7 +474,7 @@ export function UpgradePage({ album }: Props) {
                 )}
                 <span className="text-2xl font-bold text-gray-900">{discountedPrice}€</span>
                 {discountStatus === "valid" && (
-                  <p className="text-xs font-bold text-green-700">−{discountPercent}% popust</p>
+                  <p className="text-xs font-bold text-green-700">{t.discountOff(discountPercent)}</p>
                 )}
               </div>
             </div>
