@@ -240,6 +240,95 @@ export async function runMigrations() {
   `);
   await run("discount_codes idx", (q) => q`CREATE INDEX IF NOT EXISTS discount_codes_code_idx ON discount_codes (code)`);
 
+  // ── Affiliates ────────────────────────────────────────────────────────────
+  await run("create affiliates", (q) => q`
+    CREATE TABLE IF NOT EXISTS affiliates (
+      id                       TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
+      clerk_user_id            TEXT,
+      email                    TEXT NOT NULL UNIQUE,
+      name                     TEXT NOT NULL,
+      website                  TEXT,
+      paypal_email             TEXT,
+      bank_iban                TEXT,
+      referral_code            VARCHAR(32) NOT NULL UNIQUE,
+      commission_rate          INTEGER NOT NULL DEFAULT 20,
+      cookie_days              INTEGER NOT NULL DEFAULT 30,
+      status                   TEXT NOT NULL DEFAULT 'pending',
+      preferred_locale         TEXT NOT NULL DEFAULT 'sl',
+      promotion_plan           TEXT,
+      notes                    TEXT,
+      total_clicks             INTEGER NOT NULL DEFAULT 0,
+      total_conversions        INTEGER NOT NULL DEFAULT 0,
+      total_earnings_cents     INTEGER NOT NULL DEFAULT 0,
+      pending_balance_cents    INTEGER NOT NULL DEFAULT 0,
+      available_balance_cents  INTEGER NOT NULL DEFAULT 0,
+      approved_at              TIMESTAMPTZ,
+      created_at               TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      updated_at               TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )
+  `);
+  await run("affiliates clerk idx", (q) => q`CREATE INDEX IF NOT EXISTS affiliates_clerk_idx ON affiliates (clerk_user_id)`);
+  await run("affiliates code idx", (q) => q`CREATE INDEX IF NOT EXISTS affiliates_code_idx ON affiliates (referral_code)`);
+  await run("affiliates status idx", (q) => q`CREATE INDEX IF NOT EXISTS affiliates_status_idx ON affiliates (status)`);
+
+  await run("create affiliate_clicks", (q) => q`
+    CREATE TABLE IF NOT EXISTS affiliate_clicks (
+      id                           TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
+      affiliate_id                 TEXT NOT NULL REFERENCES affiliates(id) ON DELETE CASCADE,
+      ip_address                   TEXT,
+      user_agent                   TEXT,
+      referrer_url                 TEXT,
+      landing_page                 TEXT,
+      converted_mollie_payment_id  TEXT,
+      converted_at                 TIMESTAMPTZ,
+      clicked_at                   TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )
+  `);
+  await run("clicks affiliate idx", (q) => q`CREATE INDEX IF NOT EXISTS clicks_affiliate_idx ON affiliate_clicks (affiliate_id)`);
+  await run("clicks at idx", (q) => q`CREATE INDEX IF NOT EXISTS clicks_clicked_at_idx ON affiliate_clicks (clicked_at)`);
+
+  await run("create affiliate_commissions", (q) => q`
+    CREATE TABLE IF NOT EXISTS affiliate_commissions (
+      id                       TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
+      affiliate_id             TEXT NOT NULL REFERENCES affiliates(id) ON DELETE CASCADE,
+      mollie_payment_id        TEXT NOT NULL UNIQUE,
+      album_slug               TEXT,
+      customer_email           TEXT,
+      order_description        TEXT,
+      order_currency           TEXT NOT NULL DEFAULT 'EUR',
+      order_amount_cents       INTEGER NOT NULL,
+      commission_rate          INTEGER NOT NULL,
+      commission_amount_cents  INTEGER NOT NULL,
+      status                   TEXT NOT NULL DEFAULT 'pending',
+      lock_until               TIMESTAMPTZ NOT NULL,
+      approved_at              TIMESTAMPTZ,
+      paid_at                  TIMESTAMPTZ,
+      cancelled_at             TIMESTAMPTZ,
+      cancel_reason            TEXT,
+      email_sent_at            TIMESTAMPTZ,
+      created_at               TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )
+  `);
+  await run("commissions affiliate idx", (q) => q`CREATE INDEX IF NOT EXISTS commissions_affiliate_idx ON affiliate_commissions (affiliate_id)`);
+  await run("commissions status idx", (q) => q`CREATE INDEX IF NOT EXISTS commissions_status_idx ON affiliate_commissions (status)`);
+  await run("commissions lock idx", (q) => q`CREATE INDEX IF NOT EXISTS commissions_lock_idx ON affiliate_commissions (lock_until)`);
+
+  await run("create affiliate_payouts", (q) => q`
+    CREATE TABLE IF NOT EXISTS affiliate_payouts (
+      id            TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
+      affiliate_id  TEXT NOT NULL REFERENCES affiliates(id) ON DELETE CASCADE,
+      amount_cents  INTEGER NOT NULL,
+      currency      TEXT NOT NULL DEFAULT 'EUR',
+      method        TEXT NOT NULL,
+      reference     TEXT,
+      status        TEXT NOT NULL DEFAULT 'requested',
+      notes         TEXT,
+      processed_at  TIMESTAMPTZ,
+      created_at    TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )
+  `);
+  await run("payouts affiliate idx", (q) => q`CREATE INDEX IF NOT EXISTS payouts_affiliate_idx ON affiliate_payouts (affiliate_id)`);
+
   if (failures === 0) {
     console.log("[migrations] ✓ DB schema up to date");
   } else {

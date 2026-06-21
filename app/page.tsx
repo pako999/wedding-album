@@ -878,6 +878,7 @@ export default async function HomePage() {
                 <li><Link href="/blog" className="hover:text-white transition-colors">Blog</Link></li>
                 <li><Link href="/dashboard/new" className="hover:text-white transition-colors">Ustvari album</Link></li>
                 <li><Link href="/dashboard" className="hover:text-white transition-colors">Prijava</Link></li>
+                <li><Link href="/affiliate/apply" className="hover:text-white transition-colors">Partnerski program</Link></li>
               </ul>
             </div>
 

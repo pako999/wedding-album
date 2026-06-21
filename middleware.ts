@@ -103,6 +103,24 @@ export default clerkMiddleware(async (auth, req) => {
   requestHeaders.set("x-pathname", pathname);
   const res = NextResponse.next({ request: { headers: requestHeaders } });
 
+  // ── Affiliate ref param capture ──────────────────────────────────────────
+  // Any link with ?ref=CODE on any page sets the affiliate cookie. The
+  // cookie expires after 30 days. We only set it if the visitor doesn't
+  // already have one (first-touch attribution — first affiliate wins).
+  // The actual click counter increment + click row insert happens when
+  // they hit /api/affiliate/track explicitly; this is just the fallback
+  // so a directly-shared ?ref= URL still attributes properly.
+  const refParam = req.nextUrl.searchParams.get("ref");
+  if (refParam && /^[A-Z0-9]{4,16}$/.test(refParam) && !req.cookies.get("gc_ref")) {
+    res.cookies.set("gc_ref", refParam, {
+      maxAge: 30 * 24 * 60 * 60,
+      httpOnly: false,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      path: "/",
+    });
+  }
+
   // ── Block crawlers from album guest pages via HTTP header ────────────────
   // Album URLs (/<slug>) are private link-only galleries. The page also
   // emits a <meta name="robots" content="noindex,…"> tag, but
