@@ -67,6 +67,19 @@ export default clerkMiddleware(async (auth, req) => {
   const hostname = req.headers.get("host") ?? "";
   const pathname = req.nextUrl.pathname;
 
+  // ── Normalize malformed paths with backslashes ─────────────────────────────
+  // Scrapers, email clients, and link unfurlers occasionally mangle URLs by
+  // appending a trailing backslash (e.g. /hr/contact\ → /hr/contact%5C).
+  // Next.js's runtime then tries to require a route module that doesn't
+  // exist and logs MODULE_NOT_FOUND. Redirect to the cleaned path so the
+  // backlink juice survives and the logs stay clean.
+  if (pathname.includes("\\") || pathname.includes("%5C") || pathname.includes("%5c")) {
+    const cleanPath = pathname.replace(/(?:\\|%5C|%5c)+/gi, "").replace(/\/+$/, "") || "/";
+    const target = req.nextUrl.clone();
+    target.pathname = cleanPath;
+    return NextResponse.redirect(target, 308);
+  }
+
   // ── Custom domain routing ──────────────────────────────────────────────────
   // Only fire for requests that come from a *custom* domain (premium feature)
   if (!isOwnDomain(hostname) && !isInternalApi(req)) {
