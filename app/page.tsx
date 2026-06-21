@@ -800,6 +800,8 @@ export default async function HomePage() {
               { q: "V kakšni kakovosti se shranjujejo fotografije?", a: "V polni originalni ločljivosti, brez kakršnega koli stiskanja ali zmanjšanja kakovosti." },
               { q: "Ali podpirate videe?",                          a: "Pro in Premium paket podpirata nalaganje videov do 500 MB na posnetek." },
               { q: "Kaj se zgodi po dogodku?",                      a: "Album ostane aktiven toliko časa, kolikor traja vaš paket. Vse fotografije in videe lahko kadar koli prenesete kot ZIP arhiv ali jih shranite neposredno v Google Drive." },
+              { q: "Kaj se zgodi, če gostje nimajo interneta med nalaganjem?", a: "Nič se ne izgubi. Aplikacija samodejno zazna, da ni signala, in fotografije shrani v čakalno vrsto. Ko se internet vrne — pa če je to čez minuto ali čez uro — se fotografije naložijo samodejno, brez da bi gost moral karkoli narediti." },
+              { q: "Kaj če želi gost dodati fotografije po poroki, ko nima več QR kode?", a: "Po uspešnem nalaganju se na zaslonu pojavi možnost, da si gost pošlje povezavo do albuma na e-pošto. Naslednji dan — ali kadarkoli — odpre album direktno iz prejete pošte, brez QR kode in brez iskanja." },
             ].map((faq) => (
               <details key={faq.q} className="bg-white border border-gray-100 rounded-2xl group">
                 <summary className="flex items-center justify-between px-6 py-4 cursor-pointer font-semibold text-[#0F1729] list-none text-[0.95rem]">
