@@ -196,6 +196,8 @@ const COPY: Record<Lang, Copy> = {
       { title: "Puna kvaliteta", desc: "Sve fotografije i videozapisi pohranjuju se u originalnoj kvaliteti. Bez kompresije, bez gubitka detalja." },
       { title: "Uživo tijekom događaja", desc: "Nove fotografije pojavljuju se odmah dok ih gosti učitavaju. Pratite trenutke već za vrijeme samog događaja." },
       { title: "Prilagođeno vašem događaju", desc: "Odaberite dizajn QR kartice koji odgovara vašem događaju i stvorite iskustvo koje djeluje kao dio slavlja." },
+      { title: "Bez brige za signal", desc: "Kad gosti nemaju interneta, fotografije se automatski čuvaju u redu čekanja. Kad se signal vrati, učitavaju se same – bez ponovnog traženja." },
+      { title: "Album uvijek pri ruci", desc: "Nakon učitavanja gosti si pošalju vezu na e-poštu. Sljedeći dan otvaraju album direktno iz primljene pošte – bez QR koda." },
     ],
     reviewsTitle: "Mišljenja naših parova",
     reviews: [
@@ -211,7 +213,7 @@ const COPY: Record<Lang, Copy> = {
     plus: { label: "Plus", tagline: "Za veće događaje i vjenčanja", price: "49€", was: "69€",
       features: ["Jedinstveni QR kod", "Neograničen broj gostiju", "Neograničeno fotografija", "Do 100 videozapisa", "Pristup galeriji 1 godinu", "Preuzimanje svih slika (ZIP)", "Live galerija (projekcija)", "Personalizirana stranica s imenima", "E-mail obavijesti za par"], cta: "Odaberi Plus", ribbon: "NAJPOPULARNIJE" },
     premium: { label: "Premium", tagline: "Za one koji žele sve", price: "79€", was: "109€",
-      features: ["Jedinstveni QR kod", "Neograničen broj gostiju", "Neograničeno fotografija", "Do 100 videozapisa", "Pristup galeriji 1 godinu", "Preuzimanje svih slika (ZIP)", "Live galerija (projekcija)", "Personalizirana stranica s imenima", "Vlastita domena (foto.vaše-ime.si)", "Premium dizajn predlošci", "Prioritetna podrška"], cta: "Odaberi Premium" },
+      features: ["Jedinstveni QR kod", "Neograničen broj gostiju", "Neograničeno fotografija", "Do 100 videozapisa", "Pristup galeriji 2 godine", "Preuzimanje svih slika (ZIP)", "Live galerija (projekcija)", "Personalizirana stranica s imenima", "Vlastita domena (foto.vaše-ime.si)", "Premium dizajn predlošci", "Prioritetna podrška"], cta: "Odaberi Premium" },
     guarantee: "30-dnevno jamstvo povrata novca – bez pitanja.",
     faqTitle: "Često postavljana pitanja",
     faqs: [
@@ -280,6 +282,8 @@ const COPY: Record<Lang, Copy> = {
       { title: "Pun kvalitet", desc: "Sve fotografije i video snimci se čuvaju u originalnom kvalitetu. Bez kompresije, bez gubitka detalja." },
       { title: "Uživo tokom događaja", desc: "Nove fotografije pojavljuju se odmah dok ih gosti otpremaju. Pratite trenutke već tokom samog događaja." },
       { title: "Prilagođeno vašem događaju", desc: "Izaberite dizajn QR kartice koji odgovara vašem događaju i napravite iskustvo koje deluje kao deo slavlja." },
+      { title: "Bez brige za signal", desc: "Kad gosti nemaju interneta, fotografije se automatski čuvaju u redu čekanja. Kad se signal vrati, otpremaju se same – bez ponovnog traženja." },
+      { title: "Album uvek pri ruci", desc: "Nakon otpremanja gosti sebi pošalju vezu na e-poštu. Sledećeg dana otvaraju album direktno iz primljene pošte – bez QR koda." },
     ],
     reviewsTitle: "Mišljenja naših parova",
     reviews: [
@@ -295,7 +299,7 @@ const COPY: Record<Lang, Copy> = {
     plus: { label: "Plus", tagline: "Za veće događaje i venčanja", price: "49€", was: "69€",
       features: ["Jedinstveni QR kod", "Neograničen broj gostiju", "Neograničeno fotografija", "Do 100 video snimaka", "Pristup galeriji 1 godinu", "Preuzimanje svih slika (ZIP)", "Live galerija (projekcija)", "Personalizovana stranica sa imenima", "E-mail obaveštenja za par"], cta: "Izaberi Plus", ribbon: "NAJPOPULARNIJE" },
     premium: { label: "Premium", tagline: "Za one koji žele sve", price: "79€", was: "109€",
-      features: ["Jedinstveni QR kod", "Neograničen broj gostiju", "Neograničeno fotografija", "Do 100 video snimaka", "Pristup galeriji 1 godinu", "Preuzimanje svih slika (ZIP)", "Live galerija (projekcija)", "Personalizovana stranica sa imenima", "Sopstveni domen (foto.vase-ime.si)", "Premium dizajn šabloni", "Prioritetna podrška"], cta: "Izaberi Premium" },
+      features: ["Jedinstveni QR kod", "Neograničen broj gostiju", "Neograničeno fotografija", "Do 100 video snimaka", "Pristup galeriji 2 godine", "Preuzimanje svih slika (ZIP)", "Live galerija (projekcija)", "Personalizovana stranica sa imenima", "Sopstveni domen (foto.vase-ime.si)", "Premium dizajn šabloni", "Prioritetna podrška"], cta: "Izaberi Premium" },
     guarantee: "30-dnevna garancija povraćaja novca – bez pitanja.",
     faqTitle: "Često postavljana pitanja",
     faqs: [
@@ -364,6 +368,8 @@ const COPY: Record<Lang, Copy> = {
       { title: "Volle Qualität", desc: "Alle Fotos und Videos werden in Originalqualität gespeichert. Keine Kompression, kein Detailverlust." },
       { title: "Live während der Feier", desc: "Neue Fotos erscheinen sofort, sobald Gäste sie hochladen. Verfolgen Sie die Momente schon während der Veranstaltung." },
       { title: "An Ihre Feier angepasst", desc: "Wählen Sie ein QR-Karten-Design, das zu Ihrer Feier passt — und schaffen Sie ein Erlebnis, das wie Teil der Feier wirkt." },
+      { title: "Auch ohne Signal", desc: "Wenn Gäste kein Internet haben, werden Fotos automatisch in eine Warteschlange gespeichert. Sobald das Signal zurückkommt, laden sie sich von selbst hoch." },
+      { title: "Album immer zur Hand", desc: "Nach dem Hochladen senden sich Gäste den Link per E-Mail. Am nächsten Tag öffnen sie das Album direkt aus der E-Mail – ganz ohne QR-Code." },
     ],
     reviewsTitle: "Meinungen unserer Paare",
     reviews: [
@@ -379,7 +385,7 @@ const COPY: Record<Lang, Copy> = {
     plus: { label: "Plus", tagline: "Für größere Feiern und Hochzeiten", price: "49€", was: "69€",
       features: ["Einzigartiger QR-Code", "Unbegrenzt Gäste", "Unbegrenzt Fotos", "Bis zu 100 Videos", "1 Jahr Galerie-Zugriff", "Download aller Bilder (ZIP)", "Live-Galerie (Projektion)", "Personalisierte Seite mit Namen", "E-Mail-Benachrichtigungen"], cta: "Plus wählen", ribbon: "BELIEBTESTE" },
     premium: { label: "Premium", tagline: "Für alle, die alles wollen", price: "79€", was: "109€",
-      features: ["Einzigartiger QR-Code", "Unbegrenzt Gäste", "Unbegrenzt Fotos", "Bis zu 100 Videos", "1 Jahr Galerie-Zugriff", "Download aller Bilder (ZIP)", "Live-Galerie (Projektion)", "Personalisierte Seite mit Namen", "Eigene Domain (foto.ihr-name.si)", "Premium-Design-Vorlagen", "Prioritäts-Support"], cta: "Premium wählen" },
+      features: ["Einzigartiger QR-Code", "Unbegrenzt Gäste", "Unbegrenzt Fotos", "Bis zu 100 Videos", "2 Jahre Galerie-Zugriff", "Download aller Bilder (ZIP)", "Live-Galerie (Projektion)", "Personalisierte Seite mit Namen", "Eigene Domain (foto.ihr-name.si)", "Premium-Design-Vorlagen", "Prioritäts-Support"], cta: "Premium wählen" },
     guarantee: "30-Tage-Geld-zurück-Garantie – ohne Wenn und Aber.",
     faqTitle: "Häufige Fragen",
     faqs: [
@@ -448,6 +454,8 @@ const COPY: Record<Lang, Copy> = {
       { title: "Full quality", desc: "Every photo and video is stored in original resolution. No compression, no detail loss." },
       { title: "Live during the day", desc: "New photos appear as guests upload them, so you can enjoy the moments while the event is still going." },
       { title: "Tailored to your event", desc: "Pick a QR card design that fits your event and create an experience that looks like part of the celebration." },
+      { title: "Works without signal", desc: "If guests have no internet, photos are held in a queue automatically. When signal returns they upload on their own — no retrying needed." },
+      { title: "Album link in your inbox", desc: "After uploading, guests send themselves the link by email. Next day they open the album straight from their inbox — no QR code needed." },
     ],
     reviewsTitle: "What couples say",
     reviews: [
@@ -463,7 +471,7 @@ const COPY: Record<Lang, Copy> = {
     plus: { label: "Plus", tagline: "For bigger events and weddings", price: "€49", was: "€69",
       features: ["Unique QR code", "Unlimited guests", "Unlimited photos", "Up to 100 videos", "1-year gallery access", "Bulk download (ZIP)", "Live gallery (projection)", "Personalised page with names", "Email notifications"], cta: "Choose Plus", ribbon: "MOST POPULAR" },
     premium: { label: "Premium", tagline: "For those who want it all", price: "€79", was: "€109",
-      features: ["Unique QR code", "Unlimited guests", "Unlimited photos", "Up to 100 videos", "1-year gallery access", "Bulk download (ZIP)", "Live gallery (projection)", "Personalised page with names", "Custom domain (photos.yourname.com)", "Premium design templates", "Priority support"], cta: "Choose Premium" },
+      features: ["Unique QR code", "Unlimited guests", "Unlimited photos", "Up to 100 videos", "2-year gallery access", "Bulk download (ZIP)", "Live gallery (projection)", "Personalised page with names", "Custom domain (photos.yourname.com)", "Premium design templates", "Priority support"], cta: "Choose Premium" },
     guarantee: "30-day money-back guarantee — no questions asked.",
     faqTitle: "Frequently asked questions",
     faqs: [
@@ -532,6 +540,8 @@ const COPY: Record<Lang, Copy> = {
       { title: "Calidad completa", desc: "Todas las fotos y vídeos en resolución original. Sin compresión, sin pérdida de detalle." },
       { title: "En directo durante el evento", desc: "Las fotos nuevas aparecen al instante mientras los invitados las suben." },
       { title: "Personalizado para tu evento", desc: "Elige un diseño de tarjeta QR que encaje con tu evento y crea una experiencia que parece parte de la celebración." },
+      { title: "Sin preocuparte por la señal", desc: "Si los invitados no tienen internet, las fotos se guardan en cola automáticamente. Cuando vuelve la señal, se suben solas — sin volver a intentarlo." },
+      { title: "Enlace al álbum en tu email", desc: "Tras subir las fotos, los invitados se envían el enlace por email. Al día siguiente abren el álbum desde su correo — sin necesitar el QR." },
     ],
     reviewsTitle: "Opiniones de nuestras parejas",
     reviews: [
@@ -547,7 +557,7 @@ const COPY: Record<Lang, Copy> = {
     plus: { label: "Plus", tagline: "Para eventos grandes y bodas", price: "49€", was: "69€",
       features: ["Código QR único", "Invitados ilimitados", "Fotos ilimitadas", "Hasta 100 vídeos", "Acceso 1 año", "Descarga masiva (ZIP)", "Galería en directo (proyección)", "Página personalizada con nombres", "Avisos por email"], cta: "Elegir Plus", ribbon: "MÁS POPULAR" },
     premium: { label: "Premium", tagline: "Para los que lo quieren todo", price: "79€", was: "109€",
-      features: ["Código QR único", "Invitados ilimitados", "Fotos ilimitadas", "Hasta 100 vídeos", "Acceso 1 año", "Descarga masiva (ZIP)", "Galería en directo (proyección)", "Página personalizada con nombres", "Dominio propio (fotos.tu-nombre.com)", "Plantillas premium", "Soporte prioritario"], cta: "Elegir Premium" },
+      features: ["Código QR único", "Invitados ilimitados", "Fotos ilimitadas", "Hasta 100 vídeos", "Acceso 2 años", "Descarga masiva (ZIP)", "Galería en directo (proyección)", "Página personalizada con nombres", "Dominio propio (fotos.tu-nombre.com)", "Plantillas premium", "Soporte prioritario"], cta: "Elegir Premium" },
     guarantee: "Garantía de devolución de 30 días — sin preguntas.",
     faqTitle: "Preguntas frecuentes",
     faqs: [

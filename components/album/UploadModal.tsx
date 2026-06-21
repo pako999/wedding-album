@@ -29,7 +29,7 @@ interface UploadFile {
   id: string;
   file: File;
   preview: string | null;
-  status: "idle" | "compressing" | "uploading" | "done" | "error" | "skipped";
+  status: "idle" | "compressing" | "uploading" | "done" | "error" | "skipped" | "queued";
   progress: number;
   error?: string;
   isVideo: boolean;
@@ -418,10 +418,16 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
   const [dragOver, setDragOver] = useState(false);
   const [momentId, setMomentId] = useState<string>(defaultMomentId ?? "");
   const [droppedCount, setDroppedCount] = useState(0);
+  const [saveLinkEmail, setSaveLinkEmail] = useState("");
+  const [saveLinkSending, setSaveLinkSending] = useState(false);
+  const [saveLinkSent, setSaveLinkSent] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const remaining = Math.max(0, maxPhotos - currentCount);
   const isDemo = albumSlug === "ana-marko-13ka";
   const hasUploaded = files.some(f => f.status === "done" || f.status === "skipped");
+  const [isOffline, setIsOffline] = useState(() =>
+    typeof navigator !== "undefined" ? !navigator.onLine : false
+  );
 
   // Keep a ref so async callbacks always see latest values
   const uploadingRef = useRef(false);
@@ -476,6 +482,30 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
         .catch(() => {}); // silently ignore — not critical
     }
   }, [uploading]);
+
+  // ── Offline / online detection ────────────────────────────────────────────
+  // When the device loses connectivity, newly queued files are held in
+  // "queued" state. When the connection returns the `online` event resets
+  // them to "idle" and the auto-start effect picks them up automatically.
+  useEffect(() => {
+    const goOffline = () => setIsOffline(true);
+    const goOnline = () => {
+      setIsOffline(false);
+      setFiles(prev =>
+        prev.map(f =>
+          f.status === "queued" || f.status === "error"
+            ? { ...f, status: "idle", error: undefined }
+            : f,
+        ),
+      );
+    };
+    window.addEventListener("offline", goOffline);
+    window.addEventListener("online", goOnline);
+    return () => {
+      window.removeEventListener("offline", goOffline);
+      window.removeEventListener("online", goOnline);
+    };
+  }, []);
 
   // ── Visibility-change auto-retry ─────────────────────────────────────────
   // When the user switches back to the browser (after phone lock or app switch),
@@ -550,15 +580,42 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
   useEffect(() => { retryRef.current = uploadAll; });
 
   // Auto-start the upload as soon as files are added — no "Naloži" button needed.
+  // If the device is offline, mark files as "queued" instead; the online
+  // handler above will flip them back to "idle" and this effect fires again.
   useEffect(() => {
     if (!uploading && files.some(f => f.status === "idle")) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      void uploadAll();
+      if (!navigator.onLine) {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        setFiles(prev => prev.map(f =>
+          f.status === "idle" ? { ...f, status: "queued" } : f,
+        ));
+      } else {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        void uploadAll();
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [files, uploading]);
 
   const success = files.filter(f => f.status === "done").length;
+
+  const sendAlbumLink = async () => {
+    const email = saveLinkEmail.trim();
+    if (!email || saveLinkSending || saveLinkSent) return;
+    setSaveLinkSending(true);
+    try {
+      await fetch(`/api/albums/${albumSlug}/remind`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, delayMinutes: 0 }),
+      });
+      setSaveLinkSent(true);
+    } catch {
+      // silently ignore — not critical
+    } finally {
+      setSaveLinkSending(false);
+    }
+  };
 
   return (
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-6">
@@ -581,6 +638,15 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
             </svg>
           </button>
         </div>
+
+        {isOffline && (
+          <div className="flex items-center gap-2 px-4 py-3 bg-blue-50 border-b border-blue-200 text-blue-800 text-xs shrink-0">
+            <svg className="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M18.364 5.636a9 9 0 010 12.728M5.636 5.636a9 9 0 000 12.728M12 12v.01M15.536 8.464a5 5 0 010 7.072M8.464 8.464a5 5 0 000 7.072" />
+            </svg>
+            <span>{t.offlineBanner}</span>
+          </div>
+        )}
 
         {droppedCount > 0 && (
           <div className="flex items-start gap-2 px-4 py-3 bg-amber-50 border-b border-amber-200 text-amber-800 text-xs shrink-0">
@@ -615,6 +681,35 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
               >
                 {t.closeWindow}
               </button>
+
+              {/* Save album link to email — so guest can find it tomorrow without QR */}
+              <div className="mt-5 pt-4 border-t border-gray-100 text-left">
+                <p className="text-xs font-semibold text-[#0F1729]/70 mb-1">📧 {t.saveLinkTitle}</p>
+                <p className="text-xs text-[#0F1729]/40 mb-3">{t.saveLinkDesc}</p>
+                {saveLinkSent ? (
+                  <p className="text-xs text-green-600 font-medium text-center py-2">{t.saveLinkSent}</p>
+                ) : (
+                  <div className="flex gap-2">
+                    <input
+                      type="email"
+                      value={saveLinkEmail}
+                      onChange={e => setSaveLinkEmail(e.target.value)}
+                      onKeyDown={e => e.key === "Enter" && sendAlbumLink()}
+                      placeholder="vas@email.com"
+                      autoComplete="email"
+                      className="flex-1 px-3 py-2 text-sm border border-gray-200 rounded-xl outline-none focus:border-gray-400"
+                    />
+                    <button
+                      onClick={sendAlbumLink}
+                      disabled={saveLinkSending || !saveLinkEmail.trim()}
+                      className="px-4 py-2 text-sm rounded-xl text-white font-medium transition-all disabled:opacity-40"
+                      style={{ background: accent }}
+                    >
+                      {saveLinkSending ? "…" : t.saveLinkSend}
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
           ) : (
             <>
@@ -694,6 +789,7 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
                       )}
                       {f.status === "done" && <p className="text-xs text-green-600 flex items-center gap-1"><svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>{t.fileUploaded}</p>}
                       {f.status === "skipped" && <p className="text-xs text-gray-400 flex items-center gap-1"><svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>{t.alreadyUploaded}</p>}
+                      {f.status === "queued" && <p className="text-xs text-blue-500 flex items-center gap-1"><svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>{t.fileQueued}</p>}
                       {f.status === "error" && <p className="text-xs text-red-500 truncate">{f.error}</p>}
                     </div>
                   </div>

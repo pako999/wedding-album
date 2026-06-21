@@ -11,7 +11,6 @@ const nextConfig: NextConfig = {
       { source: "/zasebnost",  destination: "/privacy", permanent: false },
       { source: "/piskotki",   destination: "/cookies", permanent: false },
       { source: "/vracilo",    destination: "/refund",  permanent: false },
-      { source: "/gdpr",       destination: "/gdpr",    permanent: false },
     ];
   },
   images: {

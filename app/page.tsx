@@ -90,6 +90,20 @@ function IconPhone() {
     </svg>
   );
 }
+function IconWifi() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6">
+      <path d="M5 12.55a11 11 0 0 1 14.08 0M1.42 9a16 16 0 0 1 21.16 0M8.53 16.11a6 6 0 0 1 6.95 0M12 20h.01" />
+    </svg>
+  );
+}
+function IconMail() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6">
+      <rect x="2" y="4" width="20" height="16" rx="2" /><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+    </svg>
+  );
+}
 
 // ── QR Pattern (CSS-drawn) ────────────────────────────────────────────────────
 function QRPattern() {
@@ -580,6 +594,8 @@ export default async function HomePage() {
               { Icon: IconCamera, title: "Polna kakovost",             desc: "Vse fotografije in videi se shranijo v originalni kakovosti. Brez stiskanja in brez izgube podrobnosti." },
               { Icon: IconBolt,   title: "V živo med dogodkom",        desc: "Nove fotografije se prikazujejo takoj, ko jih gostje naložijo. Utrinke lahko spremljate že med samim dogodkom." },
               { Icon: IconQR,     title: "Prilagojeno vašemu dogodku", desc: "Izberite dizajn QR kartice, ki se ujema z vašim dogodkom, in ustvarite izkušnjo, ki bo videti kot del praznovanja." },
+              { Icon: IconWifi,   title: "Brez skrbi za signal",       desc: "Ko gostje nimajo interneta, se fotografije samodejno shranijo v čakalno vrsto. Ko se signal vrne, se naložijo same – brez ponovnega iskanja." },
+              { Icon: IconMail,   title: "Album vedno pri roki",       desc: "Po nalaganju si gostje pošljejo povezavo na e-pošto. Naslednji dan odprejo album direktno iz prejete pošte – brez QR kode." },
             ].map(({ Icon, title, desc }) => (
               <div
                 key={title}
@@ -743,7 +759,7 @@ export default async function HomePage() {
                   "Neomejeno število gostov",
                   "Neomejeno fotografij",
                   "Do 100 videoposnetkov",
-                  "Dostop do galerije 1 leto",
+                  "Dostop do galerije 2 leti",
                   "Prenos vseh slik (ZIP)",
                   "Live galerija (projekcija)",
                   "Personalizirana stran z imeni",
@@ -784,6 +800,8 @@ export default async function HomePage() {
               { q: "V kakšni kakovosti se shranjujejo fotografije?", a: "V polni originalni ločljivosti, brez kakršnega koli stiskanja ali zmanjšanja kakovosti." },
               { q: "Ali podpirate videe?",                          a: "Pro in Premium paket podpirata nalaganje videov do 500 MB na posnetek." },
               { q: "Kaj se zgodi po dogodku?",                      a: "Album ostane aktiven toliko časa, kolikor traja vaš paket. Vse fotografije in videe lahko kadar koli prenesete kot ZIP arhiv ali jih shranite neposredno v Google Drive." },
+              { q: "Kaj se zgodi, če gostje nimajo interneta med nalaganjem?", a: "Nič se ne izgubi. Aplikacija samodejno zazna, da ni signala, in fotografije shrani v čakalno vrsto. Ko se internet vrne — pa če je to čez minuto ali čez uro — se fotografije naložijo samodejno, brez da bi gost moral karkoli narediti." },
+              { q: "Kaj če želi gost dodati fotografije po poroki, ko nima več QR kode?", a: "Po uspešnem nalaganju se na zaslonu pojavi možnost, da si gost pošlje povezavo do albuma na e-pošto. Naslednji dan — ali kadarkoli — odpre album direktno iz prejete pošte, brez QR kode in brez iskanja." },
             ].map((faq) => (
               <details key={faq.q} className="bg-white border border-gray-100 rounded-2xl group">
                 <summary className="flex items-center justify-between px-6 py-4 cursor-pointer font-semibold text-[#0F1729] list-none text-[0.95rem]">

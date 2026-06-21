@@ -62,6 +62,8 @@ export interface Translations {
   fileUploaded: string;         // "Uploaded"
   alreadyUploaded: string;      // "Already in album"
   fileNetworkError: string;     // "Network error"
+  fileQueued: string;           // "Queued — will upload when back online"
+  offlineBanner: string;        // "No internet — photos queued, will upload automatically"
 
   // Limit warning
   limitReached: string;         // "Album photo limit reached"
@@ -193,6 +195,12 @@ export interface Translations {
   reminderError: string;        // "Something went wrong. Please try again."
   reminderInvalidEmail: string; // "Please enter a valid email address."
 
+  // Save album link to email (shown on upload success screen)
+  saveLinkTitle: string;         // "Save link to your email"
+  saveLinkDesc: string;          // "Enter your email and we'll send you the album link so you can find it anytime."
+  saveLinkSend: string;          // "Send"
+  saveLinkSent: string;          // "Link sent! Check your inbox."
+
   // Discount code (upgrade / checkout page)
   discountCode: string;           // "Discount code" — section label
   discountPlaceholder: string;    // "Enter code…"
@@ -240,6 +248,8 @@ const sl: Translations = {
   fileUploaded: "Naloženo",
   alreadyUploaded: "Že v albumu",
   fileNetworkError: "Omrežna napaka",
+  fileQueued: "V vrsti — naloži se, ko bo vzpostavljena internet",
+  offlineBanner: "Ni interneta — fotografije so v vrsti in se bodo samodejno naložile, ko bo vzpostavljena povezava",
   limitReached: "Omejitev albuma je dosežena.",
   filesDropped: (n) => `${n} ${n === 1 ? "datoteka ni bila dodana" : "datotek ni bilo dodano"} — dosežena je omejitev albuma.`,
   footerCredit: "Guestcam",
@@ -341,6 +351,10 @@ const sl: Translations = {
   reminderSuccess: "Opomnik je nastavljen! Preverite e-pošto.",
   reminderError: "Nekaj je šlo narobe. Poskusite znova.",
   reminderInvalidEmail: "Vnesite veljaven e-naslov.",
+  saveLinkTitle: "Pošlji si povezavo na e-pošto",
+  saveLinkDesc: "Vnesite e-naslov in pošljemo vam povezavo do albuma, da ga boste lahko našli kadarkoli.",
+  saveLinkSend: "Pošlji",
+  saveLinkSent: "Povezava poslana! Preverite e-pošto. ✓",
   discountCode: "Koda za popust",
   discountPlaceholder: "Vnesite kodo…",
   discountApply: "Uveljavi",
@@ -386,6 +400,8 @@ const hr: Translations = {
   fileUploaded: "Učitano",
   alreadyUploaded: "Već u albumu",
   fileNetworkError: "Mrežna greška",
+  fileQueued: "U redu — učitat će se kad bude interneta",
+  offlineBanner: "Nema interneta — fotografije su u redu i automatski će se učitati kad se veza uspostavi",
   limitReached: "Dostignut limit fotografija.",
   footerCredit: "Guestcam",
   eventLabel: (type) => ({
@@ -486,6 +502,10 @@ const hr: Translations = {
   reminderSuccess: "Podsjetnik je postavljen! Provjerite e-poštu.",
   reminderError: "Nešto je pošlo po zlu. Pokušajte ponovno.",
   reminderInvalidEmail: "Unesite valjanu e-poštu.",
+  saveLinkTitle: "Pošalji si vezu na e-poštu",
+  saveLinkDesc: "Unesite e-poštu i poslat ćemo vam vezu do albuma da ga možete pronaći kad god zatreba.",
+  saveLinkSend: "Pošalji",
+  saveLinkSent: "Veza poslana! Provjerite e-poštu. ✓",
   discountCode: "Kod za popust",
   discountPlaceholder: "Unesite kod…",
   discountApply: "Primijeni",
@@ -531,6 +551,8 @@ const sr: Translations = {
   fileUploaded: "Otpremljeno",
   alreadyUploaded: "Već u albumu",
   fileNetworkError: "Mrežna greška",
+  fileQueued: "U redu — otpremiće se kad bude interneta",
+  offlineBanner: "Nema interneta — fotografije su u redu i automatski će se otpremiti kad se veza uspostavi",
   limitReached: "Dostignut limit fotografija.",
   footerCredit: "Guestcam",
   eventLabel: (type) => ({
@@ -631,6 +653,10 @@ const sr: Translations = {
   reminderSuccess: "Podsetnik je postavljen! Proverite e-poštu.",
   reminderError: "Nešto je pošlo po zlu. Pokušajte ponovo.",
   reminderInvalidEmail: "Unesite ispravnu e-poštu.",
+  saveLinkTitle: "Pošalji sebi vezu na e-poštu",
+  saveLinkDesc: "Unesite e-poštu i poslaćemo vam vezu do albuma da ga možete pronaći kad god zatreba.",
+  saveLinkSend: "Pošalji",
+  saveLinkSent: "Veza poslana! Proverite e-poštu. ✓",
   discountCode: "Kod za popust",
   discountPlaceholder: "Unesite kod…",
   discountApply: "Primeni",
@@ -675,6 +701,8 @@ const en: Translations = {
   fileUploaded: "Uploaded",
   alreadyUploaded: "Already in album",
   fileNetworkError: "Network error",
+  fileQueued: "Queued — will upload when back online",
+  offlineBanner: "No internet — photos are queued and will upload automatically when your connection returns",
   limitReached: "Album photo limit reached.",
   filesDropped: (n) => `${n} ${n === 1 ? "file" : "files"} not added — album limit reached.`,
   footerCredit: "Guestcam",
@@ -776,6 +804,10 @@ const en: Translations = {
   reminderSuccess: "Reminder set! Check your inbox.",
   reminderError: "Something went wrong. Please try again.",
   reminderInvalidEmail: "Please enter a valid email address.",
+  saveLinkTitle: "Send this link to your email",
+  saveLinkDesc: "Enter your email and we'll send you the album link so you can find it anytime — no QR code needed.",
+  saveLinkSend: "Send",
+  saveLinkSent: "Link sent! Check your inbox. ✓",
   discountCode: "Discount code",
   discountPlaceholder: "Enter code…",
   discountApply: "Apply",
@@ -820,6 +852,8 @@ const de: Translations = {
   fileUploaded: "Hochgeladen",
   alreadyUploaded: "Bereits im Album",
   fileNetworkError: "Netzwerkfehler",
+  fileQueued: "In der Warteschlange — wird hochgeladen, sobald Internet verfügbar",
+  offlineBanner: "Kein Internet — Fotos sind in der Warteschlange und werden automatisch hochgeladen, sobald die Verbindung wiederhergestellt ist",
   limitReached: "Foto-Limit des Albums erreicht.",
   filesDropped: (n) => `${n} ${n === 1 ? "Datei nicht hinzugefügt" : "Dateien nicht hinzugefügt"} — Album-Limit erreicht.`,
   footerCredit: "Guestcam",
@@ -921,6 +955,10 @@ const de: Translations = {
   reminderSuccess: "Erinnerung eingerichtet! Prüfen Sie Ihren Posteingang.",
   reminderError: "Etwas ist schiefgelaufen. Bitte erneut versuchen.",
   reminderInvalidEmail: "Bitte geben Sie eine gültige E-Mail-Adresse ein.",
+  saveLinkTitle: "Link per E-Mail senden",
+  saveLinkDesc: "Geben Sie Ihre E-Mail-Adresse ein und wir senden Ihnen den Link zum Album — auch ohne QR-Code auffindbar.",
+  saveLinkSend: "Senden",
+  saveLinkSent: "Link gesendet! Bitte prüfen Sie Ihren Posteingang. ✓",
   discountCode: "Rabattcode",
   discountPlaceholder: "Code eingeben…",
   discountApply: "Einlösen",
@@ -965,6 +1003,8 @@ const es: Translations = {
   fileUploaded: "Subido",
   alreadyUploaded: "Ya en el álbum",
   fileNetworkError: "Error de red",
+  fileQueued: "En cola — se subirá cuando haya internet",
+  offlineBanner: "Sin internet — las fotos están en cola y se subirán automáticamente cuando vuelva la conexión",
   limitReached: "Límite de fotos del álbum alcanzado.",
   filesDropped: (n) => `${n} ${n === 1 ? "archivo no añadido" : "archivos no añadidos"} — límite del álbum alcanzado.`,
   footerCredit: "Guestcam",
@@ -1066,6 +1106,10 @@ const es: Translations = {
   reminderSuccess: "¡Recordatorio configurado! Revisa tu bandeja de entrada.",
   reminderError: "Algo salió mal. Inténtalo de nuevo.",
   reminderInvalidEmail: "Introduce una dirección de correo válida.",
+  saveLinkTitle: "Envíate el enlace por email",
+  saveLinkDesc: "Introduce tu email y te enviamos el enlace al álbum para que puedas encontrarlo cuando quieras, sin necesitar el QR.",
+  saveLinkSend: "Enviar",
+  saveLinkSent: "¡Enlace enviado! Revisa tu bandeja de entrada. ✓",
   discountCode: "Código de descuento",
   discountPlaceholder: "Introduce el código…",
   discountApply: "Aplicar",

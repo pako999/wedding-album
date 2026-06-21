@@ -5,7 +5,7 @@ import { eq } from "drizzle-orm";
 const PLAN_CONFIG: Record<string, { maxPhotos: number; daysAccess: number }> = {
   basic:   { maxPhotos: 1000,    daysAccess: 90  }, // 3 months
   plus:    { maxPhotos: 999_999, daysAccess: 365 }, // 1 year
-  premium: { maxPhotos: 999_999, daysAccess: 365 }, // 1 year
+  premium: { maxPhotos: 999_999, daysAccess: 730 }, // 2 years
 };
 
 /**

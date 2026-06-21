@@ -59,10 +59,11 @@ export async function POST(req: NextRequest) {
 
   if (discountCode) {
     const disc = await validateDiscount(discountCode, planId);
-    if (disc.valid) {
-      baseCents = disc.finalCents;
-      discountCodeId = disc.discountCodeId;
+    if (!disc.valid) {
+      return NextResponse.json({ error: disc.error ?? "Discount code is no longer valid." }, { status: 409 });
     }
+    baseCents = disc.finalCents;
+    discountCodeId = disc.discountCodeId;
   }
 
   const totalCents = baseCents + (tableStands ? 900 : 0);
