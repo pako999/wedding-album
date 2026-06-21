@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { getPayment, isPaidStatus, mollieConfigured } from "@/lib/mollie";
 import { applyPlanToAlbum } from "@/lib/paddle-reconcile";
 import { htmlEscape, notifyTelegram } from "@/lib/telegram";
+import { sendAdminPaymentEmail } from "@/lib/email/notifications";
+import { incrementDiscountUsage } from "@/lib/discount";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -70,15 +72,30 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ received: true });
   }
 
+  // Increment discount usage counter if a code was used
+  if (payment.metadata?.discountCodeId) {
+    await incrementDiscountUsage(payment.metadata.discountCodeId).catch(() => {});
+  }
+
   const amount = parseFloat(payment.amount.value).toFixed(2);
   const currency = payment.amount.currency;
   const { emoji, text } = planLabel(planId);
 
-  await notifyTelegram(
-    `${emoji} <b>Plačilo: ${text}</b>\n` +
-    `${amount} ${currency}\n` +
-    `Album: <code>${htmlEscape(albumSlug)}</code>`,
-  );
+  await Promise.all([
+    notifyTelegram(
+      `${emoji} <b>Plačilo: ${text}</b>\n` +
+      `${amount} ${currency}\n` +
+      `Album: <code>${htmlEscape(albumSlug)}</code>`,
+    ),
+    sendAdminPaymentEmail({
+      albumSlug,
+      planId,
+      amount,
+      currency,
+      paymentId,
+      method: payment.method ?? null,
+    }),
+  ]);
 
   return NextResponse.json({ received: true });
 }

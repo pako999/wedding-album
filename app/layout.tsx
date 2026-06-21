@@ -83,6 +83,11 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: "Guestcam" }],
   manifest: "/manifest.json",
+  // Explicit SVG icon — Google accepts SVG with no size restriction.
+  // The 48×48 PNG is auto-added by Next.js from app/icon.tsx.
+  icons: {
+    icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
+  },
   // Site is live — individual private routes (albums, dashboard, etc.) override
   // this with their own noindex where appropriate.
   robots: { index: true, follow: true },

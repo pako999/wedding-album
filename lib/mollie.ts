@@ -21,7 +21,8 @@ export interface MolliePayment {
   status: string;
   amount: { value: string; currency: string };
   description: string;
-  metadata: { albumSlug?: string; planId?: string } | null;
+  method: string | null; // e.g. "ideal", "creditcard", "banktransfer"
+  metadata: { albumSlug?: string; planId?: string; discountCodeId?: string } | null;
   createdAt: string;
   _links?: {
     checkout?: { href: string; type: string };

@@ -192,6 +192,14 @@ export interface Translations {
   reminderSuccess: string;      // "Reminder set! Check your inbox."
   reminderError: string;        // "Something went wrong. Please try again."
   reminderInvalidEmail: string; // "Please enter a valid email address."
+
+  // Discount code (upgrade / checkout page)
+  discountCode: string;           // "Discount code" — section label
+  discountPlaceholder: string;    // "Enter code…"
+  discountApply: string;          // "Apply"
+  discountRemove: string;         // "Remove"
+  discountInvalid: string;        // "Code is invalid or has expired."
+  discountOff: (n: number) => string; // "−20% off"
 }
 
 // ─── All translations ─────────────────────────────────────────────────────────
@@ -333,6 +341,12 @@ const sl: Translations = {
   reminderSuccess: "Opomnik je nastavljen! Preverite e-pošto.",
   reminderError: "Nekaj je šlo narobe. Poskusite znova.",
   reminderInvalidEmail: "Vnesite veljaven e-naslov.",
+  discountCode: "Koda za popust",
+  discountPlaceholder: "Vnesite kodo…",
+  discountApply: "Uveljavi",
+  discountRemove: "Odstrani",
+  discountInvalid: "Koda ni veljavna ali je potekla.",
+  discountOff: (n) => `−${n}% popust`,
 };
 
 const hr: Translations = {
@@ -472,6 +486,12 @@ const hr: Translations = {
   reminderSuccess: "Podsjetnik je postavljen! Provjerite e-poštu.",
   reminderError: "Nešto je pošlo po zlu. Pokušajte ponovno.",
   reminderInvalidEmail: "Unesite valjanu e-poštu.",
+  discountCode: "Kod za popust",
+  discountPlaceholder: "Unesite kod…",
+  discountApply: "Primijeni",
+  discountRemove: "Ukloni",
+  discountInvalid: "Kod nije važeći ili je istekao.",
+  discountOff: (n) => `−${n}% popust`,
 };
 
 const sr: Translations = {
@@ -611,6 +631,12 @@ const sr: Translations = {
   reminderSuccess: "Podsetnik je postavljen! Proverite e-poštu.",
   reminderError: "Nešto je pošlo po zlu. Pokušajte ponovo.",
   reminderInvalidEmail: "Unesite ispravnu e-poštu.",
+  discountCode: "Kod za popust",
+  discountPlaceholder: "Unesite kod…",
+  discountApply: "Primeni",
+  discountRemove: "Ukloni",
+  discountInvalid: "Kod nije važeći ili je istekao.",
+  discountOff: (n) => `−${n}% popust`,
 };
 
 const en: Translations = {
@@ -750,6 +776,12 @@ const en: Translations = {
   reminderSuccess: "Reminder set! Check your inbox.",
   reminderError: "Something went wrong. Please try again.",
   reminderInvalidEmail: "Please enter a valid email address.",
+  discountCode: "Discount code",
+  discountPlaceholder: "Enter code…",
+  discountApply: "Apply",
+  discountRemove: "Remove",
+  discountInvalid: "Code is invalid or has expired.",
+  discountOff: (n) => `−${n}% off`,
 };
 
 const de: Translations = {
@@ -889,6 +921,12 @@ const de: Translations = {
   reminderSuccess: "Erinnerung eingerichtet! Prüfen Sie Ihren Posteingang.",
   reminderError: "Etwas ist schiefgelaufen. Bitte erneut versuchen.",
   reminderInvalidEmail: "Bitte geben Sie eine gültige E-Mail-Adresse ein.",
+  discountCode: "Rabattcode",
+  discountPlaceholder: "Code eingeben…",
+  discountApply: "Einlösen",
+  discountRemove: "Entfernen",
+  discountInvalid: "Code ist ungültig oder abgelaufen.",
+  discountOff: (n) => `−${n}% Rabatt`,
 };
 
 const es: Translations = {
@@ -1028,6 +1066,12 @@ const es: Translations = {
   reminderSuccess: "¡Recordatorio configurado! Revisa tu bandeja de entrada.",
   reminderError: "Algo salió mal. Inténtalo de nuevo.",
   reminderInvalidEmail: "Introduce una dirección de correo válida.",
+  discountCode: "Código de descuento",
+  discountPlaceholder: "Introduce el código…",
+  discountApply: "Aplicar",
+  discountRemove: "Quitar",
+  discountInvalid: "El código no es válido o ha caducado.",
+  discountOff: (n) => `−${n}% descuento`,
 };
 
 export const translations: Record<Lang, Translations> = { sl, hr, sr, en, de, es };

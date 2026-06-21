@@ -274,6 +274,26 @@ export const photoComments = pgTable(
   ]
 );
 
+// ─── Discount Codes ───────────────────────────────────────────────────────────
+
+export const discountCodes = pgTable(
+  "discount_codes",
+  {
+    id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+    code: varchar("code", { length: 50 }).notNull().unique(),
+    percentOff: integer("percent_off").notNull(), // 1–100
+    maxUses: integer("max_uses"),                 // null = unlimited
+    usedCount: integer("used_count").notNull().default(0),
+    expiresAt: timestamp("expires_at"),           // null = never
+    isActive: boolean("is_active").notNull().default(true),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+  },
+  (t) => [index("discount_codes_code_idx").on(t.code)]
+);
+
+export type DiscountCode    = typeof discountCodes.$inferSelect;
+export type NewDiscountCode = typeof discountCodes.$inferInsert;
+
 // ─── Upload Reminders ────────────────────────────────────────────────────────
 
 export const uploadReminders = pgTable(
