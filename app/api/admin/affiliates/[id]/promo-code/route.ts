@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { affiliates, discountCodes } from "@/lib/db/schema";
-import { eq, and, ne } from "drizzle-orm";
+import { eq, and, ne, desc } from "drizzle-orm";
 import { requireAdmin } from "@/lib/admin";
 import { sendAffiliatePromoCodeEmail } from "@/lib/email/notifications";
 
@@ -129,8 +129,12 @@ export async function PATCH(
     isActive?: boolean;
   };
 
+  // Always operate on the affiliate's most recent code (the one shown
+  // in the admin UI). Without `orderBy desc(createdAt)` the toggle could
+  // resurrect a historical deactivated code instead of touching the live one.
   const current = await db.query.discountCodes.findFirst({
     where: eq(discountCodes.affiliateId, id),
+    orderBy: desc(discountCodes.createdAt),
   });
   if (!current) return NextResponse.json({ error: "Ni promo kode." }, { status: 404 });
 

@@ -104,21 +104,32 @@ export default clerkMiddleware(async (auth, req) => {
   const res = NextResponse.next({ request: { headers: requestHeaders } });
 
   // ── Affiliate ref param capture ──────────────────────────────────────────
-  // Any link with ?ref=CODE on any page sets the affiliate cookie. The
-  // cookie expires after 30 days. We only set it if the visitor doesn't
-  // already have one (first-touch attribution — first affiliate wins).
-  // The actual click counter increment + click row insert happens when
-  // they hit /api/affiliate/track explicitly; this is just the fallback
-  // so a directly-shared ?ref= URL still attributes properly.
+  // Any link with ?ref=CODE on any non-API page is forwarded to
+  // /api/affiliate/track which validates the code against the active
+  // affiliates table BEFORE setting the cookie. This avoids two failure
+  // modes the cookie-only shortcut had:
+  //   • Bogus codes (typos, tampering) would lock the cookie for 30 days
+  //     and block the real affiliate's later link from attributing.
+  //   • The middleware can't safely talk to Neon on every request.
+  // The tracker endpoint redirects back to the original path with the
+  // `?ref` stripped, so the user never sees the tracking URL.
   const refParam = req.nextUrl.searchParams.get("ref");
-  if (refParam && /^[A-Z0-9]{4,16}$/.test(refParam) && !req.cookies.get("gc_ref")) {
-    res.cookies.set("gc_ref", refParam, {
-      maxAge: 30 * 24 * 60 * 60,
-      httpOnly: false,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      path: "/",
-    });
+  const onTrackerEndpoint = pathname.startsWith("/api/affiliate/track");
+  if (
+    refParam &&
+    /^[A-Z0-9]{4,16}$/.test(refParam) &&
+    !pathname.startsWith("/api/") &&
+    !onTrackerEndpoint
+  ) {
+    const cleanSearch = new URLSearchParams(req.nextUrl.search);
+    cleanSearch.delete("ref");
+    const to = pathname + (cleanSearch.toString() ? `?${cleanSearch.toString()}` : "");
+    const trackerUrl = req.nextUrl.clone();
+    trackerUrl.pathname = "/api/affiliate/track";
+    trackerUrl.search = "";
+    trackerUrl.searchParams.set("ref", refParam);
+    trackerUrl.searchParams.set("to", to);
+    return NextResponse.redirect(trackerUrl);
   }
 
   // ── Block crawlers from album guest pages via HTTP header ────────────────

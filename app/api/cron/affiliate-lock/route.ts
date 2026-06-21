@@ -18,8 +18,15 @@ export const dynamic = "force-dynamic";
  * Schedule this in vercel.json with `0 8 * * *` (08:00 UTC daily).
  */
 export async function GET(req: NextRequest) {
+  // Fail closed: in any environment where CRON_SECRET is missing, refuse
+  // to run. Otherwise `Bearer undefined` would match and an unauth caller
+  // could flip pending commissions to approved.
+  const secret = process.env.CRON_SECRET;
+  if (!secret) {
+    return NextResponse.json({ error: "Cron secret not configured" }, { status: 503 });
+  }
   const auth = req.headers.get("authorization");
-  if (auth !== `Bearer ${process.env.CRON_SECRET}`) {
+  if (auth !== `Bearer ${secret}`) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

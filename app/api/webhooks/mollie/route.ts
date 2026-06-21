@@ -295,36 +295,46 @@ import { albums as import_albums, discountCodes as import_discountCodes } from "
  * need a manual decision because we've already wired money out).
  */
 async function clawbackAffiliateCommission(molliePaymentId: string) {
-  // Atomic: only succeeds if the commission is still in a reversible state.
-  // Returns the row(s) we transitioned so we can also drain the balance.
+  const found = await db.query.affiliateCommissions.findFirst({
+    where: eq(affiliateCommissions.molliePaymentId, molliePaymentId),
+  });
+  if (!found) return;
+  if (found.status !== "pending" && found.status !== "approved") return;
+
+  const previousStatus = found.status;
+
+  // Atomic transition: the WHERE includes the previous status, so a
+  // concurrent cron run that flipped pending → approved between our read
+  // and write will lose the race here, returning no rows. That keeps the
+  // balance deduction below in lockstep with the actual status the
+  // commission was in.
   const reversed = await db.update(affiliateCommissions).set({
     status: "cancelled",
     cancelledAt: new Date(),
     cancelReason: "refund",
   }).where(and(
-    eq(affiliateCommissions.molliePaymentId, molliePaymentId),
-    or(
-      eq(affiliateCommissions.status, "pending"),
-      eq(affiliateCommissions.status, "approved"),
-    ),
+    eq(affiliateCommissions.id, found.id),
+    eq(affiliateCommissions.status, previousStatus),
   )).returning();
+  if (reversed.length === 0) return;
 
-  for (const commission of reversed) {
-    // Reverse the balance changes. Pending balance was bumped on creation
-    // (-pending +totalEarnings); approved moved pending → available.
-    // We don't try to detect which case we're in — instead we GREATEST(0,…)
-    // both deductions so we never go negative. totalEarnings is the
-    // lifetime gross; we leave it untouched (it represents *earned*
-    // commission events, regardless of later refunds — better signal for
-    // affiliate engagement).
+  // Drain ONLY the balance bucket that actually held this commission's
+  // money. Subtracting from both — as the first cut did — could
+  // underpay an affiliate who had unrelated approved sales sitting in
+  // availableBalanceCents while a still-pending sale was being refunded.
+  if (previousStatus === "approved") {
     await db.update(affiliates).set({
-      pendingBalanceCents: sql`GREATEST(0, ${affiliates.pendingBalanceCents} - ${commission.commissionAmountCents})`,
-      availableBalanceCents: sql`GREATEST(0, ${affiliates.availableBalanceCents} - ${commission.commissionAmountCents})`,
+      availableBalanceCents: sql`GREATEST(0, ${affiliates.availableBalanceCents} - ${found.commissionAmountCents})`,
       updatedAt: new Date(),
-    }).where(eq(affiliates.id, commission.affiliateId));
-
-    console.log(
-      `[affiliate] commission ${commission.id} clawed back (refund on ${molliePaymentId})`,
-    );
+    }).where(eq(affiliates.id, found.affiliateId));
+  } else {
+    await db.update(affiliates).set({
+      pendingBalanceCents: sql`GREATEST(0, ${affiliates.pendingBalanceCents} - ${found.commissionAmountCents})`,
+      updatedAt: new Date(),
+    }).where(eq(affiliates.id, found.affiliateId));
   }
+
+  console.log(
+    `[affiliate] commission ${found.id} (${previousStatus}) clawed back on refund of ${molliePaymentId}`,
+  );
 }
