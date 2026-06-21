@@ -90,6 +90,20 @@ function IconPhone() {
     </svg>
   );
 }
+function IconWifi() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6">
+      <path d="M5 12.55a11 11 0 0 1 14.08 0M1.42 9a16 16 0 0 1 21.16 0M8.53 16.11a6 6 0 0 1 6.95 0M12 20h.01" />
+    </svg>
+  );
+}
+function IconMail() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6">
+      <rect x="2" y="4" width="20" height="16" rx="2" /><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+    </svg>
+  );
+}
 
 // ── QR Pattern (CSS-drawn) ────────────────────────────────────────────────────
 function QRPattern() {
@@ -580,6 +594,8 @@ export default async function HomePage() {
               { Icon: IconCamera, title: "Polna kakovost",             desc: "Vse fotografije in videi se shranijo v originalni kakovosti. Brez stiskanja in brez izgube podrobnosti." },
               { Icon: IconBolt,   title: "V živo med dogodkom",        desc: "Nove fotografije se prikazujejo takoj, ko jih gostje naložijo. Utrinke lahko spremljate že med samim dogodkom." },
               { Icon: IconQR,     title: "Prilagojeno vašemu dogodku", desc: "Izberite dizajn QR kartice, ki se ujema z vašim dogodkom, in ustvarite izkušnjo, ki bo videti kot del praznovanja." },
+              { Icon: IconWifi,   title: "Brez skrbi za signal",       desc: "Ko gostje nimajo interneta, se fotografije samodejno shranijo v čakalno vrsto. Ko se signal vrne, se naložijo same – brez ponovnega iskanja." },
+              { Icon: IconMail,   title: "Album vedno pri roki",       desc: "Po nalaganju si gostje pošljejo povezavo na e-pošto. Naslednji dan odprejo album direktno iz prejete pošte – brez QR kode." },
             ].map(({ Icon, title, desc }) => (
               <div
                 key={title}
