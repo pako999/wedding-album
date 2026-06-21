@@ -8,13 +8,14 @@ import { ImageResponse } from "next/og";
  * (which was rendering an off-brand pink camera) with the same
  * yellow design as `public/icon.svg` and the rest of the brand.
  *
- * 32×32 is the size Google scrapes for the SERP favicon. Higher
- * sizes (apple-icon for iOS, icon-192/512 for the PWA manifest)
+ * 48×48 is the smallest size Google accepts for SERP favicons —
+ * Google requires a multiple of 48px × 48px (32px was rejected).
+ * Higher sizes (apple-icon for iOS, icon-192/512 for the PWA manifest)
  * live in their own routes.
  */
 
 export const runtime = "edge";
-export const size = { width: 32, height: 32 };
+export const size = { width: 48, height: 48 };
 export const contentType = "image/png";
 
 export default function Icon() {
@@ -32,8 +33,8 @@ export default function Icon() {
         {/* Mirrors public/icon.svg exactly — brand yellow #FFC94D
             background with a white camera + amber lens. */}
         <svg
-          width="32"
-          height="32"
+          width="48"
+          height="48"
           viewBox="0 0 512 512"
           xmlns="http://www.w3.org/2000/svg"
         >

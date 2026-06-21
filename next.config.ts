@@ -3,6 +3,9 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   async redirects() {
     return [
+      // /favicon.ico → Next.js dynamic icon route so Google finds a favicon
+      // at the conventional path (in addition to the <link rel="icon"> tag).
+      { source: "/favicon.ico", destination: "/icon", permanent: false },
       // Slovenian-language URL aliases for legal pages
       { source: "/pogoji",     destination: "/terms",   permanent: false },
       { source: "/zasebnost",  destination: "/privacy", permanent: false },
