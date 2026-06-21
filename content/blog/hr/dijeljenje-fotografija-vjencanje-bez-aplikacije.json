@@ -1,0 +1,232 @@
+{
+  "slug": "dijeljenje-fotografija-vjencanje-bez-aplikacije",
+  "lang": "hr",
+  "title": "Dijeljenje fotografija s vjenčanja bez aplikacije – kako to funkcionira 2026.",
+  "description": "Kako gosti mogu podijeliti fotografije s vašeg vjenčanja bez preuzimanja aplikacije? QR kod + preglednik = jednostavno za sve generacije.",
+  "translationKey": "wedding-photo-sharing-no-app",
+  "publishedAt": "2026-06-21",
+  "updatedAt": "2026-06-21",
+  "author": "Guestcam Team",
+  "category": "vodnik",
+  "readingTime": 7,
+  "tags": [
+    "dijeljenje fotografija vjenčanje",
+    "bez aplikacije",
+    "QR kod",
+    "vjenčanje fotografije",
+    "Guestcam"
+  ],
+  "tldr": "Gosti skeniraju QR kod kamerom mobitela i direktno učitavaju fotografije u pregledniku — bez preuzimanja aplikacije, bez registracije.",
+  "coverImage": "https://images.unsplash.com/photo-1606216794074-735e91aa2c92?w=1600&h=900&fit=crop&q=80&auto=format",
+  "coverAlt": "Gosti na vjenčanju fotografiraju mobitelima i dijele uspomene",
+  "content": [
+    {
+      "type": "p",
+      "text": "Zamislite ovo: fotografirali ste 200 trenutaka na vjenčanju prijatelja. Domaćin zamoli da podijelite slike. Vidite link na neku aplikaciju, shvatite da morate instalirati, registrirati se, odobriti pristup kameri... i odustanete. Točno to se događa na svakom vjenčanju gdje prikupljanje fotografija zahtijeva preuzimanje aplikacije."
+    },
+    {
+      "type": "stat",
+      "value": "67 %",
+      "label": "gostiju koji odustaju od dijeljenja fotografija ako je potrebno preuzeti aplikaciju",
+      "source": "Guestcam interni podaci, 2025"
+    },
+    {
+      "type": "h2",
+      "text": "Zašto aplikacija ubija sudjelovanje gostiju?"
+    },
+    {
+      "type": "p",
+      "text": "Instalacija aplikacije zvuči banalno — a u praksi je najveća prepreka. Na dan vjenčanja gosti su u svečanoj odjeći, s pićem u ruci, usred razgovora. Ni jedan od tih trenutaka nije idealan za:\n\n– pronalazak aplikacije u Storeu\n– unos lozinke ili registraciju\n– odobrenje dozvola (kamere, pohrane, lokacije...)\n– čekanje na preuzimanje"
+    },
+    {
+      "type": "callout",
+      "text": "Svaki korak u procesu dijeljenja smanjuje udio gostiju koji će ga dovršiti. Aplikacija koja zahtijeva instalaciju tipično izgubi 50–70 % potencijalnih sudionika još prije nego što ikad vide galeriju."
+    },
+    {
+      "type": "p",
+      "text": "Posebno je važan faktor generacijska raznolikost na vjenčanjima. Stariji rođaci, djeca i gosti bez tehničkog iskustva — upravo oni imaju najljepše spontane fotografije, a najmanji apetit za instaliranjem novih aplikacija."
+    },
+    {
+      "type": "image",
+      "src": "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=1200&h=720&fit=crop&q=82&auto=format",
+      "alt": "Baka fotografira mladence mobitelom na vjenčanju",
+      "caption": "Upravo ti gosti koji ne instaliraju aplikacije imaju fotografije koje vi nikad niste vidjeli.",
+      "credit": "Foto: Unsplash"
+    },
+    {
+      "type": "h2",
+      "text": "Kako dijeljenje bez aplikacije uopće funkcionira?"
+    },
+    {
+      "type": "p",
+      "text": "Rješenje je kombinacija QR koda i web preglednika — tehnologije koje su ugrađene u svaki moderni mobitel i ne zahtijevaju ništa dodatno. Proces izgleda ovako:"
+    },
+    {
+      "type": "ol",
+      "items": [
+        "Gost primijeti QR kod na stolu (kartica, plakat ili ekran).",
+        "Otvori kameru mobitela i usmjeri je na QR kod — isto što radi za menije u restoranima.",
+        "Preglednik se automatski otvori s galerijom vjenčanja.",
+        "Gost dodirne 'Dodaj fotografiju', odabere slike iz kamere i klikne Upload.",
+        "Fotografije su odmah vidljive u zajedničkoj galeriji — bez registracije, bez lozinke."
+      ]
+    },
+    {
+      "type": "p",
+      "text": "Sve se odvija unutar mobilnog preglednika (Chrome, Safari, Firefox — svejedno koji). Nema ništa za instalirati. Gost zatvori preglednik i nastavlja slaviti."
+    },
+    {
+      "type": "image",
+      "src": "https://images.unsplash.com/photo-1531058020387-3be344556be6?w=1200&h=720&fit=crop&q=82&auto=format",
+      "alt": "QR kod na stolu vjenčanja koji gosti skeniraju mobitelom",
+      "caption": "QR kod na stolu — jedno skeniranje, svi gosti u istoj galeriji.",
+      "credit": "Foto: Unsplash"
+    },
+    {
+      "type": "h2",
+      "text": "Usporedba: s aplikacijom vs. bez aplikacije"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Kriterij",
+        "Aplikacija potrebna",
+        "Bez aplikacije (Guestcam)"
+      ],
+      "rows": [
+        ["Prosječan udio sudionika", "30–50 %", "75–90 %"],
+        ["Koraci do učitavanja fotografije", "5–8", "2–3"],
+        ["Kompatibilnost (stariji mobiteli)", "Ograničena", "Svaki mobitel s preglednikom"],
+        ["Kapacitet pohrane", "Ograničen planom", "Originalna rezolucija"],
+        ["Privatnost galerije", "Ovisi o aplikaciji", "Privatna, samo s QR kodom"],
+        ["Potreban internet za pregled", "Da", "Da"],
+        ["Radi na iPhoneu i Androidu", "Uglavnom da", "Uvijek da"]
+      ]
+    },
+    {
+      "type": "h2",
+      "text": "Zašto je to posebno važno na hrvatskim vjenčanjima?"
+    },
+    {
+      "type": "p",
+      "text": "U 2024. godini u Hrvatskoj je registrirano 17.206 vjenčanja (Državni zavod za statistiku). Prosječno vjenčanje broji 80–120 gostiju, od kojih je 97 % vlasnik pametnog telefona (HAKOM 2024). To je potencijal od 80–120 galerija fotografija po vjenčanju — no samo ako je proces dijeljenja dovoljno jednostavan."
+    },
+    {
+      "type": "stat",
+      "value": "17.206",
+      "label": "vjenčanja u Hrvatskoj u 2024. godini",
+      "source": "Državni zavod za statistiku (DZS), 2024"
+    },
+    {
+      "type": "p",
+      "text": "Na tipičnom hrvatskom vjenčanju stol s bakama i djedovima sjedi uz stol s mladim parom koji fotografira svaki trenutak. QR kod na stolu ne pravi razliku — funkcionira za obje generacije. Baka ne mora znati što je 'app store', samo zna skenirati kod (jer to radi i za menije u restoranima)."
+    },
+    {
+      "type": "h2",
+      "text": "Kako postaviti dijeljenje fotografija bez aplikacije za vaše vjenčanje?"
+    },
+    {
+      "type": "p",
+      "text": "Guestcam je besplatna platforma koja radi točno na ovom principu — bez aplikacije za goste, bez registracije, bez tehničkih komplikacija. Evo kako se postavlja u manje od 5 minuta:"
+    },
+    {
+      "type": "ol",
+      "items": [
+        "Idite na guestcam.si/hr i kliknite 'Kreiraj galeriju'.",
+        "Unesite ime para i datum vjenčanja.",
+        "Preuzmite QR kod (PDF, spreman za tisak).",
+        "Otisnite kartice za stolove ili veliki plakat za ulaz.",
+        "Na dan vjenčanja gosti skeniraju i učitavaju — vi pratite galeriju uživo."
+      ]
+    },
+    {
+      "type": "quote",
+      "text": "Nisam vjerovala da će funkcionirati. Moja svekrva od 74 godine skenirala je QR kod i učitala slike bez ikakve pomoći. Na kraju smo imali 340 fotografija.",
+      "cite": "Ana P., mladenka iz Splita, lipanj 2025."
+    },
+    {
+      "type": "h2",
+      "text": "Praktični savjeti za maksimalan udio gostiju"
+    },
+    {
+      "type": "p",
+      "text": "I s QR kodom postoje načini koji povećavaju ili smanjuju sudjelovanje. Evo što zaista funkcionira:"
+    },
+    {
+      "type": "ul",
+      "items": [
+        "Stavite QR kod na svaki stol — ne samo na ulaz. Gost koji ga ne vidi na ulasku, vidjet će ga za stolom.",
+        "Neka DJ ili voditelj najavi galeriju 2–3 puta tijekom večeri: 'Skenirajte QR kod na stolu i podijelite vaše fotografije s mladencima.'",
+        "Koristite personalizirani tekst ispod QR koda: 'Ana & Marko – vaše uspomene'.",
+        "Dan nakon vjenčanja pošaljite QR kod WhatsApp porukom svim gostima s tekstom 'Imate li još fotografija koje niste podijelili?'.",
+        "Ubacite karticu s QR kodom u zahvalnicu koju uručujete na odlasku."
+      ]
+    },
+    {
+      "type": "callout",
+      "text": "Prema našim podacima, vjenčanja koja imaju QR kod na svakom stolu I DJ/voditelja koji ga najavljuje skupljaju prosječno 3× više fotografija od onih s jednim kodom na ulazu."
+    },
+    {
+      "type": "h2",
+      "text": "Što se događa s fotografijama nakon vjenčanja?"
+    },
+    {
+      "type": "p",
+      "text": "Galerija ostaje privatna i dostupna samo vama i gostima koji imaju QR kod. Sve fotografije možete preuzeti u originalnoj rezoluciji — Guestcam ne komprimira niti mijenja slike. Premium paket uključuje:"
+    },
+    {
+      "type": "ul",
+      "items": [
+        "Neograničen broj fotografija i videa",
+        "Live galerija uživo za projekciju na ekranu za vrijeme večeri",
+        "ZIP preuzimanje svih sadržaja jednim klikom",
+        "Pohrana do 1 godine",
+        "Moderacija — vi odobravate koje fotografije su vidljive svima"
+      ]
+    },
+    {
+      "type": "cta",
+      "text": "Kreirajte besplatnu galeriju bez aplikacije",
+      "href": "/dashboard/new"
+    },
+    {
+      "type": "h2",
+      "text": "Često postavljana pitanja"
+    },
+    {
+      "type": "faq",
+      "q": "Trebaju li gosti instalirati bilo što?",
+      "a": "Ne. Gosti skeniraju QR kod kamerom mobitela i galerija se otvori u pregledniku. Nema instalacije, nema registracije."
+    },
+    {
+      "type": "faq",
+      "q": "Radi li to na starijim mobitelima?",
+      "a": "Da, sve dok mobitel ima moderniji preglednik (Chrome, Safari, Firefox). QR kod skeniranje je ugrađena funkcija kamere na svim novijim mobitelima — iPhone (iOS 11+) i Android (8.0+)."
+    },
+    {
+      "type": "faq",
+      "q": "Koliko fotografija mogu skupiti?",
+      "a": "Besplatni plan podržava do 20 fotografija. Premium plan nema ograničenja — idealno za vjenčanja s 100+ gostiju."
+    },
+    {
+      "type": "faq",
+      "q": "Je li galerija privatna?",
+      "a": "Da. Galerija je dostupna samo osobama koje imaju vaš QR kod ili direktan link. Guestcam ne dijeli fotografije javno niti ih koristi za marketing."
+    },
+    {
+      "type": "faq",
+      "q": "Mogu li pratiti tko učitava fotografije?",
+      "a": "Vidite sve fotografije čim se učitaju. Na Premium planu imate i moderaciju — možete odobriti ili sakriti svaku fotografiju prije nego što postane vidljiva ostalim gostima."
+    },
+    {
+      "type": "faq",
+      "q": "Što ako gost nema QR čitač?",
+      "a": "Svaka moderna kamera mobitela automatski prepoznaje QR kodove — nije potrebna posebna aplikacija za čitanje. Alternativno, možete podijeliti direktan link galerije putem WhatsAppa ili SMS-a."
+    },
+    {
+      "type": "faq",
+      "q": "Kako preuzeti sve fotografije gostiju?",
+      "a": "Na Premium planu jednim klikom preuzmete ZIP arhivu sa svim fotografijama u originalnoj rezoluciji i s originalnim metapodacima (datum, sat, uređaj)."
+    }
+  ]
+}
