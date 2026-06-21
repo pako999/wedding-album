@@ -195,6 +195,12 @@ export interface Translations {
   reminderError: string;        // "Something went wrong. Please try again."
   reminderInvalidEmail: string; // "Please enter a valid email address."
 
+  // Save album link to email (shown on upload success screen)
+  saveLinkTitle: string;         // "Save link to your email"
+  saveLinkDesc: string;          // "Enter your email and we'll send you the album link so you can find it anytime."
+  saveLinkSend: string;          // "Send"
+  saveLinkSent: string;          // "Link sent! Check your inbox."
+
   // Discount code (upgrade / checkout page)
   discountCode: string;           // "Discount code" — section label
   discountPlaceholder: string;    // "Enter code…"
@@ -345,6 +351,10 @@ const sl: Translations = {
   reminderSuccess: "Opomnik je nastavljen! Preverite e-pošto.",
   reminderError: "Nekaj je šlo narobe. Poskusite znova.",
   reminderInvalidEmail: "Vnesite veljaven e-naslov.",
+  saveLinkTitle: "Pošlji si povezavo na e-pošto",
+  saveLinkDesc: "Vnesite e-naslov in pošljemo vam povezavo do albuma, da ga boste lahko našli kadarkoli.",
+  saveLinkSend: "Pošlji",
+  saveLinkSent: "Povezava poslana! Preverite e-pošto. ✓",
   discountCode: "Koda za popust",
   discountPlaceholder: "Vnesite kodo…",
   discountApply: "Uveljavi",
@@ -492,6 +502,10 @@ const hr: Translations = {
   reminderSuccess: "Podsjetnik je postavljen! Provjerite e-poštu.",
   reminderError: "Nešto je pošlo po zlu. Pokušajte ponovno.",
   reminderInvalidEmail: "Unesite valjanu e-poštu.",
+  saveLinkTitle: "Pošalji si vezu na e-poštu",
+  saveLinkDesc: "Unesite e-poštu i poslat ćemo vam vezu do albuma da ga možete pronaći kad god zatreba.",
+  saveLinkSend: "Pošalji",
+  saveLinkSent: "Veza poslana! Provjerite e-poštu. ✓",
   discountCode: "Kod za popust",
   discountPlaceholder: "Unesite kod…",
   discountApply: "Primijeni",
@@ -639,6 +653,10 @@ const sr: Translations = {
   reminderSuccess: "Podsetnik je postavljen! Proverite e-poštu.",
   reminderError: "Nešto je pošlo po zlu. Pokušajte ponovo.",
   reminderInvalidEmail: "Unesite ispravnu e-poštu.",
+  saveLinkTitle: "Pošalji sebi vezu na e-poštu",
+  saveLinkDesc: "Unesite e-poštu i poslaćemo vam vezu do albuma da ga možete pronaći kad god zatreba.",
+  saveLinkSend: "Pošalji",
+  saveLinkSent: "Veza poslana! Proverite e-poštu. ✓",
   discountCode: "Kod za popust",
   discountPlaceholder: "Unesite kod…",
   discountApply: "Primeni",
@@ -786,6 +804,10 @@ const en: Translations = {
   reminderSuccess: "Reminder set! Check your inbox.",
   reminderError: "Something went wrong. Please try again.",
   reminderInvalidEmail: "Please enter a valid email address.",
+  saveLinkTitle: "Send this link to your email",
+  saveLinkDesc: "Enter your email and we'll send you the album link so you can find it anytime — no QR code needed.",
+  saveLinkSend: "Send",
+  saveLinkSent: "Link sent! Check your inbox. ✓",
   discountCode: "Discount code",
   discountPlaceholder: "Enter code…",
   discountApply: "Apply",
@@ -933,6 +955,10 @@ const de: Translations = {
   reminderSuccess: "Erinnerung eingerichtet! Prüfen Sie Ihren Posteingang.",
   reminderError: "Etwas ist schiefgelaufen. Bitte erneut versuchen.",
   reminderInvalidEmail: "Bitte geben Sie eine gültige E-Mail-Adresse ein.",
+  saveLinkTitle: "Link per E-Mail senden",
+  saveLinkDesc: "Geben Sie Ihre E-Mail-Adresse ein und wir senden Ihnen den Link zum Album — auch ohne QR-Code auffindbar.",
+  saveLinkSend: "Senden",
+  saveLinkSent: "Link gesendet! Bitte prüfen Sie Ihren Posteingang. ✓",
   discountCode: "Rabattcode",
   discountPlaceholder: "Code eingeben…",
   discountApply: "Einlösen",
@@ -1080,6 +1106,10 @@ const es: Translations = {
   reminderSuccess: "¡Recordatorio configurado! Revisa tu bandeja de entrada.",
   reminderError: "Algo salió mal. Inténtalo de nuevo.",
   reminderInvalidEmail: "Introduce una dirección de correo válida.",
+  saveLinkTitle: "Envíate el enlace por email",
+  saveLinkDesc: "Introduce tu email y te enviamos el enlace al álbum para que puedas encontrarlo cuando quieras, sin necesitar el QR.",
+  saveLinkSend: "Enviar",
+  saveLinkSent: "¡Enlace enviado! Revisa tu bandeja de entrada. ✓",
   discountCode: "Código de descuento",
   discountPlaceholder: "Introduce el código…",
   discountApply: "Aplicar",

@@ -418,6 +418,9 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
   const [dragOver, setDragOver] = useState(false);
   const [momentId, setMomentId] = useState<string>(defaultMomentId ?? "");
   const [droppedCount, setDroppedCount] = useState(0);
+  const [saveLinkEmail, setSaveLinkEmail] = useState("");
+  const [saveLinkSending, setSaveLinkSending] = useState(false);
+  const [saveLinkSent, setSaveLinkSent] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const remaining = Math.max(0, maxPhotos - currentCount);
   const isDemo = albumSlug === "ana-marko-13ka";
@@ -592,6 +595,24 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
 
   const success = files.filter(f => f.status === "done").length;
 
+  const sendAlbumLink = async () => {
+    const email = saveLinkEmail.trim();
+    if (!email || saveLinkSending || saveLinkSent) return;
+    setSaveLinkSending(true);
+    try {
+      await fetch(`/api/albums/${albumSlug}/remind`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, delayMinutes: 0 }),
+      });
+      setSaveLinkSent(true);
+    } catch {
+      // silently ignore — not critical
+    } finally {
+      setSaveLinkSending(false);
+    }
+  };
+
   return (
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-6">
       <div className="absolute inset-0 bg-[#0F1729]/70 backdrop-blur-sm" onClick={!uploading ? onClose : undefined} />
@@ -656,6 +677,35 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
               >
                 {t.closeWindow}
               </button>
+
+              {/* Save album link to email — so guest can find it tomorrow without QR */}
+              <div className="mt-5 pt-4 border-t border-gray-100 text-left">
+                <p className="text-xs font-semibold text-[#0F1729]/70 mb-1">📧 {t.saveLinkTitle}</p>
+                <p className="text-xs text-[#0F1729]/40 mb-3">{t.saveLinkDesc}</p>
+                {saveLinkSent ? (
+                  <p className="text-xs text-green-600 font-medium text-center py-2">{t.saveLinkSent}</p>
+                ) : (
+                  <div className="flex gap-2">
+                    <input
+                      type="email"
+                      value={saveLinkEmail}
+                      onChange={e => setSaveLinkEmail(e.target.value)}
+                      onKeyDown={e => e.key === "Enter" && sendAlbumLink()}
+                      placeholder="vas@email.com"
+                      autoComplete="email"
+                      className="flex-1 px-3 py-2 text-sm border border-gray-200 rounded-xl outline-none focus:border-gray-400"
+                    />
+                    <button
+                      onClick={sendAlbumLink}
+                      disabled={saveLinkSending || !saveLinkEmail.trim()}
+                      className="px-4 py-2 text-sm rounded-xl text-white font-medium transition-all disabled:opacity-40"
+                      style={{ background: accent }}
+                    >
+                      {saveLinkSending ? "…" : t.saveLinkSend}
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
           ) : (
             <>
