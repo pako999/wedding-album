@@ -59,7 +59,7 @@ const PLANS: Plan[] = [
       "Do 100 videoposnetkov",
       "QR koda za mizo",
       "Prenos vseh slik (ZIP)",
-      "Dostop 1 leto",
+      "Dostop 2 leti",
       "Live galerija v realnem času",
       "Personalizirana stran",
       "Premium predloge",

@@ -13,6 +13,7 @@ export async function POST(
   const admin = await requireAdmin();
   if (!admin) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
+
   const { id } = await params;
   const { active } = await req.json() as { active?: boolean };
 
