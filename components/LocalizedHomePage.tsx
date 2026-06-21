@@ -659,7 +659,7 @@ export async function LocalizedHomePage({ lang }: { lang: Lang }) {
           </Link>
           <div className="flex items-center gap-3 sm:gap-5">
             <LanguageSwitcher current={lang} languages={HOME_HREFLANG} ariaLabel={t.switcherAria} />
-            <Link href={lang === "sl" ? "/blog" : `/${lang}/blog`} className="hidden sm:block text-sm font-medium text-gray-600 hover:text-[#0F1729] transition-colors">
+            <Link href={`/${lang}/blog`} className="hidden sm:block text-sm font-medium text-gray-600 hover:text-[#0F1729] transition-colors">
               Blog
             </Link>
             <HeaderAuthButtons lang={lang} />
@@ -674,8 +674,8 @@ export async function LocalizedHomePage({ lang }: { lang: Lang }) {
               signedIn={signedIn}
               lang={lang}
               links={[
-                { href: lang === "sl" ? "/blog" : `/${lang}/blog`, label: t.navBlog },
-                { href: lang === "sl" ? "/contact" : `/${lang}/contact`, label: t.navContact },
+                { href: `/${lang}/blog`, label: t.navBlog },
+                { href: `/${lang}/contact`, label: t.navContact },
               ]}
               labels={{
                 open: t.navOpenMenu,
