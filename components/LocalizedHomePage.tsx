@@ -211,7 +211,7 @@ const COPY: Record<Lang, Copy> = {
     plus: { label: "Plus", tagline: "Za veće događaje i vjenčanja", price: "49€", was: "69€",
       features: ["Jedinstveni QR kod", "Neograničen broj gostiju", "Neograničeno fotografija", "Do 100 videozapisa", "Pristup galeriji 1 godinu", "Preuzimanje svih slika (ZIP)", "Live galerija (projekcija)", "Personalizirana stranica s imenima", "E-mail obavijesti za par"], cta: "Odaberi Plus", ribbon: "NAJPOPULARNIJE" },
     premium: { label: "Premium", tagline: "Za one koji žele sve", price: "79€", was: "109€",
-      features: ["Jedinstveni QR kod", "Neograničen broj gostiju", "Neograničeno fotografija", "Do 100 videozapisa", "Pristup galeriji 1 godinu", "Preuzimanje svih slika (ZIP)", "Live galerija (projekcija)", "Personalizirana stranica s imenima", "Vlastita domena (foto.vaše-ime.si)", "Premium dizajn predlošci", "Prioritetna podrška"], cta: "Odaberi Premium" },
+      features: ["Jedinstveni QR kod", "Neograničen broj gostiju", "Neograničeno fotografija", "Do 100 videozapisa", "Pristup galeriji 2 godine", "Preuzimanje svih slika (ZIP)", "Live galerija (projekcija)", "Personalizirana stranica s imenima", "Vlastita domena (foto.vaše-ime.si)", "Premium dizajn predlošci", "Prioritetna podrška"], cta: "Odaberi Premium" },
     guarantee: "30-dnevno jamstvo povrata novca – bez pitanja.",
     faqTitle: "Često postavljana pitanja",
     faqs: [
@@ -295,7 +295,7 @@ const COPY: Record<Lang, Copy> = {
     plus: { label: "Plus", tagline: "Za veće događaje i venčanja", price: "49€", was: "69€",
       features: ["Jedinstveni QR kod", "Neograničen broj gostiju", "Neograničeno fotografija", "Do 100 video snimaka", "Pristup galeriji 1 godinu", "Preuzimanje svih slika (ZIP)", "Live galerija (projekcija)", "Personalizovana stranica sa imenima", "E-mail obaveštenja za par"], cta: "Izaberi Plus", ribbon: "NAJPOPULARNIJE" },
     premium: { label: "Premium", tagline: "Za one koji žele sve", price: "79€", was: "109€",
-      features: ["Jedinstveni QR kod", "Neograničen broj gostiju", "Neograničeno fotografija", "Do 100 video snimaka", "Pristup galeriji 1 godinu", "Preuzimanje svih slika (ZIP)", "Live galerija (projekcija)", "Personalizovana stranica sa imenima", "Sopstveni domen (foto.vase-ime.si)", "Premium dizajn šabloni", "Prioritetna podrška"], cta: "Izaberi Premium" },
+      features: ["Jedinstveni QR kod", "Neograničen broj gostiju", "Neograničeno fotografija", "Do 100 video snimaka", "Pristup galeriji 2 godine", "Preuzimanje svih slika (ZIP)", "Live galerija (projekcija)", "Personalizovana stranica sa imenima", "Sopstveni domen (foto.vase-ime.si)", "Premium dizajn šabloni", "Prioritetna podrška"], cta: "Izaberi Premium" },
     guarantee: "30-dnevna garancija povraćaja novca – bez pitanja.",
     faqTitle: "Često postavljana pitanja",
     faqs: [
@@ -379,7 +379,7 @@ const COPY: Record<Lang, Copy> = {
     plus: { label: "Plus", tagline: "Für größere Feiern und Hochzeiten", price: "49€", was: "69€",
       features: ["Einzigartiger QR-Code", "Unbegrenzt Gäste", "Unbegrenzt Fotos", "Bis zu 100 Videos", "1 Jahr Galerie-Zugriff", "Download aller Bilder (ZIP)", "Live-Galerie (Projektion)", "Personalisierte Seite mit Namen", "E-Mail-Benachrichtigungen"], cta: "Plus wählen", ribbon: "BELIEBTESTE" },
     premium: { label: "Premium", tagline: "Für alle, die alles wollen", price: "79€", was: "109€",
-      features: ["Einzigartiger QR-Code", "Unbegrenzt Gäste", "Unbegrenzt Fotos", "Bis zu 100 Videos", "1 Jahr Galerie-Zugriff", "Download aller Bilder (ZIP)", "Live-Galerie (Projektion)", "Personalisierte Seite mit Namen", "Eigene Domain (foto.ihr-name.si)", "Premium-Design-Vorlagen", "Prioritäts-Support"], cta: "Premium wählen" },
+      features: ["Einzigartiger QR-Code", "Unbegrenzt Gäste", "Unbegrenzt Fotos", "Bis zu 100 Videos", "2 Jahre Galerie-Zugriff", "Download aller Bilder (ZIP)", "Live-Galerie (Projektion)", "Personalisierte Seite mit Namen", "Eigene Domain (foto.ihr-name.si)", "Premium-Design-Vorlagen", "Prioritäts-Support"], cta: "Premium wählen" },
     guarantee: "30-Tage-Geld-zurück-Garantie – ohne Wenn und Aber.",
     faqTitle: "Häufige Fragen",
     faqs: [
@@ -463,7 +463,7 @@ const COPY: Record<Lang, Copy> = {
     plus: { label: "Plus", tagline: "For bigger events and weddings", price: "€49", was: "€69",
       features: ["Unique QR code", "Unlimited guests", "Unlimited photos", "Up to 100 videos", "1-year gallery access", "Bulk download (ZIP)", "Live gallery (projection)", "Personalised page with names", "Email notifications"], cta: "Choose Plus", ribbon: "MOST POPULAR" },
     premium: { label: "Premium", tagline: "For those who want it all", price: "€79", was: "€109",
-      features: ["Unique QR code", "Unlimited guests", "Unlimited photos", "Up to 100 videos", "1-year gallery access", "Bulk download (ZIP)", "Live gallery (projection)", "Personalised page with names", "Custom domain (photos.yourname.com)", "Premium design templates", "Priority support"], cta: "Choose Premium" },
+      features: ["Unique QR code", "Unlimited guests", "Unlimited photos", "Up to 100 videos", "2-year gallery access", "Bulk download (ZIP)", "Live gallery (projection)", "Personalised page with names", "Custom domain (photos.yourname.com)", "Premium design templates", "Priority support"], cta: "Choose Premium" },
     guarantee: "30-day money-back guarantee — no questions asked.",
     faqTitle: "Frequently asked questions",
     faqs: [
@@ -547,7 +547,7 @@ const COPY: Record<Lang, Copy> = {
     plus: { label: "Plus", tagline: "Para eventos grandes y bodas", price: "49€", was: "69€",
       features: ["Código QR único", "Invitados ilimitados", "Fotos ilimitadas", "Hasta 100 vídeos", "Acceso 1 año", "Descarga masiva (ZIP)", "Galería en directo (proyección)", "Página personalizada con nombres", "Avisos por email"], cta: "Elegir Plus", ribbon: "MÁS POPULAR" },
     premium: { label: "Premium", tagline: "Para los que lo quieren todo", price: "79€", was: "109€",
-      features: ["Código QR único", "Invitados ilimitados", "Fotos ilimitadas", "Hasta 100 vídeos", "Acceso 1 año", "Descarga masiva (ZIP)", "Galería en directo (proyección)", "Página personalizada con nombres", "Dominio propio (fotos.tu-nombre.com)", "Plantillas premium", "Soporte prioritario"], cta: "Elegir Premium" },
+      features: ["Código QR único", "Invitados ilimitados", "Fotos ilimitadas", "Hasta 100 vídeos", "Acceso 2 años", "Descarga masiva (ZIP)", "Galería en directo (proyección)", "Página personalizada con nombres", "Dominio propio (fotos.tu-nombre.com)", "Plantillas premium", "Soporte prioritario"], cta: "Elegir Premium" },
     guarantee: "Garantía de devolución de 30 días — sin preguntas.",
     faqTitle: "Preguntas frecuentes",
     faqs: [

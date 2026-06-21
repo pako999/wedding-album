@@ -743,7 +743,7 @@ export default async function HomePage() {
                   "Neomejeno število gostov",
                   "Neomejeno fotografij",
                   "Do 100 videoposnetkov",
-                  "Dostop do galerije 1 leto",
+                  "Dostop do galerije 2 leti",
                   "Prenos vseh slik (ZIP)",
                   "Live galerija (projekcija)",
                   "Personalizirana stran z imeni",
