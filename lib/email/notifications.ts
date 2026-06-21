@@ -543,3 +543,451 @@ export async function sendAdminBankOrderEmail(params: {
   );
   await sendAdminEmail(`🏦 Predračun ${planPrice}€ — ${albumSlug} (${planName})`, html);
 }
+
+// ─── Affiliate emails ────────────────────────────────────────────────────────
+//
+// Multi-language outgoing notifications for the partner program. Strings are
+// duplicated here per locale to keep the templates self-contained (the
+// rendering happens server-side and we don't want to load the full
+// translations.ts payload just for emails). If you add a key here, mirror
+// it across all six locale objects.
+
+type AffiliateLocale = "sl" | "hr" | "sr" | "en" | "de" | "es";
+
+interface AffiliateStrings {
+  // Application received (applicant)
+  appReceivedSubject: string;
+  appReceivedHeading: string;
+  appReceivedBody: (name: string) => string;
+  appReceivedFooter: string;
+  // Approved / welcome
+  welcomeSubject: string;
+  welcomeHeading: string;
+  welcomeBody: (name: string) => string;
+  welcomeCodeLabel: string;
+  welcomeLinkLabel: string;
+  welcomeRateLabel: string;
+  welcomeRateValue: (pct: number) => string;
+  welcomeLockLabel: string;
+  welcomeLockValue: (days: number) => string;
+  welcomeMinPayoutLabel: string;
+  welcomeMinPayoutValue: (eur: number) => string;
+  welcomeCta: string;
+  // Commission earned
+  commissionSubject: (amount: string) => string;
+  commissionHeading: string;
+  commissionGreeting: (name: string) => string;
+  commissionIntro: string;
+  commissionAmountLabel: (pct: number) => string;
+  commissionOrderLabel: string;
+  commissionOrderValueLabel: string;
+  commissionYourCutLabel: string;
+  commissionLockNotice: (date: string) => string;
+  commissionCta: string;
+  // Approved (after lock)
+  approvedSubject: (amount: string) => string;
+  approvedBody: (name: string, amount: string) => string;
+  approvedCta: string;
+  contactFooter: string;
+}
+
+const AFF_STRINGS: Record<AffiliateLocale, AffiliateStrings> = {
+  sl: {
+    appReceivedSubject: "Prijava prejeta — GuestCam partnerski program",
+    appReceivedHeading: "🎉 Prijava prejeta",
+    appReceivedBody: (name) => `Pozdravljeni, <strong>${escapeHtml(name)}</strong>!<br><br>Hvala za vašo prijavo v GuestCam partnerski program. Pregledali jo bomo in vam odgovorili v 2 delovnih dneh.`,
+    appReceivedFooter: "Za vprašanja nam pišite na <a href=\"mailto:partnerji@guestcam.si\" style=\"color:#1E3A8A;\">partnerji@guestcam.si</a>",
+    welcomeSubject: "🎉 Dobrodošli v GuestCam partnerskem programu",
+    welcomeHeading: "🎉 Vaša prijava je odobrena!",
+    welcomeBody: (name) => `Pozdravljeni, <strong>${escapeHtml(name)}</strong>!<br><br>Veseli nas, da ste del GuestCam partnerske skupnosti. Spodaj so vse informacije, ki jih potrebujete za začetek.`,
+    welcomeCodeLabel: "Vaša partnerska koda",
+    welcomeLinkLabel: "Vaša partnerska povezava",
+    welcomeRateLabel: "Provizija",
+    welcomeRateValue: (pct) => `${pct}% od vsakega plačanega naročila`,
+    welcomeLockLabel: "Rok izplačila",
+    welcomeLockValue: (days) => `${days} dni po nakupu`,
+    welcomeMinPayoutLabel: "Minimalni znesek za izplačilo",
+    welcomeMinPayoutValue: (eur) => `${eur} EUR`,
+    welcomeCta: "Odpri nadzorno ploščo →",
+    commissionSubject: (amount) => `💰 Zaslužili ste ${amount} EUR — GuestCam partnerski program`,
+    commissionHeading: "💰 Nova provizija",
+    commissionGreeting: (name) => `Pozdravljeni, <strong>${escapeHtml(name)}</strong>!`,
+    commissionIntro: "Nekdo je kupil GuestCam prek vaše partnerske povezave. Zaslužili ste:",
+    commissionAmountLabel: (pct) => `provizija (${pct}% od naročila)`,
+    commissionOrderLabel: "Naročilo",
+    commissionOrderValueLabel: "Vrednost naročila",
+    commissionYourCutLabel: "Vaša provizija",
+    commissionLockNotice: (date) => `Provizija bo potrjena <strong>${date}</strong> (14-dnevni varnostni rok za morebitna vračila).`,
+    commissionCta: "Poglej nadzorno ploščo →",
+    approvedSubject: (amount) => `✅ Vaša provizija ${amount} EUR je potrjena`,
+    approvedBody: (name, amount) => `Pozdravljeni, <strong>${escapeHtml(name)}</strong>!<br><br>Vaša provizija v višini <strong>${amount} EUR</strong> je zdaj potrjena in na voljo za izplačilo.`,
+    approvedCta: "Zahtevaj izplačilo →",
+    contactFooter: "GuestCam partnerski program · <a href=\"mailto:partnerji@guestcam.si\" style=\"color:#1E3A8A;\">partnerji@guestcam.si</a>",
+  },
+  en: {
+    appReceivedSubject: "Application received — GuestCam Partner Program",
+    appReceivedHeading: "🎉 Application received",
+    appReceivedBody: (name) => `Hi <strong>${escapeHtml(name)}</strong>,<br><br>Thanks for applying to the GuestCam Partner Program. We'll review your application and get back to you within 2 business days.`,
+    appReceivedFooter: "Questions? Email us at <a href=\"mailto:partnerji@guestcam.si\" style=\"color:#1E3A8A;\">partnerji@guestcam.si</a>",
+    welcomeSubject: "🎉 Welcome to the GuestCam Partner Program",
+    welcomeHeading: "🎉 Your application is approved!",
+    welcomeBody: (name) => `Hi <strong>${escapeHtml(name)}</strong>,<br><br>We're glad to have you in the GuestCam partner community. Here's everything you need to get started.`,
+    welcomeCodeLabel: "Your referral code",
+    welcomeLinkLabel: "Your referral link",
+    welcomeRateLabel: "Commission",
+    welcomeRateValue: (pct) => `${pct}% of every paid order`,
+    welcomeLockLabel: "Payout window",
+    welcomeLockValue: (days) => `${days} days after purchase`,
+    welcomeMinPayoutLabel: "Minimum payout",
+    welcomeMinPayoutValue: (eur) => `${eur} EUR`,
+    welcomeCta: "Open dashboard →",
+    commissionSubject: (amount) => `💰 You earned ${amount} EUR — GuestCam Partner Program`,
+    commissionHeading: "💰 New commission",
+    commissionGreeting: (name) => `Hi <strong>${escapeHtml(name)}</strong>,`,
+    commissionIntro: "Someone bought GuestCam through your partner link. You earned:",
+    commissionAmountLabel: (pct) => `commission (${pct}% of order)`,
+    commissionOrderLabel: "Order",
+    commissionOrderValueLabel: "Order value",
+    commissionYourCutLabel: "Your commission",
+    commissionLockNotice: (date) => `Commission becomes available on <strong>${date}</strong> (14-day refund safety window).`,
+    commissionCta: "Open dashboard →",
+    approvedSubject: (amount) => `✅ Your ${amount} EUR commission is approved`,
+    approvedBody: (name, amount) => `Hi <strong>${escapeHtml(name)}</strong>,<br><br>Your commission of <strong>${amount} EUR</strong> is now approved and ready for payout.`,
+    approvedCta: "Request payout →",
+    contactFooter: "GuestCam Partner Program · <a href=\"mailto:partnerji@guestcam.si\" style=\"color:#1E3A8A;\">partnerji@guestcam.si</a>",
+  },
+  de: {
+    appReceivedSubject: "Bewerbung erhalten — GuestCam Partnerprogramm",
+    appReceivedHeading: "🎉 Bewerbung erhalten",
+    appReceivedBody: (name) => `Hallo <strong>${escapeHtml(name)}</strong>,<br><br>vielen Dank für Ihre Bewerbung beim GuestCam Partnerprogramm. Wir prüfen Ihre Bewerbung und melden uns innerhalb von 2 Werktagen.`,
+    appReceivedFooter: "Fragen? Schreiben Sie uns an <a href=\"mailto:partnerji@guestcam.si\" style=\"color:#1E3A8A;\">partnerji@guestcam.si</a>",
+    welcomeSubject: "🎉 Willkommen im GuestCam Partnerprogramm",
+    welcomeHeading: "🎉 Ihre Bewerbung wurde genehmigt!",
+    welcomeBody: (name) => `Hallo <strong>${escapeHtml(name)}</strong>,<br><br>wir freuen uns, Sie in der GuestCam Partner-Community begrüßen zu dürfen. Hier finden Sie alles, was Sie für den Start brauchen.`,
+    welcomeCodeLabel: "Ihr Partner-Code",
+    welcomeLinkLabel: "Ihr Partner-Link",
+    welcomeRateLabel: "Provision",
+    welcomeRateValue: (pct) => `${pct}% von jeder bezahlten Bestellung`,
+    welcomeLockLabel: "Auszahlungsfrist",
+    welcomeLockValue: (days) => `${days} Tage nach Kauf`,
+    welcomeMinPayoutLabel: "Mindestbetrag für Auszahlung",
+    welcomeMinPayoutValue: (eur) => `${eur} EUR`,
+    welcomeCta: "Dashboard öffnen →",
+    commissionSubject: (amount) => `💰 Sie haben ${amount} EUR verdient — GuestCam Partnerprogramm`,
+    commissionHeading: "💰 Neue Provision",
+    commissionGreeting: (name) => `Hallo <strong>${escapeHtml(name)}</strong>,`,
+    commissionIntro: "Jemand hat GuestCam über Ihren Partner-Link gekauft. Sie haben verdient:",
+    commissionAmountLabel: (pct) => `Provision (${pct}% der Bestellung)`,
+    commissionOrderLabel: "Bestellung",
+    commissionOrderValueLabel: "Bestellwert",
+    commissionYourCutLabel: "Ihre Provision",
+    commissionLockNotice: (date) => `Die Provision wird am <strong>${date}</strong> freigegeben (14-tägige Rückerstattungsfrist).`,
+    commissionCta: "Dashboard öffnen →",
+    approvedSubject: (amount) => `✅ Ihre Provision von ${amount} EUR wurde freigegeben`,
+    approvedBody: (name, amount) => `Hallo <strong>${escapeHtml(name)}</strong>,<br><br>Ihre Provision in Höhe von <strong>${amount} EUR</strong> ist jetzt freigegeben und auszahlungsbereit.`,
+    approvedCta: "Auszahlung anfordern →",
+    contactFooter: "GuestCam Partnerprogramm · <a href=\"mailto:partnerji@guestcam.si\" style=\"color:#1E3A8A;\">partnerji@guestcam.si</a>",
+  },
+  hr: {
+    appReceivedSubject: "Prijava primljena — GuestCam partnerski program",
+    appReceivedHeading: "🎉 Prijava primljena",
+    appReceivedBody: (name) => `Pozdrav, <strong>${escapeHtml(name)}</strong>!<br><br>Hvala na prijavi u GuestCam partnerski program. Pregledat ćemo vašu prijavu i javiti vam se u roku od 2 radna dana.`,
+    appReceivedFooter: "Pitanja? Pišite nam na <a href=\"mailto:partnerji@guestcam.si\" style=\"color:#1E3A8A;\">partnerji@guestcam.si</a>",
+    welcomeSubject: "🎉 Dobrodošli u GuestCam partnerski program",
+    welcomeHeading: "🎉 Vaša prijava je odobrena!",
+    welcomeBody: (name) => `Pozdrav, <strong>${escapeHtml(name)}</strong>!<br><br>Drago nam je što ste dio GuestCam partnerske zajednice. U nastavku su sve informacije za početak.`,
+    welcomeCodeLabel: "Vaš partnerski kod",
+    welcomeLinkLabel: "Vaša partnerska poveznica",
+    welcomeRateLabel: "Provizija",
+    welcomeRateValue: (pct) => `${pct}% od svake plaćene narudžbe`,
+    welcomeLockLabel: "Rok isplate",
+    welcomeLockValue: (days) => `${days} dana nakon kupnje`,
+    welcomeMinPayoutLabel: "Minimalni iznos za isplatu",
+    welcomeMinPayoutValue: (eur) => `${eur} EUR`,
+    welcomeCta: "Otvori nadzornu ploču →",
+    commissionSubject: (amount) => `💰 Zaradili ste ${amount} EUR — GuestCam partnerski program`,
+    commissionHeading: "💰 Nova provizija",
+    commissionGreeting: (name) => `Pozdrav, <strong>${escapeHtml(name)}</strong>!`,
+    commissionIntro: "Netko je kupio GuestCam preko vaše partnerske poveznice. Zaradili ste:",
+    commissionAmountLabel: (pct) => `provizija (${pct}% od narudžbe)`,
+    commissionOrderLabel: "Narudžba",
+    commissionOrderValueLabel: "Vrijednost narudžbe",
+    commissionYourCutLabel: "Vaša provizija",
+    commissionLockNotice: (date) => `Provizija će biti potvrđena <strong>${date}</strong> (14-dnevni rok za moguće povrate).`,
+    commissionCta: "Otvori nadzornu ploču →",
+    approvedSubject: (amount) => `✅ Vaša provizija od ${amount} EUR je odobrena`,
+    approvedBody: (name, amount) => `Pozdrav, <strong>${escapeHtml(name)}</strong>!<br><br>Vaša provizija u iznosu od <strong>${amount} EUR</strong> sada je odobrena i spremna za isplatu.`,
+    approvedCta: "Zatraži isplatu →",
+    contactFooter: "GuestCam partnerski program · <a href=\"mailto:partnerji@guestcam.si\" style=\"color:#1E3A8A;\">partnerji@guestcam.si</a>",
+  },
+  sr: {
+    appReceivedSubject: "Prijava primljena — GuestCam partnerski program",
+    appReceivedHeading: "🎉 Prijava primljena",
+    appReceivedBody: (name) => `Pozdrav, <strong>${escapeHtml(name)}</strong>!<br><br>Hvala na prijavi za GuestCam partnerski program. Pregledaćemo vašu prijavu i javićemo vam se u roku od 2 radna dana.`,
+    appReceivedFooter: "Pitanja? Pišite nam na <a href=\"mailto:partnerji@guestcam.si\" style=\"color:#1E3A8A;\">partnerji@guestcam.si</a>",
+    welcomeSubject: "🎉 Dobrodošli u GuestCam partnerski program",
+    welcomeHeading: "🎉 Vaša prijava je odobrena!",
+    welcomeBody: (name) => `Pozdrav, <strong>${escapeHtml(name)}</strong>!<br><br>Drago nam je što ste deo GuestCam partnerske zajednice. U nastavku su sve informacije za početak.`,
+    welcomeCodeLabel: "Vaš partnerski kod",
+    welcomeLinkLabel: "Vaš partnerski link",
+    welcomeRateLabel: "Provizija",
+    welcomeRateValue: (pct) => `${pct}% od svake plaćene porudžbine`,
+    welcomeLockLabel: "Rok isplate",
+    welcomeLockValue: (days) => `${days} dana posle kupovine`,
+    welcomeMinPayoutLabel: "Minimalni iznos za isplatu",
+    welcomeMinPayoutValue: (eur) => `${eur} EUR`,
+    welcomeCta: "Otvori kontrolnu tablu →",
+    commissionSubject: (amount) => `💰 Zaradili ste ${amount} EUR — GuestCam partnerski program`,
+    commissionHeading: "💰 Nova provizija",
+    commissionGreeting: (name) => `Pozdrav, <strong>${escapeHtml(name)}</strong>!`,
+    commissionIntro: "Neko je kupio GuestCam preko vašeg partnerskog linka. Zaradili ste:",
+    commissionAmountLabel: (pct) => `provizija (${pct}% od porudžbine)`,
+    commissionOrderLabel: "Porudžbina",
+    commissionOrderValueLabel: "Vrednost porudžbine",
+    commissionYourCutLabel: "Vaša provizija",
+    commissionLockNotice: (date) => `Provizija će biti odobrena <strong>${date}</strong> (14-dnevni rok za eventualne povraćaje).`,
+    commissionCta: "Otvori kontrolnu tablu →",
+    approvedSubject: (amount) => `✅ Vaša provizija od ${amount} EUR je odobrena`,
+    approvedBody: (name, amount) => `Pozdrav, <strong>${escapeHtml(name)}</strong>!<br><br>Vaša provizija u iznosu od <strong>${amount} EUR</strong> sada je odobrena i dostupna za isplatu.`,
+    approvedCta: "Zatraži isplatu →",
+    contactFooter: "GuestCam partnerski program · <a href=\"mailto:partnerji@guestcam.si\" style=\"color:#1E3A8A;\">partnerji@guestcam.si</a>",
+  },
+  es: {
+    appReceivedSubject: "Solicitud recibida — Programa de afiliados GuestCam",
+    appReceivedHeading: "🎉 Solicitud recibida",
+    appReceivedBody: (name) => `Hola <strong>${escapeHtml(name)}</strong>,<br><br>Gracias por solicitar entrar al programa de afiliados de GuestCam. Revisaremos tu solicitud y te responderemos en un plazo de 2 días hábiles.`,
+    appReceivedFooter: "¿Preguntas? Escríbenos a <a href=\"mailto:partnerji@guestcam.si\" style=\"color:#1E3A8A;\">partnerji@guestcam.si</a>",
+    welcomeSubject: "🎉 Bienvenido al programa de afiliados de GuestCam",
+    welcomeHeading: "🎉 ¡Tu solicitud ha sido aprobada!",
+    welcomeBody: (name) => `Hola <strong>${escapeHtml(name)}</strong>,<br><br>Nos alegra que formes parte de la comunidad de afiliados de GuestCam. Aquí tienes todo lo que necesitas para empezar.`,
+    welcomeCodeLabel: "Tu código de afiliado",
+    welcomeLinkLabel: "Tu enlace de afiliado",
+    welcomeRateLabel: "Comisión",
+    welcomeRateValue: (pct) => `${pct}% de cada pedido pagado`,
+    welcomeLockLabel: "Plazo de pago",
+    welcomeLockValue: (days) => `${days} días después de la compra`,
+    welcomeMinPayoutLabel: "Importe mínimo para pago",
+    welcomeMinPayoutValue: (eur) => `${eur} EUR`,
+    welcomeCta: "Abrir panel →",
+    commissionSubject: (amount) => `💰 Has ganado ${amount} EUR — Programa de afiliados GuestCam`,
+    commissionHeading: "💰 Nueva comisión",
+    commissionGreeting: (name) => `Hola <strong>${escapeHtml(name)}</strong>,`,
+    commissionIntro: "Alguien ha comprado GuestCam a través de tu enlace de afiliado. Has ganado:",
+    commissionAmountLabel: (pct) => `comisión (${pct}% del pedido)`,
+    commissionOrderLabel: "Pedido",
+    commissionOrderValueLabel: "Valor del pedido",
+    commissionYourCutLabel: "Tu comisión",
+    commissionLockNotice: (date) => `La comisión se aprobará el <strong>${date}</strong> (período de seguridad de 14 días por posibles reembolsos).`,
+    commissionCta: "Abrir panel →",
+    approvedSubject: (amount) => `✅ Tu comisión de ${amount} EUR ha sido aprobada`,
+    approvedBody: (name, amount) => `Hola <strong>${escapeHtml(name)}</strong>,<br><br>Tu comisión de <strong>${amount} EUR</strong> ya está aprobada y disponible para pago.`,
+    approvedCta: "Solicitar pago →",
+    contactFooter: "Programa de afiliados GuestCam · <a href=\"mailto:partnerji@guestcam.si\" style=\"color:#1E3A8A;\">partnerji@guestcam.si</a>",
+  },
+};
+
+function affiliateShell(heading: string, body: string, footer: string): string {
+  return `<!DOCTYPE html>
+<html><head><meta charset="utf-8" /><title>${heading}</title></head>
+<body style="margin:0;padding:0;background:#F2F4F8;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;color:#0F1729;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#F2F4F8;padding:32px 16px;">
+    <tr><td align="center">
+      <table width="560" cellpadding="0" cellspacing="0" style="max-width:560px;background:#ffffff;border-radius:14px;overflow:hidden;box-shadow:0 4px 20px rgba(15,23,41,0.06);">
+        <tr><td style="background:#0F1729;padding:28px 32px;">
+          <p style="margin:0 0 6px;font-size:11px;letter-spacing:3px;font-weight:700;color:#FFC94D;">GUESTCAM · PARTNERJI</p>
+          <h1 style="margin:0;font-size:20px;color:#ffffff;font-weight:800;">${heading}</h1>
+        </td></tr>
+        <tr><td style="padding:28px 32px;font-size:14.5px;line-height:1.65;color:#475569;">
+          ${body}
+        </td></tr>
+      </table>
+      <p style="margin:14px 0 0;font-size:12px;color:#94A3B8;line-height:1.6;">${footer}</p>
+    </td></tr>
+  </table>
+</body></html>`;
+}
+
+function pickLocale(locale: string | undefined): AffiliateLocale {
+  return locale && locale in AFF_STRINGS ? (locale as AffiliateLocale) : "sl";
+}
+
+function fmtMoney(cents: number): string {
+  return (cents / 100).toFixed(2);
+}
+
+function fmtDate(d: Date, locale: AffiliateLocale): string {
+  const localeTag = locale === "sl" ? "sl-SI" : locale === "hr" ? "hr-HR" : locale === "sr" ? "sr-Latn" : locale === "de" ? "de-DE" : locale === "es" ? "es-ES" : "en-GB";
+  return d.toLocaleDateString(localeTag, { day: "numeric", month: "long", year: "numeric" });
+}
+
+/** Confirmation email when an affiliate submits the application form. */
+export async function sendAffiliateApplicationReceivedEmail({
+  to, name, locale,
+}: { to: string; name: string; locale: string }) {
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) return;
+  const t = AFF_STRINGS[pickLocale(locale)];
+  const html = affiliateShell(
+    t.appReceivedHeading,
+    t.appReceivedBody(name),
+    t.appReceivedFooter,
+  );
+  try {
+    await new Resend(apiKey).emails.send({
+      from: `GuestCam Partnerji <${FROM}>`,
+      to,
+      subject: t.appReceivedSubject,
+      html,
+    });
+  } catch (err) {
+    console.error("[affiliate apply email] send failed:", err);
+  }
+}
+
+/** Admin notification when a new affiliate application lands. */
+export async function sendAdminAffiliateApplicationEmail(params: {
+  affiliateId: string;
+  name: string;
+  email: string;
+  website?: string | null;
+  promotionPlan: string;
+}) {
+  const html = adminEmailShell(
+    `🤝 Nova partnerska prijava — ${params.name}`,
+    `<h2 style="margin:0 0 16px;font-size:18px;font-weight:800;color:#0F1729;">🤝 Nova partnerska prijava</h2>
+     <table cellpadding="0" cellspacing="0" style="font-size:14px;line-height:1.9;color:#475569;width:100%;">
+       <tr><td style="width:130px;font-weight:700;color:#0F1729;">Ime:</td><td>${escapeHtml(params.name)}</td></tr>
+       <tr><td style="font-weight:700;color:#0F1729;">Email:</td><td><a href="mailto:${escapeHtml(params.email)}" style="color:#1E3A8A;">${escapeHtml(params.email)}</a></td></tr>
+       ${params.website ? `<tr><td style="font-weight:700;color:#0F1729;">Spletna stran:</td><td><a href="${escapeHtml(params.website)}" style="color:#1E3A8A;">${escapeHtml(params.website)}</a></td></tr>` : ""}
+       <tr><td style="vertical-align:top;font-weight:700;color:#0F1729;">Načrt promocije:</td><td>${escapeHtml(params.promotionPlan).replace(/\n/g, "<br>")}</td></tr>
+     </table>
+     <p style="margin:16px 0 0;">
+       <a href="${APP_URL}/admin/affiliates/${params.affiliateId}" style="display:inline-block;padding:11px 22px;background:#0F1729;color:#fff;text-decoration:none;border-radius:8px;font-weight:700;font-size:13px;">Pregled v admin panelu →</a>
+     </p>`,
+  );
+  await sendAdminEmail(`🤝 Nova partnerska prijava — ${params.name} (${params.email})`, html);
+}
+
+/** Sent when an admin approves an affiliate application. */
+export async function sendAffiliateWelcomeEmail({
+  to, name, locale, referralCode, commissionRate, lockDays, minPayoutEur,
+}: {
+  to: string;
+  name: string;
+  locale: string;
+  referralCode: string;
+  commissionRate: number;
+  lockDays: number;
+  minPayoutEur: number;
+}) {
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) return;
+  const t = AFF_STRINGS[pickLocale(locale)];
+  const refLink = `${APP_URL}/?ref=${referralCode}`;
+  const dashboardUrl = `${APP_URL}/affiliate/dashboard`;
+  const body = `
+    ${t.welcomeBody(name)}
+    <div style="margin:22px 0 8px;background:#F8FAFC;border:1px solid #E2E8F0;border-radius:12px;padding:18px 20px;">
+      <p style="margin:0 0 4px;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#94A3B8;font-weight:700;">${t.welcomeCodeLabel}</p>
+      <p style="margin:0;font-family:monospace;font-size:22px;font-weight:800;color:#0F1729;letter-spacing:2px;">${escapeHtml(referralCode)}</p>
+      <p style="margin:14px 0 4px;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#94A3B8;font-weight:700;">${t.welcomeLinkLabel}</p>
+      <a href="${refLink}" style="font-size:13px;color:#1E3A8A;font-weight:600;word-break:break-all;">${refLink}</a>
+    </div>
+    <table cellpadding="0" cellspacing="0" style="font-size:14px;line-height:1.9;color:#475569;width:100%;margin-top:14px;">
+      <tr><td style="font-weight:700;color:#0F1729;">${t.welcomeRateLabel}:</td><td>${t.welcomeRateValue(commissionRate)}</td></tr>
+      <tr><td style="font-weight:700;color:#0F1729;">${t.welcomeLockLabel}:</td><td>${t.welcomeLockValue(lockDays)}</td></tr>
+      <tr><td style="font-weight:700;color:#0F1729;">${t.welcomeMinPayoutLabel}:</td><td>${t.welcomeMinPayoutValue(minPayoutEur)}</td></tr>
+    </table>
+    <p style="margin:24px 0 0;text-align:center;">
+      <a href="${dashboardUrl}" style="display:inline-block;padding:14px 28px;background:#FFC94D;color:#0F1729;text-decoration:none;border-radius:10px;font-weight:800;font-size:14px;">${t.welcomeCta}</a>
+    </p>
+  `;
+  try {
+    await new Resend(apiKey).emails.send({
+      from: `GuestCam Partnerji <${FROM}>`,
+      to,
+      subject: t.welcomeSubject,
+      html: affiliateShell(t.welcomeHeading, body, t.contactFooter),
+    });
+  } catch (err) {
+    console.error("[affiliate welcome email] send failed:", err);
+  }
+}
+
+/** Sent immediately after a commission is created (pending status). */
+export async function sendAffiliateCommissionEmail({
+  to, name, locale, commissionAmountCents, orderAmountCents, commissionRate,
+  orderDescription, lockUntil,
+}: {
+  to: string;
+  name: string;
+  locale: string;
+  commissionAmountCents: number;
+  orderAmountCents: number;
+  commissionRate: number;
+  orderDescription: string;
+  lockUntil: Date;
+}) {
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) return;
+  const t = AFF_STRINGS[pickLocale(locale)];
+  const localeKey = pickLocale(locale);
+  const commissionStr = fmtMoney(commissionAmountCents);
+  const orderStr = fmtMoney(orderAmountCents);
+  const lockStr = fmtDate(lockUntil, localeKey);
+  const dashboardUrl = `${APP_URL}/affiliate/dashboard`;
+  const body = `
+    <p style="margin:0 0 12px;">${t.commissionGreeting(name)}</p>
+    <p style="margin:0;">${t.commissionIntro}</p>
+    <div style="margin:22px 0;background:#F0FDF4;border-radius:10px;padding:24px;text-align:center;">
+      <p style="margin:0;color:#15803D;font-size:38px;font-weight:800;line-height:1;">${commissionStr} EUR</p>
+      <p style="margin:6px 0 0;color:#475569;font-size:12px;">${t.commissionAmountLabel(commissionRate)}</p>
+    </div>
+    <table cellpadding="0" cellspacing="0" style="font-size:14px;line-height:1.9;color:#475569;width:100%;">
+      <tr><td style="font-weight:700;color:#0F1729;">${t.commissionOrderLabel}:</td><td style="text-align:right;">${escapeHtml(orderDescription)}</td></tr>
+      <tr><td style="font-weight:700;color:#0F1729;">${t.commissionOrderValueLabel}:</td><td style="text-align:right;">${orderStr} EUR</td></tr>
+      <tr><td style="font-weight:700;color:#0F1729;">${t.commissionYourCutLabel}:</td><td style="text-align:right;color:#15803D;font-weight:800;">${commissionStr} EUR</td></tr>
+    </table>
+    <p style="margin:18px 0 0;font-size:13px;color:#64748B;">⏳ ${t.commissionLockNotice(lockStr)}</p>
+    <p style="margin:24px 0 0;text-align:center;">
+      <a href="${dashboardUrl}" style="display:inline-block;padding:14px 28px;background:#0F1729;color:#fff;text-decoration:none;border-radius:10px;font-weight:800;font-size:14px;">${t.commissionCta}</a>
+    </p>
+  `;
+  try {
+    await new Resend(apiKey).emails.send({
+      from: `GuestCam Partnerji <${FROM}>`,
+      to,
+      subject: t.commissionSubject(commissionStr),
+      html: affiliateShell(t.commissionHeading, body, t.contactFooter),
+    });
+  } catch (err) {
+    console.error("[affiliate commission email] send failed:", err);
+  }
+}
+
+/** Sent when a commission transitions from pending → approved (after lock period). */
+export async function sendAffiliateCommissionApprovedEmail({
+  to, name, locale, amountCents,
+}: { to: string; name: string; locale: string; amountCents: number }) {
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) return;
+  const t = AFF_STRINGS[pickLocale(locale)];
+  const amountStr = fmtMoney(amountCents);
+  const payoutUrl = `${APP_URL}/affiliate/dashboard`;
+  const body = `
+    ${t.approvedBody(name, amountStr)}
+    <p style="margin:24px 0 0;text-align:center;">
+      <a href="${payoutUrl}" style="display:inline-block;padding:14px 28px;background:#0F1729;color:#fff;text-decoration:none;border-radius:10px;font-weight:800;font-size:14px;">${t.approvedCta}</a>
+    </p>
+  `;
+  try {
+    await new Resend(apiKey).emails.send({
+      from: `GuestCam Partnerji <${FROM}>`,
+      to,
+      subject: t.approvedSubject(amountStr),
+      html: affiliateShell("✅", body, t.contactFooter),
+    });
+  } catch (err) {
+    console.error("[affiliate approved email] send failed:", err);
+  }
+}

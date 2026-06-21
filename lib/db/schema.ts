@@ -338,6 +338,142 @@ export const bankOrders = pgTable(
 export type BankOrder = typeof bankOrders.$inferSelect;
 export type NewBankOrder = typeof bankOrders.$inferInsert;
 
+// ─── Affiliates ──────────────────────────────────────────────────────────────
+// Partner program: bloggers, agencies, customers refer GuestCam and earn
+// a commission (default 20%) on each paid order. All monetary fields use
+// integer cents (€49 = 4900) to match the rest of the codebase and avoid
+// floating-point drift.
+
+export const affiliates = pgTable(
+  "affiliates",
+  {
+    id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+    // Set if the affiliate is also a Clerk user; nullable for external partners.
+    clerkUserId: text("clerk_user_id"),
+    email: text("email").notNull().unique(),
+    name: text("name").notNull(),
+    website: text("website"),
+    paypalEmail: text("paypal_email"),
+    bankIban: text("bank_iban"),
+    // Unique code that goes in their link: guestcam.si/?ref=YOURCODE
+    referralCode: varchar("referral_code", { length: 32 }).notNull().unique(),
+    // Percent (1–100). 20 = 20% of order value.
+    commissionRate: integer("commission_rate").notNull().default(20),
+    cookieDays: integer("cookie_days").notNull().default(30),
+    status: text("status", {
+      enum: ["pending", "active", "suspended", "rejected"],
+    }).notNull().default("pending"),
+    // Locale for outgoing affiliate emails.
+    preferredLocale: text("preferred_locale", {
+      enum: ["sl", "hr", "sr", "en", "de", "es"],
+    }).notNull().default("sl"),
+    // Free-form text from the affiliate's application explaining promotion plan.
+    promotionPlan: text("promotion_plan"),
+    notes: text("notes"),
+    // Stats cache — updated whenever a commission is created / approved / cancelled.
+    totalClicks: integer("total_clicks").notNull().default(0),
+    totalConversions: integer("total_conversions").notNull().default(0),
+    // Money is stored as integer cents.
+    totalEarningsCents: integer("total_earnings_cents").notNull().default(0),
+    pendingBalanceCents: integer("pending_balance_cents").notNull().default(0),
+    availableBalanceCents: integer("available_balance_cents").notNull().default(0),
+    approvedAt: timestamp("approved_at"),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+    updatedAt: timestamp("updated_at").notNull().defaultNow(),
+  },
+  (t) => [
+    index("affiliates_clerk_idx").on(t.clerkUserId),
+    index("affiliates_code_idx").on(t.referralCode),
+    index("affiliates_status_idx").on(t.status),
+  ],
+);
+
+export const affiliateClicks = pgTable(
+  "affiliate_clicks",
+  {
+    id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+    affiliateId: text("affiliate_id")
+      .notNull()
+      .references(() => affiliates.id, { onDelete: "cascade" }),
+    ipAddress: text("ip_address"),
+    userAgent: text("user_agent"),
+    referrerUrl: text("referrer_url"),
+    landingPage: text("landing_page"),
+    // Set when this click leads to a paid order.
+    convertedMolliePaymentId: text("converted_mollie_payment_id"),
+    convertedAt: timestamp("converted_at"),
+    clickedAt: timestamp("clicked_at").notNull().defaultNow(),
+  },
+  (t) => [
+    index("clicks_affiliate_idx").on(t.affiliateId),
+    index("clicks_clicked_at_idx").on(t.clickedAt),
+  ],
+);
+
+export const affiliateCommissions = pgTable(
+  "affiliate_commissions",
+  {
+    id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+    affiliateId: text("affiliate_id")
+      .notNull()
+      .references(() => affiliates.id, { onDelete: "cascade" }),
+    // Mollie payment id (tr_xxxx). Unique guard against double-crediting.
+    molliePaymentId: text("mollie_payment_id").notNull().unique(),
+    albumSlug: text("album_slug"),
+    customerEmail: text("customer_email"),
+    orderDescription: text("order_description"),
+    orderCurrency: text("order_currency").notNull().default("EUR"),
+    // Money in cents.
+    orderAmountCents: integer("order_amount_cents").notNull(),
+    commissionRate: integer("commission_rate").notNull(),
+    commissionAmountCents: integer("commission_amount_cents").notNull(),
+    status: text("status", {
+      enum: ["pending", "approved", "paid", "cancelled"],
+    }).notNull().default("pending"),
+    // Lock period: commission becomes "approved" after lockUntil passes,
+    // so refunds within the window cancel the commission cleanly.
+    lockUntil: timestamp("lock_until").notNull(),
+    approvedAt: timestamp("approved_at"),
+    paidAt: timestamp("paid_at"),
+    cancelledAt: timestamp("cancelled_at"),
+    cancelReason: text("cancel_reason"),
+    emailSentAt: timestamp("email_sent_at"),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+  },
+  (t) => [
+    index("commissions_affiliate_idx").on(t.affiliateId),
+    index("commissions_status_idx").on(t.status),
+    index("commissions_lock_idx").on(t.lockUntil),
+  ],
+);
+
+export const affiliatePayouts = pgTable(
+  "affiliate_payouts",
+  {
+    id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+    affiliateId: text("affiliate_id")
+      .notNull()
+      .references(() => affiliates.id, { onDelete: "cascade" }),
+    amountCents: integer("amount_cents").notNull(),
+    currency: text("currency").notNull().default("EUR"),
+    method: text("method", { enum: ["paypal", "bank_transfer"] }).notNull(),
+    reference: text("reference"),
+    status: text("status", {
+      enum: ["requested", "processing", "paid", "failed"],
+    }).notNull().default("requested"),
+    notes: text("notes"),
+    processedAt: timestamp("processed_at"),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+  },
+  (t) => [index("payouts_affiliate_idx").on(t.affiliateId)],
+);
+
+export type Affiliate           = typeof affiliates.$inferSelect;
+export type NewAffiliate        = typeof affiliates.$inferInsert;
+export type AffiliateClick      = typeof affiliateClicks.$inferSelect;
+export type AffiliateCommission = typeof affiliateCommissions.$inferSelect;
+export type AffiliatePayout     = typeof affiliatePayouts.$inferSelect;
+
 // ─── Types ───────────────────────────────────────────────────────────────────
 
 export type Album = typeof albums.$inferSelect;

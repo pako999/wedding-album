@@ -22,7 +22,12 @@ export interface MolliePayment {
   amount: { value: string; currency: string };
   description: string;
   method: string | null; // e.g. "ideal", "creditcard", "banktransfer"
-  metadata: { albumSlug?: string; planId?: string; discountCodeId?: string } | null;
+  metadata: {
+    albumSlug?: string;
+    planId?: string;
+    discountCodeId?: string;
+    affiliateRef?: string;
+  } | null;
   createdAt: string;
   _links?: {
     checkout?: { href: string; type: string };

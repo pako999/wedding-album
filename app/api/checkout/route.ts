@@ -5,6 +5,7 @@ import { albums } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { createPayment, mollieConfigured, MollieError } from "@/lib/mollie";
 import { validateDiscount } from "@/lib/discount";
+import { getAffiliateRefFromCookie } from "@/lib/affiliate/attribution";
 
 export const runtime = "nodejs";
 
@@ -74,13 +75,23 @@ export async function POST(req: NextRequest) {
   const redirectUrl = `${baseUrl}/api/mollie-return?slug=${encodeURIComponent(albumSlug)}`;
   const webhookUrl = `${baseUrl}/api/webhooks/mollie`;
 
+  // If the customer arrived via a partner link, the cookie was set by
+  // /api/affiliate/track (or the middleware ref-capture). Carry the code
+  // into Mollie metadata so the webhook can credit the affiliate.
+  const affiliateRef = await getAffiliateRefFromCookie();
+
   try {
     const { id, checkoutUrl } = await createPayment({
       amountCents: totalCents,
       description,
       redirectUrl,
       webhookUrl,
-      metadata: { albumSlug, planId, ...(discountCodeId ? { discountCodeId } : {}) },
+      metadata: {
+        albumSlug,
+        planId,
+        ...(discountCodeId ? { discountCodeId } : {}),
+        ...(affiliateRef ? { affiliateRef } : {}),
+      },
     });
 
     // Persist payment ID so /api/mollie-return can reconcile if webhook hasn't fired yet.

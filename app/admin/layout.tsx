@@ -15,6 +15,7 @@ const NAV = [
   { href: "/admin/discounts",  label: "Kode za popust", icon: "🏷️" },
   { href: "/admin/payments",     label: "Plačila",           icon: "💳" },
   { href: "/admin/bank-orders",  label: "Predračuni",         icon: "🏦" },
+  { href: "/admin/affiliates",   label: "Partnerji",          icon: "🤝" },
 ];
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
