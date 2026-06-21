@@ -62,6 +62,8 @@ export interface Translations {
   fileUploaded: string;         // "Uploaded"
   alreadyUploaded: string;      // "Already in album"
   fileNetworkError: string;     // "Network error"
+  fileQueued: string;           // "Queued — will upload when back online"
+  offlineBanner: string;        // "No internet — photos queued, will upload automatically"
 
   // Limit warning
   limitReached: string;         // "Album photo limit reached"
@@ -240,6 +242,8 @@ const sl: Translations = {
   fileUploaded: "Naloženo",
   alreadyUploaded: "Že v albumu",
   fileNetworkError: "Omrežna napaka",
+  fileQueued: "V vrsti — naloži se, ko bo vzpostavljena internet",
+  offlineBanner: "Ni interneta — fotografije so v vrsti in se bodo samodejno naložile, ko bo vzpostavljena povezava",
   limitReached: "Omejitev albuma je dosežena.",
   filesDropped: (n) => `${n} ${n === 1 ? "datoteka ni bila dodana" : "datotek ni bilo dodano"} — dosežena je omejitev albuma.`,
   footerCredit: "Guestcam",
@@ -386,6 +390,8 @@ const hr: Translations = {
   fileUploaded: "Učitano",
   alreadyUploaded: "Već u albumu",
   fileNetworkError: "Mrežna greška",
+  fileQueued: "U redu — učitat će se kad bude interneta",
+  offlineBanner: "Nema interneta — fotografije su u redu i automatski će se učitati kad se veza uspostavi",
   limitReached: "Dostignut limit fotografija.",
   footerCredit: "Guestcam",
   eventLabel: (type) => ({
@@ -531,6 +537,8 @@ const sr: Translations = {
   fileUploaded: "Otpremljeno",
   alreadyUploaded: "Već u albumu",
   fileNetworkError: "Mrežna greška",
+  fileQueued: "U redu — otpremiće se kad bude interneta",
+  offlineBanner: "Nema interneta — fotografije su u redu i automatski će se otpremiti kad se veza uspostavi",
   limitReached: "Dostignut limit fotografija.",
   footerCredit: "Guestcam",
   eventLabel: (type) => ({
@@ -675,6 +683,8 @@ const en: Translations = {
   fileUploaded: "Uploaded",
   alreadyUploaded: "Already in album",
   fileNetworkError: "Network error",
+  fileQueued: "Queued — will upload when back online",
+  offlineBanner: "No internet — photos are queued and will upload automatically when your connection returns",
   limitReached: "Album photo limit reached.",
   filesDropped: (n) => `${n} ${n === 1 ? "file" : "files"} not added — album limit reached.`,
   footerCredit: "Guestcam",
@@ -820,6 +830,8 @@ const de: Translations = {
   fileUploaded: "Hochgeladen",
   alreadyUploaded: "Bereits im Album",
   fileNetworkError: "Netzwerkfehler",
+  fileQueued: "In der Warteschlange — wird hochgeladen, sobald Internet verfügbar",
+  offlineBanner: "Kein Internet — Fotos sind in der Warteschlange und werden automatisch hochgeladen, sobald die Verbindung wiederhergestellt ist",
   limitReached: "Foto-Limit des Albums erreicht.",
   filesDropped: (n) => `${n} ${n === 1 ? "Datei nicht hinzugefügt" : "Dateien nicht hinzugefügt"} — Album-Limit erreicht.`,
   footerCredit: "Guestcam",
@@ -965,6 +977,8 @@ const es: Translations = {
   fileUploaded: "Subido",
   alreadyUploaded: "Ya en el álbum",
   fileNetworkError: "Error de red",
+  fileQueued: "En cola — se subirá cuando haya internet",
+  offlineBanner: "Sin internet — las fotos están en cola y se subirán automáticamente cuando vuelva la conexión",
   limitReached: "Límite de fotos del álbum alcanzado.",
   filesDropped: (n) => `${n} ${n === 1 ? "archivo no añadido" : "archivos no añadidos"} — límite del álbum alcanzado.`,
   footerCredit: "Guestcam",
