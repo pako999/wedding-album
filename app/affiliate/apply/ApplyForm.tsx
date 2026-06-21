@@ -19,6 +19,10 @@ export function ApplyForm() {
     promotionPlan: "",
     bankIban: "",
     preferredLocale: "sl",
+    instagramUrl: "",
+    facebookUrl: "",
+    xUrl: "",
+    tiktokUrl: "",
   });
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
@@ -107,6 +111,56 @@ export function ApplyForm() {
           className={inputClass}
           style={{ borderColor: "#E5E7EB", resize: "vertical" }}
         />
+      </div>
+      {/* Social media profiles (optional) */}
+      <div>
+        <p className="text-xs font-semibold text-gray-600 mb-1.5">Profili na družbenih omrežjih (neobvezno)</p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label className="block text-[11px] text-gray-500 mb-1">Instagram</label>
+            <input
+              type="url"
+              placeholder="https://instagram.com/vas_profil"
+              value={form.instagramUrl}
+              onChange={(e) => setForm({ ...form, instagramUrl: e.target.value })}
+              className={inputClass}
+              style={{ borderColor: "#E5E7EB" }}
+            />
+          </div>
+          <div>
+            <label className="block text-[11px] text-gray-500 mb-1">Facebook</label>
+            <input
+              type="url"
+              placeholder="https://facebook.com/vas_profil"
+              value={form.facebookUrl}
+              onChange={(e) => setForm({ ...form, facebookUrl: e.target.value })}
+              className={inputClass}
+              style={{ borderColor: "#E5E7EB" }}
+            />
+          </div>
+          <div>
+            <label className="block text-[11px] text-gray-500 mb-1">X (Twitter)</label>
+            <input
+              type="url"
+              placeholder="https://x.com/vas_profil"
+              value={form.xUrl}
+              onChange={(e) => setForm({ ...form, xUrl: e.target.value })}
+              className={inputClass}
+              style={{ borderColor: "#E5E7EB" }}
+            />
+          </div>
+          <div>
+            <label className="block text-[11px] text-gray-500 mb-1">TikTok</label>
+            <input
+              type="url"
+              placeholder="https://tiktok.com/@vas_profil"
+              value={form.tiktokUrl}
+              onChange={(e) => setForm({ ...form, tiktokUrl: e.target.value })}
+              className={inputClass}
+              style={{ borderColor: "#E5E7EB" }}
+            />
+          </div>
+        </div>
       </div>
       <div>
         <label className="block text-xs font-semibold text-gray-600 mb-1.5">Transakcijski račun (IBAN) za izplačila (neobvezno)</label>

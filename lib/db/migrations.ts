@@ -239,6 +239,11 @@ export async function runMigrations() {
     )
   `);
   await run("discount_codes idx", (q) => q`CREATE INDEX IF NOT EXISTS discount_codes_code_idx ON discount_codes (code)`);
+  // Add the affiliate link column on older DBs that pre-date the partner program.
+  await run("discount_codes add affiliate_id", (q) => q`
+    ALTER TABLE discount_codes ADD COLUMN IF NOT EXISTS affiliate_id TEXT
+  `);
+  await run("discount_codes affiliate idx", (q) => q`CREATE INDEX IF NOT EXISTS discount_codes_affiliate_idx ON discount_codes (affiliate_id)`);
 
   // ── Affiliates ────────────────────────────────────────────────────────────
   await run("create affiliates", (q) => q`
@@ -270,6 +275,10 @@ export async function runMigrations() {
   await run("affiliates clerk idx", (q) => q`CREATE INDEX IF NOT EXISTS affiliates_clerk_idx ON affiliates (clerk_user_id)`);
   await run("affiliates code idx", (q) => q`CREATE INDEX IF NOT EXISTS affiliates_code_idx ON affiliates (referral_code)`);
   await run("affiliates status idx", (q) => q`CREATE INDEX IF NOT EXISTS affiliates_status_idx ON affiliates (status)`);
+  await run("affiliates.instagram_url", (q) => q`ALTER TABLE affiliates ADD COLUMN IF NOT EXISTS instagram_url TEXT`);
+  await run("affiliates.facebook_url",  (q) => q`ALTER TABLE affiliates ADD COLUMN IF NOT EXISTS facebook_url TEXT`);
+  await run("affiliates.x_url",         (q) => q`ALTER TABLE affiliates ADD COLUMN IF NOT EXISTS x_url TEXT`);
+  await run("affiliates.tiktok_url",    (q) => q`ALTER TABLE affiliates ADD COLUMN IF NOT EXISTS tiktok_url TEXT`);
 
   await run("create affiliate_clicks", (q) => q`
     CREATE TABLE IF NOT EXISTS affiliate_clicks (

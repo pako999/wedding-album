@@ -286,6 +286,10 @@ export const discountCodes = pgTable(
     usedCount: integer("used_count").notNull().default(0),
     expiresAt: timestamp("expires_at"),           // null = never
     isActive: boolean("is_active").notNull().default(true),
+    // If this code belongs to an affiliate partner, link to their row.
+    // When the code is redeemed at checkout we also credit a commission
+    // to that affiliate (no cookie needed).
+    affiliateId: text("affiliate_id"),
     createdAt: timestamp("created_at").notNull().defaultNow(),
   },
   (t) => [index("discount_codes_code_idx").on(t.code)]
@@ -370,6 +374,11 @@ export const affiliates = pgTable(
     // Free-form text from the affiliate's application explaining promotion plan.
     promotionPlan: text("promotion_plan"),
     notes: text("notes"),
+    // Optional social media profile URLs collected at application time.
+    instagramUrl: text("instagram_url"),
+    facebookUrl: text("facebook_url"),
+    xUrl: text("x_url"),
+    tiktokUrl: text("tiktok_url"),
     // Stats cache — updated whenever a commission is created / approved / cancelled.
     totalClicks: integer("total_clicks").notNull().default(0),
     totalConversions: integer("total_conversions").notNull().default(0),

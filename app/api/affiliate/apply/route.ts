@@ -20,6 +20,10 @@ interface Body {
   promotionPlan?: string;
   bankIban?: string;
   preferredLocale?: string;
+  instagramUrl?: string;
+  facebookUrl?: string;
+  xUrl?: string;
+  tiktokUrl?: string;
 }
 
 export async function POST(req: NextRequest) {
@@ -34,6 +38,10 @@ export async function POST(req: NextRequest) {
   const preferredLocale: Locale = LOCALES.includes(body.preferredLocale as Locale)
     ? (body.preferredLocale as Locale)
     : "sl";
+  const instagramUrl = (body.instagramUrl ?? "").trim() || null;
+  const facebookUrl  = (body.facebookUrl  ?? "").trim() || null;
+  const xUrl         = (body.xUrl         ?? "").trim() || null;
+  const tiktokUrl    = (body.tiktokUrl    ?? "").trim() || null;
 
   if (name.length < 2) {
     return NextResponse.json({ error: "Vnesite vaše ime." }, { status: 400 });
@@ -70,6 +78,10 @@ export async function POST(req: NextRequest) {
       promotionPlan,
       referralCode,
       preferredLocale,
+      instagramUrl,
+      facebookUrl,
+      xUrl,
+      tiktokUrl,
       status: "pending",
     })
     .returning();

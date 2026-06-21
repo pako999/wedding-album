@@ -57,6 +57,10 @@ export async function POST(req: NextRequest) {
   const plan = PLAN_CONFIG[planId];
   let baseCents = plan.amount;
   let discountCodeId: string | undefined;
+  // Pull the referral code from the cookie. May be overridden below if
+  // the buyer used a promo code that belongs to an affiliate — that
+  // takes precedence over the cookie (most recent and explicit signal).
+  let affiliateRef = await getAffiliateRefFromCookie();
 
   if (discountCode) {
     const disc = await validateDiscount(discountCode, planId);
@@ -65,6 +69,16 @@ export async function POST(req: NextRequest) {
     }
     baseCents = disc.finalCents;
     discountCodeId = disc.discountCodeId;
+    // Resolve the affiliate (by id → referralCode) if this discount code
+    // is tied to a partner. We carry the partner's referralCode in
+    // Mollie metadata so the webhook can credit the commission.
+    if (disc.affiliateId) {
+      const { affiliates } = await import("@/lib/db/schema");
+      const aff = await db.query.affiliates.findFirst({
+        where: eq(affiliates.id, disc.affiliateId),
+      }).catch(() => null);
+      if (aff && aff.status === "active") affiliateRef = aff.referralCode;
+    }
   }
 
   const totalCents = baseCents + (tableStands ? 900 : 0);
@@ -74,11 +88,6 @@ export async function POST(req: NextRequest) {
   // Mollie redirects back to /api/mollie-return which does reconcile then bounces to dashboard.
   const redirectUrl = `${baseUrl}/api/mollie-return?slug=${encodeURIComponent(albumSlug)}`;
   const webhookUrl = `${baseUrl}/api/webhooks/mollie`;
-
-  // If the customer arrived via a partner link, the cookie was set by
-  // /api/affiliate/track (or the middleware ref-capture). Carry the code
-  // into Mollie metadata so the webhook can credit the affiliate.
-  const affiliateRef = await getAffiliateRefFromCookie();
 
   try {
     const { id, checkoutUrl } = await createPayment({

@@ -555,6 +555,21 @@ export async function sendAdminBankOrderEmail(params: {
 type AffiliateLocale = "sl" | "hr" | "sr" | "en" | "de" | "es";
 
 interface AffiliateStrings {
+  // Promo (discount) code assigned by admin
+  promoSubject: (code: string) => string;
+  promoHeading: string;
+  promoIntro: (name: string) => string;
+  promoCodeLabel: string;
+  promoDiscountLabel: string;
+  promoDiscountValue: (pct: number) => string;
+  promoPlansLabel: string;
+  promoPlansValue: string;
+  promoExampleHeading: string;
+  promoExample: (code: string, pct: number) => string;
+  promoShareHeading: string;
+  promoShareTemplate: (code: string, pct: number) => string;
+  promoNote: string;
+  promoCta: string;
   // Application received (applicant)
   appReceivedSubject: string;
   appReceivedHeading: string;
@@ -593,6 +608,20 @@ interface AffiliateStrings {
 
 const AFF_STRINGS: Record<AffiliateLocale, AffiliateStrings> = {
   sl: {
+    promoSubject: (code) => `🎁 Vaša promocijska koda ${code} je pripravljena`,
+    promoHeading: "🎁 Promocijska koda za stranke",
+    promoIntro: (name) => `Pozdravljeni, <strong>${escapeHtml(name)}</strong>!<br><br>Pripravili smo vašo promocijsko kodo, ki jo lahko delite na družbenih omrežjih, blogu ali kjerkoli vam ustreza. Vsak, ki uporabi to kodo, prejme popust — vi pa še vedno dobite vašo redno provizijo.`,
+    promoCodeLabel: "Promocijska koda",
+    promoDiscountLabel: "Popust za kupca",
+    promoDiscountValue: (pct) => `${pct}% popusta na celotno naročilo`,
+    promoPlansLabel: "Velja za pakete",
+    promoPlansValue: "Basic, Plus, Premium (vse plačljive pakete GuestCam)",
+    promoExampleHeading: "Primer popusta",
+    promoExample: (code, pct) => `Kupec izbere paket Plus (49 €) in v polje »koda za popust« vnese <strong>${code}</strong>. S ${pct}% popustom plača samo ${(49 * (100 - pct) / 100).toFixed(2)} €. Vi prejmete vašo redno provizijo od te transakcije.`,
+    promoShareHeading: "Predlog besedila za objavo",
+    promoShareTemplate: (code, pct) => `Z mojo kodo <strong>${code}</strong> prihranite ${pct}% pri ustvarjanju vaše svadbene/dogodkovne foto galerije GuestCam. 🎉<br>👉 guestcam.si`,
+    promoNote: "Koda se aktivira takoj. Lahko jo delite kadarkoli.",
+    promoCta: "Odpri nadzorno ploščo →",
     appReceivedSubject: "Prijava prejeta — GuestCam partnerski program",
     appReceivedHeading: "🎉 Prijava prejeta",
     appReceivedBody: (name) => `Pozdravljeni, <strong>${escapeHtml(name)}</strong>!<br><br>Hvala za vašo prijavo v GuestCam partnerski program. Pregledali jo bomo in vam odgovorili v 2 delovnih dneh.`,
@@ -625,6 +654,20 @@ const AFF_STRINGS: Record<AffiliateLocale, AffiliateStrings> = {
     contactFooter: "GuestCam partnerski program · <a href=\"mailto:partnerji@guestcam.si\" style=\"color:#1E3A8A;\">partnerji@guestcam.si</a>",
   },
   en: {
+    promoSubject: (code) => `🎁 Your promo code ${code} is ready`,
+    promoHeading: "🎁 Promo code for customers",
+    promoIntro: (name) => `Hi <strong>${escapeHtml(name)}</strong>,<br><br>We've set up your promo code that you can share on social media, your blog, or anywhere else. Anyone who uses this code gets a discount — and you still earn your regular commission.`,
+    promoCodeLabel: "Promo code",
+    promoDiscountLabel: "Customer discount",
+    promoDiscountValue: (pct) => `${pct}% off the entire order`,
+    promoPlansLabel: "Works on plans",
+    promoPlansValue: "Basic, Plus, Premium (all paid GuestCam plans)",
+    promoExampleHeading: "Example",
+    promoExample: (code, pct) => `Customer picks the Plus plan (€49) and enters <strong>${code}</strong> in the discount field. With ${pct}% off they pay only €${(49 * (100 - pct) / 100).toFixed(2)}. You still earn your regular commission on this transaction.`,
+    promoShareHeading: "Suggested share text",
+    promoShareTemplate: (code, pct) => `Use my code <strong>${code}</strong> to save ${pct}% on your wedding / event photo gallery with GuestCam. 🎉<br>👉 guestcam.si`,
+    promoNote: "The code is active immediately. Share it whenever you want.",
+    promoCta: "Open dashboard →",
     appReceivedSubject: "Application received — GuestCam Partner Program",
     appReceivedHeading: "🎉 Application received",
     appReceivedBody: (name) => `Hi <strong>${escapeHtml(name)}</strong>,<br><br>Thanks for applying to the GuestCam Partner Program. We'll review your application and get back to you within 2 business days.`,
@@ -657,6 +700,20 @@ const AFF_STRINGS: Record<AffiliateLocale, AffiliateStrings> = {
     contactFooter: "GuestCam Partner Program · <a href=\"mailto:partnerji@guestcam.si\" style=\"color:#1E3A8A;\">partnerji@guestcam.si</a>",
   },
   de: {
+    promoSubject: (code) => `🎁 Ihr Promo-Code ${code} ist bereit`,
+    promoHeading: "🎁 Promo-Code für Kunden",
+    promoIntro: (name) => `Hallo <strong>${escapeHtml(name)}</strong>,<br><br>wir haben Ihren Promo-Code eingerichtet, den Sie in sozialen Medien, in Ihrem Blog oder überall sonst teilen können. Jeder, der diesen Code verwendet, erhält einen Rabatt — und Sie verdienen weiterhin Ihre reguläre Provision.`,
+    promoCodeLabel: "Promo-Code",
+    promoDiscountLabel: "Kundenrabatt",
+    promoDiscountValue: (pct) => `${pct}% auf die gesamte Bestellung`,
+    promoPlansLabel: "Gültig für Pakete",
+    promoPlansValue: "Basic, Plus, Premium (alle bezahlten GuestCam-Pakete)",
+    promoExampleHeading: "Beispiel",
+    promoExample: (code, pct) => `Der Kunde wählt das Plus-Paket (49 €) und gibt <strong>${code}</strong> im Rabattfeld ein. Mit ${pct}% Rabatt bezahlt er nur ${(49 * (100 - pct) / 100).toFixed(2)} €. Sie verdienen weiterhin Ihre reguläre Provision für diese Transaktion.`,
+    promoShareHeading: "Vorgeschlagener Werbetext",
+    promoShareTemplate: (code, pct) => `Mit meinem Code <strong>${code}</strong> sparen Sie ${pct}% bei der Erstellung Ihrer Hochzeits- / Event-Fotogalerie mit GuestCam. 🎉<br>👉 guestcam.si`,
+    promoNote: "Der Code ist sofort aktiv. Teilen Sie ihn jederzeit.",
+    promoCta: "Dashboard öffnen →",
     appReceivedSubject: "Bewerbung erhalten — GuestCam Partnerprogramm",
     appReceivedHeading: "🎉 Bewerbung erhalten",
     appReceivedBody: (name) => `Hallo <strong>${escapeHtml(name)}</strong>,<br><br>vielen Dank für Ihre Bewerbung beim GuestCam Partnerprogramm. Wir prüfen Ihre Bewerbung und melden uns innerhalb von 2 Werktagen.`,
@@ -689,6 +746,20 @@ const AFF_STRINGS: Record<AffiliateLocale, AffiliateStrings> = {
     contactFooter: "GuestCam Partnerprogramm · <a href=\"mailto:partnerji@guestcam.si\" style=\"color:#1E3A8A;\">partnerji@guestcam.si</a>",
   },
   hr: {
+    promoSubject: (code) => `🎁 Vaš promo kod ${code} je spreman`,
+    promoHeading: "🎁 Promo kod za kupce",
+    promoIntro: (name) => `Pozdrav, <strong>${escapeHtml(name)}</strong>!<br><br>Pripremili smo vaš promo kod koji možete dijeliti na društvenim mrežama, blogu ili bilo gdje drugdje. Svatko tko upotrijebi ovaj kod dobiva popust — vi i dalje dobivate svoju redovnu proviziju.`,
+    promoCodeLabel: "Promo kod",
+    promoDiscountLabel: "Popust za kupca",
+    promoDiscountValue: (pct) => `${pct}% popusta na cijelu narudžbu`,
+    promoPlansLabel: "Vrijedi za pakete",
+    promoPlansValue: "Basic, Plus, Premium (svi plaćeni GuestCam paketi)",
+    promoExampleHeading: "Primjer",
+    promoExample: (code, pct) => `Kupac odabere paket Plus (49 €) i u polje za popust unese <strong>${code}</strong>. S ${pct}% popusta plaća samo ${(49 * (100 - pct) / 100).toFixed(2)} €. Vi i dalje dobivate svoju redovnu proviziju za tu transakciju.`,
+    promoShareHeading: "Prijedlog teksta za dijeljenje",
+    promoShareTemplate: (code, pct) => `S mojim kodom <strong>${code}</strong> uštedite ${pct}% pri izradi vaše vjenčane / event foto galerije s GuestCam. 🎉<br>👉 guestcam.si`,
+    promoNote: "Kod je odmah aktivan. Možete ga dijeliti bilo kada.",
+    promoCta: "Otvori nadzornu ploču →",
     appReceivedSubject: "Prijava primljena — GuestCam partnerski program",
     appReceivedHeading: "🎉 Prijava primljena",
     appReceivedBody: (name) => `Pozdrav, <strong>${escapeHtml(name)}</strong>!<br><br>Hvala na prijavi u GuestCam partnerski program. Pregledat ćemo vašu prijavu i javiti vam se u roku od 2 radna dana.`,
@@ -721,6 +792,20 @@ const AFF_STRINGS: Record<AffiliateLocale, AffiliateStrings> = {
     contactFooter: "GuestCam partnerski program · <a href=\"mailto:partnerji@guestcam.si\" style=\"color:#1E3A8A;\">partnerji@guestcam.si</a>",
   },
   sr: {
+    promoSubject: (code) => `🎁 Vaš promo kod ${code} je spreman`,
+    promoHeading: "🎁 Promo kod za kupce",
+    promoIntro: (name) => `Pozdrav, <strong>${escapeHtml(name)}</strong>!<br><br>Pripremili smo vaš promo kod koji možete deliti na društvenim mrežama, blogu ili bilo gde drugde. Svako ko upotrebi ovaj kod dobija popust — vi i dalje dobijate svoju redovnu proviziju.`,
+    promoCodeLabel: "Promo kod",
+    promoDiscountLabel: "Popust za kupca",
+    promoDiscountValue: (pct) => `${pct}% popusta na celu porudžbinu`,
+    promoPlansLabel: "Važi za pakete",
+    promoPlansValue: "Basic, Plus, Premium (svi plaćeni GuestCam paketi)",
+    promoExampleHeading: "Primer",
+    promoExample: (code, pct) => `Kupac odabere paket Plus (49 €) i u polje za popust unese <strong>${code}</strong>. Sa ${pct}% popusta plaća samo ${(49 * (100 - pct) / 100).toFixed(2)} €. Vi i dalje dobijate svoju redovnu proviziju za tu transakciju.`,
+    promoShareHeading: "Predlog teksta za deljenje",
+    promoShareTemplate: (code, pct) => `Sa mojim kodom <strong>${code}</strong> uštedite ${pct}% pri kreiranju vaše svadbene / event foto galerije sa GuestCam. 🎉<br>👉 guestcam.si`,
+    promoNote: "Kod je odmah aktivan. Možete ga deliti bilo kada.",
+    promoCta: "Otvori kontrolnu tablu →",
     appReceivedSubject: "Prijava primljena — GuestCam partnerski program",
     appReceivedHeading: "🎉 Prijava primljena",
     appReceivedBody: (name) => `Pozdrav, <strong>${escapeHtml(name)}</strong>!<br><br>Hvala na prijavi za GuestCam partnerski program. Pregledaćemo vašu prijavu i javićemo vam se u roku od 2 radna dana.`,
@@ -753,6 +838,20 @@ const AFF_STRINGS: Record<AffiliateLocale, AffiliateStrings> = {
     contactFooter: "GuestCam partnerski program · <a href=\"mailto:partnerji@guestcam.si\" style=\"color:#1E3A8A;\">partnerji@guestcam.si</a>",
   },
   es: {
+    promoSubject: (code) => `🎁 Tu código promocional ${code} está listo`,
+    promoHeading: "🎁 Código promocional para clientes",
+    promoIntro: (name) => `Hola <strong>${escapeHtml(name)}</strong>,<br><br>Hemos configurado tu código promocional que puedes compartir en redes sociales, tu blog o donde prefieras. Quien use este código obtiene un descuento — y tú sigues ganando tu comisión habitual.`,
+    promoCodeLabel: "Código promocional",
+    promoDiscountLabel: "Descuento para el cliente",
+    promoDiscountValue: (pct) => `${pct}% de descuento en todo el pedido`,
+    promoPlansLabel: "Válido para los planes",
+    promoPlansValue: "Basic, Plus, Premium (todos los planes pagos de GuestCam)",
+    promoExampleHeading: "Ejemplo",
+    promoExample: (code, pct) => `El cliente elige el plan Plus (49 €) e introduce <strong>${code}</strong> en el campo de descuento. Con ${pct}% de descuento paga solo ${(49 * (100 - pct) / 100).toFixed(2)} €. Tú sigues ganando tu comisión habitual en esa transacción.`,
+    promoShareHeading: "Texto sugerido para compartir",
+    promoShareTemplate: (code, pct) => `Con mi código <strong>${code}</strong> ahorras ${pct}% al crear tu galería de fotos de boda / evento con GuestCam. 🎉<br>👉 guestcam.si`,
+    promoNote: "El código está activo de inmediato. Compártelo cuando quieras.",
+    promoCta: "Abrir panel →",
     appReceivedSubject: "Solicitud recibida — Programa de afiliados GuestCam",
     appReceivedHeading: "🎉 Solicitud recibida",
     appReceivedBody: (name) => `Hola <strong>${escapeHtml(name)}</strong>,<br><br>Gracias por solicitar entrar al programa de afiliados de GuestCam. Revisaremos tu solicitud y te responderemos en un plazo de 2 días hábiles.`,
@@ -964,6 +1063,103 @@ export async function sendAffiliateCommissionEmail({
   } catch (err) {
     console.error("[affiliate commission email] send failed:", err);
   }
+}
+
+/**
+ * Sent to the affiliate when the admin assigns or updates their personal
+ * promo (discount) code. Includes the code, customer discount percentage,
+ * an example purchase, and a pre-written share message.
+ */
+export async function sendAffiliatePromoCodeEmail({
+  to, name, locale, code, percentOff,
+}: {
+  to: string;
+  name: string;
+  locale: string;
+  code: string;
+  percentOff: number;
+}) {
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) return;
+  const t = AFF_STRINGS[pickLocale(locale)];
+  const dashboardUrl = `${APP_URL}/affiliate/dashboard`;
+  const body = `
+    <p style="margin:0 0 12px;">${t.promoIntro(name)}</p>
+    <div style="margin:22px 0 8px;background:#FFF9EC;border:1px solid #FFC94D;border-radius:12px;padding:20px;text-align:center;">
+      <p style="margin:0 0 4px;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#94A3B8;font-weight:700;">${t.promoCodeLabel}</p>
+      <p style="margin:0;font-family:monospace;font-size:28px;font-weight:800;color:#0F1729;letter-spacing:3px;">${escapeHtml(code)}</p>
+      <p style="margin:14px 0 0;font-size:13px;color:#0F1729;font-weight:700;">${t.promoDiscountValue(percentOff)}</p>
+    </div>
+    <table cellpadding="0" cellspacing="0" style="font-size:14px;line-height:1.9;color:#475569;width:100%;">
+      <tr><td style="font-weight:700;color:#0F1729;width:160px;">${t.promoDiscountLabel}:</td><td>${t.promoDiscountValue(percentOff)}</td></tr>
+      <tr><td style="font-weight:700;color:#0F1729;">${t.promoPlansLabel}:</td><td>${t.promoPlansValue}</td></tr>
+    </table>
+    <div style="margin:22px 0 0;padding:18px 20px;background:#F8FAFC;border-radius:10px;">
+      <p style="margin:0 0 6px;font-size:12px;font-weight:700;color:#0F1729;text-transform:uppercase;letter-spacing:1px;">${t.promoExampleHeading}</p>
+      <p style="margin:0;font-size:13.5px;color:#475569;line-height:1.6;">${t.promoExample(code, percentOff)}</p>
+    </div>
+    <div style="margin:14px 0 0;padding:18px 20px;background:#F0FDF4;border-radius:10px;">
+      <p style="margin:0 0 6px;font-size:12px;font-weight:700;color:#15803D;text-transform:uppercase;letter-spacing:1px;">${t.promoShareHeading}</p>
+      <p style="margin:0;font-size:13.5px;color:#15803D;line-height:1.6;">${t.promoShareTemplate(code, percentOff)}</p>
+    </div>
+    <p style="margin:18px 0 0;font-size:12px;color:#94A3B8;text-align:center;">${t.promoNote}</p>
+    <p style="margin:24px 0 0;text-align:center;">
+      <a href="${dashboardUrl}" style="display:inline-block;padding:14px 28px;background:#FFC94D;color:#0F1729;text-decoration:none;border-radius:10px;font-weight:800;font-size:14px;">${t.promoCta}</a>
+    </p>
+  `;
+  try {
+    await new Resend(apiKey).emails.send({
+      from: `GuestCam Partnerji <${FROM}>`,
+      to,
+      subject: t.promoSubject(code),
+      html: affiliateShell(t.promoHeading, body, t.contactFooter),
+    });
+  } catch (err) {
+    console.error("[affiliate promo email] send failed:", err);
+  }
+}
+
+/**
+ * Admin notification fired whenever an affiliate makes a sale.
+ * Sent in parallel with the regular admin payment email so the ops team
+ * sees who drove the order and how much commission we owe.
+ */
+export async function sendAdminAffiliateSaleEmail(params: {
+  affiliateId: string;
+  affiliateName: string;
+  affiliateEmail: string;
+  referralCode: string;
+  orderAmountCents: number;
+  commissionAmountCents: number;
+  commissionRate: number;
+  albumSlug: string;
+  planName: string;
+  promoCode?: string | null;
+}) {
+  const eur = (c: number) => `${(c / 100).toFixed(2)} €`;
+  const html = adminEmailShell(
+    `🤝 Partner prodaja — ${params.affiliateName} (+${eur(params.commissionAmountCents)})`,
+    `<h2 style="margin:0 0 16px;font-size:18px;font-weight:800;color:#0F1729;">🤝 Partnerska prodaja</h2>
+     <table cellpadding="0" cellspacing="0" style="font-size:14px;line-height:2;color:#475569;width:100%;">
+       <tr><td style="width:160px;font-weight:700;color:#0F1729;">Partner:</td><td>${escapeHtml(params.affiliateName)}</td></tr>
+       <tr><td style="font-weight:700;color:#0F1729;">Email:</td><td><a href="mailto:${escapeHtml(params.affiliateEmail)}" style="color:#1E3A8A;">${escapeHtml(params.affiliateEmail)}</a></td></tr>
+       <tr><td style="font-weight:700;color:#0F1729;">Partnerska koda:</td><td style="font-family:monospace;">${escapeHtml(params.referralCode)}</td></tr>
+       ${params.promoCode ? `<tr><td style="font-weight:700;color:#0F1729;">Promo koda uporabljena:</td><td style="font-family:monospace;color:#15803D;font-weight:700;">${escapeHtml(params.promoCode)}</td></tr>` : ""}
+       <tr><td style="font-weight:700;color:#0F1729;">Album:</td><td style="font-family:monospace;">${escapeHtml(params.albumSlug)}</td></tr>
+       <tr><td style="font-weight:700;color:#0F1729;">Paket:</td><td>${escapeHtml(params.planName)}</td></tr>
+       <tr><td style="font-weight:700;color:#0F1729;">Vrednost naročila:</td><td style="font-weight:700;color:#0F1729;">${eur(params.orderAmountCents)}</td></tr>
+       <tr><td style="font-weight:700;color:#0F1729;">Provizija (${params.commissionRate}%):</td><td style="font-weight:800;color:#15803D;font-size:16px;">+${eur(params.commissionAmountCents)}</td></tr>
+       <tr><td style="font-weight:700;color:#0F1729;">Čas:</td><td>${new Date().toLocaleString("sl-SI")}</td></tr>
+     </table>
+     <p style="margin:16px 0 0;">
+       <a href="${APP_URL}/admin/affiliates/${params.affiliateId}" style="display:inline-block;padding:11px 22px;background:#0F1729;color:#fff;text-decoration:none;border-radius:8px;font-weight:700;font-size:13px;">Pregled partnerja →</a>
+     </p>
+     <p style="margin:14px 0 0;font-size:12px;color:#94A3B8;">Provizija je v 14-dnevnem zaklepu in se po izteku samodejno potrdi.</p>`,
+  );
+  await sendAdminEmail(
+    `🤝 Partner ${params.affiliateName} +${eur(params.commissionAmountCents)} (${params.planName})`,
+    html,
+  );
 }
 
 /** Sent when a commission transitions from pending → approved (after lock period). */

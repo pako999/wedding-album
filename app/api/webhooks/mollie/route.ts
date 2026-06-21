@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getPayment, isPaidStatus, isRefundedStatus, mollieConfigured } from "@/lib/mollie";
 import { applyPlanToAlbum } from "@/lib/paddle-reconcile";
 import { htmlEscape, notifyTelegram } from "@/lib/telegram";
-import { sendAdminPaymentEmail, sendAffiliateCommissionEmail } from "@/lib/email/notifications";
+import { sendAdminPaymentEmail, sendAffiliateCommissionEmail, sendAdminAffiliateSaleEmail } from "@/lib/email/notifications";
 import { incrementDiscountUsage } from "@/lib/discount";
 import { db } from "@/lib/db";
 import { affiliates, affiliateCommissions, affiliateClicks } from "@/lib/db/schema";
@@ -110,6 +110,8 @@ export async function POST(req: NextRequest) {
         customerEmail: null,
         orderAmountCents: Math.round(parseFloat(payment.amount.value) * 100),
         orderCurrency: payment.amount.currency.toUpperCase(),
+        promoCode: payment.metadata?.discountCodeId ? null : null, // resolved inside helper from discountCodeId
+        discountCodeId: payment.metadata?.discountCodeId ?? null,
       });
     } catch (err) {
       console.error("[mollie webhook] affiliate commission failed:", err);
@@ -149,6 +151,8 @@ async function createAffiliateCommission(params: {
   customerEmail: string | null;
   orderAmountCents: number;
   orderCurrency: string;
+  promoCode?: string | null;
+  discountCodeId?: string | null;
 }) {
   // Idempotency: if a commission for this Mollie payment already exists
   // (webhook fired twice), skip. The unique index on mollie_payment_id
@@ -237,17 +241,41 @@ async function createAffiliateCommission(params: {
     ),
   ).catch(() => {});
 
-  // Send the commission notification email. Failure must not break the webhook.
-  await sendAffiliateCommissionEmail({
-    to: affiliate.email,
-    name: affiliate.name,
-    locale: affiliate.preferredLocale,
-    commissionAmountCents,
-    orderAmountCents: params.orderAmountCents,
-    commissionRate: affiliate.commissionRate,
-    orderDescription: planLabel(params.planId).text,
-    lockUntil,
-  }).catch((err) => console.error("[affiliate commission email] failed:", err));
+  // If a discount code was used and it belongs to this affiliate, pull its
+  // code string so we can surface it in the admin notification.
+  let promoCode: string | null = null;
+  if (params.discountCodeId) {
+    const dc = await db.query.discountCodes.findFirst({
+      where: eq(import_discountCodes.id, params.discountCodeId),
+    }).catch(() => null);
+    if (dc && dc.affiliateId === affiliate.id) promoCode = dc.code;
+  }
+
+  // Fire the two notification emails in parallel. Both are best-effort.
+  await Promise.all([
+    sendAffiliateCommissionEmail({
+      to: affiliate.email,
+      name: affiliate.name,
+      locale: affiliate.preferredLocale,
+      commissionAmountCents,
+      orderAmountCents: params.orderAmountCents,
+      commissionRate: affiliate.commissionRate,
+      orderDescription: planLabel(params.planId).text,
+      lockUntil,
+    }).catch((err) => console.error("[affiliate commission email] failed:", err)),
+    sendAdminAffiliateSaleEmail({
+      affiliateId: affiliate.id,
+      affiliateName: affiliate.name,
+      affiliateEmail: affiliate.email,
+      referralCode: affiliate.referralCode,
+      orderAmountCents: params.orderAmountCents,
+      commissionAmountCents,
+      commissionRate: affiliate.commissionRate,
+      albumSlug: params.albumSlug,
+      planName: planLabel(params.planId).text,
+      promoCode,
+    }).catch((err) => console.error("[admin affiliate sale email] failed:", err)),
+  ]);
 
   await db.update(affiliateCommissions).set({
     emailSentAt: new Date(),
@@ -256,7 +284,7 @@ async function createAffiliateCommission(params: {
 
 // We import albums dynamically inside the helper to avoid loading it at module
 // init time when the webhook is cold. Trick to keep the helper self-contained.
-import { albums as import_albums } from "@/lib/db/schema";
+import { albums as import_albums, discountCodes as import_discountCodes } from "@/lib/db/schema";
 
 /**
  * Reverse an affiliate commission when a paid order is later refunded or
@@ -267,36 +295,46 @@ import { albums as import_albums } from "@/lib/db/schema";
  * need a manual decision because we've already wired money out).
  */
 async function clawbackAffiliateCommission(molliePaymentId: string) {
-  // Atomic: only succeeds if the commission is still in a reversible state.
-  // Returns the row(s) we transitioned so we can also drain the balance.
+  const found = await db.query.affiliateCommissions.findFirst({
+    where: eq(affiliateCommissions.molliePaymentId, molliePaymentId),
+  });
+  if (!found) return;
+  if (found.status !== "pending" && found.status !== "approved") return;
+
+  const previousStatus = found.status;
+
+  // Atomic transition: the WHERE includes the previous status, so a
+  // concurrent cron run that flipped pending → approved between our read
+  // and write will lose the race here, returning no rows. That keeps the
+  // balance deduction below in lockstep with the actual status the
+  // commission was in.
   const reversed = await db.update(affiliateCommissions).set({
     status: "cancelled",
     cancelledAt: new Date(),
     cancelReason: "refund",
   }).where(and(
-    eq(affiliateCommissions.molliePaymentId, molliePaymentId),
-    or(
-      eq(affiliateCommissions.status, "pending"),
-      eq(affiliateCommissions.status, "approved"),
-    ),
+    eq(affiliateCommissions.id, found.id),
+    eq(affiliateCommissions.status, previousStatus),
   )).returning();
+  if (reversed.length === 0) return;
 
-  for (const commission of reversed) {
-    // Reverse the balance changes. Pending balance was bumped on creation
-    // (-pending +totalEarnings); approved moved pending → available.
-    // We don't try to detect which case we're in — instead we GREATEST(0,…)
-    // both deductions so we never go negative. totalEarnings is the
-    // lifetime gross; we leave it untouched (it represents *earned*
-    // commission events, regardless of later refunds — better signal for
-    // affiliate engagement).
+  // Drain ONLY the balance bucket that actually held this commission's
+  // money. Subtracting from both — as the first cut did — could
+  // underpay an affiliate who had unrelated approved sales sitting in
+  // availableBalanceCents while a still-pending sale was being refunded.
+  if (previousStatus === "approved") {
     await db.update(affiliates).set({
-      pendingBalanceCents: sql`GREATEST(0, ${affiliates.pendingBalanceCents} - ${commission.commissionAmountCents})`,
-      availableBalanceCents: sql`GREATEST(0, ${affiliates.availableBalanceCents} - ${commission.commissionAmountCents})`,
+      availableBalanceCents: sql`GREATEST(0, ${affiliates.availableBalanceCents} - ${found.commissionAmountCents})`,
       updatedAt: new Date(),
-    }).where(eq(affiliates.id, commission.affiliateId));
-
-    console.log(
-      `[affiliate] commission ${commission.id} clawed back (refund on ${molliePaymentId})`,
-    );
+    }).where(eq(affiliates.id, found.affiliateId));
+  } else {
+    await db.update(affiliates).set({
+      pendingBalanceCents: sql`GREATEST(0, ${affiliates.pendingBalanceCents} - ${found.commissionAmountCents})`,
+      updatedAt: new Date(),
+    }).where(eq(affiliates.id, found.affiliateId));
   }
+
+  console.log(
+    `[affiliate] commission ${found.id} (${previousStatus}) clawed back on refund of ${molliePaymentId}`,
+  );
 }

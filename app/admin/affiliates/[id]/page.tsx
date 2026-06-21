@@ -1,9 +1,10 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { db } from "@/lib/db";
-import { affiliates, affiliateCommissions } from "@/lib/db/schema";
-import { eq, desc } from "drizzle-orm";
+import { affiliates, affiliateCommissions, discountCodes } from "@/lib/db/schema";
+import { eq, desc, and } from "drizzle-orm";
 import { AffiliateAdminControls } from "./AffiliateAdminControls";
+import { PromoCodeControls } from "./PromoCodeControls";
 
 export const dynamic = "force-dynamic";
 export const metadata = { robots: { index: false, follow: false } };
@@ -43,6 +44,10 @@ export default async function AdminAffiliateDetailPage({
     .orderBy(desc(affiliateCommissions.createdAt))
     .limit(100);
 
+  const promo = await db.query.discountCodes.findFirst({
+    where: and(eq(discountCodes.affiliateId, id), eq(discountCodes.isActive, true)),
+  });
+
   return (
     <div className="space-y-6">
       <div>
@@ -56,6 +61,9 @@ export default async function AdminAffiliateDetailPage({
       {/* Controls */}
       <AffiliateAdminControls affiliate={affiliate} />
 
+      {/* Promo (discount) code for customers */}
+      <PromoCodeControls affiliateId={affiliate.id} initialPromo={promo ?? null} />
+
       {/* Info */}
       <div className="bg-white rounded-2xl border border-gray-200 p-5">
         <h2 className="font-bold text-[#0F1729] mb-3">Podatki</h2>
@@ -64,9 +72,13 @@ export default async function AdminAffiliateDetailPage({
           <Field label="Status" value={affiliate.status} />
           <Field label="Provizija" value={`${affiliate.commissionRate}%`} />
           <Field label="Veljavnost piškotka" value={`${affiliate.cookieDays} dni`} />
-          <Field label="Spletna stran" value={affiliate.website ?? "—"} />
+          <Field label="Spletna stran" value={affiliate.website ? <a href={affiliate.website} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline break-all">{affiliate.website}</a> : "—"} />
           <Field label="PayPal" value={affiliate.paypalEmail ?? "—"} />
           <Field label="IBAN" value={affiliate.bankIban ?? "—"} />
+          <Field label="Instagram" value={affiliate.instagramUrl ? <a href={affiliate.instagramUrl} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline break-all">{affiliate.instagramUrl}</a> : "—"} />
+          <Field label="Facebook" value={affiliate.facebookUrl ? <a href={affiliate.facebookUrl} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline break-all">{affiliate.facebookUrl}</a> : "—"} />
+          <Field label="X (Twitter)" value={affiliate.xUrl ? <a href={affiliate.xUrl} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline break-all">{affiliate.xUrl}</a> : "—"} />
+          <Field label="TikTok" value={affiliate.tiktokUrl ? <a href={affiliate.tiktokUrl} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline break-all">{affiliate.tiktokUrl}</a> : "—"} />
           <Field label="Jezik obvestil" value={affiliate.preferredLocale} />
           <Field label="Prijavljen" value={fmtDate(affiliate.createdAt)} />
           <Field label="Odobren" value={fmtDate(affiliate.approvedAt)} />
