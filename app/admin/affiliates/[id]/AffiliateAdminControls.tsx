@@ -73,16 +73,22 @@ export function AffiliateAdminControls({ affiliate }: { affiliate: Affiliate }) 
           <label className="block text-xs font-semibold text-gray-600 mb-1.5">Provizija (%)</label>
           <div className="flex gap-2">
             <input
-              type="number"
-              min={1}
-              max={100}
+              type="text"
+              inputMode="numeric"
               value={rate}
-              onChange={(e) => setRate(Number(e.target.value))}
+              onChange={(e) => setRate(e.target.value.replace(/[^0-9]/g, ""))}
               className="flex-1 px-3 py-2 text-sm border border-gray-200 rounded-xl"
             />
             <button
-              onClick={() => patch({ commissionRate: rate })}
-              disabled={pending || rate === affiliate.commissionRate}
+              onClick={() => {
+                const n = Number(rate);
+                if (!Number.isFinite(n) || n < 1 || n > 100) {
+                  setError("Provizija mora biti med 1 in 100.");
+                  return;
+                }
+                patch({ commissionRate: n });
+              }}
+              disabled={pending || rate === String(affiliate.commissionRate)}
               className="px-3 py-2 rounded-xl bg-[#0F1729] text-white text-xs font-bold disabled:opacity-50"
             >
               Shrani

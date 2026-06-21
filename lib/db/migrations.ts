@@ -239,6 +239,11 @@ export async function runMigrations() {
     )
   `);
   await run("discount_codes idx", (q) => q`CREATE INDEX IF NOT EXISTS discount_codes_code_idx ON discount_codes (code)`);
+  // Add the affiliate link column on older DBs that pre-date the partner program.
+  await run("discount_codes add affiliate_id", (q) => q`
+    ALTER TABLE discount_codes ADD COLUMN IF NOT EXISTS affiliate_id TEXT
+  `);
+  await run("discount_codes affiliate idx", (q) => q`CREATE INDEX IF NOT EXISTS discount_codes_affiliate_idx ON discount_codes (affiliate_id)`);
 
   // ── Affiliates ────────────────────────────────────────────────────────────
   await run("create affiliates", (q) => q`

@@ -1,9 +1,10 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { db } from "@/lib/db";
-import { affiliates, affiliateCommissions } from "@/lib/db/schema";
-import { eq, desc } from "drizzle-orm";
+import { affiliates, affiliateCommissions, discountCodes } from "@/lib/db/schema";
+import { eq, desc, and } from "drizzle-orm";
 import { AffiliateAdminControls } from "./AffiliateAdminControls";
+import { PromoCodeControls } from "./PromoCodeControls";
 
 export const dynamic = "force-dynamic";
 export const metadata = { robots: { index: false, follow: false } };
@@ -43,6 +44,10 @@ export default async function AdminAffiliateDetailPage({
     .orderBy(desc(affiliateCommissions.createdAt))
     .limit(100);
 
+  const promo = await db.query.discountCodes.findFirst({
+    where: and(eq(discountCodes.affiliateId, id), eq(discountCodes.isActive, true)),
+  });
+
   return (
     <div className="space-y-6">
       <div>
@@ -55,6 +60,9 @@ export default async function AdminAffiliateDetailPage({
 
       {/* Controls */}
       <AffiliateAdminControls affiliate={affiliate} />
+
+      {/* Promo (discount) code for customers */}
+      <PromoCodeControls affiliateId={affiliate.id} initialPromo={promo ?? null} />
 
       {/* Info */}
       <div className="bg-white rounded-2xl border border-gray-200 p-5">

@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getPayment, isPaidStatus, isRefundedStatus, mollieConfigured } from "@/lib/mollie";
 import { applyPlanToAlbum } from "@/lib/paddle-reconcile";
 import { htmlEscape, notifyTelegram } from "@/lib/telegram";
-import { sendAdminPaymentEmail, sendAffiliateCommissionEmail } from "@/lib/email/notifications";
+import { sendAdminPaymentEmail, sendAffiliateCommissionEmail, sendAdminAffiliateSaleEmail } from "@/lib/email/notifications";
 import { incrementDiscountUsage } from "@/lib/discount";
 import { db } from "@/lib/db";
 import { affiliates, affiliateCommissions, affiliateClicks } from "@/lib/db/schema";
@@ -110,6 +110,8 @@ export async function POST(req: NextRequest) {
         customerEmail: null,
         orderAmountCents: Math.round(parseFloat(payment.amount.value) * 100),
         orderCurrency: payment.amount.currency.toUpperCase(),
+        promoCode: payment.metadata?.discountCodeId ? null : null, // resolved inside helper from discountCodeId
+        discountCodeId: payment.metadata?.discountCodeId ?? null,
       });
     } catch (err) {
       console.error("[mollie webhook] affiliate commission failed:", err);
@@ -149,6 +151,8 @@ async function createAffiliateCommission(params: {
   customerEmail: string | null;
   orderAmountCents: number;
   orderCurrency: string;
+  promoCode?: string | null;
+  discountCodeId?: string | null;
 }) {
   // Idempotency: if a commission for this Mollie payment already exists
   // (webhook fired twice), skip. The unique index on mollie_payment_id
@@ -237,17 +241,41 @@ async function createAffiliateCommission(params: {
     ),
   ).catch(() => {});
 
-  // Send the commission notification email. Failure must not break the webhook.
-  await sendAffiliateCommissionEmail({
-    to: affiliate.email,
-    name: affiliate.name,
-    locale: affiliate.preferredLocale,
-    commissionAmountCents,
-    orderAmountCents: params.orderAmountCents,
-    commissionRate: affiliate.commissionRate,
-    orderDescription: planLabel(params.planId).text,
-    lockUntil,
-  }).catch((err) => console.error("[affiliate commission email] failed:", err));
+  // If a discount code was used and it belongs to this affiliate, pull its
+  // code string so we can surface it in the admin notification.
+  let promoCode: string | null = null;
+  if (params.discountCodeId) {
+    const dc = await db.query.discountCodes.findFirst({
+      where: eq(import_discountCodes.id, params.discountCodeId),
+    }).catch(() => null);
+    if (dc && dc.affiliateId === affiliate.id) promoCode = dc.code;
+  }
+
+  // Fire the two notification emails in parallel. Both are best-effort.
+  await Promise.all([
+    sendAffiliateCommissionEmail({
+      to: affiliate.email,
+      name: affiliate.name,
+      locale: affiliate.preferredLocale,
+      commissionAmountCents,
+      orderAmountCents: params.orderAmountCents,
+      commissionRate: affiliate.commissionRate,
+      orderDescription: planLabel(params.planId).text,
+      lockUntil,
+    }).catch((err) => console.error("[affiliate commission email] failed:", err)),
+    sendAdminAffiliateSaleEmail({
+      affiliateId: affiliate.id,
+      affiliateName: affiliate.name,
+      affiliateEmail: affiliate.email,
+      referralCode: affiliate.referralCode,
+      orderAmountCents: params.orderAmountCents,
+      commissionAmountCents,
+      commissionRate: affiliate.commissionRate,
+      albumSlug: params.albumSlug,
+      planName: planLabel(params.planId).text,
+      promoCode,
+    }).catch((err) => console.error("[admin affiliate sale email] failed:", err)),
+  ]);
 
   await db.update(affiliateCommissions).set({
     emailSentAt: new Date(),
@@ -256,7 +284,7 @@ async function createAffiliateCommission(params: {
 
 // We import albums dynamically inside the helper to avoid loading it at module
 // init time when the webhook is cold. Trick to keep the helper self-contained.
-import { albums as import_albums } from "@/lib/db/schema";
+import { albums as import_albums, discountCodes as import_discountCodes } from "@/lib/db/schema";
 
 /**
  * Reverse an affiliate commission when a paid order is later refunded or

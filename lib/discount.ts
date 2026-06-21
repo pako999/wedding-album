@@ -15,6 +15,9 @@ export interface DiscountResult {
   originalPrice: number;
   finalPrice: number;
   finalCents: number;
+  /** Affiliate that owns this code (if any) — caller uses this to also
+   *  attribute a commission on top of the customer discount. */
+  affiliateId: string | null;
 }
 
 export interface DiscountError {
@@ -50,6 +53,7 @@ export async function validateDiscount(
     originalPrice,
     finalPrice,
     finalCents,
+    affiliateId: row.affiliateId ?? null,
   };
 }
 

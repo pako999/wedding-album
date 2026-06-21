@@ -286,6 +286,10 @@ export const discountCodes = pgTable(
     usedCount: integer("used_count").notNull().default(0),
     expiresAt: timestamp("expires_at"),           // null = never
     isActive: boolean("is_active").notNull().default(true),
+    // If this code belongs to an affiliate partner, link to their row.
+    // When the code is redeemed at checkout we also credit a commission
+    // to that affiliate (no cookie needed).
+    affiliateId: text("affiliate_id"),
     createdAt: timestamp("created_at").notNull().defaultNow(),
   },
   (t) => [index("discount_codes_code_idx").on(t.code)]
