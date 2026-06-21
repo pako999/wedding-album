@@ -37,25 +37,27 @@ export async function GET(req: NextRequest) {
 
   for (const commission of due) {
     try {
-      await db.transaction(async (tx) => {
-        // Lock the row to prevent double-processing if cron overlaps.
-        const fresh = await tx.query.affiliateCommissions.findFirst({
-          where: eq(affiliateCommissions.id, commission.id),
-        });
-        if (!fresh || fresh.status !== "pending") return;
+      // Atomic transition: only one concurrent invocation wins. If the
+      // returned row is empty, another process (or a retry) already
+      // approved this commission — skip silently to avoid double-credit.
+      const transitioned = await db.update(affiliateCommissions).set({
+        status: "approved",
+        approvedAt: now,
+      }).where(and(
+        eq(affiliateCommissions.id, commission.id),
+        eq(affiliateCommissions.status, "pending"),
+      )).returning();
 
-        await tx.update(affiliateCommissions).set({
-          status: "approved",
-          approvedAt: now,
-        }).where(eq(affiliateCommissions.id, commission.id));
+      if (transitioned.length === 0) continue;
 
-        // Move money: pending → available.
-        await tx.update(affiliates).set({
-          pendingBalanceCents: sql`GREATEST(0, ${affiliates.pendingBalanceCents} - ${commission.commissionAmountCents})`,
-          availableBalanceCents: sql`${affiliates.availableBalanceCents} + ${commission.commissionAmountCents}`,
-          updatedAt: now,
-        }).where(eq(affiliates.id, commission.affiliateId));
-      });
+      // Move money pending → available. Safe to do after the atomic
+      // status transition above: only the winning transaction reaches here.
+      await db.update(affiliates).set({
+        pendingBalanceCents: sql`GREATEST(0, ${affiliates.pendingBalanceCents} - ${commission.commissionAmountCents})`,
+        availableBalanceCents: sql`${affiliates.availableBalanceCents} + ${commission.commissionAmountCents}`,
+        updatedAt: now,
+      }).where(eq(affiliates.id, commission.affiliateId));
+
       approved++;
 
       // Notify the affiliate — best-effort, never block the cron.

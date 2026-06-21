@@ -883,7 +883,8 @@ export async function sendAffiliateWelcomeEmail({
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) return;
   const t = AFF_STRINGS[pickLocale(locale)];
-  const refLink = `${APP_URL}/?ref=${referralCode}`;
+  // Route through the tracker endpoint so clicks are properly logged.
+  const refLink = `${APP_URL}/api/affiliate/track?ref=${referralCode}&to=/`;
   const dashboardUrl = `${APP_URL}/affiliate/dashboard`;
   const body = `
     ${t.welcomeBody(name)}

@@ -28,7 +28,11 @@ const STATUS_LABEL: Record<string, { label: string; cls: string }> = {
 
 export function DashboardClient({ affiliate, commissions }: Props) {
   const [copied, setCopied] = useState<string | null>(null);
-  const refLink = `${APP_URL}/?ref=${affiliate.referralCode}`;
+  // Route the visible "your link" through the tracker endpoint so each
+  // share-click produces an affiliate_clicks row and bumps totalClicks.
+  // The endpoint sets the cookie and redirects to "/" — same UX as the
+  // direct ?ref= link, but with proper analytics.
+  const refLink = `${APP_URL}/api/affiliate/track?ref=${affiliate.referralCode}&to=/`;
 
   async function copy(value: string, key: string) {
     try {

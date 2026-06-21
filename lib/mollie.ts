@@ -20,6 +20,10 @@ export interface MolliePayment {
   id: string;
   status: string;
   amount: { value: string; currency: string };
+  // Present once any refund has been processed. Both fields are absent
+  // on payments that have never been refunded.
+  amountRefunded?: { value: string; currency: string };
+  amountRemaining?: { value: string; currency: string };
   description: string;
   method: string | null; // e.g. "ideal", "creditcard", "banktransfer"
   metadata: {
@@ -93,6 +97,11 @@ export async function getPayment(id: string): Promise<MolliePayment> {
 
 export function isPaidStatus(status: string): boolean {
   return status === "paid";
+}
+
+/** Status values that indicate a paid payment has been reversed in full. */
+export function isRefundedStatus(status: string): boolean {
+  return status === "refunded" || status === "charged_back";
 }
 
 export async function listPayments(limit = 50): Promise<MolliePayment[]> {
