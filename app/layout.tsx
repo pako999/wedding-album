@@ -136,6 +136,15 @@ export default async function RootLayout({
     <ClerkProvider localization={clerkLocalization}>
       <html lang={lang} className={`${dmSans.variable} ${cormorant.variable}`}>
         <body className="font-sans antialiased bg-[#F2F4F8] text-[#0F1729] min-h-screen">
+          {/* Cookiebot — must be beforeInteractive so auto-blocking mode can
+              intercept GA and any other third-party scripts before they fire. */}
+          <Script
+            id="Cookiebot"
+            src="https://consent.cookiebot.com/uc.js"
+            data-cbid="d27e2582-e0d4-4963-bf86-ffdf25bc79fd"
+            data-blockingmode="auto"
+            strategy="beforeInteractive"
+          />
           {children}
           {GA_ID && (
             <>
