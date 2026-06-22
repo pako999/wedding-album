@@ -334,8 +334,9 @@ export function CookieConsent({ lang }: { lang: LangCode }) {
           role="dialog"
           aria-modal="true"
           aria-label={t.title}
-          className="fixed inset-x-3 bottom-3 sm:left-auto sm:right-4 sm:bottom-4 sm:max-w-md z-[100] bg-white border border-gray-200 shadow-2xl rounded-2xl p-4 sm:p-5"
+          className="fixed inset-x-0 bottom-0 z-[100] bg-white border-t border-gray-200 shadow-2xl p-4 sm:p-5"
         >
+          <div className="max-w-screen-xl mx-auto">
           <h2 className="font-serif text-base font-bold text-[#0F1729] mb-2">{t.title}</h2>
           <p className="text-sm text-gray-600 leading-relaxed mb-4">{t.body}</p>
 
@@ -430,6 +431,7 @@ export function CookieConsent({ lang }: { lang: LangCode }) {
               {t.policyLink} →
             </a>
           </p>
+          </div>
         </div>
       )}
     </>
