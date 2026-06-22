@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { GuestcamLogo } from "@/components/GuestcamLogo";
-import { CookieSettingsButton } from "@/components/CookieSettingsButton";
 
 type Lang = "sl" | "hr" | "sr" | "de" | "en" | "es";
 
@@ -157,9 +156,6 @@ export function SeoFooter({ lang }: { lang: Lang }) {
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-gray-500">
           <p>© 2026 Sport group d.o.o. · SI72133449</p>
           <div className="flex items-center gap-4">
-            {/* "Cookie settings" — re-opens the consent banner so visitors can
-                revoke or change their granular choices any time. */}
-            <CookieSettingsButton label={t.cookies} />
             <p>
               Narejeno v Sloveniji by{" "}
               <a
