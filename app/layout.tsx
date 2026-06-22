@@ -3,10 +3,14 @@ import { headers } from "next/headers";
 import { DM_Sans, Cormorant_Garamond } from "next/font/google";
 import Script from "next/script";
 import { ClerkProvider } from "@clerk/nextjs";
+import { auth } from "@clerk/nextjs/server";
 import { clerkLocaleFor } from "@/lib/clerk-locales";
 import { ExitIntentPopup } from "@/components/ExitIntentPopup";
 import { DiscountBanner } from "@/components/DiscountBanner";
 import type { LangCode } from "@/components/LanguageSwitcher";
+import { db } from "@/lib/db";
+import { albums } from "@/lib/db/schema";
+import { and, eq, ne } from "drizzle-orm";
 import "./globals.css";
 
 /**
@@ -126,6 +130,19 @@ export const metadata: Metadata = {
   },
 };
 
+/** Returns true if the visitor has at least one paid album (basic/plus/premium). */
+async function checkHasPaidPlan(userId: string): Promise<boolean> {
+  try {
+    const row = await db.query.albums.findFirst({
+      columns: { id: true },
+      where: and(eq(albums.ownerClerkId, userId), ne(albums.plan, "free")),
+    });
+    return !!row;
+  } catch {
+    return false;
+  }
+}
+
 export default async function RootLayout({
   children,
 }: {
@@ -133,6 +150,25 @@ export default async function RootLayout({
 }) {
   const lang = await detectLang();
   const clerkLocalization = clerkLocaleFor(lang);
+
+  // Only show promo banners on public marketing pages to visitors
+  // who have not yet purchased a plan.
+  const h = await headers();
+  const pathname = h.get("x-pathname") ?? "";
+  const isProtectedPath =
+    pathname.startsWith("/dashboard") ||
+    pathname.startsWith("/admin") ||
+    pathname.startsWith("/sign-in") ||
+    pathname.startsWith("/sign-up");
+
+  let showPromo = !isProtectedPath;
+  if (showPromo) {
+    const { userId } = await auth();
+    if (userId) {
+      const paid = await checkHasPaidPlan(userId);
+      if (paid) showPromo = false;
+    }
+  }
 
   return (
     <ClerkProvider localization={clerkLocalization}>
@@ -147,9 +183,9 @@ export default async function RootLayout({
             data-blockingmode="auto"
             strategy="beforeInteractive"
           />
-          <DiscountBanner lang={lang} />
+          {showPromo && <DiscountBanner lang={lang} />}
           {children}
-          <ExitIntentPopup lang={lang} />
+          {showPromo && <ExitIntentPopup lang={lang} />}
           {GA_ID && (
             <>
               <Script
