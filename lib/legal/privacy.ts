@@ -121,86 +121,122 @@ export const privacyDoc: Record<LangCode, LegalDoc> = {
   sl: {
     heading: "Politika zasebnosti",
     eyebrow: "Pravni dokument",
-    lastUpdated: "Zadnja posodobitev: 1. januar 2026 · Sport group d.o.o.",
+    lastUpdated: "Datum ucinkovitosti: 19. junij 2026 · Sport group d.o.o.",
     intro:
-      "Sport group d.o.o. (v nadaljevanju: “mi”, “naše”, “Guestcam”) spoštuje vašo zasebnost in varuje osebne podatke v skladu z Uredbo (EU) 2016/679 (GDPR) ter veljavno slovensko zakonodajo. Ta politika opisuje, katere podatke zbiramo, kako jih uporabljamo in kakšne so vaše pravice.",
+      "Sport group d.o.o. si prizadeva za odlicno storitev za stranke. Del nase zaveze je odgovorno upravljanje osebnih podatkov, zbranih prek spletnega mesta guestcam.si. Nasi primarni cilji pri obdelavi teh informacij so: izboljsanje uporabniske izkusnje, zagotavljanje pravocasne podpore, izboljsanje izdelkov in storitev ter izvajanje potrebnih poslovnih operacij.",
     sections: [
       {
-        title: "1. Upravljavec podatkov",
+        title: "1. Uvod in informacije o organizaciji",
         blocks: [
-          { type: "contactCard", lines: ["Sport group d.o.o.", "Davčna številka: SI72133449", "E-pošta: info@guestcam.si"] },
+          { type: "p", text: "Sport group d.o.o. si prizadeva za odlicno storitev za stranke. Del nase zaveze je odgovorno upravljanje osebnih podatkov, zbranih prek spletnega mesta guestcam.si. Nasi primarni cilji pri obdelavi teh informacij vkljucujejo:" },
+          { type: "ul", items: [
+            "Izboljsanje uporabniske izkusnje na nasi platformi",
+            "Zagotavljanje pravocasne podpore in odgovarjanje na povprasevanja ali zahteve za storitve",
+            "Izboljsanje nasih izdelkov in storitev",
+            "Izvajanje potrebnih poslovnih operacij (racunovodstvo, upravljanje racunov)",
+          ] },
+          { type: "p", text: "Nimamo imenovanega pooblascenca za varstvo podatkov (DPO), vendar ostajamo popolnoma zavezani resevanju vasih pomislekov glede zasebnosti." },
+          { type: "contactCard", lines: ["Sport group d.o.o.", "E-posta: info@guestcam.si", "Telefon: +386 71604980"] },
         ],
       },
       {
-        title: "2. Katere podatke zbiramo",
+        title: "2. Obseg in uporaba",
         blocks: [
-          { type: "h3", text: "2.1 Podatki, ki jih vnesete sami" },
+          { type: "p", text: "Ta politika sciti osebne podatke vseh deležnikov: obiskovalcev spletnega mesta, registriranih uporabnikov in strank, ki uporabljajo guestcam.si." },
+        ],
+      },
+      {
+        title: "3. Shranjevanje in zascita podatkov",
+        blocks: [
+          { type: "p", text: "Osebni podatki so shranjeni na varnih strežnikih, ki se nahajajo v: SI, DE. Sodelujemo z uglednimi ponudniki gostovanja podatkov, ki so zavezani k uporabi najsodobnejsih varnostnih ukrepov." },
+          { type: "p", text: "Nasi partnerji za gostovanje podatkov so zavezani k visoki ravni tehnicnih in organizacijskih varnostnih ukrepov, ki zagotavljajo zascito vasih osebnih podatkov pred nepooblascenim dostopom, izgubo ali unicevanjem." },
+        ],
+      },
+      {
+        title: "4. Deljenje podatkov in pogodbeni obdelovalci",
+        blocks: [
+          { type: "p", text: "Vase osebne podatke lahko delimo z naslednjimi ponudniki storitev tretjih oseb:" },
+          { type: "h3", text: "Google Tag Manager" },
           { type: "ul", items: [
-            "Ime para / organizatorja — pri ustvarjanju galerije vnesete ime (npr. “Ana in Marko”), ki je prikazano na QR kodi in v galeriji.",
-            "E-poštni naslov — za prijavo prek Clerk.com (samo organizator galerije). Gosti za nalaganje fotografij ne potrebujejo računa.",
-            "Datum in kraj dogodka — neobvezni podatki za personalizacijo galerije.",
+            "Ponudnik: Google Ireland Limited",
+            "Namen: Upravljanje oznak, zbrani podatki o sprožanju oznak",
+            "Politika zasebnosti: https://business.safety.google/privacy/",
           ] },
-          { type: "h3", text: "2.2 Vsebina, ki jo naložite" },
+          { type: "h3", text: "Google Ads" },
           { type: "ul", items: [
-            "Fotografije in video posnetki, ki jih naložijo gostje ali organizator.",
-            "Metapodatki datotek (datum nastanka, velikost) — shranjeni le v namen prikaza in prenosa.",
+            "Ponudnik: Google Ireland Limited",
+            "Namen: Prilagajanje uporabniske izkusnje, analitika, trzenje in oglaševanje",
+            "Zbrani podatki: E-posta/telefon, ID naprave, IP naslov, prstni odtis brskalnika, lokacija, dnevniki interakcij, nacin placila",
+            "Politika zasebnosti: https://business.safety.google/privacy/",
           ] },
-          { type: "h3", text: "2.3 Tehnični podatki" },
+          { type: "h3", text: "Google Analytics" },
           { type: "ul", items: [
-            "IP naslov (za zaščito pred zlorabo storitve).",
-            "Vrsta brskalnika in naprave (za optimizacijo prikaza galerije).",
-            "Piškotki Clerk.com za vzdrževano sejo (samo organizator).",
+            "Ponudnik: Google Ireland Limited",
+            "Namen: Trzenje, analitika",
+            "Zbrani podatki: Ime, datum rojstva, nacionalna ID, e-posta/telefon, naslov, ID naprave, IP, OS, prstni odtis brskalnika, lokacija, zgodovina brskanja, dnevniki interakcij, zgodovina nakupov",
+            "Politika zasebnosti: https://business.safety.google/privacy/",
+          ] },
+          { type: "h3", text: "Meta" },
+          { type: "ul", items: [
+            "Ponudnik: Meta Platforms Ireland Ltd.",
+            "Namen: Prilagajanje UX, analitika, trzenje",
+            "Zbrani podatki: Ime, datum rojstva, e-posta/telefon, naslov, podatki o placilu, ID naprave, IP, informacije o brskalniku, OS, prstni odtis brskalnika, lokacija, dnevniki interakcij, zgodovina brskanja",
+            "Politika zasebnosti: https://www.facebook.com/privacy/explanation",
           ] },
         ],
       },
       {
-        title: "3. Namen obdelave in pravna podlaga",
-        blocks: [{ type: "table", ...legalBasisRows.sl }],
-      },
-      {
-        title: "4. Kje so shranjeni vaši podatki",
+        title: "5. Sporazumi o obdelavi podatkov",
         blocks: [
-          { type: "p", text: "Vse fotografije in datoteke shranjujemo prek storitve Bunny.net (CDN in hramba podatkov) v podatkovnih centrih na ozemlju EU. Uporabniški računi (avtentikacija) so upravljani prek storitve Clerk.com, ki podatke hrani v skladu z GDPR. Podatki galerije (naslovi, datumi, metapodatki) so shranjeni v podatkovni bazi Neon PostgreSQL na strežnikih v EU." },
-          { type: "p", text: "Nobeni vaši podatki niso posredovani tretjim osebam za oglaševalske namene ali prodani naprej." },
+          { type: "p", text: "Sporazumi o obdelavi podatkov (DPA) zagotavljajo, da tretje osebe uvedejo ustrezne tehnicne in organizacijske ukrepe v skladu z GDPR." },
         ],
       },
       {
-        title: "5. Čas hrambe podatkov",
+        title: "6. Vase pravice (GDPR)",
         blocks: [
-          { type: "ul", items: [
-            "Fotografije in galerija — shranjene so toliko časa, kolikor traja vaš paket (1 mesec, 1 leto ali 2 leti). Po preteku paketa, če ga ne obnovite, galerijo in vse vsebine trajno izbrišemo.",
-            "Račun organizatorja — hranjen, dokler aktivno vzdržujete vsaj eno galerijo ali dokler ne zahtevate izbrisa. Račun brez aktivnih galerij izbrišemo po 2 letih neaktivnosti.",
-            "Računovodski podatki — računi in plačilni podatki (brez številk kartic) hranimo 10 let v skladu z zakonodajo o računovodstvu.",
-          ] },
-        ],
-      },
-      {
-        title: "6. Vaše pravice (GDPR)",
-        blocks: [
-          { type: "p", text: "V skladu z GDPR imate naslednje pravice:" },
           { type: "cards", items: gdprRightsCards.sl },
-          { type: "p", text: "Svojo pravico uveljavljate prek e-pošte info@guestcam.si. Odgovorimo v 30 dneh." },
+          { type: "p", text: "Za uveljavljanje vasih pravic nas kontaktirajte na info@guestcam.si ali +386 71604980. Odgovorimo v zakonsko dolocenem roku." },
         ],
       },
       {
-        title: "7. Varnost podatkov",
+        title: "7. Piskotki in tehnologije sledenja",
         blocks: [
-          { type: "p", text: "Vse povezave so zaščitene s protokolom HTTPS (TLS 1.3). Dostop do galerij je mogoč zgolj z unikatno QR kodo oziroma URL-jem, ki ga delite vi. Noben javni iskalnik ne more indeksirati vsebine vaše galerije. Interni dostop do podatkov imajo le pooblaščeni zaposleni, kadar je to nujno za podporo." },
+          { type: "p", text: "Ob vasem prvem obisku se prikaže pasica za soglasje k piskotkom. Uporabljamo naslednje vrste piskotkov:" },
+          { type: "ul", items: [
+            "Nujni piskotki",
+            "Piskotki za zmogljivost/analitiko",
+            "Funkcionalni piskotki",
+            "Oglaševalski/ciljni piskotki",
+          ] },
+          { type: "link", text: "Vec podrobnosti o piskotkih", href: "/cookies" },
         ],
       },
       {
-        title: "8. Piškotki",
-        blocks: [{ type: "p", text: "Za informacije o piškotkih glejte našo Politiko piškotkov." }],
-      },
-      {
-        title: "9. Spremembe politike zasebnosti",
-        blocks: [{ type: "p", text: "O bistvenih spremembah vas obvestimo prek e-pošte (organizatorje) ali z obvestilom v storitvi. Datum zadnje posodobitve je vedno naveden na vrhu tega dokumenta." }],
-      },
-      {
-        title: "10. Kontakt",
+        title: "8. Mednarodni prenosi podatkov",
         blocks: [
-          { type: "p", text: "Za vse vprašanja glede zasebnosti nas kontaktirajte:" },
-          { type: "contactCard", lines: ["Sport group d.o.o.", "E-pošta: info@guestcam.si", "Davčna številka: SI72133449"] },
+          { type: "p", text: "Vase osebne podatke lahko prenesemo na lokacije izven vase države. Vsi prenosi so v skladu z GDPR." },
+        ],
+      },
+      {
+        title: "9. Obvestilo o krsitvi podatkov",
+        blocks: [
+          { type: "ul", items: [
+            "Zaznavanje prek internega nadzora",
+            "Ce je potrebno, obvestimo regulatorne organe v 30 dneh",
+            "Prizadete posameznike obvestimo v 30 dneh",
+          ] },
+        ],
+      },
+      {
+        title: "10. Posodobitve politike",
+        blocks: [
+          { type: "p", text: "O spremembah vas obvestimo prek e-posta ali obvestil na spletnem mestu. Nadaljnja uporaba po spremembah pomeni sprejetje novih pogojev." },
+        ],
+      },
+      {
+        title: "11. Kontakt",
+        blocks: [
+          { type: "contactCard", lines: ["Sport group d.o.o.", "E-posta: info@guestcam.si", "Telefon: +386 71604980"] },
         ],
       },
     ],
@@ -208,286 +244,616 @@ export const privacyDoc: Record<LangCode, LegalDoc> = {
   hr: {
     heading: "Politika privatnosti",
     eyebrow: "Pravni dokument",
-    lastUpdated: "Zadnje ažurirano: 1. siječnja 2026 · Sport group d.o.o.",
+    lastUpdated: "Datum stupanja na snagu: 19. lipnja 2026 · Sport group d.o.o.",
     intro:
-      "Sport group d.o.o. (u nastavku: “mi”, “naše”, “Guestcam”) poštuje vašu privatnost i štiti osobne podatke u skladu s Uredbom (EU) 2016/679 (GDPR) i važećim hrvatskim zakonodavstvom. Ova politika opisuje koje podatke prikupljamo, kako ih koristimo i koja su vaša prava.",
+      "Sport group d.o.o. posvecan je pružanju izvrsne usluge nasim klijentima. Dio nase predanosti ukljucuje odgovorno upravljanje osobnim podacima prikupljenim putem naseg web mjesta guestcam.si. Nasi primarni ciljevi u obradi ovih informacija ukljucuju: poboljsanje korisnickog iskustva, pružanje pravovremene podrske, poboljsanje proizvoda i usluga te provodenje nužnih poslovnih operacija.",
     sections: [
-      { title: "1. Voditelj obrade podataka", blocks: [
-        { type: "contactCard", lines: ["Sport group d.o.o.", "OIB: SI72133449", "E-pošta: info@guestcam.si"] },
-      ] },
-      { title: "2. Koje podatke prikupljamo", blocks: [
-        { type: "h3", text: "2.1 Podaci koje sami unosite" },
-        { type: "ul", items: [
-          "Ime para / organizatora — prilikom kreiranja galerije unosite ime (npr. “Ana i Marko”), koje se prikazuje na QR kodu i u galeriji.",
-          "Adresa e-pošte — za prijavu putem Clerk.com (samo organizator galerije). Gosti ne trebaju račun za učitavanje fotografija.",
-          "Datum i mjesto događaja — neobavezni podaci za personalizaciju galerije.",
-        ] },
-        { type: "h3", text: "2.2 Sadržaj koji učitavate" },
-        { type: "ul", items: [
-          "Fotografije i videozapisi koje učitavaju gosti ili organizator.",
-          "Metapodaci datoteka (datum nastanka, veličina) — pohranjeni isključivo radi prikaza i preuzimanja.",
-        ] },
-        { type: "h3", text: "2.3 Tehnički podaci" },
-        { type: "ul", items: [
-          "IP adresa (za zaštitu od zlouporabe usluge).",
-          "Vrsta preglednika i uređaja (za optimizaciju prikaza galerije).",
-          "Kolačići Clerk.com za održavanje sesije (samo organizator).",
-        ] },
-      ] },
-      { title: "3. Svrha obrade i pravna osnova", blocks: [{ type: "table", ...legalBasisRows.hr }] },
-      { title: "4. Gdje su pohranjeni vaši podaci", blocks: [
-        { type: "p", text: "Sve fotografije i datoteke pohranjujemo putem usluge Bunny.net (CDN i pohrana podataka) u podatkovnim centrima na području EU. Korisnički računi (autentifikacija) upravljani su putem Clerk.com koja podatke čuva u skladu s GDPR-om. Podaci galerije (nazivi, datumi, metapodaci) pohranjeni su u bazi podataka Neon PostgreSQL na poslužiteljima u EU." },
-        { type: "p", text: "Vaše podatke ne prosljeđujemo trećim stranama za oglašavanje niti ih prodajemo dalje." },
-      ] },
-      { title: "5. Razdoblje čuvanja podataka", blocks: [
-        { type: "ul", items: [
-          "Fotografije i galerija — čuvaju se onoliko koliko traje vaš paket (1 mjesec, 1 godina ili 2 godine). Nakon isteka paketa, ako ga ne obnovite, galeriju i sav sadržaj trajno brišemo.",
-          "Račun organizatora — čuva se dok aktivno održavate barem jednu galeriju ili dok ne zatražite brisanje. Račun bez aktivnih galerija brišemo nakon 2 godine neaktivnosti.",
-          "Računovodstveni podaci — račune i podatke o plaćanju (bez brojeva kartica) čuvamo 10 godina u skladu sa zakonodavstvom o računovodstvu.",
-        ] },
-      ] },
-      { title: "6. Vaša prava (GDPR)", blocks: [
-        { type: "p", text: "U skladu s GDPR-om imate sljedeća prava:" },
-        { type: "cards", items: gdprRightsCards.hr },
-        { type: "p", text: "Svoje pravo ostvarujete putem e-pošte info@guestcam.si. Odgovaramo u roku od 30 dana." },
-      ] },
-      { title: "7. Sigurnost podataka", blocks: [
-        { type: "p", text: "Sve veze su zaštićene protokolom HTTPS (TLS 1.3). Pristup galerijama moguć je isključivo putem jedinstvenog QR koda ili URL-a koji vi dijelite. Nijedna javna tražilica ne može indeksirati sadržaj vaše galerije. Interni pristup podacima imaju samo ovlašteni zaposlenici, i to samo kada je to nužno za podršku." },
-      ] },
-      { title: "8. Kolačići", blocks: [{ type: "p", text: "Za informacije o kolačićima pogledajte našu Politiku kolačića." }] },
-      { title: "9. Izmjene politike privatnosti", blocks: [{ type: "p", text: "O bitnim izmjenama obavještavamo vas putem e-pošte (organizatore) ili obavijesti u usluzi. Datum zadnjeg ažuriranja uvijek je naveden na vrhu ovog dokumenta." }] },
-      { title: "10. Kontakt", blocks: [
-        { type: "p", text: "Za sva pitanja o privatnosti kontaktirajte nas:" },
-        { type: "contactCard", lines: ["Sport group d.o.o.", "E-pošta: info@guestcam.si", "OIB: SI72133449"] },
-      ] },
+      {
+        title: "1. Uvod i informacije o organizaciji",
+        blocks: [
+          { type: "p", text: "Sport group d.o.o. posvecan je pružanju izvrsne usluge nasim klijentima. Dio nase predanosti ukljucuje odgovorno upravljanje osobnim podacima prikupljenim putem naseg web mjesta guestcam.si. Nasi primarni ciljevi u obradi ovih informacija ukljucuju:" },
+          { type: "ul", items: [
+            "Poboljsanje korisnickog iskustva na nasoj platformi",
+            "Pružanje pravovremene podrske i odgovaranje na upite ili zahtjeve za uslugama",
+            "Poboljsanje nasih proizvoda i usluga",
+            "Provodenje nužnih poslovnih operacija (naplata, upravljanje racunima)",
+          ] },
+          { type: "p", text: "Nemamo imenovanog službenika za zastitu podataka (DPO), ali ostajemo potpuno predani rjesavanju vasih briga o privatnosti." },
+          { type: "contactCard", lines: ["Sport group d.o.o.", "E-posta: info@guestcam.si", "Telefon: +386 71604980"] },
+        ],
+      },
+      {
+        title: "2. Opseg i primjena",
+        blocks: [
+          { type: "p", text: "Ova politika stiti osobne podatke svih dionika: posjetitelja web mjesta, registriranih korisnika i klijenata koji koriste guestcam.si." },
+        ],
+      },
+      {
+        title: "3. Pohrana i zastita podataka",
+        blocks: [
+          { type: "p", text: "Osobni podaci pohranjeni su na sigurnim poslužiteljima koji se nalaze u: SI, DE. Suradujemo s uglednim pružateljima usluga pohrane podataka koji su predani korištenju najsuvremenijih sigurnosnih mjera." },
+          { type: "p", text: "Nasi partneri za pohrane podataka obvezani su na visoku razinu tehnickih i organizacijskih sigurnosnih mjera kako bi osigurali zastitu vasih osobnih podataka od neovlastenog pristupa, gubitka ili unistavanja." },
+        ],
+      },
+      {
+        title: "4. Dijeljenje podataka i trecestrani obradivaci",
+        blocks: [
+          { type: "p", text: "Vase osobne podatke možemo dijeliti s navedenim pružateljima usluga trecih strana:" },
+          { type: "h3", text: "Google Tag Manager" },
+          { type: "ul", items: [
+            "Pružatelj: Google Ireland Limited",
+            "Svrha: Upravljanje oznakama, agregirani podaci o aktiviranju oznaka",
+            "Politika privatnosti: https://business.safety.google/privacy/",
+          ] },
+          { type: "h3", text: "Google Ads" },
+          { type: "ul", items: [
+            "Pružatelj: Google Ireland Limited",
+            "Svrha: Prilagodba korisnickog iskustva, analitika, marketing i oglasavanje",
+            "Prikupljeni podaci: E-posta/telefon, ID uredaja, IP adresa, otisak prsta preglednika, lokacija, zapisnici interakcija, nacin placanja",
+            "Politika privatnosti: https://business.safety.google/privacy/",
+          ] },
+          { type: "h3", text: "Google Analytics" },
+          { type: "ul", items: [
+            "Pružatelj: Google Ireland Limited",
+            "Svrha: Marketing, analitika",
+            "Prikupljeni podaci: Ime, datum rodenja, nacionalni ID, e-posta/telefon, adresa, ID uredaja, IP, OS, otisak prsta preglednika, lokacija, povijest pregledavanja, zapisnici interakcija, povijest kupnje",
+            "Politika privatnosti: https://business.safety.google/privacy/",
+          ] },
+          { type: "h3", text: "Meta" },
+          { type: "ul", items: [
+            "Pružatelj: Meta Platforms Ireland Ltd.",
+            "Svrha: Prilagodba UX-a, analitika, marketing",
+            "Prikupljeni podaci: Ime, datum rodenja, e-posta/telefon, adresa, podaci o placanju, ID uredaja, IP, informacije o pregledniku, OS, otisak prsta preglednika, lokacija, zapisnici interakcija, povijest pregledavanja",
+            "Politika privatnosti: https://www.facebook.com/privacy/explanation",
+          ] },
+        ],
+      },
+      {
+        title: "5. Ugovori o obradi podataka",
+        blocks: [
+          { type: "p", text: "Ugovori o obradi podataka (DPA) osiguravaju da trece strane provode odgovarajuce tehnicke i organizacijske mjere sukladno GDPR-u." },
+        ],
+      },
+      {
+        title: "6. Vasa prava (GDPR)",
+        blocks: [
+          { type: "cards", items: gdprRightsCards.hr },
+          { type: "p", text: "Za ostvarivanje vasih prava kontaktirajte nas na info@guestcam.si ili +386 71604980. Odgovaramo u zakonski propisanom roku." },
+        ],
+      },
+      {
+        title: "7. Kolacici i tehnologije pracenja",
+        blocks: [
+          { type: "p", text: "Pri vasem prvom posjetu prikazuje se natpis za privolu za kolacice. Koristimo sljedece vrste kolacica:" },
+          { type: "ul", items: [
+            "Nužni kolacici",
+            "Kolacici za izvedbu/analitiku",
+            "Funkcionalni kolacici",
+            "Oglasivacki/ciljani kolacici",
+          ] },
+          { type: "link", text: "Vise pojedinosti o kolacicima", href: "/cookies" },
+        ],
+      },
+      {
+        title: "8. Medunarodna prijevoz podataka",
+        blocks: [
+          { type: "p", text: "Vase osobne podatke možemo prenijeti na lokacije izvan vase države. Svi prijenosi su u skladu s GDPR-om." },
+        ],
+      },
+      {
+        title: "9. Obavijest o povredi podataka",
+        blocks: [
+          { type: "ul", items: [
+            "Otkrivanje putem internog nadzora",
+            "Ako je potrebno, obavjestavamo regulatorna tijela u roku od 30 dana",
+            "Pogodjene pojedince obavjestavamo u roku od 30 dana",
+          ] },
+        ],
+      },
+      {
+        title: "10. Azuriranja politike",
+        blocks: [
+          { type: "p", text: "Obavjestavamo vas putem e-poste ili obavijesti na web mjestu. Nastavak koristenja nakon promjena znaci prihvacanje novih uvjeta." },
+        ],
+      },
+      {
+        title: "11. Kontakt",
+        blocks: [
+          { type: "contactCard", lines: ["Sport group d.o.o.", "E-posta: info@guestcam.si", "Telefon: +386 71604980"] },
+        ],
+      },
     ],
   },
   sr: {
     heading: "Politika privatnosti",
     eyebrow: "Pravni dokument",
-    lastUpdated: "Poslednje ažurirano: 1. januar 2026 · Sport group d.o.o.",
+    lastUpdated: "Datum stupanja na snagu: 19. jun 2026. · Sport group d.o.o.",
     intro:
-      "Sport group d.o.o. (u daljem tekstu: “mi”, “naše”, “Guestcam”) poštuje vašu privatnost i štiti lične podatke u skladu sa Uredbom (EU) 2016/679 (GDPR) i važećim zakonodavstvom. Ova politika opisuje koje podatke prikupljamo, kako ih koristimo i koja su vaša prava.",
+      "Sport group d.o.o. posvecan je pruzanju izvrsne usluge nasim klijentima. Deo nase posvecnosti ukljucuje odgovorno upravljanje licnim podacima prikupljenim putem naseg web sajta guestcam.si. Nasi primarni ciljevi u obradi ovih informacija ukljucuju: poboljsanje korisnickog iskustva, pruzanje pravovremene podrske, poboljsanje proizvoda i usluga te obavljanje neophodnih poslovnih operacija.",
     sections: [
-      { title: "1. Rukovalac podataka", blocks: [
-        { type: "contactCard", lines: ["Sport group d.o.o.", "PIB: SI72133449", "E-pošta: info@guestcam.si"] },
-      ] },
-      { title: "2. Koje podatke prikupljamo", blocks: [
-        { type: "h3", text: "2.1 Podaci koje sami unosite" },
-        { type: "ul", items: [
-          "Ime para / organizatora — prilikom kreiranja galerije unosite ime (npr. “Ana i Marko”), koje se prikazuje na QR kodu i u galeriji.",
-          "Adresa e-pošte — za prijavu putem Clerk.com (samo organizator galerije). Gostima nije potreban nalog za otpremanje fotografija.",
-          "Datum i mesto događaja — neobavezni podaci za personalizaciju galerije.",
-        ] },
-        { type: "h3", text: "2.2 Sadržaj koji otpremate" },
-        { type: "ul", items: [
-          "Fotografije i video zapisi koje otpremaju gosti ili organizator.",
-          "Metapodaci datoteka (datum nastanka, veličina) — čuvani isključivo radi prikaza i preuzimanja.",
-        ] },
-        { type: "h3", text: "2.3 Tehnički podaci" },
-        { type: "ul", items: [
-          "IP adresa (za zaštitu od zloupotrebe usluge).",
-          "Vrsta pregledača i uređaja (za optimizaciju prikaza galerije).",
-          "Kolačići Clerk.com za održavanje sesije (samo organizator).",
-        ] },
-      ] },
-      { title: "3. Svrha obrade i pravna osnova", blocks: [{ type: "table", ...legalBasisRows.sr }] },
-      { title: "4. Gde su pohranjeni vaši podaci", blocks: [
-        { type: "p", text: "Sve fotografije i datoteke čuvamo putem usluge Bunny.net (CDN i pohrana podataka) u podatkovnim centrima na teritoriji EU. Korisnički nalozi (autentifikacija) upravljani su putem Clerk.com koja podatke čuva u skladu sa GDPR-om. Podaci galerije (nazivi, datumi, metapodaci) pohranjeni su u bazi Neon PostgreSQL na serverima u EU." },
-        { type: "p", text: "Vaše podatke ne prosleđujemo trećim licima za reklamiranje niti ih prodajemo dalje." },
-      ] },
-      { title: "5. Period čuvanja podataka", blocks: [
-        { type: "ul", items: [
-          "Fotografije i galerija — čuvaju se onoliko koliko traje vaš paket (1 mesec, 1 godina ili 2 godine). Nakon isteka paketa, ako ga ne obnovite, galeriju i sav sadržaj trajno brišemo.",
-          "Nalog organizatora — čuva se dok aktivno održavate barem jednu galeriju ili dok ne zatražite brisanje. Nalog bez aktivnih galerija brišemo posle 2 godine neaktivnosti.",
-          "Računovodstveni podaci — račune i podatke o plaćanju (bez brojeva kartica) čuvamo 10 godina u skladu sa zakonodavstvom o računovodstvu.",
-        ] },
-      ] },
-      { title: "6. Vaša prava (GDPR)", blocks: [
-        { type: "p", text: "U skladu sa GDPR-om imate sledeća prava:" },
-        { type: "cards", items: gdprRightsCards.sr },
-        { type: "p", text: "Svoje pravo ostvarujete putem e-pošte info@guestcam.si. Odgovaramo u roku od 30 dana." },
-      ] },
-      { title: "7. Bezbednost podataka", blocks: [
-        { type: "p", text: "Sve veze su zaštićene protokolom HTTPS (TLS 1.3). Pristup galerijama moguć je isključivo putem jedinstvenog QR koda ili URL-a koji vi delite. Nijedan javni pretraživač ne može indeksirati sadržaj vaše galerije. Interni pristup podacima imaju samo ovlašćeni zaposleni, i to samo kada je neophodno za podršku." },
-      ] },
-      { title: "8. Kolačići", blocks: [{ type: "p", text: "Za informacije o kolačićima pogledajte našu Politiku kolačića." }] },
-      { title: "9. Izmene politike privatnosti", blocks: [{ type: "p", text: "O bitnim izmenama obaveštavamo vas putem e-pošte (organizatore) ili obaveštenja u usluzi. Datum poslednjeg ažuriranja uvek je naveden na vrhu ovog dokumenta." }] },
-      { title: "10. Kontakt", blocks: [
-        { type: "p", text: "Za sva pitanja o privatnosti kontaktirajte nas:" },
-        { type: "contactCard", lines: ["Sport group d.o.o.", "E-pošta: info@guestcam.si", "PIB: SI72133449"] },
-      ] },
+      {
+        title: "1. Uvod i informacije o organizaciji",
+        blocks: [
+          { type: "p", text: "Sport group d.o.o. posvecan je pruzanju izvrsne usluge nasim klijentima. Deo nase posvecnosti ukljucuje odgovorno upravljanje licnim podacima prikupljenim putem naseg web sajta guestcam.si. Nasi primarni ciljevi u obradi ovih informacija ukljucuju:" },
+          { type: "ul", items: [
+            "Poboljsanje korisnickog iskustva na nasoj platformi",
+            "Pruzanje pravovremene podrske i odgovaranje na upite ili zahteve za uslugama",
+            "Poboljsanje nasih proizvoda i usluga",
+            "Obavljanje neophodnih poslovnih operacija (naplata, upravljanje nalozima)",
+          ] },
+          { type: "p", text: "Nemamo imenovanog sluzbenika za zastitu podataka (DPO), ali ostajemo potpuno posvecenicni resavanju vasih briga o privatnosti." },
+          { type: "contactCard", lines: ["Sport group d.o.o.", "E-posta: info@guestcam.si", "Telefon: +386 71604980"] },
+        ],
+      },
+      {
+        title: "2. Obuhvat i primena",
+        blocks: [
+          { type: "p", text: "Ova politika stiti licne podatke svih zainteresovanih strana: posetilaca web sajta, registrovanih korisnika i klijenata koji koriste guestcam.si." },
+        ],
+      },
+      {
+        title: "3. Cuvanje i zastita podataka",
+        blocks: [
+          { type: "p", text: "Licni podaci se cuvaju na sigurnim serverima koji se nalaze u: SI, DE. Saradsujemo sa uglednim pružaocima usluga hostinga podataka koji su posveceni koriscenju najsavremenijih bezbednosnih mera." },
+          { type: "p", text: "Nasi partneri za hosting podataka obavezani su na visok nivo tehnickih i organizacionih bezbednosnih mera kako bi osigurali zastitu vasih licnih podataka od neovlascenog pristupa, gubitka ili unistavanja." },
+        ],
+      },
+      {
+        title: "4. Deljenje podataka i obradivaci trecih strana",
+        blocks: [
+          { type: "p", text: "Vase licne podatke mozemo deliti sa sledecim pružaocima usluga trecih strana:" },
+          { type: "h3", text: "Google Tag Manager" },
+          { type: "ul", items: [
+            "Pružalac: Google Ireland Limited",
+            "Svrha: Upravljanje oznakama, agregirani podaci o aktiviranju oznaka",
+            "Politika privatnosti: https://business.safety.google/privacy/",
+          ] },
+          { type: "h3", text: "Google Ads" },
+          { type: "ul", items: [
+            "Pružalac: Google Ireland Limited",
+            "Svrha: Prilagodavanje korisnickog iskustva, analitika, marketing i oglasavanje",
+            "Prikupljeni podaci: E-posta/telefon, ID uredaja, IP adresa, otisak prsta pregledaca, lokacija, zapisi interakcija, nacin placanja",
+            "Politika privatnosti: https://business.safety.google/privacy/",
+          ] },
+          { type: "h3", text: "Google Analytics" },
+          { type: "ul", items: [
+            "Pružalac: Google Ireland Limited",
+            "Svrha: Marketing, analitika",
+            "Prikupljeni podaci: Ime, datum rodenja, nacionalni ID, e-posta/telefon, adresa, ID uredaja, IP, OS, otisak prsta pregledaca, lokacija, istorija pregledanja, zapisi interakcija, istorija kupovine",
+            "Politika privatnosti: https://business.safety.google/privacy/",
+          ] },
+          { type: "h3", text: "Meta" },
+          { type: "ul", items: [
+            "Pružalac: Meta Platforms Ireland Ltd.",
+            "Svrha: Prilagodavanje UX-a, analitika, marketing",
+            "Prikupljeni podaci: Ime, datum rodenja, e-posta/telefon, adresa, podaci o placanju, ID uredaja, IP, informacije o pregledacu, OS, otisak prsta pregledaca, lokacija, zapisi interakcija, istorija pregledanja",
+            "Politika privatnosti: https://www.facebook.com/privacy/explanation",
+          ] },
+        ],
+      },
+      {
+        title: "5. Ugovori o obradi podataka",
+        blocks: [
+          { type: "p", text: "Ugovori o obradi podataka (DPA) osiguravaju da trece strane primene odgovarajuce tehnicke i organizacione mere u skladu sa GDPR-om." },
+        ],
+      },
+      {
+        title: "6. Vasa prava (GDPR)",
+        blocks: [
+          { type: "cards", items: gdprRightsCards.sr },
+          { type: "p", text: "Za ostvarivanje vasih prava kontaktirajte nas na info@guestcam.si ili +386 71604980. Odgovaramo u zakonski propisanom roku." },
+        ],
+      },
+      {
+        title: "7. Kolacici i tehnologije pracenja",
+        blocks: [
+          { type: "p", text: "Pri vasoj prvoj poseti prikazuje se baner za pristanak na kolacice. Koristimo sledece vrste kolacica:" },
+          { type: "ul", items: [
+            "Neophodni kolacici",
+            "Kolacici za performanse/analitiku",
+            "Funkcionalni kolacici",
+            "Oglasivacki/ciljani kolacici",
+          ] },
+          { type: "link", text: "Vise detalja o kolacicima", href: "/cookies" },
+        ],
+      },
+      {
+        title: "8. Medunarodni prenosi podataka",
+        blocks: [
+          { type: "p", text: "Vase licne podatke mozemo preneti na lokacije van vase drzave. Svi prenosi su u skladu sa GDPR-om." },
+        ],
+      },
+      {
+        title: "9. Obavestenje o povredi podataka",
+        blocks: [
+          { type: "ul", items: [
+            "Otkrivanje putem internog nadzora",
+            "Ako je potrebno, obavestavamo regulatorna tela u roku od 30 dana",
+            "Pogodjene pojedince obavestavamo u roku od 30 dana",
+          ] },
+        ],
+      },
+      {
+        title: "10. Azuriranja politike",
+        blocks: [
+          { type: "p", text: "Obavestavamo vas putem e-poste ili obavestenja na web sajtu. Nastavak koristenja nakon izmena znaci prihvatanje novih uslova." },
+        ],
+      },
+      {
+        title: "11. Kontakt",
+        blocks: [
+          { type: "contactCard", lines: ["Sport group d.o.o.", "E-posta: info@guestcam.si", "Telefon: +386 71604980"] },
+        ],
+      },
     ],
   },
   de: {
     heading: "Datenschutzerklärung",
     eyebrow: "Rechtsdokument",
-    lastUpdated: "Zuletzt aktualisiert: 1. Januar 2026 · Sport group d.o.o.",
+    lastUpdated: "Datum des Inkrafttretens: 19. Juni 2026 · Sport group d.o.o.",
     intro:
-      "Sport group d.o.o. (im Folgenden: “wir”, “uns”, “Guestcam”) respektiert Ihre Privatsphäre und schützt personenbezogene Daten im Einklang mit der Verordnung (EU) 2016/679 (DSGVO) sowie geltendem Recht. Diese Erklärung beschreibt, welche Daten wir erheben, wie wir sie verwenden und welche Rechte Sie haben.",
+      "Sport group d.o.o. ist bestrebt, unseren Kunden einen hervorragenden Service zu bieten. Teil unseres Engagements ist der verantwortungsvolle Umgang mit personenbezogenen Daten, die über unsere Website guestcam.si erhoben werden. Unsere primären Ziele bei der Verarbeitung dieser Informationen umfassen: Verbesserung der Benutzererfahrung, zeitnahe Unterstützung, Verbesserung unserer Produkte und Dienste sowie die Durchführung notwendiger Geschäftsvorgänge.",
     sections: [
-      { title: "1. Verantwortlicher", blocks: [
-        { type: "contactCard", lines: ["Sport group d.o.o.", "USt-IdNr.: SI72133449", "E-Mail: info@guestcam.si"] },
-      ] },
-      { title: "2. Welche Daten wir erheben", blocks: [
-        { type: "h3", text: "2.1 Von Ihnen eingegebene Daten" },
-        { type: "ul", items: [
-          "Name des Paares / Veranstalters — beim Anlegen der Galerie geben Sie einen Namen ein (z. B. “Ana und Marko”), der auf dem QR-Code und in der Galerie angezeigt wird.",
-          "E-Mail-Adresse — für die Anmeldung über Clerk.com (nur Galerie-Organisator). Gäste benötigen kein Konto, um Fotos hochzuladen.",
-          "Datum und Ort der Veranstaltung — optionale Daten zur Personalisierung der Galerie.",
-        ] },
-        { type: "h3", text: "2.2 Hochgeladene Inhalte" },
-        { type: "ul", items: [
-          "Fotos und Videos, die von Gästen oder dem Organisator hochgeladen werden.",
-          "Datei-Metadaten (Erstellungsdatum, Größe) — werden ausschließlich zur Anzeige und zum Download gespeichert.",
-        ] },
-        { type: "h3", text: "2.3 Technische Daten" },
-        { type: "ul", items: [
-          "IP-Adresse (zum Schutz vor Missbrauch des Dienstes).",
-          "Browser- und Gerätetyp (zur Optimierung der Galerieanzeige).",
-          "Clerk.com-Cookies für die Sitzungsverwaltung (nur Organisator).",
-        ] },
-      ] },
-      { title: "3. Verarbeitungszweck und Rechtsgrundlage", blocks: [{ type: "table", ...legalBasisRows.de }] },
-      { title: "4. Wo Ihre Daten gespeichert werden", blocks: [
-        { type: "p", text: "Sämtliche Fotos und Dateien speichern wir über Bunny.net (CDN und Datenspeicherung) in Rechenzentren innerhalb der EU. Benutzerkonten (Authentifizierung) werden über Clerk.com verwaltet, das Daten DSGVO-konform speichert. Galerie-Daten (Titel, Datumsangaben, Metadaten) werden in der Neon-PostgreSQL-Datenbank auf Servern in der EU gespeichert." },
-        { type: "p", text: "Wir geben keine Daten zu Werbezwecken an Dritte weiter und verkaufen sie nicht." },
-      ] },
-      { title: "5. Aufbewahrungsdauer", blocks: [
-        { type: "ul", items: [
-          "Fotos und Galerie — werden so lange aufbewahrt, wie Ihr Paket läuft (1 Monat, 1 Jahr oder 2 Jahre). Nach Ablauf des Pakets, wenn Sie es nicht verlängern, löschen wir Galerie und alle Inhalte unwiderruflich.",
-          "Organisator-Konto — wird aufbewahrt, solange Sie mindestens eine Galerie aktiv pflegen oder bis Sie Löschung verlangen. Konten ohne aktive Galerien löschen wir nach 2 Jahren Inaktivität.",
-          "Buchhaltungsdaten — Rechnungen und Zahlungsdaten (ohne Kartennummern) bewahren wir 10 Jahre gemäß Rechnungslegungsvorschriften auf.",
-        ] },
-      ] },
-      { title: "6. Ihre Rechte (DSGVO)", blocks: [
-        { type: "p", text: "Gemäß DSGVO haben Sie folgende Rechte:" },
-        { type: "cards", items: gdprRightsCards.de },
-        { type: "p", text: "Ihre Rechte machen Sie per E-Mail an info@guestcam.si geltend. Wir antworten innerhalb von 30 Tagen." },
-      ] },
-      { title: "7. Datensicherheit", blocks: [
-        { type: "p", text: "Alle Verbindungen sind mit HTTPS (TLS 1.3) gesichert. Der Zugriff auf Galerien ist ausschließlich über den eindeutigen QR-Code bzw. die von Ihnen geteilte URL möglich. Keine öffentliche Suchmaschine kann den Inhalt Ihrer Galerie indexieren. Internen Zugriff auf Daten haben nur autorisierte Mitarbeiter, und nur wenn dies für den Support erforderlich ist." },
-      ] },
-      { title: "8. Cookies", blocks: [{ type: "p", text: "Informationen zu Cookies finden Sie in unserer Cookie-Richtlinie." }] },
-      { title: "9. Änderungen dieser Datenschutzerklärung", blocks: [{ type: "p", text: "Über wesentliche Änderungen informieren wir Sie per E-Mail (Organisatoren) oder über einen Hinweis im Dienst. Das Datum der letzten Aktualisierung ist stets am Anfang dieses Dokuments angegeben." }] },
-      { title: "10. Kontakt", blocks: [
-        { type: "p", text: "Bei allen Fragen zum Datenschutz kontaktieren Sie uns:" },
-        { type: "contactCard", lines: ["Sport group d.o.o.", "E-Mail: info@guestcam.si", "USt-IdNr.: SI72133449"] },
-      ] },
+      {
+        title: "1. Einleitung und Organisationsangaben",
+        blocks: [
+          { type: "p", text: "Sport group d.o.o. ist bestrebt, unseren Kunden einen hervorragenden Service zu bieten. Teil unseres Engagements ist der verantwortungsvolle Umgang mit personenbezogenen Daten, die über unsere Website guestcam.si erhoben werden. Unsere primären Ziele bei der Verarbeitung dieser Informationen umfassen:" },
+          { type: "ul", items: [
+            "Verbesserung der Benutzererfahrung auf unserer Plattform",
+            "Bereitstellung zeitnaher Unterstützung und Beantwortung von Anfragen oder Serviceanfragen",
+            "Verbesserung unserer Produkte und Dienste",
+            "Durchführung notwendiger Geschäftsvorgänge (Abrechnung, Kontoverwaltung)",
+          ] },
+          { type: "p", text: "Wir haben keinen benannten Datenschutzbeauftragten (DSB), bleiben aber vollständig verpflichtet, Ihre Datenschutzanliegen zu behandeln." },
+          { type: "contactCard", lines: ["Sport group d.o.o.", "E-Mail: info@guestcam.si", "Telefon: +386 71604980"] },
+        ],
+      },
+      {
+        title: "2. Geltungsbereich und Anwendung",
+        blocks: [
+          { type: "p", text: "Diese Richtlinie schützt personenbezogene Daten aller Beteiligten: Website-Besucher, registrierte Benutzer und Kunden, die guestcam.si nutzen." },
+        ],
+      },
+      {
+        title: "3. Datenspeicherung und -schutz",
+        blocks: [
+          { type: "p", text: "Personenbezogene Daten werden auf sicheren Servern in folgenden Ländern gespeichert: SI, DE. Wir arbeiten mit renommierten Daten-Hosting-Anbietern zusammen, die sich dem Einsatz modernster Sicherheitsmaßnahmen verpflichtet haben." },
+          { type: "p", text: "Unsere Daten-Hosting-Partner sind zu einem hohen Niveau an technischen und organisatorischen Sicherheitsmaßnahmen verpflichtet, um Ihre personenbezogenen Daten vor unbefugtem Zugriff, Verlust oder Zerstörung zu schützen." },
+        ],
+      },
+      {
+        title: "4. Datenweitergabe und Auftragsverarbeiter",
+        blocks: [
+          { type: "p", text: "Wir können Ihre personenbezogenen Daten mit den folgenden Drittanbieter-Dienstleistern teilen:" },
+          { type: "h3", text: "Google Tag Manager" },
+          { type: "ul", items: [
+            "Anbieter: Google Ireland Limited",
+            "Zweck: Tag-Verwaltung, aggregierte Daten über Tag-Auslösungen",
+            "Datenschutzerklärung: https://business.safety.google/privacy/",
+          ] },
+          { type: "h3", text: "Google Ads" },
+          { type: "ul", items: [
+            "Anbieter: Google Ireland Limited",
+            "Zweck: Anpassung der Benutzererfahrung, Analyse, Marketing und Werbung",
+            "Erhobene Daten: E-Mail/Telefon, Geräte-ID, IP-Adresse, Browser-Fingerprint, Standort, Interaktionsprotokolle, Zahlungsmethode",
+            "Datenschutzerklärung: https://business.safety.google/privacy/",
+          ] },
+          { type: "h3", text: "Google Analytics" },
+          { type: "ul", items: [
+            "Anbieter: Google Ireland Limited",
+            "Zweck: Marketing, Analyse",
+            "Erhobene Daten: Name, Geburtsdatum, nationale ID, E-Mail/Telefon, Adresse, Geräte-ID, IP, Betriebssystem, Browser-Fingerprint, Standort, Browserverlauf, Interaktionsprotokolle, Kaufhistorie",
+            "Datenschutzerklärung: https://business.safety.google/privacy/",
+          ] },
+          { type: "h3", text: "Meta" },
+          { type: "ul", items: [
+            "Anbieter: Meta Platforms Ireland Ltd.",
+            "Zweck: UX-Anpassung, Analyse, Marketing",
+            "Erhobene Daten: Name, Geburtsdatum, E-Mail/Telefon, Adresse, Zahlungsinformationen, Geräte-ID, IP, Browser-Informationen, Betriebssystem, Browser-Fingerprint, Standort, Interaktionsprotokolle, Browserverlauf",
+            "Datenschutzerklärung: https://www.facebook.com/privacy/explanation",
+          ] },
+        ],
+      },
+      {
+        title: "5. Datenverarbeitungsverträge",
+        blocks: [
+          { type: "p", text: "Datenverarbeitungsverträge (DVV) stellen sicher, dass Dritte angemessene technische und organisatorische Maßnahmen gemäß DSGVO implementieren." },
+        ],
+      },
+      {
+        title: "6. Ihre Rechte (DSGVO)",
+        blocks: [
+          { type: "cards", items: gdprRightsCards.de },
+          { type: "p", text: "Zur Ausübung Ihrer Rechte kontaktieren Sie uns unter info@guestcam.si oder +386 71604980. Wir antworten innerhalb der gesetzlich vorgeschriebenen Frist." },
+        ],
+      },
+      {
+        title: "7. Cookies und Tracking-Technologien",
+        blocks: [
+          { type: "p", text: "Bei Ihrem ersten Besuch wird ein Cookie-Zustimmungsbanner angezeigt. Wir verwenden folgende Cookie-Arten:" },
+          { type: "ul", items: [
+            "Notwendige Cookies",
+            "Performance-/Analyse-Cookies",
+            "Funktionale Cookies",
+            "Werbe-/Targeting-Cookies",
+          ] },
+          { type: "link", text: "Weitere Details zu Cookies", href: "/cookies" },
+        ],
+      },
+      {
+        title: "8. Internationale Datenübertragungen",
+        blocks: [
+          { type: "p", text: "Wir können Ihre personenbezogenen Daten an Standorte außerhalb Ihres Landes übertragen. Alle Übertragungen erfolgen in Übereinstimmung mit der DSGVO." },
+        ],
+      },
+      {
+        title: "9. Benachrichtigung bei Datenpannen",
+        blocks: [
+          { type: "ul", items: [
+            "Erkennung durch internes Monitoring",
+            "Falls erforderlich, benachrichtigen wir die Aufsichtsbehörden innerhalb von 30 Tagen",
+            "Betroffene Personen werden innerhalb von 30 Tagen benachrichtigt",
+          ] },
+        ],
+      },
+      {
+        title: "10. Aktualisierungen der Richtlinie",
+        blocks: [
+          { type: "p", text: "Wir benachrichtigen Sie per E-Mail oder über Website-Benachrichtigungen. Die fortgesetzte Nutzung nach Änderungen gilt als Zustimmung." },
+        ],
+      },
+      {
+        title: "11. Kontakt",
+        blocks: [
+          { type: "contactCard", lines: ["Sport group d.o.o.", "E-Mail: info@guestcam.si", "Telefon: +386 71604980"] },
+        ],
+      },
     ],
   },
   en: {
     heading: "Privacy Policy",
     eyebrow: "Legal document",
-    lastUpdated: "Last updated: January 1, 2026 · Sport group d.o.o.",
+    lastUpdated: "Effective date: 19 June 2026 · Sport group d.o.o.",
     intro:
-      "Sport group d.o.o. (“we”, “our”, “Guestcam”) respects your privacy and protects personal data in accordance with Regulation (EU) 2016/679 (GDPR) and applicable law. This policy describes what data we collect, how we use it, and what your rights are.",
+      "Sport group d.o.o. is dedicated to serving our customers. Part of our commitment involves the responsible management of personal information collected through our website guestcam.si. Our primary goals in processing this information include: enhancing the user experience, providing timely support, improving our products and services, and conducting necessary business operations.",
     sections: [
-      { title: "1. Data controller", blocks: [
-        { type: "contactCard", lines: ["Sport group d.o.o.", "VAT ID: SI72133449", "Email: info@guestcam.si"] },
-      ] },
-      { title: "2. What data we collect", blocks: [
-        { type: "h3", text: "2.1 Data you provide" },
-        { type: "ul", items: [
-          "Couple / organiser name — when creating a gallery you enter a name (e.g. “Ana and Marko”) that is displayed on the QR code and inside the gallery.",
-          "Email address — used to sign in via Clerk.com (gallery organiser only). Guests do not need an account to upload photos.",
-          "Event date and location — optional data used to personalise the gallery.",
-        ] },
-        { type: "h3", text: "2.2 Content you upload" },
-        { type: "ul", items: [
-          "Photos and videos uploaded by guests or by the organiser.",
-          "File metadata (creation date, size) — stored only to display and download the files.",
-        ] },
-        { type: "h3", text: "2.3 Technical data" },
-        { type: "ul", items: [
-          "IP address (to protect the service from abuse).",
-          "Browser and device type (to optimise gallery rendering).",
-          "Clerk.com cookies for session persistence (organiser only).",
-        ] },
-      ] },
-      { title: "3. Purpose and legal basis", blocks: [{ type: "table", ...legalBasisRows.en }] },
-      { title: "4. Where your data lives", blocks: [
-        { type: "p", text: "All photos and files are stored via Bunny.net (CDN and storage) in data centres within the EU. User accounts (authentication) are managed via Clerk.com, which stores data in compliance with the GDPR. Gallery records (titles, dates, metadata) are stored in a Neon PostgreSQL database on servers in the EU." },
-        { type: "p", text: "We never share your data with third parties for advertising purposes, and we never sell it." },
-      ] },
-      { title: "5. Data retention", blocks: [
-        { type: "ul", items: [
-          "Photos and gallery — kept for the duration of your plan (1 month, 1 year, or 2 years). When the plan expires, if you don't renew, we permanently delete the gallery and all content.",
-          "Organiser account — kept while you actively maintain at least one gallery, or until you request deletion. Accounts with no active galleries are deleted after 2 years of inactivity.",
-          "Accounting data — invoices and payment data (no card numbers) are kept for 10 years as required by accounting law.",
-        ] },
-      ] },
-      { title: "6. Your rights (GDPR)", blocks: [
-        { type: "p", text: "Under the GDPR you have the following rights:" },
-        { type: "cards", items: gdprRightsCards.en },
-        { type: "p", text: "Exercise your rights by emailing info@guestcam.si. We respond within 30 days." },
-      ] },
-      { title: "7. Security", blocks: [
-        { type: "p", text: "All connections are secured with HTTPS (TLS 1.3). Galleries are accessible only via the unique QR code or URL you share. No public search engine can index your gallery content. Internal access to data is limited to authorised staff, only when necessary for support." },
-      ] },
-      { title: "8. Cookies", blocks: [{ type: "p", text: "For details on cookies, see our Cookie Policy." }] },
-      { title: "9. Changes to this policy", blocks: [{ type: "p", text: "We notify you of material changes by email (organisers) or via a notice inside the service. The last-updated date is always shown at the top of this document." }] },
-      { title: "10. Contact", blocks: [
-        { type: "p", text: "For any privacy questions, contact us:" },
-        { type: "contactCard", lines: ["Sport group d.o.o.", "Email: info@guestcam.si", "VAT ID: SI72133449"] },
-      ] },
+      {
+        title: "1. Introduction and organizational info",
+        blocks: [
+          { type: "p", text: "Sport group d.o.o. is dedicated to serving our customers. Part of our commitment involves the responsible management of personal information collected through our website guestcam.si. Our primary goals in processing this information include:" },
+          { type: "ul", items: [
+            "Enhancing the user experience on our platform",
+            "Providing timely support and responding to inquiries or service requests",
+            "Improving our products and services",
+            "Conducting necessary business operations (billing, account management)",
+          ] },
+          { type: "p", text: "We do not have a designated Data Protection Officer (DPO) but remain fully committed to addressing your privacy concerns." },
+          { type: "contactCard", lines: ["Sport group d.o.o.", "Email: info@guestcam.si", "Phone: +386 71604980"] },
+        ],
+      },
+      {
+        title: "2. Scope and application",
+        blocks: [
+          { type: "p", text: "This policy protects personal information of all stakeholders: website visitors, registered users, and customers using guestcam.si." },
+        ],
+      },
+      {
+        title: "3. Data storage and protection",
+        blocks: [
+          { type: "p", text: "Personal information is stored in secure servers located in: SI, DE. We partner with reputable data hosting providers committed to using state-of-the-art security measures." },
+          { type: "p", text: "Our data hosting partners are committed to a high level of technical and organisational security measures to protect your personal information from unauthorised access, loss or destruction." },
+        ],
+      },
+      {
+        title: "4. Data sharing and third-party processors",
+        blocks: [
+          { type: "p", text: "We may share your personal information with the following third-party service providers:" },
+          { type: "h3", text: "Google Tag Manager" },
+          { type: "ul", items: [
+            "Provider: Google Ireland Limited",
+            "Purpose: Tag management, aggregated data about tag firing",
+            "Privacy policy: https://business.safety.google/privacy/",
+          ] },
+          { type: "h3", text: "Google Ads" },
+          { type: "ul", items: [
+            "Provider: Google Ireland Limited",
+            "Purpose: Customizing user experience, analytics, marketing and advertising",
+            "Data collected: Email/Phone, Device ID, IP address, Browser fingerprint, Location, Interaction logs, Payment method",
+            "Privacy policy: https://business.safety.google/privacy/",
+          ] },
+          { type: "h3", text: "Google Analytics" },
+          { type: "ul", items: [
+            "Provider: Google Ireland Limited",
+            "Purpose: Marketing, analytics",
+            "Data collected: Name, DOB, National ID, Email/Phone, Address, Device ID, IP, OS, Browser fingerprint, Location, Browsing history, Interaction logs, Purchase history",
+            "Privacy policy: https://business.safety.google/privacy/",
+          ] },
+          { type: "h3", text: "Meta" },
+          { type: "ul", items: [
+            "Provider: Meta Platforms Ireland Ltd.",
+            "Purpose: UX customization, analytics, marketing",
+            "Data collected: Name, DOB, Email/Phone, Address, Payment info, Device ID, IP, Browser info, OS, Browser fingerprint, Location, Interaction logs, Browsing history",
+            "Privacy policy: https://www.facebook.com/privacy/explanation",
+          ] },
+        ],
+      },
+      {
+        title: "5. Data Processing Agreements",
+        blocks: [
+          { type: "p", text: "Data Processing Agreements (DPAs) ensure third parties implement adequate technical and organisational measures per GDPR." },
+        ],
+      },
+      {
+        title: "6. Your rights (GDPR)",
+        blocks: [
+          { type: "cards", items: gdprRightsCards.en },
+          { type: "p", text: "Contact us at info@guestcam.si or +386 71604980 to exercise your rights. We respond within the legally required timeframe." },
+        ],
+      },
+      {
+        title: "7. Cookies and tracking technologies",
+        blocks: [
+          { type: "p", text: "A cookie consent banner is displayed on your first visit. We use the following types of cookies:" },
+          { type: "ul", items: [
+            "Essential cookies",
+            "Performance/analytics cookies",
+            "Functional cookies",
+            "Advertising/targeting cookies",
+          ] },
+          { type: "link", text: "More details on cookies", href: "/cookies" },
+        ],
+      },
+      {
+        title: "8. International data transfers",
+        blocks: [
+          { type: "p", text: "We may transfer personal information to locations outside your country. All transfers comply with GDPR." },
+        ],
+      },
+      {
+        title: "9. Data breach notification",
+        blocks: [
+          { type: "ul", items: [
+            "Detection via internal monitoring",
+            "If required, we notify regulatory authorities within 30 days",
+            "Affected individuals are notified within 30 days",
+          ] },
+        ],
+      },
+      {
+        title: "10. Policy updates",
+        blocks: [
+          { type: "p", text: "We notify you via email or website notifications. Continued use after changes constitutes acceptance." },
+        ],
+      },
+      {
+        title: "11. Contact",
+        blocks: [
+          { type: "contactCard", lines: ["Sport group d.o.o.", "Email: info@guestcam.si", "Phone: +386 71604980"] },
+        ],
+      },
     ],
   },
   es: {
     heading: "Política de privacidad",
     eyebrow: "Documento legal",
-    lastUpdated: "Última actualización: 1 de enero de 2026 · Sport group d.o.o.",
+    lastUpdated: "Fecha de entrada en vigor: 19 de junio de 2026 · Sport group d.o.o.",
     intro:
-      "Sport group d.o.o. (en adelante, “nosotros”, “nuestro”, “Guestcam”) respeta tu privacidad y protege los datos personales conforme al Reglamento (UE) 2016/679 (RGPD) y la legislación aplicable. Esta política describe qué datos recopilamos, cómo los usamos y cuáles son tus derechos.",
+      "Sport group d.o.o. se dedica a servir a nuestros clientes. Parte de nuestro compromiso implica la gestión responsable de la información personal recopilada a través de nuestro sitio web guestcam.si. Nuestros objetivos principales en el procesamiento de esta información incluyen: mejorar la experiencia del usuario, brindar soporte oportuno, mejorar nuestros productos y servicios y llevar a cabo las operaciones comerciales necesarias.",
     sections: [
-      { title: "1. Responsable del tratamiento", blocks: [
-        { type: "contactCard", lines: ["Sport group d.o.o.", "CIF: SI72133449", "Email: info@guestcam.si"] },
-      ] },
-      { title: "2. Qué datos recopilamos", blocks: [
-        { type: "h3", text: "2.1 Datos que proporcionas tú" },
-        { type: "ul", items: [
-          "Nombre de la pareja / organizador — al crear la galería introduces un nombre (p. ej. “Ana y Marko”) que se muestra en el código QR y en la galería.",
-          "Dirección de email — usada para iniciar sesión mediante Clerk.com (solo organizador). Los invitados no necesitan cuenta para subir fotos.",
-          "Fecha y lugar del evento — datos opcionales para personalizar la galería.",
-        ] },
-        { type: "h3", text: "2.2 Contenido que subes" },
-        { type: "ul", items: [
-          "Fotos y vídeos subidos por invitados o por el organizador.",
-          "Metadatos de archivos (fecha de creación, tamaño) — almacenados únicamente para mostrar y descargar los archivos.",
-        ] },
-        { type: "h3", text: "2.3 Datos técnicos" },
-        { type: "ul", items: [
-          "Dirección IP (para proteger el servicio frente a usos indebidos).",
-          "Tipo de navegador y dispositivo (para optimizar la visualización de la galería).",
-          "Cookies de Clerk.com para mantener la sesión (solo organizador).",
-        ] },
-      ] },
-      { title: "3. Finalidad y base jurídica", blocks: [{ type: "table", ...legalBasisRows.es }] },
-      { title: "4. Dónde se almacenan tus datos", blocks: [
-        { type: "p", text: "Todas las fotos y archivos se almacenan a través de Bunny.net (CDN y almacenamiento) en centros de datos dentro de la UE. Las cuentas de usuario (autenticación) se gestionan a través de Clerk.com, que almacena los datos conforme al RGPD. Los registros de la galería (títulos, fechas, metadatos) se almacenan en una base de datos Neon PostgreSQL en servidores en la UE." },
-        { type: "p", text: "Nunca compartimos tus datos con terceros con fines publicitarios ni los vendemos." },
-      ] },
-      { title: "5. Conservación de datos", blocks: [
-        { type: "ul", items: [
-          "Fotos y galería — se conservan mientras dure tu plan (1 mes, 1 año o 2 años). Tras la expiración del plan, si no lo renuevas, eliminamos permanentemente la galería y todo el contenido.",
-          "Cuenta de organizador — se conserva mientras mantengas activamente al menos una galería o hasta que solicites su eliminación. Las cuentas sin galerías activas se eliminan tras 2 años de inactividad.",
-          "Datos contables — facturas y datos de pago (sin números de tarjeta) se conservan 10 años, conforme a la legislación contable.",
-        ] },
-      ] },
-      { title: "6. Tus derechos (RGPD)", blocks: [
-        { type: "p", text: "Conforme al RGPD tienes los siguientes derechos:" },
-        { type: "cards", items: gdprRightsCards.es },
-        { type: "p", text: "Ejerce tus derechos por email a info@guestcam.si. Respondemos en 30 días." },
-      ] },
-      { title: "7. Seguridad de los datos", blocks: [
-        { type: "p", text: "Todas las conexiones están protegidas con HTTPS (TLS 1.3). El acceso a las galerías solo es posible mediante el código QR único o la URL que tú compartas. Ningún buscador público puede indexar el contenido de tu galería. El acceso interno a los datos está limitado al personal autorizado y solo cuando sea necesario para soporte." },
-      ] },
-      { title: "8. Cookies", blocks: [{ type: "p", text: "Para más información sobre cookies, consulta nuestra Política de cookies." }] },
-      { title: "9. Cambios en esta política", blocks: [{ type: "p", text: "Te notificaremos los cambios importantes por email (organizadores) o mediante un aviso dentro del servicio. La fecha de la última actualización siempre se muestra en la parte superior de este documento." }] },
-      { title: "10. Contacto", blocks: [
-        { type: "p", text: "Para cualquier consulta sobre privacidad, contáctanos:" },
-        { type: "contactCard", lines: ["Sport group d.o.o.", "Email: info@guestcam.si", "CIF: SI72133449"] },
-      ] },
+      {
+        title: "1. Introducción e información organizativa",
+        blocks: [
+          { type: "p", text: "Sport group d.o.o. se dedica a servir a nuestros clientes. Parte de nuestro compromiso implica la gestión responsable de la información personal recopilada a través de nuestro sitio web guestcam.si. Nuestros objetivos principales en el procesamiento de esta información incluyen:" },
+          { type: "ul", items: [
+            "Mejorar la experiencia del usuario en nuestra plataforma",
+            "Brindar soporte oportuno y responder a consultas o solicitudes de servicio",
+            "Mejorar nuestros productos y servicios",
+            "Llevar a cabo las operaciones comerciales necesarias (facturación, gestión de cuentas)",
+          ] },
+          { type: "p", text: "No contamos con un Delegado de Protección de Datos (DPD) designado, pero seguimos completamente comprometidos a abordar sus inquietudes de privacidad." },
+          { type: "contactCard", lines: ["Sport group d.o.o.", "Email: info@guestcam.si", "Teléfono: +386 71604980"] },
+        ],
+      },
+      {
+        title: "2. Ámbito y aplicación",
+        blocks: [
+          { type: "p", text: "Esta política protege la información personal de todas las partes interesadas: visitantes del sitio web, usuarios registrados y clientes que utilizan guestcam.si." },
+        ],
+      },
+      {
+        title: "3. Almacenamiento y protección de datos",
+        blocks: [
+          { type: "p", text: "La información personal se almacena en servidores seguros ubicados en: SI, DE. Colaboramos con proveedores de alojamiento de datos de reconocido prestigio comprometidos con el uso de las medidas de seguridad más avanzadas." },
+          { type: "p", text: "Nuestros socios de alojamiento de datos se comprometen a un alto nivel de medidas de seguridad técnicas y organizativas para proteger su información personal de accesos no autorizados, pérdidas o destrucción." },
+        ],
+      },
+      {
+        title: "4. Intercambio de datos y procesadores terceros",
+        blocks: [
+          { type: "p", text: "Podemos compartir su información personal con los siguientes proveedores de servicios terceros:" },
+          { type: "h3", text: "Google Tag Manager" },
+          { type: "ul", items: [
+            "Proveedor: Google Ireland Limited",
+            "Finalidad: Gestión de etiquetas, datos agregados sobre la activación de etiquetas",
+            "Política de privacidad: https://business.safety.google/privacy/",
+          ] },
+          { type: "h3", text: "Google Ads" },
+          { type: "ul", items: [
+            "Proveedor: Google Ireland Limited",
+            "Finalidad: Personalización de la experiencia del usuario, análisis, marketing y publicidad",
+            "Datos recopilados: Email/teléfono, ID del dispositivo, dirección IP, huella digital del navegador, ubicación, registros de interacción, método de pago",
+            "Política de privacidad: https://business.safety.google/privacy/",
+          ] },
+          { type: "h3", text: "Google Analytics" },
+          { type: "ul", items: [
+            "Proveedor: Google Ireland Limited",
+            "Finalidad: Marketing, análisis",
+            "Datos recopilados: Nombre, fecha de nacimiento, ID nacional, email/teléfono, dirección, ID del dispositivo, IP, sistema operativo, huella digital del navegador, ubicación, historial de navegación, registros de interacción, historial de compras",
+            "Política de privacidad: https://business.safety.google/privacy/",
+          ] },
+          { type: "h3", text: "Meta" },
+          { type: "ul", items: [
+            "Proveedor: Meta Platforms Ireland Ltd.",
+            "Finalidad: Personalización de UX, análisis, marketing",
+            "Datos recopilados: Nombre, fecha de nacimiento, email/teléfono, dirección, información de pago, ID del dispositivo, IP, información del navegador, sistema operativo, huella digital del navegador, ubicación, registros de interacción, historial de navegación",
+            "Política de privacidad: https://www.facebook.com/privacy/explanation",
+          ] },
+        ],
+      },
+      {
+        title: "5. Acuerdos de procesamiento de datos",
+        blocks: [
+          { type: "p", text: "Los Acuerdos de Procesamiento de Datos (APD) garantizan que los terceros implementen las medidas técnicas y organizativas adecuadas conforme al RGPD." },
+        ],
+      },
+      {
+        title: "6. Sus derechos (RGPD)",
+        blocks: [
+          { type: "cards", items: gdprRightsCards.es },
+          { type: "p", text: "Contáctenos en info@guestcam.si o +386 71604980 para ejercer sus derechos. Respondemos dentro del plazo legalmente requerido." },
+        ],
+      },
+      {
+        title: "7. Cookies y tecnologías de seguimiento",
+        blocks: [
+          { type: "p", text: "Se muestra un banner de consentimiento de cookies en su primera visita. Utilizamos los siguientes tipos de cookies:" },
+          { type: "ul", items: [
+            "Cookies esenciales",
+            "Cookies de rendimiento/análisis",
+            "Cookies funcionales",
+            "Cookies publicitarias/de segmentación",
+          ] },
+          { type: "link", text: "Más detalles sobre cookies", href: "/cookies" },
+        ],
+      },
+      {
+        title: "8. Transferencias internacionales de datos",
+        blocks: [
+          { type: "p", text: "Podemos transferir información personal a ubicaciones fuera de su país. Todas las transferencias cumplen con el RGPD." },
+        ],
+      },
+      {
+        title: "9. Notificación de brechas de seguridad",
+        blocks: [
+          { type: "ul", items: [
+            "Detección mediante monitoreo interno",
+            "Si es necesario, notificamos a las autoridades reguladoras en un plazo de 30 días",
+            "Los individuos afectados son notificados en un plazo de 30 días",
+          ] },
+        ],
+      },
+      {
+        title: "10. Actualizaciones de la política",
+        blocks: [
+          { type: "p", text: "Le notificamos mediante email o notificaciones del sitio web. El uso continuado tras los cambios constituye aceptación." },
+        ],
+      },
+      {
+        title: "11. Contacto",
+        blocks: [
+          { type: "contactCard", lines: ["Sport group d.o.o.", "Email: info@guestcam.si", "Teléfono: +386 71604980"] },
+        ],
+      },
     ],
   },
 };
