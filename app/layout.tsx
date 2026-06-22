@@ -4,6 +4,7 @@ import { DM_Sans, Cormorant_Garamond } from "next/font/google";
 import Script from "next/script";
 import { ClerkProvider } from "@clerk/nextjs";
 import { clerkLocaleFor } from "@/lib/clerk-locales";
+import { ExitIntentPopup } from "@/components/ExitIntentPopup";
 import type { LangCode } from "@/components/LanguageSwitcher";
 import "./globals.css";
 
@@ -146,6 +147,7 @@ export default async function RootLayout({
             strategy="beforeInteractive"
           />
           {children}
+          <ExitIntentPopup lang={lang} />
           {GA_ID && (
             <>
               <Script
