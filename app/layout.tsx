@@ -5,6 +5,7 @@ import Script from "next/script";
 import { ClerkProvider } from "@clerk/nextjs";
 import { clerkLocaleFor } from "@/lib/clerk-locales";
 import { ExitIntentPopup } from "@/components/ExitIntentPopup";
+import { DiscountBanner } from "@/components/DiscountBanner";
 import type { LangCode } from "@/components/LanguageSwitcher";
 import "./globals.css";
 
@@ -146,6 +147,7 @@ export default async function RootLayout({
             data-blockingmode="auto"
             strategy="beforeInteractive"
           />
+          <DiscountBanner lang={lang} />
           {children}
           <ExitIntentPopup lang={lang} />
           {GA_ID && (
