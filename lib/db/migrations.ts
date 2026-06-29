@@ -338,6 +338,14 @@ export async function runMigrations() {
   `);
   await run("payouts affiliate idx", (q) => q`CREATE INDEX IF NOT EXISTS payouts_affiliate_idx ON affiliate_payouts (affiliate_id)`);
 
+  await run("create onboarding_reminders", (q) => q`
+    CREATE TABLE IF NOT EXISTS onboarding_reminders (
+      clerk_id  TEXT PRIMARY KEY,
+      email     TEXT NOT NULL,
+      sent_at   TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )
+  `);
+
   if (failures === 0) {
     console.log("[migrations] ✓ DB schema up to date");
   } else {

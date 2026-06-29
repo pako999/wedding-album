@@ -315,6 +315,17 @@ export const uploadReminders = pgTable(
   (t) => [index("upload_reminders_due_idx").on(t.sent, t.sendAt)]
 );
 
+// ─── Onboarding nudges ───────────────────────────────────────────────────────
+// One row per Clerk user that has received the "you signed up but never
+// created a gallery" reminder. We never want to spam — one PK on clerkId
+// guarantees a single send per user.
+
+export const onboardingReminders = pgTable("onboarding_reminders", {
+  clerkId: text("clerk_id").primaryKey(),
+  email: text("email").notNull(),
+  sentAt: timestamp("sent_at").notNull().defaultNow(),
+});
+
 // ─── Bank Orders ─────────────────────────────────────────────────────────────
 
 export const bankOrders = pgTable(

@@ -2,6 +2,7 @@ import { db } from "@/lib/db";
 import { albums } from "@/lib/db/schema";
 import { count, sql } from "drizzle-orm";
 import { clerkClient } from "@clerk/nextjs/server";
+import { UserUpgradeMenu } from "@/components/admin/UserUpgradeMenu";
 
 export const dynamic = "force-dynamic";
 
@@ -110,6 +111,7 @@ export default async function AdminUsers() {
               <th className="px-4 py-3 font-medium">Galerije</th>
               <th className="px-4 py-3 font-medium">Plačane</th>
               <th className="px-4 py-3 font-medium">Registracija</th>
+              <th className="px-4 py-3 font-medium">Ročna nadgradnja</th>
             </tr>
           </thead>
           <tbody>
@@ -133,11 +135,14 @@ export default async function AdminUsers() {
                 <td className="px-4 py-3 text-xs text-gray-500">
                   {u.createdAt ? new Date(u.createdAt).toLocaleDateString("sl-SI") : "—"}
                 </td>
+                <td className="px-4 py-3">
+                  <UserUpgradeMenu clerkId={u.clerkId} albumCount={u.albumCount} />
+                </td>
               </tr>
             ))}
             {enriched.length === 0 && (
               <tr>
-                <td colSpan={5} className="px-4 py-12 text-center text-sm text-gray-400">
+                <td colSpan={6} className="px-4 py-12 text-center text-sm text-gray-400">
                   Ni uporabnikov.
                 </td>
               </tr>

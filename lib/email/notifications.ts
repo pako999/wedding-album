@@ -1271,3 +1271,225 @@ export async function sendOrganizerAgreementEmail({
     console.error("[organizer agreement email] send failed:", err);
   }
 }
+
+// ─── Shared contact footer ───────────────────────────────────────────────────
+// Used by every transactional email (welcome, onboarding nudge, bank order,
+// checkout receipts) so customers always see the full company details.
+
+type EmailLang = "sl" | "hr" | "sr" | "de" | "en" | "es";
+
+const CONTACT_FOOTER_LABELS: Record<EmailLang, { questions: string; reply: string; vatLabel: string }> = {
+  sl: { questions: "Vprašanja?",  reply: "Odgovorite na to e-pošto ali pišite na", vatLabel: "Davčna št."  },
+  hr: { questions: "Pitanja?",    reply: "Odgovorite na ovaj e-mail ili pišite na", vatLabel: "OIB"         },
+  sr: { questions: "Pitanja?",    reply: "Odgovorite na ovaj e-mail ili pišite na", vatLabel: "PIB"         },
+  de: { questions: "Fragen?",     reply: "Antworten Sie auf diese E-Mail oder schreiben Sie an", vatLabel: "USt-IdNr." },
+  en: { questions: "Questions?",  reply: "Reply to this email or write to",         vatLabel: "VAT ID"      },
+  es: { questions: "¿Preguntas?", reply: "Responde a este correo o escribe a",      vatLabel: "CIF"         },
+};
+
+export function contactFooterHtml(lang: EmailLang = "sl"): string {
+  const t = CONTACT_FOOTER_LABELS[lang] ?? CONTACT_FOOTER_LABELS.sl;
+  return `
+    <tr><td style="padding:0 36px 8px;">
+      <div style="height:1px;background:#E2E8F0;margin:8px 0;"></div>
+    </td></tr>
+    <tr><td style="padding:8px 36px 24px;">
+      <p style="margin:0 0 10px;font-size:13px;line-height:1.6;color:#475569;">
+        <strong style="color:#0F1729;">${t.questions}</strong> ${t.reply}
+        <a href="mailto:info@guestcam.si" style="color:#1E3A8A;text-decoration:none;font-weight:600;">info@guestcam.si</a>
+        · <a href="tel:+38671604980" style="color:#1E3A8A;text-decoration:none;font-weight:600;">+386 71 604 980</a>
+      </p>
+      <p style="margin:0;font-size:11px;line-height:1.6;color:#94A3B8;">
+        <strong style="color:#64748B;">Sport group d.o.o.</strong> · Osojnikova 4a, 2000 Maribor, Slovenija ·
+        ${t.vatLabel}: SI72133449 ·
+        <a href="${APP_URL}" style="color:#94A3B8;text-decoration:underline;">guestcam.si</a>
+      </p>
+    </td></tr>`;
+}
+
+// ─── Onboarding nudge — sent 7 days after sign-up if no album was created ────
+
+interface OnboardingNudgeParams {
+  to: string;
+  firstName?: string | null;
+  lang?: EmailLang;
+}
+
+interface NudgeCopy {
+  subject: string;
+  heading: string;
+  greeting: (name?: string | null) => string;
+  intro: string;
+  bullet1: string;
+  bullet2: string;
+  bullet3: string;
+  ctaPrimary: string;
+  ctaSecondary: string;
+  helpHeading: string;
+  helpBody: string;
+  signoff: string;
+}
+
+const NUDGE_COPY: Record<EmailLang, NudgeCopy> = {
+  sl: {
+    subject: "Vam pomagamo ustvariti prvo galerijo? 🎉",
+    heading: "Pripravljeni na vašo prvo galerijo?",
+    greeting: (n) => `Pozdravljeni${n ? ` ${escapeHtml(n)}` : ""},`,
+    intro: "Pred tednom dni ste se registrirali v Guestcam — odlično! Še niste ustvarili prve galerije, zato vas vabimo, da to storite v naslednjih nekaj minutah.",
+    bullet1: "Vnesite ime para in datum dogodka (30 sekund)",
+    bullet2: "Prenesite QR kodo in jo natisnite za vsak stol",
+    bullet3: "Gostje skenirajo in nalagajo fotografije — brez aplikacije",
+    ctaPrimary: "Ustvari galerijo zdaj →",
+    ctaSecondary: "Kako deluje QR koda?",
+    helpHeading: "Potrebujete pomoč?",
+    helpBody: "Z veseljem vam pomagamo z nastavitvijo. Pokličite ali pišite — odgovorimo isti dan.",
+    signoff: "— Ekipa Guestcam",
+  },
+  hr: {
+    subject: "Trebate pomoć s prvom galerijom? 🎉",
+    heading: "Spremni za vašu prvu galeriju?",
+    greeting: (n) => `Pozdrav${n ? ` ${escapeHtml(n)}` : ""},`,
+    intro: "Prije tjedan dana registrirali ste se na Guestcam — odlično! Još niste izradili prvu galeriju, pa vas pozivamo da to napravite u sljedećih nekoliko minuta.",
+    bullet1: "Unesite ime para i datum događaja (30 sekundi)",
+    bullet2: "Preuzmite QR kod i natisnite ga za svaki stol",
+    bullet3: "Gosti skeniraju i učitavaju fotografije — bez aplikacije",
+    ctaPrimary: "Stvori galeriju sada →",
+    ctaSecondary: "Kako QR kod funkcionira?",
+    helpHeading: "Treba vam pomoć?",
+    helpBody: "Rado ćemo vam pomoći s postavljanjem. Nazovite ili pišite — odgovaramo isti dan.",
+    signoff: "— Tim Guestcam",
+  },
+  sr: {
+    subject: "Treba vam pomoć sa prvom galerijom? 🎉",
+    heading: "Spremni za vašu prvu galeriju?",
+    greeting: (n) => `Pozdrav${n ? ` ${escapeHtml(n)}` : ""},`,
+    intro: "Pre nedelju dana ste se registrovali na Guestcam — odlično! Još niste napravili prvu galeriju, pa vas pozivamo da to uradite u narednih nekoliko minuta.",
+    bullet1: "Unesite ime para i datum događaja (30 sekundi)",
+    bullet2: "Preuzmite QR kod i odštampajte ga za svaki sto",
+    bullet3: "Gosti skeniraju i otpremaju fotografije — bez aplikacije",
+    ctaPrimary: "Napravi galeriju sada →",
+    ctaSecondary: "Kako QR kod funkcioniše?",
+    helpHeading: "Treba vam pomoć?",
+    helpBody: "Rado ćemo vam pomoći sa podešavanjem. Pozovite ili pišite — odgovaramo istog dana.",
+    signoff: "— Tim Guestcam",
+  },
+  de: {
+    subject: "Brauchen Sie Hilfe mit Ihrer ersten Galerie? 🎉",
+    heading: "Bereit für Ihre erste Galerie?",
+    greeting: (n) => `Hallo${n ? ` ${escapeHtml(n)}` : ""},`,
+    intro: "Vor einer Woche haben Sie sich bei Guestcam registriert — wunderbar! Sie haben Ihre erste Galerie noch nicht erstellt, deshalb laden wir Sie ein, das in den nächsten Minuten zu tun.",
+    bullet1: "Geben Sie den Namen des Paares und das Datum ein (30 Sekunden)",
+    bullet2: "Laden Sie den QR-Code herunter und drucken Sie ihn für jeden Tisch",
+    bullet3: "Gäste scannen und laden Fotos hoch — ohne App",
+    ctaPrimary: "Galerie jetzt erstellen →",
+    ctaSecondary: "So funktioniert der QR-Code",
+    helpHeading: "Brauchen Sie Hilfe?",
+    helpBody: "Wir helfen Ihnen gerne bei der Einrichtung. Rufen Sie an oder schreiben Sie — wir antworten am selben Tag.",
+    signoff: "— Das Guestcam-Team",
+  },
+  en: {
+    subject: "Need a hand creating your first gallery? 🎉",
+    heading: "Ready to create your first gallery?",
+    greeting: (n) => `Hi${n ? ` ${escapeHtml(n)}` : ""},`,
+    intro: "You signed up to Guestcam a week ago — welcome! You haven't created your first gallery yet, so we'd love to help you get it set up in the next few minutes.",
+    bullet1: "Enter the couple's name and the event date (30 seconds)",
+    bullet2: "Download the QR code and print one for each table",
+    bullet3: "Guests scan and upload photos — no app required",
+    ctaPrimary: "Create my gallery →",
+    ctaSecondary: "How the QR code works",
+    helpHeading: "Need help?",
+    helpBody: "We're happy to walk you through the setup. Call or email — we reply the same day.",
+    signoff: "— The Guestcam team",
+  },
+  es: {
+    subject: "¿Te ayudamos con tu primera galería? 🎉",
+    heading: "¿Listo para tu primera galería?",
+    greeting: (n) => `Hola${n ? ` ${escapeHtml(n)}` : ""},`,
+    intro: "Hace una semana te registraste en Guestcam — ¡bienvenido! Aún no has creado tu primera galería, así que nos encantaría ayudarte a configurarla en los próximos minutos.",
+    bullet1: "Introduce el nombre de la pareja y la fecha (30 segundos)",
+    bullet2: "Descarga el código QR e imprime uno para cada mesa",
+    bullet3: "Los invitados escanean y suben fotos — sin app",
+    ctaPrimary: "Crear mi galería →",
+    ctaSecondary: "Cómo funciona el código QR",
+    helpHeading: "¿Necesitas ayuda?",
+    helpBody: "Te ayudamos con la configuración encantados. Llama o escríbenos — respondemos el mismo día.",
+    signoff: "— El equipo de Guestcam",
+  },
+};
+
+export function onboardingNudgeHtml(lang: EmailLang, firstName?: string | null): string {
+  const t = NUDGE_COPY[lang] ?? NUDGE_COPY.en;
+  const newAlbumUrl = `${APP_URL}/dashboard/new`;
+  const helpUrl     = `${APP_URL}/${lang === "sl" ? "" : `${lang}/`}contact`;
+  return `<!DOCTYPE html>
+<html lang="${lang}">
+<head><meta charset="utf-8" /><title>${t.heading}</title></head>
+<body style="margin:0;padding:0;background:#F2F4F8;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;color:#0F1729;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#F2F4F8;padding:32px 16px;">
+    <tr><td align="center">
+      <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;background:#ffffff;border-radius:18px;overflow:hidden;box-shadow:0 4px 24px rgba(15,23,41,0.06);">
+
+        <tr><td style="background:linear-gradient(135deg,#FFC94D 0%,#FFD966 100%);padding:36px 36px 28px;">
+          <p style="margin:0 0 8px;font-size:12px;letter-spacing:3px;font-weight:700;color:#0F1729;">GUESTCAM</p>
+          <h1 style="margin:0;font-size:24px;line-height:1.25;color:#0F1729;font-weight:800;">${t.heading}</h1>
+        </td></tr>
+
+        <tr><td style="padding:32px 36px 8px;">
+          <p style="margin:0 0 16px;font-size:16px;line-height:1.55;color:#0F1729;">${t.greeting(firstName)}</p>
+          <p style="margin:0 0 22px;font-size:15px;line-height:1.65;color:#475569;">${t.intro}</p>
+
+          <table width="100%" cellpadding="0" cellspacing="0" style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:14px;">
+            <tr><td style="padding:18px 22px;">
+              <p style="margin:0 0 10px;font-size:13px;color:#475569;line-height:1.6;"><strong style="color:#0F1729;">1.</strong> ${t.bullet1}</p>
+              <p style="margin:0 0 10px;font-size:13px;color:#475569;line-height:1.6;"><strong style="color:#0F1729;">2.</strong> ${t.bullet2}</p>
+              <p style="margin:0;font-size:13px;color:#475569;line-height:1.6;"><strong style="color:#0F1729;">3.</strong> ${t.bullet3}</p>
+            </td></tr>
+          </table>
+        </td></tr>
+
+        <tr><td style="padding:26px 36px 0;text-align:center;">
+          <a href="${newAlbumUrl}" style="display:inline-block;padding:14px 28px;background:#0F1729;color:#ffffff;text-decoration:none;border-radius:12px;font-weight:700;font-size:14px;margin:0 4px 8px;">${t.ctaPrimary}</a>
+          <a href="${helpUrl}" style="display:inline-block;padding:14px 26px;background:#ffffff;color:#0F1729;border:1.5px solid #0F1729;text-decoration:none;border-radius:12px;font-weight:700;font-size:14px;margin:0 4px 8px;">${t.ctaSecondary}</a>
+        </td></tr>
+
+        <tr><td style="padding:28px 36px 0;">
+          <table width="100%" cellpadding="0" cellspacing="0" style="background:#FFF8E1;border:1px solid #FFE08A;border-radius:14px;">
+            <tr><td style="padding:18px 22px;">
+              <p style="margin:0 0 6px;font-size:14px;font-weight:700;color:#0F1729;">💬 ${t.helpHeading}</p>
+              <p style="margin:0;font-size:13px;line-height:1.55;color:#64748B;">${t.helpBody}</p>
+            </td></tr>
+          </table>
+        </td></tr>
+
+        <tr><td style="padding:28px 36px 6px;">
+          <p style="margin:0;font-size:13px;color:#0F1729;font-weight:700;">${t.signoff}</p>
+        </td></tr>
+
+        ${contactFooterHtml(lang)}
+
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>`;
+}
+
+export async function sendOnboardingNudgeEmail({ to, firstName, lang = "sl" }: OnboardingNudgeParams) {
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) {
+    console.warn("[email] RESEND_API_KEY not set — skipping onboarding nudge");
+    return;
+  }
+  const resend = new Resend(apiKey);
+  const t = NUDGE_COPY[lang] ?? NUDGE_COPY.en;
+  try {
+    await resend.emails.send({
+      from: `Guestcam <${FROM}>`,
+      to,
+      subject: t.subject,
+      html: onboardingNudgeHtml(lang, firstName),
+    });
+  } catch (err) {
+    console.error("[onboarding nudge email] send failed:", err);
+  }
+}
