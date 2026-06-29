@@ -4,7 +4,7 @@ import { auth, currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { and, desc, eq, gt, ne } from "drizzle-orm";
 import { db } from "@/lib/db";
-import { albums } from "@/lib/db/schema";
+import { albums, userPlanOverrides } from "@/lib/db/schema";
 import { sendWelcomeEmail, sendOrganizerAgreementEmail } from "@/lib/email/notifications";
 
 function slugify(text: string): string {
@@ -58,12 +58,35 @@ export async function createAlbum(formData: FormData) {
     orderBy: [desc(albums.expiresAt)],
   });
 
-  const inheritedPlan  = activePaidAlbum?.plan      ?? "free";
-  const inheritedMax   = activePaidAlbum?.maxPhotos  ?? 20;
-  const inheritedFilm  = activePaidAlbum?.filmTier   ?? "free";
-  const inheritedExpiry = activePaidAlbum
+  let inheritedPlan: "free" | "basic" | "plus" | "premium" =
+    activePaidAlbum?.plan ?? "free";
+  let inheritedMax    = activePaidAlbum?.maxPhotos ?? 20;
+  let inheritedFilm: "free" | "pro" | "premium" =
+    activePaidAlbum?.filmTier ?? "free";
+  let inheritedExpiry: Date | null = activePaidAlbum
     ? activePaidAlbum.expiresAt
     : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // free = 30 days
+  let inheritedSessionId: string | undefined = activePaidAlbum
+    ? `inherit:${activePaidAlbum.slug}`
+    : undefined;
+
+  // Admin-set override (writes by /api/admin/users/:clerkId/upgrade for
+  // users who hadn't created any album yet). Wins over the album-inherit
+  // path so a freshly-promoted free user gets the chosen plan applied to
+  // their first gallery. One-shot: deleted after consumption.
+  const override = await db.query.userPlanOverrides.findFirst({
+    where: eq(userPlanOverrides.clerkId, userId),
+  });
+  if (override) {
+    inheritedPlan      = override.plan;
+    inheritedMax       = override.maxPhotos;
+    inheritedFilm      = override.filmTier;
+    inheritedExpiry    = override.daysAccess
+      ? new Date(Date.now() + override.daysAccess * 24 * 60 * 60 * 1000)
+      : null;
+    inheritedSessionId = override.compTag ?? `admin-override:${userId}`;
+    await db.delete(userPlanOverrides).where(eq(userPlanOverrides.clerkId, userId));
+  }
 
   await db.insert(albums).values({
     slug,
@@ -79,11 +102,7 @@ export async function createAlbum(formData: FormData) {
     filmTier:          inheritedFilm,
     moderationEnabled: false,
     expiresAt:         inheritedExpiry,
-    // Mark that this plan was inherited (not a direct payment) so the
-    // Paddle idempotency check in applyPlanToAlbum doesn't confuse it.
-    stripeSessionId: activePaidAlbum
-      ? `inherit:${activePaidAlbum.slug}`
-      : undefined,
+    stripeSessionId:   inheritedSessionId,
   });
 
   // Send a welcome email on the owner's *first* album. Best-effort — if

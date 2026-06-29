@@ -1,5 +1,5 @@
 import { db } from "@/lib/db";
-import { albums } from "@/lib/db/schema";
+import { albums, userPlanOverrides } from "@/lib/db/schema";
 import { count, sql } from "drizzle-orm";
 import { clerkClient } from "@clerk/nextjs/server";
 import { UserUpgradeMenu } from "@/components/admin/UserUpgradeMenu";
@@ -46,6 +46,15 @@ export default async function AdminUsers() {
       r.clerkId,
       { email: r.email, albumCount: r.albumCount, paidAlbumCount: Number(r.paidAlbumCount ?? 0) },
     ]),
+  );
+
+  // Pending plan overrides (admin upgrades waiting to be consumed on the
+  // user's first album creation).
+  const overrideRows = await db
+    .select({ clerkId: userPlanOverrides.clerkId, plan: userPlanOverrides.plan, compTag: userPlanOverrides.compTag })
+    .from(userPlanOverrides);
+  const overrides = new Map(
+    overrideRows.map((r) => [r.clerkId, r.compTag ? r.compTag.replace("comp:", "") : r.plan]),
   );
 
   // Pull every Clerk user (paginate; the API caps each page at 500).
@@ -136,7 +145,11 @@ export default async function AdminUsers() {
                   {u.createdAt ? new Date(u.createdAt).toLocaleDateString("sl-SI") : "—"}
                 </td>
                 <td className="px-4 py-3">
-                  <UserUpgradeMenu clerkId={u.clerkId} albumCount={u.albumCount} />
+                  <UserUpgradeMenu
+                    clerkId={u.clerkId}
+                    albumCount={u.albumCount}
+                    pendingOverride={overrides.get(u.clerkId) ?? null}
+                  />
                 </td>
               </tr>
             ))}

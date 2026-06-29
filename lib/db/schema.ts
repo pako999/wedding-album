@@ -315,6 +315,26 @@ export const uploadReminders = pgTable(
   (t) => [index("upload_reminders_due_idx").on(t.sent, t.sendAt)]
 );
 
+// ─── User plan overrides ─────────────────────────────────────────────────────
+// Lets admin "upgrade" a user who has not created an album yet. The override
+// is consumed (and deleted) the first time that user creates a gallery, so
+// their freshly-created album lands on the chosen plan immediately. Admin
+// can also write here for users who already have albums — every NEW gallery
+// after the override would still inherit it on top of the existing
+// inherit-from-paid-album logic.
+
+export const userPlanOverrides = pgTable("user_plan_overrides", {
+  clerkId: text("clerk_id").primaryKey(),
+  plan: text("plan", { enum: ["free", "basic", "plus", "premium"] }).notNull(),
+  maxPhotos: integer("max_photos").notNull(),
+  filmTier: text("film_tier", { enum: ["free", "pro", "premium"] }).notNull().default("free"),
+  daysAccess: integer("days_access"), // null = never expires
+  /** "comp:influencer" / "comp:sponsor" stamped on the next album so the
+   *  comp flag survives. null for real admin upgrades. */
+  compTag: text("comp_tag"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
 // ─── Onboarding nudges ───────────────────────────────────────────────────────
 // One row per Clerk user that has received the "you signed up but never
 // created a gallery" reminder. We never want to spam — one PK on clerkId

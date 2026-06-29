@@ -14,14 +14,18 @@ const PLANS: { key: AdminPlan; label: string }[] = [
   { key: "sponsor",    label: "🤝 Sponsor" },
 ];
 
-export function UserUpgradeMenu({ clerkId, albumCount }: { clerkId: string; albumCount: number }) {
+export function UserUpgradeMenu({
+  clerkId,
+  albumCount,
+  pendingOverride,
+}: {
+  clerkId: string;
+  albumCount: number;
+  pendingOverride?: string | null;
+}) {
   const router = useRouter();
   const [busy, startTransition] = useTransition();
   const [msg, setMsg] = useState<string | null>(null);
-
-  if (albumCount === 0) {
-    return <span className="text-[10px] text-gray-300">brez galerij</span>;
-  }
 
   const apply = (plan: AdminPlan) => {
     setMsg(null);
@@ -36,25 +40,36 @@ export function UserUpgradeMenu({ clerkId, albumCount }: { clerkId: string; albu
         setMsg(json.error ?? "Napaka");
         return;
       }
-      setMsg(`✓ ${json.updated}`);
+      if (albumCount === 0) {
+        setMsg(plan === "free" ? "✓ preklicano" : "✓ shranjeno za prvo galerijo");
+      } else {
+        setMsg(`✓ ${json.updated} galerij`);
+      }
       router.refresh();
     });
   };
 
   return (
-    <div className="inline-flex items-center gap-2">
-      <select
-        defaultValue=""
-        disabled={busy}
-        onChange={(e) => { const v = e.target.value as AdminPlan | ""; if (v) apply(v); e.currentTarget.value = ""; }}
-        className="text-xs font-semibold px-2 py-1 rounded border border-gray-200 bg-white disabled:opacity-50"
-      >
-        <option value="" disabled>Nadgradi …</option>
-        {PLANS.map((p) => (
-          <option key={p.key} value={p.key}>{p.label}</option>
-        ))}
-      </select>
-      {msg && <span className="text-[10px] text-gray-500">{msg}</span>}
+    <div className="inline-flex flex-col gap-1">
+      <div className="inline-flex items-center gap-2">
+        <select
+          defaultValue=""
+          disabled={busy}
+          onChange={(e) => { const v = e.target.value as AdminPlan | ""; if (v) apply(v); e.currentTarget.value = ""; }}
+          className="text-xs font-semibold px-2 py-1 rounded border border-gray-200 bg-white disabled:opacity-50"
+        >
+          <option value="" disabled>Nadgradi …</option>
+          {PLANS.map((p) => (
+            <option key={p.key} value={p.key}>{p.label}</option>
+          ))}
+        </select>
+        {msg && <span className="text-[10px] text-gray-500">{msg}</span>}
+      </div>
+      {pendingOverride && (
+        <span className="text-[10px] text-amber-700 bg-amber-50 border border-amber-200 px-1.5 py-0.5 rounded inline-block w-fit">
+          čaka {pendingOverride}
+        </span>
+      )}
     </div>
   );
 }

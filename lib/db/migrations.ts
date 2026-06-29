@@ -338,6 +338,18 @@ export async function runMigrations() {
   `);
   await run("payouts affiliate idx", (q) => q`CREATE INDEX IF NOT EXISTS payouts_affiliate_idx ON affiliate_payouts (affiliate_id)`);
 
+  await run("create user_plan_overrides", (q) => q`
+    CREATE TABLE IF NOT EXISTS user_plan_overrides (
+      clerk_id     TEXT PRIMARY KEY,
+      plan         TEXT NOT NULL,
+      max_photos   INTEGER NOT NULL,
+      film_tier    TEXT NOT NULL DEFAULT 'free',
+      days_access  INTEGER,
+      comp_tag     TEXT,
+      created_at   TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )
+  `);
+
   await run("create onboarding_reminders", (q) => q`
     CREATE TABLE IF NOT EXISTS onboarding_reminders (
       clerk_id  TEXT PRIMARY KEY,
