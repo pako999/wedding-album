@@ -83,14 +83,14 @@ export default async function AdminOverview() {
             // are Stripe-anchored vs manually flipped / expired.
             const real = paidByPlanMap[row.plan] ?? 0;
             return (
-              <div key={row.plan} className="flex items-center justify-between text-sm">
+              <div key={row.plan} className="flex items-center justify-between gap-2 text-sm flex-wrap">
                 <span className="font-medium capitalize text-gray-700">{row.plan}</span>
-                <span className="text-gray-500">
+                <span className="text-gray-500 text-right">
                   {row.n} galerij{" "}
                   {row.plan !== "free" && (
                     <>
-                      <span className="text-[10px] text-gray-400">({real} plačanih)</span>{" "}
-                      <span className="ml-1 text-[#C9820A] font-semibold">
+                      <span className="text-[10px] text-gray-400 whitespace-nowrap">({real} plačanih)</span>{" "}
+                      <span className="ml-1 text-[#C9820A] font-semibold whitespace-nowrap">
                         {real * (PLAN_PRICES[row.plan] ?? 0)}€
                       </span>
                     </>
@@ -141,12 +141,12 @@ export default async function AdminOverview() {
 
 function Stat({ label, value, icon }: { label: string; value: number | string; icon: string }) {
   return (
-    <div className="bg-white rounded-2xl border border-gray-200 p-5">
-      <div className="flex items-center justify-between mb-2">
-        <span className="text-xs uppercase tracking-wide text-gray-400 font-semibold">{label}</span>
-        <span className="text-base">{icon}</span>
-      </div>
-      <p className="font-serif text-3xl text-[#0F1729]">{value}</p>
+    <div className="relative bg-white rounded-2xl border border-gray-200 p-4 sm:p-5 min-w-0">
+      <span className="absolute top-3 right-3 text-base">{icon}</span>
+      <span className="block text-[10px] sm:text-xs uppercase tracking-wide text-gray-400 font-semibold pr-7 break-words leading-tight mb-2">
+        {label}
+      </span>
+      <p className="font-serif text-2xl sm:text-3xl text-[#0F1729]">{value}</p>
     </div>
   );
 }
