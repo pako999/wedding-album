@@ -162,12 +162,6 @@ export default async function HomePage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      {/* ── Announcement bar ─────────────────────────────────────────────────── */}
-      <div className="text-[#0F1729] text-center text-xs font-semibold py-2.5 px-4" style={{ background: '#FFC94D' }}>
-        Ustvarite galerijo danes — <strong>brezplačno za vedno!</strong> 🎉{' '}
-        <Link href="/dashboard/new" className="underline font-bold ml-2">Začni zdaj →</Link>
-      </div>
-
       {/* ── Navbar ──────────────────────────────────────────────────────────── */}
       <header className="sticky top-0 z-40 border-b border-[#FFC94D]/30 bg-white/80 backdrop-blur-md">
         <nav className="max-w-7xl mx-auto px-8 h-16 flex items-center justify-between">
