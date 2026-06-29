@@ -16,18 +16,16 @@ interface UserRow {
 }
 
 export default async function AdminUsers() {
-  // Aggregate album counts per owner from our DB.
+  // Source of truth = Clerk (every registered user, even if they never
+  // created a gallery). Album counts are joined in from our DB.
   //
   // "Paid" counts ONLY albums with a real payment reference attached —
   // a Paddle transaction (txn_…) or a historical Stripe session (cs_…).
-  // This deliberately excludes:
-  //   • test data manually flipped to a paid plan via direct DB writes
-  //     (we wrote stripeSessionId values like "manual_fix_…" / "comp:…")
-  //   • expired paid plans where the row still says plus/premium but
-  //     the access window has lapsed (expiresAt < now)
-  // so the Uporabniki stat reflects actual paying customers.
+  // Excluded:
+  //   • manual admin flips (stripeSessionId LIKE "manual_…"/"comp:…")
+  //   • expired paid plans (expiresAt < now)
   const now = new Date();
-  const rows = await db
+  const albumRows = await db
     .select({
       clerkId: albums.ownerClerkId,
       email: sql<string | null>`MAX(${albums.ownerEmail})`,
@@ -42,46 +40,69 @@ export default async function AdminUsers() {
     .from(albums)
     .groupBy(albums.ownerClerkId);
 
-  // Enrich with Clerk profile (best-effort — falls back to DB if Clerk fails)
-  const enriched: UserRow[] = await Promise.all(
-    rows.map(async (r) => {
-      try {
-        const client = await clerkClient();
-        const user = await client.users.getUser(r.clerkId);
-        return {
-          clerkId: r.clerkId,
-          email: user.emailAddresses?.[0]?.emailAddress ?? r.email,
-          firstName: user.firstName ?? null,
-          lastName: user.lastName ?? null,
-          createdAt: user.createdAt ?? null,
-          albumCount: r.albumCount,
-          paidAlbumCount: Number(r.paidAlbumCount ?? 0),
-        };
-      } catch {
-        return {
-          clerkId: r.clerkId,
-          email: r.email,
-          firstName: null,
-          lastName: null,
-          createdAt: null,
-          albumCount: r.albumCount,
-          paidAlbumCount: Number(r.paidAlbumCount ?? 0),
-        };
-      }
-    }),
+  const albumStats = new Map(
+    albumRows.map((r) => [
+      r.clerkId,
+      { email: r.email, albumCount: r.albumCount, paidAlbumCount: Number(r.paidAlbumCount ?? 0) },
+    ]),
   );
 
+  // Pull every Clerk user (paginate; the API caps each page at 500).
+  const client = await clerkClient();
+  const clerkUsers: Awaited<ReturnType<typeof client.users.getUserList>>["data"] = [];
+  let offset = 0;
+  const PAGE = 100;
+  while (true) {
+    const { data } = await client.users.getUserList({ limit: PAGE, offset });
+    clerkUsers.push(...data);
+    if (data.length < PAGE) break;
+    offset += PAGE;
+    if (offset >= 5000) break; // safety: don't fetch beyond 5k in one render
+  }
+
+  const enriched: UserRow[] = clerkUsers.map((u) => {
+    const stats = albumStats.get(u.id);
+    return {
+      clerkId: u.id,
+      email: u.emailAddresses?.[0]?.emailAddress ?? stats?.email ?? null,
+      firstName: u.firstName ?? null,
+      lastName: u.lastName ?? null,
+      createdAt: u.createdAt ?? null,
+      albumCount: stats?.albumCount ?? 0,
+      paidAlbumCount: stats?.paidAlbumCount ?? 0,
+    };
+  });
+
+  // Surface any DB-only owners whose Clerk record was deleted but who
+  // still appear as album owners — otherwise admin loses sight of them.
+  for (const [clerkId, stats] of albumStats) {
+    if (clerkUsers.some((u) => u.id === clerkId)) continue;
+    enriched.push({
+      clerkId,
+      email: stats.email,
+      firstName: null,
+      lastName: null,
+      createdAt: null,
+      albumCount: stats.albumCount,
+      paidAlbumCount: stats.paidAlbumCount,
+    });
+  }
+
   enriched.sort((a, b) => (b.createdAt ?? 0) - (a.createdAt ?? 0));
+
+  const withGallery = enriched.filter((u) => u.albumCount > 0).length;
 
   return (
     <div className="space-y-6">
       <header>
         <h1 className="font-serif text-3xl text-[#0F1729]">Uporabniki</h1>
-        <p className="text-sm text-gray-500 mt-1">{enriched.length} uporabnikov z vsaj eno galerijo.</p>
+        <p className="text-sm text-gray-500 mt-1">
+          {enriched.length} registriranih · {withGallery} z vsaj eno galerijo
+        </p>
       </header>
 
-      <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
-        <table className="w-full text-sm">
+      <div className="bg-white rounded-2xl border border-gray-200 overflow-x-auto">
+        <table className="w-full text-sm min-w-[640px]">
           <thead>
             <tr className="text-left text-xs uppercase tracking-wide text-gray-400 border-b border-gray-100">
               <th className="px-4 py-3 font-medium">Uporabnik</th>
