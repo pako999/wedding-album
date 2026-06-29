@@ -49,13 +49,21 @@ export default async function AdminUsers() {
   );
 
   // Pending plan overrides (admin upgrades waiting to be consumed on the
-  // user's first album creation).
-  const overrideRows = await db
-    .select({ clerkId: userPlanOverrides.clerkId, plan: userPlanOverrides.plan, compTag: userPlanOverrides.compTag })
-    .from(userPlanOverrides);
-  const overrides = new Map(
-    overrideRows.map((r) => [r.clerkId, r.compTag ? r.compTag.replace("comp:", "") : r.plan]),
-  );
+  // user's first album creation). Wrapped in try/catch so a fresh DB
+  // without the user_plan_overrides table (migration not yet run) does
+  // not crash the whole admin page — the badges just won't show until
+  // /api/migrate is hit.
+  let overrides = new Map<string, string>();
+  try {
+    const overrideRows = await db
+      .select({ clerkId: userPlanOverrides.clerkId, plan: userPlanOverrides.plan, compTag: userPlanOverrides.compTag })
+      .from(userPlanOverrides);
+    overrides = new Map(
+      overrideRows.map((r) => [r.clerkId, r.compTag ? r.compTag.replace("comp:", "") : r.plan] as [string, string]),
+    );
+  } catch (err) {
+    console.warn("[admin/users] user_plan_overrides query failed (run /api/migrate?):", err);
+  }
 
   // Pull every Clerk user (paginate; the API caps each page at 500).
   const client = await clerkClient();

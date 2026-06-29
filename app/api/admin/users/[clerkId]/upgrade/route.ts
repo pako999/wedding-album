@@ -73,36 +73,43 @@ export async function POST(
     .where(eq(albums.ownerClerkId, clerkId))
     .returning({ slug: albums.slug });
 
-  // 2) Maintain the user-level override.
-  if (newPlan === "free") {
-    // Free = wipe the pending override.
-    await db.delete(userPlanOverrides).where(eq(userPlanOverrides.clerkId, clerkId));
-  } else {
-    await db
-      .insert(userPlanOverrides)
-      .values({
-        clerkId,
-        plan: config.effectivePlan,
-        maxPhotos: config.maxPhotos,
-        filmTier: config.filmTier,
-        daysAccess: config.daysAccess,
-        compTag: config.compTag ?? null,
-      })
-      .onConflictDoUpdate({
-        target: userPlanOverrides.clerkId,
-        set: {
+  // 2) Maintain the user-level override. Tolerate a missing table on
+  // a fresh DB so an admin upgrading an existing user still gets the
+  // bulk-album update applied even if /api/migrate hasn't run yet.
+  let overrideSaved = false;
+  try {
+    if (newPlan === "free") {
+      await db.delete(userPlanOverrides).where(eq(userPlanOverrides.clerkId, clerkId));
+    } else {
+      await db
+        .insert(userPlanOverrides)
+        .values({
+          clerkId,
           plan: config.effectivePlan,
           maxPhotos: config.maxPhotos,
           filmTier: config.filmTier,
           daysAccess: config.daysAccess,
           compTag: config.compTag ?? null,
-        },
-      });
+        })
+        .onConflictDoUpdate({
+          target: userPlanOverrides.clerkId,
+          set: {
+            plan: config.effectivePlan,
+            maxPhotos: config.maxPhotos,
+            filmTier: config.filmTier,
+            daysAccess: config.daysAccess,
+            compTag: config.compTag ?? null,
+          },
+        });
+      overrideSaved = true;
+    }
+  } catch (err) {
+    console.warn("[admin/users/upgrade] override write failed (run /api/migrate?):", err);
   }
 
   return NextResponse.json({
     updated: r.length,
     slugs: r.map((x) => x.slug),
-    overrideSaved: newPlan !== "free",
+    overrideSaved,
   });
 }

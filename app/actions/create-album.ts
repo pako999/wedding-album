@@ -74,18 +74,24 @@ export async function createAlbum(formData: FormData) {
   // users who hadn't created any album yet). Wins over the album-inherit
   // path so a freshly-promoted free user gets the chosen plan applied to
   // their first gallery. One-shot: deleted after consumption.
-  const override = await db.query.userPlanOverrides.findFirst({
-    where: eq(userPlanOverrides.clerkId, userId),
-  });
-  if (override) {
-    inheritedPlan      = override.plan;
-    inheritedMax       = override.maxPhotos;
-    inheritedFilm      = override.filmTier;
-    inheritedExpiry    = override.daysAccess
-      ? new Date(Date.now() + override.daysAccess * 24 * 60 * 60 * 1000)
-      : null;
-    inheritedSessionId = override.compTag ?? `admin-override:${userId}`;
-    await db.delete(userPlanOverrides).where(eq(userPlanOverrides.clerkId, userId));
+  // Try/catch keeps album creation alive on a fresh DB where the
+  // migration hasn't run yet (table doesn't exist).
+  try {
+    const override = await db.query.userPlanOverrides.findFirst({
+      where: eq(userPlanOverrides.clerkId, userId),
+    });
+    if (override) {
+      inheritedPlan      = override.plan;
+      inheritedMax       = override.maxPhotos;
+      inheritedFilm      = override.filmTier;
+      inheritedExpiry    = override.daysAccess
+        ? new Date(Date.now() + override.daysAccess * 24 * 60 * 60 * 1000)
+        : null;
+      inheritedSessionId = override.compTag ?? `admin-override:${userId}`;
+      await db.delete(userPlanOverrides).where(eq(userPlanOverrides.clerkId, userId));
+    }
+  } catch (err) {
+    console.warn("[create-album] user_plan_overrides lookup failed:", err);
   }
 
   await db.insert(albums).values({
