@@ -755,8 +755,8 @@ export default async function HomePage() {
               <p className="font-extrabold text-lg text-[#0F1729] mb-1">Premium</p>
               <p className="text-sm text-gray-400 mb-6">Za tiste, ki želite vse</p>
               <div className="flex items-end gap-2 mb-7">
-                <span className="font-extrabold text-[3rem] leading-none text-[#0F1729]">79€</span>
-                <span className="text-gray-300 line-through text-lg mb-1.5">109€</span>
+                <span className="font-extrabold text-[3rem] leading-none text-[#0F1729]">99€</span>
+                <span className="text-gray-300 line-through text-lg mb-1.5">149€</span>
               </div>
               <ul className="space-y-3 flex-1 mb-8">
                 {[

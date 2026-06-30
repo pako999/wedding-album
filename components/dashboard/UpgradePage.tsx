@@ -52,7 +52,7 @@ const PLANS: Plan[] = [
   {
     id: "premium",
     name: "Premium",
-    price: 79,
+    price: 99,
     tagline: "Vse vključeno",
     features: [
       "Neomejeno fotografij",

@@ -12,7 +12,7 @@ export const runtime = "nodejs";
 const PLAN_LABELS: Record<string, { name: string; price: number }> = {
   basic:   { name: "Basic",   price: 39 },
   plus:    { name: "Plus",    price: 49 },
-  premium: { name: "Premium", price: 79 },
+  premium: { name: "Premium", price: 99 },
 };
 
 interface BillingDetails {

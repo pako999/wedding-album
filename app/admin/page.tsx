@@ -4,7 +4,7 @@ import { sql, desc, and, ne, count, eq, isNotNull, gt, or, like, isNull } from "
 
 export const dynamic = "force-dynamic";
 
-const PLAN_PRICES: Record<string, number> = { basic: 39, plus: 49, premium: 79 };
+const PLAN_PRICES: Record<string, number> = { basic: 39, plus: 49, premium: 99 };
 
 export default async function AdminOverview() {
   // "Paid" means: plan != free AND a real payment reference is attached —

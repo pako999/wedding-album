@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { addManualOrder } from "./actions";
 
-const PLAN_PRICES: Record<string, number> = { basic: 39, plus: 49, premium: 79 };
+const PLAN_PRICES: Record<string, number> = { basic: 39, plus: 49, premium: 99 };
 
 export function AddOrderForm() {
   const [open, setOpen]       = useState(false);
@@ -113,7 +113,7 @@ export function AddOrderForm() {
           >
             <option value="basic">Basic — 39€</option>
             <option value="plus">Plus — 49€</option>
-            <option value="premium">Premium — 79€</option>
+            <option value="premium">Premium — 99€</option>
           </select>
         </div>
 

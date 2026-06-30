@@ -46,7 +46,7 @@ export default async function AdminDiscounts() {
           <tbody>
             {codes.map((c) => {
               const pct = c.percentOff;
-              const prices = [39, 49, 79].map((p) => Math.round(p * (1 - pct / 100)));
+              const prices = [39, 49, 99].map((p) => Math.round(p * (1 - pct / 100)));
               const expired = c.expiresAt && c.expiresAt < new Date();
               return (
                 <tr key={c.id} className="border-b border-gray-50 last:border-0">

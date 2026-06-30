@@ -5,7 +5,7 @@ import { and, eq, isNull, or, sql } from "drizzle-orm";
 export const PLAN_PRICES: Record<string, number> = {
   basic:   39,
   plus:    49,
-  premium: 79,
+  premium: 99,
 };
 
 export interface DiscountResult {
