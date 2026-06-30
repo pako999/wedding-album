@@ -8,6 +8,10 @@ const APP_URL = typeof window !== "undefined" ? window.location.origin : "https:
 interface Props {
   affiliate: Affiliate;
   commissions: AffiliateCommission[];
+  /** Server-rendered analytics block injected from the page. Lets us
+   *  keep DashboardClient as a client component (for copy-to-clipboard
+   *  etc.) while doing the heavy SQL aggregation on the server. */
+  analytics?: React.ReactNode;
 }
 
 function fmtEur(cents: number): string {
@@ -26,7 +30,7 @@ const STATUS_LABEL: Record<string, { label: string; cls: string }> = {
   cancelled: { label: "Preklicano",cls: "bg-gray-100 text-gray-500 border-gray-200" },
 };
 
-export function DashboardClient({ affiliate, commissions }: Props) {
+export function DashboardClient({ affiliate, commissions, analytics }: Props) {
   const [copied, setCopied] = useState<string | null>(null);
   // Route the visible "your link" through the tracker endpoint so each
   // share-click produces an affiliate_clicks row and bumps totalClicks.
@@ -126,6 +130,9 @@ export function DashboardClient({ affiliate, commissions }: Props) {
             dni — se provizija pripiše tebi.
           </p>
         </div>
+
+        {/* 360 traffic analytics — server-rendered, see page.tsx */}
+        {analytics && <div className="mb-6">{analytics}</div>}
 
         {/* Commission history */}
         <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden">

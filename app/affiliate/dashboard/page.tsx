@@ -5,6 +5,7 @@ import { db } from "@/lib/db";
 import { affiliates, affiliateCommissions } from "@/lib/db/schema";
 import { desc, eq } from "drizzle-orm";
 import { DashboardClient } from "./DashboardClient";
+import { AffiliateAnalytics } from "@/components/affiliate/AffiliateAnalytics";
 
 export const dynamic = "force-dynamic";
 
@@ -81,5 +82,17 @@ export default async function AffiliateDashboardPage() {
     .orderBy(desc(affiliateCommissions.createdAt))
     .limit(50);
 
-  return <DashboardClient affiliate={affiliate} commissions={commissions} />;
+  return (
+    <DashboardClient
+      affiliate={affiliate}
+      commissions={commissions}
+      analytics={
+        <AffiliateAnalytics
+          affiliateId={affiliate.id}
+          windowDays={30}
+          showRecentClicks={false}
+        />
+      }
+    />
+  );
 }

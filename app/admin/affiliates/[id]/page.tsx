@@ -6,6 +6,7 @@ import { eq, desc, and } from "drizzle-orm";
 import { AffiliateAdminControls } from "./AffiliateAdminControls";
 import { PromoCodeControls } from "./PromoCodeControls";
 import { ReferralLinkCard } from "./ReferralLinkCard";
+import { AffiliateAnalytics } from "@/components/affiliate/AffiliateAnalytics";
 
 export const dynamic = "force-dynamic";
 export const metadata = { robots: { index: false, follow: false } };
@@ -99,6 +100,9 @@ export default async function AdminAffiliateDetailPage({
           </div>
         )}
       </div>
+
+      {/* 360 analytics — traffic sources, landing pages, devices, recent clicks */}
+      <AffiliateAnalytics affiliateId={affiliate.id} windowDays={30} />
 
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
