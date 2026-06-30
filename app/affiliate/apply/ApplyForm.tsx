@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { affiliateTranslations, type AffiliateLang } from "@/lib/i18n/affiliate-translations";
 
 const LOCALES = [
   { code: "sl", label: "Slovenščina" },
@@ -11,14 +12,19 @@ const LOCALES = [
   { code: "es", label: "Español" },
 ];
 
-export function ApplyForm() {
+interface Props {
+  lang: AffiliateLang;
+}
+
+export function ApplyForm({ lang }: Props) {
+  const t = affiliateTranslations[lang].apply;
   const [form, setForm] = useState({
     name: "",
     email: "",
     website: "",
     promotionPlan: "",
     bankIban: "",
-    preferredLocale: "sl",
+    preferredLocale: lang,
     instagramUrl: "",
     facebookUrl: "",
     xUrl: "",
@@ -32,10 +38,8 @@ export function ApplyForm() {
     return (
       <div className="text-center py-10">
         <div className="text-5xl mb-4">✅</div>
-        <h3 className="text-xl font-extrabold text-[#0F1729] mb-2">Prijava prejeta!</h3>
-        <p className="text-sm text-gray-500 max-w-md mx-auto">
-          Hvala za prijavo. Pregledali jo bomo in vam odgovorili v 2 delovnih dneh na vaš e-poštni naslov.
-        </p>
+        <h3 className="text-xl font-extrabold text-[#0F1729] mb-2">{t.successTitle}</h3>
+        <p className="text-sm text-gray-500 max-w-md mx-auto">{t.successBody}</p>
       </div>
     );
   }
@@ -52,23 +56,24 @@ export function ApplyForm() {
       });
       const data = await res.json() as { success?: boolean; error?: string };
       if (!res.ok || !data.success) {
-        setError(data.error ?? "Prišlo je do napake.");
+        setError(data.error ?? t.errorGeneric);
         setSubmitting(false);
         return;
       }
       setDone(true);
     } catch {
-      setError("Prišlo je do napake. Prosimo, poskusite znova.");
+      setError(t.errorGeneric);
       setSubmitting(false);
     }
   }
 
   const inputClass = "w-full px-3.5 py-2.5 text-sm border rounded-xl focus:outline-none focus:border-[#FFC94D] focus:ring-1 focus:ring-[#FFC94D] transition-colors";
+  const req = <span className="text-red-500">*</span>;
 
   return (
     <form onSubmit={submit} className="space-y-3.5">
       <div>
-        <label className="block text-xs font-semibold text-gray-600 mb-1.5">Ime in priimek <span className="text-red-500">*</span></label>
+        <label className="block text-xs font-semibold text-gray-600 mb-1.5">{t.formName} {req}</label>
         <input
           type="text"
           required
@@ -79,7 +84,7 @@ export function ApplyForm() {
         />
       </div>
       <div>
-        <label className="block text-xs font-semibold text-gray-600 mb-1.5">E-poštni naslov <span className="text-red-500">*</span></label>
+        <label className="block text-xs font-semibold text-gray-600 mb-1.5">{t.formEmail} {req}</label>
         <input
           type="email"
           required
@@ -90,7 +95,7 @@ export function ApplyForm() {
         />
       </div>
       <div>
-        <label className="block text-xs font-semibold text-gray-600 mb-1.5">Vaša spletna stran (neobvezno)</label>
+        <label className="block text-xs font-semibold text-gray-600 mb-1.5">{t.formWebsite}</label>
         <input
           type="url"
           placeholder="https://..."
@@ -101,26 +106,27 @@ export function ApplyForm() {
         />
       </div>
       <div>
-        <label className="block text-xs font-semibold text-gray-600 mb-1.5">Kako nameravate promovirati GuestCam? <span className="text-red-500">*</span></label>
+        <label className="block text-xs font-semibold text-gray-600 mb-1.5">{t.formPromotionPlan} {req}</label>
         <textarea
           required
           rows={5}
-          placeholder="Opišite vašo publiko, kanale (blog, Instagram, YouTube...) in strategijo promocije."
+          placeholder={t.formPromotionPlaceholder}
           value={form.promotionPlan}
           onChange={(e) => setForm({ ...form, promotionPlan: e.target.value })}
           className={inputClass}
           style={{ borderColor: "#E5E7EB", resize: "vertical" }}
         />
       </div>
-      {/* Social media profiles (optional) */}
+      {/* Social media profiles (optional) — using urlSchema placeholders so
+          the slot is self-explanatory regardless of language. */}
       <div>
-        <p className="text-xs font-semibold text-gray-600 mb-1.5">Profili na družbenih omrežjih (neobvezno)</p>
+        <p className="text-xs font-semibold text-gray-600 mb-1.5">{SOCIAL_HEADER[lang]}</p>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
             <label className="block text-[11px] text-gray-500 mb-1">Instagram</label>
             <input
               type="url"
-              placeholder="https://instagram.com/vas_profil"
+              placeholder="https://instagram.com/..."
               value={form.instagramUrl}
               onChange={(e) => setForm({ ...form, instagramUrl: e.target.value })}
               className={inputClass}
@@ -131,7 +137,7 @@ export function ApplyForm() {
             <label className="block text-[11px] text-gray-500 mb-1">Facebook</label>
             <input
               type="url"
-              placeholder="https://facebook.com/vas_profil"
+              placeholder="https://facebook.com/..."
               value={form.facebookUrl}
               onChange={(e) => setForm({ ...form, facebookUrl: e.target.value })}
               className={inputClass}
@@ -142,7 +148,7 @@ export function ApplyForm() {
             <label className="block text-[11px] text-gray-500 mb-1">X (Twitter)</label>
             <input
               type="url"
-              placeholder="https://x.com/vas_profil"
+              placeholder="https://x.com/..."
               value={form.xUrl}
               onChange={(e) => setForm({ ...form, xUrl: e.target.value })}
               className={inputClass}
@@ -153,7 +159,7 @@ export function ApplyForm() {
             <label className="block text-[11px] text-gray-500 mb-1">TikTok</label>
             <input
               type="url"
-              placeholder="https://tiktok.com/@vas_profil"
+              placeholder="https://tiktok.com/@..."
               value={form.tiktokUrl}
               onChange={(e) => setForm({ ...form, tiktokUrl: e.target.value })}
               className={inputClass}
@@ -163,7 +169,7 @@ export function ApplyForm() {
         </div>
       </div>
       <div>
-        <label className="block text-xs font-semibold text-gray-600 mb-1.5">Transakcijski račun (IBAN) za izplačila (neobvezno)</label>
+        <label className="block text-xs font-semibold text-gray-600 mb-1.5">{t.formIban}</label>
         <input
           type="text"
           placeholder="SI56 0000 0000 0000 000"
@@ -174,7 +180,7 @@ export function ApplyForm() {
         />
       </div>
       <div>
-        <label className="block text-xs font-semibold text-gray-600 mb-1.5">Jezik za obvestila</label>
+        <label className="block text-xs font-semibold text-gray-600 mb-1.5">{t.formLocale}</label>
         <select
           value={form.preferredLocale}
           onChange={(e) => setForm({ ...form, preferredLocale: e.target.value })}
@@ -199,8 +205,20 @@ export function ApplyForm() {
         className="w-full mt-4 py-3.5 rounded-xl font-bold text-sm transition-all hover:opacity-90 disabled:opacity-60"
         style={{ background: "#FFC94D", color: "#0F1729" }}
       >
-        {submitting ? "Pošiljam…" : "Pošlji prijavo"}
+        {submitting ? t.formSubmitting : t.formSubmit}
       </button>
     </form>
   );
 }
+
+// Not in the central translation registry yet, so spelled out per locale
+// here. Keep them short — it's just a section header above the optional
+// social profile inputs.
+const SOCIAL_HEADER: Record<AffiliateLang, string> = {
+  sl: "Profili na družbenih omrežjih (neobvezno)",
+  hr: "Profili na društvenim mrežama (neobavezno)",
+  sr: "Profili na društvenim mrežama (neobavezno)",
+  de: "Social-Media-Profile (optional)",
+  en: "Social media profiles (optional)",
+  es: "Perfiles en redes sociales (opcional)",
+};

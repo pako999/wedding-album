@@ -80,6 +80,11 @@ const CONTACT_CLUSTER = clusterLinks({
   de: "/contact", en: "/contact", es: "/contact",
 });
 
+const AFFILIATE_APPLY_CLUSTER = clusterLinks({
+  sl: "/affiliate/apply", hr: "/affiliate/apply", sr: "/affiliate/apply",
+  de: "/affiliate/apply", en: "/affiliate/apply", es: "/affiliate/apply",
+});
+
 /** Per-document legal clusters (same slug across all 6 langs). */
 function legalCluster(doc: string): Record<string, string> {
   const slugs: Record<Locale, string> = { sl: `/${doc}`, hr: `/${doc}`, sr: `/${doc}`, de: `/${doc}`, en: `/${doc}`, es: `/${doc}` };
@@ -226,6 +231,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { path: "/gdpr",    priority: 0.3, changeFrequency: "yearly", lastModified: LAST_EDITED.legalSl, alternates: legalCluster("gdpr")    },
     { path: "/cookies", priority: 0.3, changeFrequency: "yearly", lastModified: LAST_EDITED.legalSl, alternates: legalCluster("cookies") },
     { path: "/refund",  priority: 0.3, changeFrequency: "yearly", lastModified: LAST_EDITED.legalSl, alternates: legalCluster("refund")  },
+
+    // Affiliate apply
+    { path: "/affiliate/apply",    priority: 0.55, changeFrequency: "monthly", alternates: AFFILIATE_APPLY_CLUSTER },
+    { path: "/hr/affiliate/apply", priority: 0.5,  changeFrequency: "monthly", alternates: AFFILIATE_APPLY_CLUSTER },
+    { path: "/sr/affiliate/apply", priority: 0.5,  changeFrequency: "monthly", alternates: AFFILIATE_APPLY_CLUSTER },
+    { path: "/de/affiliate/apply", priority: 0.5,  changeFrequency: "monthly", alternates: AFFILIATE_APPLY_CLUSTER },
+    { path: "/en/affiliate/apply", priority: 0.5,  changeFrequency: "monthly", alternates: AFFILIATE_APPLY_CLUSTER },
+    { path: "/es/affiliate/apply", priority: 0.5,  changeFrequency: "monthly", alternates: AFFILIATE_APPLY_CLUSTER },
 
     // Contact pages
     { path: "/contact",    priority: 0.5,  changeFrequency: "yearly", lastModified: LAST_EDITED.contact, alternates: CONTACT_CLUSTER },

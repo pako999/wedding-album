@@ -155,11 +155,17 @@ export default async function RootLayout({
   // who have not yet purchased a plan.
   const h = await headers();
   const pathname = h.get("x-pathname") ?? "";
+  // Affiliate paths are matched in any locale: /affiliate/*, /hr/affiliate/*,
+  // /sr/affiliate/*, etc. The discount banner + exit popup are for paying
+  // customers; partners are a different audience and the offer doesn't
+  // apply to them.
+  const isAffiliatePath = /^\/(?:sl|hr|sr|de|en|es)?\/?affiliate(?:\/|$)/.test(pathname);
   const isProtectedPath =
     pathname.startsWith("/dashboard") ||
     pathname.startsWith("/admin") ||
     pathname.startsWith("/sign-in") ||
-    pathname.startsWith("/sign-up");
+    pathname.startsWith("/sign-up") ||
+    isAffiliatePath;
 
   let showPromo = !isProtectedPath;
   if (showPromo) {
