@@ -43,9 +43,11 @@ export function UserUpgradeMenu({
       if (plan === "free") {
         setMsg("✓ preklicano");
       } else if (json.created) {
-        setMsg("✓ galerija ustvarjena");
+        setMsg(json.emailed ? "✓ galerija ustvarjena, e-pošta poslana" : "✓ galerija ustvarjena");
       } else if (json.updated > 0) {
-        setMsg(`✓ ${json.updated} galerij posodobljenih`);
+        setMsg(json.emailed
+          ? `✓ ${json.updated} galerij + e-pošta`
+          : `✓ ${json.updated} galerij posodobljenih`);
       } else {
         setMsg("✓ shranjeno");
       }
@@ -71,7 +73,7 @@ export function UserUpgradeMenu({
       </div>
       {pendingOverride && (
         <span className="text-[10px] text-amber-700 bg-amber-50 border border-amber-200 px-1.5 py-0.5 rounded inline-block w-fit">
-          čaka {pendingOverride}
+          naslednja galerija: {pendingOverride}
         </span>
       )}
     </div>

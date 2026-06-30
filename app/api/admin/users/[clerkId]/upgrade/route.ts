@@ -4,6 +4,20 @@ import { albums, userPlanOverrides } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { clerkClient } from "@clerk/nextjs/server";
 import { requireAdmin } from "@/lib/admin";
+import { sendAccountUpgradedEmail } from "@/lib/email/notifications";
+
+type EmailLang = "sl" | "hr" | "sr" | "de" | "en" | "es";
+const SUPPORTED_LANGS: EmailLang[] = ["sl", "hr", "sr", "de", "en", "es"];
+
+function pickLang(meta: unknown): EmailLang {
+  if (meta && typeof meta === "object") {
+    const raw = (meta as Record<string, unknown>).lang;
+    if (typeof raw === "string" && (SUPPORTED_LANGS as string[]).includes(raw)) {
+      return raw as EmailLang;
+    }
+  }
+  return "sl";
+}
 
 export const dynamic = "force-dynamic";
 
@@ -78,6 +92,14 @@ export async function POST(
     : null;
   const sessionIdUpdate = config.compTag ? { stripeSessionId: config.compTag } : {};
 
+  // Fetch the Clerk user up-front so we can both populate the
+  // placeholder album AND notify them by email.
+  const client = await clerkClient();
+  const clerkUser = await client.users.getUser(clerkId).catch(() => null);
+  const ownerEmail   = clerkUser?.emailAddresses?.[0]?.emailAddress ?? null;
+  const firstName    = clerkUser?.firstName ?? null;
+  const emailLang    = pickLang(clerkUser?.publicMetadata);
+
   // 1) Bulk-update any existing albums.
   const updated = await db
     .update(albums)
@@ -96,12 +118,8 @@ export async function POST(
   let created: string | null = null;
   if (updated.length === 0 && newPlan !== "free") {
     try {
-      const client = await clerkClient();
-      const u = await client.users.getUser(clerkId).catch(() => null);
-
-      const firstLast = [u?.firstName, u?.lastName].filter(Boolean).join(" ").trim();
-      const coupleName = firstLast || u?.emailAddresses?.[0]?.emailAddress?.split("@")[0] || "Moja prva galerija";
-      const ownerEmail = u?.emailAddresses?.[0]?.emailAddress ?? null;
+      const firstLast = [clerkUser?.firstName, clerkUser?.lastName].filter(Boolean).join(" ").trim();
+      const coupleName = firstLast || ownerEmail?.split("@")[0] || "Moja prva galerija";
       const suffix = Math.random().toString(36).slice(2, 6);
       const baseSlug = slugify(coupleName) || "galerija";
       const slug = `${baseSlug}-${suffix}`;
@@ -165,10 +183,28 @@ export async function POST(
     console.warn("[admin/users/upgrade] override write failed (run /api/migrate?):", err);
   }
 
+  // 4) Notify the user by email — best-effort, never blocks the response.
+  let emailed = false;
+  if (newPlan !== "free" && ownerEmail) {
+    try {
+      await sendAccountUpgradedEmail({
+        to: ownerEmail,
+        firstName,
+        plan: config.effectivePlan as "basic" | "plus" | "premium",
+        placeholderSlug: created ?? updated[0]?.slug ?? null,
+        lang: emailLang,
+      });
+      emailed = true;
+    } catch (err) {
+      console.warn("[admin/users/upgrade] notify email failed:", err);
+    }
+  }
+
   return NextResponse.json({
     updated: updated.length,
     created,
     slugs: updated.map((x) => x.slug),
     overrideSaved,
+    emailed,
   });
 }

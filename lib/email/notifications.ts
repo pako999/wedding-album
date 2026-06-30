@@ -1493,3 +1493,203 @@ export async function sendOnboardingNudgeEmail({ to, firstName, lang = "sl" }: O
     console.error("[onboarding nudge email] send failed:", err);
   }
 }
+
+// ─── Account upgraded — sent when admin manually applies a plan ──────────────
+
+interface AccountUpgradedParams {
+  to: string;
+  firstName?: string | null;
+  plan: "basic" | "plus" | "premium";
+  /** Slug of a placeholder gallery we just created so they can land in
+   *  the dashboard ready to rename and configure it. */
+  placeholderSlug?: string | null;
+  lang?: EmailLang;
+}
+
+interface UpgradeCopy {
+  subject: (plan: string) => string;
+  heading: string;
+  greeting: (n?: string | null) => string;
+  intro: (plan: string) => string;
+  placeholder: string;
+  bullets: { basic: string[]; plus: string[]; premium: string[] };
+  cta: string;
+  ctaRename: string;
+  signoff: string;
+}
+
+const UPGRADE_COPY: Record<EmailLang, UpgradeCopy> = {
+  sl: {
+    subject: (p) => `🎉 Vaš Guestcam račun je nadgrajen na ${p}`,
+    heading: "Vaš račun je nadgrajen!",
+    greeting: (n) => `Pozdravljeni${n ? ` ${escapeHtml(n)}` : ""},`,
+    intro: (p) => `Z veseljem vam sporočamo, da je naša ekipa vaš Guestcam račun nadgradila na paket <strong>${p}</strong>. Vse ugodnosti so na voljo takoj.`,
+    placeholder: "Za vas smo že pripravili galerijo. V nadzorni plošči jo lahko preimenujete (npr. \"Ana & Marko\"), dodate datum dogodka in delite QR kodo z gosti.",
+    bullets: {
+      basic:   ["1000 fotografij", "90-dnevni dostop", "Personalizirane QR kartice"],
+      plus:    ["Neomejene fotografije", "1-letni dostop", "Live galerija", "Personalizirane predloge"],
+      premium: ["Neomejene fotografije in videi", "1-letni dostop", "Live galerija + AI Film Studio", "Premium predloge", "Prioritetna podpora"],
+    },
+    cta: "Odprite nadzorno ploščo →",
+    ctaRename: "Uredite svojo galerijo →",
+    signoff: "— Ekipa Guestcam",
+  },
+  hr: {
+    subject: (p) => `🎉 Vaš Guestcam račun je nadograđen na ${p}`,
+    heading: "Vaš račun je nadograđen!",
+    greeting: (n) => `Pozdrav${n ? ` ${escapeHtml(n)}` : ""},`,
+    intro: (p) => `S veseljem vam javljamo da je naš tim vaš Guestcam račun nadogradio na paket <strong>${p}</strong>. Sve pogodnosti dostupne su odmah.`,
+    placeholder: "Već smo vam pripremili galeriju. U nadzornoj ploči je možete preimenovati (npr. \"Ana & Marko\"), dodati datum događaja i podijeliti QR kod s gostima.",
+    bullets: {
+      basic:   ["1000 fotografija", "90 dana pristupa", "Personalizirane QR kartice"],
+      plus:    ["Neograničene fotografije", "1 godina pristupa", "Live galerija", "Personalizirani predlošci"],
+      premium: ["Neograničene fotografije i videozapisi", "1 godina pristupa", "Live galerija + AI Film Studio", "Premium predlošci", "Prioritetna podrška"],
+    },
+    cta: "Otvori nadzornu ploču →",
+    ctaRename: "Uredi svoju galeriju →",
+    signoff: "— Tim Guestcam",
+  },
+  sr: {
+    subject: (p) => `🎉 Vaš Guestcam nalog je unapređen na ${p}`,
+    heading: "Vaš nalog je unapređen!",
+    greeting: (n) => `Pozdrav${n ? ` ${escapeHtml(n)}` : ""},`,
+    intro: (p) => `Sa zadovoljstvom vas obaveštavamo da je naš tim vaš Guestcam nalog unapredio na paket <strong>${p}</strong>. Sve pogodnosti su dostupne odmah.`,
+    placeholder: "Već smo vam pripremili galeriju. U kontrolnoj tabli je možete preimenovati (npr. \"Ana & Marko\"), dodati datum događaja i podeliti QR kod sa gostima.",
+    bullets: {
+      basic:   ["1000 fotografija", "90 dana pristupa", "Personalizovane QR kartice"],
+      plus:    ["Neograničene fotografije", "1 godina pristupa", "Live galerija", "Personalizovani šabloni"],
+      premium: ["Neograničene fotografije i video zapisi", "1 godina pristupa", "Live galerija + AI Film Studio", "Premium šabloni", "Prioritetna podrška"],
+    },
+    cta: "Otvori kontrolnu tablu →",
+    ctaRename: "Uredi svoju galeriju →",
+    signoff: "— Tim Guestcam",
+  },
+  de: {
+    subject: (p) => `🎉 Ihr Guestcam-Konto wurde auf ${p} hochgestuft`,
+    heading: "Ihr Konto wurde hochgestuft!",
+    greeting: (n) => `Hallo${n ? ` ${escapeHtml(n)}` : ""},`,
+    intro: (p) => `Wir freuen uns, Ihnen mitzuteilen, dass unser Team Ihr Guestcam-Konto auf das Paket <strong>${p}</strong> hochgestuft hat. Alle Vorteile sind sofort verfügbar.`,
+    placeholder: "Wir haben bereits eine Galerie für Sie vorbereitet. Im Dashboard können Sie sie umbenennen (z. B. \"Ana & Marko\"), das Veranstaltungsdatum hinzufügen und den QR-Code mit den Gästen teilen.",
+    bullets: {
+      basic:   ["1000 Fotos", "90 Tage Zugriff", "Personalisierte QR-Karten"],
+      plus:    ["Unbegrenzte Fotos", "1 Jahr Zugriff", "Live-Galerie", "Personalisierte Vorlagen"],
+      premium: ["Unbegrenzte Fotos und Videos", "1 Jahr Zugriff", "Live-Galerie + AI Film Studio", "Premium-Vorlagen", "Priorisierter Support"],
+    },
+    cta: "Dashboard öffnen →",
+    ctaRename: "Galerie bearbeiten →",
+    signoff: "— Das Guestcam-Team",
+  },
+  en: {
+    subject: (p) => `🎉 Your Guestcam account has been upgraded to ${p}`,
+    heading: "Your account has been upgraded!",
+    greeting: (n) => `Hi${n ? ` ${escapeHtml(n)}` : ""},`,
+    intro: (p) => `We're delighted to let you know our team has upgraded your Guestcam account to the <strong>${p}</strong> plan. All benefits are available immediately.`,
+    placeholder: "We've already prepared a gallery for you. From your dashboard you can rename it (e.g. \"Ana & Marko\"), add the event date, and share the QR code with guests.",
+    bullets: {
+      basic:   ["1,000 photos", "90 days of access", "Personalised QR cards"],
+      plus:    ["Unlimited photos", "1 year of access", "Live gallery", "Personalised templates"],
+      premium: ["Unlimited photos and videos", "1 year of access", "Live gallery + AI Film Studio", "Premium templates", "Priority support"],
+    },
+    cta: "Open the dashboard →",
+    ctaRename: "Edit your gallery →",
+    signoff: "— The Guestcam team",
+  },
+  es: {
+    subject: (p) => `🎉 Tu cuenta de Guestcam ha sido actualizada a ${p}`,
+    heading: "¡Tu cuenta ha sido actualizada!",
+    greeting: (n) => `Hola${n ? ` ${escapeHtml(n)}` : ""},`,
+    intro: (p) => `Nos alegra informarte que nuestro equipo ha actualizado tu cuenta de Guestcam al plan <strong>${p}</strong>. Todos los beneficios están disponibles de inmediato.`,
+    placeholder: "Ya te hemos preparado una galería. Desde tu panel puedes renombrarla (p. ej. \"Ana y Marko\"), añadir la fecha del evento y compartir el código QR con tus invitados.",
+    bullets: {
+      basic:   ["1.000 fotos", "90 días de acceso", "Tarjetas QR personalizadas"],
+      plus:    ["Fotos ilimitadas", "1 año de acceso", "Galería en directo", "Plantillas personalizadas"],
+      premium: ["Fotos y vídeos ilimitados", "1 año de acceso", "Galería en directo + AI Film Studio", "Plantillas Premium", "Soporte prioritario"],
+    },
+    cta: "Abrir el panel →",
+    ctaRename: "Editar mi galería →",
+    signoff: "— El equipo de Guestcam",
+  },
+};
+
+export function accountUpgradedHtml(
+  lang: EmailLang,
+  plan: "basic" | "plus" | "premium",
+  firstName?: string | null,
+  placeholderSlug?: string | null,
+): string {
+  const t = UPGRADE_COPY[lang] ?? UPGRADE_COPY.en;
+  const planLabel = plan.charAt(0).toUpperCase() + plan.slice(1);
+  const dashboardUrl = placeholderSlug ? `${APP_URL}/dashboard/${placeholderSlug}` : `${APP_URL}/dashboard`;
+  const ctaLabel = placeholderSlug ? t.ctaRename : t.cta;
+  const bullets = t.bullets[plan] ?? t.bullets.premium;
+
+  return `<!DOCTYPE html>
+<html lang="${lang}">
+<head><meta charset="utf-8" /><title>${t.heading}</title></head>
+<body style="margin:0;padding:0;background:#F2F4F8;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;color:#0F1729;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#F2F4F8;padding:32px 16px;">
+    <tr><td align="center">
+      <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;background:#ffffff;border-radius:18px;overflow:hidden;box-shadow:0 4px 24px rgba(15,23,41,0.06);">
+
+        <tr><td style="background:linear-gradient(135deg,#FFC94D 0%,#FFD966 100%);padding:36px 36px 28px;">
+          <p style="margin:0 0 8px;font-size:12px;letter-spacing:3px;font-weight:700;color:#0F1729;">GUESTCAM · ${planLabel.toUpperCase()}</p>
+          <h1 style="margin:0;font-size:24px;line-height:1.25;color:#0F1729;font-weight:800;">${t.heading}</h1>
+        </td></tr>
+
+        <tr><td style="padding:32px 36px 8px;">
+          <p style="margin:0 0 16px;font-size:16px;line-height:1.55;color:#0F1729;">${t.greeting(firstName)}</p>
+          <p style="margin:0 0 22px;font-size:15px;line-height:1.65;color:#475569;">${t.intro(planLabel)}</p>
+
+          <table width="100%" cellpadding="0" cellspacing="0" style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:14px;">
+            <tr><td style="padding:18px 22px;">
+              ${bullets.map((b) => `<p style="margin:0 0 6px;font-size:13px;color:#475569;line-height:1.6;">✓ ${escapeHtml(b)}</p>`).join("")}
+            </td></tr>
+          </table>
+        </td></tr>
+
+        ${placeholderSlug ? `
+        <tr><td style="padding:24px 36px 0;">
+          <table width="100%" cellpadding="0" cellspacing="0" style="background:#FFF8E1;border:1px solid #FFE08A;border-radius:14px;">
+            <tr><td style="padding:18px 22px;">
+              <p style="margin:0;font-size:13px;line-height:1.6;color:#64748B;">${t.placeholder}</p>
+            </td></tr>
+          </table>
+        </td></tr>` : ""}
+
+        <tr><td style="padding:28px 36px 0;text-align:center;">
+          <a href="${dashboardUrl}" style="display:inline-block;padding:14px 28px;background:#0F1729;color:#ffffff;text-decoration:none;border-radius:12px;font-weight:700;font-size:14px;">${ctaLabel}</a>
+        </td></tr>
+
+        <tr><td style="padding:28px 36px 6px;">
+          <p style="margin:0;font-size:13px;color:#0F1729;font-weight:700;">${t.signoff}</p>
+        </td></tr>
+
+        ${contactFooterHtml(lang)}
+
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>`;
+}
+
+export async function sendAccountUpgradedEmail({ to, firstName, plan, placeholderSlug, lang = "sl" }: AccountUpgradedParams) {
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) {
+    console.warn("[email] RESEND_API_KEY not set — skipping account upgraded email");
+    return;
+  }
+  const resend = new Resend(apiKey);
+  const t = UPGRADE_COPY[lang] ?? UPGRADE_COPY.en;
+  const planLabel = plan.charAt(0).toUpperCase() + plan.slice(1);
+  try {
+    await resend.emails.send({
+      from: `Guestcam <${FROM}>`,
+      to,
+      subject: t.subject(planLabel),
+      html: accountUpgradedHtml(lang, plan, firstName, placeholderSlug),
+    });
+  } catch (err) {
+    console.error("[account upgraded email] send failed:", err);
+  }
+}
