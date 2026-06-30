@@ -7,20 +7,20 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { OG_IMAGE_URL, ogImage } from "@/lib/og";
 
 export const metadata: Metadata = {
-  title: "QR kod za vjenčanje — Potpuni vodič 2025 | Guestcam",
+  title: "QR kod za vjenčanje — skupite fotografije gostiju 2026 | Guestcam",
   description:
-    "Sve što trebate znati o QR kodu za vjenčanje. Kako funkcionira, zašto vam treba i kako ga postaviti za 2 minute s Guestcam.",
+    "Aplikacija za fotografije s vjenčanja preko QR koda: gosti skeniraju, vi dobivate sve slike u punoj kvaliteti. Bez instalacije. Postavite za 2 minute.",
   openGraph: {
-    title: "QR kod za vjenčanje — Potpuni vodič 2025",
+    title: "QR kod za vjenčanje — skupite fotografije gostiju 2026",
     description:
-      "Skupite sve fotografije gostiju jednim QR kodom. Bez aplikacije, u punoj kvaliteti.",
+      "Skupite sve fotografije s vjenčanja od gostiju jednim QR kodom. Bez aplikacije, u punoj kvaliteti.",
     type: "article",
-    images: [ogImage("QR kod za vjenčanje — Potpuni vodič")],
+    images: [ogImage("QR kod za vjenčanje — skupite fotografije gostiju")],
   },
   twitter: {
     card: "summary_large_image",
-    title: "QR kod za vjenčanje — Potpuni vodič 2025",
-    description: "Skupite sve fotografije gostiju jednim QR kodom.",
+    title: "QR kod za vjenčanje — skupite fotografije gostiju 2026",
+    description: "Skupite sve fotografije s vjenčanja jednim QR kodom. Bez aplikacije.",
     images: [OG_IMAGE_URL],
   },
   alternates: {
@@ -108,13 +108,13 @@ export default function QrKodVjencanjePage() {
             Vodič · Hrvatska · 2025
           </div>
           <h1 className="font-serif text-4xl md:text-5xl font-bold text-[#0F1729] leading-tight mb-5">
-            QR kod za vjenčanje — sve što trebate znati
+            QR kod za vjenčanje — skupite sve fotografije gostiju
           </h1>
           <p className="text-lg text-gray-600 leading-relaxed mb-6">
-            QR kod za vjenčanje danas je jedan od najpametnijih načina za
-            skupljanje fotografija gostiju. Umjesto da slike ostanu zarobljene
-            na telefonima, gosti ih jednim skeniranjem šalju izravno u vaš
-            osobni vjenčani album — bez aplikacije, bez registracije, bez stresa.
+            Aplikacija za fotografije s vjenčanja preko QR koda — najpametniji
+            način da skupite slike svih gostiju. Umjesto da fotografije ostanu
+            zarobljene na telefonima, gosti ih jednim skeniranjem šalju izravno
+            u vašu privatnu galeriju — bez aplikacije, bez registracije, bez stresa.
           </p>
           <div className="flex flex-wrap gap-4 text-sm text-gray-500">
             <span className="flex items-center gap-1.5">

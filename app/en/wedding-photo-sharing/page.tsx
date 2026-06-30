@@ -7,20 +7,20 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { OG_IMAGE_URL, ogImage } from "@/lib/og";
 
 export const metadata: Metadata = {
-  title: "Wedding Photo Sharing App — Complete Guide 2025 | Guestcam",
+  title: "Wedding QR Code: Collect Guest Photos Without an App (2026) | Guestcam",
   description:
-    "The best way to share wedding photos with guests. No app downloads, full quality, instant QR code upload. See why couples choose Guestcam over Google Photos and WhatsApp.",
+    "Wedding QR code for photos: guests scan, you get every photo in full quality. No app downloads, no logins. The wedding photo sharing app couples use to collect guest photos. Set up in 2 minutes.",
   openGraph: {
-    title: "Wedding Photo Sharing App — Complete Guide 2025",
+    title: "Wedding QR Code: Collect Guest Photos Without an App (2026)",
     description:
-      "Collect all your guests' photos with one QR code. No app needed, full resolution, private and secure.",
+      "Collect every wedding photo from your guests with one QR code. No app downloads, full resolution, private and secure.",
     type: "article",
-    images: [ogImage("Wedding Photo Sharing App — Complete Guide 2025")],
+    images: [ogImage("Wedding QR Code — Collect Guest Photos")],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Wedding Photo Sharing App — Complete Guide 2025",
-    description: "Collect all your guests' photos with one QR code.",
+    title: "Wedding QR Code: Collect Guest Photos Without an App",
+    description: "Collect every wedding photo from your guests with one QR code.",
     images: [OG_IMAGE_URL],
   },
   alternates: {
@@ -100,7 +100,7 @@ export default function WeddingPhotoSharingPage() {
             Guide · English · 2025
           </div>
           <h1 className="font-serif text-4xl md:text-5xl font-bold text-[#0F1729] leading-tight mb-5">
-            Wedding Photo Sharing App — the complete guide
+            Wedding QR Code: collect every guest photo (no app required)
           </h1>
           <p className="text-lg text-gray-600 leading-relaxed mb-6">
             Every guest at your wedding takes photos. Beautiful candid moments,

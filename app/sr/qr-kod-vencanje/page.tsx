@@ -7,20 +7,20 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { OG_IMAGE_URL, ogImage } from "@/lib/og";
 
 export const metadata: Metadata = {
-  title: "QR kod za venčanje — Potpuni vodič 2025 | Guestcam",
+  title: "QR kod za venčanje i svadbu — sakupite slike gostiju 2026 | Guestcam",
   description:
-    "Sve što treba da znate o QR kodu za venčanje. Kako funkcioniše, zašto vam treba i kako ga za 2 minuta postavite sa Guestcam.",
+    "QR kod za svadbu i venčanje: sakupite sve slike i fotografije gostiju jednim skeniranjem. Bez aplikacije, u punom kvalitetu. Postavite za 2 minuta.",
   openGraph: {
-    title: "QR kod za venčanje — Potpuni vodič 2025",
+    title: "QR kod za venčanje i svadbu — sakupite slike gostiju 2026",
     description:
-      "Sakupite sve fotografije gostiju jednim QR kodom. Bez aplikacije, u punom kvalitetu.",
+      "Sakupite sve slike i fotografije sa svadbe i venčanja jednim QR kodom. Bez aplikacije, u punom kvalitetu.",
     type: "article",
-    images: [ogImage("QR kod za venčanje — Potpuni vodič")],
+    images: [ogImage("QR kod za venčanje i svadbu")],
   },
   twitter: {
     card: "summary_large_image",
-    title: "QR kod za venčanje — Potpuni vodič 2025",
-    description: "Sakupite sve fotografije gostiju jednim QR kodom.",
+    title: "QR kod za venčanje i svadbu — sakupite slike gostiju 2026",
+    description: "Sakupite sve slike sa svadbe jednim QR kodom. Bez aplikacije.",
     images: [OG_IMAGE_URL],
   },
   alternates: {
@@ -105,13 +105,14 @@ export default function QrKodVencanjePage() {
             Vodič · Srbija · 2025
           </div>
           <h1 className="font-serif text-4xl md:text-5xl font-bold text-[#0F1729] leading-tight mb-5">
-            QR kod za venčanje — sve što treba da znate
+            QR kod za venčanje i svadbu — sakupite sve slike gostiju
           </h1>
           <p className="text-lg text-gray-600 leading-relaxed mb-6">
-            QR kod za venčanje je danas jedan od najpametnijih načina da sakupite
-            fotografije gostiju. Umesto da slike ostanu zaključane na telefonima,
-            gosti ih jednim skeniranjem šalju direktno u vašu privatnu galeriju —
-            bez aplikacije, bez registracije, bez nervoze.
+            QR kod za svadbu ili venčanje je danas najpametniji način da sakupite
+            slike i fotografije sa svadbe od svih gostiju. Umesto da slike ostanu
+            zaključane na telefonima, gosti ih jednim skeniranjem šalju direktno
+            u vašu privatnu galeriju — bez aplikacije, bez registracije, bez
+            nervoze.
           </p>
           <div className="flex flex-wrap gap-4 text-sm text-gray-500">
             <span className="flex items-center gap-1.5">
@@ -132,13 +133,14 @@ export default function QrKodVencanjePage() {
         {/* What is */}
         <section className="mb-10">
           <h2 className="font-serif text-2xl font-bold text-[#0F1729] mb-4">
-            Šta je QR kod za venčanje?
+            Šta je QR kod za svadbu i venčanje?
           </h2>
           <p className="text-gray-600 leading-relaxed mb-4">
-            QR kod za venčanje je posebna koda koju štampate na stolove, pozivnice
-            ili stalke na svadbenom mestu. Kada je gost skenira pametnim telefonom,
-            telefon ga automatski preusmerava u vašu ličnu galeriju, gde se otpremljena
-            fotografija ili video snimak odmah pojavljuje u vašoj zbirci.
+            QR kod za svadbu (ili venčanje — sve je isto) je posebna koda koju
+            štampate na stolove, pozivnice ili stalke na svadbenom mestu. Kada
+            je gost skenira pametnim telefonom, telefon ga automatski preusmerava
+            u vašu ličnu galeriju, gde se otpremljena slika sa svadbe ili video
+            snimak odmah pojavljuje u vašoj zbirci.
           </p>
           <p className="text-gray-600 leading-relaxed">
             Za razliku od grupa na WhatsAppu, Vajberu ili Mesendžeru — ili platformi
