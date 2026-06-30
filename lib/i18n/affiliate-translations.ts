@@ -93,7 +93,7 @@ const sl: AffiliateUiStrings = {
     subheading: "Pridružite se GuestCam partnerskemu programu in zaslužite 20% od vsakega plačanega naročila — za vsako novo sklenitev partnerske povezave.",
     benefits: [
       { title: "20% provizija", body: "Za vsako naročilo prek vaše povezave." },
-      { title: "30-dnevni piškotek", body: "Pripisano vam je vsako naročilo v 30 dneh od klika." },
+      { title: "60-dnevni piškotek", body: "Pripisano vam je vsako naročilo v 60 dneh od klika." },
       { title: "Hitro izplačilo", body: "Po 14 dneh na PayPal ali bančni račun." },
       { title: "Lastna nadzorna plošča", body: "Sledite klikom, naročilom in zaslužku v realnem času." },
     ],
@@ -167,7 +167,7 @@ const en: AffiliateUiStrings = {
     subheading: "Join the GuestCam partner program and earn 20% of every paid order — for every new sign-up through your partner link.",
     benefits: [
       { title: "20% commission", body: "On every order through your link." },
-      { title: "30-day cookie", body: "Every order within 30 days of click is credited to you." },
+      { title: "60-day cookie", body: "Every order within 60 days of click is credited to you." },
       { title: "Fast payout", body: "After 14 days to PayPal or bank account." },
       { title: "Your own dashboard", body: "Track clicks, orders, and earnings in real time." },
     ],
@@ -241,7 +241,7 @@ const de: AffiliateUiStrings = {
     subheading: "Treten Sie dem GuestCam Partnerprogramm bei und verdienen Sie 20% von jeder bezahlten Bestellung — für jede neue Anmeldung über Ihren Partner-Link.",
     benefits: [
       { title: "20% Provision", body: "Für jede Bestellung über Ihren Link." },
-      { title: "30-Tage Cookie", body: "Jede Bestellung innerhalb von 30 Tagen nach dem Klick wird Ihnen gutgeschrieben." },
+      { title: "60-Tage Cookie", body: "Jede Bestellung innerhalb von 60 Tagen nach dem Klick wird Ihnen gutgeschrieben." },
       { title: "Schnelle Auszahlung", body: "Nach 14 Tagen auf PayPal oder Bankkonto." },
       { title: "Eigenes Dashboard", body: "Verfolgen Sie Klicks, Bestellungen und Einnahmen in Echtzeit." },
     ],
@@ -315,7 +315,7 @@ const hr: AffiliateUiStrings = {
     subheading: "Pridružite se GuestCam partnerskom programu i zaradite 20% od svake plaćene narudžbe — za svaku novu prijavu putem vaše partnerske poveznice.",
     benefits: [
       { title: "20% provizija", body: "Za svaku narudžbu putem vaše poveznice." },
-      { title: "30-dnevni kolačić", body: "Svaka narudžba u roku od 30 dana od klika pripisuje se vama." },
+      { title: "60-dnevni kolačić", body: "Svaka narudžba u roku od 60 dana od klika pripisuje se vama." },
       { title: "Brza isplata", body: "Nakon 14 dana na PayPal ili bankovni račun." },
       { title: "Vlastita nadzorna ploča", body: "Pratite klikove, narudžbe i zaradu u stvarnom vremenu." },
     ],
@@ -389,7 +389,7 @@ const sr: AffiliateUiStrings = {
     subheading: "Pridružite se GuestCam partnerskom programu i zaradite 20% od svake plaćene porudžbine — za svaku novu prijavu putem vašeg partnerskog linka.",
     benefits: [
       { title: "20% provizija", body: "Za svaku porudžbinu preko vašeg linka." },
-      { title: "30-dnevni kolačić", body: "Svaka porudžbina u roku od 30 dana od klika pripisuje se vama." },
+      { title: "60-dnevni kolačić", body: "Svaka porudžbina u roku od 60 dana od klika pripisuje se vama." },
       { title: "Brza isplata", body: "Posle 14 dana na PayPal ili bankovni račun." },
       { title: "Sopstvena kontrolna tabla", body: "Pratite klikove, porudžbine i zaradu u realnom vremenu." },
     ],
@@ -463,7 +463,7 @@ const es: AffiliateUiStrings = {
     subheading: "Únete al programa de afiliados de GuestCam y gana el 20% de cada pedido pagado — por cada nuevo registro a través de tu enlace de afiliado.",
     benefits: [
       { title: "20% de comisión", body: "Por cada pedido a través de tu enlace." },
-      { title: "Cookie de 30 días", body: "Cada pedido en los 30 días siguientes al clic se te acredita." },
+      { title: "Cookie de 60 días", body: "Cada pedido en los 60 días siguientes al clic se te acredita." },
       { title: "Pago rápido", body: "Tras 14 días a PayPal o cuenta bancaria." },
       { title: "Tu propio panel", body: "Sigue clics, pedidos y ganancias en tiempo real." },
     ],

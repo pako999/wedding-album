@@ -3,7 +3,7 @@ import { headers } from "next/headers";
 import {
   resolveAffiliate,
   AFFILIATE_COOKIE,
-  COOKIE_MAX_AGE,
+  DEFAULT_COOKIE_DAYS,
 } from "@/lib/affiliate/attribution";
 
 export const runtime = "nodejs";
@@ -47,8 +47,9 @@ export async function GET(req: NextRequest) {
 
   const res = NextResponse.redirect(redirectUrl);
   if (affiliate) {
+    const days = affiliate.cookieDays || DEFAULT_COOKIE_DAYS;
     res.cookies.set(AFFILIATE_COOKIE, code, {
-      maxAge: COOKIE_MAX_AGE,
+      maxAge: days * 24 * 60 * 60,
       httpOnly: false, // first-party only; needs to be readable for analytics
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",

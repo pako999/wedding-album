@@ -99,7 +99,7 @@ export function ReferralLinkCard({ affiliateId, referralCode, status, approvedAt
 
       <p className="text-[11px] text-gray-400 leading-relaxed">
         Vsak klik na katero koli različico se beleži v partnerski dashboard. Piškotek
-        ostane 30 dni, tako da se naročilo še vedno pripiše partnerju, tudi če stranka
+        ostane 60 dni, tako da se naročilo še vedno pripiše partnerju, tudi če stranka
         nakup dokonča kasneje.
       </p>
     </div>

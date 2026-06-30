@@ -104,7 +104,7 @@ export function DashboardClient({ affiliate, commissions }: Props) {
 
         {/* Commission rate + cookie days info */}
         <div className="bg-white rounded-2xl border border-gray-100 p-5 mb-6">
-          <div className="flex flex-wrap gap-x-8 gap-y-3 text-sm">
+          <div className="flex flex-wrap gap-x-8 gap-y-3 text-sm mb-3">
             <div>
               <span className="text-gray-400 mr-2">Provizija:</span>
               <strong className="text-[#0F1729]">{affiliate.commissionRate}%</strong>
@@ -118,6 +118,13 @@ export function DashboardClient({ affiliate, commissions }: Props) {
               <strong className="text-[#0F1729]">{fmtEur(affiliate.totalEarningsCents)}</strong>
             </div>
           </div>
+          <p className="text-[11px] text-gray-500 leading-relaxed border-t border-gray-100 pt-3">
+            <strong className="text-[#0F1729]">Kako deluje {affiliate.cookieDays}-dnevni piškotek:</strong>{" "}
+            Ko nekdo klikne tvojo povezavo, se v njegovem brskalniku shrani piškotek za{" "}
+            <strong>{affiliate.cookieDays} dni</strong>. Če v tem času opravi nakup —
+            tudi če klikne danes in plača šele čez {Math.max(1, affiliate.cookieDays - 5)}{" "}
+            dni — se provizija pripiše tebi.
+          </p>
         </div>
 
         {/* Commission history */}

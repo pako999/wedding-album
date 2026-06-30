@@ -394,7 +394,7 @@ export const affiliates = pgTable(
     referralCode: varchar("referral_code", { length: 32 }).notNull().unique(),
     // Percent (1–100). 20 = 20% of order value.
     commissionRate: integer("commission_rate").notNull().default(20),
-    cookieDays: integer("cookie_days").notNull().default(30),
+    cookieDays: integer("cookie_days").notNull().default(60),
     status: text("status", {
       enum: ["pending", "active", "suspended", "rejected"],
     }).notNull().default("pending"),

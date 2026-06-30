@@ -358,6 +358,15 @@ export async function runMigrations() {
     )
   `);
 
+  // Bump affiliate cookie window 30 -> 60 days. Schema default is 60 for
+  // new rows; this catches any existing rows still on the old default.
+  // Safe to re-run; only touches rows still at exactly 30.
+  await run("bump affiliate cookie_days 30 to 60", (q) => q`
+    UPDATE affiliates
+       SET cookie_days = 60
+     WHERE cookie_days = 30
+  `);
+
   // Backfill: publish any admin-created placeholder galleries that were
   // accidentally inserted with is_published = false before the
   // visibility fix. Safe to re-run — it only touches placeholders.

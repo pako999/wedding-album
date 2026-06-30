@@ -28,7 +28,7 @@ export default function AffiliateApplyPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-10">
           {[
             { icon: "💰", title: "20% provizija", body: "Za vsako naročilo prek vaše povezave." },
-            { icon: "🍪", title: "30-dnevni piškotek", body: "Pripisano vam je vsako naročilo v 30 dneh od klika." },
+            { icon: "🍪", title: "60-dnevni piškotek", body: "Pripisano vam je vsako naročilo v 60 dneh od klika." },
             { icon: "💳", title: "Hitro izplačilo", body: "Po 14 dneh na PayPal ali bančni račun." },
             { icon: "📊", title: "Lastna nadzorna plošča", body: "Sledite klikom, naročilom in zaslužku v realnem času." },
           ].map((b) => (

@@ -4,7 +4,11 @@ import { affiliates, affiliateClicks } from "@/lib/db/schema";
 import { eq, sql } from "drizzle-orm";
 
 export const AFFILIATE_COOKIE = "gc_ref";
-export const COOKIE_MAX_AGE = 30 * 24 * 60 * 60; // 30 days in seconds
+/** Fallback when an affiliate row has no cookieDays set. Real value comes
+ *  from affiliate.cookieDays via resolveAffiliate(), letting us run
+ *  special-deal partners on longer attribution windows. */
+export const DEFAULT_COOKIE_DAYS = 60;
+export const COOKIE_MAX_AGE = DEFAULT_COOKIE_DAYS * 24 * 60 * 60;
 
 export interface ClickMeta {
   ipAddress?: string;
