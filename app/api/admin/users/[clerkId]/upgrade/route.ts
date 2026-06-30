@@ -134,7 +134,11 @@ export async function POST(
           eventType: "wedding",
           coupleName,
           weddingDate: today,
-          isPublished: false,            // hidden until owner edits
+          // Published so the URL works the moment the owner gets the
+          // upgrade email; they can change visibility later from the
+          // dashboard. Plan + limits are already applied, the gallery
+          // is just empty until they (or guests) upload anything.
+          isPublished: true,
           plan: config.effectivePlan,
           maxPhotos: config.maxPhotos,
           filmTier: config.filmTier,
