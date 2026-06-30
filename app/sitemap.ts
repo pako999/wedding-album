@@ -90,18 +90,37 @@ function legalCluster(doc: string): Record<string, string> {
  * Walk content/blog/<lang>/*.json and produce one sitemap entry per post
  * using its real publishedAt/updatedAt timestamps.
  */
+/** Shared cluster: the blog index has the same slug across all languages
+ *  (just under different locale prefixes). */
+const BLOG_INDEX_CLUSTER = clusterLinks({
+  sl: "/blog", hr: "/blog", sr: "/blog", de: "/blog", en: "/blog", es: "/blog",
+});
+
 async function blogEntries(): Promise<PageEntry[]> {
   const blogDir = path.join(process.cwd(), "content", "blog");
   const out: PageEntry[] = [];
 
-  // Index pages — change as new posts arrive
-  out.push({ path: "/blog", priority: 0.7, changeFrequency: "weekly" });
+  // Index pages — same slug in every locale, so the alternates cluster
+  // is just BLOG_INDEX_CLUSTER for every entry.
+  out.push({ path: "/blog",        priority: 0.7,  changeFrequency: "weekly", alternates: BLOG_INDEX_CLUSTER });
   for (const lang of ["hr", "sr", "de", "en", "es"]) {
-    out.push({ path: `/${lang}/blog`, priority: 0.65, changeFrequency: "weekly" });
+    out.push({ path: `/${lang}/blog`, priority: 0.65, changeFrequency: "weekly", alternates: BLOG_INDEX_CLUSTER });
   }
 
-  // Per-post URLs with real updatedAt timestamps
-  for (const lang of ["sl", "hr", "sr", "de", "en", "es"]) {
+  // First pass: read every post once, recording its translationKey, slug,
+  // language, and updatedAt. We need the full map before we can attach
+  // hreflang alternates because each post needs to know the URLs of its
+  // siblings in every other language.
+  interface PostInfo {
+    lang: Locale;
+    slug: string;
+    url: string;
+    updated?: string;
+    translationKey?: string;
+  }
+  const allPosts: PostInfo[] = [];
+
+  for (const lang of LOCALES) {
     const dir = path.join(blogDir, lang);
     let files: string[] = [];
     try {
@@ -113,23 +132,56 @@ async function blogEntries(): Promise<PageEntry[]> {
       if (!file.endsWith(".json")) continue;
       const slug = file.replace(".json", "");
       const url = lang === "sl" ? `/blog/${slug}` : `/${lang}/blog/${slug}`;
-      // Read the post just enough to grab its date. Skip silently if malformed.
       let updated: string | undefined;
+      let translationKey: string | undefined;
       try {
         const raw = await fs.readFile(path.join(dir, file), "utf8");
-        const data = JSON.parse(raw) as { updatedAt?: string; publishedAt?: string };
+        const data = JSON.parse(raw) as {
+          updatedAt?: string;
+          publishedAt?: string;
+          translationKey?: string;
+        };
         updated = data.updatedAt ?? data.publishedAt;
+        translationKey = data.translationKey;
       } catch {
-        // ignore
+        // skip malformed file silently — better than breaking the whole sitemap
       }
-      out.push({
-        path: url,
-        priority: 0.6,
-        changeFrequency: "monthly",
-        lastModified: updated,
-      });
+      allPosts.push({ lang, slug, url, updated, translationKey });
     }
   }
+
+  // Build translationKey → { locale: absoluteUrl } so each post can declare
+  // its language siblings in the sitemap.
+  const clustersByKey = new Map<string, Record<string, string>>();
+  for (const p of allPosts) {
+    if (!p.translationKey) continue;
+    const c = clustersByKey.get(p.translationKey) ?? {};
+    c[p.lang] = `${SITE_URL}${p.url}`;
+    clustersByKey.set(p.translationKey, c);
+  }
+  // For posts with siblings, fall back x-default to the SL version when
+  // present, otherwise the EN version, otherwise the first available.
+  for (const [key, langs] of clustersByKey) {
+    if (Object.keys(langs).length < 2) {
+      // A "cluster" of size 1 isn't worth emitting hreflang for — Google
+      // would just see a self-referencing alternate.
+      clustersByKey.delete(key);
+      continue;
+    }
+    langs["x-default"] = langs.sl ?? langs.en ?? Object.values(langs)[0];
+  }
+
+  for (const p of allPosts) {
+    const cluster = p.translationKey ? clustersByKey.get(p.translationKey) : undefined;
+    out.push({
+      path: p.url,
+      priority: 0.6,
+      changeFrequency: "monthly",
+      lastModified: p.updated,
+      alternates: cluster,
+    });
+  }
+
   return out;
 }
 
