@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { albums, userPlanOverrides } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
+import { clerkClient } from "@clerk/nextjs/server";
 import { requireAdmin } from "@/lib/admin";
 
 export const dynamic = "force-dynamic";
@@ -9,19 +10,26 @@ export const dynamic = "force-dynamic";
 /**
  * POST /api/admin/users/[clerkId]/upgrade  body: { plan }
  *
- * Manual admin override that BOTH:
- *   1. Bulk-promotes every existing album owned by the Clerk user to the
- *      requested plan (matches the per-album PATCH endpoint).
- *   2. Records a user-level override in `user_plan_overrides` so the next
- *      gallery the user creates lands on the chosen plan automatically —
- *      this is what makes it useful for users who have NOT yet created
- *      a gallery (zero rows in `albums` to update).
+ * Manual admin override — applies a plan to a user IMMEDIATELY:
  *
- * Plan === "free" wipes the override (cancels a pending upgrade).
+ *   • If the user already has albums → bulk-update every album to the
+ *     chosen plan (limits, expiry, comp tag).
+ *
+ *   • If the user has zero albums → create a placeholder album owned
+ *     by them with the chosen plan applied. The owner can rename it
+ *     from their dashboard. This is what makes the upgrade visible
+ *     and useful instantly instead of "waiting" forever.
+ *
+ *   • Plan === "free" wipes any pending override and (if albums exist)
+ *     downgrades them. It does NOT create a placeholder album for a
+ *     0-album user — there is nothing to do, they are already free.
+ *
+ * Also maintains user_plan_overrides as a fallback: if Clerk lookup
+ * fails or the placeholder create errors, the override still gets
+ * written so the user's first real album inherits the plan.
  *
  * Pseudo-plans:
- *   influencer / sponsor → effective premium, stamped with comp: tag so
- *   revenue stats can exclude them.
+ *   influencer / sponsor → effective premium, stamped with comp: tag.
  */
 type AdminPlan = "free" | "basic" | "plus" | "premium" | "influencer" | "sponsor";
 
@@ -39,6 +47,16 @@ const PLAN_CONFIG: Record<AdminPlan, {
   influencer: { effectivePlan: "premium", maxPhotos: 999_999, daysAccess: 365, compTag: "comp:influencer", filmTier: "premium" },
   sponsor:    { effectivePlan: "premium", maxPhotos: 999_999, daysAccess: 365, compTag: "comp:sponsor",    filmTier: "premium" },
 };
+
+function slugify(text: string): string {
+  return text
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 40);
+}
 
 export async function POST(
   req: NextRequest,
@@ -61,7 +79,7 @@ export async function POST(
   const sessionIdUpdate = config.compTag ? { stripeSessionId: config.compTag } : {};
 
   // 1) Bulk-update any existing albums.
-  const r = await db
+  const updated = await db
     .update(albums)
     .set({
       plan: config.effectivePlan,
@@ -73,9 +91,49 @@ export async function POST(
     .where(eq(albums.ownerClerkId, clerkId))
     .returning({ slug: albums.slug });
 
-  // 2) Maintain the user-level override. Tolerate a missing table on
-  // a fresh DB so an admin upgrading an existing user still gets the
-  // bulk-album update applied even if /api/migrate hasn't run yet.
+  // 2) If the user had zero albums AND the plan is non-free, create
+  //    a placeholder so the upgrade applies immediately.
+  let created: string | null = null;
+  if (updated.length === 0 && newPlan !== "free") {
+    try {
+      const client = await clerkClient();
+      const u = await client.users.getUser(clerkId).catch(() => null);
+
+      const firstLast = [u?.firstName, u?.lastName].filter(Boolean).join(" ").trim();
+      const coupleName = firstLast || u?.emailAddresses?.[0]?.emailAddress?.split("@")[0] || "Moja prva galerija";
+      const ownerEmail = u?.emailAddresses?.[0]?.emailAddress ?? null;
+      const suffix = Math.random().toString(36).slice(2, 6);
+      const baseSlug = slugify(coupleName) || "galerija";
+      const slug = `${baseSlug}-${suffix}`;
+
+      const today = new Date().toISOString().slice(0, 10);
+      const inserted = await db
+        .insert(albums)
+        .values({
+          slug,
+          ownerClerkId: clerkId,
+          ownerEmail,
+          eventType: "wedding",
+          coupleName,
+          weddingDate: today,
+          isPublished: false,            // hidden until owner edits
+          plan: config.effectivePlan,
+          maxPhotos: config.maxPhotos,
+          filmTier: config.filmTier,
+          expiresAt: expiresAt ?? undefined,
+          stripeSessionId: config.compTag ?? `admin-grant:${clerkId}`,
+          moderationEnabled: false,
+        })
+        .returning({ slug: albums.slug });
+      created = inserted[0]?.slug ?? null;
+    } catch (err) {
+      console.warn("[admin/users/upgrade] placeholder album create failed:", err);
+    }
+  }
+
+  // 3) Maintain a user-level override so future albums also inherit
+  //    the upgrade. Tolerate a missing table so the rest of the
+  //    endpoint still works on a fresh DB.
   let overrideSaved = false;
   try {
     if (newPlan === "free") {
@@ -108,8 +166,9 @@ export async function POST(
   }
 
   return NextResponse.json({
-    updated: r.length,
-    slugs: r.map((x) => x.slug),
+    updated: updated.length,
+    created,
+    slugs: updated.map((x) => x.slug),
     overrideSaved,
   });
 }

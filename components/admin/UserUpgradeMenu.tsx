@@ -40,10 +40,14 @@ export function UserUpgradeMenu({
         setMsg(json.error ?? "Napaka");
         return;
       }
-      if (albumCount === 0) {
-        setMsg(plan === "free" ? "✓ preklicano" : "✓ shranjeno za prvo galerijo");
+      if (plan === "free") {
+        setMsg("✓ preklicano");
+      } else if (json.created) {
+        setMsg("✓ galerija ustvarjena");
+      } else if (json.updated > 0) {
+        setMsg(`✓ ${json.updated} galerij posodobljenih`);
       } else {
-        setMsg(`✓ ${json.updated} galerij`);
+        setMsg("✓ shranjeno");
       }
       router.refresh();
     });
