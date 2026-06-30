@@ -184,7 +184,7 @@ export interface Translations {
   reminderTitle: string;        // "Get an upload reminder"
   reminderDesc: string;         // "Enter your email and we'll remind you to upload your photos."
   reminderEmailPlaceholder: string; // "your@email.com"
-  reminderWhenLabel: string;    // "When to send"
+  reminderWhenLabel: string;    // "When should we email you the reminder?"
   reminderWhenNow: string;      // "Send now"
   reminderWhen1h: string;       // "In 1 hour"
   reminderWhenTomorrow: string; // "Tomorrow"
@@ -341,7 +341,7 @@ const sl: Translations = {
   reminderTitle: "Prejmi opomnik za nalaganje",
   reminderDesc: "Vnesite svoj e-naslov in poslali vam bomo opomnik za nalaganje fotografij.",
   reminderEmailPlaceholder: "vas@email.com",
-  reminderWhenLabel: "Kdaj poslati",
+  reminderWhenLabel: "Kdaj vam pošljemo opomnik na email?",
   reminderWhenNow: "Pošlji zdaj",
   reminderWhen1h: "Čez 1 uro",
   reminderWhenTomorrow: "Jutri",
@@ -492,7 +492,7 @@ const hr: Translations = {
   reminderTitle: "Primi podsjetnik za učitavanje",
   reminderDesc: "Unesite svoju e-poštu i poslat ćemo vam podsjetnik za učitavanje fotografija.",
   reminderEmailPlaceholder: "vas@email.com",
-  reminderWhenLabel: "Kada poslati",
+  reminderWhenLabel: "Kada da vam pošaljemo podsjetnik na email?",
   reminderWhenNow: "Pošalji odmah",
   reminderWhen1h: "Za 1 sat",
   reminderWhenTomorrow: "Sutra",
@@ -643,7 +643,7 @@ const sr: Translations = {
   reminderTitle: "Primi podsetnik za otpremanje",
   reminderDesc: "Unesite svoju e-poštu i poslaćemo vam podsetnik da otpremite fotografije.",
   reminderEmailPlaceholder: "vas@email.com",
-  reminderWhenLabel: "Kada poslati",
+  reminderWhenLabel: "Kada da vam pošaljemo podsetnik na email?",
   reminderWhenNow: "Pošalji odmah",
   reminderWhen1h: "Za 1 sat",
   reminderWhenTomorrow: "Sutra",
@@ -794,7 +794,7 @@ const en: Translations = {
   reminderTitle: "Get an upload reminder",
   reminderDesc: "Enter your email and we'll remind you to upload your photos.",
   reminderEmailPlaceholder: "your@email.com",
-  reminderWhenLabel: "When to send",
+  reminderWhenLabel: "When should we email you the reminder?",
   reminderWhenNow: "Send now",
   reminderWhen1h: "In 1 hour",
   reminderWhenTomorrow: "Tomorrow",
@@ -945,7 +945,7 @@ const de: Translations = {
   reminderTitle: "Hochlade-Erinnerung erhalten",
   reminderDesc: "Geben Sie Ihre E-Mail-Adresse ein und wir erinnern Sie ans Hochladen Ihrer Fotos.",
   reminderEmailPlaceholder: "ihre@email.com",
-  reminderWhenLabel: "Wann senden",
+  reminderWhenLabel: "Wann sollen wir Ihnen die Erinnerung per E-Mail senden?",
   reminderWhenNow: "Jetzt senden",
   reminderWhen1h: "In 1 Stunde",
   reminderWhenTomorrow: "Morgen",
@@ -1096,7 +1096,7 @@ const es: Translations = {
   reminderTitle: "Recibe un recordatorio de subida",
   reminderDesc: "Introduce tu correo y te recordaremos que subas tus fotos.",
   reminderEmailPlaceholder: "tu@email.com",
-  reminderWhenLabel: "Cuándo enviar",
+  reminderWhenLabel: "¿Cuándo te enviamos el recordatorio por email?",
   reminderWhenNow: "Enviar ahora",
   reminderWhen1h: "En 1 hora",
   reminderWhenTomorrow: "Mañana",
