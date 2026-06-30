@@ -358,6 +358,17 @@ export async function runMigrations() {
     )
   `);
 
+  // Backfill: publish any admin-created placeholder galleries that were
+  // accidentally inserted with is_published = false before the
+  // visibility fix. Safe to re-run — it only touches placeholders.
+  await run("publish admin-grant placeholders", (q) => q`
+    UPDATE albums
+       SET is_published = true
+     WHERE is_published = false
+       AND (stripe_session_id LIKE 'admin-grant:%'
+         OR stripe_session_id IN ('comp:influencer','comp:sponsor'))
+  `);
+
   if (failures === 0) {
     console.log("[migrations] ✓ DB schema up to date");
   } else {
