@@ -7,19 +7,19 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { OG_IMAGE_URL, ogImage } from "@/lib/og";
 
 export const metadata: Metadata = {
-  title: "Fotos de Boda con QR — Guía Completa 2025 | Guestcam",
+  title: "Código QR para boda: recopila las fotos de tus invitados (2026) | Guestcam",
   description:
-    "Cómo recopilar todas las fotos de tu boda con un código QR. Sin necesidad de app, calidad completa, subida instantánea. Guestcam explica todo.",
+    "App para fotos de boda con código QR: los invitados escanean, tú recibes todas las fotos en calidad original. Sin instalar nada. Configura en 2 minutos.",
   openGraph: {
-    title: "Fotos de Boda con QR — Guía Completa 2025",
+    title: "Código QR para boda: recopila las fotos de tus invitados (2026)",
     description:
-      "Recopila todas las fotos de tus invitados con un solo código QR. Sin app, resolución completa, privado y seguro.",
+      "Recopila todas las fotos de tus invitados con un código QR. Sin app, resolución completa, privado y seguro.",
     type: "article",
-    images: [ogImage("Fotos de Boda con QR — Guía Completa")],
+    images: [ogImage("Código QR para boda — fotos de invitados")],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Fotos de Boda con QR — Guía Completa 2025",
+    title: "Código QR para boda: recopila las fotos de tus invitados",
     description: "Recopila todas las fotos de tus invitados con un código QR.",
     images: [OG_IMAGE_URL],
   },
@@ -100,7 +100,7 @@ export default function FotosBodaQrPage() {
             Guía · España · 2025
           </div>
           <h1 className="font-serif text-4xl md:text-5xl font-bold text-[#0F1729] leading-tight mb-5">
-            Fotos de boda con QR — todo lo que necesitas saber
+            Código QR para boda: recopila todas las fotos de tus invitados (sin app)
           </h1>
           <p className="text-lg text-gray-600 leading-relaxed mb-6">
             Cada invitado en tu boda hace fotos. Momentos espontáneos, abrazos

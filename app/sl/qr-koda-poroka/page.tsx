@@ -7,20 +7,20 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { OG_IMAGE_URL, ogImage } from "@/lib/og";
 
 export const metadata: Metadata = {
-  title: "QR koda za poroko — Popoln vodnik 2025 | Guestcam",
+  title: "QR koda za poroko — zberite fotografije gostov 2026 | Guestcam",
   description:
-    "Vse, kar morate vedeti o QR kodi za poroko. Kako deluje, zakaj jo potrebujete in kako jo v 2 minutah nastavite z Guestcam.",
+    "Aplikacija za poročne fotografije s QR kodo: gostje skenirajo, vi dobite vse fotografije v polni kakovosti. Brez nameščanja aplikacije. Postavite v 2 minutah.",
   openGraph: {
-    title: "QR koda za poroko — Popoln vodnik 2025",
+    title: "QR koda za poroko — zberite fotografije gostov 2026",
     description:
-      "Zberi vse fotografije gostov z eno samo QR kodo. Brez aplikacije, v polni kakovosti.",
+      "Zberite vse fotografije gostov z eno samo QR kodo. Brez aplikacije, v polni kakovosti.",
     type: "article",
-    images: [ogImage("QR koda za poroko — Popoln vodnik 2025")],
+    images: [ogImage("QR koda za poroko — zberite fotografije gostov")],
   },
   twitter: {
     card: "summary_large_image",
-    title: "QR koda za poroko — Popoln vodnik 2025",
-    description: "Zberi vse fotografije gostov z eno samo QR kodo.",
+    title: "QR koda za poroko — zberite fotografije gostov 2026",
+    description: "Zberite vse fotografije gostov z eno samo QR kodo. Brez aplikacije.",
     images: [OG_IMAGE_URL],
   },
   alternates: {
@@ -109,7 +109,7 @@ export default function QrKodaPorokaPage() {
             Vodnik · Slovenija · 2025
           </div>
           <h1 className="font-serif text-4xl md:text-5xl font-bold text-[#0F1729] leading-tight mb-5">
-            QR koda za poroko — vse, kar morate vedeti
+            QR koda za poroko: zberite vse fotografije gostov (brez aplikacije)
           </h1>
           <p className="text-lg text-gray-600 leading-relaxed mb-6">
             QR koda za poroko je danes eden najpametnejših načinov za zbiranje

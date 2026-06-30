@@ -7,20 +7,20 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { OG_IMAGE_URL, ogImage } from "@/lib/og";
 
 export const metadata: Metadata = {
-  title: "Hochzeitsfotos sammeln mit QR-Code — Vollständiger Leitfaden 2025 | Guestcam",
+  title: "QR-Code Hochzeit: Hochzeitsfotos der Gäste sammeln (2026) | Guestcam",
   description:
-    "Wie Sie alle Hochzeitsfotos Ihrer Gäste mit einer einzigen QR-Code-App sammeln. Keine App-Downloads, volle Qualität, sofortiger Upload. Guestcam erklärt.",
+    "Hochzeitsfotos sammeln mit QR-Code — Gäste scannen, Sie bekommen jedes Foto in voller Qualität. Keine App nötig. Hochzeitsfotos-App, in 2 Minuten eingerichtet.",
   openGraph: {
-    title: "Hochzeitsfotos sammeln mit QR-Code — Leitfaden 2025",
+    title: "QR-Code Hochzeit: Hochzeitsfotos der Gäste sammeln (2026)",
     description:
-      "Sammeln Sie alle Fotos Ihrer Gäste mit einem QR-Code. Keine App erforderlich, volle Auflösung, privat und sicher.",
+      "Sammeln Sie alle Hochzeitsfotos Ihrer Gäste mit einem QR-Code. Keine App, volle Auflösung, privat.",
     type: "article",
-    images: [ogImage("Hochzeitsfotos sammeln mit QR-Code")],
+    images: [ogImage("QR-Code Hochzeit — Hochzeitsfotos sammeln")],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Hochzeitsfotos sammeln mit QR-Code — Leitfaden 2025",
-    description: "Sammeln Sie alle Fotos Ihrer Gäste mit einem QR-Code.",
+    title: "QR-Code Hochzeit: Hochzeitsfotos der Gäste sammeln (2026)",
+    description: "Sammeln Sie alle Hochzeitsfotos Ihrer Gäste mit einem QR-Code.",
     images: [OG_IMAGE_URL],
   },
   alternates: {
@@ -100,7 +100,7 @@ export default function HochzeitsfotosSammelnPage() {
             Ratgeber · Deutschland · 2025
           </div>
           <h1 className="font-serif text-4xl md:text-5xl font-bold text-[#0F1729] leading-tight mb-5">
-            Hochzeitsfotos sammeln mit QR-Code — der vollständige Leitfaden
+            QR-Code Hochzeit: alle Hochzeitsfotos der Gäste sammeln (ohne App)
           </h1>
           <p className="text-lg text-gray-600 leading-relaxed mb-6">
             Jeder Gast auf Ihrer Hochzeit macht Fotos. Spontane Momente,
