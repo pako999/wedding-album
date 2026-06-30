@@ -5,6 +5,7 @@ import { affiliates, affiliateCommissions, discountCodes } from "@/lib/db/schema
 import { eq, desc, and } from "drizzle-orm";
 import { AffiliateAdminControls } from "./AffiliateAdminControls";
 import { PromoCodeControls } from "./PromoCodeControls";
+import { ReferralLinkCard } from "./ReferralLinkCard";
 
 export const dynamic = "force-dynamic";
 export const metadata = { robots: { index: false, follow: false } };
@@ -60,6 +61,14 @@ export default async function AdminAffiliateDetailPage({
 
       {/* Controls */}
       <AffiliateAdminControls affiliate={affiliate} />
+
+      {/* Referral link the partner shares with customers */}
+      <ReferralLinkCard
+        affiliateId={affiliate.id}
+        referralCode={affiliate.referralCode}
+        status={affiliate.status}
+        approvedAt={affiliate.approvedAt ? affiliate.approvedAt.toISOString() : null}
+      />
 
       {/* Promo (discount) code for customers */}
       <PromoCodeControls affiliateId={affiliate.id} initialPromo={promo ?? null} />
