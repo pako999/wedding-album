@@ -302,7 +302,7 @@ export default function AlternativesPage() {
                 <p className="font-semibold text-red-600 text-sm mb-2">Limitations</p>
                 <ul className="space-y-1.5 text-sm text-gray-600">
                   {[
-                    "Free plan capped at 50 guests / 200 photos",
+                    "Free plan capped at 20 photos and 30 days of access",
                     "Newer service — less brand recognition",
                   ].map((item) => (
                     <li key={item} className="flex gap-2">

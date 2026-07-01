@@ -268,7 +268,7 @@ export default function AlternativenPage() {
                 <p className="font-semibold text-red-600 text-sm mb-2">Einschränkungen</p>
                 <ul className="space-y-1.5 text-sm text-gray-600">
                   {[
-                    "Kostenloser Plan auf 50 Gäste / 200 Fotos begrenzt",
+                    "Kostenloser Plan auf 20 Fotos und 30 Tage Zugriff begrenzt",
                     "Jüngerer Dienst — weniger bekannte Marke",
                   ].map((item) => (
                     <li key={item} className="flex gap-2">

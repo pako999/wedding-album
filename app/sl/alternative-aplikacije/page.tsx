@@ -269,7 +269,7 @@ export default function AlternativeAplikacijePage() {
                 <p className="font-semibold text-red-600 text-sm mb-2">Omejitve</p>
                 <ul className="space-y-1.5 text-sm text-gray-600">
                   {[
-                    "Brezplačni paket omejen na 50 gostov / 200 fotografij",
+                    "Brezplačni paket omejen na 20 fotografij in 30 dni dostopa",
                     "Novejša storitev — manj prepoznavnosti znamke",
                   ].map((item) => (
                     <li key={item} className="flex gap-2">
