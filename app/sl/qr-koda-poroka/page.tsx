@@ -7,11 +7,11 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { OG_IMAGE_URL, ogImage } from "@/lib/og";
 
 export const metadata: Metadata = {
-  title: "QR koda za poroko — zberite fotografije gostov 2026 | Guestcam",
+  title: "QR koda za poroko — fotografije gostov 2026",
   description:
-    "Aplikacija za poročne fotografije s QR kodo: gostje skenirajo, vi dobite vse fotografije v polni kakovosti. Brez nameščanja aplikacije. Postavite v 2 minutah.",
+    "Aplikacija za poročne fotografije s QR kodo: gostje skenirajo, vi dobite vse fotografije v polni kakovosti. Brez aplikacije. Postavite v 2 minutah.",
   openGraph: {
-    title: "QR koda za poroko — zberite fotografije gostov 2026",
+    title: "QR koda za poroko — fotografije gostov 2026",
     description:
       "Zberite vse fotografije gostov z eno samo QR kodo. Brez aplikacije, v polni kakovosti.",
     type: "article",
@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "QR koda za poroko — zberite fotografije gostov 2026",
+    title: "QR koda za poroko — fotografije gostov 2026",
     description: "Zberite vse fotografije gostov z eno samo QR kodo. Brez aplikacije.",
     images: [OG_IMAGE_URL],
   },

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { LegalPage } from "@/components/LegalPage";
 
 export const metadata: Metadata = {
-  title: "Rückerstattungsrichtlinie | Guestcam",
+  title: "Rückerstattungsrichtlinie",
   alternates: { canonical: "https://www.guestcam.si/de/refund" },
   robots: { index: true, follow: true },
 };

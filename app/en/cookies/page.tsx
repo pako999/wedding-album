@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { LegalPage } from "@/components/LegalPage";
 
 export const metadata: Metadata = {
-  title: "Cookie Policy | Guestcam",
+  title: "Cookie Policy",
   alternates: { canonical: "https://www.guestcam.si/en/cookies" },
   robots: { index: true, follow: true },
 };

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { LegalPage } from "@/components/LegalPage";
 
 export const metadata: Metadata = {
-  title: "Refund Policy | Guestcam",
+  title: "Refund Policy",
   alternates: { canonical: "https://www.guestcam.si/en/refund" },
   robots: { index: true, follow: true },
 };

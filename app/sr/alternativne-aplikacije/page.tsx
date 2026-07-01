@@ -7,11 +7,11 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { OG_IMAGE_URL, ogImage } from "@/lib/og";
 
 export const metadata: Metadata = {
-  title: "Najbolje aplikacije za deljenje fotografija sa venčanja 2025 | Guestcam",
+  title: "Najbolje aplikacije za venčane fotografije 2026",
   description:
-    "Poređenje: Guestcam vs Google Photos vs WhatsApp vs Dropbox. Koja aplikacija je najbolja za sakupljanje fotografija sa venčanja? Iskreni pregled prednosti i mana.",
+    "Guestcam vs Google Photos vs WhatsApp vs Dropbox. Koja aplikacija najbolje sakuplja fotografije sa venčanja? Iskreno poređenje prednosti i mana.",
   openGraph: {
-    title: "Najbolje aplikacije za deljenje fotografija sa venčanja 2025",
+    title: "Najbolje aplikacije za venčane fotografije 2026",
     description:
       "Iskreno poređenje rešenja za sakupljanje fotografija sa venčanja. Kvalitet, privatnost, cena — sve na jednom mestu.",
     type: "article",
@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Najbolje aplikacije za deljenje fotografija sa venčanja 2025",
+    title: "Najbolje aplikacije za venčane fotografije 2026",
     description: "Iskreno poređenje rešenja za sakupljanje fotografija sa venčanja.",
     images: [OG_IMAGE_URL],
   },
@@ -40,7 +40,7 @@ export const metadata: Metadata = {
 const articleSchema = {
   "@context": "https://schema.org",
   "@type": "Article",
-  headline: "Najbolje aplikacije za deljenje fotografija sa venčanja 2025",
+  headline: "Najbolje aplikacije za venčane fotografije 2026",
   description:
     "Poređenje: Guestcam vs Google Photos vs WhatsApp vs Dropbox. Koja aplikacija je najbolja za sakupljanje fotografija sa venčanja?",
   inLanguage: "sr-RS",

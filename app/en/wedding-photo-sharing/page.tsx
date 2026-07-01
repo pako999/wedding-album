@@ -7,11 +7,11 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { OG_IMAGE_URL, ogImage } from "@/lib/og";
 
 export const metadata: Metadata = {
-  title: "Wedding QR Code: Collect Guest Photos Without an App (2026) | Guestcam",
+  title: "Wedding QR Code: Collect Guest Photos 2026",
   description:
-    "Wedding QR code for photos: guests scan, you get every photo in full quality. No app downloads, no logins. The wedding photo sharing app couples use to collect guest photos. Set up in 2 minutes.",
+    "Wedding QR code for photos: guests scan, you get every photo in full quality. No app, no logins. Collect every guest photo. Set up in 2 minutes.",
   openGraph: {
-    title: "Wedding QR Code: Collect Guest Photos Without an App (2026)",
+    title: "Wedding QR Code: Collect Guest Photos 2026",
     description:
       "Collect every wedding photo from your guests with one QR code. No app downloads, full resolution, private and secure.",
     type: "article",

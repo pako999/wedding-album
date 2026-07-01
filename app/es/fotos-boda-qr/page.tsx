@@ -7,11 +7,11 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { OG_IMAGE_URL, ogImage } from "@/lib/og";
 
 export const metadata: Metadata = {
-  title: "Código QR para boda: recopila las fotos de tus invitados (2026) | Guestcam",
+  title: "Código QR para boda: fotos de tus invitados 2026",
   description:
     "App para fotos de boda con código QR: los invitados escanean, tú recibes todas las fotos en calidad original. Sin instalar nada. Configura en 2 minutos.",
   openGraph: {
-    title: "Código QR para boda: recopila las fotos de tus invitados (2026)",
+    title: "Código QR para boda: fotos de tus invitados 2026",
     description:
       "Recopila todas las fotos de tus invitados con un código QR. Sin app, resolución completa, privado y seguro.",
     type: "article",

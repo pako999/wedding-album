@@ -7,9 +7,9 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { OG_IMAGE_URL, ogImage } from "@/lib/og";
 
 export const metadata: Metadata = {
-  title: "Beste Apps zum Teilen von Hochzeitsfotos 2025 | Guestcam",
+  title: "Beste Apps zum Teilen von Hochzeitsfotos 2025",
   description:
-    "Vergleich: Guestcam vs Google Photos vs WhatsApp vs Dropbox. Welche App eignet sich am besten zum Sammeln von Hochzeitsfotos? Ehrlicher Überblick über Vor- und Nachteile.",
+    "Guestcam vs Google Photos vs WhatsApp vs Dropbox. Welche App sammelt Hochzeitsfotos am besten? Ehrlicher Vergleich der Vor- und Nachteile.",
   openGraph: {
     title: "Beste Apps zum Teilen von Hochzeitsfotos 2025",
     description:

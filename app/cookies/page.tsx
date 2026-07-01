@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { LegalPage } from "@/components/LegalPage";
 
 export const metadata: Metadata = {
-  title: "Politika piškotkov | Guestcam",
+  title: "Politika piškotkov",
   description: "Politika piškotkov Guestcam — uporabljamo le tehnično nujne piškotke, brez oglaševalskih ali sledilnih.",
   alternates: {
     canonical: "https://www.guestcam.si/cookies",

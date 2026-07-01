@@ -7,11 +7,11 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { OG_IMAGE_URL, ogImage } from "@/lib/og";
 
 export const metadata: Metadata = {
-  title: "QR-Code Hochzeit: Hochzeitsfotos der Gäste sammeln (2026) | Guestcam",
+  title: "QR-Code Hochzeit: Fotos der Gäste sammeln 2026",
   description:
-    "Hochzeitsfotos sammeln mit QR-Code — Gäste scannen, Sie bekommen jedes Foto in voller Qualität. Keine App nötig. Hochzeitsfotos-App, in 2 Minuten eingerichtet.",
+    "Hochzeitsfotos sammeln per QR-Code: Gäste scannen, Sie bekommen jedes Foto in voller Qualität. Keine App. In 2 Minuten eingerichtet.",
   openGraph: {
-    title: "QR-Code Hochzeit: Hochzeitsfotos der Gäste sammeln (2026)",
+    title: "QR-Code Hochzeit: Fotos der Gäste sammeln 2026",
     description:
       "Sammeln Sie alle Hochzeitsfotos Ihrer Gäste mit einem QR-Code. Keine App, volle Auflösung, privat.",
     type: "article",
@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "QR-Code Hochzeit: Hochzeitsfotos der Gäste sammeln (2026)",
+    title: "QR-Code Hochzeit: Fotos der Gäste sammeln 2026",
     description: "Sammeln Sie alle Hochzeitsfotos Ihrer Gäste mit einem QR-Code.",
     images: [OG_IMAGE_URL],
   },

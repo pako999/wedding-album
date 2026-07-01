@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { ContactPage } from "@/components/ContactPage";
 
 export const metadata: Metadata = {
-  title: "Kontakt | Guestcam",
+  title: "Kontakt",
   description: "Schreiben Sie uns — E-Mail, WhatsApp, Premium-Support für Ihre Hochzeitsgalerie.",
   alternates: {
     canonical: "https://www.guestcam.si/de/contact",

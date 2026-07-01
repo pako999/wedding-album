@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { LegalPage } from "@/components/LegalPage";
 
 export const metadata: Metadata = {
-  title: "Pogoji uporabe | Guestcam",
+  title: "Pogoji uporabe",
   description: "Pogoji uporabe storitve Guestcam — paketi, plačila, pravice in obveznosti uporabnikov.",
   alternates: {
     canonical: "https://www.guestcam.si/terms",

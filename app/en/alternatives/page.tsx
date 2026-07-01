@@ -7,9 +7,9 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { OG_IMAGE_URL, ogImage } from "@/lib/og";
 
 export const metadata: Metadata = {
-  title: "Best Wedding Photo Sharing App Alternatives 2025 | Guestcam",
+  title: "Best Wedding Photo Sharing App Alternatives 2025",
   description:
-    "Compare the best wedding photo sharing apps: Guestcam vs Google Photos vs WhatsApp vs Dropbox vs HoneyCam and more. Find out which one is right for your wedding.",
+    "Guestcam vs Google Photos vs WhatsApp vs Dropbox vs HoneyCam. Find the right wedding photo sharing app for your day — honest side-by-side.",
   openGraph: {
     title: "Best Wedding Photo Sharing App Alternatives 2025",
     description:

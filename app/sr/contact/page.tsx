@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { ContactPage } from "@/components/ContactPage";
 
 export const metadata: Metadata = {
-  title: "Kontakt | Guestcam",
+  title: "Kontakt",
   description: "Pišite nam — email, WhatsApp, Premium podrška za vašu venčanu galeriju.",
   alternates: {
     canonical: "https://www.guestcam.si/sr/contact",

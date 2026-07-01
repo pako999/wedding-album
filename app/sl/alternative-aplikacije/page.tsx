@@ -7,11 +7,11 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { OG_IMAGE_URL, ogImage } from "@/lib/og";
 
 export const metadata: Metadata = {
-  title: "Najboljše aplikacije za deljenje poročnih fotografij 2025 | Guestcam",
+  title: "Najboljše aplikacije za poročne fotografije 2026",
   description:
-    "Primerjava: Guestcam vs Google Photos vs WhatsApp vs Dropbox. Katera aplikacija je najboljša za zbiranje fotografij s poroke? Iskren pregled prednosti in pasti.",
+    "Guestcam vs Google Photos vs WhatsApp vs Dropbox. Katera aplikacija najbolje zbere poročne fotografije? Iskrena primerjava prednosti in pasti.",
   openGraph: {
-    title: "Najboljše aplikacije za deljenje poročnih fotografij 2025",
+    title: "Najboljše aplikacije za poročne fotografije 2026",
     description:
       "Iskrena primerjava rešitev za zbiranje poročnih fotografij. Kakovost, zasebnost, cena — vse na enem mestu.",
     type: "article",
@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Najboljše aplikacije za deljenje poročnih fotografij 2025",
+    title: "Najboljše aplikacije za poročne fotografije 2026",
     description: "Iskrena primerjava rešitev za zbiranje poročnih fotografij.",
     images: [OG_IMAGE_URL],
   },
@@ -40,7 +40,7 @@ export const metadata: Metadata = {
 const articleSchema = {
   "@context": "https://schema.org",
   "@type": "Article",
-  headline: "Najboljše aplikacije za deljenje poročnih fotografij 2025",
+  headline: "Najboljše aplikacije za poročne fotografije 2026",
   description:
     "Primerjava: Guestcam vs Google Photos vs WhatsApp vs Dropbox. Katera aplikacija je najboljša za zbiranje fotografij s poroke?",
   inLanguage: "sl-SI",

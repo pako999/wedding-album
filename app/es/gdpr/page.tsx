@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { LegalPage } from "@/components/LegalPage";
 
 export const metadata: Metadata = {
-  title: "Tus derechos según el RGPD | Guestcam",
+  title: "Tus derechos según el RGPD",
   alternates: { canonical: "https://www.guestcam.si/es/gdpr" },
   robots: { index: true, follow: true },
 };

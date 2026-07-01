@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { LegalPage } from "@/components/LegalPage";
 
 export const metadata: Metadata = {
-  title: "Términos de uso | Guestcam",
+  title: "Términos de uso",
   alternates: { canonical: "https://www.guestcam.si/es/terms" },
   robots: { index: true, follow: true },
 };

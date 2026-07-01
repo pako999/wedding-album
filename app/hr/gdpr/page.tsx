@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { LegalPage } from "@/components/LegalPage";
 
 export const metadata: Metadata = {
-  title: "Prava prema GDPR-u | Guestcam",
+  title: "Prava prema GDPR-u",
   alternates: { canonical: "https://www.guestcam.si/hr/gdpr" },
   robots: { index: true, follow: true },
 };
