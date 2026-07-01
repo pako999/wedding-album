@@ -24,6 +24,10 @@ interface FooterCopy {
   guideLabel: string;
   altLabel: string;
   altUrl: string;
+  /** Optional extra guides — used to surface the SL event-topic landings
+   *  (slike-s-poroke, porocni-album, baby-shower-slike, etc.). Populate
+   *  per locale as those topics get translated. */
+  extraGuides?: { label: string; url: string }[];
   legal: string;
   privacy: string;
   terms: string;
@@ -40,6 +44,14 @@ const COPY: Record<Lang, FooterCopy> = {
     blog: "Blog", guides: "Vodniki",
     guideLabel: "QR koda za poroko", guideUrl: "/sl/qr-koda-poroka",
     altLabel: "Primerjava aplikacij", altUrl: "/sl/alternative-aplikacije",
+    extraGuides: [
+      { label: "Slike s poroke",         url: "/sl/slike-s-poroke" },
+      { label: "QR koda za poroko",      url: "/sl/qr-koda-za-poroko" },
+      { label: "Poročni album",          url: "/sl/porocni-album" },
+      { label: "Zbiranje slik s poroke", url: "/sl/zbiranje-slik-s-poroke" },
+      { label: "Slike z rojstnega dne",  url: "/sl/slike-z-rojstnega-dne" },
+      { label: "Baby shower slike",      url: "/sl/baby-shower-slike" },
+    ],
     legal: "Pravno", privacy: "Zasebnost", terms: "Pogoji uporabe", cookies: "Piškotki", gdpr: "GDPR", refund: "Vračilo denarja", contact: "Kontakt",
   },
   hr: {
@@ -134,6 +146,11 @@ export function SeoFooter({ lang }: { lang: Lang }) {
             <ul className="space-y-2.5 text-sm text-gray-400">
               <li><Link href={t.guideUrl} className="hover:text-white transition-colors">{t.guideLabel}</Link></li>
               <li><Link href={t.altUrl} className="hover:text-white transition-colors">{t.altLabel}</Link></li>
+              {t.extraGuides?.map((g) => (
+                <li key={g.url}>
+                  <Link href={g.url} className="hover:text-white transition-colors">{g.label}</Link>
+                </li>
+              ))}
             </ul>
           </div>
 
