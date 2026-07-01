@@ -183,7 +183,7 @@ export function ApplyForm({ lang }: Props) {
         <label className="block text-xs font-semibold text-gray-600 mb-1.5">{t.formLocale}</label>
         <select
           value={form.preferredLocale}
-          onChange={(e) => setForm({ ...form, preferredLocale: e.target.value })}
+          onChange={(e) => setForm({ ...form, preferredLocale: e.target.value as AffiliateLang })}
           className={inputClass}
           style={{ borderColor: "#E5E7EB" }}
         >
