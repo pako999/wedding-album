@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { SignOutButton } from "@clerk/nextjs";
 import { GuestcamLogo } from "@/components/GuestcamLogo";
+import { RunMigrationsButton } from "@/components/admin/RunMigrationsButton";
 
 interface NavItem {
   href: string;
@@ -105,6 +106,7 @@ export function AdminShell({ nav, adminEmail, children }: Props & { children: Re
         </nav>
 
         <div className="p-3 border-t border-gray-100 space-y-2">
+          <RunMigrationsButton />
           <Link
             href="/dashboard"
             className="block text-xs text-gray-400 hover:text-[#0F1729] transition-colors px-3"
