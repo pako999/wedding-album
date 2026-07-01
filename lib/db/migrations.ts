@@ -358,6 +358,17 @@ export async function runMigrations() {
     )
   `);
 
+  // Cleanup: delete any user_plan_overrides for users who already own
+  // an album — the override is redundant and only serves to show a
+  // misleading "next gallery: X" badge on the admin Uporabniki page.
+  // Safe to re-run; only deletes rows whose owner already has albums.
+  await run("clean stale user_plan_overrides", (q) => q`
+    DELETE FROM user_plan_overrides o
+     WHERE EXISTS (
+       SELECT 1 FROM albums a WHERE a.owner_clerk_id = o.clerk_id
+     )
+  `);
+
   // Bump affiliate cookie window 30 -> 60 days. Schema default is 60 for
   // new rows; this catches any existing rows still on the old default.
   // Safe to re-run; only touches rows still at exactly 30.

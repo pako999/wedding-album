@@ -71,7 +71,11 @@ export function UserUpgradeMenu({
         </select>
         {msg && <span className="text-[10px] text-gray-500">{msg}</span>}
       </div>
-      {pendingOverride && (
+      {/* Only show the "waiting" badge for users who have no albums yet.
+          Once they own even one album, the override no longer matters
+          for their next gallery — the create-album inherit-from-paid
+          logic takes over. */}
+      {pendingOverride && albumCount === 0 && (
         <span className="text-[10px] text-amber-700 bg-amber-50 border border-amber-200 px-1.5 py-0.5 rounded inline-block w-fit">
           naslednja galerija: {pendingOverride}
         </span>

@@ -153,12 +153,18 @@ export async function POST(
     }
   }
 
-  // 3) Maintain a user-level override so future albums also inherit
-  //    the upgrade. Tolerate a missing table so the rest of the
-  //    endpoint still works on a fresh DB.
+  // 3) Maintain the user-level override.
+  //    - "free" -> wipe any pending override (cancels a queued upgrade)
+  //    - If we already materialized the upgrade this call (via a
+  //      placeholder or existing album update), also wipe the override:
+  //      it's already applied, no point queueing "next gallery" too.
+  //    - Only WRITE the override when we couldn't materialize the upgrade
+  //      (placeholder creation failed AND user had no existing albums).
+  //      That's the true "waiting for their first gallery" state.
   let overrideSaved = false;
   try {
-    if (newPlan === "free") {
+    const materialized = created !== null || updated.length > 0;
+    if (newPlan === "free" || materialized) {
       await db.delete(userPlanOverrides).where(eq(userPlanOverrides.clerkId, clerkId));
     } else {
       await db
