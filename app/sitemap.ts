@@ -213,6 +213,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { path: "/es/fotos-boda-qr",          priority: 0.8, changeFrequency: "monthly", lastModified: LAST_EDITED.seoLandings, alternates: SEO_LANDING_CLUSTER },
 
     // Alternatives / comparison pages
+    // Event topic landings — new SEO cluster targeting long-tail SL
+    // keywords. HR/SR/DE/EN/ES variants can be added by extending
+    // lib/seo/event-topics.ts and adding matching route files.
+    { path: "/sl/slike-s-poroke",          priority: 0.75, changeFrequency: "monthly" },
+    { path: "/sl/qr-koda-za-poroko",       priority: 0.75, changeFrequency: "monthly" },
+    { path: "/sl/porocni-album",           priority: 0.75, changeFrequency: "monthly" },
+    { path: "/sl/zbiranje-slik-s-poroke",  priority: 0.75, changeFrequency: "monthly" },
+    { path: "/sl/slike-z-rojstnega-dne",   priority: 0.7,  changeFrequency: "monthly" },
+    { path: "/sl/baby-shower-slike",       priority: 0.7,  changeFrequency: "monthly" },
+
     { path: "/sl/alternative-aplikacije",  priority: 0.7, changeFrequency: "monthly", lastModified: LAST_EDITED.alternatives, alternates: ALTERNATIVES_CLUSTER },
     { path: "/hr/alternativne-aplikacije", priority: 0.7, changeFrequency: "monthly", lastModified: LAST_EDITED.alternatives, alternates: ALTERNATIVES_CLUSTER },
     { path: "/sr/alternativne-aplikacije", priority: 0.7, changeFrequency: "monthly", lastModified: LAST_EDITED.alternatives, alternates: ALTERNATIVES_CLUSTER },
