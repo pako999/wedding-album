@@ -159,7 +159,7 @@ export function SeoFooter({ lang }: { lang: Lang }) {
             <p>
               Narejeno v Sloveniji by{" "}
               <a
-                href="https://futurecode.si"
+                href="https://www.futurecode.si"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="font-semibold text-[#FFC94D] hover:text-white transition-colors"

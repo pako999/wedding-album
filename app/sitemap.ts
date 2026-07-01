@@ -1,8 +1,7 @@
 import type { MetadataRoute } from "next";
 import fs from "node:fs/promises";
 import path from "node:path";
-
-const SITE_URL = "https://www.guestcam.si";
+import { SITE_URL } from "@/lib/urls";
 
 type ChangeFreq = "always" | "hourly" | "daily" | "weekly" | "monthly" | "yearly" | "never";
 

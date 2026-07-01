@@ -11,6 +11,7 @@ import type { LangCode } from "@/components/LanguageSwitcher";
 import { db } from "@/lib/db";
 import { albums } from "@/lib/db/schema";
 import { and, eq, ne } from "drizzle-orm";
+import { SITE_URL } from "@/lib/urls";
 import "./globals.css";
 
 /**
@@ -60,8 +61,6 @@ const cormorant = Cormorant_Garamond({
 export const viewport: Viewport = {
   themeColor: "#C9820A",
 };
-
-const SITE_URL = "https://www.guestcam.si";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),

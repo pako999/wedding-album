@@ -917,7 +917,7 @@ export default async function HomePage() {
             <p className="text-xs text-gray-500">
               © {new Date().getFullYear()} Guestcam · Sport group d.o.o. · Narejeno v Sloveniji by{" "}
               <a
-                href="https://futurecode.si"
+                href="https://www.futurecode.si"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="font-semibold text-[#FFC94D] hover:text-white transition-colors"
