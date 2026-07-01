@@ -160,12 +160,28 @@ export default async function RootLayout({
   // customers; partners are a different audience and the offer doesn't
   // apply to them.
   const isAffiliatePath = /^\/(?:sl|hr|sr|de|en|es)?\/?affiliate(?:\/|$)/.test(pathname);
+
+  // Album guest pages live at /<slug>. Owners have already paid, guests
+  // don't need to see a "15% off your first plan" pitch when they're
+  // opening a wedding gallery. Mirrors middleware.ts isAlbumGuestPath.
+  const isAlbumGuestPath = (() => {
+    const segments = pathname.split("/").filter(Boolean);
+    if (segments.length !== 1) return false;
+    const RESERVED = new Set([
+      "blog", "contact", "privacy", "terms", "gdpr", "cookies", "refund",
+      "admin", "dashboard", "api", "sign-in", "sign-up", "dev", "affiliate",
+      "sl", "hr", "sr", "de", "en", "es",
+    ]);
+    return !RESERVED.has(segments[0]);
+  })();
+
   const isProtectedPath =
     pathname.startsWith("/dashboard") ||
     pathname.startsWith("/admin") ||
     pathname.startsWith("/sign-in") ||
     pathname.startsWith("/sign-up") ||
-    isAffiliatePath;
+    isAffiliatePath ||
+    isAlbumGuestPath;
 
   let showPromo = !isProtectedPath;
   if (showPromo) {
