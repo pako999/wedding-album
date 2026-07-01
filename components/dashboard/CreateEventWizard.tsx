@@ -272,27 +272,6 @@ export function CreateEventWizard({ initialPlan }: { initialPlan?: PaidPlanId } 
           />
         </div>
 
-        {/* Password */}
-        <div>
-          <label className="block text-sm font-semibold text-[#0F1729] mb-2">
-            Geslo galerije <span className="text-gray-400 font-normal">(neobvezno)</span>
-          </label>
-          <div className="relative">
-            <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
-            </svg>
-            <input
-              name="password"
-              type="text"
-              placeholder="Pustite prazno za javni dostop"
-              className="w-full pl-9 pr-4 py-3 rounded-xl border border-gray-200 text-[#0F1729] text-sm outline-none transition-all focus:border-[#C9820A]"
-              onFocus={e => (e.target.style.boxShadow = "0 0 0 3px rgba(255,201,77,0.15)")}
-              onBlur={e => (e.target.style.boxShadow = "0 0 0 0px rgba(255,201,77,0)")}
-            />
-          </div>
-          <p className="text-xs text-gray-400 mt-1.5">Gosti bodo morali vnesti geslo za ogled in dodajanje fotografij.</p>
-        </div>
-
         {/* Info strip */}
         <div className="rounded-2xl p-4 flex items-start gap-3 text-sm" style={{ background: "rgba(255,201,77,0.06)", border: "1px solid rgba(255,201,77,0.15)" }}>
           <span className="shrink-0" style={{ color: "#C9820A" }}>✨</span>

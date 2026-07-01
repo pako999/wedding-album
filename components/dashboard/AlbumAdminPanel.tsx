@@ -1237,7 +1237,10 @@ function AlbumSettingsForm({ album, children }: { album: Album; children?: React
   const [weddingDate, setWeddingDate]         = useState(album.weddingDate);
   const [location, setLocation]               = useState(album.location ?? "");
   const [notifyEmail, setNotifyEmail]         = useState(album.notifyEmail ?? "");
-  const [password, setPassword]               = useState(album.password ?? "");
+  // Password stays in state so existing galleries preserve theirs on save,
+  // but the UI field was removed to reduce confusion — most couples never
+  // want a password. Owners who need one can still add via API.
+  const [password]                            = useState(album.password ?? "");
   const [moderationEnabled, setModerationEnabled] = useState(album.moderationEnabled);
   const [isPublished, setIsPublished]         = useState(album.isPublished);
   const [eventType, setEventType]             = useState(album.eventType ?? "wedding");
@@ -1328,18 +1331,8 @@ function AlbumSettingsForm({ album, children }: { album: Album; children?: React
         />
       </div>
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Geslo (neobvezno)</label>
-        <input
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          placeholder="Prazno = brez gesla"
-          className={inputClass}
-        />
-      </div>
-
       {/* Slot for the cover-photo picker — passed in from AlbumAdminPanel.
-          Sits between the password field and the theme picker so it
+          Sits between the metadata fields and the theme picker so it
           reads as one continuous "appearance" section in the form. */}
       {children}
 
