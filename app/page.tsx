@@ -731,7 +731,7 @@ export default async function HomePage() {
                 {[
                   "Unikatna QR koda",
                   "Neomejeno število gostov",
-                  "Neomejeno fotografij",
+                  "Do 5000 fotografij",
                   "Do 100 videoposnetkov",
                   "Dostop do galerije 1 leto",
                   "Prenos vseh slik (ZIP)",
