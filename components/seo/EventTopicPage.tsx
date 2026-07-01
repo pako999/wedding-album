@@ -65,6 +65,22 @@ export function EventTopicPage({ locale, topicKey }: Props) {
 
   const dashboardHref = "/dashboard/new";
 
+  // Build a complete 6-locale hreflang map for the LanguageSwitcher.
+  // Locales that have this topic translated point to their translated
+  // URL; those that don't fall back to their homepage so users can
+  // still change languages from this page.
+  const ALL_LOCALES = ["sl", "hr", "sr", "de", "en", "es"] as const;
+  const translated = new Set(localesForTopic(topicKey));
+  const hreflang = ALL_LOCALES.reduce((acc, loc) => {
+    if (translated.has(loc)) {
+      const e = getEventTopic(loc, topicKey)!;
+      acc[loc] = loc === "sl" ? `/${e.slug}` : `/${loc}/${e.slug}`;
+    } else {
+      acc[loc] = loc === "sl" ? "/" : `/${loc}`;
+    }
+    return acc;
+  }, {} as Record<(typeof ALL_LOCALES)[number], string>);
+
   // JSON-LD Article + FAQPage schema — helps Google render rich result
   // cards for the FAQ block and pin the article to its language cluster.
   const articleSchema = {
@@ -101,7 +117,7 @@ export function EventTopicPage({ locale, topicKey }: Props) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
-      <SiteHeader lang={locale} hreflang={{}} />
+      <SiteHeader lang={locale} hreflang={hreflang} />
 
       <main className="max-w-3xl mx-auto px-6 py-16">
         {/* Hero */}
