@@ -894,6 +894,12 @@ export default async function HomePage() {
               <ul className="space-y-2.5 text-sm text-gray-400">
                 <li><Link href="/sl/qr-koda-poroka" className="hover:text-white transition-colors">QR koda za poroko</Link></li>
                 <li><Link href="/sl/alternative-aplikacije" className="hover:text-white transition-colors">Primerjava aplikacij</Link></li>
+                <li><Link href="/sl/slike-s-poroke" className="hover:text-white transition-colors">Slike s poroke</Link></li>
+                <li><Link href="/sl/qr-koda-za-poroko" className="hover:text-white transition-colors">QR koda za poroko (vodnik)</Link></li>
+                <li><Link href="/sl/porocni-album" className="hover:text-white transition-colors">Poročni album</Link></li>
+                <li><Link href="/sl/zbiranje-slik-s-poroke" className="hover:text-white transition-colors">Zbiranje slik s poroke</Link></li>
+                <li><Link href="/sl/slike-z-rojstnega-dne" className="hover:text-white transition-colors">Slike z rojstnega dne</Link></li>
+                <li><Link href="/sl/baby-shower-slike" className="hover:text-white transition-colors">Baby shower slike</Link></li>
               </ul>
             </div>
 
