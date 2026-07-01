@@ -1200,7 +1200,7 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
       {/* ── Footer ────────────────────────────────────────────────────────── */}
       <footer className="border-t mt-8 py-6 text-center" style={{ borderColor: BRAND.border }}>
         <p className="text-xs" style={{ color: BRAND.muted }}>
-          Guestcam · <a href="https://guestcam.si" className="hover:underline">guestcam.si</a>
+          Guestcam · <a href="https://www.guestcam.si" className="hover:underline">guestcam.si</a>
         </p>
       </footer>
 

@@ -12,15 +12,15 @@ export const metadata: Metadata = {
   title: "Blog — Guestcam",
   description: "Nasveti, vodniki in primerjave za zbiranje fotografij gostov na porokah, rojstnih dneh in dogodkih.",
   alternates: {
-    canonical: "https://guestcam.si/blog",
+    canonical: "https://www.guestcam.si/blog",
     languages: {
-      sl: "https://guestcam.si/blog",
-      hr: "https://guestcam.si/hr/blog",
-      sr: "https://guestcam.si/sr/blog",
-      de: "https://guestcam.si/de/blog",
-      en: "https://guestcam.si/en/blog",
-      es: "https://guestcam.si/es/blog",
-      "x-default": "https://guestcam.si/blog",
+      sl: "https://www.guestcam.si/blog",
+      hr: "https://www.guestcam.si/hr/blog",
+      sr: "https://www.guestcam.si/sr/blog",
+      de: "https://www.guestcam.si/de/blog",
+      en: "https://www.guestcam.si/en/blog",
+      es: "https://www.guestcam.si/es/blog",
+      "x-default": "https://www.guestcam.si/blog",
     },
   },
   openGraph: {

@@ -3,7 +3,7 @@ import { LegalPage } from "@/components/LegalPage";
 
 export const metadata: Metadata = {
   title: "Ihre Rechte nach DSGVO | Guestcam",
-  alternates: { canonical: "https://guestcam.si/de/gdpr" },
+  alternates: { canonical: "https://www.guestcam.si/de/gdpr" },
   robots: { index: true, follow: true },
 };
 

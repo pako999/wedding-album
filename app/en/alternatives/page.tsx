@@ -24,15 +24,15 @@ export const metadata: Metadata = {
     images: [OG_IMAGE_URL],
   },
   alternates: {
-    canonical: "https://guestcam.si/en/alternatives",
+    canonical: "https://www.guestcam.si/en/alternatives",
     languages: {
-      "sl": "https://guestcam.si/sl/alternative-aplikacije",
-      "hr": "https://guestcam.si/hr/alternativne-aplikacije",
-      "sr": "https://guestcam.si/sr/alternativne-aplikacije",
-      "de": "https://guestcam.si/de/alternativen",
-      "en": "https://guestcam.si/en/alternatives",
-      "es": "https://guestcam.si/es/alternativas",
-      "x-default": "https://guestcam.si/sl/alternative-aplikacije",
+      "sl": "https://www.guestcam.si/sl/alternative-aplikacije",
+      "hr": "https://www.guestcam.si/hr/alternativne-aplikacije",
+      "sr": "https://www.guestcam.si/sr/alternativne-aplikacije",
+      "de": "https://www.guestcam.si/de/alternativen",
+      "en": "https://www.guestcam.si/en/alternatives",
+      "es": "https://www.guestcam.si/es/alternativas",
+      "x-default": "https://www.guestcam.si/sl/alternative-aplikacije",
     },
   },
 };

@@ -44,9 +44,9 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     title: titles[langCode],
     description: descriptions[langCode],
     alternates: {
-      canonical: `https://guestcam.si/${langCode}/blog`,
+      canonical: `https://www.guestcam.si/${langCode}/blog`,
       languages: Object.fromEntries(
-        ALL_LANGS.map((l) => [l, l === "sl" ? "https://guestcam.si/blog" : `https://guestcam.si/${l}/blog`]),
+        ALL_LANGS.map((l) => [l, l === "sl" ? "https://www.guestcam.si/blog" : `https://www.guestcam.si/${l}/blog`]),
       ),
     },
     openGraph: {

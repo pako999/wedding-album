@@ -10,15 +10,15 @@ import { EventCard } from "@/components/EventCard";
 
 export const metadata: Metadata = {
   alternates: {
-    canonical: "https://guestcam.si",
+    canonical: "https://www.guestcam.si",
     languages: {
-      sl: "https://guestcam.si/",
-      hr: "https://guestcam.si/hr",
-      sr: "https://guestcam.si/sr",
-      de: "https://guestcam.si/de",
-      en: "https://guestcam.si/en",
-      es: "https://guestcam.si/es",
-      "x-default": "https://guestcam.si/",
+      sl: "https://www.guestcam.si/",
+      hr: "https://www.guestcam.si/hr",
+      sr: "https://www.guestcam.si/sr",
+      de: "https://www.guestcam.si/de",
+      en: "https://www.guestcam.si/en",
+      es: "https://www.guestcam.si/es",
+      "x-default": "https://www.guestcam.si/",
     },
   },
 };
@@ -29,25 +29,25 @@ const jsonLd = {
   "@graph": [
     {
       "@type": "Organization",
-      "@id": "https://guestcam.si/#organization",
+      "@id": "https://www.guestcam.si/#organization",
       name: "Guestcam",
-      url: "https://guestcam.si",
-      logo: "https://guestcam.si/icon-512.png",
+      url: "https://www.guestcam.si",
+      logo: "https://www.guestcam.si/icon-512.png",
     },
     {
       "@type": "WebSite",
-      "@id": "https://guestcam.si/#website",
+      "@id": "https://www.guestcam.si/#website",
       name: "Guestcam",
-      url: "https://guestcam.si",
+      url: "https://www.guestcam.si",
       inLanguage: "sl-SI",
-      publisher: { "@id": "https://guestcam.si/#organization" },
+      publisher: { "@id": "https://www.guestcam.si/#organization" },
     },
     {
       "@type": "SoftwareApplication",
       name: "Guestcam",
       applicationCategory: "PhotographyApplication",
       operatingSystem: "Web",
-      url: "https://guestcam.si",
+      url: "https://www.guestcam.si",
       description:
         "Z eno QR kodo zberite vse fotografije in videe gostov v eni zasebni galeriji.",
       offers: { "@type": "Offer", price: "0", priceCurrency: "EUR" },

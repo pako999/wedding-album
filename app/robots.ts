@@ -61,7 +61,7 @@ export default function robots(): MetadataRoute.Robots {
         }),
       ),
     ],
-    sitemap: "https://guestcam.si/sitemap.xml",
-    host: "https://guestcam.si",
+    sitemap: "https://www.guestcam.si/sitemap.xml",
+    host: "https://www.guestcam.si",
   };
 }

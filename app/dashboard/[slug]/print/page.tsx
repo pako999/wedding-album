@@ -32,7 +32,7 @@ export default async function PrintPage({ params }: Props) {
   if (!album || album.ownerClerkId !== userId) redirect("/dashboard");
 
   // Build URLs
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://guestcam.si";
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://www.guestcam.si";
   const albumUrl = `${appUrl}/${slug}`;
   const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=${encodeURIComponent(albumUrl)}&bgcolor=ffffff&color=1C1917&qzone=2&format=png`;
 

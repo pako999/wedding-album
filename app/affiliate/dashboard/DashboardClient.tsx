@@ -3,7 +3,7 @@
 import { useState } from "react";
 import type { Affiliate, AffiliateCommission } from "@/lib/db/schema";
 
-const APP_URL = typeof window !== "undefined" ? window.location.origin : "https://guestcam.si";
+const APP_URL = typeof window !== "undefined" ? window.location.origin : "https://www.guestcam.si";
 
 interface Props {
   affiliate: Affiliate;

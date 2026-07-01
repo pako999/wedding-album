@@ -3,7 +3,7 @@ import { LegalPage } from "@/components/LegalPage";
 
 export const metadata: Metadata = {
   title: "Nutzungsbedingungen | Guestcam",
-  alternates: { canonical: "https://guestcam.si/de/terms" },
+  alternates: { canonical: "https://www.guestcam.si/de/terms" },
   robots: { index: true, follow: true },
 };
 

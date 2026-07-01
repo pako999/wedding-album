@@ -3,7 +3,7 @@
  * Drop the return value into a `<script type="application/ld+json">` tag.
  */
 
-const SITE = "https://guestcam.si";
+const SITE = "https://www.guestcam.si";
 
 interface FaqEntry { q: string; a: string; }
 

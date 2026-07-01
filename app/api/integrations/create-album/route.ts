@@ -64,7 +64,7 @@ export async function POST(req: NextRequest) {
     })
     .returning();
 
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://guestcam.si";
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://www.guestcam.si";
 
   return NextResponse.json({
     albumId: album.id,

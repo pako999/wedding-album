@@ -116,7 +116,7 @@ export async function getTranslationMap(translationKey: string): Promise<Partial
     const match = posts.find((p) => p.translationKey === translationKey);
     if (match) {
       const path = lang === "sl" ? `/blog/${match.slug}` : `/${lang}/blog/${match.slug}`;
-      out[lang] = `https://guestcam.si${path}`;
+      out[lang] = `https://www.guestcam.si${path}`;
     }
   }
   return out;

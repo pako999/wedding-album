@@ -40,7 +40,7 @@ interface Props {
 // ─── Success Screen ───────────────────────────────────────────────────────────
 
 function NewAlbumSuccess({ album, paidPlan }: { album: Album; paidPlan?: "basic" | "plus" | "premium" }) {
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://guestcam.si";
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://www.guestcam.si";
   const albumUrl = `${appUrl}/${album.slug}`;
   // Always route to the dashboard — the upgrade page is a separate flow.
   const dashboardUrl = `/dashboard/${album.slug}`;
@@ -206,7 +206,7 @@ function NewAlbumSuccess({ album, paidPlan }: { album: Album; paidPlan?: "basic"
 
 export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activeTab, isNew, isUpgraded, paidPlan, ownerEmail, viewingAsAdmin }: Props) {
   const router = useRouter();
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://guestcam.si";
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://www.guestcam.si";
   const albumUrl = `${appUrl}/${album.slug}`;
   // Mobile sidebar drawer — hidden by default on small screens.
   const [sidebarOpen, setSidebarOpen] = useState(false);

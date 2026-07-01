@@ -17,7 +17,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const post = await getPost("sl", slug);
   if (!post) return {};
   const languages = await getTranslationMap(post.translationKey);
-  const canonical = `https://guestcam.si${blogUrl("sl", post.slug)}`;
+  const canonical = `https://www.guestcam.si${blogUrl("sl", post.slug)}`;
   return {
     title: post.title,
     description: post.description,

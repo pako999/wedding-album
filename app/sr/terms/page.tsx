@@ -3,7 +3,7 @@ import { LegalPage } from "@/components/LegalPage";
 
 export const metadata: Metadata = {
   title: "Uslovi korišćenja | Guestcam",
-  alternates: { canonical: "https://guestcam.si/sr/terms" },
+  alternates: { canonical: "https://www.guestcam.si/sr/terms" },
   robots: { index: true, follow: true },
 };
 

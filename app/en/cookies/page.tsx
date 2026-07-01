@@ -3,7 +3,7 @@ import { LegalPage } from "@/components/LegalPage";
 
 export const metadata: Metadata = {
   title: "Cookie Policy | Guestcam",
-  alternates: { canonical: "https://guestcam.si/en/cookies" },
+  alternates: { canonical: "https://www.guestcam.si/en/cookies" },
   robots: { index: true, follow: true },
 };
 

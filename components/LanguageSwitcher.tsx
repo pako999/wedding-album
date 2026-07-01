@@ -125,12 +125,12 @@ export function LanguageSwitcher({ current, languages, ariaLabel }: Props) {
  * every other language has its own minimal landing page at `/<lang>`.
  */
 export const HOME_HREFLANG: Record<LangCode, string> = {
-  sl: "https://guestcam.si/",
-  hr: "https://guestcam.si/hr",
-  sr: "https://guestcam.si/sr",
-  de: "https://guestcam.si/de",
-  en: "https://guestcam.si/en",
-  es: "https://guestcam.si/es",
+  sl: "https://www.guestcam.si/",
+  hr: "https://www.guestcam.si/hr",
+  sr: "https://www.guestcam.si/sr",
+  de: "https://www.guestcam.si/de",
+  en: "https://www.guestcam.si/en",
+  es: "https://www.guestcam.si/es",
 };
 
 /**
@@ -138,20 +138,20 @@ export const HOME_HREFLANG: Record<LangCode, string> = {
  * Exported so guide pages and the homepage can share one source of truth.
  */
 export const GUIDE_HREFLANG: Record<LangCode, string> = {
-  sl: "https://guestcam.si/sl/qr-koda-poroka",
-  hr: "https://guestcam.si/hr/qr-kod-vjencanje",
-  sr: "https://guestcam.si/sr/qr-kod-vencanje",
-  de: "https://guestcam.si/de/hochzeitsfotos-sammeln",
-  en: "https://guestcam.si/en/wedding-photo-sharing",
-  es: "https://guestcam.si/es/fotos-boda-qr",
+  sl: "https://www.guestcam.si/sl/qr-koda-poroka",
+  hr: "https://www.guestcam.si/hr/qr-kod-vjencanje",
+  sr: "https://www.guestcam.si/sr/qr-kod-vencanje",
+  de: "https://www.guestcam.si/de/hochzeitsfotos-sammeln",
+  en: "https://www.guestcam.si/en/wedding-photo-sharing",
+  es: "https://www.guestcam.si/es/fotos-boda-qr",
 };
 
 /** Hreflang map for the "alternatives / comparison" landing pages. */
 export const ALTERNATIVES_HREFLANG: Record<LangCode, string> = {
-  sl: "https://guestcam.si/sl/alternative-aplikacije",
-  hr: "https://guestcam.si/hr/alternativne-aplikacije",
-  sr: "https://guestcam.si/sr/alternativne-aplikacije",
-  de: "https://guestcam.si/de/alternativen",
-  en: "https://guestcam.si/en/alternatives",
-  es: "https://guestcam.si/es/alternativas",
+  sl: "https://www.guestcam.si/sl/alternative-aplikacije",
+  hr: "https://www.guestcam.si/hr/alternativne-aplikacije",
+  sr: "https://www.guestcam.si/sr/alternativne-aplikacije",
+  de: "https://www.guestcam.si/de/alternativen",
+  en: "https://www.guestcam.si/en/alternatives",
+  es: "https://www.guestcam.si/es/alternativas",
 };

@@ -32,7 +32,7 @@ async function detectLang(): Promise<LangCode> {
     const path =
       h.get("x-pathname") ??
       h.get("next-url") ??
-      new URL(h.get("referer") ?? "https://guestcam.si").pathname;
+      new URL(h.get("referer") ?? "https://www.guestcam.si").pathname;
     const first = path.split("/").filter(Boolean)[0] ?? "";
     if ((SUPPORTED_LANGS as string[]).includes(first)) {
       return first as LangCode;
@@ -61,7 +61,7 @@ export const viewport: Viewport = {
   themeColor: "#C9820A",
 };
 
-const SITE_URL = "https://guestcam.si";
+const SITE_URL = "https://www.guestcam.si";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),

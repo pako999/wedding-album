@@ -10,8 +10,8 @@ interface Props {
 }
 
 export function ReferralLinkCard({ affiliateId, referralCode, status, approvedAt }: Props) {
-  const referralLink = `https://guestcam.si/api/affiliate/track?ref=${referralCode}&to=/`;
-  const cleanShareLink = `https://guestcam.si?ref=${referralCode}`;
+  const referralLink = `https://www.guestcam.si/api/affiliate/track?ref=${referralCode}&to=/`;
+  const cleanShareLink = `https://www.guestcam.si?ref=${referralCode}`;
 
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
   const [resendMsg, setResendMsg] = useState<string | null>(null);

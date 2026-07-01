@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 import fs from "node:fs/promises";
 import path from "node:path";
 
-const SITE_URL = "https://guestcam.si";
+const SITE_URL = "https://www.guestcam.si";
 
 type ChangeFreq = "always" | "hourly" | "daily" | "weekly" | "monthly" | "yearly" | "never";
 
@@ -21,20 +21,16 @@ interface PageEntry {
 // avoids the "everything updated today" anti-pattern that Google
 // learns to ignore. Increment when you actually edit the page.
 const LAST_EDITED = {
-  // 2026-06-30 — homepage pricing card Premium 79€→99€ across 6 locales.
-  homepage:    "2026-06-30",
-  // 2026-06-30 — all 6 SEO landing titles, H1s, and meta descriptions
-  // rewritten to lead with action verbs and the highest-intent term
-  // (commits 19a9c23 + 5afa6cd). Bumping lastmod tells Google to
-  // re-crawl ASAP so the new SERP copy goes live within 1-3 days.
-  seoLandings: "2026-06-30",
-  alternatives:"2026-05-22",
-  // 2026-06-19 — privacy policy rewrite (Cookiebot-aligned, 11 sections,
-  // all 6 languages). Bumping lastmod so the new disclosure text gets
-  // re-indexed promptly.
-  legalSl:     "2026-06-19",
-  legalIntl:   "2026-06-19",
-  contact:     "2026-05-22",
+  // 2026-07-01 — global bare-host → www canonical fix so every sitemap URL
+  // resolves 200 instead of 307 (Semrush audit flagged 3xx-in-sitemap on
+  // every entry). Also covers all in-flight copy/pricing changes since
+  // last bump. Bumping every category so Google re-crawls the full set.
+  homepage:    "2026-07-01",
+  seoLandings: "2026-07-01",
+  alternatives:"2026-07-01",
+  legalSl:     "2026-07-01",
+  legalIntl:   "2026-07-01",
+  contact:     "2026-07-01",
 };
 
 const LOCALES = ["sl", "hr", "sr", "de", "en", "es"] as const;

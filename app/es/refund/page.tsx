@@ -3,7 +3,7 @@ import { LegalPage } from "@/components/LegalPage";
 
 export const metadata: Metadata = {
   title: "Política de reembolsos | Guestcam",
-  alternates: { canonical: "https://guestcam.si/es/refund" },
+  alternates: { canonical: "https://www.guestcam.si/es/refund" },
   robots: { index: true, follow: true },
 };
 

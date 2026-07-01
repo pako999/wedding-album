@@ -11,22 +11,22 @@ export const metadata: Metadata = {
   description:
     "Sakupite sve fotografije i video snimke gostiju sa venčanja preko QR koda u privatnoj galeriji. Bez aplikacije, pun kvalitet, besplatno za probu.",
   alternates: {
-    canonical: "https://guestcam.si/sr",
+    canonical: "https://www.guestcam.si/sr",
     languages: {
-      sl: "https://guestcam.si/",
-      hr: "https://guestcam.si/hr",
-      sr: "https://guestcam.si/sr",
-      de: "https://guestcam.si/de",
-      en: "https://guestcam.si/en",
-      es: "https://guestcam.si/es",
-      "x-default": "https://guestcam.si/",
+      sl: "https://www.guestcam.si/",
+      hr: "https://www.guestcam.si/hr",
+      sr: "https://www.guestcam.si/sr",
+      de: "https://www.guestcam.si/de",
+      en: "https://www.guestcam.si/en",
+      es: "https://www.guestcam.si/es",
+      "x-default": "https://www.guestcam.si/",
     },
   },
   openGraph: {
     type: "website",
     locale: "sr_RS",
     siteName: "Guestcam",
-    url: "https://guestcam.si/sr",
+    url: "https://www.guestcam.si/sr",
     title: "QR kod za venčanje · Fotografije gostiju uživo | Guestcam",
     description:
       "Sakupite sve fotografije i video snimke gostiju sa venčanja preko QR koda u privatnoj galeriji. Bez aplikacije, pun kvalitet, besplatno za probu.",
@@ -36,7 +36,7 @@ export const metadata: Metadata = {
     // bumping ?v=.
     images: [
       {
-        url: "https://guestcam.si/og-image.png?v=2",
+        url: "https://www.guestcam.si/og-image.png?v=2",
         width: 910,
         height: 1200,
         alt: "QR kod za venčanje · Fotografije gostiju uživo | Guestcam",
@@ -48,7 +48,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "QR kod za venčanje · Fotografije gostiju uživo | Guestcam",
     description: "Sakupite sve fotografije i video snimke gostiju sa venčanja preko QR koda u privatnoj galeriji. Bez aplikacije, pun kvalitet, besplatno za probu.",
-    images: ["https://guestcam.si/og-image.png?v=2"],
+    images: ["https://www.guestcam.si/og-image.png?v=2"],
   },
 };
 

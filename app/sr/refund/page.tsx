@@ -3,7 +3,7 @@ import { LegalPage } from "@/components/LegalPage";
 
 export const metadata: Metadata = {
   title: "Politika povraćaja novca | Guestcam",
-  alternates: { canonical: "https://guestcam.si/sr/refund" },
+  alternates: { canonical: "https://www.guestcam.si/sr/refund" },
   robots: { index: true, follow: true },
 };
 

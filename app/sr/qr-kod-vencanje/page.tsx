@@ -24,15 +24,15 @@ export const metadata: Metadata = {
     images: [OG_IMAGE_URL],
   },
   alternates: {
-    canonical: "https://guestcam.si/sr/qr-kod-vencanje",
+    canonical: "https://www.guestcam.si/sr/qr-kod-vencanje",
     languages: {
-      "sl": "https://guestcam.si/sl/qr-koda-poroka",
-      "hr": "https://guestcam.si/hr/qr-kod-vjencanje",
-      "sr": "https://guestcam.si/sr/qr-kod-vencanje",
-      "de": "https://guestcam.si/de/hochzeitsfotos-sammeln",
-      "en": "https://guestcam.si/en/wedding-photo-sharing",
-      "es": "https://guestcam.si/es/fotos-boda-qr",
-      "x-default": "https://guestcam.si/sl/qr-koda-poroka",
+      "sl": "https://www.guestcam.si/sl/qr-koda-poroka",
+      "hr": "https://www.guestcam.si/hr/qr-kod-vjencanje",
+      "sr": "https://www.guestcam.si/sr/qr-kod-vencanje",
+      "de": "https://www.guestcam.si/de/hochzeitsfotos-sammeln",
+      "en": "https://www.guestcam.si/en/wedding-photo-sharing",
+      "es": "https://www.guestcam.si/es/fotos-boda-qr",
+      "x-default": "https://www.guestcam.si/sl/qr-koda-poroka",
     },
   },
 };
@@ -48,9 +48,9 @@ const articleSchema = {
   publisher: {
     "@type": "Organization",
     name: "Guestcam",
-    logo: "https://guestcam.si/icon-512.png",
+    logo: "https://www.guestcam.si/icon-512.png",
   },
-  mainEntityOfPage: "https://guestcam.si/sr/qr-kod-vencanje",
+  mainEntityOfPage: "https://www.guestcam.si/sr/qr-kod-vencanje",
 };
 
 
