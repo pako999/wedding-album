@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { albums, photos, photoComments } from "@/lib/db/schema";
 import { eq, and } from "drizzle-orm";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
 
@@ -14,6 +15,11 @@ export async function POST(
   req: NextRequest,
   { params }: { params: Promise<{ slug: string; photoId: string }> }
 ) {
+  // 10 comments per minute per IP — well above real user behaviour,
+  // blocks a script from spraying spam.
+  const rl = await checkRateLimit("comment", 10, 60_000);
+  if (!rl.ok) return rl.response;
+
   const { slug, photoId } = await params;
   const payload = await req.json() as {
     uploaderName: string;

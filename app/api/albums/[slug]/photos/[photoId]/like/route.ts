@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { albums, photos, photoLikes } from "@/lib/db/schema";
 import { eq, and, count } from "drizzle-orm";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
 
@@ -14,6 +15,11 @@ export async function POST(
   req: NextRequest,
   { params }: { params: Promise<{ slug: string; photoId: string }> }
 ) {
+  // 60 like toggles per minute per IP — a real user can't click that
+  // fast; catches automated inflation.
+  const rl = await checkRateLimit("like", 60, 60_000);
+  if (!rl.ok) return rl.response;
+
   const { slug, photoId } = await params;
   const { uploaderName, action } = await req.json() as {
     uploaderName: string;

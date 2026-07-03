@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 export const dynamic = "force-dynamic";
 
@@ -16,6 +17,13 @@ export const dynamic = "force-dynamic";
  * Returns: { ok: true } on success, { error } with appropriate status on failure.
  */
 export async function POST(req: NextRequest) {
+  // Rate limit — belt-and-suspenders on top of Turnstile. Stops the case
+  // where a Turnstile token is stolen or reused before its 5-min expiry
+  // from being weaponised into a Resend billing attack. 3 messages per
+  // 10 min per IP covers legitimate multi-topic follow-ups.
+  const rl = await checkRateLimit("contact", 3, 10 * 60_000);
+  if (!rl.ok) return rl.response;
+
   let payload: {
     name?: unknown;
     email?: unknown;

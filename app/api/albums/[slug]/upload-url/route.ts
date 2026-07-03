@@ -22,6 +22,7 @@ import {
   createBunnyStreamUpload,
 } from "@/lib/storage/bunny";
 import { hashAlbumPassword, needsRehash, verifyAlbumPassword } from "@/lib/album-password";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
 
@@ -47,6 +48,14 @@ export async function POST(
   { params }: { params: Promise<{ slug: string }> },
 ) {
   const { slug } = await params;
+
+  // Rate limit — protects against album-password brute force and
+  // photo-count exhaustion. 30 upload URLs / minute per IP is generous
+  // for real batch uploads (guests dragging in 20+ photos) but stops
+  // a script hitting the endpoint thousands of times.
+  const rl = await checkRateLimit("upload-url", 30, 60_000);
+  if (!rl.ok) return rl.response;
+
   const body = await req.json() as { filename: string; contentType: string; size: number };
   const { filename, contentType } = body;
 

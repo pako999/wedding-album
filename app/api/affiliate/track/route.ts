@@ -5,6 +5,7 @@ import {
   AFFILIATE_COOKIE,
   DEFAULT_COOKIE_DAYS,
 } from "@/lib/affiliate/attribution";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -31,6 +32,16 @@ export async function GET(req: NextRequest) {
   const redirectUrl = new URL(safeTo, req.url);
 
   if (!code) {
+    return NextResponse.redirect(redirectUrl);
+  }
+
+  // Rate limit prevents a bad actor from inflating an affiliate's click
+  // count with a script. 60 clicks per minute per IP is well above real
+  // user browsing behaviour. On limit hit we still 302 to the target
+  // page — we just skip logging the click. Better UX than a 429 for a
+  // real user caught by a shared IP.
+  const rl = await checkRateLimit(`track:${code}`, 60, 60_000);
+  if (!rl.ok) {
     return NextResponse.redirect(redirectUrl);
   }
 
