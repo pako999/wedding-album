@@ -34,6 +34,14 @@ const ALLOWED_VIDEO_TYPES = new Set([
   "video/webm", "video/mpeg", "video/3gpp", "video/avi",
 ]);
 
+// Hard per-file upload caps enforced before we hand out a storage key.
+// Without these the client could PUT a 100 GB file straight to Bunny
+// using the presigned URL and torch the storage bill.
+// iPhone/Android RAW / burst files rarely exceed ~40 MB; the 60 MB cap
+// gives headroom for high-res panoramas without becoming exploitable.
+const MAX_IMAGE_BYTES = 60 * 1024 * 1024;        //  60 MB per photo
+const MAX_VIDEO_BYTES = 500 * 1024 * 1024;       // 500 MB per video
+
 export async function POST(
   req: NextRequest,
   { params }: { params: Promise<{ slug: string }> },
@@ -97,6 +105,19 @@ export async function POST(
 
   if (!isVideo && !isImage) {
     return NextResponse.json({ error: "Unsupported file type" }, { status: 400 });
+  }
+
+  // Enforce per-file size caps. The client sends `size`, so a malicious
+  // client could lie — but they'd only cheat themselves out of a valid
+  // storage key. The final Bunny PUT should also enforce the cap
+  // (BUNNY_STORAGE_MAX_FILE_SIZE) as a belt-and-suspenders defence.
+  const cap = isVideo ? MAX_VIDEO_BYTES : MAX_IMAGE_BYTES;
+  if (typeof body.size === "number" && body.size > cap) {
+    const mb = Math.floor(cap / (1024 * 1024));
+    return NextResponse.json(
+      { error: `File too large (max ${mb} MB per ${isVideo ? "video" : "photo"})` },
+      { status: 413 },
+    );
   }
 
   // Free plan: max 1 video

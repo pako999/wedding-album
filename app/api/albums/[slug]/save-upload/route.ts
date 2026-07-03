@@ -51,6 +51,20 @@ export async function POST(
     return NextResponse.json({ error: "mimeType required" }, { status: 400 });
   }
 
+  // Belt-and-suspenders: even if the upload-url pre-check was bypassed,
+  // reject oversized files before we record them. Caps match upload-url.
+  if (typeof sizeBytes === "number") {
+    const isVideo = mimeType.startsWith("video/");
+    const cap = isVideo ? 500 * 1024 * 1024 : 60 * 1024 * 1024;
+    if (sizeBytes > cap) {
+      const mb = Math.floor(cap / (1024 * 1024));
+      return NextResponse.json(
+        { error: `File too large (max ${mb} MB per ${isVideo ? "video" : "photo"})` },
+        { status: 413 },
+      );
+    }
+  }
+
   const album = await db.query.albums.findFirst({ where: eq(albums.slug, slug) }).catch(() => null);
   if (!album || !album.isPublished) {
     return NextResponse.json({ error: "Album not found" }, { status: 404 });
