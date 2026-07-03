@@ -389,6 +389,67 @@ export async function runMigrations() {
          OR stripe_session_id IN ('comp:influencer','comp:sponsor'))
   `);
 
+  // ── Referral engine (P0) ──────────────────────────────────────────────────
+  await run("add albums.referral_code", (q) => q`
+    ALTER TABLE albums ADD COLUMN IF NOT EXISTS referral_code VARCHAR(20)
+  `);
+  await run("add albums.referral_code unique", (q) => q`
+    ALTER TABLE albums ADD CONSTRAINT albums_referral_code_key UNIQUE (referral_code)
+  `);
+  await run("add albums.referral_code idx", (q) => q`
+    CREATE INDEX IF NOT EXISTS albums_referral_code_idx ON albums (referral_code)
+  `);
+  await run("add albums.referral_source_album_id", (q) => q`
+    ALTER TABLE albums ADD COLUMN IF NOT EXISTS referral_source_album_id TEXT
+  `);
+  await run("add albums.referral_touchpoint", (q) => q`
+    ALTER TABLE albums ADD COLUMN IF NOT EXISTS referral_touchpoint VARCHAR(30)
+  `);
+  await run("create guest_emails", (q) => q`
+    CREATE TABLE IF NOT EXISTS guest_emails (
+      id                 TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
+      album_id           TEXT NOT NULL REFERENCES albums(id) ON DELETE CASCADE,
+      email              TEXT NOT NULL,
+      marketing_consent  BOOLEAN NOT NULL DEFAULT FALSE,
+      consent_timestamp  TIMESTAMPTZ,
+      locale             VARCHAR(5),
+      created_at         TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )
+  `);
+  await run("guest_emails unique", (q) => q`
+    ALTER TABLE guest_emails ADD CONSTRAINT guest_emails_album_email_unique UNIQUE (album_id, email)
+  `);
+  await run("guest_emails album idx", (q) => q`
+    CREATE INDEX IF NOT EXISTS guest_emails_album_idx ON guest_emails (album_id)
+  `);
+  await run("create referral_conversions", (q) => q`
+    CREATE TABLE IF NOT EXISTS referral_conversions (
+      id                    TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
+      source_album_id       TEXT NOT NULL REFERENCES albums(id) ON DELETE CASCADE,
+      new_user_clerk_id     TEXT NOT NULL,
+      new_album_id          TEXT REFERENCES albums(id) ON DELETE SET NULL,
+      touchpoint            VARCHAR(30),
+      converted_to_paid_at  TIMESTAMPTZ,
+      created_at            TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )
+  `);
+  await run("refc source idx", (q) => q`CREATE INDEX IF NOT EXISTS refc_source_idx ON referral_conversions (source_album_id)`);
+  await run("refc new_user idx", (q) => q`CREATE INDEX IF NOT EXISTS refc_new_user_idx ON referral_conversions (new_user_clerk_id)`);
+
+  // Backfill: give every existing album a referral code. Done in the DB
+  // (not app-side) so we don't need N round-trips. Uses UPPER + regex
+  // fold + album.id suffix for uniqueness.
+  await run("backfill album referral_code", (q) => q`
+    UPDATE albums
+       SET referral_code = (
+             UPPER(REGEXP_REPLACE(couple_name, '[^A-Za-z0-9]+', '-', 'g'))
+             || '-' || UPPER(SUBSTRING(id, 1, 2))
+           )
+     WHERE referral_code IS NULL
+       AND couple_name IS NOT NULL
+       AND couple_name <> ''
+  `);
+
   if (failures === 0) {
     console.log("[migrations] ✓ DB schema up to date");
   } else {

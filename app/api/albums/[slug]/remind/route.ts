@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import { albums, uploadReminders } from "@/lib/db/schema";
+import { albums, uploadReminders, guestEmails } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { sendUploadReminder } from "@/lib/email/notifications";
 
@@ -8,10 +8,13 @@ export const runtime = "nodejs";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const ALLOWED_DELAYS = [0, 60, 1440, 4320];
+const VALID_LOCALES = new Set(["sl", "hr", "sr", "de", "en", "es"]);
 
 interface RemindBody {
   email?: string;
   delayMinutes?: number;
+  marketingConsent?: boolean;
+  locale?: string;
 }
 
 /**
@@ -73,5 +76,31 @@ export async function POST(
     });
   }
 
-  return NextResponse.json({ ok: true });
+  // Capture the email with the guest's consent choice. Feeds the D3
+  // transactional and D21 pitch email sequences in P1. Best-effort; if
+  // the row already exists we upsert consent (they can opt in later
+  // by re-entering their email — spec doesn't cover opt-in-only-once).
+  const marketingConsent = body.marketingConsent === true;
+  const locale = typeof body.locale === "string" && VALID_LOCALES.has(body.locale) ? body.locale : null;
+  try {
+    await db
+      .insert(guestEmails)
+      .values({
+        albumId: album.id,
+        email,
+        marketingConsent,
+        consentTimestamp: marketingConsent ? new Date() : null,
+        locale,
+      })
+      .onConflictDoUpdate({
+        target: [guestEmails.albumId, guestEmails.email],
+        set: marketingConsent
+          ? { marketingConsent: true, consentTimestamp: new Date(), locale }
+          : { locale }, // never downgrade consent silently — only upgrade
+      });
+  } catch (err) {
+    console.warn("[remind] guest_emails upsert failed:", err);
+  }
+
+  return NextResponse.json({ ok: true, marketingConsent });
 }

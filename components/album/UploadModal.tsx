@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useRef, useEffect } from "react";
 import { translations, type Lang } from "@/lib/i18n/translations";
+import { GuestReferralCta } from "@/components/album/GuestReferralCta";
 
 interface Props {
   albumSlug: string;
@@ -23,6 +24,10 @@ interface Props {
   moments?: { id: string; name: string }[];
   /** Pre-selected moment id for the Moment selector. */
   defaultMomentId?: string | null;
+  /** Album's own referral code — shown to the guest after upload as an
+   *  invite to create their own gallery with 15% off. Optional; if
+   *  null (e.g. legacy album pre-backfill) the CTA hides itself. */
+  referralCode?: string | null;
 }
 
 interface UploadFile {
@@ -410,7 +415,7 @@ async function saveUpload(slug: string, body: object) {
 
 // ── Component ─────────────────────────────────────────────────────────────────
 
-export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, currentCount, lang, onClose, onSuccess, onNameChange: _onNameChange, initialFiles, accent = "#C9820A", albumPassword = "", moments = [], defaultMomentId = null }: Props) {
+export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, currentCount, lang, onClose, onSuccess, onNameChange: _onNameChange, initialFiles, accent = "#C9820A", albumPassword = "", moments = [], defaultMomentId = null, referralCode = null }: Props) {
   const t = translations[lang];
   const [files, setFiles] = useState<UploadFile[]>([]);
   const [uploading, setUploading] = useState(false);
@@ -421,6 +426,7 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
   const [saveLinkEmail, setSaveLinkEmail] = useState("");
   const [saveLinkSending, setSaveLinkSending] = useState(false);
   const [saveLinkSent, setSaveLinkSent] = useState(false);
+  const [marketingConsent, setMarketingConsent] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const remaining = Math.max(0, maxPhotos - currentCount);
   const isDemo = albumSlug === "ana-marko-13ka";
@@ -607,9 +613,24 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
       await fetch(`/api/albums/${albumSlug}/remind`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, delayMinutes: 0 }),
+        body: JSON.stringify({
+          email,
+          delayMinutes: 0,
+          marketingConsent,
+          locale: lang,
+        }),
       });
       setSaveLinkSent(true);
+      // Fire GA event for guest email capture (referral engine funnel).
+      if (typeof window !== "undefined") {
+        const gtag = (window as unknown as { gtag?: (...args: unknown[]) => void }).gtag;
+        if (typeof gtag === "function") {
+          gtag("event", "guest_email_captured", {
+            marketing_consent: marketingConsent,
+            locale: lang,
+          });
+        }
+      }
     } catch {
       // silently ignore — not critical
     } finally {
@@ -691,27 +712,49 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
                 {saveLinkSent ? (
                   <p className="text-xs text-green-600 font-medium text-center py-2">{t.saveLinkSent}</p>
                 ) : (
-                  <div className="flex gap-2">
-                    <input
-                      type="email"
-                      value={saveLinkEmail}
-                      onChange={e => setSaveLinkEmail(e.target.value)}
-                      onKeyDown={e => e.key === "Enter" && sendAlbumLink()}
-                      placeholder="vas@email.com"
-                      autoComplete="email"
-                      className="flex-1 px-3 py-2 text-sm border border-gray-200 rounded-xl outline-none focus:border-gray-400"
-                    />
-                    <button
-                      onClick={sendAlbumLink}
-                      disabled={saveLinkSending || !saveLinkEmail.trim()}
-                      className="px-4 py-2 text-sm rounded-xl text-white font-medium transition-all disabled:opacity-40"
-                      style={{ background: accent }}
-                    >
-                      {saveLinkSending ? "…" : t.saveLinkSend}
-                    </button>
-                  </div>
+                  <>
+                    <div className="flex gap-2">
+                      <input
+                        type="email"
+                        value={saveLinkEmail}
+                        onChange={e => setSaveLinkEmail(e.target.value)}
+                        onKeyDown={e => e.key === "Enter" && sendAlbumLink()}
+                        placeholder="vas@email.com"
+                        autoComplete="email"
+                        className="flex-1 px-3 py-2 text-sm border border-gray-200 rounded-xl outline-none focus:border-gray-400"
+                      />
+                      <button
+                        onClick={sendAlbumLink}
+                        disabled={saveLinkSending || !saveLinkEmail.trim()}
+                        className="px-4 py-2 text-sm rounded-xl text-white font-medium transition-all disabled:opacity-40"
+                        style={{ background: accent }}
+                      >
+                        {saveLinkSending ? "…" : t.saveLinkSend}
+                      </button>
+                    </div>
+                    {/* GDPR marketing consent — unchecked by default. */}
+                    <label className="mt-2 flex items-start gap-2 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={marketingConsent}
+                        onChange={(e) => setMarketingConsent(e.target.checked)}
+                        className="mt-0.5 shrink-0 accent-[#C9820A]"
+                      />
+                      <span className="text-[11px] text-[#0F1729]/60 leading-snug">
+                        {t.marketingConsentLabel}
+                      </span>
+                    </label>
+                  </>
                 )}
               </div>
+
+              {/* Guest referral CTA — invite this guest to plan their own
+                  event. Renders only for albums with a code (post-migration). */}
+              <GuestReferralCta
+                referralCode={referralCode}
+                lang={lang}
+                sourceAlbumSlug={albumSlug}
+              />
             </div>
           ) : (
             <>

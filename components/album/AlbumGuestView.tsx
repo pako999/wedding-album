@@ -1653,6 +1653,7 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
           moments={moments}
           defaultMomentId={selectedMomentId}
           initialFiles={cameraFilesRef.current}
+          referralCode={album.referralCode ?? null}
           onClose={() => { cameraFilesRef.current = null; setUploadOpen(false); }}
           onNameChange={(name) => setUploaderName(name)}
           onSuccess={() => { cameraFilesRef.current = null; setUploadOpen(false); router.refresh(); }}

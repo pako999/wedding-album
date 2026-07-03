@@ -127,10 +127,18 @@ export default clerkMiddleware(async (auth, req) => {
   // The tracker endpoint redirects back to the original path with the
   // `?ref` stripped, so the user never sees the tracking URL.
   const refParam = req.nextUrl.searchParams.get("ref");
+  const tpParam  = req.nextUrl.searchParams.get("tp");
   const onTrackerEndpoint = pathname.startsWith("/api/affiliate/track");
+  // Affiliate codes: alnum only, 4-16 chars (e.g. "B0TJYH6J").
+  // Guest referral codes have hyphens (e.g. "ANA-MARKO-4Z") — routed
+  // differently so we don't ping the affiliate tracker with a code
+  // that will never match.
+  const isAffiliatePattern = refParam && /^[A-Z0-9]{4,16}$/.test(refParam);
+  const isGuestPattern     = refParam && /^[A-Z0-9]+(?:-[A-Z0-9]+){1,3}$/.test(refParam);
+
   if (
     refParam &&
-    /^[A-Z0-9]{4,16}$/.test(refParam) &&
+    isAffiliatePattern &&
     !pathname.startsWith("/api/") &&
     !onTrackerEndpoint
   ) {
@@ -143,6 +151,42 @@ export default clerkMiddleware(async (auth, req) => {
     trackerUrl.searchParams.set("ref", refParam);
     trackerUrl.searchParams.set("to", to);
     return NextResponse.redirect(trackerUrl);
+  }
+
+  // Guest referral capture (P0 of the viral engine). Different from the
+  // affiliate flow: guest codes live on albums.referralCode and grant
+  // a 15% first-purchase discount when the referred user signs up and
+  // pays. First-touch wins — only set cookies if absent.
+  if (
+    refParam &&
+    isGuestPattern &&
+    !pathname.startsWith("/api/") &&
+    !onTrackerEndpoint
+  ) {
+    const existing = req.cookies.get("gc_gref")?.value;
+    if (!existing) {
+      const secure = process.env.NODE_ENV === "production";
+      res.cookies.set("gc_gref", refParam, {
+        maxAge: 90 * 24 * 60 * 60, path: "/", httpOnly: false, secure, sameSite: "lax",
+      });
+      if (tpParam && /^[a-z_]{4,30}$/.test(tpParam)) {
+        res.cookies.set("gc_gtp", tpParam, {
+          maxAge: 90 * 24 * 60 * 60, path: "/", httpOnly: false, secure, sameSite: "lax",
+        });
+      }
+    }
+    // Strip ?ref & ?tp from the URL for cleanliness (avoids the code
+    // showing up in analytics/pasted links after cookie is set).
+    const cleanSearch = new URLSearchParams(req.nextUrl.search);
+    cleanSearch.delete("ref");
+    cleanSearch.delete("tp");
+    const cleanUrl = req.nextUrl.clone();
+    cleanUrl.search = cleanSearch.toString() ? `?${cleanSearch.toString()}` : "";
+    const redirected = NextResponse.redirect(cleanUrl);
+    // Copy the cookies we just set onto the redirect response so the
+    // browser stores them even when we're navigating away.
+    for (const c of res.cookies.getAll()) redirected.cookies.set(c);
+    return redirected;
   }
 
   // ── Block crawlers from album guest pages via HTTP header ────────────────

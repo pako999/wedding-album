@@ -6,6 +6,8 @@ import { and, desc, eq, gt, ne } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { albums, userPlanOverrides } from "@/lib/db/schema";
 import { sendWelcomeEmail, sendOrganizerAgreementEmail } from "@/lib/email/notifications";
+import { generateUniqueReferralCode } from "@/lib/referral/codes";
+import { attributeNewAlbumFromCookie } from "@/lib/referral/attribution";
 
 function slugify(text: string): string {
   return text
@@ -94,7 +96,18 @@ export async function createAlbum(formData: FormData) {
     console.warn("[create-album] user_plan_overrides lookup failed:", err);
   }
 
-  await db.insert(albums).values({
+  // Generate a unique referral code so guests at this event can invite
+  // others via the upload-success CTA / gallery footer. Best-effort:
+  // if generation fails we still create the album — the referral engine
+  // can lazy-fill on the next read.
+  let referralCode: string | null = null;
+  try {
+    referralCode = await generateUniqueReferralCode(coupleName);
+  } catch (err) {
+    console.warn("[create-album] referral code generation failed:", err);
+  }
+
+  const inserted = await db.insert(albums).values({
     slug,
     ownerClerkId:      userId,
     eventType,
@@ -109,7 +122,15 @@ export async function createAlbum(formData: FormData) {
     moderationEnabled: false,
     expiresAt:         inheritedExpiry,
     stripeSessionId:   inheritedSessionId,
-  });
+    referralCode,
+  }).returning({ id: albums.id });
+
+  // If this user showed up via a ?ref= link from another album's guest,
+  // stamp the attribution + log a conversion row (K-factor source).
+  const newAlbumId = inserted[0]?.id;
+  if (newAlbumId) {
+    await attributeNewAlbumFromCookie(newAlbumId, userId).catch(() => {});
+  }
 
   // Send a welcome email on the owner's *first* album. Best-effort — if
   // anything goes wrong (Resend down, no email on file) we still redirect.

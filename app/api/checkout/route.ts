@@ -6,6 +6,7 @@ import { eq } from "drizzle-orm";
 import { createPayment, mollieConfigured, MollieError } from "@/lib/mollie";
 import { validateDiscount } from "@/lib/discount";
 import { getAffiliateRefFromCookie } from "@/lib/affiliate/attribution";
+import { getGuestRefFromCookie } from "@/lib/referral/attribution";
 
 export const runtime = "nodejs";
 
@@ -81,6 +82,29 @@ export async function POST(req: NextRequest) {
     }
   }
 
+  // Guest referral discount (P0). If no explicit discount code was
+  // applied AND the buyer has a valid ?ref= cookie from another album,
+  // give them 15% off and stash the source album's referralCode in
+  // Mollie metadata so the webhook can flip referral_conversions to
+  // "paid". Affiliate discount takes precedence — only one 15% applies.
+  let guestRefCode: string | null = null;
+  let guestRefTouchpoint: string | null = null;
+  if (!discountCodeId) {
+    const gref = await getGuestRefFromCookie();
+    if (gref?.code) {
+      const source = await db.query.albums.findFirst({
+        where: eq(albums.referralCode, gref.code),
+      }).catch(() => null);
+      // Never apply self-referral, and never on the FIRST purchase of the
+      // referring album itself (source.ownerClerkId !== buyer).
+      if (source && source.ownerClerkId !== userId) {
+        baseCents = Math.round(baseCents * 0.85);
+        guestRefCode = gref.code;
+        guestRefTouchpoint = gref.tp ?? null;
+      }
+    }
+  }
+
   const totalCents = baseCents + (tableStands ? 900 : 0);
   const description = plan.name + (tableStands ? " + Podstavki za mizo" : "");
 
@@ -100,6 +124,8 @@ export async function POST(req: NextRequest) {
         planId,
         ...(discountCodeId ? { discountCodeId } : {}),
         ...(affiliateRef ? { affiliateRef } : {}),
+        ...(guestRefCode ? { guestRefCode } : {}),
+        ...(guestRefTouchpoint ? { guestRefTouchpoint } : {}),
       },
     });
 

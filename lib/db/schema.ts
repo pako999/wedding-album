@@ -74,12 +74,23 @@ export const albums = pgTable(
     photoCount: integer("photo_count").notNull().default(0),
     pendingCount: integer("pending_count").notNull().default(0),
 
+    // Referral engine (P0). Human-friendly code derived from coupleName,
+    // shown to guests on the upload success screen and everywhere else
+    // the owner can share the album's referral link.
+    referralCode: varchar("referral_code", { length: 20 }).unique(),
+
+    // Attribution — when THIS album's owner signed up because a guest at
+    // some OTHER album clicked the referral link.
+    referralSourceAlbumId: text("referral_source_album_id"),
+    referralTouchpoint: varchar("referral_touchpoint", { length: 30 }),
+
     createdAt: timestamp("created_at").notNull().defaultNow(),
     updatedAt: timestamp("updated_at").notNull().defaultNow(),
   },
   (t) => [
     index("albums_owner_idx").on(t.ownerClerkId),
     index("albums_slug_idx").on(t.slug),
+    index("albums_referral_code_idx").on(t.referralCode),
   ]
 );
 
@@ -297,6 +308,58 @@ export const discountCodes = pgTable(
 
 export type DiscountCode    = typeof discountCodes.$inferSelect;
 export type NewDiscountCode = typeof discountCodes.$inferInsert;
+
+// ─── Guest email capture (referral engine — P0) ──────────────────────────────
+// Emails guests give us via the "email me the album link" flow, with a
+// consent flag captured at the same moment (GDPR-compliant). Feeds the
+// D3 transactional and D21 soft-pitch email sequences in P1.
+
+export const guestEmails = pgTable(
+  "guest_emails",
+  {
+    id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+    albumId: text("album_id")
+      .notNull()
+      .references(() => albums.id, { onDelete: "cascade" }),
+    email: text("email").notNull(),
+    marketingConsent: boolean("marketing_consent").notNull().default(false),
+    consentTimestamp: timestamp("consent_timestamp"),
+    locale: varchar("locale", { length: 5 }),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+  },
+  (t) => [
+    index("guest_emails_album_idx").on(t.albumId),
+    unique("guest_emails_album_email_unique").on(t.albumId, t.email),
+  ],
+);
+
+// ─── Referral conversions (K-factor source of truth) ─────────────────────────
+// One row per new user whose signup was attributed to an existing album.
+// convertedToPaidAt fills in when they buy — that's when it counts toward K.
+
+export const referralConversions = pgTable(
+  "referral_conversions",
+  {
+    id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+    /** The event whose guest turned into a new user. */
+    sourceAlbumId: text("source_album_id")
+      .notNull()
+      .references(() => albums.id, { onDelete: "cascade" }),
+    newUserClerkId: text("new_user_clerk_id").notNull(),
+    /** Nullable until the new user creates their own album. */
+    newAlbumId: text("new_album_id").references(() => albums.id, { onDelete: "set null" }),
+    /** Which touchpoint they clicked — upload_success, email_d3, email_d21,
+     *  email_footer, gallery_footer, live_display, couple_share. */
+    touchpoint: varchar("touchpoint", { length: 30 }),
+    /** Set when they hit "paid" for the first time. Drives the K numerator. */
+    convertedToPaidAt: timestamp("converted_to_paid_at"),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+  },
+  (t) => [
+    index("refc_source_idx").on(t.sourceAlbumId),
+    index("refc_new_user_idx").on(t.newUserClerkId),
+  ],
+);
 
 // ─── Upload Reminders ────────────────────────────────────────────────────────
 

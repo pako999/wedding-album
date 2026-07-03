@@ -200,6 +200,7 @@ export interface Translations {
   saveLinkDesc: string;          // "Enter your email and we'll send you the album link so you can find it anytime."
   saveLinkSend: string;          // "Send"
   saveLinkSent: string;          // "Link sent! Check your inbox."
+  marketingConsentLabel: string; // GDPR opt-in on the guest email input
 
   // Discount code (upgrade / checkout page)
   discountCode: string;           // "Discount code" — section label
@@ -355,6 +356,7 @@ const sl: Translations = {
   saveLinkDesc: "Vnesite e-naslov in pošljemo vam povezavo do albuma, da ga boste lahko našli kadarkoli.",
   saveLinkSend: "Pošlji",
   saveLinkSent: "Povezava poslana! Preverite e-pošto. ✓",
+  marketingConsentLabel: "Obveščajte me o Guestcam novostih in ponudbah",
   discountCode: "Koda za popust",
   discountPlaceholder: "Vnesite kodo…",
   discountApply: "Uveljavi",
@@ -506,6 +508,7 @@ const hr: Translations = {
   saveLinkDesc: "Unesite e-poštu i poslat ćemo vam vezu do albuma da ga možete pronaći kad god zatreba.",
   saveLinkSend: "Pošalji",
   saveLinkSent: "Veza poslana! Provjerite e-poštu. ✓",
+  marketingConsentLabel: "Obavještavajte me o Guestcam novostima i ponudama",
   discountCode: "Kod za popust",
   discountPlaceholder: "Unesite kod…",
   discountApply: "Primijeni",
@@ -657,6 +660,7 @@ const sr: Translations = {
   saveLinkDesc: "Unesite e-poštu i poslaćemo vam vezu do albuma da ga možete pronaći kad god zatreba.",
   saveLinkSend: "Pošalji",
   saveLinkSent: "Veza poslana! Proverite e-poštu. ✓",
+  marketingConsentLabel: "Obaveštavajte me o Guestcam novostima i ponudama",
   discountCode: "Kod za popust",
   discountPlaceholder: "Unesite kod…",
   discountApply: "Primeni",
@@ -808,6 +812,7 @@ const en: Translations = {
   saveLinkDesc: "Enter your email and we'll send you the album link so you can find it anytime — no QR code needed.",
   saveLinkSend: "Send",
   saveLinkSent: "Link sent! Check your inbox. ✓",
+  marketingConsentLabel: "Keep me updated on Guestcam news and offers",
   discountCode: "Discount code",
   discountPlaceholder: "Enter code…",
   discountApply: "Apply",
@@ -959,6 +964,7 @@ const de: Translations = {
   saveLinkDesc: "Geben Sie Ihre E-Mail-Adresse ein und wir senden Ihnen den Link zum Album — auch ohne QR-Code auffindbar.",
   saveLinkSend: "Senden",
   saveLinkSent: "Link gesendet! Bitte prüfen Sie Ihren Posteingang. ✓",
+  marketingConsentLabel: "Informieren Sie mich über Guestcam-Neuigkeiten und Angebote",
   discountCode: "Rabattcode",
   discountPlaceholder: "Code eingeben…",
   discountApply: "Einlösen",
@@ -1110,6 +1116,7 @@ const es: Translations = {
   saveLinkDesc: "Introduce tu email y te enviamos el enlace al álbum para que puedas encontrarlo cuando quieras, sin necesitar el QR.",
   saveLinkSend: "Enviar",
   saveLinkSent: "¡Enlace enviado! Revisa tu bandeja de entrada. ✓",
+  marketingConsentLabel: "Mantenedme informado sobre novedades y ofertas de Guestcam",
   discountCode: "Código de descuento",
   discountPlaceholder: "Introduce el código…",
   discountApply: "Aplicar",

@@ -1,11 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getPayment, isPaidStatus, isRefundedStatus, mollieConfigured } from "@/lib/mollie";
 import { applyPlanToAlbum } from "@/lib/paddle-reconcile";
+import { markConversionPaid } from "@/lib/referral/attribution";
 import { htmlEscape, notifyTelegram } from "@/lib/telegram";
 import { sendAdminPaymentEmail, sendAffiliateCommissionEmail, sendAdminAffiliateSaleEmail } from "@/lib/email/notifications";
 import { incrementDiscountUsage } from "@/lib/discount";
 import { db } from "@/lib/db";
-import { affiliates, affiliateCommissions, affiliateClicks } from "@/lib/db/schema";
+import { affiliates, affiliateCommissions, affiliateClicks, albums } from "@/lib/db/schema";
 import { eq, sql, and, isNull, or } from "drizzle-orm";
 
 export const runtime = "nodejs";
@@ -92,6 +93,19 @@ export async function POST(req: NextRequest) {
   // Increment discount usage counter if a code was used
   if (payment.metadata?.discountCodeId) {
     await incrementDiscountUsage(payment.metadata.discountCodeId).catch(() => {});
+  }
+
+  // Guest-referral: mark the conversion as paid so K-factor reporting
+  // picks it up. Idempotent — markConversionPaid only flips the first
+  // unpaid row for this Clerk id. Best-effort.
+  try {
+    const buyer = await db.query.albums.findFirst({
+      columns: { ownerClerkId: true },
+      where: eq(albums.slug, albumSlug),
+    });
+    if (buyer?.ownerClerkId) await markConversionPaid(buyer.ownerClerkId);
+  } catch (err) {
+    console.warn("[mollie webhook] referral conversion mark-paid failed:", err);
   }
 
   // ── Affiliate commission ────────────────────────────────────────────────
