@@ -1,10 +1,12 @@
 import { db } from "@/lib/db";
 import { albums, userPlanOverrides } from "@/lib/db/schema";
-import { count, sql } from "drizzle-orm";
 import { clerkClient } from "@clerk/nextjs/server";
 import { UserUpgradeMenu } from "@/components/admin/UserUpgradeMenu";
 
 export const dynamic = "force-dynamic";
+
+type PlanTier = "free" | "basic" | "plus" | "premium";
+type PlanSource = "none" | "paid" | "admin" | "inherit";
 
 interface UserRow {
   clerkId: string;
@@ -14,39 +16,87 @@ interface UserRow {
   createdAt: number | null;
   albumCount: number;
   paidAlbumCount: number;
+  /** Best plan across all this user's active (non-expired) albums. */
+  bestPlan: PlanTier;
+  /** How they got that plan — real payment, admin grant, or inherited. */
+  planSource: PlanSource;
+  /** True if any active album has a comp tag (influencer/sponsor). */
+  isComp: boolean;
+}
+
+const PLAN_RANK: Record<PlanTier, number> = { free: 0, basic: 1, plus: 2, premium: 3 };
+
+/** Pick the higher-value of two plans. */
+function betterPlan(a: PlanTier, b: PlanTier): PlanTier {
+  return PLAN_RANK[a] >= PLAN_RANK[b] ? a : b;
 }
 
 export default async function AdminUsers() {
   // Source of truth = Clerk (every registered user, even if they never
-  // created a gallery). Album counts are joined in from our DB.
-  //
-  // "Paid" counts ONLY albums with a real payment reference attached —
-  // a Paddle transaction (txn_…) or a historical Stripe session (cs_…).
-  // Excluded:
-  //   • manual admin flips (stripeSessionId LIKE "manual_…"/"comp:…")
-  //   • expired paid plans (expiresAt < now)
+  // created a gallery). Per-album detail is joined in so we can show the
+  // same plan / paid-vs-admin-granted breakdown as the Galerije view.
   const now = new Date();
-  const albumRows = await db
+  const albumDetail = await db
     .select({
-      clerkId: albums.ownerClerkId,
-      email: sql<string | null>`MAX(${albums.ownerEmail})`,
-      albumCount: count(),
-      paidAlbumCount: sql<number>`SUM(CASE
-        WHEN ${albums.plan} <> 'free'
-          AND (${albums.stripeSessionId} LIKE 'txn_%' OR ${albums.stripeSessionId} LIKE 'cs_%')
-          AND (${albums.expiresAt} IS NULL OR ${albums.expiresAt} > ${now})
-        THEN 1 ELSE 0
-      END)`,
+      ownerClerkId: albums.ownerClerkId,
+      ownerEmail: albums.ownerEmail,
+      plan: albums.plan,
+      stripeSessionId: albums.stripeSessionId,
+      expiresAt: albums.expiresAt,
     })
-    .from(albums)
-    .groupBy(albums.ownerClerkId);
+    .from(albums);
 
-  const albumStats = new Map(
-    albumRows.map((r) => [
-      r.clerkId,
-      { email: r.email, albumCount: r.albumCount, paidAlbumCount: Number(r.paidAlbumCount ?? 0) },
-    ]),
-  );
+  interface AlbumStats {
+    email: string | null;
+    albumCount: number;
+    paidAlbumCount: number;
+    bestPlan: PlanTier;
+    planSource: PlanSource;
+    isComp: boolean;
+  }
+  const albumStats = new Map<string, AlbumStats>();
+  for (const a of albumDetail) {
+    const key = a.ownerClerkId;
+    const cur = albumStats.get(key) ?? {
+      email: null,
+      albumCount: 0,
+      paidAlbumCount: 0,
+      bestPlan: "free" as PlanTier,
+      planSource: "none" as PlanSource,
+      isComp: false,
+    };
+    cur.albumCount++;
+    if (a.ownerEmail && !cur.email) cur.email = a.ownerEmail;
+
+    // An album is "active" for plan-badge purposes if not yet expired.
+    const active = a.expiresAt == null || a.expiresAt > now;
+    if (!active) {
+      albumStats.set(key, cur);
+      continue;
+    }
+
+    const plan = (a.plan ?? "free") as PlanTier;
+    const sid = a.stripeSessionId ?? "";
+
+    // Classify the payment source for this album.
+    const isRealPaid = plan !== "free" && (sid.startsWith("txn_") || sid.startsWith("cs_"));
+    const isComp    = sid === "comp:influencer" || sid === "comp:sponsor";
+    const isAdmin   = isComp || sid.startsWith("admin-grant:") || sid.startsWith("admin-override:") || sid.startsWith("manual_fix");
+    const isInherit = sid.startsWith("inherit:");
+
+    if (isRealPaid) cur.paidAlbumCount++;
+    if (isComp) cur.isComp = true;
+
+    // Roll up the strongest plan across active albums, and record how it
+    // was granted. Real payment > admin > inherit > none.
+    if (PLAN_RANK[plan] > PLAN_RANK[cur.bestPlan]) {
+      cur.bestPlan = plan;
+      cur.planSource = isRealPaid ? "paid" : isAdmin ? "admin" : isInherit ? "inherit" : (plan !== "free" ? "paid" : "none");
+    } else if (plan === cur.bestPlan && cur.planSource === "none" && plan !== "free") {
+      cur.planSource = isRealPaid ? "paid" : isAdmin ? "admin" : "inherit";
+    }
+    albumStats.set(key, cur);
+  }
 
   // Pending plan overrides (admin upgrades waiting to be consumed on the
   // user's first album creation). Wrapped in try/catch so a fresh DB
@@ -88,6 +138,9 @@ export default async function AdminUsers() {
       createdAt: u.createdAt ?? null,
       albumCount: stats?.albumCount ?? 0,
       paidAlbumCount: stats?.paidAlbumCount ?? 0,
+      bestPlan: stats?.bestPlan ?? "free",
+      planSource: stats?.planSource ?? "none",
+      isComp: stats?.isComp ?? false,
     };
   });
 
@@ -103,6 +156,9 @@ export default async function AdminUsers() {
       createdAt: null,
       albumCount: stats.albumCount,
       paidAlbumCount: stats.paidAlbumCount,
+      bestPlan: stats.bestPlan,
+      planSource: stats.planSource,
+      isComp: stats.isComp,
     });
   }
 
@@ -126,7 +182,7 @@ export default async function AdminUsers() {
               <th className="px-4 py-3 font-medium">Uporabnik</th>
               <th className="px-4 py-3 font-medium">Email</th>
               <th className="px-4 py-3 font-medium">Galerije</th>
-              <th className="px-4 py-3 font-medium">Plačane</th>
+              <th className="px-4 py-3 font-medium">Paket</th>
               <th className="px-4 py-3 font-medium">Registracija</th>
               <th className="px-4 py-3 font-medium">Ročna nadgradnja</th>
             </tr>
@@ -143,11 +199,12 @@ export default async function AdminUsers() {
                 <td className="px-4 py-3 text-gray-600">{u.email ?? "—"}</td>
                 <td className="px-4 py-3 text-gray-700 font-semibold">{u.albumCount}</td>
                 <td className="px-4 py-3">
-                  {u.paidAlbumCount > 0 ? (
-                    <span className="text-xs font-bold text-[#C9820A]">{u.paidAlbumCount}</span>
-                  ) : (
-                    <span className="text-xs text-gray-400">—</span>
-                  )}
+                  <PlanBadge
+                    plan={u.bestPlan}
+                    source={u.planSource}
+                    isComp={u.isComp}
+                    hasAlbums={u.albumCount > 0}
+                  />
                 </td>
                 <td className="px-4 py-3 text-xs text-gray-500">
                   {u.createdAt ? new Date(u.createdAt).toLocaleDateString("sl-SI") : "—"}
@@ -171,6 +228,61 @@ export default async function AdminUsers() {
           </tbody>
         </table>
       </div>
+    </div>
+  );
+}
+
+/** Colour-coded plan badge that matches what admin sees in the Galerije
+ *  table — so the two views agree at a glance. */
+function PlanBadge({
+  plan,
+  source,
+  isComp,
+  hasAlbums,
+}: {
+  plan: PlanTier;
+  source: PlanSource;
+  isComp: boolean;
+  hasAlbums: boolean;
+}) {
+  if (!hasAlbums) {
+    return <span className="text-xs text-gray-300">brez galerij</span>;
+  }
+  if (plan === "free") {
+    return (
+      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide bg-gray-100 text-gray-500">
+        Free
+      </span>
+    );
+  }
+  // Comp badges (influencer/sponsor) get their own colour so they read
+  // as "gift" instead of "paid customer".
+  if (isComp) {
+    return (
+      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide bg-fuchsia-100 text-fuchsia-700">
+        {plan} <span className="opacity-60">· comp</span>
+      </span>
+    );
+  }
+  const paletteByPlan: Record<Exclude<PlanTier, "free">, string> = {
+    basic:   "bg-blue-100 text-blue-700",
+    plus:    "bg-emerald-100 text-emerald-700",
+    premium: "bg-amber-100 text-amber-700",
+  };
+  const labelBySource: Record<PlanSource, string> = {
+    paid:    "plačan",
+    admin:   "ročno",
+    inherit: "podedovano",
+    none:    "",
+  };
+  return (
+    <div className="flex flex-col gap-0.5">
+      <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide ${paletteByPlan[plan]} w-fit`}>
+        {plan}
+      </span>
+      {labelBySource[source] && (
+        <span className="text-[10px] text-gray-400 lowercase">{labelBySource[source]}</span>
+      )}
     </div>
   );
 }
