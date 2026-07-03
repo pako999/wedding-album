@@ -216,12 +216,49 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // Event topic landings — new SEO cluster targeting long-tail SL
     // keywords. HR/SR/DE/EN/ES variants can be added by extending
     // lib/seo/event-topics.ts and adding matching route files.
+    // Event topic landings — 6 topics × 6 locales. hreflang cluster is
+    // auto-attached by the eventTopicMetadata() helper on each page.
     { path: "/sl/slike-s-poroke",          priority: 0.75, changeFrequency: "monthly" },
     { path: "/sl/qr-koda-za-poroko",       priority: 0.75, changeFrequency: "monthly" },
     { path: "/sl/porocni-album",           priority: 0.75, changeFrequency: "monthly" },
     { path: "/sl/zbiranje-slik-s-poroke",  priority: 0.75, changeFrequency: "monthly" },
     { path: "/sl/slike-z-rojstnega-dne",   priority: 0.7,  changeFrequency: "monthly" },
     { path: "/sl/baby-shower-slike",       priority: 0.7,  changeFrequency: "monthly" },
+
+    { path: "/hr/fotografije-s-vjencanja",        priority: 0.7,  changeFrequency: "monthly" },
+    { path: "/hr/qr-kod-za-vjencanje-kako",       priority: 0.7,  changeFrequency: "monthly" },
+    { path: "/hr/vjencani-album",                 priority: 0.7,  changeFrequency: "monthly" },
+    { path: "/hr/skupljanje-fotografija-vjencanje", priority: 0.7, changeFrequency: "monthly" },
+    { path: "/hr/fotografije-s-rodjendana",       priority: 0.65, changeFrequency: "monthly" },
+    { path: "/hr/baby-shower-fotografije",        priority: 0.65, changeFrequency: "monthly" },
+
+    { path: "/sr/slike-sa-vencanja",              priority: 0.7,  changeFrequency: "monthly" },
+    { path: "/sr/qr-kod-za-vencanje-kako",        priority: 0.7,  changeFrequency: "monthly" },
+    { path: "/sr/vencani-album",                  priority: 0.7,  changeFrequency: "monthly" },
+    { path: "/sr/skupljanje-fotografija-vencanje", priority: 0.7, changeFrequency: "monthly" },
+    { path: "/sr/slike-sa-rodjendana",            priority: 0.65, changeFrequency: "monthly" },
+    { path: "/sr/baby-shower-fotografije",        priority: 0.65, changeFrequency: "monthly" },
+
+    { path: "/de/hochzeitsfotos-gaeste",              priority: 0.7,  changeFrequency: "monthly" },
+    { path: "/de/qr-code-hochzeit-erstellen",         priority: 0.7,  changeFrequency: "monthly" },
+    { path: "/de/digitales-hochzeitsalbum",           priority: 0.7,  changeFrequency: "monthly" },
+    { path: "/de/hochzeitsfotos-von-gaesten-sammeln", priority: 0.7,  changeFrequency: "monthly" },
+    { path: "/de/geburtstagsfotos-sammeln",           priority: 0.65, changeFrequency: "monthly" },
+    { path: "/de/babyparty-fotos",                    priority: 0.65, changeFrequency: "monthly" },
+
+    { path: "/en/wedding-photos-from-guests",     priority: 0.7,  changeFrequency: "monthly" },
+    { path: "/en/how-to-make-wedding-qr-code",    priority: 0.7,  changeFrequency: "monthly" },
+    { path: "/en/digital-wedding-album",          priority: 0.7,  changeFrequency: "monthly" },
+    { path: "/en/collect-wedding-photos-guests",  priority: 0.7,  changeFrequency: "monthly" },
+    { path: "/en/birthday-photos-guests",         priority: 0.65, changeFrequency: "monthly" },
+    { path: "/en/baby-shower-photos-guests",      priority: 0.65, changeFrequency: "monthly" },
+
+    { path: "/es/fotos-boda-invitados",           priority: 0.7,  changeFrequency: "monthly" },
+    { path: "/es/como-hacer-codigo-qr-boda",      priority: 0.7,  changeFrequency: "monthly" },
+    { path: "/es/album-de-boda-digital",          priority: 0.7,  changeFrequency: "monthly" },
+    { path: "/es/recopilar-fotos-boda-invitados", priority: 0.7,  changeFrequency: "monthly" },
+    { path: "/es/fotos-cumpleanos-invitados",     priority: 0.65, changeFrequency: "monthly" },
+    { path: "/es/fotos-baby-shower",              priority: 0.65, changeFrequency: "monthly" },
 
     { path: "/sl/alternative-aplikacije",  priority: 0.7, changeFrequency: "monthly", lastModified: LAST_EDITED.alternatives, alternates: ALTERNATIVES_CLUSTER },
     { path: "/hr/alternativne-aplikacije", priority: 0.7, changeFrequency: "monthly", lastModified: LAST_EDITED.alternatives, alternates: ALTERNATIVES_CLUSTER },

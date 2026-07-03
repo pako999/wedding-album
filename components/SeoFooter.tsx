@@ -60,6 +60,14 @@ const COPY: Record<Lang, FooterCopy> = {
     blog: "Blog", guides: "Vodiči",
     guideLabel: "QR kod za vjenčanje", guideUrl: "/hr/qr-kod-vjencanje",
     altLabel: "Usporedba aplikacija", altUrl: "/hr/alternativne-aplikacije",
+    extraGuides: [
+      { label: "Fotografije s vjenčanja",       url: "/hr/fotografije-s-vjencanja" },
+      { label: "QR kod za vjenčanje (vodič)",   url: "/hr/qr-kod-za-vjencanje-kako" },
+      { label: "Vjenčani album",                url: "/hr/vjencani-album" },
+      { label: "Skupljanje fotografija",        url: "/hr/skupljanje-fotografija-vjencanje" },
+      { label: "Fotografije s rođendana",       url: "/hr/fotografije-s-rodjendana" },
+      { label: "Baby shower fotografije",       url: "/hr/baby-shower-fotografije" },
+    ],
     legal: "Pravno", privacy: "Privatnost", terms: "Uvjeti", cookies: "Kolačići", gdpr: "GDPR", refund: "Povrat novca", contact: "Kontakt",
   },
   sr: {
@@ -68,6 +76,14 @@ const COPY: Record<Lang, FooterCopy> = {
     blog: "Blog", guides: "Vodiči",
     guideLabel: "QR kod za venčanje", guideUrl: "/sr/qr-kod-vencanje",
     altLabel: "Poređenje aplikacija", altUrl: "/sr/alternativne-aplikacije",
+    extraGuides: [
+      { label: "Slike sa venčanja",         url: "/sr/slike-sa-vencanja" },
+      { label: "QR kod za venčanje (vodič)", url: "/sr/qr-kod-za-vencanje-kako" },
+      { label: "Venčani album",             url: "/sr/vencani-album" },
+      { label: "Skupljanje fotografija",    url: "/sr/skupljanje-fotografija-vencanje" },
+      { label: "Slike sa rođendana",        url: "/sr/slike-sa-rodjendana" },
+      { label: "Baby shower fotografije",   url: "/sr/baby-shower-fotografije" },
+    ],
     legal: "Pravno", privacy: "Privatnost", terms: "Uslovi", cookies: "Kolačići", gdpr: "GDPR", refund: "Povraćaj novca", contact: "Kontakt",
   },
   de: {
@@ -76,6 +92,14 @@ const COPY: Record<Lang, FooterCopy> = {
     blog: "Blog", guides: "Anleitungen",
     guideLabel: "Hochzeitsfotos sammeln", guideUrl: "/de/hochzeitsfotos-sammeln",
     altLabel: "App-Vergleich", altUrl: "/de/alternativen",
+    extraGuides: [
+      { label: "Hochzeitsfotos der Gäste",         url: "/de/hochzeitsfotos-gaeste" },
+      { label: "QR-Code Hochzeit erstellen",       url: "/de/qr-code-hochzeit-erstellen" },
+      { label: "Digitales Hochzeitsalbum",         url: "/de/digitales-hochzeitsalbum" },
+      { label: "Fotos von Gästen sammeln",         url: "/de/hochzeitsfotos-von-gaesten-sammeln" },
+      { label: "Geburtstagsfotos sammeln",         url: "/de/geburtstagsfotos-sammeln" },
+      { label: "Babyparty Fotos",                  url: "/de/babyparty-fotos" },
+    ],
     legal: "Rechtliches", privacy: "Datenschutz", terms: "AGB", cookies: "Cookies", gdpr: "DSGVO", refund: "Rückerstattung", contact: "Kontakt",
   },
   en: {
@@ -84,6 +108,14 @@ const COPY: Record<Lang, FooterCopy> = {
     blog: "Blog", guides: "Guides",
     guideLabel: "Wedding photo sharing", guideUrl: "/en/wedding-photo-sharing",
     altLabel: "App alternatives", altUrl: "/en/alternatives",
+    extraGuides: [
+      { label: "Wedding photos from guests",   url: "/en/wedding-photos-from-guests" },
+      { label: "How to make a wedding QR",     url: "/en/how-to-make-wedding-qr-code" },
+      { label: "Digital wedding album",        url: "/en/digital-wedding-album" },
+      { label: "Collect wedding photos",       url: "/en/collect-wedding-photos-guests" },
+      { label: "Birthday photos from guests",  url: "/en/birthday-photos-guests" },
+      { label: "Baby shower photos",           url: "/en/baby-shower-photos-guests" },
+    ],
     legal: "Legal", privacy: "Privacy", terms: "Terms", cookies: "Cookies", gdpr: "GDPR", refund: "Refunds", contact: "Contact",
   },
   es: {
@@ -92,6 +124,14 @@ const COPY: Record<Lang, FooterCopy> = {
     blog: "Blog", guides: "Guías",
     guideLabel: "Fotos boda QR", guideUrl: "/es/fotos-boda-qr",
     altLabel: "Comparativa de apps", altUrl: "/es/alternativas",
+    extraGuides: [
+      { label: "Fotos de boda de invitados",  url: "/es/fotos-boda-invitados" },
+      { label: "Cómo hacer código QR boda",   url: "/es/como-hacer-codigo-qr-boda" },
+      { label: "Álbum de boda digital",       url: "/es/album-de-boda-digital" },
+      { label: "Recopilar fotos de boda",     url: "/es/recopilar-fotos-boda-invitados" },
+      { label: "Fotos de cumpleaños",         url: "/es/fotos-cumpleanos-invitados" },
+      { label: "Fotos de baby shower",        url: "/es/fotos-baby-shower" },
+    ],
     legal: "Legal", privacy: "Privacidad", terms: "Términos", cookies: "Cookies", gdpr: "RGPD", refund: "Reembolsos", contact: "Contacto",
   },
 };
