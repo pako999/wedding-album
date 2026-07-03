@@ -3,8 +3,33 @@ import { notFound, redirect } from "next/navigation";
 import { auth } from "@clerk/nextjs/server";
 import { requireAdmin, requireAdminEmail, hasValidAdminCookie } from "@/lib/admin";
 import { AdminShell } from "@/components/admin/AdminShell";
+import { runMigrations } from "@/lib/db/migrations";
 
 export const dynamic = "force-dynamic";
+
+/**
+ * Cold-start bootstrap. First admin request per Vercel instance calls
+ * runMigrations() — idempotent, uses IF NOT EXISTS / IF EXISTS
+ * everywhere, so re-running is cheap. We cache the promise so subsequent
+ * admin requests skip the DB round-trip.
+ *
+ * This exists because Drizzle's SELECT now includes columns added in
+ * later migrations (referral_code, etc.). If a Neon instance hasn't been
+ * migrated yet, EVERY page that touches `albums` throws — including the
+ * admin layout itself, so the "🔧 Popravi bazo" button becomes
+ * unreachable. Running here makes the button redundant on cold start.
+ */
+let bootstrapPromise: Promise<void> | null = null;
+async function ensureMigrations(): Promise<void> {
+  if (!bootstrapPromise) {
+    bootstrapPromise = runMigrations().catch((err) => {
+      console.error("[admin bootstrap] migrations failed:", err);
+      // Reset so the next request retries.
+      bootstrapPromise = null;
+    });
+  }
+  return bootstrapPromise;
+}
 
 const NAV = [
   { href: "/admin",            label: "Pregled",       icon: "📊" },
@@ -17,6 +42,10 @@ const NAV = [
 ];
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
+  // Bootstrap on the first admin hit per instance so a stale schema
+  // doesn't crash the layout itself and lock the operator out.
+  await ensureMigrations();
+
   // Auth — bounce anonymous users to sign-in, everyone else either passes
   // or gets a 404 (deliberately not a 403, so the admin surface is not
   // discoverable to random Clerk users).
