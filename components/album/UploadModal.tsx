@@ -646,16 +646,16 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
         style={{ maxHeight: "92dvh", paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 shrink-0">
-          <div>
-            <h2 className="font-serif text-xl font-light text-[#0F1729]">{t.uploadModalTitle}</h2>
-            <div className="flex items-center gap-3 mt-0.5">
-              <span className="text-[10px] text-[#0F1729]/40 px-2 py-0.5 rounded-full font-medium" style={{ background: `${accent}1A` }}>📷 {t.maxImageSize(MAX_IMAGE_MB)}</span>
-              <span className="text-[10px] text-[#0F1729]/40 px-2 py-0.5 rounded-full font-medium" style={{ background: `${accent}1A` }}>📹 {t.maxVideoSize(MAX_VIDEO_MB)}</span>
-              <span className="text-[10px] text-green-600 font-medium">{t.fullQuality}</span>
+        <div className="flex items-center justify-between gap-2 px-4 sm:px-6 py-4 border-b border-gray-100 shrink-0 min-w-0">
+          <div className="min-w-0 flex-1">
+            <h2 className="font-serif text-xl font-light text-[#0F1729] truncate">{t.uploadModalTitle}</h2>
+            <div className="flex items-center gap-2 sm:gap-3 mt-0.5 flex-wrap">
+              <span className="text-[10px] text-[#0F1729]/40 px-2 py-0.5 rounded-full font-medium whitespace-nowrap" style={{ background: `${accent}1A` }}>📷 {t.maxImageSize(MAX_IMAGE_MB)}</span>
+              <span className="text-[10px] text-[#0F1729]/40 px-2 py-0.5 rounded-full font-medium whitespace-nowrap" style={{ background: `${accent}1A` }}>📹 {t.maxVideoSize(MAX_VIDEO_MB)}</span>
+              <span className="text-[10px] text-green-600 font-medium whitespace-nowrap">{t.fullQuality}</span>
             </div>
           </div>
-          <button onClick={onClose} disabled={uploading} className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 disabled:opacity-40">
+          <button onClick={onClose} disabled={uploading} className="shrink-0 w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 disabled:opacity-40">
             <svg className="w-4 h-4 text-[#0F1729]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
             </svg>
@@ -681,18 +681,18 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
           </div>
         )}
 
-        <div className="flex-1 overflow-y-auto p-6 space-y-4">
+        <div className="flex-1 overflow-y-auto overflow-x-hidden p-4 sm:p-6 space-y-4">
           {allDone ? (
-            <div className="text-center py-8">
+            <div className="text-center py-8 min-w-0">
               <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-4">
                 <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                 </svg>
               </div>
-              <p className="font-serif text-xl font-light text-[#0F1729] mb-1">{t.successTitle(success)}</p>
-              <p className="font-sans text-sm text-[#0F1729]/60 mb-3">{t.successDesc}</p>
+              <p className="font-serif text-xl font-light text-[#0F1729] mb-1 break-words">{t.successTitle(success)}</p>
+              <p className="font-sans text-sm text-[#0F1729]/60 mb-3 break-words">{t.successDesc}</p>
               {/* Approval note — demo albums show a "not public" notice instead */}
-              <p className="font-sans text-xs text-[#0F1729]/45 bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 mb-6 leading-relaxed">
+              <p className="font-sans text-xs text-[#0F1729]/45 bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 mb-6 leading-relaxed break-words">
                 {isDemo ? t.demoUploadNote : t.approvalNote}
               </p>
               <button
@@ -713,20 +713,21 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
                   <p className="text-xs text-green-600 font-medium text-center py-2">{t.saveLinkSent}</p>
                 ) : (
                   <>
-                    <div className="flex gap-2">
+                    <div className="flex gap-2 min-w-0">
                       <input
                         type="email"
+                        size={1}
                         value={saveLinkEmail}
                         onChange={e => setSaveLinkEmail(e.target.value)}
                         onKeyDown={e => e.key === "Enter" && sendAlbumLink()}
                         placeholder="vas@email.com"
                         autoComplete="email"
-                        className="flex-1 px-3 py-2 text-sm border border-gray-200 rounded-xl outline-none focus:border-gray-400"
+                        className="flex-1 min-w-0 px-3 py-2 text-sm border border-gray-200 rounded-xl outline-none focus:border-gray-400"
                       />
                       <button
                         onClick={sendAlbumLink}
                         disabled={saveLinkSending || !saveLinkEmail.trim()}
-                        className="px-4 py-2 text-sm rounded-xl text-white font-medium transition-all disabled:opacity-40"
+                        className="shrink-0 px-4 py-2 text-sm rounded-xl text-white font-medium transition-all disabled:opacity-40"
                         style={{ background: accent }}
                       >
                         {saveLinkSending ? "…" : t.saveLinkSend}
@@ -850,7 +851,7 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
         </div>
 
         {!allDone && (
-          <div className="px-6 py-4 border-t border-gray-100 shrink-0 space-y-3">
+          <div className="px-4 sm:px-6 py-4 border-t border-gray-100 shrink-0 space-y-3">
             {/* Overall progress bar — visible only while uploading */}
             {uploading && (() => {
               const total = files.length;
