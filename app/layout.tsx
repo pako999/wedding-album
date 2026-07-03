@@ -59,7 +59,10 @@ const cormorant = Cormorant_Garamond({
 });
 
 export const viewport: Viewport = {
-  themeColor: "#C9820A",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#FFFFFF" },
+    { media: "(prefers-color-scheme: dark)",  color: "#0F1729" },
+  ],
 };
 
 export const metadata: Metadata = {
@@ -195,6 +198,13 @@ export default async function RootLayout({
     <ClerkProvider localization={clerkLocalization}>
       <html lang={lang} className={`${dmSans.variable} ${cormorant.variable}`}>
         <body className="font-sans antialiased bg-[#F2F4F8] text-[#0F1729] min-h-screen">
+          {/* Preconnect hints — trim ~100-300 ms off TLS handshake for the
+              third-party scripts we KNOW will load on every page. Next.js
+              hoists these to <head> automatically. */}
+          <link rel="preconnect" href="https://www.googletagmanager.com" />
+          <link rel="preconnect" href="https://consent.cookiebot.com" />
+          <link rel="dns-prefetch" href="https://www.google-analytics.com" />
+
           {/* Cookiebot — must be beforeInteractive so auto-blocking mode can
               intercept GA and any other third-party scripts before they fire. */}
           <Script

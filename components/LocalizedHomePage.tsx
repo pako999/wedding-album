@@ -769,15 +769,36 @@ export async function LocalizedHomePage({ lang }: { lang: Lang }) {
               <div className="hidden lg:block relative select-none" style={{ height: 600 }}>
                 <div className="absolute rounded-3xl overflow-hidden shadow-2xl" style={{ top: 56, left: 0, width: 372, height: 466, transform: "rotate(-5deg)", zIndex: 20 }}>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src="/hero/scan.webp" alt="" className="w-full h-full object-cover" />
+                  <img
+                    src="/hero/scan.webp"
+                    alt=""
+                    width={372}
+                    height={466}
+                    fetchPriority="high"
+                    className="w-full h-full object-cover"
+                  />
                 </div>
                 <div className="absolute rounded-2xl overflow-hidden shadow-xl" style={{ top: 0, right: 0, width: 244, height: 304, transform: "rotate(5deg)", zIndex: 30 }}>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src="/hero/gallery.webp" alt="" className="w-full h-full object-cover" />
+                  <img
+                    src="/hero/gallery.webp"
+                    alt=""
+                    width={244}
+                    height={304}
+                    loading="lazy"
+                    className="w-full h-full object-cover"
+                  />
                 </div>
                 <div className="absolute rounded-2xl overflow-hidden shadow-2xl" style={{ bottom: 20, right: 24, width: 252, height: 252, transform: "rotate(4deg)", zIndex: 30 }}>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src="/hero/cards.webp" alt="" className="w-full h-full object-cover" />
+                  <img
+                    src="/hero/cards.webp"
+                    alt=""
+                    width={252}
+                    height={252}
+                    loading="lazy"
+                    className="w-full h-full object-cover"
+                  />
                 </div>
               </div>
             </div>
