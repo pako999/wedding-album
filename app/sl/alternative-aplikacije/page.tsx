@@ -5,6 +5,7 @@ import { GuestcamLogo } from "@/components/GuestcamLogo";
 import { SeoFooter } from "@/components/SeoFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { OG_IMAGE_URL, ogImage } from "@/lib/og";
+import { safeJsonLd } from "@/lib/seo/jsonld-safe";
 
 export const metadata: Metadata = {
   title: "Najboljše aplikacije za poročne fotografije 2026",
@@ -99,7 +100,7 @@ export default function AlternativeAplikacijePage() {
     <div className="min-h-screen bg-white text-[#0F1729] font-sans">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
+        dangerouslySetInnerHTML={{ __html: safeJsonLd(articleSchema) }}
       />
       <SiteHeader lang="sl" hreflang={ALTERNATIVES_HREFLANG} />
 

@@ -47,7 +47,10 @@ export async function GET(req: NextRequest) {
 
   const h = await headers();
   const affiliate = await resolveAffiliate(code, {
+    // Prefer Vercel's stripped-and-verified header so a spoofed
+    // x-forwarded-for from the client can't game IP-based analytics.
     ipAddress:
+      h.get("x-vercel-forwarded-for")?.split(",")[0]?.trim() ??
       h.get("x-forwarded-for")?.split(",")[0]?.trim() ??
       h.get("x-real-ip") ??
       undefined,

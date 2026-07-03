@@ -3,6 +3,7 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { SeoFooter } from "@/components/SeoFooter";
 import type { LangCode } from "@/components/LanguageSwitcher";
 import { type BlogPost, type BlogBlock, getRelatedPosts, getTranslationMap, blogUrl, headingId } from "@/lib/blog";
+import { safeJsonLd } from "@/lib/seo/jsonld-safe";
 
 interface Props {
   post: BlogPost;
@@ -359,7 +360,7 @@ export async function BlogPostPage({ post }: Props) {
       {/* JSON-LD for SEO / AI engines */}
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: safeJsonLd(jsonLd) }}
       />
 
       <SeoFooter lang={post.lang} />

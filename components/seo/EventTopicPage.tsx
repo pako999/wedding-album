@@ -11,6 +11,7 @@ import {
   localesForTopic,
 } from "@/lib/seo/event-topics";
 import { SITE_URL } from "@/lib/urls";
+import { safeJsonLd } from "@/lib/seo/jsonld-safe";
 
 /** Build metadata for a topic + locale. Handles canonical + hreflang. */
 export function eventTopicMetadata(
@@ -111,11 +112,11 @@ export function EventTopicPage({ locale, topicKey }: Props) {
     <div className="min-h-screen bg-white text-[#0F1729] font-sans">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
+        dangerouslySetInnerHTML={{ __html: safeJsonLd(articleSchema) }}
       />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+        dangerouslySetInnerHTML={{ __html: safeJsonLd(faqSchema) }}
       />
       <SiteHeader lang={locale} hreflang={hreflang} />
 

@@ -9,6 +9,13 @@ export function RunMigrationsButton() {
   const [msg, setMsg] = useState<{ ok: boolean; text: string } | null>(null);
 
   const run = () => {
+    // Confirmation gate so a stray click / brief admin-session hijack
+    // doesn't fire a DB mutation with one press. Migrations are
+    // idempotent so damage is bounded, but confirm() costs nothing.
+    if (typeof window !== "undefined") {
+      const ok = window.confirm("Zaženi migracije baze? Idempotentno, a le, če veš, kaj počneš.");
+      if (!ok) return;
+    }
     setMsg(null);
     startTransition(async () => {
       const res = await fetch("/api/admin/run-migrations", { method: "POST" });

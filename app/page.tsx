@@ -7,6 +7,7 @@ import { HomeMobileMenu } from "@/components/HomeMobileMenu";
 import { LanguageSwitcher, HOME_HREFLANG } from "@/components/LanguageSwitcher";
 import { HeaderAuthButtons } from "@/components/HeaderAuthButtons";
 import { EventCard } from "@/components/EventCard";
+import { safeJsonLd } from "@/lib/seo/jsonld-safe";
 
 export const metadata: Metadata = {
   alternates: {
@@ -159,7 +160,7 @@ export default async function HomePage() {
     <div className="min-h-screen bg-white text-[#0F1729] font-sans">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: safeJsonLd(jsonLd) }}
       />
 
       {/* ── Navbar ──────────────────────────────────────────────────────────── */}

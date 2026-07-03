@@ -5,6 +5,7 @@ import { GuestcamLogo } from "@/components/GuestcamLogo";
 import { SeoFooter } from "@/components/SeoFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { OG_IMAGE_URL, ogImage } from "@/lib/og";
+import { safeJsonLd } from "@/lib/seo/jsonld-safe";
 
 export const metadata: Metadata = {
   title: "Mejores Apps para Compartir Fotos de Boda 2025",
@@ -97,7 +98,7 @@ export default function AlternativasPage() {
     <div className="min-h-screen bg-white text-[#0F1729] font-sans">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
+        dangerouslySetInnerHTML={{ __html: safeJsonLd(articleSchema) }}
       />
       <SiteHeader lang="es" hreflang={ALTERNATIVES_HREFLANG} />
 
