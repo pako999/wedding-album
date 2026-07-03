@@ -4,6 +4,7 @@ import { albums } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { ALBUM_THEMES } from "@/lib/album-themes";
 import { checkAlbumOwnership } from "@/lib/album-ownership";
+import { hashAlbumPassword, isHashed } from "@/lib/album-password";
 
 export async function PATCH(
   req: NextRequest,
@@ -42,13 +43,28 @@ export async function PATCH(
       ? theme
       : album.theme;
 
+  // Password handling: hash any new plaintext value with scrypt; empty
+  // string means "clear"; undefined means "leave unchanged". If the
+  // owner submits the exact hash already stored (round-trip from form
+  // state), don't double-hash it — treat as no-op.
+  let nextPassword: string | null | undefined;
+  if (password === undefined) {
+    nextPassword = undefined;
+  } else if (!password) {
+    nextPassword = null;
+  } else if (typeof password === "string" && isHashed(password) && password === album.password) {
+    nextPassword = undefined;
+  } else {
+    nextPassword = await hashAlbumPassword(String(password));
+  }
+
   await db
     .update(albums)
     .set({
       coupleName: coupleName ?? album.coupleName,
       location: location !== undefined ? (location || null) : album.location,
       notifyEmail: notifyEmail !== undefined ? (notifyEmail || null) : album.notifyEmail,
-      password: password !== undefined ? (password || null) : album.password,
+      password: nextPassword !== undefined ? nextPassword : album.password,
       moderationEnabled: moderationEnabled !== undefined ? moderationEnabled : album.moderationEnabled,
       isPublished: isPublished !== undefined ? isPublished : album.isPublished,
       coverImageUrl: coverImageUrl !== undefined ? (coverImageUrl || null) : album.coverImageUrl,

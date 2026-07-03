@@ -21,6 +21,7 @@ import {
   isBunnyStreamConfigured,
   createBunnyStreamUpload,
 } from "@/lib/storage/bunny";
+import { hashAlbumPassword, needsRehash, verifyAlbumPassword } from "@/lib/album-password";
 
 export const runtime = "nodejs";
 
@@ -54,10 +55,21 @@ export async function POST(
   }
   // Password-protected albums: the guest must supply the album password
   // (collected at the password gate) to obtain an upload destination.
+  // Verifies against scrypt-hashed OR legacy plaintext (see
+  // lib/album-password.ts) and silently upgrades legacy rows on match.
   if (album.password) {
-    const provided = req.headers.get("x-album-password");
-    if (provided !== album.password) {
+    const provided = req.headers.get("x-album-password") ?? "";
+    const ok = await verifyAlbumPassword(provided, album.password);
+    if (!ok) {
       return NextResponse.json({ error: "Wrong album password" }, { status: 403 });
+    }
+    if (needsRehash(album.password)) {
+      const upgraded = await hashAlbumPassword(provided);
+      await db
+        .update(albums)
+        .set({ password: upgraded })
+        .where(eq(albums.id, album.id))
+        .catch(() => {}); // best-effort; wrong hash won't lock out the guest
     }
   }
   if (album.photoCount >= album.maxPhotos) {

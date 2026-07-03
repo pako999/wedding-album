@@ -5,6 +5,7 @@ import { albums, photos, moments } from "@/lib/db/schema";
 import { eq, and } from "drizzle-orm";
 import { AlbumGuestView } from "@/components/album/AlbumGuestView";
 import { type Lang } from "@/lib/i18n/translations";
+import { hashAlbumPassword, needsRehash, verifyAlbumPassword } from "@/lib/album-password";
 import type { Metadata } from "next";
 
 export const dynamic = "force-dynamic";
@@ -124,9 +125,22 @@ export default async function AlbumPage({ params, searchParams }: Props) {
     }
   } catch { /* viewer is anonymous — that's fine */ }
 
-  // Password gate (server-side check). Owners always bypass.
+  // Password gate (server-side check). Owners always bypass. Verifies
+  // against scrypt-hashed OR legacy plaintext (see lib/album-password.ts)
+  // and silently upgrades legacy rows on the first correct entry.
   const passwordRequired = !!album.password && !isOwner;
-  const passwordCorrect = isOwner || !album.password || pw === album.password;
+  let passwordCorrect = isOwner || !album.password;
+  if (!passwordCorrect && album.password) {
+    passwordCorrect = await verifyAlbumPassword(pw ?? "", album.password);
+    if (passwordCorrect && needsRehash(album.password)) {
+      const upgraded = await hashAlbumPassword(pw ?? "");
+      await db
+        .update(albums)
+        .set({ password: upgraded })
+        .where(eq(albums.id, album.id))
+        .catch(() => {});
+    }
+  }
 
   // Fetch published photos
   const albumPhotos = passwordCorrect
