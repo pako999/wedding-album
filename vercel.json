@@ -19,6 +19,14 @@
     {
       "path": "/api/cron/onboarding-nudge",
       "schedule": "0 9 * * *"
+    },
+    {
+      "path": "/api/cron/guest-email-d3",
+      "schedule": "5 9 * * *"
+    },
+    {
+      "path": "/api/cron/guest-email-d21",
+      "schedule": "10 9 * * *"
     }
   ]
 }

@@ -326,10 +326,21 @@ export const guestEmails = pgTable(
     consentTimestamp: timestamp("consent_timestamp"),
     locale: varchar("locale", { length: 5 }),
     createdAt: timestamp("created_at").notNull().defaultNow(),
+    /** D3 transactional (photo-count nudge, no consent needed). */
+    d3SentAt: timestamp("d3_sent_at"),
+    /** D21 soft-pitch with 15% code (marketing — consent required). */
+    d21SentAt: timestamp("d21_sent_at"),
+    /** Timestamp of guest's unsubscribe click. Also flips consent to false. */
+    unsubscribedAt: timestamp("unsubscribed_at"),
+    /** Random opaque token used as the unsubscribe link — safer than exposing row id. */
+    unsubscribeToken: text("unsubscribe_token").$defaultFn(() => crypto.randomUUID()),
   },
   (t) => [
     index("guest_emails_album_idx").on(t.albumId),
     unique("guest_emails_album_email_unique").on(t.albumId, t.email),
+    index("guest_emails_d3_due_idx").on(t.d3SentAt),
+    index("guest_emails_d21_due_idx").on(t.d21SentAt),
+    unique("guest_emails_unsubscribe_token_unique").on(t.unsubscribeToken),
   ],
 );
 

@@ -1693,3 +1693,339 @@ export async function sendAccountUpgradedEmail({ to, firstName, plan, placeholde
     console.error("[account upgraded email] send failed:", err);
   }
 }
+
+// ─── Guest referral loop — D3 (transactional photo-count nudge) ──────────────
+// Sent 3 days after the guest gave us their email (no consent needed — this is
+// a natural continuation of the "email me the album link" flow they opted into).
+// Message: "the album has N photos now — take another look."
+
+type GuestLang = "sl" | "hr" | "sr" | "de" | "en" | "es";
+const GUEST_LANGS: readonly GuestLang[] = ["sl", "hr", "sr", "de", "en", "es"];
+function pickGuestLang(v: string | null | undefined): GuestLang {
+  if (v && (GUEST_LANGS as readonly string[]).includes(v)) return v as GuestLang;
+  return "sl";
+}
+
+interface D3Copy {
+  subject: (couple: string, count: number) => string;
+  heading: string;
+  greeting: string;
+  intro: (couple: string, count: number) => string;
+  cta: string;
+  outro: string;
+  unsubscribe: string;
+  signoff: string;
+}
+
+const D3_COPY: Record<GuestLang, D3Copy> = {
+  sl: {
+    subject: (c, n) => `📸 ${n} novih fotografij v galeriji ${c}`,
+    heading: "Nove fotografije so tu",
+    greeting: "Pozdravljeni,",
+    intro: (c, n) => `Galerija <strong>${escapeHtml(c)}</strong> že vsebuje <strong>${n}</strong> fotografij. Preverite, kaj so ujeli drugi gostje — morda je tudi katera vaša najljubša med njimi.`,
+    cta: "Odpri galerijo →",
+    outro: "Se še niste? Delite svoje fotografije z drugimi — vsak nov posnetek naredi spomin popolnejši.",
+    unsubscribe: "Odjava",
+    signoff: "— Ekipa Guestcam",
+  },
+  hr: {
+    subject: (c, n) => `📸 ${n} novih fotografija u galeriji ${c}`,
+    heading: "Nove fotografije su tu",
+    greeting: "Pozdrav,",
+    intro: (c, n) => `Galerija <strong>${escapeHtml(c)}</strong> već sadrži <strong>${n}</strong> fotografija. Pogledajte što su drugi gosti uhvatili — možda je i vaša omiljena među njima.`,
+    cta: "Otvori galeriju →",
+    outro: "Još niste? Podijelite svoje fotografije s drugima — svaka nova snimka čini uspomenu potpunijom.",
+    unsubscribe: "Odjava",
+    signoff: "— Ekipa Guestcam",
+  },
+  sr: {
+    subject: (c, n) => `📸 ${n} novih fotografija u galeriji ${c}`,
+    heading: "Nove fotografije su ovde",
+    greeting: "Pozdrav,",
+    intro: (c, n) => `Galerija <strong>${escapeHtml(c)}</strong> već ima <strong>${n}</strong> fotografija. Pogledajte šta su drugi gosti uhvatili — možda je i vaša omiljena među njima.`,
+    cta: "Otvori galeriju →",
+    outro: "Još niste? Podelite svoje fotografije sa drugima — svaka nova fotografija čini uspomenu potpunijom.",
+    unsubscribe: "Odjava",
+    signoff: "— Ekipa Guestcam",
+  },
+  de: {
+    subject: (c, n) => `📸 ${n} neue Fotos in der Galerie ${c}`,
+    heading: "Neue Fotos sind da",
+    greeting: "Hallo,",
+    intro: (c, n) => `Die Galerie <strong>${escapeHtml(c)}</strong> enthält bereits <strong>${n}</strong> Fotos. Schauen Sie, was andere Gäste eingefangen haben — vielleicht ist Ihr Lieblingsfoto dabei.`,
+    cta: "Galerie öffnen →",
+    outro: "Noch nicht? Teilen Sie Ihre Fotos mit den anderen — jedes neue Foto macht die Erinnerung vollständiger.",
+    unsubscribe: "Abmelden",
+    signoff: "— Das Guestcam-Team",
+  },
+  en: {
+    subject: (c, n) => `📸 ${n} new photos in the ${c} gallery`,
+    heading: "New photos are in",
+    greeting: "Hi,",
+    intro: (c, n) => `The <strong>${escapeHtml(c)}</strong> gallery now has <strong>${n}</strong> photos. Take another look — your favourite shot might be in there.`,
+    cta: "Open the gallery →",
+    outro: "Haven't uploaded yet? Share yours too — every new photo makes the memory more complete.",
+    unsubscribe: "Unsubscribe",
+    signoff: "— The Guestcam team",
+  },
+  es: {
+    subject: (c, n) => `📸 ${n} fotos nuevas en la galería ${c}`,
+    heading: "Nuevas fotos disponibles",
+    greeting: "Hola,",
+    intro: (c, n) => `La galería <strong>${escapeHtml(c)}</strong> ya tiene <strong>${n}</strong> fotos. Echa otro vistazo — tu foto favorita puede estar entre ellas.`,
+    cta: "Abrir la galería →",
+    outro: "¿Aún no has subido? Comparte las tuyas también — cada foto nueva hace el recuerdo más completo.",
+    unsubscribe: "Cancelar suscripción",
+    signoff: "— El equipo de Guestcam",
+  },
+};
+
+interface D3Params {
+  to: string;
+  albumSlug: string;
+  coupleName: string;
+  photoCount: number;
+  unsubscribeToken: string;
+  locale?: string | null;
+}
+
+export function guestEmailD3Html(p: D3Params & { locale: GuestLang }): string {
+  const t = D3_COPY[p.locale];
+  const albumUrl = `${APP_URL}/${p.albumSlug}`;
+  const unsubUrl = `${APP_URL}/api/unsubscribe/${p.unsubscribeToken}`;
+  return `<!DOCTYPE html>
+<html lang="${p.locale}">
+<head><meta charset="utf-8" /><title>${t.heading}</title></head>
+<body style="margin:0;padding:0;background:#F2F4F8;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;color:#0F1729;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#F2F4F8;padding:32px 16px;">
+    <tr><td align="center">
+      <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;background:#ffffff;border-radius:18px;overflow:hidden;box-shadow:0 4px 24px rgba(15,23,41,0.06);">
+        <tr><td style="background:linear-gradient(135deg,#FFC94D 0%,#FFD966 100%);padding:32px 36px 26px;">
+          <p style="margin:0 0 8px;font-size:11px;letter-spacing:3px;font-weight:700;color:#0F1729;">GUESTCAM</p>
+          <h1 style="margin:0;font-size:22px;line-height:1.3;color:#0F1729;font-weight:800;">${t.heading}</h1>
+        </td></tr>
+        <tr><td style="padding:28px 36px 8px;">
+          <p style="margin:0 0 14px;font-size:15px;line-height:1.55;color:#0F1729;">${t.greeting}</p>
+          <p style="margin:0 0 22px;font-size:15px;line-height:1.65;color:#475569;">${t.intro(p.coupleName, p.photoCount)}</p>
+          <p style="margin:0 0 24px;text-align:center;">
+            <a href="${albumUrl}" style="display:inline-block;padding:13px 26px;background:#0F1729;color:#ffffff;text-decoration:none;border-radius:12px;font-weight:700;font-size:14px;">${t.cta}</a>
+          </p>
+          <p style="margin:0;font-size:14px;line-height:1.6;color:#64748B;">${t.outro}</p>
+        </td></tr>
+        <tr><td style="padding:24px 36px 28px;text-align:center;border-top:1px solid #F1F5F9;">
+          <p style="margin:0 0 8px;font-size:12px;color:#94A3B8;">${t.signoff}</p>
+          <p style="margin:0;font-size:11px;color:#94A3B8;">
+            <a href="${unsubUrl}" style="color:#94A3B8;text-decoration:underline;">${t.unsubscribe}</a>
+          </p>
+        </td></tr>
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>`;
+}
+
+export async function sendGuestEmailD3(p: D3Params) {
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) {
+    console.warn("[email] RESEND_API_KEY not set — skipping D3 guest email");
+    return;
+  }
+  const locale = pickGuestLang(p.locale);
+  const t = D3_COPY[locale];
+  const resend = new Resend(apiKey);
+  await resend.emails.send({
+    from: `Guestcam <${FROM}>`,
+    to: p.to,
+    subject: t.subject(p.coupleName, p.photoCount),
+    html: guestEmailD3Html({ ...p, locale }),
+  });
+}
+
+// ─── Guest referral loop — D21 (marketing pitch with 15% code) ───────────────
+// Sent 21 days after email capture, ONLY to guests who ticked "marketing consent".
+// Message: "hosting your own event? here's 15% off with the couple's code".
+
+interface D21Copy {
+  subject: (code: string) => string;
+  heading: string;
+  greeting: string;
+  intro: (couple: string) => string;
+  bullet1: string;
+  bullet2: string;
+  bullet3: string;
+  codeLabel: string;
+  cta: string;
+  disclaimer: string;
+  unsubscribe: string;
+  signoff: string;
+}
+
+const D21_COPY: Record<GuestLang, D21Copy> = {
+  sl: {
+    subject: (code) => `🎉 15% popust s kodo ${code} — vaša lastna galerija`,
+    heading: "Pripravljate svoj dogodek?",
+    greeting: "Pozdravljeni,",
+    intro: (c) => `Upamo, da so vas fotografije iz galerije <strong>${escapeHtml(c)}</strong> nasmejale. Če pripravljate svoj dogodek — poroko, rojstni dan, praznovanje — vam podarjamo <strong>15% popust</strong>.`,
+    bullet1: "Gostje skenirajo QR kodo in nalagajo fotografije brez aplikacije",
+    bullet2: "Vse fotografije v polni kakovosti, na enem mestu",
+    bullet3: "Prenesete jih kot ZIP ali shranite v Google Drive",
+    codeLabel: "Vaša koda",
+    cta: "Ustvari galerijo →",
+    disclaimer: "Koda velja 30 dni na vseh plačljivih paketih.",
+    unsubscribe: "Ne želim več teh sporočil",
+    signoff: "— Ekipa Guestcam",
+  },
+  hr: {
+    subject: (code) => `🎉 15% popusta s kodom ${code} — vaša vlastita galerija`,
+    heading: "Pripremate svoj događaj?",
+    greeting: "Pozdrav,",
+    intro: (c) => `Nadamo se da su vas fotografije iz galerije <strong>${escapeHtml(c)}</strong> nasmijale. Ako pripremate svoj događaj — vjenčanje, rođendan, proslavu — poklanjamo vam <strong>15% popusta</strong>.`,
+    bullet1: "Gosti skeniraju QR kod i uploadaju fotografije bez aplikacije",
+    bullet2: "Sve fotografije u punoj kvaliteti, na jednom mjestu",
+    bullet3: "Preuzmete ih kao ZIP ili spremite u Google Drive",
+    codeLabel: "Vaš kod",
+    cta: "Napravi galeriju →",
+    disclaimer: "Kod vrijedi 30 dana na svim plaćenim paketima.",
+    unsubscribe: "Ne želim više ovih poruka",
+    signoff: "— Ekipa Guestcam",
+  },
+  sr: {
+    subject: (code) => `🎉 15% popusta sa kodom ${code} — vaša sopstvena galerija`,
+    heading: "Pripremate svoj događaj?",
+    greeting: "Pozdrav,",
+    intro: (c) => `Nadamo se da su vas fotografije iz galerije <strong>${escapeHtml(c)}</strong> obradovale. Ako pripremate svoj događaj — venčanje, rođendan, proslavu — poklanjamo vam <strong>15% popusta</strong>.`,
+    bullet1: "Gosti skeniraju QR kod i uploaduju fotografije bez aplikacije",
+    bullet2: "Sve fotografije u punom kvalitetu, na jednom mestu",
+    bullet3: "Preuzmete ih kao ZIP ili sačuvate u Google Drive",
+    codeLabel: "Vaš kod",
+    cta: "Napravi galeriju →",
+    disclaimer: "Kod važi 30 dana na svim plaćenim paketima.",
+    unsubscribe: "Ne želim više ovih poruka",
+    signoff: "— Ekipa Guestcam",
+  },
+  de: {
+    subject: (code) => `🎉 15% Rabatt mit Code ${code} — Ihre eigene Galerie`,
+    heading: "Planen Sie Ihr Event?",
+    greeting: "Hallo,",
+    intro: (c) => `Wir hoffen, die Fotos aus der Galerie <strong>${escapeHtml(c)}</strong> haben Ihnen gefallen. Wenn Sie Ihr eigenes Event planen — Hochzeit, Geburtstag, Feier — schenken wir Ihnen <strong>15% Rabatt</strong>.`,
+    bullet1: "Gäste scannen den QR-Code und laden Fotos ohne App hoch",
+    bullet2: "Alle Fotos in voller Qualität, an einem Ort",
+    bullet3: "Als ZIP herunterladen oder in Google Drive speichern",
+    codeLabel: "Ihr Code",
+    cta: "Galerie erstellen →",
+    disclaimer: "Code gilt 30 Tage auf allen kostenpflichtigen Paketen.",
+    unsubscribe: "Diese E-Mails abbestellen",
+    signoff: "— Das Guestcam-Team",
+  },
+  en: {
+    subject: (code) => `🎉 15% off with code ${code} — your own gallery`,
+    heading: "Planning your own event?",
+    greeting: "Hi,",
+    intro: (c) => `We hope the photos from the <strong>${escapeHtml(c)}</strong> gallery brought a smile. If you're planning your own event — wedding, birthday, celebration — here's <strong>15% off</strong> from us.`,
+    bullet1: "Guests scan the QR code and upload photos with no app",
+    bullet2: "All photos in full quality, in one place",
+    bullet3: "Download as ZIP or save to Google Drive",
+    codeLabel: "Your code",
+    cta: "Create a gallery →",
+    disclaimer: "Code is valid for 30 days on all paid plans.",
+    unsubscribe: "Unsubscribe from these emails",
+    signoff: "— The Guestcam team",
+  },
+  es: {
+    subject: (code) => `🎉 15% de descuento con el código ${code} — tu propia galería`,
+    heading: "¿Preparas tu propio evento?",
+    greeting: "Hola,",
+    intro: (c) => `Esperamos que las fotos de la galería <strong>${escapeHtml(c)}</strong> te hayan sacado una sonrisa. Si preparas tu propio evento — boda, cumpleaños, celebración — te regalamos un <strong>15% de descuento</strong>.`,
+    bullet1: "Los invitados escanean el QR y suben fotos sin app",
+    bullet2: "Todas las fotos en máxima calidad, en un solo lugar",
+    bullet3: "Descarga como ZIP o guarda en Google Drive",
+    codeLabel: "Tu código",
+    cta: "Crear galería →",
+    disclaimer: "El código es válido 30 días en todos los planes de pago.",
+    unsubscribe: "Cancelar suscripción",
+    signoff: "— El equipo de Guestcam",
+  },
+};
+
+interface D21Params {
+  to: string;
+  discountCode: string;
+  discountPct: number;
+  fromCoupleName: string;
+  unsubscribeToken: string;
+  locale?: string | null;
+}
+
+export function guestEmailD21Html(p: D21Params & { locale: GuestLang }): string {
+  const t = D21_COPY[p.locale];
+  const localePrefix = p.locale === "sl" ? "" : `${p.locale}/`;
+  // Middleware captures ?ref=<code>&tp=<touchpoint> into gc_gref/gc_gtp
+  // cookies and strips the query — the 15% is applied at checkout automatically.
+  const createUrl = `${APP_URL}/${localePrefix}?ref=${encodeURIComponent(p.discountCode)}&tp=email_d21`;
+  const unsubUrl  = `${APP_URL}/api/unsubscribe/${p.unsubscribeToken}`;
+  return `<!DOCTYPE html>
+<html lang="${p.locale}">
+<head><meta charset="utf-8" /><title>${t.heading}</title></head>
+<body style="margin:0;padding:0;background:#F2F4F8;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;color:#0F1729;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#F2F4F8;padding:32px 16px;">
+    <tr><td align="center">
+      <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;background:#ffffff;border-radius:18px;overflow:hidden;box-shadow:0 4px 24px rgba(15,23,41,0.06);">
+        <tr><td style="background:linear-gradient(135deg,#FFC94D 0%,#FFD966 100%);padding:32px 36px 26px;">
+          <p style="margin:0 0 8px;font-size:11px;letter-spacing:3px;font-weight:700;color:#0F1729;">GUESTCAM</p>
+          <h1 style="margin:0;font-size:22px;line-height:1.3;color:#0F1729;font-weight:800;">${t.heading}</h1>
+        </td></tr>
+        <tr><td style="padding:28px 36px 8px;">
+          <p style="margin:0 0 14px;font-size:15px;line-height:1.55;color:#0F1729;">${t.greeting}</p>
+          <p style="margin:0 0 22px;font-size:15px;line-height:1.65;color:#475569;">${t.intro(p.fromCoupleName)}</p>
+
+          <table width="100%" cellpadding="0" cellspacing="0" style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:14px;">
+            <tr><td style="padding:16px 20px;">
+              <p style="margin:0 0 8px;font-size:13px;color:#475569;line-height:1.55;">• ${t.bullet1}</p>
+              <p style="margin:0 0 8px;font-size:13px;color:#475569;line-height:1.55;">• ${t.bullet2}</p>
+              <p style="margin:0;font-size:13px;color:#475569;line-height:1.55;">• ${t.bullet3}</p>
+            </td></tr>
+          </table>
+
+          <table width="100%" cellpadding="0" cellspacing="0" style="margin-top:24px;background:#FFF9EC;border:1.5px dashed #FFC94D;border-radius:14px;">
+            <tr><td style="padding:18px 22px;text-align:center;">
+              <p style="margin:0 0 6px;font-size:11px;letter-spacing:2px;color:#C9820A;font-weight:700;">${t.codeLabel.toUpperCase()}</p>
+              <p style="margin:0;font-size:24px;font-weight:800;letter-spacing:2px;color:#0F1729;font-family:'Courier New',monospace;">${escapeHtml(p.discountCode)}</p>
+              <p style="margin:6px 0 0;font-size:12px;color:#94A3B8;">−${p.discountPct}%</p>
+            </td></tr>
+          </table>
+
+          <p style="margin:24px 0 0;text-align:center;">
+            <a href="${createUrl}" style="display:inline-block;padding:14px 28px;background:#0F1729;color:#ffffff;text-decoration:none;border-radius:12px;font-weight:700;font-size:14px;">${t.cta}</a>
+          </p>
+          <p style="margin:14px 0 0;font-size:12px;color:#94A3B8;text-align:center;">${t.disclaimer}</p>
+        </td></tr>
+        <tr><td style="padding:24px 36px 28px;text-align:center;border-top:1px solid #F1F5F9;">
+          <p style="margin:0 0 8px;font-size:12px;color:#94A3B8;">${t.signoff}</p>
+          <p style="margin:0;font-size:11px;color:#94A3B8;">
+            <a href="${unsubUrl}" style="color:#94A3B8;text-decoration:underline;">${t.unsubscribe}</a>
+          </p>
+        </td></tr>
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>`;
+}
+
+export async function sendGuestEmailD21(p: D21Params) {
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) {
+    console.warn("[email] RESEND_API_KEY not set — skipping D21 guest email");
+    return;
+  }
+  const locale = pickGuestLang(p.locale);
+  const t = D21_COPY[locale];
+  const resend = new Resend(apiKey);
+  await resend.emails.send({
+    from: `Guestcam <${FROM}>`,
+    to: p.to,
+    subject: t.subject(p.discountCode),
+    html: guestEmailD21Html({ ...p, locale }),
+  });
+}

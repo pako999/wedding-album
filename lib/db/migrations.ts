@@ -436,6 +436,23 @@ export async function runMigrations() {
   await run("refc source idx", (q) => q`CREATE INDEX IF NOT EXISTS refc_source_idx ON referral_conversions (source_album_id)`);
   await run("refc new_user idx", (q) => q`CREATE INDEX IF NOT EXISTS refc_new_user_idx ON referral_conversions (new_user_clerk_id)`);
 
+  // ── Referral engine (P1) — guest email sequence tracking ─────────────────
+  await run("guest_emails.d3_sent_at",         (q) => q`ALTER TABLE guest_emails ADD COLUMN IF NOT EXISTS d3_sent_at TIMESTAMPTZ`);
+  await run("guest_emails.d21_sent_at",        (q) => q`ALTER TABLE guest_emails ADD COLUMN IF NOT EXISTS d21_sent_at TIMESTAMPTZ`);
+  await run("guest_emails.unsubscribed_at",    (q) => q`ALTER TABLE guest_emails ADD COLUMN IF NOT EXISTS unsubscribed_at TIMESTAMPTZ`);
+  await run("guest_emails.unsubscribe_token",  (q) => q`ALTER TABLE guest_emails ADD COLUMN IF NOT EXISTS unsubscribe_token TEXT`);
+  // Backfill tokens for existing rows so day-3/day-21 sends can already include an unsubscribe link.
+  await run("guest_emails backfill tokens", (q) => q`
+    UPDATE guest_emails
+       SET unsubscribe_token = gen_random_uuid()::text
+     WHERE unsubscribe_token IS NULL
+  `);
+  await run("guest_emails.unsubscribe_token unique", (q) => q`
+    ALTER TABLE guest_emails ADD CONSTRAINT guest_emails_unsubscribe_token_unique UNIQUE (unsubscribe_token)
+  `);
+  await run("guest_emails d3 due idx",  (q) => q`CREATE INDEX IF NOT EXISTS guest_emails_d3_due_idx  ON guest_emails (d3_sent_at)`);
+  await run("guest_emails d21 due idx", (q) => q`CREATE INDEX IF NOT EXISTS guest_emails_d21_due_idx ON guest_emails (d21_sent_at)`);
+
   // Backfill: give every existing album a referral code. Done in the DB
   // (not app-side) so we don't need N round-trips. Uses UPPER + regex
   // fold + album.id suffix for uniqueness.

@@ -14,6 +14,7 @@ import { ReminderModal } from "./ReminderModal";
 import { CountdownTimer } from "./CountdownTimer";
 import { Slideshow } from "./Slideshow";
 import { ProjectionWall } from "./ProjectionWall";
+import { PoweredByBadge } from "./PoweredByBadge";
 import { translations, LANGS, type Lang, type Translations } from "@/lib/i18n/translations";
 import { bunnyDisplayUrl, bunnyOriginalUrl } from "@/lib/storage/bunny";
 import { getAlbumTheme } from "@/lib/album-themes";
@@ -1198,9 +1199,14 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
       )}
 
       {/* ── Footer ────────────────────────────────────────────────────────── */}
-      <footer className="border-t mt-8 py-6 text-center" style={{ borderColor: BRAND.border }}>
-        <p className="text-xs" style={{ color: BRAND.muted }}>
-          Guestcam · <a href="https://www.guestcam.si" className="hover:underline">guestcam.si</a>
+      {/* Referral engine — the PoweredByBadge is non-removable across all
+          plans (incl. Premium) so every guest sees the CTA. Attribution is
+          via ?ref=<album.referralCode>&tp=gallery_footer picked up by
+          middleware. */}
+      <footer className="border-t mt-8 py-6 text-center flex flex-col items-center gap-3" style={{ borderColor: BRAND.border }}>
+        <PoweredByBadge referralCode={album.referralCode ?? null} lang={lang} />
+        <p className="text-[10px]" style={{ color: BRAND.muted }}>
+          © {new Date().getFullYear()} Guestcam
         </p>
       </footer>
 
