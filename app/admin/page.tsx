@@ -1,5 +1,5 @@
 import { db } from "@/lib/db";
-import { albums, photos } from "@/lib/db/schema";
+import { albums, photos, referralConversions, guestEmails } from "@/lib/db/schema";
 import { sql, desc, and, ne, count, eq, isNotNull, gt, or, like, isNull } from "drizzle-orm";
 
 export const dynamic = "force-dynamic";
@@ -48,6 +48,45 @@ export default async function AdminOverview() {
     orderBy: [desc(albums.createdAt)],
     limit: 8,
   });
+
+  // ── Referral engine (guest viral loop) metrics ──────────────────────────
+  // Wrapped in try/catch so a DB that hasn't run migrations yet doesn't
+  // crash the whole overview.
+  let referralSignups = 0;
+  let referralPaid = 0;
+  let capturedGuestEmails = 0;
+  let d3Sent = 0;
+  let d21Sent = 0;
+  try {
+    const [{ c }] = await db.select({ c: count() }).from(referralConversions);
+    referralSignups = c;
+  } catch { /* table not migrated yet */ }
+  try {
+    const [{ c }] = await db
+      .select({ c: count() })
+      .from(referralConversions)
+      .where(isNotNull(referralConversions.convertedToPaidAt));
+    referralPaid = c;
+  } catch { /* ignore */ }
+  try {
+    const [{ c }] = await db.select({ c: count() }).from(guestEmails);
+    capturedGuestEmails = c;
+    const [{ c: d3 }] = await db
+      .select({ c: count() })
+      .from(guestEmails)
+      .where(isNotNull(guestEmails.d3SentAt));
+    d3Sent = d3;
+    const [{ c: d21 }] = await db
+      .select({ c: count() })
+      .from(guestEmails)
+      .where(isNotNull(guestEmails.d21SentAt));
+    d21Sent = d21;
+  } catch { /* ignore */ }
+
+  // K-factor: paid conversions ÷ paid albums. Each paid event is one couple
+  // who could plausibly refer new couples, so it's the honest denominator.
+  // A K of 1.0 = every paid event yields exactly one new paid event.
+  const kFactor = paidAlbums > 0 ? referralPaid / paidAlbums : 0;
 
   // Rough lifetime revenue — derived from REAL paid albums only
   // (Stripe-anchored, non-expired). Manual DB flips and expired plans
@@ -106,6 +145,23 @@ export default async function AdminOverview() {
         </div>
       </section>
 
+      {/* ── Referral engine ────────────────────────────────────────────── */}
+      <section className="bg-gradient-to-br from-white to-[#FFF9EC] rounded-2xl border border-[#FFE3A2] p-6">
+        <div className="flex items-center gap-2 mb-1">
+          <span className="text-lg">🌱</span>
+          <h2 className="font-semibold text-[#0F1729]">Viralna zanka (Referral engine)</h2>
+        </div>
+        <p className="text-xs text-gray-500 mb-5">
+          Koliko novih plačanih dogodkov ustvari en plačan dogodek prek priporočil.
+        </p>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <MiniStat label="K-faktor" value={kFactor.toFixed(2)} hint={kFactor >= 1 ? "viralno ≥ 1.0" : "pod-viralno"} />
+          <MiniStat label="Prijave prek priporočil" value={referralSignups} hint="skupno" />
+          <MiniStat label="Plačane konverzije" value={referralPaid} hint="dejansko kupili" />
+          <MiniStat label="Zajeti e-maili gostov" value={capturedGuestEmails} hint={`D3: ${d3Sent} · D21: ${d21Sent}`} />
+        </div>
+      </section>
+
       <section className="bg-white rounded-2xl border border-gray-200 p-6">
         <h2 className="font-semibold text-[#0F1729] mb-4">Zadnje galerije</h2>
         <table className="w-full text-sm">
@@ -135,6 +191,16 @@ export default async function AdminOverview() {
           </tbody>
         </table>
       </section>
+    </div>
+  );
+}
+
+function MiniStat({ label, value, hint }: { label: string; value: number | string; hint?: string }) {
+  return (
+    <div className="bg-white/70 backdrop-blur rounded-xl border border-[#FFE3A2]/60 p-3">
+      <p className="text-[10px] uppercase tracking-wide text-[#C9820A] font-bold mb-1">{label}</p>
+      <p className="font-serif text-2xl text-[#0F1729] leading-none">{value}</p>
+      {hint && <p className="text-[10px] text-gray-400 mt-1">{hint}</p>}
     </div>
   );
 }

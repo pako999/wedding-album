@@ -1,7 +1,10 @@
 import { cookies } from "next/headers";
 import { db } from "@/lib/db";
 import { albums, referralConversions } from "@/lib/db/schema";
-import { eq, and } from "drizzle-orm";
+import { eq } from "drizzle-orm";
+
+/** How much extra storage the couple gets for each referred paid event. */
+export const COUPLE_REWARD_DAYS = 90;
 
 /**
  * Guest-referral attribution — separate from the affiliate flow.
@@ -96,7 +99,16 @@ export async function attributeNewAlbumFromCookie(
 }
 
 /** Mark a conversion as paid — called from the Mollie webhook after
- *  successful payment. Idempotent; only writes the FIRST paid moment. */
+ *  successful payment. Idempotent; only writes the FIRST paid moment.
+ *
+ *  P2 side-effect: when a conversion flips to paid for the first time we
+ *  reward the *source* album (the couple whose event referred them) with
+ *  +COUPLE_REWARD_DAYS of extra storage. Guard with the `convertedToPaidAt
+ *  IS NULL` check so a webhook replay never double-grants. Reward is
+ *  clamped from `max(now, current expiresAt)` so an already-expired source
+ *  album's clock restarts from today (getting a partial reward would be
+ *  worse than none).
+ */
 export async function markConversionPaid(newUserClerkId: string): Promise<void> {
   try {
     // Find the earliest not-yet-paid conversion row for this user.
@@ -111,6 +123,23 @@ export async function markConversionPaid(newUserClerkId: string): Promise<void> 
       .update(referralConversions)
       .set({ convertedToPaidAt: new Date() })
       .where(eq(referralConversions.id, unpaid.id));
+
+    // Grant the couple's reward: +90 days on the source album's expiresAt.
+    // A missing/expired expiresAt is normalised to "now" first so the reward
+    // is always a full 90 days forward from today.
+    const source = await db.query.albums.findFirst({
+      where: eq(albums.id, unpaid.sourceAlbumId),
+    });
+    if (source) {
+      const now = new Date();
+      const base = source.expiresAt && source.expiresAt > now ? source.expiresAt : now;
+      const rewarded = new Date(base.getTime() + COUPLE_REWARD_DAYS * 24 * 60 * 60 * 1000);
+      await db
+        .update(albums)
+        .set({ expiresAt: rewarded })
+        .where(eq(albums.id, source.id))
+        .catch((err) => console.error("[referral reward] extend expiresAt failed:", err));
+    }
   } catch (err) {
     console.error("[referral markConversionPaid] failed:", err);
   }
