@@ -19,18 +19,63 @@ export async function runMigrations() {
 
   const sql = neon(url);
   let failures = 0;
+  let consecutiveTimeouts = 0;
+  let aborted = false;
+
+  // A step is a "transient" failure if it's a network/timeout error from
+  // the Neon HTTP transport (ETIMEDOUT, ECONNRESET, "fetch failed", 5xx).
+  // Those get retried; real SQL errors (constraint violations, syntax) go
+  // straight to the failure counter.
+  const isTransient = (err: unknown): boolean => {
+    if (!err || typeof err !== "object") return false;
+    const e = err as Record<string, unknown>;
+    const cause = (e.cause as Record<string, unknown> | undefined) ?? {};
+    const source = (e.sourceError as Record<string, unknown> | undefined) ?? {};
+    const codes = new Set(["ETIMEDOUT", "ECONNRESET", "ENOTFOUND", "EAI_AGAIN", "UND_ERR_SOCKET"]);
+    if (typeof e.code === "string" && codes.has(e.code)) return true;
+    if (typeof cause.code === "string" && codes.has(cause.code)) return true;
+    if (typeof (cause.cause as { code?: string })?.code === "string"
+        && codes.has(((cause.cause as { code?: string }).code) ?? "")) return true;
+    if (typeof source.message === "string" && source.message.includes("fetch failed")) return true;
+    if (typeof e.message === "string" && /fetch failed|ETIMEDOUT|socket|network/i.test(e.message)) return true;
+    return false;
+  };
 
   // Run one statement, swallowing (but logging) any error so the next
-  // statement still gets a chance to apply.
+  // statement still gets a chance to apply. On transient network errors
+  // (Neon HTTP timeout) we retry once with a small backoff — most cold-
+  // start blips resolve inside a second. If several statements in a row
+  // still time out we abort the whole migration to avoid burning ~60
+  // more HTTP round-trips against a dead endpoint.
   const run = async (
     label: string,
     fn: (q: NeonQueryFunction<false, false>) => Promise<unknown>,
   ) => {
-    try {
-      await fn(sql);
-    } catch (err) {
-      failures++;
-      console.error(`[migrations] step failed (${label}):`, err);
+    if (aborted) return;
+    for (let attempt = 0; attempt < 2; attempt++) {
+      try {
+        await fn(sql);
+        consecutiveTimeouts = 0;
+        return;
+      } catch (err) {
+        const transient = isTransient(err);
+        if (transient && attempt === 0) {
+          await new Promise((r) => setTimeout(r, 1000));
+          continue;
+        }
+        failures++;
+        console.error(`[migrations] step failed (${label}):`, err);
+        if (transient) {
+          consecutiveTimeouts++;
+          if (consecutiveTimeouts >= 3) {
+            aborted = true;
+            console.error("[migrations] aborting — 3 consecutive Neon timeouts, DB unreachable");
+          }
+        } else {
+          consecutiveTimeouts = 0;
+        }
+        return;
+      }
     }
   };
 
