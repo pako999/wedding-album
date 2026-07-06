@@ -42,9 +42,12 @@
 
 ## Cenovni paketi
 
-- **Brezplačno** — do 200 fotografij, do 50 gostov, vse osnovne funkcije.
-- **Plus** — od 39 €, več fotografij, brez logotipa Guestcam.
-- **Premium** — Film Studio (avtomatski kinematografski film iz fotografij gostov), lastna domena (npr. foto.ime-para.si), prioritetna podpora.
+- **Brezplačno** — do 20 fotografij, dostop 30 dni, osnovne funkcije za preizkus.
+- **Basic — 39 €** — do 1000 fotografij, do 10 videoposnetkov, dostop 3 mesece, prenos vseh fotografij v ZIP.
+- **Plus — 49 €** (najbolj priljubljen) — do 5000 fotografij, do 100 videoposnetkov, dostop 1 leto, galerija v živo, personalizirana stran, premium predloge.
+- **Premium — 99 €** — neomejeno fotografij, do 100 videoposnetkov, dostop 2 leti, Film Studio (avtomatski kinematografski film iz fotografij gostov), lasten napis na QR kartici, prioritetna podpora.
+
+Vsi paketi so **enkratno plačilo, brez naročnine**. 30-dnevna garancija vračila denarja. Vključen DDV. Plačilo s kartico ali predračun / bančno nakazilo.
 
 ## Konkurenca / pogosta vprašanja
 

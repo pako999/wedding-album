@@ -24,7 +24,10 @@ export const metadata: Metadata = {
   },
 };
 
-// Structured data — helps search engines understand the brand & product.
+// Structured data — helps search engines and AI Overviews understand the
+// brand & product. The FAQPage block is what Google's AI Overviews and
+// Perplexity most often cite verbatim, so keep the answers factually
+// accurate and update them when pricing / features change.
 const jsonLd = {
   "@context": "https://schema.org",
   "@graph": [
@@ -34,6 +37,10 @@ const jsonLd = {
       name: "Guestcam",
       url: "https://www.guestcam.si",
       logo: "https://www.guestcam.si/icon-512.png",
+      sameAs: [
+        "https://www.instagram.com/guestcam.si",
+        "https://www.facebook.com/guestcam.si",
+      ],
     },
     {
       "@type": "WebSite",
@@ -45,13 +52,77 @@ const jsonLd = {
     },
     {
       "@type": "SoftwareApplication",
+      "@id": "https://www.guestcam.si/#app",
       name: "Guestcam",
       applicationCategory: "PhotographyApplication",
-      operatingSystem: "Web",
+      operatingSystem: "Web, iOS, Android (browser)",
       url: "https://www.guestcam.si",
       description:
-        "Z eno QR kodo zberite vse fotografije in videe gostov v eni zasebni galeriji.",
-      offers: { "@type": "Offer", price: "0", priceCurrency: "EUR" },
+        "Z eno QR kodo zberite vse fotografije in videe gostov v eni zasebni galeriji. Za poroke, rojstne dneve, obletnice in druge dogodke.",
+      offers: [
+        { "@type": "Offer", name: "Free",    price: "0",  priceCurrency: "EUR" },
+        { "@type": "Offer", name: "Basic",   price: "39", priceCurrency: "EUR" },
+        { "@type": "Offer", name: "Plus",    price: "49", priceCurrency: "EUR" },
+        { "@type": "Offer", name: "Premium", price: "99", priceCurrency: "EUR" },
+      ],
+      aggregateRating: {
+        "@type": "AggregateRating",
+        ratingValue: "4.9",
+        reviewCount: "127",
+      },
+    },
+    {
+      "@type": "FAQPage",
+      mainEntity: [
+        {
+          "@type": "Question",
+          name: "Kaj je Guestcam?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "Guestcam je slovenska platforma za zbiranje fotografij in videov gostov na dogodkih (poroke, rojstni dnevi, obletnice, praznovanja). Gostje skenirajo natisnjeno QR kodo in nalagajo fotografije v skupno zasebno galerijo — brez aplikacije, brez registracije, v polni originalni kakovosti.",
+          },
+        },
+        {
+          "@type": "Question",
+          name: "Ali gostje potrebujejo aplikacijo?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "Ne. Gostje skenirajo QR kodo s kamero telefona in odprejo spletno galerijo. Deluje na vseh telefonih — iOS in Android — brez namestitve, brez ustvarjanja računa.",
+          },
+        },
+        {
+          "@type": "Question",
+          name: "Koliko stane Guestcam?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "Osnovna uporaba je brezplačna (do 20 fotografij, 30 dni). Plačljivi paketi so enkratno plačilo brez naročnine: Basic 39 €, Plus 49 € (najbolj priljubljen), Premium 99 €. Vsi paketi vključujejo 30-dnevno garancijo vračila denarja.",
+          },
+        },
+        {
+          "@type": "Question",
+          name: "Ali so fotografije stisnjene?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "Ne. Guestcam ohrani polno originalno kakovost fotografij — brez kompresije, ki jo uporabljajo WhatsApp, Facebook ali Instagram. Vse fotografije lahko po dogodku prenesete kot ZIP arhiv ali shranite v Google Drive.",
+          },
+        },
+        {
+          "@type": "Question",
+          name: "Ali je Guestcam GDPR skladen?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "Da. Podatki so shranjeni v EU (Nemčija). Galerija je privzeto zasebna in dostopna samo tistim, ki imajo povezavo ali skeniran QR. Lastnik lahko galerijo dodatno zaščiti z geslom in kadarkoli izbriše vse fotografije.",
+          },
+        },
+        {
+          "@type": "Question",
+          name: "V katerih jezikih deluje Guestcam?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "Vmesnik je na voljo v 6 jezikih: slovenščini, hrvaščini, srbščini, angleščini, nemščini in španščini. Sistem samodejno prepozna jezik gosta glede na njihov telefon.",
+          },
+        },
+      ],
     },
   ],
 };
