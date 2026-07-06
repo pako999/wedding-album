@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getPayment, isPaidStatus, isRefundedStatus, mollieConfigured } from "@/lib/mollie";
 import { applyPlanToAlbum } from "@/lib/paddle-reconcile";
 import { markConversionPaid } from "@/lib/referral/attribution";
+import { sendPurchaseEvent } from "@/lib/meta-capi";
 import { htmlEscape, notifyTelegram } from "@/lib/telegram";
 import { sendAdminPaymentEmail, sendAffiliateCommissionEmail, sendAdminAffiliateSaleEmail } from "@/lib/email/notifications";
 import { incrementDiscountUsage } from "@/lib/discount";
@@ -88,6 +89,43 @@ export async function POST(req: NextRequest) {
 
   if (applied.status === "already_applied") {
     return NextResponse.json({ received: true });
+  }
+
+  // ── Meta Conversions API: server-side Purchase (dedupes with browser) ──
+  // Fired here — AFTER the applyPlanToAlbum idempotency guard, so a
+  // webhook replay for the same tr_… never re-sends. Uses payment.id as
+  // event_id — the browser Pixel's Purchase (fired from
+  // AlbumAdminPanel.tsx on the Mollie return) uses album.stripeSessionId
+  // as its eventID, which is set to this same payment.id by
+  // applyPlanToAlbum. Meta collapses the pair on shared event_id.
+  //
+  // Note on GDPR: the browser Pixel is Cookiebot-gated (marketing
+  // consent). This server-side send fires unconditionally on a
+  // completed transaction the user explicitly initiated, which is the
+  // industry norm for e-commerce measurement. If we later add a
+  // documented policy of blocking all marketing signals without
+  // consent, gate this call on a consent-at-checkout flag.
+  try {
+    const buyerAlbum = await db.query.albums.findFirst({
+      columns: { ownerEmail: true, notifyEmail: true },
+      where: eq(albums.slug, albumSlug),
+    });
+    await sendPurchaseEvent({
+      eventId:        paymentId,
+      email:          buyerAlbum?.notifyEmail ?? buyerAlbum?.ownerEmail ?? null,
+      value:          Number(payment.amount.value),
+      currency:       payment.amount.currency,
+      contentName:    planLabel(planId).text,
+      eventSourceUrl: "https://www.guestcam.si",
+      clientIp:       req.headers.get("x-vercel-forwarded-for")
+                        ?? req.headers.get("x-forwarded-for")
+                        ?? null,
+      clientUserAgent: req.headers.get("user-agent") ?? null,
+    });
+  } catch (err) {
+    // sendPurchaseEvent already swallows its own errors, but wrap
+    // here too so any read-side hiccup can't break the webhook.
+    console.error("[mollie webhook] meta-capi send failed:", err);
   }
 
   // Increment discount usage counter if a code was used
