@@ -12,6 +12,20 @@ import { ZipDownloader } from "@/components/dashboard/ZipDownloader";
 import { CoverPhotoSettings } from "@/components/dashboard/CoverPhotoSettings";
 import { FilmStudio } from "@/components/dashboard/FilmStudio";
 import { ALBUM_THEMES } from "@/lib/album-themes";
+import { fbEvent } from "@/lib/fbpixel";
+
+/**
+ * List price of each paid plan in EUR. Used to fire the Meta Pixel
+ * Purchase event with a real `value` — the customer-facing price on
+ * /pricing is the source of truth. Mollie discount codes / affiliate
+ * codes can reduce the amount charged, but for the Pixel we report the
+ * headline plan price so ad ROAS comparisons match campaign expectations.
+ */
+const PLAN_PRICES_EUR: Record<"basic" | "plus" | "premium", number> = {
+  basic:   39,
+  plus:    49,
+  premium: 99,
+};
 
 type Tab = "overview" | "gallery" | "qr" | "settings" | "pending" | "film";
 
@@ -218,6 +232,41 @@ export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activ
       setTimeout(() => setLinkCopied(false), 2000);
     });
   };
+
+  // ── Meta Pixel Purchase event ─────────────────────────────────────────
+  // Fire once when the Mollie return handler bounces the owner back here
+  // with ?upgraded=1 AND the DB confirms the plan actually flipped off
+  // free (i.e. the payment reconciled server-side — we don't want to fire
+  // Purchase on a stale query param). Dedup via sessionStorage per album
+  // so a refresh doesn't double-count.
+  useEffect(() => {
+    if (!isUpgraded) return;
+    if (album.plan === "free") return;
+    const dedupKey = `fbq_purchase_${album.id}_${album.stripeSessionId ?? ""}`;
+    if (typeof window === "undefined") return;
+    try {
+      if (sessionStorage.getItem(dedupKey)) return;
+      const planKey = (album.plan as keyof typeof PLAN_PRICES_EUR);
+      const value = PLAN_PRICES_EUR[planKey] ?? 0;
+      if (value > 0) {
+        fbEvent(
+          "Purchase",
+          {
+            value,
+            currency: "EUR",
+            content_name: album.plan.charAt(0).toUpperCase() + album.plan.slice(1),
+            content_type: "product",
+            content_ids: [album.plan],
+          },
+          // Dedup id for Conversions API server-side twin, if ever added.
+          album.stripeSessionId ?? undefined,
+        );
+      }
+      sessionStorage.setItem(dedupKey, "1");
+    } catch {
+      // sessionStorage unavailable (private mode, etc.) — best effort.
+    }
+  }, [isUpgraded, album.plan, album.id, album.stripeSessionId]);
 
   // Show success screen if just created
   if (isNew) {

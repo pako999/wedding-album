@@ -7,6 +7,7 @@ import { auth } from "@clerk/nextjs/server";
 import { clerkLocaleFor } from "@/lib/clerk-locales";
 import { ExitIntentPopup } from "@/components/ExitIntentPopup";
 import { DiscountBanner } from "@/components/DiscountBanner";
+import MetaPixel from "@/components/MetaPixel";
 import type { LangCode } from "@/components/LanguageSwitcher";
 import { db } from "@/lib/db";
 import { albums } from "@/lib/db/schema";
@@ -20,14 +21,6 @@ import "./globals.css";
  * a separate property (staging, beta).
  */
 const GA_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID ?? "G-NCHGTBTWPF";
-
-/**
- * Meta (Facebook) Pixel ID. Cookiebot's auto-blocking recognises
- * connect.facebook.net and holds the loader until the visitor grants
- * marketing consent — so we do NOT need a manual consent gate around
- * the init/track calls; they're safe to render on every page.
- */
-const META_PIXEL_ID = process.env.NEXT_PUBLIC_META_PIXEL_ID ?? "1857190351911563";
 
 const SUPPORTED_LANGS: LangCode[] = ["sl", "hr", "sr", "de", "en", "es"];
 
@@ -212,7 +205,7 @@ export default async function RootLayout({
           <link rel="preconnect" href="https://www.googletagmanager.com" />
           <link rel="preconnect" href="https://consent.cookiebot.com" />
           <link rel="dns-prefetch" href="https://www.google-analytics.com" />
-          {META_PIXEL_ID && <link rel="dns-prefetch" href="https://connect.facebook.net" />}
+          <link rel="dns-prefetch" href="https://connect.facebook.net" />
 
           {/* Cookiebot — must be beforeInteractive so auto-blocking mode can
               intercept GA and any other third-party scripts before they fire. */}
@@ -223,6 +216,7 @@ export default async function RootLayout({
             data-blockingmode="auto"
             strategy="beforeInteractive"
           />
+          <MetaPixel />
           {showPromo && <DiscountBanner lang={lang} />}
           {children}
           {showPromo && <ExitIntentPopup lang={lang} />}
@@ -242,39 +236,6 @@ export default async function RootLayout({
                   gtag('config', '${GA_ID}');
                 `}
               </Script>
-            </>
-          )}
-          {/* Meta Pixel — Cookiebot's auto-blocking mode intercepts the
-              fbevents.js request until the visitor grants marketing consent,
-              so the queued fbq('init') / fbq('track') calls only actually
-              hit Facebook after consent. Wrap the noscript img with the
-              Cookiebot marketing marker so that fallback is also gated. */}
-          {META_PIXEL_ID && (
-            <>
-              <Script id="meta-pixel" strategy="afterInteractive">
-                {`
-                  !function(f,b,e,v,n,t,s)
-                  {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-                  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-                  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-                  n.queue=[];t=b.createElement(e);t.async=!0;
-                  t.src=v;s=b.getElementsByTagName(e)[0];
-                  s.parentNode.insertBefore(t,s)}(window, document,'script',
-                  'https://connect.facebook.net/en_US/fbevents.js');
-                  fbq('init', '${META_PIXEL_ID}');
-                  fbq('track', 'PageView');
-                `}
-              </Script>
-              <noscript>
-                <img
-                  height="1"
-                  width="1"
-                  style={{ display: "none" }}
-                  alt=""
-                  data-cookieconsent="marketing"
-                  src={`https://www.facebook.com/tr?id=${META_PIXEL_ID}&ev=PageView&noscript=1`}
-                />
-              </noscript>
             </>
           )}
         </body>
