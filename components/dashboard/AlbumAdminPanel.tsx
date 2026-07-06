@@ -65,6 +65,30 @@ function NewAlbumSuccess({ album, paidPlan }: { album: Album; paidPlan?: "basic"
   // 3-step onboarding wizard: success → QR code → print templates → dashboard.
   const [step, setStep] = useState<1 | 2 | 3>(1);
 
+  // ── Meta Pixel CompleteRegistration event ────────────────────────────
+  // Landing on this success screen IS the "gallery created" moment. The
+  // ?new=1 query param is only set by app/actions/create-album.ts on the
+  // post-insert redirect, so this component mounts exactly once per new
+  // gallery. Dedup by album.id in sessionStorage in case the owner
+  // refreshes the wizard before advancing — one CompleteRegistration per
+  // album, not per render.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const dedupKey = `fbq_register_${album.id}`;
+    try {
+      if (sessionStorage.getItem(dedupKey)) return;
+      fbEvent("CompleteRegistration", {
+        content_name: paidPlan
+          ? paidPlan.charAt(0).toUpperCase() + paidPlan.slice(1)
+          : "Free",
+        status: "completed",
+      });
+      sessionStorage.setItem(dedupKey, "1");
+    } catch {
+      // sessionStorage unavailable — best effort.
+    }
+  }, [album.id, paidPlan]);
+
   return (
     <div className="min-h-screen flex items-center justify-center p-4" style={{ background: "#f5f5f7" }}>
       <div className="bg-white rounded-2xl shadow-lg p-6 sm:p-10 max-w-md w-full">
