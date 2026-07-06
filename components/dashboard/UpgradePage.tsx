@@ -6,67 +6,24 @@ import Link from "next/link";
 import { GuestcamLogo } from "@/components/GuestcamLogo";
 import type { Album } from "@/lib/db/schema";
 import { translations, type Lang } from "@/lib/i18n/translations";
+import { UPGRADE_COPY, PLAN_FEATURE_KEYS } from "@/lib/i18n/upgrade-translations";
 
 type PlanId = "free" | "basic" | "plus" | "premium";
 
-interface Plan {
+// Plan prices and product-tier metadata are locale-independent —
+// only the display copy (tagline / features / badge) is localised via
+// UPGRADE_COPY + PLAN_FEATURE_KEYS.
+interface PlanMeta {
   id: PlanId;
   name: string;
   price: number;
-  tagline: string;
-  features: string[];
-  badge?: string;
+  hasBadge?: boolean;
 }
 
-const PLANS: Plan[] = [
-  {
-    id: "basic",
-    name: "Basic",
-    price: 39,
-    tagline: "Za manjše dogodke",
-    features: [
-      "Do 1000 fotografij",
-      "Do 10 videoposnetkov",
-      "QR koda za mizo",
-      "Prenos vseh slik (ZIP)",
-      "Dostop 3 mesece",
-    ],
-  },
-  {
-    id: "plus",
-    name: "Plus",
-    price: 49,
-    tagline: "Najpopularnejši",
-    badge: "PRIPOROČENO",
-    features: [
-      "Do 5000 fotografij",
-      "Do 100 videoposnetkov",
-      "QR koda za mizo",
-      "Prenos vseh slik (ZIP)",
-      "Dostop 1 leto",
-      "Live galerija v realnem času",
-      "Personalizirana stran",
-      "Premium predloge",
-    ],
-  },
-  {
-    id: "premium",
-    name: "Premium",
-    price: 99,
-    tagline: "Vse vključeno",
-    features: [
-      "Neomejeno fotografij",
-      "Do 100 videoposnetkov",
-      "QR koda za mizo",
-      "Prenos vseh slik (ZIP)",
-      "Dostop 2 leti",
-      "Live galerija v realnem času",
-      "Personalizirana stran",
-      "Premium predloge",
-      "Lasten napis na QR kartici",
-      "Prioritetna podpora",
-    ],
-  },
+const PLANS: PlanMeta[] = [
+  { id: "basic",   name: "Basic",   price: 39 },
+  { id: "plus",    name: "Plus",    price: 49, hasBadge: true },
+  { id: "premium", name: "Premium", price: 99 },
 ];
 
 interface Props {
@@ -76,6 +33,15 @@ interface Props {
 
 export function UpgradePage({ album, lang = "sl" }: Props) {
   const t = translations[lang];
+  const u = UPGRADE_COPY[lang];
+
+  // Localised tagline lookup, keyed by plan id → UPGRADE_COPY key.
+  const planTagline = (id: PlanId): string => {
+    if (id === "basic")   return u.taglineBasic;
+    if (id === "plus")    return u.taglinePlus;
+    if (id === "premium") return u.taglinePremium;
+    return "";
+  };
   const searchParams = useSearchParams();
   const initialPlan: PlanId = (() => {
     const p = searchParams.get("plan");
@@ -149,7 +115,7 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
             </svg>
-            Nazaj
+            {u.back}
           </Link>
           <GuestcamLogo size="sm" showMark={false} />
           <div className="w-16" />
@@ -162,10 +128,10 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
 
           {/* Page title */}
           <div className="text-center mb-8">
-            <h1 className="text-2xl font-bold text-gray-900 mb-1">Nadgradite svojo galerijo</h1>
+            <h1 className="text-2xl font-bold text-gray-900 mb-1">{u.title}</h1>
             <p className="text-sm text-gray-500">
               <span className="font-medium text-gray-700">{album.coupleName}</span>
-              {" "}· Izberite paket, ki ustreza vašemu dogodku.
+              {" "}· {u.subtitle}
             </p>
           </div>
 
@@ -200,22 +166,22 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 flex-wrap">
                         <span className="font-bold text-gray-900">{plan.name}</span>
-                        {plan.badge && (
+                        {plan.hasBadge && (
                           <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full text-white" style={{ background: "#FFC94D", color: "#0F1729" }}>
-                            {plan.badge}
+                            {u.badgeRecommended}
                           </span>
                         )}
-                        <span className="text-xs text-gray-400">{plan.tagline}</span>
+                        <span className="text-xs text-gray-400">{planTagline(plan.id)}</span>
                       </div>
 
-                      {isSelected && (
+                      {isSelected && plan.id !== "free" && (
                         <ul className="mt-3 space-y-1.5">
-                          {plan.features.map((f) => (
-                            <li key={f} className="flex items-center gap-2 text-sm text-gray-600">
+                          {PLAN_FEATURE_KEYS[plan.id as "basic" | "plus" | "premium"].map((fk) => (
+                            <li key={fk} className="flex items-center gap-2 text-sm text-gray-600">
                               <svg className="w-4 h-4 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                               </svg>
-                              {f}
+                              {u[fk] as string}
                             </li>
                           ))}
                         </ul>
@@ -225,7 +191,7 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
                     {/* Price */}
                     <div className="text-right flex-shrink-0">
                       <span className="text-xl font-bold text-gray-900">{plan.price}€</span>
-                      <p className="text-xs text-gray-400">vključen 22% DDV</p>
+                      <p className="text-xs text-gray-400">{u.vatIncluded}</p>
                     </div>
                   </div>
                 </button>
@@ -236,13 +202,13 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
           {/* ── Trust strip ───────────────────────────────────────────── */}
           <div className="grid grid-cols-3 gap-2 mb-6">
             {[
-              { icon: "🛡️", label: "30-dnevna garancija" },
-              { icon: "🔒", label: "Varno plačilo" },
-              { icon: "⚡", label: "Takojšnja aktivacija" },
-            ].map((t) => (
-              <div key={t.label} className="bg-white rounded-xl border border-gray-100 p-3 text-center">
-                <div className="text-lg mb-1">{t.icon}</div>
-                <p className="text-xs text-gray-600 font-medium leading-tight">{t.label}</p>
+              { icon: "🛡️", label: u.trustRefund },
+              { icon: "🔒", label: u.trustSecure },
+              { icon: "⚡", label: u.trustInstant },
+            ].map((item) => (
+              <div key={item.label} className="bg-white rounded-xl border border-gray-100 p-3 text-center">
+                <div className="text-lg mb-1">{item.icon}</div>
+                <p className="text-xs text-gray-600 font-medium leading-tight">{item.label}</p>
               </div>
             ))}
           </div>
@@ -257,13 +223,13 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
               ))}
             </div>
             <p className="text-sm text-gray-600 italic leading-relaxed mb-3">
-              &ldquo;Guestcam je bila najboljša odločitev za naš dan. Gostje so naložili čez 300 fotografij — brez aplikacij, brez zapletov. Vse fotografije so bile na enem mestu!&rdquo;
+              &ldquo;{u.testimonialQuote}&rdquo;
             </p>
             <div className="flex items-center gap-2">
               <div className="w-7 h-7 rounded-full bg-[#FFF9EC] flex items-center justify-center text-sm font-bold text-[#C9820A]">A</div>
               <div>
-                <p className="text-xs font-semibold text-gray-800">Ana & Marko</p>
-                <p className="text-xs text-gray-400">500+ fotografij · 2026</p>
+                <p className="text-xs font-semibold text-gray-800">{u.testimonialAuthor}</p>
+                <p className="text-xs text-gray-400">{u.testimonialMeta}</p>
               </div>
             </div>
           </div>
@@ -282,8 +248,8 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
               </svg>
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-semibold text-gray-900 mb-0.5">Imate vprašanje?</p>
-              <p className="text-xs text-gray-500 mb-3">Pišite nam na Viber ali WhatsApp — odgovorimo v nekaj minutah.</p>
+              <p className="text-sm font-semibold text-gray-900 mb-0.5">{u.supportTitle}</p>
+              <p className="text-xs text-gray-500 mb-3">{u.supportSubtitle}</p>
               <div className="flex gap-2 flex-wrap">
                 <a
                   href="viber://chat?number=38641580250"
@@ -378,13 +344,13 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
 
           {/* ── Payment method ────────────────────────────────────────── */}
           <div className="bg-white rounded-2xl border border-gray-100 p-5 mb-4">
-            <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-3">Način plačila</p>
+            <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-3">{u.paymentMethod}</p>
             <div className="space-y-2">
               {[
                 {
                   id: "card" as const,
-                  label: "Plačilo s kartico",
-                  sub: "Visa, Mastercard, iDEAL · Takojšnja aktivacija",
+                  label: u.paymentCardLabel,
+                  sub: u.paymentCardSub,
                   icon: (
                     <div className="flex gap-1">
                       <div className="w-7 h-5 rounded bg-blue-600 flex items-center justify-center text-white text-[8px] font-bold">VISA</div>
@@ -394,8 +360,8 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
                 },
                 {
                   id: "invoice" as const,
-                  label: "Predračun / bančno nakazilo",
-                  sub: "Predračun prejmete v 24 urah",
+                  label: u.paymentInvoiceLabel,
+                  sub: u.paymentInvoiceSub,
                   icon: (
                     <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.8}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v14a2 2 0 01-2 2z" />
@@ -437,15 +403,15 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
           {/* ── Billing form (invoice only) ───────────────────────────── */}
           {paymentMethod === "invoice" && (
             <div className="bg-white rounded-2xl border border-gray-100 p-5 mb-4">
-              <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-3">Podatki za predračun</p>
+              <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-3">{u.billingTitle}</p>
               <div className="space-y-2.5">
                 {[
-                  { key: "name", placeholder: "Ime in priimek *", type: "text" },
-                  { key: "companyName", placeholder: "Naziv podjetja (neobvezno)", type: "text" },
-                  { key: "email", placeholder: "E-poštni naslov *", type: "email" },
-                  { key: "address", placeholder: "Ulica in hišna številka *", type: "text" },
-                  { key: "city", placeholder: "Poštna številka in kraj *", type: "text" },
-                  { key: "taxId", placeholder: "Davčna številka (neobvezno)", type: "text" },
+                  { key: "name",        placeholder: u.billingName,    type: "text"  },
+                  { key: "companyName", placeholder: u.billingCompany, type: "text"  },
+                  { key: "email",       placeholder: u.billingEmail,   type: "email" },
+                  { key: "address",     placeholder: u.billingAddress, type: "text"  },
+                  { key: "city",        placeholder: u.billingCity,    type: "text"  },
+                  { key: "taxId",       placeholder: u.billingTaxId,   type: "text"  },
                 ].map(({ key, placeholder, type }) => (
                   <input
                     key={key}
@@ -465,8 +431,8 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
           <div className="bg-white rounded-2xl border border-gray-100 p-5 mb-4">
             <div className="flex items-center justify-between mb-3 pb-3 border-b border-gray-100">
               <div>
-                <p className="font-semibold text-gray-900">Paket {chosen.name}</p>
-                <p className="text-xs text-gray-400">{chosen.tagline}</p>
+                <p className="font-semibold text-gray-900">{u.planPrefix} {chosen.name}</p>
+                <p className="text-xs text-gray-400">{planTagline(chosen.id)}</p>
               </div>
               <div className="text-right">
                 {discountStatus === "valid" && (
@@ -479,8 +445,8 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
               </div>
             </div>
             <div className="flex items-center justify-between text-xs text-gray-400 mb-4">
-              <span>vključen 22% DDV</span>
-              <span>Enkratno plačilo · brez naročnine</span>
+              <span>{u.vatIncluded}</span>
+              <span>{u.onetimePayment}</span>
             </div>
 
             {/* Terms acceptance checkbox */}
@@ -493,10 +459,21 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
                   className="mt-0.5 w-4 h-4 rounded accent-[#FFC94D] flex-shrink-0 cursor-pointer"
                 />
                 <span className="text-xs text-gray-500 leading-relaxed">
-                  Z nakupom se strinjate s{" "}
-                  <Link href="/terms" target="_blank" className="underline hover:text-gray-800">pogoji uporabe</Link>
-                  {". "}
-                  30-dnevna garancija vračila denarja.
+                  {(() => {
+                    // Split the localised "By purchasing you agree to the {link}..."
+                    // sentence around the {link} placeholder so the interior can be
+                    // an actual <Link> component (not just anchored HTML string).
+                    const marker = "__LINK__";
+                    const rendered = u.termsAcceptance(marker);
+                    const [before, after] = rendered.split(marker);
+                    return (
+                      <>
+                        {before}
+                        <Link href="/terms" target="_blank" className="underline hover:text-gray-800">{u.termsLinkText}</Link>
+                        {after}
+                      </>
+                    );
+                  })()}
                 </span>
               </label>
             )}
@@ -504,8 +481,8 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
             {invoiceDone ? (
               <div className="rounded-xl p-5 text-center" style={{ background: "#F0FDF4", border: "2px solid #86EFAC" }}>
                 <p className="text-2xl mb-2">✅</p>
-                <p className="font-bold text-green-800 mb-1">Naročilo prejeto!</p>
-                <p className="text-sm text-green-700">Predračun vam pošljemo v 24 urah. Po plačilu bo paket <strong>{chosen.name}</strong> takoj aktiviran.</p>
+                <p className="font-bold text-green-800 mb-1">{u.invoiceDoneTitle}</p>
+                <p className="text-sm text-green-700">{u.invoiceDoneBody(chosen.name)}</p>
               </div>
             ) : (
               <button
@@ -517,7 +494,7 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
                   try {
                     if (paymentMethod === "invoice") {
                       if (!billing.name.trim() || !billing.email.trim() || !billing.address.trim() || !billing.city.trim()) {
-                        alert("Prosimo izpolnite vse obvezne podatke (ime, e-pošta, naslov, kraj).");
+                        alert(u.alertMissingFields);
                         setIsLoading(false);
                         return;
                       }
@@ -558,9 +535,7 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
                     }
                   } catch (err) {
                     console.error("[checkout]", err);
-                    alert(paymentMethod === "invoice"
-                      ? "Napaka pri oddaji naročila. Pišite na info@guestcam.si"
-                      : "Napaka pri plačilu. Poskusite znova ali nas kontaktirajte na info@guestcam.si");
+                    alert(paymentMethod === "invoice" ? u.alertInvoiceFailed : u.alertPaymentFailed);
                     setIsLoading(false);
                   }
                 }}
@@ -571,12 +546,12 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
                       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                     </svg>
-                    {paymentMethod === "invoice" ? "Pošiljanje…" : "Preusmeritev na plačilo…"}
+                    {paymentMethod === "invoice" ? u.ctaSending : u.ctaRedirecting}
                   </>
                 ) : paymentMethod === "invoice" ? (
-                  `Oddaj naročilo po predračunu — ${discountedPrice}€`
+                  u.ctaInvoice(discountedPrice)
                 ) : (
-                  `Nadgradi na ${chosen.name} — ${discountedPrice}€ →`
+                  u.ctaCard(chosen.name, discountedPrice)
                 )}
               </button>
             )}
@@ -592,30 +567,30 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
             <div className="col-span-2 sm:col-span-1">
               <GuestcamLogo size="sm" showMark={true} variant="onDark" />
               <p className="text-gray-400 text-xs leading-relaxed mt-3">
-                Galerija s QR kodo — brez aplikacije.<br />Gostje fotografirajo, vi zbirate spomine.
+                {u.footerTagline}
               </p>
             </div>
             <div>
-              <h3 className="text-xs font-bold uppercase tracking-widest text-gray-500 mb-3">Produkt</h3>
+              <h3 className="text-xs font-bold uppercase tracking-widest text-gray-500 mb-3">{u.footerProduct}</h3>
               <ul className="space-y-2 text-sm text-gray-400">
-                <li><Link href="/#pricing" className="hover:text-white transition-colors">Cenik</Link></li>
-                <li><Link href="/#how" className="hover:text-white transition-colors">Kako deluje</Link></li>
-                <li><Link href="/dashboard" className="hover:text-white transition-colors">Moje galerije</Link></li>
-                <li><Link href="/contact" className="hover:text-white transition-colors">Kontakt</Link></li>
+                <li><Link href="/#pricing" className="hover:text-white transition-colors">{u.footerLinkPricing}</Link></li>
+                <li><Link href="/#how" className="hover:text-white transition-colors">{u.footerLinkHow}</Link></li>
+                <li><Link href="/dashboard" className="hover:text-white transition-colors">{u.footerLinkMyGalleries}</Link></li>
+                <li><Link href="/contact" className="hover:text-white transition-colors">{u.footerLinkContact}</Link></li>
               </ul>
             </div>
             <div>
-              <h3 className="text-xs font-bold uppercase tracking-widest text-gray-500 mb-3">Pravno</h3>
+              <h3 className="text-xs font-bold uppercase tracking-widest text-gray-500 mb-3">{u.footerLegal}</h3>
               <ul className="space-y-2 text-sm text-gray-400">
-                <li><Link href="/privacy" className="hover:text-white transition-colors">Zasebnost</Link></li>
-                <li><Link href="/terms" className="hover:text-white transition-colors">Pogoji uporabe</Link></li>
-                <li><Link href="/refund" className="hover:text-white transition-colors">Vračilo denarja</Link></li>
+                <li><Link href="/privacy" className="hover:text-white transition-colors">{u.footerLinkPrivacy}</Link></li>
+                <li><Link href="/terms" className="hover:text-white transition-colors">{u.footerLinkTerms}</Link></li>
+                <li><Link href="/refund" className="hover:text-white transition-colors">{u.footerLinkRefund}</Link></li>
                 <li><Link href="/gdpr" className="hover:text-white transition-colors">GDPR</Link></li>
               </ul>
             </div>
           </div>
           <div className="flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-gray-500">
-            <p>© 2026 Guestcam · Sport group d.o.o. · SI72133449 · Slovenija</p>
+            <p>{u.footerCompanyLine}</p>
             <div className="flex items-center gap-3">
               <span className="flex items-center gap-1">
                 <svg className="w-3 h-3 text-green-400" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" /></svg>
@@ -625,7 +600,7 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
                 <svg className="w-3 h-3 text-blue-400" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" /></svg>
                 GDPR
               </span>
-              <span>Brez registracije za goste</span>
+              <span>{u.footerNoRegistration}</span>
             </div>
           </div>
         </div>
