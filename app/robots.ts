@@ -56,7 +56,17 @@ export default function robots(): MetadataRoute.Robots {
           "ImagesiftBot", "Diffbot", "Omgilibot", "Applebot-Extended"].map(
         (userAgent) => ({
           userAgent,
-          allow: ["/blog", "/sl/", "/hr/", "/sr/", "/de/", "/en/", "/es/", "/contact"],
+          // /llms.txt and /.well-known/ai-content.md MUST stay reachable
+          // — they're the "cite this instead" files these bots look for
+          // before deciding whether to quote us. Also allow the localised
+          // homepages + blog + contact so we're citeable in every language.
+          allow: [
+            "/llms.txt",
+            "/.well-known/",
+            "/blog",
+            "/sl/", "/hr/", "/sr/", "/de/", "/en/", "/es/",
+            "/contact",
+          ],
           disallow: ["/"],
         }),
       ),

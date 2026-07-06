@@ -65,11 +65,11 @@ const jsonLd = {
         { "@type": "Offer", name: "Plus",    price: "49", priceCurrency: "EUR" },
         { "@type": "Offer", name: "Premium", price: "99", priceCurrency: "EUR" },
       ],
-      aggregateRating: {
-        "@type": "AggregateRating",
-        ratingValue: "4.9",
-        reviewCount: "127",
-      },
+      // NOTE: Do NOT ship an `aggregateRating` here until we have real
+      // review data anchored to a public source (G2 / Trustpilot / Google
+      // Business). Google's rich-results checker flags unverified ratings
+      // and can suppress the entire structured-data card as a penalty.
+      // See app/admin backlog: "wire real review aggregate".
     },
     {
       "@type": "FAQPage",

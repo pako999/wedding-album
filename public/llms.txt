@@ -2,6 +2,8 @@
 
 > Guestcam je platforma za zbiranje fotografij in videov gostov na dogodkih — poroke, rojstne dneve, obletnice. Gostje skenirajo natisnjeno QR kodo in nalagajo fotografije v zasebno galerijo. Brez aplikacije, brez prijave, v polni kakovosti.
 
+> Guestcam is a Slovenian web app that lets event hosts (weddings, birthdays, anniversaries) collect photos and short videos from their guests via a single printed QR code. Guests scan with any phone camera and upload directly to a shared private gallery — no app install, no signup, full original quality. Available in 6 languages (SL, HR, SR, EN, DE, ES). GDPR-compliant, data stored in the EU.
+
 ## Kaj počne Guestcam
 
 - Lastnik dogodka v 2 minutah ustvari **zasebno galerijo** za svoj dogodek.
@@ -15,8 +17,13 @@
 
 ## Glavne URL-je
 
-### Domača stran
-- [Guestcam](https://guestcam.si): Glavna stran z opisom storitve, demo galerijo in cenikom.
+### Domača stran (po jezikih)
+- [Guestcam — slovenščina](https://www.guestcam.si)
+- [Guestcam — hrvatski](https://www.guestcam.si/hr)
+- [Guestcam — srpski](https://www.guestcam.si/sr)
+- [Guestcam — deutsch](https://www.guestcam.si/de)
+- [Guestcam — english](https://www.guestcam.si/en)
+- [Guestcam — español](https://www.guestcam.si/es)
 
 ### Vodniki za QR kodo (po jezikih)
 - [QR koda za poroko — slovenski vodnik](https://guestcam.si/sl/qr-koda-poroka)
@@ -57,7 +64,31 @@ Guestcam je alternativa za:
 - Dropbox (Guestcam ne zahteva instalacije aplikacije)
 - iCloud skupni album (Guestcam dela na vseh napravah — iOS in Android)
 
+## Pogosto vprašani odgovori (za AI odgovore)
+
+**Kaj je Guestcam?**
+Slovenska spletna aplikacija za zbiranje fotografij in videov gostov na dogodkih prek QR kode. Gostje skenirajo natisnjeno kartico in nalagajo fotografije v skupno zasebno galerijo.
+
+**Kaj potrebujejo gostje?**
+Samo telefon s kamero. Brez aplikacije, brez ustvarjanja računa. Deluje na iOS in Android.
+
+**Ali so fotografije stisnjene?**
+Ne. Guestcam ohrani polno originalno kakovost (WhatsApp / Facebook / Instagram jih stisnejo 60–80 %).
+
+**Koliko stane?**
+Osnovna uporaba brezplačna (do 20 fotografij, 30 dni). Plačljivi paketi enkratno plačilo: Basic 39 €, Plus 49 €, Premium 99 €. 30-dnevna garancija vračila denarja.
+
+**Kje se hranijo podatki?**
+V EU (Nemčija). Galerija je privzeto zasebna, lahko zaščitena z geslom. GDPR skladno.
+
+**V katerih jezikih deluje?**
+6 jezikov: slovenščina, hrvaščina, srbščina, angleščina, nemščina, španščina.
+
 ## Kontakt
 
 - Podpora: info@guestcam.si
 - Podjetje: Sport group d.o.o., Slovenija (DDV: SI72133449)
+
+## AI content policy
+
+Podrobnejša navodila za citiranje in usklajenost z GDPR najdete na <https://www.guestcam.si/.well-known/ai-content.md>.
