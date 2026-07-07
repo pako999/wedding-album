@@ -22,7 +22,7 @@ const TEMPLATES: TemplateInfo[] = [
     style: "white",
     headline: "Ujemite ljubezen",
     sub: "Delite fotografije s tega posebnega dne",
-    cta: "Skeniraj QR kodo · Dodaj fotografijo",
+    cta: "Skeniraj QR kodo · Dodaj fotografije",
   },
   {
     id: "dark",
@@ -48,7 +48,7 @@ const TEMPLATES: TemplateInfo[] = [
     emoji: "🌾",
     style: "kraft",
     headline: "Zberi naše spomine",
-    sub: "Skeniraj QR kodo in dodaj fotografijo",
+    sub: "Skeniraj QR kodo in dodaj fotografije",
     cta: "Skeniraj · Fotografiraj · Deli",
   },
   {
@@ -57,7 +57,7 @@ const TEMPLATES: TemplateInfo[] = [
     emoji: "🌿",
     style: "cream",
     headline: "Deli ta trenutek z nami",
-    sub: "Skeniraj spodnjo kodo in naloži fotografijo",
+    sub: "Skeniraj spodnjo kodo in naloži fotografije",
     cta: "Skeniraj QR kodo · Takoj naloži",
   },
   {
