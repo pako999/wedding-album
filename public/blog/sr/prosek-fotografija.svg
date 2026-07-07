@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 520" font-family="'DM Sans','Segoe UI',system-ui,sans-serif">
+  <rect width="1200" height="520" rx="24" fill="#FFFFFF"/>
+  <rect x="0.5" y="0.5" width="1199" height="519" rx="23.5" fill="none" stroke="#E5E7EB"/>
+
+  <!-- Title -->
+  <text x="64" y="76" font-size="30" font-weight="800" fill="#0F1729">Prosečan broj fotografija koje par zaista dobije</text>
+  <text x="64" y="110" font-size="17" fill="#64748B">Podaci sa venčanja sa ~80 gostiju</text>
+
+  <!-- Guestcam bar: 340 → width 880 -->
+  <circle cx="72" cy="170" r="6" fill="#C9820A"/>
+  <text x="90" y="176" font-size="16" font-weight="700" fill="#0F1729">QR kod na svakom stolu (Guestcam)</text>
+  <rect x="64" y="192" width="880" height="52" rx="4" fill="#C9820A"/>
+  <text x="960" y="226" font-size="26" font-weight="800" fill="#0F1729">340</text>
+
+  <!-- Traditional bar: 30 → width 880*30/340 = 78 -->
+  <circle cx="72" cy="310" r="6" fill="#2563EB"/>
+  <text x="90" y="316" font-size="16" font-weight="700" fill="#0F1729">Tradicionalno (WhatsApp grupa / e-mail)</text>
+  <rect x="64" y="332" width="78" height="52" rx="4" fill="#2563EB"/>
+  <text x="158" y="366" font-size="26" font-weight="800" fill="#0F1729">30</text>
+
+  <!-- Bottom annotation -->
+  <rect x="64" y="432" width="1072" height="2" fill="#F1F5F9"/>
+  <text x="64" y="474" font-size="16" fill="#64748B">Razlika nije u gostima — isti ljudi, isto venčanje. Razlika je u broju prepreka do galerije: <tspan font-weight="800" fill="#0F1729">11&#215; više uspomena.</tspan></text>
+</svg>
