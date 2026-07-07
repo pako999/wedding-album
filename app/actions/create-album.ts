@@ -8,6 +8,7 @@ import { albums, userPlanOverrides } from "@/lib/db/schema";
 import { sendWelcomeEmail, sendOrganizerAgreementEmail } from "@/lib/email/notifications";
 import { generateUniqueReferralCode } from "@/lib/referral/codes";
 import { attributeNewAlbumFromCookie } from "@/lib/referral/attribution";
+import { inferLangFromLocation } from "@/lib/i18n/infer-lang";
 
 function slugify(text: string): string {
   return text
@@ -114,6 +115,9 @@ export async function createAlbum(formData: FormData) {
     coupleName,
     weddingDate:       eventDate,
     location,
+    // Croatian wedding → Croatian gallery by default. Guests can still
+    // switch languages in the header; ?lang= URL param overrides.
+    defaultLang:       inferLangFromLocation(location),
     password,
     isPublished:       true,
     plan:              inheritedPlan,

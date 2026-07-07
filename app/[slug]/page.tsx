@@ -95,9 +95,6 @@ export default async function AlbumPage({ params, searchParams }: Props) {
   const { slug } = await params;
   const { pw, lang: langParam } = await searchParams;
 
-  // Album language: explicit ?lang= param, otherwise default to Slovenian.
-  const lang: Lang = (langParam as Lang) ?? "sl";
-
   const album = await db.query.albums.findFirst({
     where: eq(albums.slug, slug),
   });
@@ -105,6 +102,19 @@ export default async function AlbumPage({ params, searchParams }: Props) {
   if (!album || !album.isPublished) {
     notFound();
   }
+
+  // Album language: explicit ?lang= wins; otherwise the album's own
+  // default (inferred from the event location at creation — a Croatian
+  // wedding opens in Croatian, not Slovenian). Guests can still switch
+  // via the in-gallery language picker.
+  const VALID_LANGS: readonly Lang[] = ["sl", "hr", "sr", "de", "en", "es"];
+  const isValidLang = (v: string | undefined | null): v is Lang =>
+    !!v && (VALID_LANGS as readonly string[]).includes(v);
+  const lang: Lang = isValidLang(langParam)
+    ? langParam
+    : isValidLang(album.defaultLang)
+      ? album.defaultLang
+      : "sl";
 
   // Is the signed-in viewer the album owner? Two checks:
   //   1. Clerk userId matches `ownerClerkId` (normal case).
