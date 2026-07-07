@@ -3,6 +3,7 @@ import { auth, currentUser } from "@clerk/nextjs/server";
 import { db } from "@/lib/db";
 import { albums, photos, moments } from "@/lib/db/schema";
 import { eq, and } from "drizzle-orm";
+import { withSchemaHealing } from "@/lib/db/bootstrap";
 import { AlbumGuestView } from "@/components/album/AlbumGuestView";
 import { type Lang } from "@/lib/i18n/translations";
 import { hashAlbumPassword, needsRehash, verifyAlbumPassword } from "@/lib/album-password";
@@ -41,9 +42,12 @@ const EVENT_LABEL_SL: Record<string, string> = {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const album = await db.query.albums.findFirst({
-    where: eq(albums.slug, slug),
-  });
+  // withSchemaHealing: if the schema is stale (new column deployed but
+  // migration not yet run on this DB), run migrations + retry instead of
+  // 500ing every gallery until someone opens /admin.
+  const album = await withSchemaHealing(() =>
+    db.query.albums.findFirst({ where: eq(albums.slug, slug) }),
+  );
   if (!album) return { title: "Album not found" };
 
   const eventLabel = EVENT_LABEL_SL[album.eventType ?? "other"] ?? EVENT_LABEL_SL.other;
@@ -95,9 +99,9 @@ export default async function AlbumPage({ params, searchParams }: Props) {
   const { slug } = await params;
   const { pw, lang: langParam } = await searchParams;
 
-  const album = await db.query.albums.findFirst({
-    where: eq(albums.slug, slug),
-  });
+  const album = await withSchemaHealing(() =>
+    db.query.albums.findFirst({ where: eq(albums.slug, slug) }),
+  );
 
   if (!album || !album.isPublished) {
     notFound();
