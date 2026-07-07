@@ -90,3 +90,27 @@ body {
 .hero-rose-glow {
   background: radial-gradient(ellipse at 60% 50%, rgba(255,201,77,0.15) 0%, transparent 70%);
 }
+
+/* ── Print rules ─────────────────────────────────────────────────────────
+   Hide floating widgets when the user prints the QR-card templates page
+   (or any other route). Cookiebot's declaration button + dialog use a
+   handful of injected ids/classes — kill them all so the black "CO" pill
+   doesn't end up in the print preview / saved PDF. Same treatment for
+   the Clerk auth widget and Vercel toolbar so nothing overlays the
+   printable content. */
+@media print {
+  #CybotCookiebotDialog,
+  #CybotCookiebotDialogBodyUnderlay,
+  #CookiebotWidget,
+  .CookiebotWidget,
+  #CookiebotDeclarationLink,
+  [id^="CybotCookiebot"],
+  [class^="CybotCookiebot"],
+  [class^="CookieConsent"],
+  .cookieconsent-optout,
+  #vercel-toolbar,
+  .clerk-badge {
+    display: none !important;
+    visibility: hidden !important;
+  }
+}
