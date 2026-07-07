@@ -319,47 +319,117 @@ export default async function HomePage() {
       </header>
 
       {/* ── Hero ────────────────────────────────────────────────────────────── */}
-      <section style={{ background: '#F2F4F8' }}>
-        <div className="w-full">
+      {/* Two-column explanatory hero. Copy-first on the left tells a new
+          visitor exactly what Guestcam does (QR code → guests upload →
+          organizer downloads) in the first viewport, without asking them
+          to interpret a photo. The photo on the right shows the QR card +
+          phone in-context so the concept lands visually too.
+          Mobile: photo goes on top, copy stacks under. */}
+      <section style={{ background: 'linear-gradient(180deg, #F2F4F8 0%, #FFF8E7 100%)' }} className="overflow-hidden">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-14 sm:pt-14 sm:pb-20 lg:pt-20">
+          <div className="grid lg:grid-cols-12 gap-8 lg:gap-14 items-center">
 
-          {/* H1 kept for SEO / screen readers — visible headline lives inside the hero image */}
-          <h1 className="sr-only">
-            Vaši najboljši trenutki. Na enem mestu. — Guestcam QR foto album za poroke in dogodke
-          </h1>
+            {/* ── LEFT — copy ─────────────────────────────────────────── */}
+            <div className="lg:col-span-6 order-2 lg:order-1">
+              <p className="text-[11px] sm:text-xs font-bold uppercase tracking-[0.2em] text-[#C9820A] mb-4">
+                QR foto album za poroke in dogodke
+              </p>
 
-          {/* Edge-to-edge hero image — desktop landscape, mobile portrait variant via <picture>.
-              Contains the visible headline, 3-step story, and trust badges. */}
-          <div className="overflow-hidden bg-white">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <picture>
-              <source media="(max-width: 640px)" srcSet="/hero/guestcam-hero-mobile.webp" />
-              <img
-                src="/hero/guestcam-hero.webp"
-                alt="Vaši najboljši trenutki na enem mestu — gostje skenirajo QR kodo na poročni mizi in delijo fotografije v skupni album"
-                className="block w-full h-auto"
-                width={1672}
-                height={941}
-                fetchPriority="high"
-              />
-            </picture>
+              <h1 className="font-serif text-[2.4rem] sm:text-5xl lg:text-[3.6rem] leading-[1.05] text-[#0F1729] tracking-tight">
+                Ne izgubi slik <br className="hidden sm:block" />
+                <span className="italic" style={{ color: '#C9820A' }}>svojega dogodka.</span>
+              </h1>
+
+              <p className="mt-5 text-base sm:text-lg text-gray-600 leading-relaxed max-w-lg">
+                Zbere vse slike in videje tvojih gostov v en zaseben album —
+                brez aplikacije, brez registracije, v polni kakovosti.
+              </p>
+
+              {/* Audience callouts — "who's this for and what do they do" */}
+              <div className="mt-7 grid sm:grid-cols-2 gap-3 max-w-lg">
+                <div className="rounded-2xl bg-white/80 backdrop-blur border border-[#FFE3A2]/60 p-4 shadow-sm">
+                  <div className="flex items-center gap-2 mb-1.5">
+                    <span className="w-6 h-6 rounded-full bg-[#FFF3CC] flex items-center justify-center text-sm">📱</span>
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-[#C9820A]">Za goste</p>
+                  </div>
+                  <p className="text-sm text-[#0F1729] font-semibold leading-snug">
+                    Skenirajo QR, naložijo takoj.
+                  </p>
+                  <p className="text-xs text-gray-500 mt-1 leading-snug">
+                    Brez aplikacije. Brez prijave.
+                  </p>
+                </div>
+                <div className="rounded-2xl bg-white/80 backdrop-blur border border-[#FFE3A2]/60 p-4 shadow-sm">
+                  <div className="flex items-center gap-2 mb-1.5">
+                    <span className="w-6 h-6 rounded-full bg-[#FFF3CC] flex items-center justify-center text-sm">📦</span>
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-[#C9820A]">Organizator</p>
+                  </div>
+                  <p className="text-sm text-[#0F1729] font-semibold leading-snug">
+                    Vse slike na enem mestu.
+                  </p>
+                  <p className="text-xs text-gray-500 mt-1 leading-snug">
+                    ZIP prenos z 1 klikom.
+                  </p>
+                </div>
+              </div>
+
+              {/* CTA row */}
+              <div className="mt-8 flex flex-wrap items-center gap-3 sm:gap-4">
+                <Link
+                  href="/dashboard/new"
+                  className="inline-flex items-center gap-2.5 px-7 sm:px-8 py-3.5 sm:py-4 rounded-full text-[#0F1729] font-bold text-base transition-all duration-200 hover:scale-[1.02]"
+                  style={{ background: '#FFC94D', boxShadow: '0 14px 40px rgba(255,201,77,0.45)' }}
+                >
+                  Ustvari svoj dogodek
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                  </svg>
+                </Link>
+                <DemoButton variant="hero" />
+              </div>
+              <p className="mt-3 text-xs sm:text-sm text-gray-400">
+                Brez kreditne kartice · Pripravljeno v manj kot 2 minutah
+              </p>
+            </div>
+
+            {/* ── RIGHT — hero photo ──────────────────────────────────── */}
+            <div className="lg:col-span-6 order-1 lg:order-2">
+              {/* SEO H1 lives inside the copy above (visible now); this photo
+                  is decorative, so alt is descriptive but the semantic
+                  weight is on the real headline. */}
+              <div className="relative rounded-3xl overflow-hidden shadow-2xl bg-white">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <picture>
+                  <source media="(max-width: 640px)" srcSet="/hero/guestcam-hero-mobile.webp" />
+                  <img
+                    src="/hero/guestcam-hero.webp"
+                    alt="Gostje skenirajo QR kodo na poročni mizi in delijo fotografije v skupni album"
+                    className="block w-full h-auto"
+                    width={1672}
+                    height={941}
+                    fetchPriority="high"
+                  />
+                </picture>
+              </div>
+            </div>
           </div>
 
-          {/* CTA + note */}
-          <div className="flex flex-col items-center text-center px-4 py-10 sm:py-16">
-            <div className="flex flex-wrap items-center justify-center gap-4">
-              <Link
-                href="/dashboard/new"
-                className="inline-flex items-center gap-3 px-10 py-5 rounded-full text-[#0F1729] font-bold text-lg transition-all duration-200 hover:scale-[1.02]"
-                style={{ background: '#FFC94D', boxShadow: '0 14px 40px rgba(255,201,77,0.45)' }}
-              >
-                Začni brezplačno zdaj
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                </svg>
-              </Link>
-              <DemoButton variant="hero" />
-            </div>
-            <p className="mt-4 text-sm text-gray-400">Brez kreditne kartice • Pripravljeno v manj kot 2 minutah</p>
+          {/* Trust strip — 4 quick-scan reassurance bullets, matches the
+              ad reference. Kept in-hero (vs. its own section) so a new
+              visitor gets the full pitch in the first scroll. */}
+          <div className="mt-10 sm:mt-14 grid grid-cols-2 md:grid-cols-4 gap-3">
+            {[
+              { icon: '📱', title: 'Brez aplikacije',    sub: 'Deluje v vsakem brskalniku'      },
+              { icon: '🔒', title: 'Zasebno in varno',   sub: 'Samo vi imate dostop do albuma'  },
+              { icon: '🎞️', title: 'Polna kakovost',     sub: 'Vse slike in videji v HD'        },
+              { icon: '⚡', title: 'V živo',              sub: 'Prikaz v realnem času'           },
+            ].map((item) => (
+              <div key={item.title} className="rounded-2xl bg-white/70 backdrop-blur border border-white/40 p-3.5 text-center shadow-sm">
+                <div className="text-2xl mb-1.5">{item.icon}</div>
+                <p className="text-[13px] sm:text-sm font-bold text-[#0F1729] leading-tight">{item.title}</p>
+                <p className="text-[11px] sm:text-xs text-gray-500 mt-0.5 leading-tight">{item.sub}</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
