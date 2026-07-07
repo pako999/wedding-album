@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 560" font-family="'DM Sans','Segoe UI',system-ui,sans-serif">
+  <rect width="1200" height="560" rx="24" fill="#FFFFFF"/>
+  <rect x="0.5" y="0.5" width="1199" height="559" rx="23.5" fill="none" stroke="#E5E7EB"/>
+
+  <!-- Title -->
+  <text x="64" y="76" font-size="30" font-weight="800" fill="#0F1729">Koliko gostiju zaista podeli fotografije?</text>
+  <text x="64" y="110" font-size="17" fill="#64748B">Udeo gostiju koji učestvuju, po metodi prikupljanja — skala 0–100&#160;%</text>
+
+  <!-- Axis: 0% at x=64, 100% at x=1136 → 10.72 px per % -->
+
+  <!-- QR row -->
+  <circle cx="72" cy="186" r="6" fill="#C9820A"/>
+  <text x="90" y="192" font-size="16" font-weight="700" fill="#0F1729">QR kod na svakom stolu</text>
+  <rect x="64" y="208" width="1072" height="44" rx="4" fill="#F8FAFC"/>
+  <!-- range 65–80%: x = 64 + 65*10.72 = 760.8, width = 15*10.72 = 160.8 -->
+  <rect x="761" y="208" width="161" height="44" rx="4" fill="#C9820A"/>
+  <text x="748" y="236" font-size="16" font-weight="800" fill="#0F1729" text-anchor="end">65&#160;%</text>
+  <text x="934" y="236" font-size="16" font-weight="800" fill="#0F1729">80&#160;%</text>
+
+  <!-- WhatsApp row -->
+  <circle cx="72" cy="326" r="6" fill="#2563EB"/>
+  <text x="90" y="332" font-size="16" font-weight="700" fill="#0F1729">WhatsApp grupa</text>
+  <rect x="64" y="348" width="1072" height="44" rx="4" fill="#F8FAFC"/>
+  <!-- range 15–25%: x = 64 + 15*10.72 = 224.8, width = 10*10.72 = 107.2 -->
+  <rect x="225" y="348" width="107" height="44" rx="4" fill="#2563EB"/>
+  <text x="212" y="376" font-size="16" font-weight="800" fill="#0F1729" text-anchor="end">15&#160;%</text>
+  <text x="344" y="376" font-size="16" font-weight="800" fill="#0F1729">25&#160;%</text>
+
+  <!-- Axis ticks -->
+  <g font-size="13" fill="#94A3B8">
+    <text x="64" y="432">0&#160;%</text>
+    <text x="332" y="432">25&#160;%</text>
+    <text x="600" y="432" text-anchor="middle">50&#160;%</text>
+    <text x="868" y="432" text-anchor="middle">75&#160;%</text>
+    <text x="1136" y="432" text-anchor="end">100&#160;%</text>
+  </g>
+  <rect x="64" y="408" width="1072" height="1.5" fill="#E5E7EB"/>
+
+  <!-- Bottom annotation -->
+  <text x="64" y="500" font-size="16" fill="#64748B">Kada je galerija na jedan sken od kamere, učestvuje <tspan font-weight="800" fill="#0F1729">3&#215; više gostiju</tspan> nego u WhatsApp grupi.</text>
+</svg>
