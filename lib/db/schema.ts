@@ -32,6 +32,10 @@ export const albums = pgTable(
     coupleName: text("couple_name").notNull(), // "Ana & Marko" or event title
     weddingDate: text("wedding_date").notNull(), // ISO date string "2025-06-14"
     location: text("location"),
+    /** Default gallery UI language for guests (sl/hr/sr/de/en/es).
+     *  Inferred from `location` at creation; guests can still switch via
+     *  the in-gallery language picker or a ?lang= override. */
+    defaultLang: varchar("default_lang", { length: 5 }).notNull().default("sl"),
     coverImageUrl: text("cover_image_url"),
 
     // Access control

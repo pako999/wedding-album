@@ -481,6 +481,33 @@ export async function runMigrations() {
   await run("refc source idx", (q) => q`CREATE INDEX IF NOT EXISTS refc_source_idx ON referral_conversions (source_album_id)`);
   await run("refc new_user idx", (q) => q`CREATE INDEX IF NOT EXISTS refc_new_user_idx ON referral_conversions (new_user_clerk_id)`);
 
+  // ── Album default gallery language ────────────────────────────────────────
+  await run("albums.default_lang", (q) => q`
+    ALTER TABLE albums ADD COLUMN IF NOT EXISTS default_lang VARCHAR(5) NOT NULL DEFAULT 'sl'
+  `);
+  // Backfill from location country/city names. ASCII-safe substrings only
+  // (this file must stay ASCII for Turbopack): 'sterreich' catches
+  // Oesterreich/Österreich via suffix, 'espa' catches Espana/España via
+  // prefix. Only touches rows still on the 'sl' default so a manual
+  // change is never overwritten on re-run.
+  await run("backfill albums.default_lang", (q) => q`
+    UPDATE albums SET default_lang = CASE
+      WHEN location ILIKE '%hrvat%' OR location ILIKE '%croat%' OR location ILIKE '%kroat%'
+        OR location ILIKE '%zagreb%' OR location ILIKE '%split%' OR location ILIKE '%rijeka%'
+        OR location ILIKE '%osijek%' OR location ILIKE '%sisak%' OR location ILIKE '%zadar%'
+        OR location ILIKE '%dubrovnik%' THEN 'hr'
+      WHEN location ILIKE '%srbij%' OR location ILIKE '%serbi%' OR location ILIKE '%beograd%'
+        OR location ILIKE '%belgrad%' OR location ILIKE '%novi sad%' OR location ILIKE '%kragujevac%' THEN 'sr'
+      WHEN location ILIKE '%deutsch%' OR location ILIKE '%german%' OR location ILIKE '%sterreich%'
+        OR location ILIKE '%austria%' OR location ILIKE '%schweiz%' OR location ILIKE '%switzerland%'
+        OR location ILIKE '%berlin%' OR location ILIKE '%wien%' OR location ILIKE '%hamburg%' THEN 'de'
+      WHEN location ILIKE '%espa%' OR location ILIKE '%spain%' OR location ILIKE '%spanien%'
+        OR location ILIKE '%madrid%' OR location ILIKE '%barcelona%' OR location ILIKE '%valencia%' THEN 'es'
+      ELSE default_lang
+    END
+    WHERE default_lang = 'sl' AND location IS NOT NULL
+  `);
+
   // ── Referral engine (P1) — guest email sequence tracking ─────────────────
   await run("guest_emails.d3_sent_at",         (q) => q`ALTER TABLE guest_emails ADD COLUMN IF NOT EXISTS d3_sent_at TIMESTAMPTZ`);
   await run("guest_emails.d21_sent_at",        (q) => q`ALTER TABLE guest_emails ADD COLUMN IF NOT EXISTS d21_sent_at TIMESTAMPTZ`);
