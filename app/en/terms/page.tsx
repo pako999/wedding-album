@@ -4,6 +4,7 @@ import { LegalPage } from "@/components/LegalPage";
 export const metadata: Metadata = {
   title: "Terms of Service",
   alternates: { canonical: "https://www.guestcam.si/en/terms" },
+  openGraph: { url: "https://www.guestcam.si/en/terms", title: "Terms of Service" },
   robots: { index: true, follow: true },
 };
 
