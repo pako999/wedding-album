@@ -573,19 +573,19 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
             <div>
               <h3 className="text-xs font-bold uppercase tracking-widest text-gray-500 mb-3">{u.footerProduct}</h3>
               <ul className="space-y-2 text-sm text-gray-400">
-                <li><Link href="/#pricing" className="hover:text-white transition-colors">{u.footerLinkPricing}</Link></li>
-                <li><Link href="/#how" className="hover:text-white transition-colors">{u.footerLinkHow}</Link></li>
+                <li><Link href={lang === "sl" ? "/#pricing" : `/${lang}#pricing`} className="hover:text-white transition-colors">{u.footerLinkPricing}</Link></li>
+                <li><Link href={lang === "sl" ? "/#how" : `/${lang}#how`} className="hover:text-white transition-colors">{u.footerLinkHow}</Link></li>
                 <li><Link href="/dashboard" className="hover:text-white transition-colors">{u.footerLinkMyGalleries}</Link></li>
-                <li><Link href="/contact" className="hover:text-white transition-colors">{u.footerLinkContact}</Link></li>
+                <li><Link href={lang === "sl" ? "/contact" : `/${lang}/contact`} className="hover:text-white transition-colors">{u.footerLinkContact}</Link></li>
               </ul>
             </div>
             <div>
               <h3 className="text-xs font-bold uppercase tracking-widest text-gray-500 mb-3">{u.footerLegal}</h3>
               <ul className="space-y-2 text-sm text-gray-400">
-                <li><Link href="/privacy" className="hover:text-white transition-colors">{u.footerLinkPrivacy}</Link></li>
-                <li><Link href="/terms" className="hover:text-white transition-colors">{u.footerLinkTerms}</Link></li>
-                <li><Link href="/refund" className="hover:text-white transition-colors">{u.footerLinkRefund}</Link></li>
-                <li><Link href="/gdpr" className="hover:text-white transition-colors">GDPR</Link></li>
+                <li><Link href={lang === "sl" ? "/privacy" : `/${lang}/privacy`} className="hover:text-white transition-colors">{u.footerLinkPrivacy}</Link></li>
+                <li><Link href={lang === "sl" ? "/terms" : `/${lang}/terms`} className="hover:text-white transition-colors">{u.footerLinkTerms}</Link></li>
+                <li><Link href={lang === "sl" ? "/refund" : `/${lang}/refund`} className="hover:text-white transition-colors">{u.footerLinkRefund}</Link></li>
+                <li><Link href={lang === "sl" ? "/gdpr" : `/${lang}/gdpr`} className="hover:text-white transition-colors">GDPR</Link></li>
               </ul>
             </div>
           </div>

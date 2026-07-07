@@ -138,6 +138,11 @@ const COPY: Record<Lang, FooterCopy> = {
 
 export function SeoFooter({ lang }: { lang: Lang }) {
   const t = COPY[lang];
+  // Locale-aware homepage prefix: anchors must land on the visitor's OWN
+  // localized homepage (/en#how, /hr#pricing, …), not the Slovenian root.
+  // "/" for sl so the anchor is "/#how"; "/en" for others → "/en#how"
+  // (no trailing slash — avoids Next's 308 normalization redirect).
+  const home = lang === "sl" ? "/" : `/${lang}`;
   return (
     <footer className="bg-[#0F1729] text-white pt-16 pb-8">
       <div className="max-w-6xl mx-auto px-6">
@@ -169,10 +174,10 @@ export function SeoFooter({ lang }: { lang: Lang }) {
           <div>
             <h3 className="text-xs font-bold uppercase tracking-widest text-gray-500 mb-4">{t.product}</h3>
             <ul className="space-y-2.5 text-sm text-gray-400">
-              <li><a href="/#how" className="hover:text-white transition-colors">{t.howWorks}</a></li>
-              <li><a href="/#features" className="hover:text-white transition-colors">{t.features}</a></li>
-              <li><a href="/#pricing" className="hover:text-white transition-colors">{t.pricing}</a></li>
-              <li><a href="/#faq" className="hover:text-white transition-colors">{t.faq}</a></li>
+              <li><a href={`${home}#how`} className="hover:text-white transition-colors">{t.howWorks}</a></li>
+              <li><a href={`${home}#features`} className="hover:text-white transition-colors">{t.features}</a></li>
+              <li><a href={`${home}#pricing`} className="hover:text-white transition-colors">{t.pricing}</a></li>
+              <li><a href={`${home}#faq`} className="hover:text-white transition-colors">{t.faq}</a></li>
               <li><Link href="/dashboard/new" className="hover:text-white transition-colors">{t.createAlbum}</Link></li>
               <li><Link href={lang === "sl" ? "/blog" : `/${lang}/blog`} className="hover:text-white transition-colors">{t.blog}</Link></li>
               <li><Link href="/dashboard" className="hover:text-white transition-colors">{t.login}</Link></li>

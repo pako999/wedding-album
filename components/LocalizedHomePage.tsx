@@ -654,7 +654,7 @@ export async function LocalizedHomePage({ lang }: { lang: Lang }) {
       {/* Navbar */}
       <header className="sticky top-0 z-40 border-b border-[#FFC94D]/30 bg-white/80 backdrop-blur-md">
         <nav className="max-w-7xl mx-auto px-6 sm:px-8 h-16 flex items-center justify-between">
-          <Link href="/" className="flex items-center transition-transform duration-200 hover:scale-[1.03]">
+          <Link href={`/${lang}`} className="flex items-center transition-transform duration-200 hover:scale-[1.03]">
             <GuestcamLogo size="sm" showMark={true} />
           </Link>
           <div className="flex items-center gap-3 sm:gap-5">
@@ -863,7 +863,7 @@ export async function LocalizedHomePage({ lang }: { lang: Lang }) {
       </section>
 
       {/* Print templates */}
-      <section className="py-24 bg-white">
+      <section id="templates" className="py-24 bg-white">
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-14">
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold mb-4 uppercase tracking-widest"
@@ -932,7 +932,7 @@ export async function LocalizedHomePage({ lang }: { lang: Lang }) {
       </section>
 
       {/* How it works */}
-      <section style={{ background: "#0B1220" }} className="py-24 relative overflow-hidden">
+      <section id="how" style={{ background: "#0B1220" }} className="py-24 relative overflow-hidden">
         <div className="max-w-6xl mx-auto px-6 relative z-10">
           <p className="text-center text-xs font-bold uppercase tracking-[0.25em] mb-4" style={{ color: "#FFC94D" }}>{t.howEyebrow}</p>
           <h2 className="text-center font-extrabold text-white mb-5 leading-tight" style={{ fontSize: "clamp(2rem, 4vw, 3rem)" }}>
@@ -958,7 +958,7 @@ export async function LocalizedHomePage({ lang }: { lang: Lang }) {
       </section>
 
       {/* Why you need it */}
-      <section className="py-24" style={{ background: "#FFF9EC" }}>
+      <section id="why" className="py-24" style={{ background: "#FFF9EC" }}>
         <div className="max-w-6xl mx-auto px-6">
           <h2 className="text-[2.5rem] font-extrabold text-center text-[#0F1729] mb-4">{t.whyTitle}</h2>
           <p className="text-center text-gray-400 text-base mb-14 max-w-md mx-auto">{t.whySubtitle}</p>
@@ -975,7 +975,7 @@ export async function LocalizedHomePage({ lang }: { lang: Lang }) {
       </section>
 
       {/* Features */}
-      <section className="py-24 bg-white">
+      <section id="features" className="py-24 bg-white">
         <div className="max-w-6xl mx-auto px-6">
           <h2 className="text-[2.5rem] font-extrabold text-center text-[#0F1729] mb-4">{t.featuresTitle}</h2>
           <p className="text-center text-gray-500 mb-14 max-w-lg mx-auto leading-relaxed">
@@ -1000,7 +1000,7 @@ export async function LocalizedHomePage({ lang }: { lang: Lang }) {
       </section>
 
       {/* Testimonials */}
-      <section className="py-24" style={{ background: "#FFF9EC" }}>
+      <section id="reviews" className="py-24" style={{ background: "#FFF9EC" }}>
         <div className="max-w-6xl mx-auto px-6">
           <h2 className="text-[2.5rem] font-extrabold text-center text-[#0F1729] mb-14">{t.reviewsTitle}</h2>
           <div className="grid md:grid-cols-3 gap-5">
@@ -1028,7 +1028,7 @@ export async function LocalizedHomePage({ lang }: { lang: Lang }) {
       </section>
 
       {/* Pricing */}
-      <section className="py-24 bg-white">
+      <section id="pricing" className="py-24 bg-white">
         <div className="max-w-5xl mx-auto px-6">
           <h2 className="text-[2.5rem] font-extrabold text-center text-[#0F1729] mb-4">{t.pricingTitle}</h2>
           <p className="text-center text-gray-400 mb-14">{t.pricingSubtitle}</p>
@@ -1084,7 +1084,7 @@ export async function LocalizedHomePage({ lang }: { lang: Lang }) {
       </section>
 
       {/* FAQ */}
-      <section className="py-24" style={{ background: "#FFF9EC" }}>
+      <section id="faq" className="py-24" style={{ background: "#FFF9EC" }}>
         <div className="max-w-2xl mx-auto px-6">
           <h2 className="text-[2.5rem] font-extrabold text-center text-[#0F1729] mb-12">{t.faqTitle}</h2>
           <div className="space-y-3">
