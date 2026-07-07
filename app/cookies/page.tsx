@@ -16,6 +16,11 @@ export const metadata: Metadata = {
       "x-default": "https://www.guestcam.si/cookies",
     },
   },
+  openGraph: {
+    url: "https://www.guestcam.si/cookies",
+    title: "Politika piškotkov",
+    description: "Politika piškotkov Guestcam — uporabljamo le tehnično nujne piškotke, brez oglaševalskih ali sledilnih.",
+  },
   robots: { index: true, follow: true },
 };
 

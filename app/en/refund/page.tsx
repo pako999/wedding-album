@@ -4,6 +4,7 @@ import { LegalPage } from "@/components/LegalPage";
 export const metadata: Metadata = {
   title: "Refund Policy",
   alternates: { canonical: "https://www.guestcam.si/en/refund" },
+  openGraph: { url: "https://www.guestcam.si/en/refund", title: "Refund Policy" },
   robots: { index: true, follow: true },
 };
 

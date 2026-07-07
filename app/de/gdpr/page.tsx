@@ -4,6 +4,7 @@ import { LegalPage } from "@/components/LegalPage";
 export const metadata: Metadata = {
   title: "Ihre Rechte nach DSGVO",
   alternates: { canonical: "https://www.guestcam.si/de/gdpr" },
+  openGraph: { url: "https://www.guestcam.si/de/gdpr", title: "Ihre Rechte nach DSGVO" },
   robots: { index: true, follow: true },
 };
 

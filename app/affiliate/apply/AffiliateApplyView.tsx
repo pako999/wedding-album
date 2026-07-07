@@ -50,11 +50,12 @@ export function AffiliateApplyView({ lang }: { lang: AffiliateLang }) {
 export function affiliateApplyMetadata(lang: AffiliateLang): Metadata {
   const t = affiliateTranslations[lang].apply;
   const localizedPath = lang === "sl" ? "/affiliate/apply" : `/${lang}/affiliate/apply`;
+  const pageUrl = `https://www.guestcam.si${localizedPath}`;
   return {
     title: t.pageTitle,
     description: t.metaDescription,
     alternates: {
-      canonical: `https://www.guestcam.si${localizedPath}`,
+      canonical: pageUrl,
       languages: {
         sl: "https://www.guestcam.si/affiliate/apply",
         hr: "https://www.guestcam.si/hr/affiliate/apply",
@@ -64,6 +65,33 @@ export function affiliateApplyMetadata(lang: AffiliateLang): Metadata {
         es: "https://www.guestcam.si/es/affiliate/apply",
         "x-default": "https://www.guestcam.si/affiliate/apply",
       },
+    },
+    // CRITICAL: this page must carry its OWN og:url. Without it, the root
+    // layout's openGraph (url = homepage) is inherited — and Facebook
+    // Messenger / Instagram open og:url instead of the shared URL when
+    // the recipient taps the preview card, so everyone landed on the
+    // homepage instead of the application form.
+    openGraph: {
+      type: "website",
+      siteName: "Guestcam",
+      url: pageUrl,
+      title: t.pageTitle,
+      description: t.metaDescription,
+      images: [
+        {
+          url: "/og-image.png?v=2",
+          width: 910,
+          height: 1200,
+          alt: t.pageTitle,
+          type: "image/png",
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: t.pageTitle,
+      description: t.metaDescription,
+      images: ["/og-image.png?v=2"],
     },
     robots: { index: true, follow: true },
   };

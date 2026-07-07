@@ -16,6 +16,11 @@ export const metadata: Metadata = {
       "x-default": "https://www.guestcam.si/gdpr",
     },
   },
+  openGraph: {
+    url: "https://www.guestcam.si/gdpr",
+    title: "Pravice po GDPR",
+    description: "Vaše pravice po GDPR pri uporabi storitve Guestcam: dostop, popravek, izbris, prenosljivost, pritožba.",
+  },
   robots: { index: true, follow: true },
 };
 

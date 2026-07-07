@@ -16,6 +16,11 @@ export const metadata: Metadata = {
       "x-default": "https://www.guestcam.si/refund",
     },
   },
+  openGraph: {
+    url: "https://www.guestcam.si/refund",
+    title: "Politika vračila denarja",
+    description: "Politika vračila denarja Guestcam — 30-dnevna garancija vračila, pogoji, postopek in roki.",
+  },
   robots: { index: true, follow: true },
 };
 
