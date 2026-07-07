@@ -209,6 +209,9 @@ export interface Translations {
   discountRemove: string;         // "Remove"
   discountInvalid: string;        // "Code is invalid or has expired."
   discountOff: (n: number) => string; // "−20% off"
+
+  // Lightbox: aria/tooltip on the Save-to-device button
+  savePhoto: string;              // "Save photo"
 }
 
 // ─── All translations ─────────────────────────────────────────────────────────
@@ -363,6 +366,7 @@ const sl: Translations = {
   discountRemove: "Odstrani",
   discountInvalid: "Koda ni veljavna ali je potekla.",
   discountOff: (n) => `−${n}% popust`,
+  savePhoto: "Shrani fotografijo",
 };
 
 const hr: Translations = {
@@ -515,6 +519,7 @@ const hr: Translations = {
   discountRemove: "Ukloni",
   discountInvalid: "Kod nije važeći ili je istekao.",
   discountOff: (n) => `−${n}% popust`,
+  savePhoto: "Spremi fotografiju",
 };
 
 const sr: Translations = {
@@ -667,6 +672,7 @@ const sr: Translations = {
   discountRemove: "Ukloni",
   discountInvalid: "Kod nije važeći ili je istekao.",
   discountOff: (n) => `−${n}% popust`,
+  savePhoto: "Sačuvaj fotografiju",
 };
 
 const en: Translations = {
@@ -819,6 +825,7 @@ const en: Translations = {
   discountRemove: "Remove",
   discountInvalid: "Code is invalid or has expired.",
   discountOff: (n) => `−${n}% off`,
+  savePhoto: "Save photo",
 };
 
 const de: Translations = {
@@ -971,6 +978,7 @@ const de: Translations = {
   discountRemove: "Entfernen",
   discountInvalid: "Code ist ungültig oder abgelaufen.",
   discountOff: (n) => `−${n}% Rabatt`,
+  savePhoto: "Foto speichern",
 };
 
 const es: Translations = {
@@ -1123,6 +1131,7 @@ const es: Translations = {
   discountRemove: "Quitar",
   discountInvalid: "El código no es válido o ha caducado.",
   discountOff: (n) => `−${n}% descuento`,
+  savePhoto: "Guardar foto",
 };
 
 export const translations: Record<Lang, Translations> = { sl, hr, sr, en, de, es };

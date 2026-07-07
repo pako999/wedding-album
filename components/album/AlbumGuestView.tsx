@@ -17,6 +17,7 @@ import { ProjectionWall } from "./ProjectionWall";
 import { PoweredByBadge } from "./PoweredByBadge";
 import { translations, LANGS, type Lang, type Translations } from "@/lib/i18n/translations";
 import { bunnyDisplayUrl, bunnyOriginalUrl } from "@/lib/storage/bunny";
+import { saveImageToDevice } from "@/lib/share-download";
 import { getAlbumTheme } from "@/lib/album-themes";
 import type { Album, Photo, Moment } from "@/lib/db/schema";
 
@@ -1553,6 +1554,32 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
                padding ⇒ the photo uses the full lightbox width. */
             className={`guestcam-lightbox${lightboxDesktopPanelOpen ? " guestcam-lightbox--panel" : ""}`}
             render={{
+              /* Custom Download button — prefers navigator.share on mobile
+                 so iOS shows "Save Image" (→ Photos) alongside Files/Drive.
+                 Falls back to a normal <a download> on desktop. Fixes the
+                 guest report where iOS Safari's default sheet only offered
+                 Files + Google Drive. */
+              buttonDownload: () => {
+                const slide = lightboxSlides[lightboxViewIndex];
+                if (!slide?.download) return null;
+                const { url, filename } = slide.download;
+                return (
+                  <button
+                    key="save-to-device"
+                    type="button"
+                    className="yarl__button"
+                    aria-label={t.savePhoto}
+                    title={t.savePhoto}
+                    onClick={() => { void saveImageToDevice(url, filename); }}
+                  >
+                    <svg className="yarl__icon" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M12 3v12" />
+                      <path d="m7 10 5 5 5-5" />
+                      <path d="M5 21h14" />
+                    </svg>
+                  </button>
+                );
+              },
               /* Inject the panel as a custom control (absolute positioned) */
               controls: () => lightboxPhoto ? (
                 <>
