@@ -27,6 +27,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     },
     openGraph: {
       type: "article",
+      url: canonical,
       title: post.title,
       description: post.description,
       publishedTime: post.publishedAt,

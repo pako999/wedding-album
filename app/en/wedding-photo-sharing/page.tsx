@@ -11,6 +11,7 @@ export const metadata: Metadata = {
   description:
     "Wedding QR code for photos: guests scan, you get every photo in full quality. No app, no logins. Collect every guest photo. Set up in 2 minutes.",
   openGraph: {
+    url: "https://www.guestcam.si/en/wedding-photo-sharing",
     title: "Wedding QR Code: Collect Guest Photos 2026",
     description:
       "Collect every wedding photo from your guests with one QR code. No app downloads, full resolution, private and secure.",

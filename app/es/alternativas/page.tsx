@@ -12,6 +12,7 @@ export const metadata: Metadata = {
   description:
     "Comparativa: Guestcam vs Google Photos vs WhatsApp vs Dropbox. ¿Cuál es la mejor app para recopilar fotos de boda? Análisis honesto de pros y contras.",
   openGraph: {
+    url: "https://www.guestcam.si/es/alternativas",
     title: "Mejores Apps para Compartir Fotos de Boda 2025",
     description:
       "Comparativa honesta de soluciones para recopilar fotos de boda. Calidad, privacidad, precio — todo en un solo lugar.",

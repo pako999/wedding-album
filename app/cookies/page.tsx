@@ -20,6 +20,7 @@ export const metadata: Metadata = {
     url: "https://www.guestcam.si/cookies",
     title: "Politika piškotkov",
     description: "Politika piškotkov Guestcam — uporabljamo le tehnično nujne piškotke, brez oglaševalskih ali sledilnih.",
+    images: ["/og-image.png?v=2"],
   },
   robots: { index: true, follow: true },
 };

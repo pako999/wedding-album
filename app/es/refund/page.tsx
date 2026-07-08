@@ -4,7 +4,7 @@ import { LegalPage } from "@/components/LegalPage";
 export const metadata: Metadata = {
   title: "Política de reembolsos",
   alternates: { canonical: "https://www.guestcam.si/es/refund" },
-  openGraph: { url: "https://www.guestcam.si/es/refund", title: "Política de reembolsos" },
+  openGraph: { url: "https://www.guestcam.si/es/refund", title: "Política de reembolsos", images: ["/og-image.png?v=2"] },
   robots: { index: true, follow: true },
 };
 

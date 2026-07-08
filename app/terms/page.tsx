@@ -20,6 +20,7 @@ export const metadata: Metadata = {
     url: "https://www.guestcam.si/terms",
     title: "Pogoji uporabe",
     description: "Pogoji uporabe storitve Guestcam — paketi, plačila, pravice in obveznosti uporabnikov.",
+    images: ["/og-image.png?v=2"],
   },
   robots: { index: true, follow: true },
 };

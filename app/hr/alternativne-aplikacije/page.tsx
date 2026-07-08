@@ -12,6 +12,7 @@ export const metadata: Metadata = {
   description:
     "Guestcam vs Google Photos vs WhatsApp vs Dropbox. Koja aplikacija najbolje skuplja fotografije s vjenčanja? Iskrena usporedba prednosti i zamki.",
   openGraph: {
+    url: "https://www.guestcam.si/hr/alternativne-aplikacije",
     title: "Najbolje aplikacije za vjenčane fotografije 2026",
     description:
       "Iskrena usporedba rješenja za skupljanje vjenčanih fotografija. Kvaliteta, privatnost, cijena — sve na jednom mjestu.",

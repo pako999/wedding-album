@@ -20,6 +20,7 @@ export const metadata: Metadata = {
     url: "https://www.guestcam.si/de/contact",
     title: "Kontakt",
     description: "Schreiben Sie uns — E-Mail, WhatsApp, Premium-Support für Ihre Hochzeitsgalerie.",
+    images: ["/og-image.png?v=2"],
   },
   robots: { index: true, follow: true },
 };

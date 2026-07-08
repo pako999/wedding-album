@@ -24,6 +24,7 @@ export const metadata: Metadata = {
     },
   },
   openGraph: {
+    url: "https://www.guestcam.si/blog",
     type: "website",
     title: "Blog — Guestcam",
     description: "Nasveti, vodniki in primerjave za zbiranje fotografij gostov.",

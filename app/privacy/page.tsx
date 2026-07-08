@@ -20,6 +20,7 @@ export const metadata: Metadata = {
     url: "https://www.guestcam.si/privacy",
     title: "Politika zasebnosti",
     description: "Politika zasebnosti storitve Guestcam. Izveste, katere podatke zbiramo, kako jih varujemo in kakšne so vaše pravice po GDPR.",
+    images: ["/og-image.png?v=2"],
   },
   robots: { index: true, follow: true },
 };

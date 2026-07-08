@@ -4,7 +4,7 @@ import { LegalPage } from "@/components/LegalPage";
 export const metadata: Metadata = {
   title: "Términos de uso",
   alternates: { canonical: "https://www.guestcam.si/es/terms" },
-  openGraph: { url: "https://www.guestcam.si/es/terms", title: "Términos de uso" },
+  openGraph: { url: "https://www.guestcam.si/es/terms", title: "Términos de uso", images: ["/og-image.png?v=2"] },
   robots: { index: true, follow: true },
 };
 
