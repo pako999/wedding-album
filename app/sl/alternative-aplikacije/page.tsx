@@ -12,6 +12,7 @@ export const metadata: Metadata = {
   description:
     "Guestcam vs Google Photos vs WhatsApp vs Dropbox. Katera aplikacija najbolje zbere poročne fotografije? Iskrena primerjava prednosti in pasti.",
   openGraph: {
+    url: "https://www.guestcam.si/sl/alternative-aplikacije",
     title: "Najboljše aplikacije za poročne fotografije 2026",
     description:
       "Iskrena primerjava rešitev za zbiranje poročnih fotografij. Kakovost, zasebnost, cena — vse na enem mestu.",

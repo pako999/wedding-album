@@ -11,6 +11,7 @@ export const metadata: Metadata = {
   description:
     "Aplikacija za fotografije s vjenčanja preko QR koda: gosti skeniraju, vi dobivate sve slike u punoj kvaliteti. Bez instalacije. Postavite za 2 minute.",
   openGraph: {
+    url: "https://www.guestcam.si/hr/qr-kod-vjencanje",
     title: "QR kod za vjenčanje — fotografije gostiju 2026",
     description:
       "Skupite sve fotografije s vjenčanja od gostiju jednim QR kodom. Bez aplikacije, u punoj kvaliteti.",

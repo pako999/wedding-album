@@ -11,6 +11,7 @@ export const metadata: Metadata = {
   description:
     "Aplikacija za poročne fotografije s QR kodo: gostje skenirajo, vi dobite vse fotografije v polni kakovosti. Brez aplikacije. Postavite v 2 minutah.",
   openGraph: {
+    url: "https://www.guestcam.si/sl/qr-koda-poroka",
     title: "QR koda za poroko — fotografije gostov 2026",
     description:
       "Zberite vse fotografije gostov z eno samo QR kodo. Brez aplikacije, v polni kakovosti.",

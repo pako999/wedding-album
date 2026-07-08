@@ -20,6 +20,7 @@ export const metadata: Metadata = {
     url: "https://www.guestcam.si/refund",
     title: "Politika vračila denarja",
     description: "Politika vračila denarja Guestcam — 30-dnevna garancija vračila, pogoji, postopek in roki.",
+    images: ["/og-image.png?v=2"],
   },
   robots: { index: true, follow: true },
 };

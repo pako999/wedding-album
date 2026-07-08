@@ -20,6 +20,7 @@ export const metadata: Metadata = {
     url: "https://www.guestcam.si/es/contact",
     title: "Contacto",
     description: "Escríbenos — email, WhatsApp, soporte Premium para tu galería de boda.",
+    images: ["/og-image.png?v=2"],
   },
   robots: { index: true, follow: true },
 };

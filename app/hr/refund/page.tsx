@@ -4,7 +4,7 @@ import { LegalPage } from "@/components/LegalPage";
 export const metadata: Metadata = {
   title: "Politika povrata novca",
   alternates: { canonical: "https://www.guestcam.si/hr/refund" },
-  openGraph: { url: "https://www.guestcam.si/hr/refund", title: "Politika povrata novca" },
+  openGraph: { url: "https://www.guestcam.si/hr/refund", title: "Politika povrata novca", images: ["/og-image.png?v=2"] },
   robots: { index: true, follow: true },
 };
 

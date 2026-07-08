@@ -20,15 +20,19 @@ export function eventTopicMetadata(
 ): Metadata {
   const entry = getEventTopic(locale, key);
   if (!entry) return {};
-  const localePath = locale === "sl" ? `/${entry.slug}` : `/${locale}/${entry.slug}`;
+  // Every locale's route lives under its prefix — INCLUDING Slovenian
+  // (app/sl/<slug>/page.tsx). The earlier `/${slug}` shortcut for sl
+  // pointed canonicals + hreflang at root URLs that resolve as 404
+  // album slugs — Ahrefs flagged 6 broken canonicals, 8 404s and 40+
+  // hreflang-to-broken-page errors from exactly this line.
+  const localePath = `/${locale}/${entry.slug}`;
 
   // Assemble hreflang alternates only for locales that ACTUALLY have this
   // topic — Google doesn't like alternates pointing at 404s.
   const languages: Record<string, string> = {};
   for (const loc of localesForTopic(key)) {
     const e = getEventTopic(loc, key)!;
-    const p = loc === "sl" ? `/${e.slug}` : `/${loc}/${e.slug}`;
-    languages[loc] = `${SITE_URL}${p}`;
+    languages[loc] = `${SITE_URL}/${loc}/${e.slug}`;
   }
   const xDefault = languages.sl ?? languages.en ?? Object.values(languages)[0];
 
@@ -41,6 +45,7 @@ export function eventTopicMetadata(
     },
     openGraph: {
       type: "article",
+      url: `${SITE_URL}${localePath}`,
       title: entry.title,
       description: entry.description,
       images: [ogImage(entry.title)],
@@ -75,7 +80,7 @@ export function EventTopicPage({ locale, topicKey }: Props) {
   const hreflang = ALL_LOCALES.reduce((acc, loc) => {
     if (translated.has(loc)) {
       const e = getEventTopic(loc, topicKey)!;
-      acc[loc] = loc === "sl" ? `/${e.slug}` : `/${loc}/${e.slug}`;
+      acc[loc] = `/${loc}/${e.slug}`;
     } else {
       acc[loc] = loc === "sl" ? "/" : `/${loc}`;
     }

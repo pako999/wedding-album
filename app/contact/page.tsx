@@ -20,6 +20,7 @@ export const metadata: Metadata = {
     url: "https://www.guestcam.si/contact",
     title: "Kontakt",
     description: "Pišite nam — email, WhatsApp, Premium podpora za vašo poročno galerijo.",
+    images: ["/og-image.png?v=2"],
   },
   robots: { index: true, follow: true },
 };

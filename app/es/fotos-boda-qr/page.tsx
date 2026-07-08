@@ -11,6 +11,7 @@ export const metadata: Metadata = {
   description:
     "App para fotos de boda con código QR: los invitados escanean, tú recibes todas las fotos en calidad original. Sin instalar nada. Configura en 2 minutos.",
   openGraph: {
+    url: "https://www.guestcam.si/es/fotos-boda-qr",
     title: "Código QR para boda: fotos de tus invitados 2026",
     description:
       "Recopila todas las fotos de tus invitados con un código QR. Sin app, resolución completa, privado y seguro.",

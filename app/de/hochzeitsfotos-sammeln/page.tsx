@@ -11,6 +11,7 @@ export const metadata: Metadata = {
   description:
     "Hochzeitsfotos sammeln per QR-Code: Gäste scannen, Sie bekommen jedes Foto in voller Qualität. Keine App. In 2 Minuten eingerichtet.",
   openGraph: {
+    url: "https://www.guestcam.si/de/hochzeitsfotos-sammeln",
     title: "QR-Code Hochzeit: Fotos der Gäste sammeln 2026",
     description:
       "Sammeln Sie alle Hochzeitsfotos Ihrer Gäste mit einem QR-Code. Keine App, volle Auflösung, privat.",

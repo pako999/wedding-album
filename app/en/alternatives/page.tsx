@@ -11,6 +11,7 @@ export const metadata: Metadata = {
   description:
     "Guestcam vs Google Photos vs WhatsApp vs Dropbox vs HoneyCam. Find the right wedding photo sharing app for your day — honest side-by-side.",
   openGraph: {
+    url: "https://www.guestcam.si/en/alternatives",
     title: "Best Wedding Photo Sharing App Alternatives 2025",
     description:
       "Honest comparison of wedding photo sharing solutions. See which app wins on quality, ease of use, privacy and price.",

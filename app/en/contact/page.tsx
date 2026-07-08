@@ -20,6 +20,7 @@ export const metadata: Metadata = {
     url: "https://www.guestcam.si/en/contact",
     title: "Contact",
     description: "Get in touch — email, WhatsApp, Premium wedding-day support.",
+    images: ["/og-image.png?v=2"],
   },
   robots: { index: true, follow: true },
 };

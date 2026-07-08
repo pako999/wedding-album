@@ -50,6 +50,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       ),
     },
     openGraph: {
+      url: `https://www.guestcam.si/${langCode}/blog`,
       type: "website",
       locale: langCode,
       title: titles[langCode],
