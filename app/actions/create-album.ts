@@ -109,9 +109,19 @@ export async function createAlbum(formData: FormData) {
     console.warn("[create-album] referral code generation failed:", err);
   }
 
+  // Persist the owner's email on the album row — admin views and the
+  // affiliate self-referral check both rely on it, and Clerk lookups at
+  // render time are slow/paginated. Best-effort.
+  let ownerEmail: string | null = null;
+  try {
+    const creator = await currentUser();
+    ownerEmail = creator?.emailAddresses?.[0]?.emailAddress ?? null;
+  } catch { /* ignore — column stays null */ }
+
   const inserted = await db.insert(albums).values({
     slug,
     ownerClerkId:      userId,
+    ownerEmail,
     eventType,
     coupleName,
     weddingDate:       eventDate,

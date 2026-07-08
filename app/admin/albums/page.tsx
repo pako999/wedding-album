@@ -1,6 +1,7 @@
 import { db } from "@/lib/db";
 import { albums } from "@/lib/db/schema";
 import { desc, or, like } from "drizzle-orm";
+import { clerkClient } from "@clerk/nextjs/server";
 import { AdminAlbumRow } from "./AdminAlbumRow";
 
 export const dynamic = "force-dynamic";
@@ -24,6 +25,33 @@ export default async function AdminAlbums({ searchParams }: PageProps) {
     orderBy: [desc(albums.createdAt)],
     limit: 200,
   });
+
+  // Older albums predate ownerEmail being persisted at creation — resolve
+  // those from Clerk by ownerClerkId so the admin always sees who owns
+  // what. Batched (Clerk accepts a userId array) + best-effort: if Clerk
+  // is down we still render, just with dashes on the legacy rows.
+  const clerkEmails = new Map<string, string>();
+  const missingIds = [...new Set(
+    rows.filter((r) => !r.ownerEmail).map((r) => r.ownerClerkId),
+  )];
+  if (missingIds.length > 0) {
+    try {
+      const client = await clerkClient();
+      // Clerk caps userId filters at 100 per call; chunk to stay safe.
+      for (let i = 0; i < missingIds.length; i += 100) {
+        const { data } = await client.users.getUserList({
+          userId: missingIds.slice(i, i + 100),
+          limit: 100,
+        });
+        for (const u of data) {
+          const email = u.emailAddresses?.[0]?.emailAddress;
+          if (email) clerkEmails.set(u.id, email);
+        }
+      }
+    } catch (err) {
+      console.warn("[admin/albums] Clerk email lookup failed:", err);
+    }
+  }
 
   return (
     <div className="space-y-6">
@@ -52,6 +80,7 @@ export default async function AdminAlbums({ searchParams }: PageProps) {
           <thead>
             <tr className="text-left text-xs uppercase tracking-wide text-gray-400 border-b border-gray-100">
               <th className="px-4 py-3 font-medium">Galerija</th>
+              <th className="px-4 py-3 font-medium">Lastnik</th>
               <th className="px-4 py-3 font-medium">Paket</th>
               <th className="px-4 py-3 font-medium">Fotografije</th>
               <th className="px-4 py-3 font-medium">Poteče</th>
@@ -64,7 +93,7 @@ export default async function AdminAlbums({ searchParams }: PageProps) {
                 key={a.id}
                 slug={a.slug}
                 coupleName={a.coupleName}
-                ownerEmail={a.ownerEmail ?? null}
+                ownerEmail={a.ownerEmail ?? clerkEmails.get(a.ownerClerkId) ?? null}
                 plan={a.plan}
                 filmTier={a.filmTier}
                 maxPhotos={a.maxPhotos}
@@ -74,7 +103,7 @@ export default async function AdminAlbums({ searchParams }: PageProps) {
             ))}
             {rows.length === 0 && (
               <tr>
-                <td colSpan={5} className="px-4 py-12 text-center text-sm text-gray-400">
+                <td colSpan={6} className="px-4 py-12 text-center text-sm text-gray-400">
                   Ni rezultatov.
                 </td>
               </tr>
