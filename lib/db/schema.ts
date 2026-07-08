@@ -413,6 +413,21 @@ export const userPlanOverrides = pgTable("user_plan_overrides", {
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
+// ─── Per-user metadata we can't store in Clerk ───────────────────────────────
+// Country is captured from Vercel's x-vercel-ip-country header on album
+// creation and dashboard visits. Used by /admin/users to show where
+// customers come from (market analysis, support language).
+
+export const userMeta = pgTable("user_meta", {
+  clerkId: text("clerk_id").primaryKey(),
+  /** ISO-3166 alpha-2 country code from the visitor's IP ("SI", "HR"…). */
+  country: varchar("country", { length: 2 }),
+  /** How we learned it: "ip" (geo header) — inference from album
+   *  location happens at render time and isn't persisted. */
+  source: varchar("source", { length: 20 }).notNull().default("ip"),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
 // ─── Onboarding nudges ───────────────────────────────────────────────────────
 // One row per Clerk user that has received the "you signed up but never
 // created a gallery" reminder. We never want to spam — one PK on clerkId

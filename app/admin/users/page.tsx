@@ -1,7 +1,8 @@
 import { db } from "@/lib/db";
-import { albums, userPlanOverrides } from "@/lib/db/schema";
+import { albums, userPlanOverrides, userMeta } from "@/lib/db/schema";
 import { clerkClient } from "@clerk/nextjs/server";
 import { UserUpgradeMenu } from "@/components/admin/UserUpgradeMenu";
+import { countryFlag, inferCountryFromLocation } from "@/lib/user-country";
 
 export const dynamic = "force-dynamic";
 
@@ -22,6 +23,10 @@ interface UserRow {
   planSource: PlanSource;
   /** True if any active album has a comp tag (influencer/sponsor). */
   isComp: boolean;
+  /** ISO-3166 alpha-2 country + how we know it. "ip" = geo header
+   *  (reliable), "location" = inferred from album location text. */
+  country: string | null;
+  countrySource: "ip" | "location" | null;
 }
 
 const PLAN_RANK: Record<PlanTier, number> = { free: 0, basic: 1, plus: 2, premium: 3 };
@@ -43,6 +48,7 @@ export default async function AdminUsers() {
       plan: albums.plan,
       stripeSessionId: albums.stripeSessionId,
       expiresAt: albums.expiresAt,
+      location: albums.location,
     })
     .from(albums);
 
@@ -53,6 +59,8 @@ export default async function AdminUsers() {
     bestPlan: PlanTier;
     planSource: PlanSource;
     isComp: boolean;
+    /** Country inferred from the first album location that matches. */
+    inferredCountry: string | null;
   }
   const albumStats = new Map<string, AlbumStats>();
   for (const a of albumDetail) {
@@ -64,9 +72,11 @@ export default async function AdminUsers() {
       bestPlan: "free" as PlanTier,
       planSource: "none" as PlanSource,
       isComp: false,
+      inferredCountry: null,
     };
     cur.albumCount++;
     if (a.ownerEmail && !cur.email) cur.email = a.ownerEmail;
+    if (!cur.inferredCountry) cur.inferredCountry = inferCountryFromLocation(a.location);
 
     // An album is "active" for plan-badge purposes if not yet expired.
     const active = a.expiresAt == null || a.expiresAt > now;
@@ -115,6 +125,21 @@ export default async function AdminUsers() {
     console.warn("[admin/users] user_plan_overrides query failed (run /api/migrate?):", err);
   }
 
+  // Recorded IP countries (x-vercel-ip-country captured on album create +
+  // dashboard visits). try/catch so a not-yet-migrated DB doesn't crash
+  // the page — countries just show as inferred/— until migration runs.
+  let ipCountries = new Map<string, string>();
+  try {
+    const metaRows = await db
+      .select({ clerkId: userMeta.clerkId, country: userMeta.country })
+      .from(userMeta);
+    ipCountries = new Map(
+      metaRows.filter((r) => r.country).map((r) => [r.clerkId, r.country!] as [string, string]),
+    );
+  } catch (err) {
+    console.warn("[admin/users] user_meta query failed (run /api/migrate?):", err);
+  }
+
   // Pull every Clerk user (paginate; the API caps each page at 500).
   const client = await clerkClient();
   const clerkUsers: Awaited<ReturnType<typeof client.users.getUserList>>["data"] = [];
@@ -130,6 +155,7 @@ export default async function AdminUsers() {
 
   const enriched: UserRow[] = clerkUsers.map((u) => {
     const stats = albumStats.get(u.id);
+    const ipCountry = ipCountries.get(u.id) ?? null;
     return {
       clerkId: u.id,
       email: u.emailAddresses?.[0]?.emailAddress ?? stats?.email ?? null,
@@ -141,6 +167,8 @@ export default async function AdminUsers() {
       bestPlan: stats?.bestPlan ?? "free",
       planSource: stats?.planSource ?? "none",
       isComp: stats?.isComp ?? false,
+      country: ipCountry ?? stats?.inferredCountry ?? null,
+      countrySource: ipCountry ? "ip" : stats?.inferredCountry ? "location" : null,
     };
   });
 
@@ -148,6 +176,7 @@ export default async function AdminUsers() {
   // still appear as album owners — otherwise admin loses sight of them.
   for (const [clerkId, stats] of albumStats) {
     if (clerkUsers.some((u) => u.id === clerkId)) continue;
+    const ipCountry = ipCountries.get(clerkId) ?? null;
     enriched.push({
       clerkId,
       email: stats.email,
@@ -159,6 +188,8 @@ export default async function AdminUsers() {
       bestPlan: stats.bestPlan,
       planSource: stats.planSource,
       isComp: stats.isComp,
+      country: ipCountry ?? stats.inferredCountry,
+      countrySource: ipCountry ? "ip" : stats.inferredCountry ? "location" : null,
     });
   }
 
@@ -181,6 +212,7 @@ export default async function AdminUsers() {
             <tr className="text-left text-xs uppercase tracking-wide text-gray-400 border-b border-gray-100">
               <th className="px-4 py-3 font-medium">Uporabnik</th>
               <th className="px-4 py-3 font-medium">Email</th>
+              <th className="px-4 py-3 font-medium">Država</th>
               <th className="px-4 py-3 font-medium">Galerije</th>
               <th className="px-4 py-3 font-medium">Paket</th>
               <th className="px-4 py-3 font-medium">Registracija</th>
@@ -197,6 +229,24 @@ export default async function AdminUsers() {
                   <p className="font-mono text-[10px] text-gray-400">{u.clerkId}</p>
                 </td>
                 <td className="px-4 py-3 text-gray-600">{u.email ?? "—"}</td>
+                <td className="px-4 py-3">
+                  {u.country ? (
+                    <span
+                      className="inline-flex items-center gap-1.5 text-sm text-gray-700"
+                      title={u.countrySource === "ip"
+                        ? "Zaznano iz IP naslova"
+                        : "Ocenjeno iz lokacije dogodka"}
+                    >
+                      <span className="text-base leading-none">{countryFlag(u.country)}</span>
+                      <span className="font-semibold">{u.country}</span>
+                      {u.countrySource === "location" && (
+                        <span className="text-[10px] text-gray-400">≈</span>
+                      )}
+                    </span>
+                  ) : (
+                    <span className="text-xs text-gray-300">—</span>
+                  )}
+                </td>
                 <td className="px-4 py-3 text-gray-700 font-semibold">{u.albumCount}</td>
                 <td className="px-4 py-3">
                   <PlanBadge
@@ -220,7 +270,7 @@ export default async function AdminUsers() {
             ))}
             {enriched.length === 0 && (
               <tr>
-                <td colSpan={6} className="px-4 py-12 text-center text-sm text-gray-400">
+                <td colSpan={7} className="px-4 py-12 text-center text-sm text-gray-400">
                   Ni uporabnikov.
                 </td>
               </tr>

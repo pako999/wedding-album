@@ -9,6 +9,7 @@ import { sendWelcomeEmail, sendOrganizerAgreementEmail } from "@/lib/email/notif
 import { generateUniqueReferralCode } from "@/lib/referral/codes";
 import { attributeNewAlbumFromCookie } from "@/lib/referral/attribution";
 import { inferLangFromLocation } from "@/lib/i18n/infer-lang";
+import { recordUserCountry } from "@/lib/user-country";
 
 function slugify(text: string): string {
   return text
@@ -135,6 +136,10 @@ export async function createAlbum(formData: FormData) {
   if (newAlbumId) {
     await attributeNewAlbumFromCookie(newAlbumId, userId).catch(() => {});
   }
+
+  // Record the creator's country (x-vercel-ip-country) for the admin
+  // Uporabniki view. Best-effort.
+  await recordUserCountry(userId);
 
   // Send a welcome email on the owner's *first* album. Best-effort — if
   // anything goes wrong (Resend down, no email on file) we still redirect.

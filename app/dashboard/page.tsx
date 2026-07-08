@@ -5,6 +5,7 @@ import { albums } from "@/lib/db/schema";
 import { eq, or, desc, sql } from "drizzle-orm";
 import Link from "next/link";
 import { DashboardNav } from "@/components/dashboard/DashboardNav";
+import { recordUserCountry } from "@/lib/user-country";
 
 export const dynamic = "force-dynamic";
 
@@ -22,6 +23,13 @@ export default async function DashboardPage() {
     redirect("/sign-in");
   }
   if (!userId) redirect("/sign-in");
+
+  // Capture the user's country from Vercel's geo header for the admin
+  // Uporabniki view. Covers existing users who never create new albums.
+  // Awaited (single ~30ms upsert) because Vercel freezes the lambda when
+  // the response ends — a dangling promise would silently never commit.
+  // recordUserCountry never throws, so it can't break the render.
+  await recordUserCountry(userId);
 
   let userAlbums: (typeof albums.$inferSelect)[] = [];
   let dbError = false;
