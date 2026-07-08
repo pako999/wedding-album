@@ -29,10 +29,30 @@ export function ensureMigrations(): Promise<void> {
 }
 
 /** True when the error is Postgres telling us the schema is stale
- *  (missing column/table) — the one failure mode migrations fix. */
+ *  (missing column/table) — the one failure mode migrations fix.
+ *
+ *  IMPORTANT: Drizzle wraps the Neon error — the top-level message is
+ *  just "Failed query: select …" and the actual `column "x" does not
+ *  exist` + SQLSTATE code (42703/42P01) live on `err.cause` (NeonDbError).
+ *  The first version of this check only looked at err.message, so the
+ *  healing retry never fired in production. Walk the whole cause chain
+ *  and check both message text and the `code` property. */
 export function isStaleSchemaError(err: unknown): boolean {
-  const msg = err instanceof Error ? err.message : String(err);
-  return /column .* does not exist|relation .* does not exist|42703|42P01/i.test(msg);
+  const RE = /column .* does not exist|relation .* does not exist/i;
+  const CODES = new Set(["42703", "42P01"]);
+  let cur: unknown = err;
+  for (let depth = 0; cur && depth < 6; depth++) {
+    if (typeof cur === "object") {
+      const e = cur as { message?: unknown; code?: unknown; cause?: unknown; sourceError?: unknown };
+      if (typeof e.message === "string" && RE.test(e.message)) return true;
+      if (typeof e.code === "string" && CODES.has(e.code)) return true;
+      cur = e.cause ?? e.sourceError;
+    } else {
+      if (typeof cur === "string" && RE.test(cur)) return true;
+      break;
+    }
+  }
+  return false;
 }
 
 /**
