@@ -395,6 +395,15 @@ export async function runMigrations() {
     )
   `);
 
+  await run("create user_meta", (q) => q`
+    CREATE TABLE IF NOT EXISTS user_meta (
+      clerk_id    TEXT PRIMARY KEY,
+      country     VARCHAR(2),
+      source      VARCHAR(20) NOT NULL DEFAULT 'ip',
+      updated_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )
+  `);
+
   await run("create onboarding_reminders", (q) => q`
     CREATE TABLE IF NOT EXISTS onboarding_reminders (
       clerk_id  TEXT PRIMARY KEY,
