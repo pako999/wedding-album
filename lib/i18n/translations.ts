@@ -131,7 +131,7 @@ export interface Translations {
 
   // Empty state CTA
   beFirstToShare: string;       // "Be the first to share a photo!"
-  beFirstToShareHint: string;   // "Scan the QR code or upload from your phone — your photos appear here instantly."
+  beFirstToShareHint: string;   // "Enter your name below and upload photos and videos from your phone."
 
   // Section headers
   videosSection: string;        // "Videos"
@@ -304,7 +304,7 @@ const sl: Translations = {
   noVideos: "Ni videoposnetkov",
   noPhotos: "Ni fotografij",
   beFirstToShare: "Naredite prvi spomin",
-  beFirstToShareHint: "Skenirajte QR kodo ali naložite s telefona — fotografije se prikažejo tukaj v trenutku.",
+  beFirstToShareHint: "Vpišite spodaj vaše ime in naložite slike in videje iz vašega telefona.",
   videosSection: "Videi",
   photosSection: "Fotografije",
   sortLabel: "Razvrsti",
@@ -457,7 +457,7 @@ const hr: Translations = {
   noVideos: "Nema videozapisa",
   noPhotos: "Nema fotografija",
   beFirstToShare: "Stvorite prvu uspomenu",
-  beFirstToShareHint: "Skenirajte QR kod ili učitajte s telefona — fotografije se ovdje prikazuju odmah.",
+  beFirstToShareHint: "Upišite dolje svoje ime i učitajte slike i videe sa svog telefona.",
   videosSection: "Videi",
   photosSection: "Fotografije",
   sortLabel: "Razvrstaj",
@@ -610,7 +610,7 @@ const sr: Translations = {
   noVideos: "Nema videozapisa",
   noPhotos: "Nema fotografija",
   beFirstToShare: "Napravite prvu uspomenu",
-  beFirstToShareHint: "Skenirajte QR kod ili otpremite sa telefona — fotografije se ovde prikazuju odmah.",
+  beFirstToShareHint: "Upišite dole svoje ime i otpremite slike i video zapise sa svog telefona.",
   videosSection: "Videi",
   photosSection: "Fotografije",
   sortLabel: "Razvrstaj",
@@ -763,7 +763,7 @@ const en: Translations = {
   noVideos: "No videos",
   noPhotos: "No photos",
   beFirstToShare: "Create the first memory",
-  beFirstToShareHint: "Scan the QR code or upload from your phone — your photos appear here instantly.",
+  beFirstToShareHint: "Enter your name below and upload photos and videos from your phone.",
   videosSection: "Videos",
   photosSection: "Photos",
   sortLabel: "Sort",
@@ -916,7 +916,7 @@ const de: Translations = {
   noVideos: "Keine Videos",
   noPhotos: "Keine Fotos",
   beFirstToShare: "Schaffen Sie die erste Erinnerung",
-  beFirstToShareHint: "Scannen Sie den QR-Code oder laden Sie vom Handy hoch — Ihre Fotos erscheinen sofort hier.",
+  beFirstToShareHint: "Geben Sie unten Ihren Namen ein und laden Sie Fotos und Videos von Ihrem Handy hoch.",
   videosSection: "Videos",
   photosSection: "Fotos",
   sortLabel: "Sortieren",
@@ -1069,7 +1069,7 @@ const es: Translations = {
   noVideos: "No hay vídeos",
   noPhotos: "No hay fotos",
   beFirstToShare: "Crea el primer recuerdo",
-  beFirstToShareHint: "Escanea el código QR o sube desde tu teléfono — tus fotos aparecen aquí al instante.",
+  beFirstToShareHint: "Escribe tu nombre abajo y sube fotos y vídeos desde tu teléfono.",
   videosSection: "Vídeos",
   photosSection: "Fotos",
   sortLabel: "Ordenar",
