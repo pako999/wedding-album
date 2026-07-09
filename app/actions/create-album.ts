@@ -46,6 +46,13 @@ export async function createAlbum(formData: FormData) {
     throw new Error("Ime in datum sta obvezni polji.");
   }
 
+  // Mirror of the wizard's client-side cap. Long names overflow QR print
+  // cards, referral codes (VARCHAR 20 after folding), email subjects and
+  // page titles — reject instead of silently truncating.
+  if (coupleName.length > 40) {
+    throw new Error("Ime dogodka je predolgo — največ 40 znakov.");
+  }
+
   // Unique slug: event-name-XXXX
   const suffix = Math.random().toString(36).slice(2, 6);
   const slug   = `${slugify(coupleName)}-${suffix}`;

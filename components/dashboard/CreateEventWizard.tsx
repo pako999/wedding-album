@@ -130,6 +130,14 @@ export function CreateEventWizard({ initialPlan }: { initialPlan?: PaidPlanId } 
 
   const eventInfo = selectedType ?? EVENT_TYPES[0];
 
+  // Event/couple name is used on QR print cards, in referral codes, in
+  // email subjects and page titles — long names overflow all of them.
+  // Hard cap at 40 with a live counter + warning so the user knows WHY
+  // they can't keep typing instead of the input silently eating keys.
+  const NAME_MAX = 40;
+  const [nameValue, setNameValue] = useState("");
+  const nameAtLimit = nameValue.length >= NAME_MAX;
+
   function handleTypeSelect(et: EventType) {
     setSelectedType(et);
     setStep(2);
@@ -235,12 +243,27 @@ export function CreateEventWizard({ initialPlan }: { initialPlan?: PaidPlanId } 
           <input
             name="coupleName"
             required
+            maxLength={NAME_MAX}
+            value={nameValue}
+            onChange={e => setNameValue(e.target.value.slice(0, NAME_MAX))}
             placeholder={eventInfo.namePlaceholder}
-            className="w-full px-4 py-3 rounded-xl border border-gray-200 text-[#0F1729] text-sm outline-none transition-all focus:border-[#C9820A]"
+            className={`w-full px-4 py-3 rounded-xl border text-[#0F1729] text-sm outline-none transition-all ${nameAtLimit ? "border-red-400 focus:border-red-400" : "border-gray-200 focus:border-[#C9820A]"}`}
             style={{ boxShadow: "0 0 0 0px rgba(255,201,77,0)" }}
             onFocus={e => (e.target.style.boxShadow = "0 0 0 3px rgba(255,201,77,0.15)")}
             onBlur={e => (e.target.style.boxShadow = "0 0 0 0px rgba(255,201,77,0)")}
           />
+          <div className="mt-1.5 flex items-center justify-between gap-3">
+            {nameAtLimit ? (
+              <p className="text-xs text-red-500 font-medium">
+                Ime je predolgo — največ {NAME_MAX} znakov. Uporabite krajšo obliko (npr. »Ana &amp; Marko«).
+              </p>
+            ) : (
+              <span />
+            )}
+            <p className={`text-[11px] tabular-nums shrink-0 ${nameAtLimit ? "text-red-500 font-semibold" : "text-gray-400"}`}>
+              {nameValue.length}/{NAME_MAX}
+            </p>
+          </div>
         </div>
 
         {/* Date */}
