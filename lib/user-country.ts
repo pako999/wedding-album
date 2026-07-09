@@ -1,6 +1,7 @@
 import { headers } from "next/headers";
 import { db } from "@/lib/db";
 import { userMeta } from "@/lib/db/schema";
+import { eq } from "drizzle-orm";
 
 /**
  * Record the signed-in user's country from Vercel's geo header.
@@ -13,20 +14,40 @@ import { userMeta } from "@/lib/db/schema";
  * Always best-effort and fire-and-forget: a failed write must never
  * break album creation or a dashboard render.
  */
-export async function recordUserCountry(clerkId: string): Promise<void> {
+/**
+ * @returns created=true when this call inserted the user's FIRST
+ * user_meta row — i.e. we have never seen this user before. Callers
+ * use that as a "new user" signal (e.g. the Telegram fallback ping
+ * when the Clerk webhook misses a registration).
+ */
+export async function recordUserCountry(clerkId: string): Promise<{ created: boolean }> {
   try {
     const h = await headers();
-    const country = h.get("x-vercel-ip-country")?.trim().toUpperCase();
-    if (!country || country.length !== 2 || country === "XX") return;
-    await db
-      .insert(userMeta)
-      .values({ clerkId, country, source: "ip", updatedAt: new Date() })
-      .onConflictDoUpdate({
-        target: userMeta.clerkId,
-        set: { country, source: "ip", updatedAt: new Date() },
-      });
+    const raw = h.get("x-vercel-ip-country")?.trim().toUpperCase();
+    const country = raw && raw.length === 2 && raw !== "XX" ? raw : null;
+
+    const existing = await db.query.userMeta.findFirst({
+      where: (m, { eq }) => eq(m.clerkId, clerkId),
+      columns: { clerkId: true, country: true },
+    });
+
+    if (!existing) {
+      await db
+        .insert(userMeta)
+        .values({ clerkId, country, source: "ip", updatedAt: new Date() })
+        .onConflictDoNothing();
+      return { created: true };
+    }
+    if (country && country !== existing.country) {
+      await db
+        .update(userMeta)
+        .set({ country, source: "ip", updatedAt: new Date() })
+        .where(eq(userMeta.clerkId, clerkId));
+    }
+    return { created: false };
   } catch (err) {
     console.warn("[user-country] record failed:", err);
+    return { created: false };
   }
 }
 
