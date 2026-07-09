@@ -188,10 +188,20 @@ export default async function RootLayout({
 
   let showPromo = !isProtectedPath;
   if (showPromo) {
-    const { userId } = await auth();
-    if (userId) {
-      const paid = await checkHasPaidPlan(userId);
-      if (paid) showPromo = false;
+    // try/catch: ISR pages (blog, revalidate=3600) are regenerated in the
+    // BACKGROUND, where no request passes through clerkMiddleware — auth()
+    // then throws "Clerk can't detect usage of clerkMiddleware()". There is
+    // no user in that context anyway, so treating it as signed-out is
+    // exactly right (the promo banner state gets refined on the client
+    // for real visitors).
+    try {
+      const { userId } = await auth();
+      if (userId) {
+        const paid = await checkHasPaidPlan(userId);
+        if (paid) showPromo = false;
+      }
+    } catch {
+      // background revalidation / no middleware context — anonymous view
     }
   }
 
