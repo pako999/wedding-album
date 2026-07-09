@@ -447,8 +447,13 @@ export async function runMigrations() {
   await run("add albums.referral_code", (q) => q`
     ALTER TABLE albums ADD COLUMN IF NOT EXISTS referral_code VARCHAR(20)
   `);
+  // Uniqueness via CREATE UNIQUE INDEX IF NOT EXISTS — Postgres has no
+  // IF NOT EXISTS for ADD CONSTRAINT, so the previous form errored 42P07
+  // on EVERY cold start once the constraint existed. A constraint's
+  // backing index shares its name, so IF NOT EXISTS is a clean no-op on
+  // DBs that already have the constraint.
   await run("add albums.referral_code unique", (q) => q`
-    ALTER TABLE albums ADD CONSTRAINT albums_referral_code_key UNIQUE (referral_code)
+    CREATE UNIQUE INDEX IF NOT EXISTS albums_referral_code_key ON albums (referral_code)
   `);
   await run("add albums.referral_code idx", (q) => q`
     CREATE INDEX IF NOT EXISTS albums_referral_code_idx ON albums (referral_code)
@@ -471,7 +476,7 @@ export async function runMigrations() {
     )
   `);
   await run("guest_emails unique", (q) => q`
-    ALTER TABLE guest_emails ADD CONSTRAINT guest_emails_album_email_unique UNIQUE (album_id, email)
+    CREATE UNIQUE INDEX IF NOT EXISTS guest_emails_album_email_unique ON guest_emails (album_id, email)
   `);
   await run("guest_emails album idx", (q) => q`
     CREATE INDEX IF NOT EXISTS guest_emails_album_idx ON guest_emails (album_id)
@@ -529,7 +534,7 @@ export async function runMigrations() {
      WHERE unsubscribe_token IS NULL
   `);
   await run("guest_emails.unsubscribe_token unique", (q) => q`
-    ALTER TABLE guest_emails ADD CONSTRAINT guest_emails_unsubscribe_token_unique UNIQUE (unsubscribe_token)
+    CREATE UNIQUE INDEX IF NOT EXISTS guest_emails_unsubscribe_token_unique ON guest_emails (unsubscribe_token)
   `);
   await run("guest_emails d3 due idx",  (q) => q`CREATE INDEX IF NOT EXISTS guest_emails_d3_due_idx  ON guest_emails (d3_sent_at)`);
   await run("guest_emails d21 due idx", (q) => q`CREATE INDEX IF NOT EXISTS guest_emails_d21_due_idx ON guest_emails (d21_sent_at)`);
@@ -537,10 +542,20 @@ export async function runMigrations() {
   // Backfill: give every existing album a referral code. Done in the DB
   // (not app-side) so we don't need N round-trips. Uses UPPER + regex
   // fold + album.id suffix for uniqueness.
+  //
+  // The name part is capped at 17 chars (17 + '-' + 2 = 20 = the
+  // VARCHAR(20) column limit) — the uncapped version threw 22001
+  // "value too long" for any long couple name, which failed the WHOLE
+  // UPDATE and left every NULL row NULL forever, erroring on each cold
+  // start. BTRIM drops a trailing hyphen the LEFT() cut can leave;
+  // names that fold to nothing (emoji-only) fall back to 'GALLERY'.
   await run("backfill album referral_code", (q) => q`
     UPDATE albums
        SET referral_code = (
-             UPPER(REGEXP_REPLACE(couple_name, '[^A-Za-z0-9]+', '-', 'g'))
+             COALESCE(
+               NULLIF(BTRIM(LEFT(UPPER(REGEXP_REPLACE(couple_name, '[^A-Za-z0-9]+', '-', 'g')), 17), '-'), ''),
+               'GALLERY'
+             )
              || '-' || UPPER(SUBSTRING(id, 1, 2))
            )
      WHERE referral_code IS NULL
