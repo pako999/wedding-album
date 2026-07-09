@@ -6,6 +6,8 @@ import { eq, or, desc, sql } from "drizzle-orm";
 import Link from "next/link";
 import { DashboardNav } from "@/components/dashboard/DashboardNav";
 import { recordUserCountry } from "@/lib/user-country";
+import { htmlEscape, notifyTelegram } from "@/lib/telegram";
+import { sendAdminNewUserEmail } from "@/lib/email/notifications";
 
 export const dynamic = "force-dynamic";
 
@@ -29,7 +31,36 @@ export default async function DashboardPage() {
   // Awaited (single ~30ms upsert) because Vercel freezes the lambda when
   // the response ends — a dangling promise would silently never commit.
   // recordUserCountry never throws, so it can't break the render.
-  await recordUserCountry(userId);
+  const { created } = await recordUserCountry(userId);
+
+  // Fallback new-user notification. The Clerk webhook is the primary
+  // signal, but it silently misses every signup when the endpoint is
+  // misconfigured (e.g. registered on the bare domain, which 307s to
+  // www — Svix treats 3xx as failure and never retries successfully).
+  // If we have NEVER seen this user (no user_meta row until just now)
+  // AND their Clerk account is fresh (< 48 h), ping the team here.
+  // The webhook writes its own user_meta row on success, so a working
+  // webhook makes `created` false and this never double-pings.
+  if (created) {
+    try {
+      const user = await currentUser();
+      const isFresh = user?.createdAt && Date.now() - user.createdAt < 48 * 60 * 60 * 1000;
+      if (isFresh) {
+        const name = [user.firstName, user.lastName].filter(Boolean).join(" ").trim() || "(brez imena)";
+        const email = userEmail ?? "(brez e-pošte)";
+        await Promise.all([
+          notifyTelegram(
+            `🎉 <b>Nov uporabnik</b> <i>(zaznan ob prvi prijavi — Clerk webhook ga ni javil)</i>\n` +
+            `${htmlEscape(name)} — <code>${htmlEscape(email)}</code>\n` +
+            `Clerk ID: <code>${htmlEscape(userId)}</code>`,
+          ),
+          sendAdminNewUserEmail({ name, email, clerkId: userId }),
+        ]);
+      }
+    } catch (err) {
+      console.warn("[dashboard] fallback new-user ping failed:", err);
+    }
+  }
 
   let userAlbums: (typeof albums.$inferSelect)[] = [];
   let dbError = false;

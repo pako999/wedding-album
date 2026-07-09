@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { createHmac, timingSafeEqual } from "node:crypto";
 import { htmlEscape, notifyTelegram } from "@/lib/telegram";
 import { sendAdminNewUserEmail } from "@/lib/email/notifications";
+import { db } from "@/lib/db";
+import { userMeta } from "@/lib/db/schema";
 
 export const dynamic = "force-dynamic";
 
@@ -10,7 +12,11 @@ export const dynamic = "force-dynamic";
  * the team gets a Telegram ping when someone signs up.
  *
  * Configure in Clerk dashboard → Webhooks → "Add Endpoint":
- *   URL:       https://guestcam.si/api/webhooks/clerk
+ *   URL:       https://www.guestcam.si/api/webhooks/clerk
+ *              ^^^ MUST be the www host. The bare domain 307-redirects
+ *              to www on Vercel, and Svix (Clerk's deliverer) treats
+ *              3xx as a FAILED delivery — it does not follow redirects.
+ *              A bare-domain endpoint silently loses every event.
  *   Events:    user.created
  *   Signing:   copy the "Signing secret" → set CLERK_WEBHOOK_SECRET
  *              in Vercel.
@@ -18,6 +24,11 @@ export const dynamic = "force-dynamic";
  * Clerk signs requests with Svix; we verify the signature inline
  * (HMAC-SHA256 over `<id>.<timestamp>.<body>`, secret is base64
  * after stripping the `whsec_` prefix). No svix npm dep needed.
+ *
+ * Belt-and-braces: app/dashboard/page.tsx fires a FALLBACK new-user
+ * ping on a user's first dashboard visit if no user_meta row exists
+ * yet (i.e. this webhook never fired for them). To keep that
+ * exactly-once, this handler registers the user in user_meta.
  */
 export async function POST(req: NextRequest) {
   const secret = process.env.CLERK_WEBHOOK_SECRET;
@@ -80,10 +91,24 @@ export async function POST(req: NextRequest) {
       `🎉 <b>Nov uporabnik</b>\n` +
       `${htmlEscape(name)} — <code>${htmlEscape(email)}</code>\n` +
       `Clerk ID: <code>${htmlEscape(u.id ?? "?")}</code>`;
-    await Promise.all([
+    const [sent] = await Promise.all([
       notifyTelegram(msg),
       sendAdminNewUserEmail({ name, email, clerkId: u.id ?? "" }),
     ]);
+    if (!sent) {
+      console.error(
+        "[clerk webhook] Telegram ping NOT sent — check TELEGRAM_BOT_TOKEN / TELEGRAM_CHAT_ID env vars",
+      );
+    }
+    // Register the user so the dashboard fallback ping knows the
+    // webhook already covered this signup (exactly-once). Best-effort.
+    if (u.id) {
+      await db
+        .insert(userMeta)
+        .values({ clerkId: u.id, source: "clerk-webhook", updatedAt: new Date() })
+        .onConflictDoNothing()
+        .catch(() => {});
+    }
   }
 
   return NextResponse.json({ received: true });
