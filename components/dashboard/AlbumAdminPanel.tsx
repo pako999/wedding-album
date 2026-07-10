@@ -37,6 +37,11 @@ interface Props {
   activeTab: Tab;
   isNew?: boolean;
   isUpgraded?: boolean;
+  /** Exact amount charged (EUR, incl. discount codes) forwarded by the
+   *  Mollie return redirect. Used only for the Meta Pixel Purchase
+   *  value; falls back to the headline plan price when absent (e.g.
+   *  webhook-reconciled upgrades that skip the return redirect). */
+  paidAmount?: number;
   /** When the owner came from a homepage pricing card, this is the plan
    *  they picked. The onboarding success screen finishes by routing them
    *  straight into Paddle checkout for that plan. */
@@ -242,7 +247,7 @@ function NewAlbumSuccess({ album, paidPlan }: { album: Album; paidPlan?: "basic"
 
 // ─── Main Panel ───────────────────────────────────────────────────────────────
 
-export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activeTab, isNew, isUpgraded, paidPlan, ownerEmail, viewingAsAdmin }: Props) {
+export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activeTab, isNew, isUpgraded, paidAmount, paidPlan, ownerEmail, viewingAsAdmin }: Props) {
   const router = useRouter();
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://www.guestcam.si";
   const albumUrl = `${appUrl}/${album.slug}`;
@@ -271,7 +276,9 @@ export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activ
     try {
       if (sessionStorage.getItem(dedupKey)) return;
       const planKey = (album.plan as keyof typeof PLAN_PRICES_EUR);
-      const value = PLAN_PRICES_EUR[planKey] ?? 0;
+      // Exact charged amount from the Mollie return redirect wins —
+      // it includes discount codes. Headline price is the fallback.
+      const value = paidAmount ?? PLAN_PRICES_EUR[planKey] ?? 0;
       if (value > 0) {
         fbEvent(
           "Purchase",
@@ -282,7 +289,7 @@ export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activ
             content_type: "product",
             content_ids: [album.plan],
           },
-          // Dedup id for Conversions API server-side twin, if ever added.
+          // Dedup id matching the server-side CAPI event_id.
           album.stripeSessionId ?? undefined,
         );
       }
@@ -290,7 +297,7 @@ export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activ
     } catch {
       // sessionStorage unavailable (private mode, etc.) — best effort.
     }
-  }, [isUpgraded, album.plan, album.id, album.stripeSessionId]);
+  }, [isUpgraded, album.plan, album.id, album.stripeSessionId, paidAmount]);
 
   // Show success screen if just created
   if (isNew) {

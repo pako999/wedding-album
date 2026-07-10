@@ -10,7 +10,7 @@ export const dynamic = "force-dynamic";
 
 interface Props {
   params: Promise<{ slug: string }>;
-  searchParams: Promise<{ tab?: string; new?: string; upgraded?: string; plan?: string }>;
+  searchParams: Promise<{ tab?: string; new?: string; upgraded?: string; plan?: string; amount?: string }>;
 }
 
 export default async function AlbumAdminPage({ params, searchParams }: Props) {
@@ -30,9 +30,18 @@ export default async function AlbumAdminPage({ params, searchParams }: Props) {
     new: isNewParam,
     upgraded: isUpgradedParam,
     plan: planParam,
+    amount: amountParam,
   } = await searchParams;
   const isNew = isNewParam === "1";
   const isUpgraded = isUpgradedParam === "1";
+  // Exact charged amount forwarded by /api/mollie-return — feeds the
+  // client-side Meta Pixel Purchase so it reports the discounted price,
+  // not the headline one. Bounds-checked; never trusted for anything
+  // but analytics.
+  const paidAmount = (() => {
+    const n = Number.parseFloat(amountParam ?? "");
+    return Number.isFinite(n) && n > 0 && n < 10_000 ? n : undefined;
+  })();
   const paidPlan =
     planParam === "basic" || planParam === "plus" || planParam === "premium"
       ? planParam
@@ -163,6 +172,7 @@ export default async function AlbumAdminPage({ params, searchParams }: Props) {
       activeTab={tab as "overview" | "gallery" | "qr" | "settings" | "pending" | "film"}
       isNew={isNew}
       isUpgraded={isUpgraded && album?.plan !== "free"}
+      paidAmount={paidAmount}
       paidPlan={paidPlan}
       ownerEmail={ownerEmail}
       viewingAsAdmin={viewingAsAdmin}
