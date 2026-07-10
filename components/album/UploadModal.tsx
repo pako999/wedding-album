@@ -12,7 +12,11 @@ interface Props {
   currentCount: number;
   lang: Lang;
   onClose: () => void;
-  onSuccess: () => void;
+  /** Called when the guest closes the success screen. `emailCaptured`
+   *  tells the gallery whether they already left their email here — if
+   *  not, the gallery shows a follow-up email banner so the offer isn't
+   *  lost when they close the modal without scrolling to the form. */
+  onSuccess: (info?: { emailCaptured: boolean }) => void;
   onNameChange?: (name: string) => void;
   /** Files pre-selected before the modal opened (e.g. camera capture). */
   initialFiles?: FileList | null;
@@ -696,7 +700,7 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
                 {isDemo ? t.demoUploadNote : t.approvalNote}
               </p>
               <button
-                onClick={onSuccess}
+                onClick={() => onSuccess({ emailCaptured: saveLinkSent })}
                 className="px-6 py-2.5 text-[#F2F4F8] font-sans text-sm rounded-xl transition-colors"
                 style={{ background: "#0F1729" }}
                 onMouseEnter={e => { e.currentTarget.style.background = accent; }}
@@ -887,7 +891,7 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
             {/* Single action — uploading starts automatically, so the footer
                 only needs a clear, visible close button. */}
             <button
-              onClick={hasUploaded ? onSuccess : onClose}
+              onClick={hasUploaded ? () => onSuccess({ emailCaptured: saveLinkSent }) : onClose}
               disabled={uploading}
               className="flex items-center justify-center gap-2 w-full px-6 py-3 rounded-2xl text-white font-semibold text-sm transition-all disabled:opacity-60"
               style={{ background: uploading ? "#94A3B8" : accent }}
