@@ -174,15 +174,25 @@ export default async function AlbumPage({ params, searchParams }: Props) {
   });
 
   return (
-    <AlbumGuestView
-      album={album}
-      photos={albumPhotos}
-      moments={albumMoments}
-      passwordRequired={passwordRequired}
-      passwordCorrect={passwordCorrect}
-      providedPassword={pw}
-      initialLang={lang}
-      isOwner={isOwner}
-    />
+    <>
+      {/* Hide Cookiebot's persistent floating widget (the round "CO"
+          badge, bottom-left) on guest galleries — it sits on top of the
+          couple's photos and confuses guests. Only the WIDGET is hidden:
+          the initial consent dialog still appears (required — GA + Meta
+          Pixel load site-wide), and consent can be managed any time via
+          the cookie link on the marketing pages. The <style> tag only
+          exists while a gallery route is mounted. */}
+      <style>{`#CookiebotWidget { display: none !important; }`}</style>
+      <AlbumGuestView
+        album={album}
+        photos={albumPhotos}
+        moments={albumMoments}
+        passwordRequired={passwordRequired}
+        passwordCorrect={passwordCorrect}
+        providedPassword={pw}
+        initialLang={lang}
+        isOwner={isOwner}
+      />
+    </>
   );
 }
