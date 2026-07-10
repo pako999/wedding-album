@@ -150,6 +150,18 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
   const [lightboxNamePrompt, setLightboxNamePrompt] = useState(false);
   const pendingLikeRef = useRef<string | null>(null);
 
+  // Post-upload email banner. Shown once after the guest closes the
+  // upload-success screen WITHOUT leaving their email there — the modal's
+  // email form sits below the close button and most guests never scroll
+  // to it. Persisted flags keep it from nagging: "done" (email sent,
+  // here or in the modal) and "dismissed" both suppress it forever.
+  const emailBannerKey = `gc_email_done_${album.id}`;
+  const [emailBannerVisible, setEmailBannerVisible] = useState(false);
+  const [bannerEmail, setBannerEmail]     = useState("");
+  const [bannerConsent, setBannerConsent] = useState(false);
+  const [bannerSending, setBannerSending] = useState(false);
+  const [bannerSent, setBannerSent]       = useState(false);
+
   const nameInputRef  = useRef<HTMLInputElement>(null);
   const lbNameInputRef = useRef<HTMLInputElement>(null);
   const cameraFilesRef = useRef<FileList | null>(null);
@@ -706,9 +718,14 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
             )}
           </div>
 
-          {/* Row 2 — sort + quick filters + person filter chips */}
+          {/* Row 2 — sort + quick filters + person filter chips.
+              IMPORTANT: the sort dropdown must live OUTSIDE the
+              overflow-x-auto area — `overflow-x: auto` forces vertical
+              clipping too (CSS spec), which cut the open menu to an
+              unreachable sliver. Sort stays fixed on the left; only the
+              chips scroll. */}
           {(photos.length > 0) && (
-            <div className="flex items-center gap-2 pb-3 overflow-x-auto" style={{ scrollbarWidth: "none" }}>
+            <div className="flex items-center gap-2 pb-3 min-w-0">
 
               {/* Sort menu */}
               <div className="relative flex-shrink-0" ref={sortMenuRef}>
@@ -756,6 +773,10 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
               </div>
 
               <span className="h-4 w-px flex-shrink-0" style={{ background: BRAND.border }} />
+
+              {/* Scrollable chip area — everything from here on can overflow
+                  horizontally without clipping the sort dropdown above. */}
+              <div className="flex items-center gap-2 overflow-x-auto min-w-0 flex-1" style={{ scrollbarWidth: "none" }}>
 
               {/* My uploads — shortcut into the per-person filter */}
               {hasMyUploads && (() => {
@@ -835,6 +856,7 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
                   })}
                 </>
               )}
+              </div>
             </div>
           )}
 
@@ -882,6 +904,86 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
             style={{ borderColor: accentTint, background: accentTint, color: BRAND.dark }}
           >
             {t.demoUploadNote}
+          </div>
+        )}
+
+        {/* Post-upload email banner — second chance at the album-link
+            email signup for guests who closed the upload-success screen
+            without filling the form there. Dismiss or send = never again
+            (localStorage). */}
+        {emailBannerVisible && (
+          <div
+            className="mb-6 rounded-2xl border bg-white px-5 py-5 sm:px-6 relative"
+            style={{ borderColor: BRAND.border, boxShadow: "0 6px 24px rgba(15,23,41,0.06)" }}
+          >
+            <button
+              aria-label={t.close}
+              onClick={() => {
+                setEmailBannerVisible(false);
+                try { localStorage.setItem(emailBannerKey, "dismissed"); } catch { /* private mode */ }
+              }}
+              className="absolute top-3 right-3 w-7 h-7 rounded-full flex items-center justify-center text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors"
+            >
+              ✕
+            </button>
+            <div className="flex items-start gap-3 pr-8">
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center text-xl shrink-0" style={{ background: accentTint }}>
+                📧
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="text-sm font-bold" style={{ color: BRAND.dark }}>{t.saveLinkTitle}</p>
+                <p className="text-xs text-gray-500 mt-0.5 mb-3">{t.saveLinkDesc}</p>
+                {bannerSent ? (
+                  <p className="text-sm text-green-600 font-medium py-1">{t.saveLinkSent}</p>
+                ) : (
+                  <>
+                    <div className="flex gap-2 min-w-0 max-w-md">
+                      <input
+                        type="email"
+                        size={1}
+                        value={bannerEmail}
+                        onChange={e => setBannerEmail(e.target.value)}
+                        placeholder="vas@email.com"
+                        autoComplete="email"
+                        className="flex-1 min-w-0 px-3 py-2 text-sm border border-gray-200 rounded-xl outline-none focus:border-gray-400"
+                      />
+                      <button
+                        onClick={async () => {
+                          const email = bannerEmail.trim();
+                          if (!email || bannerSending) return;
+                          setBannerSending(true);
+                          try {
+                            await fetch(`/api/albums/${album.slug}/remind`, {
+                              method: "POST",
+                              headers: { "Content-Type": "application/json" },
+                              body: JSON.stringify({ email, delayMinutes: 0, marketingConsent: bannerConsent, locale: lang }),
+                            });
+                            setBannerSent(true);
+                            try { localStorage.setItem(emailBannerKey, "done"); } catch { /* private mode */ }
+                          } catch { /* non-critical */ } finally {
+                            setBannerSending(false);
+                          }
+                        }}
+                        disabled={bannerSending || !bannerEmail.trim()}
+                        className="shrink-0 px-4 py-2 text-sm rounded-xl text-white font-medium transition-all disabled:opacity-40"
+                        style={{ background: theme.accent }}
+                      >
+                        {bannerSending ? "…" : t.saveLinkSend}
+                      </button>
+                    </div>
+                    <label className="mt-2 flex items-start gap-2 cursor-pointer max-w-md">
+                      <input
+                        type="checkbox"
+                        checked={bannerConsent}
+                        onChange={(e) => setBannerConsent(e.target.checked)}
+                        className="mt-0.5 shrink-0 accent-[#C9820A]"
+                      />
+                      <span className="text-[11px] text-gray-500 leading-snug">{t.marketingConsentLabel}</span>
+                    </label>
+                  </>
+                )}
+              </div>
+            </div>
           </div>
         )}
 
@@ -1689,7 +1791,20 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
           referralCode={album.referralCode ?? null}
           onClose={() => { cameraFilesRef.current = null; setUploadOpen(false); }}
           onNameChange={(name) => setUploaderName(name)}
-          onSuccess={() => { cameraFilesRef.current = null; setUploadOpen(false); router.refresh(); }}
+          onSuccess={(info) => {
+            cameraFilesRef.current = null;
+            setUploadOpen(false);
+            router.refresh();
+            if (info?.emailCaptured) {
+              try { localStorage.setItem(emailBannerKey, "done"); } catch { /* private mode */ }
+            } else {
+              // Guest skipped the in-modal email form — offer it once more
+              // as a gallery banner (unless they already gave/declined it).
+              let seen: string | null = null;
+              try { seen = localStorage.getItem(emailBannerKey); } catch { /* private mode */ }
+              if (!seen) setEmailBannerVisible(true);
+            }
+          }}
         />
       )}
 
