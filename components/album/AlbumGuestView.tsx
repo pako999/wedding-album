@@ -157,6 +157,9 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
   // here or in the modal) and "dismissed" both suppress it forever.
   const emailBannerKey = `gc_email_done_${album.id}`;
   const [emailBannerVisible, setEmailBannerVisible] = useState(false);
+  /** Set to the entered name when it collides with an existing uploader
+   *  (case-insensitive) — renders the "is that you?" confirmation. */
+  const [nameCollision, setNameCollision] = useState<string | null>(null);
   const [bannerEmail, setBannerEmail]     = useState("");
   const [bannerConsent, setBannerConsent] = useState(false);
   const [bannerSending, setBannerSending] = useState(false);
@@ -190,6 +193,14 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
     try {
       const stored = localStorage.getItem(`likes-${album.slug}`);
       if (stored) setMyLikes(new Set(JSON.parse(stored) as string[]));
+    } catch { /* ignore */ }
+
+    // Prefill the guest's name from this device's previous visit — they
+    // still tap "Confirm", but don't have to retype (and the duplicate-
+    // name prompt knows this name is legitimately theirs).
+    try {
+      const storedName = localStorage.getItem(`name-${album.slug}`);
+      if (storedName) setUploaderName(prev => prev || storedName);
     } catch { /* ignore */ }
 
     fetch(`/api/albums/${album.slug}/reactions`)
@@ -417,17 +428,43 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
     window.history.replaceState({}, "", url.toString());
   };
 
-  const confirmName = () => {
-    if (!uploaderName.trim()) return;
-    setUploaderName(uploaderName.trim());
+  /**
+   * Confirm the guest's name. If the (case-insensitive) name already
+   * exists among uploaders AND this device hasn't used it before, show
+   * a soft confirmation instead of silently merging two guests into one
+   * identity ("Ana" #2 would inherit Ana #1's uploads/likes filter).
+   * "Yes, that's me" proceeds (returning guest on a new device);
+   * "Use a different name" clears the field. Never hard-blocks.
+   */
+  const confirmName = (force = false): boolean => {
+    const trimmed = uploaderName.trim();
+    if (!trimmed) return false;
+
+    if (!force) {
+      let storedName: string | null = null;
+      try { storedName = localStorage.getItem(`name-${album.slug}`); } catch { /* private mode */ }
+      const sameAsStored = storedName?.toLowerCase() === trimmed.toLowerCase();
+      const taken = uploaders.some(u => u.toLowerCase() === trimmed.toLowerCase());
+      if (taken && !sameAsStored) {
+        setNameCollision(trimmed);
+        return false;
+      }
+    }
+
+    setNameCollision(null);
+    setUploaderName(trimmed);
     setNameConfirmed(true);
     setLightboxNamePrompt(false);
+    // Remember the confirmed name on this device — a returning guest
+    // re-typing it later skips the duplicate-name prompt.
+    try { localStorage.setItem(`name-${album.slug}`, trimmed); } catch { /* private mode */ }
     // If the guest tapped "like" before having a name, register that like now.
     const pending = pendingLikeRef.current;
     if (pending) {
       pendingLikeRef.current = null;
-      likeWithName(pending, uploaderName.trim());
+      likeWithName(pending, trimmed);
     }
+    return true;
   };
 
   // ── Lightbox slides — mirror the currently displayed images (filtered+sorted) ──
@@ -1012,7 +1049,7 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
                 value={uploaderName}
                 onChange={(e) => setUploaderName(e.target.value)}
                 onKeyDown={(e) => {
-                  if (e.key === "Enter" && uploaderName.trim()) { confirmName(); openUpload(); }
+                  if (e.key === "Enter" && uploaderName.trim()) { if (confirmName()) openUpload(); }
                 }}
                 placeholder={t.yourNamePlaceholder}
                 autoComplete="given-name"
@@ -1020,7 +1057,7 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
                 style={{ borderColor: BRAND.border }}
               />
               <button
-                onClick={() => { confirmName(); openUpload(); }}
+                onClick={() => { if (confirmName()) openUpload(); }}
                 disabled={!uploaderName.trim()}
                 className="px-7 py-3 rounded-2xl text-sm font-semibold text-white transition-all disabled:opacity-30 hover:opacity-90 shrink-0"
                 style={{ background: BRAND.dark }}
@@ -1106,7 +1143,7 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
                       style={{ borderColor: BRAND.border }}
                     />
                     <button
-                      onClick={confirmName}
+                      onClick={() => confirmName()}
                       disabled={!uploaderName.trim()}
                       className="w-full px-6 py-3 rounded-2xl text-sm font-semibold text-white transition-all disabled:opacity-30 hover:opacity-90"
                       style={{ background: BRAND.dark }}
@@ -1391,7 +1428,7 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
                         style={{ borderColor: BRAND.border }}
                       />
                       <button
-                        onClick={confirmName}
+                        onClick={() => confirmName()}
                         disabled={!uploaderName.trim()}
                         className="px-4 py-2 rounded-xl text-sm font-semibold text-white transition-all disabled:opacity-30 shrink-0 hover:opacity-90"
                         style={{ background: theme.accent }}
@@ -1585,7 +1622,7 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
                       style={{ borderColor: lightboxNamePrompt ? "#EF4444" : BRAND.border }}
                     />
                     <button
-                      onClick={confirmName}
+                      onClick={() => confirmName()}
                       disabled={!uploaderName.trim()}
                       className="px-4 py-2.5 rounded-full text-sm font-semibold text-white transition-all disabled:opacity-30 shrink-0 hover:opacity-90"
                       style={{ background: theme.accent }}
@@ -1773,6 +1810,45 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
           />
         );
       })()}
+
+      {/* ── Duplicate-name confirmation ───────────────────────────────────── */}
+      {/* Soft check, never a hard block: the same name might be the same
+          guest on a second device (there is no login — the name IS the
+          identity). Rendered as a top-level overlay so it works from all
+          three name-entry points (onboarding card, empty state, lightbox). */}
+      {nameCollision && (
+        <div className="fixed inset-0 z-[70] flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setNameCollision(null)} />
+          <div className="relative bg-white rounded-2xl shadow-2xl p-6 max-w-sm w-full text-center">
+            <div className="w-12 h-12 rounded-full flex items-center justify-center text-2xl mx-auto mb-3" style={{ background: accentTint }}>
+              👤
+            </div>
+            <p className="text-sm font-semibold leading-snug mb-5" style={{ color: BRAND.dark }}>
+              {t.nameTakenTitle(nameCollision)}
+            </p>
+            <div className="flex flex-col gap-2">
+              <button
+                onClick={() => confirmName(true)}
+                className="w-full py-2.5 rounded-xl text-white text-sm font-bold transition-opacity hover:opacity-90"
+                style={{ background: theme.accent }}
+              >
+                {t.nameTakenYes}
+              </button>
+              <button
+                onClick={() => {
+                  setNameCollision(null);
+                  setUploaderName("");
+                  nameInputRef.current?.focus();
+                }}
+                className="w-full py-2.5 rounded-xl text-sm font-semibold border transition-colors hover:bg-gray-50"
+                style={{ color: BRAND.dark, borderColor: BRAND.border }}
+              >
+                {t.nameTakenNo}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* ── Upload modal ──────────────────────────────────────────────────── */}
       {uploadOpen && (
