@@ -212,6 +212,11 @@ export interface Translations {
 
   // Lightbox: aria/tooltip on the Save-to-device button
   savePhoto: string;              // "Save photo"
+
+  // Duplicate-name soft confirmation (name gate)
+  nameTakenTitle: (name: string) => string; // 'The name "Ana" already exists…'
+  nameTakenYes: string;           // "Yes, that's me"
+  nameTakenNo: string;            // "Use a different name"
 }
 
 // ─── All translations ─────────────────────────────────────────────────────────
@@ -367,6 +372,9 @@ const sl: Translations = {
   discountInvalid: "Koda ni veljavna ali je potekla.",
   discountOff: (n) => `−${n}% popust`,
   savePhoto: "Shrani fotografijo",
+  nameTakenTitle: (name) => `Ime »${name}« v tem albumu že obstaja. Ste to vi?`,
+  nameTakenYes: "Da, to sem jaz",
+  nameTakenNo: "Uporabi drugo ime",
 };
 
 const hr: Translations = {
@@ -520,6 +528,9 @@ const hr: Translations = {
   discountInvalid: "Kod nije važeći ili je istekao.",
   discountOff: (n) => `−${n}% popust`,
   savePhoto: "Spremi fotografiju",
+  nameTakenTitle: (name) => `Ime »${name}« već postoji u ovom albumu. Jeste li to vi?`,
+  nameTakenYes: "Da, to sam ja",
+  nameTakenNo: "Koristi drugo ime",
 };
 
 const sr: Translations = {
@@ -673,6 +684,9 @@ const sr: Translations = {
   discountInvalid: "Kod nije važeći ili je istekao.",
   discountOff: (n) => `−${n}% popust`,
   savePhoto: "Sačuvaj fotografiju",
+  nameTakenTitle: (name) => `Ime „${name}“ već postoji u ovom albumu. Da li ste to vi?`,
+  nameTakenYes: "Da, to sam ja",
+  nameTakenNo: "Koristi drugo ime",
 };
 
 const en: Translations = {
@@ -826,6 +840,9 @@ const en: Translations = {
   discountInvalid: "Code is invalid or has expired.",
   discountOff: (n) => `−${n}% off`,
   savePhoto: "Save photo",
+  nameTakenTitle: (name) => `The name “${name}” already exists in this album. Is that you?`,
+  nameTakenYes: "Yes, that's me",
+  nameTakenNo: "Use a different name",
 };
 
 const de: Translations = {
@@ -979,6 +996,9 @@ const de: Translations = {
   discountInvalid: "Code ist ungültig oder abgelaufen.",
   discountOff: (n) => `−${n}% Rabatt`,
   savePhoto: "Foto speichern",
+  nameTakenTitle: (name) => `Der Name „${name}“ existiert bereits in diesem Album. Sind Sie das?`,
+  nameTakenYes: "Ja, das bin ich",
+  nameTakenNo: "Anderen Namen verwenden",
 };
 
 const es: Translations = {
@@ -1132,6 +1152,9 @@ const es: Translations = {
   discountInvalid: "El código no es válido o ha caducado.",
   discountOff: (n) => `−${n}% descuento`,
   savePhoto: "Guardar foto",
+  nameTakenTitle: (name) => `El nombre «${name}» ya existe en este álbum. ¿Eres tú?`,
+  nameTakenYes: "Sí, soy yo",
+  nameTakenNo: "Usar otro nombre",
 };
 
 export const translations: Record<Lang, Translations> = { sl, hr, sr, en, de, es };
