@@ -31,6 +31,7 @@ export async function GET(req: NextRequest) {
       // Retry up to 5× with 1 s delay — Mollie may redirect before the payment
       // status flips to "paid" on their side (race condition).
       let paid = false;
+      let paidAmount: string | null = null;
       for (let attempt = 0; attempt < 5; attempt++) {
         if (attempt > 0) await new Promise((r) => setTimeout(r, 1000));
         try {
@@ -40,6 +41,7 @@ export async function GET(req: NextRequest) {
             if (planId) {
               await applyPlanToAlbum(slug, planId, paymentId);
               paid = true;
+              paidAmount = payment.amount?.value ?? null;
             }
             break;
           }
@@ -49,6 +51,15 @@ export async function GET(req: NextRequest) {
       }
       if (!paid) {
         console.warn("[mollie-return] payment not paid after retries:", paymentId);
+      }
+      if (paid && paidAmount) {
+        // Carry the EXACT charged amount (incl. discount codes) to the
+        // dashboard so the client-side Meta Pixel Purchase reports the
+        // real value instead of the headline plan price. Harmless in the
+        // URL — it's the amount the customer just paid themselves.
+        return NextResponse.redirect(
+          new URL(`${dashboardUrl}?upgraded=1&amount=${encodeURIComponent(paidAmount)}`, req.nextUrl.origin),
+        );
       }
     }
   } catch (err) {
