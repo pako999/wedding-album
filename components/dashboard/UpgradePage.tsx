@@ -4,6 +4,8 @@ import { useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { GuestcamLogo } from "@/components/GuestcamLogo";
+import { TrackViewContent } from "@/components/TrackViewContent";
+import { fbEvent } from "@/lib/fbpixel";
 import type { Album } from "@/lib/db/schema";
 import { translations, type Lang } from "@/lib/i18n/translations";
 import { UPGRADE_COPY, PLAN_FEATURE_KEYS } from "@/lib/i18n/upgrade-translations";
@@ -125,6 +127,8 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
       {/* ── Main content ─────────────────────────────────────────────── */}
       <main className="flex-1 py-8 px-4">
         <div className="max-w-2xl mx-auto">
+          {/* Meta Pixel funnel: the upgrade page IS the plan-selection view */}
+          <TrackViewContent name="Pricing" category="plans" />
 
           {/* Page title */}
           <div className="text-center mb-8">
@@ -520,6 +524,16 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
                       setInvoiceDone(true);
                       setIsLoading(false);
                     } else {
+                      // Meta Pixel funnel: user is committing to pay —
+                      // fire BEFORE the redirect to Mollie so the event
+                      // isn't lost to navigation. value = what they will
+                      // actually be charged (incl. discount). Consent-
+                      // gated like all fbq calls (no-op pre-consent).
+                      fbEvent("InitiateCheckout", {
+                        value: discountedPrice,
+                        currency: "EUR",
+                        content_name: chosen.name,
+                      });
                       const res = await fetch("/api/checkout", {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },

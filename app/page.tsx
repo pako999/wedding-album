@@ -7,6 +7,7 @@ import { HomeMobileMenu } from "@/components/HomeMobileMenu";
 import { LanguageSwitcher, HOME_HREFLANG } from "@/components/LanguageSwitcher";
 import { HeaderAuthButtons } from "@/components/HeaderAuthButtons";
 import { EventCard } from "@/components/EventCard";
+import { TrackViewContent } from "@/components/TrackViewContent";
 import { safeJsonLd } from "@/lib/seo/jsonld-safe";
 
 export const metadata: Metadata = {
@@ -885,6 +886,8 @@ export default async function HomePage() {
       {/* ── Pricing ─────────────────────────────────────────────────────────── */}
       <section id="pricing" className="py-24 bg-white">
         <div className="max-w-5xl mx-auto px-6">
+          {/* Meta Pixel funnel: ViewContent when the plans are seen */}
+          <TrackViewContent name="Pricing" category="plans" />
           <h2 className="text-[2.5rem] font-extrabold text-center text-[#0F1729] mb-4">Preprosti paketi</h2>
           <p className="text-center text-gray-400 mb-14">Izberite paket, ki ustreza vašemu dogodku.</p>
 
