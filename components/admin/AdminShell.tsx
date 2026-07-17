@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { usePathname } from "next/navigation";
 import { SignOutButton } from "@clerk/nextjs";
 import { GuestcamLogo } from "@/components/GuestcamLogo";
 import { RunMigrationsButton } from "@/components/admin/RunMigrationsButton";
@@ -20,12 +19,6 @@ interface Props {
 
 export function AdminShell({ nav, adminEmail, children }: Props & { children: React.ReactNode }) {
   const [open, setOpen] = useState(false);
-  const pathname = usePathname();
-
-  // Close drawer on route change
-  useEffect(() => {
-    setOpen(false);
-  }, [pathname]);
 
   // Lock body scroll while drawer is open on mobile
   useEffect(() => {
@@ -97,6 +90,7 @@ export function AdminShell({ nav, adminEmail, children }: Props & { children: Re
             <Link
               key={item.href}
               href={item.href}
+              onClick={() => setOpen(false)}
               className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium text-gray-700 hover:bg-[#FFF9EC] hover:text-[#0F1729] transition-colors"
             >
               <span className="text-base leading-none">{item.icon}</span>

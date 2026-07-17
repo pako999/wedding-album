@@ -13,6 +13,15 @@ import {
 import { SITE_URL } from "@/lib/urls";
 import { safeJsonLd } from "@/lib/seo/jsonld-safe";
 
+const STRUCTURED_DATA_LOCALE: Record<EventLocale, string> = {
+  sl: "sl-SI",
+  hr: "hr-HR",
+  sr: "sr-RS",
+  de: "de-DE",
+  en: "en-GB",
+  es: "es-ES",
+};
+
 /** Build metadata for a topic + locale. Handles canonical + hreflang. */
 export function eventTopicMetadata(
   locale: EventLocale,
@@ -94,14 +103,14 @@ export function EventTopicPage({ locale, topicKey }: Props) {
     "@type": "Article",
     headline: entry.h1,
     description: entry.description,
-    inLanguage: `${locale}-${locale.toUpperCase()}`,
+    inLanguage: STRUCTURED_DATA_LOCALE[locale],
     author: { "@type": "Organization", name: "Guestcam" },
     publisher: {
       "@type": "Organization",
       name: "Guestcam",
       logo: `${SITE_URL}/icon-512.png`,
     },
-    mainEntityOfPage: `${SITE_URL}${locale === "sl" ? `/${entry.slug}` : `/${locale}/${entry.slug}`}`,
+    mainEntityOfPage: `${SITE_URL}/${locale}/${entry.slug}`,
   };
   const faqSchema = {
     "@context": "https://schema.org",

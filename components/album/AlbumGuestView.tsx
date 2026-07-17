@@ -148,7 +148,7 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
   // When a guest taps "like" in the lightbox without a name yet, highlight the
   // name-entry field and remember the photo to like once the name is confirmed.
   const [lightboxNamePrompt, setLightboxNamePrompt] = useState(false);
-  const pendingLikeRef = useRef<string | null>(null);
+  const [pendingLike, setPendingLike] = useState<string | null>(null);
 
   // Post-upload email banner. Shown once after the guest closes the
   // upload-success screen WITHOUT leaving their email there — the modal's
@@ -166,8 +166,7 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
   const [bannerSent, setBannerSent]       = useState(false);
 
   const nameInputRef  = useRef<HTMLInputElement>(null);
-  const lbNameInputRef = useRef<HTMLInputElement>(null);
-  const cameraFilesRef = useRef<FileList | null>(null);
+  const [initialUploadFiles, setInitialUploadFiles] = useState<FileList | null>(null);
   const turnstileContainerRef = useRef<HTMLDivElement>(null);
   const sortMenuRef = useRef<HTMLDivElement>(null);
 
@@ -192,6 +191,8 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
     // Restore persisted likes for this album
     try {
       const stored = localStorage.getItem(`likes-${album.slug}`);
+      // Rehydrate device-local reactions after SSR.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       if (stored) setMyLikes(new Set(JSON.parse(stored) as string[]));
     } catch { /* ignore */ }
 
@@ -299,7 +300,8 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
     // Optimistic update
     setMyLikes(prev => {
       const next = new Set(prev);
-      alreadyLiked ? next.delete(photoId) : next.add(photoId);
+      if (alreadyLiked) next.delete(photoId);
+      else next.add(photoId);
       try { localStorage.setItem(`likes-${album.slug}`, JSON.stringify(Array.from(next))); } catch { /* ignore */ }
       return next;
     });
@@ -322,7 +324,8 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
         // Roll back optimistic update on error
         setMyLikes(prev => {
           const next = new Set(prev);
-          alreadyLiked ? next.add(photoId) : next.delete(photoId);
+          if (alreadyLiked) next.add(photoId);
+          else next.delete(photoId);
           return next;
         });
         setLikeCounts(prev => ({
@@ -340,22 +343,22 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
   /* Lightbox like handler — if the guest has no name yet, reveal & focus the
      name-entry field and remember which photo to like once confirmed, instead
      of being a dead disabled button. */
-  const handleLightboxLike = useCallback((photoId: string) => {
+  const handleLightboxLike = (photoId: string) => {
     if (uploaderName.trim() && nameConfirmed) {
       likeWithName(photoId, uploaderName);
       return;
     }
-    pendingLikeRef.current = photoId;
+    setPendingLike(photoId);
     setLightboxNamePrompt(true);
     setLightboxPanelOpen(true); // ensure the bottom sheet (with the input) is open on mobile
     requestAnimationFrame(() => {
-      const el = lbNameInputRef.current;
+      const el = document.getElementById("lightbox-guest-name") as HTMLInputElement | null;
       if (el) {
         el.focus();
         el.scrollIntoView({ block: "center", behavior: "smooth" });
       }
     });
-  }, [uploaderName, nameConfirmed, likeWithName]);
+  };
 
   // ── Post comment ─────────────────────────────────────────────────────────
   const postComment = useCallback(async () => {
@@ -381,7 +384,7 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
     } finally {
       setCommentPosting(false);
     }
-  }, [openCommentsPhoto, commentInput, uploaderName, album.slug]);
+  }, [openCommentsPhoto, commentInput, uploaderName, album.slug, turnstileToken]);
 
   // ── Uploader list (sorted by upload count desc) ───────────────────────────
   const uploaders: string[] = (() => {
@@ -459,9 +462,9 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
     // re-typing it later skips the duplicate-name prompt.
     try { localStorage.setItem(`name-${album.slug}`, trimmed); } catch { /* private mode */ }
     // If the guest tapped "like" before having a name, register that like now.
-    const pending = pendingLikeRef.current;
+    const pending = pendingLike;
     if (pending) {
-      pendingLikeRef.current = null;
+      setPendingLike(null);
       likeWithName(pending, trimmed);
     }
     return true;
@@ -482,14 +485,6 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
   const lightboxOpen = lightboxIndex >= 0;
   // Photo currently shown in the lightbox (drives the info panel)
   const lightboxPhoto: Photo | undefined = lightboxOpen ? filteredImages[lightboxViewIndex] : undefined;
-
-  // Keep the comment pipeline pointed at the lightbox's current photo while open.
-  useEffect(() => {
-    if (lightboxOpen && lightboxPhoto) {
-      setOpenCommentsPhoto(lightboxPhoto.id);
-      setCommentInput("");
-    }
-  }, [lightboxOpen, lightboxPhoto?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // ── Password gate ─────────────────────────────────────────────────────────
   if (passwordRequired && !passwordCorrect) {
@@ -737,7 +732,7 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
                       <input type="file" accept="image/*,video/*" capture="environment" multiple className="absolute inset-0 opacity-0 cursor-pointer"
                         onChange={(e) => {
                           if (!e.target.files?.length) return;
-                          cameraFilesRef.current = e.target.files;
+                          setInitialUploadFiles(e.target.files);
                           setUploadOpen(true);
                         }} />
                     </label>
@@ -1163,7 +1158,7 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
                       <input type="file" accept="image/*,video/*" capture="environment" multiple className="absolute inset-0 opacity-0 cursor-pointer"
                         onChange={(e) => {
                           if (!e.target.files?.length) return;
-                          cameraFilesRef.current = e.target.files;
+                          setInitialUploadFiles(e.target.files);
                           setUploadOpen(true);
                         }} />
                     </label>
@@ -1242,6 +1237,8 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
                     >
                       {/* Image */}
                       <div className="relative rounded-xl overflow-hidden bg-gray-100">
+                        {/* Natural dimensions are required by the masonry layout. */}
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
                           src={bunnyDisplayUrl(photo.thumbnailUrl ?? photo.blobUrl, 800, 82)}
                           alt={photo.caption ?? ""}
@@ -1324,7 +1321,7 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
             <input type="file" accept="image/*,video/*" capture="environment" multiple className="absolute inset-0 opacity-0 cursor-pointer"
               onChange={(e) => {
                 if (!e.target.files?.length) return;
-                cameraFilesRef.current = e.target.files;
+                setInitialUploadFiles(e.target.files);
                 setUploadOpen(true);
               }} />
           </label>
@@ -1610,7 +1607,7 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
                   </p>
                   <div className="flex items-center gap-2">
                     <input
-                      ref={lbNameInputRef}
+                      id="lightbox-guest-name"
                       type="text"
                       value={uploaderName}
                       onChange={e => setUploaderName(e.target.value)}
@@ -1678,14 +1675,20 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
         return (
           <Lightbox
             open={lightboxIndex >= 0}
-            close={() => { setLightboxIndex(-1); setLightboxPanelOpen(false); setLightboxDesktopPanelOpen(true); setOpenCommentsPhoto(null); setLightboxNamePrompt(false); pendingLikeRef.current = null; }}
+            close={() => { setLightboxIndex(-1); setLightboxPanelOpen(false); setLightboxDesktopPanelOpen(true); setOpenCommentsPhoto(null); setLightboxNamePrompt(false); setPendingLike(null); }}
             index={lightboxIndex}
             slides={lightboxSlides}
             plugins={[Download, Counter]}
             /* Keep the controlled `index` in sync with swipes/arrows — without
                this, the controlled prop snaps every swipe back to the photo
                the lightbox was opened on. */
-            on={{ view: ({ index }) => { setLightboxViewIndex(index); setLightboxIndex(index); } }}
+            on={{ view: ({ index }) => {
+              setLightboxViewIndex(index);
+              setLightboxIndex(index);
+              const viewedPhoto = filteredImages[index];
+              setOpenCommentsPhoto(viewedPhoto?.id ?? null);
+              setCommentInput("");
+            } }}
             styles={{ container: { backgroundColor: "rgba(0,0,0,0.97)" } }}
             /* When the desktop panel is OPEN the container also carries
                `guestcam-lightbox--panel`; globals.css scopes the right-padding
@@ -1863,12 +1866,12 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
           albumPassword={providedPassword ?? ""}
           moments={moments}
           defaultMomentId={selectedMomentId}
-          initialFiles={cameraFilesRef.current}
+          initialFiles={initialUploadFiles}
           referralCode={album.referralCode ?? null}
-          onClose={() => { cameraFilesRef.current = null; setUploadOpen(false); }}
+          onClose={() => { setInitialUploadFiles(null); setUploadOpen(false); }}
           onNameChange={(name) => setUploaderName(name)}
           onSuccess={(info) => {
-            cameraFilesRef.current = null;
+            setInitialUploadFiles(null);
             setUploadOpen(false);
             router.refresh();
             if (info?.emailCaptured) {

@@ -1,7 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { ALTERNATIVES_HREFLANG, LanguageSwitcher } from "@/components/LanguageSwitcher";
-import { GuestcamLogo } from "@/components/GuestcamLogo";
+import { ALTERNATIVES_HREFLANG } from "@/components/LanguageSwitcher";
 import { SeoFooter } from "@/components/SeoFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { OG_IMAGE_URL, ogImage } from "@/lib/og";
@@ -56,21 +55,6 @@ const articleSchema = {
 };
 
 
-function SiteFooter() {
-  return (
-    <footer className="bg-[#0F1729] text-white py-8 mt-20">
-      <div className="max-w-5xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-gray-400">
-        <p>© 2025 Sport group d.o.o. · SI72133449</p>
-        <div className="flex items-center gap-5">
-          <Link href="/privacy" className="hover:text-white transition-colors">Privatnost</Link>
-          <Link href="/terms" className="hover:text-white transition-colors">Uvjeti</Link>
-          <Link href="/cookies" className="hover:text-white transition-colors">Kolačići</Link>
-          <a href="mailto:info@guestcam.si" className="hover:text-white transition-colors">Kontakt</a>
-        </div>
-      </div>
-    </footer>
-  );
-}
 
 function Check() {
   return (
@@ -107,7 +91,7 @@ export default function AlternativneAplikacijePage() {
         {/* Hero */}
         <div className="mb-12">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold mb-5 uppercase tracking-widest bg-[#FFF3CC] text-[#C9820A]">
-            Usporedba · Hrvatska · 2025
+            Usporedba · Hrvatska · 2026
           </div>
           <h1 className="font-serif text-4xl md:text-5xl font-bold text-[#0F1729] leading-tight mb-5">
             Najbolje aplikacije za dijeljenje vjenčanih fotografija
@@ -130,7 +114,7 @@ export default function AlternativneAplikacijePage() {
               <svg className="w-4 h-4 text-[#C9820A]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75M16.5 6.108c1.131.094 1.976 1.057 1.976 2.192V18A2.25 2.25 0 0116.226 20.25H7.5A2.25 2.25 0 015.25 18V8.3c0-1.135.844-2.098 1.976-2.192" />
               </svg>
-              Ažurirano: siječanj 2025
+              Ažurirano: siječanj 2026
             </span>
           </div>
         </div>
@@ -211,7 +195,7 @@ export default function AlternativneAplikacijePage() {
               </table>
             </div>
             <p className="text-xs text-gray-400 mt-3 text-center">
-              Podaci se temelje na javno dostupnim značajkama u siječnju 2025. »Djelomično« znači da značajka postoji, ali sa značajnim ograničenjima za vjenčanja.
+              Podaci se temelje na javno dostupnim značajkama u siječnju 2026. »Djelomično« znači da značajka postoji, ali sa značajnim ograničenjima za vjenčanja.
             </p>
           </div>
         </section>

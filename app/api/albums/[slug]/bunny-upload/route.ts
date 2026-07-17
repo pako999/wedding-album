@@ -32,7 +32,6 @@ const cdnUrl        = () => process.env.BUNNY_CDN_URL ?? "https://frfr1.b-cdn.ne
 
 export async function PUT(
   req: NextRequest,
-  { params: _params }: { params: Promise<{ slug: string }> },
 ) {
   if (!isBunnyStorageConfigured()) {
     return NextResponse.json({ error: "Bunny Storage not configured" }, { status: 501 });

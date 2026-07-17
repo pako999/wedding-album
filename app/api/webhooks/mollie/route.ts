@@ -8,7 +8,7 @@ import { sendAdminPaymentEmail, sendAffiliateCommissionEmail, sendAdminAffiliate
 import { incrementDiscountUsage } from "@/lib/discount";
 import { db } from "@/lib/db";
 import { affiliates, affiliateCommissions, affiliateClicks, albums } from "@/lib/db/schema";
-import { eq, sql, and, isNull, or } from "drizzle-orm";
+import { eq, sql, and, isNull } from "drizzle-orm";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";

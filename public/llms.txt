@@ -26,26 +26,26 @@
 - [Guestcam — español](https://www.guestcam.si/es)
 
 ### Vodniki za QR kodo (po jezikih)
-- [QR koda za poroko — slovenski vodnik](https://guestcam.si/sl/qr-koda-poroka)
-- [QR kod za vjenčanje — hrvatski vodič](https://guestcam.si/hr/qr-kod-vjencanje)
-- [QR kod za venčanje — srpski vodič](https://guestcam.si/sr/qr-kod-vencanje)
-- [Hochzeitsfotos sammeln mit QR-Code — deutscher Leitfaden](https://guestcam.si/de/hochzeitsfotos-sammeln)
-- [Wedding Photo Sharing App — English guide](https://guestcam.si/en/wedding-photo-sharing)
-- [Fotos de Boda con QR — guía en español](https://guestcam.si/es/fotos-boda-qr)
+- [QR koda za poroko — slovenski vodnik](https://www.guestcam.si/sl/qr-koda-poroka)
+- [QR kod za vjenčanje — hrvatski vodič](https://www.guestcam.si/hr/qr-kod-vjencanje)
+- [QR kod za venčanje — srpski vodič](https://www.guestcam.si/sr/qr-kod-vencanje)
+- [Hochzeitsfotos sammeln mit QR-Code — deutscher Leitfaden](https://www.guestcam.si/de/hochzeitsfotos-sammeln)
+- [Wedding Photo Sharing App — English guide](https://www.guestcam.si/en/wedding-photo-sharing)
+- [Fotos de Boda con QR — guía en español](https://www.guestcam.si/es/fotos-boda-qr)
 
 ### Primerjave z alternativami (po jezikih)
-- [Alternativne aplikacije — slovenska primerjava](https://guestcam.si/sl/alternative-aplikacije)
-- [Alternativne aplikacije — hrvatska usporedba](https://guestcam.si/hr/alternativne-aplikacije)
-- [Alternativne aplikacije — srpsko poređenje](https://guestcam.si/sr/alternativne-aplikacije)
-- [Alternativen — deutscher Vergleich](https://guestcam.si/de/alternativen)
-- [Alternatives — English comparison](https://guestcam.si/en/alternatives)
-- [Alternativas — comparativa en español](https://guestcam.si/es/alternativas)
+- [Alternativne aplikacije — slovenska primerjava](https://www.guestcam.si/sl/alternative-aplikacije)
+- [Alternativne aplikacije — hrvatska usporedba](https://www.guestcam.si/hr/alternativne-aplikacije)
+- [Alternativne aplikacije — srpsko poređenje](https://www.guestcam.si/sr/alternativne-aplikacije)
+- [Alternativen — deutscher Vergleich](https://www.guestcam.si/de/alternativen)
+- [Alternatives — English comparison](https://www.guestcam.si/en/alternatives)
+- [Alternativas — comparativa en español](https://www.guestcam.si/es/alternativas)
 
 ### Pravne strani
-- [Politika zasebnosti](https://guestcam.si/privacy)
-- [Pogoji uporabe](https://guestcam.si/terms)
-- [GDPR — varstvo osebnih podatkov](https://guestcam.si/gdpr)
-- [Politika piškotkov](https://guestcam.si/cookies)
+- [Politika zasebnosti](https://www.guestcam.si/privacy)
+- [Pogoji uporabe](https://www.guestcam.si/terms)
+- [GDPR — varstvo osebnih podatkov](https://www.guestcam.si/gdpr)
+- [Politika piškotkov](https://www.guestcam.si/cookies)
 
 ## Cenovni paketi
 

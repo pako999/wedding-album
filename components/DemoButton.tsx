@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 /**
  * The album the demo QR code / link points at.
@@ -11,10 +11,9 @@ const DEMO_SLUG = "ana-marko-13ka";
 export function DemoButton({ variant = "hero" }: { variant?: "hero" | "nav" }) {
   const [open, setOpen] = useState(false);
 
-  // Resolve the demo URL from the actual host the visitor is on — works on
-  // localhost and production alike, with no dependency on a build-time env var.
-  const [origin, setOrigin] = useState("");
-  useEffect(() => { setOrigin(window.location.origin); }, []);
+  // The modal only renders after a client-side click, so the live origin is
+  // available without a hydration-time state/effect round trip.
+  const origin = typeof window === "undefined" ? "" : window.location.origin;
 
   const demoUrl = `${origin}/${DEMO_SLUG}`;
   const qrSrc = origin

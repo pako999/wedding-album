@@ -349,17 +349,21 @@ export function ProjectionWall({ album, photos, onClose }: Props) {
                       preload={i < EAGER_TILE_COUNT ? "auto" : "metadata"}
                     />
                   ) : (
-                    <img
-                      src={bunnyDisplayUrl(photo.thumbnailUrl ?? photo.blobUrl, isNewest ? 1200 : 600, 82)}
-                      alt={photo.caption ?? ""}
-                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
-                      loading={loadingAttr}
-                      onError={(e) => {
-                        const t = e.currentTarget;
-                        t.onerror = null;
-                        t.style.display = "none";
-                      }}
-                    />
+                    <>
+                      {/* Live user media bypasses the image optimizer to minimize projection latency. */}
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={bunnyDisplayUrl(photo.thumbnailUrl ?? photo.blobUrl, isNewest ? 1200 : 600, 82)}
+                        alt={photo.caption ?? ""}
+                        className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                        loading={loadingAttr}
+                        onError={(e) => {
+                          const t = e.currentTarget;
+                          t.onerror = null;
+                          t.style.display = "none";
+                        }}
+                      />
+                    </>
                   )}
 
                   {/* Gradient overlay */}
@@ -519,11 +523,15 @@ export function ProjectionWall({ album, photos, onClose }: Props) {
                 className="max-w-[92vw] max-h-[80vh] rounded-2xl"
               />
             ) : (
-              <img
-                src={bunnyDisplayUrl(lightboxPhoto.thumbnailUrl ?? lightboxPhoto.blobUrl, 2000, 90)}
-                alt={lightboxPhoto.caption ?? ""}
-                className="max-w-[92vw] max-h-[80vh] object-contain rounded-2xl"
-              />
+              <>
+                {/* Full-screen user media preserves its original CDN URL. */}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={bunnyDisplayUrl(lightboxPhoto.thumbnailUrl ?? lightboxPhoto.blobUrl, 2000, 90)}
+                  alt={lightboxPhoto.caption ?? ""}
+                  className="max-w-[92vw] max-h-[80vh] object-contain rounded-2xl"
+                />
+              </>
             )}
             {/* Uploader + time */}
             {(lightboxPhoto.uploaderName || lightboxPhoto.uploadedAt) && (

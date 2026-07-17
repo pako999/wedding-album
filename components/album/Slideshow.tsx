@@ -39,6 +39,7 @@ interface Props {
 
 export function Slideshow({ photos, startIndex = 0, onClose }: Props) {
   const images = photos.filter(p => !p.mimeType?.startsWith("video/"));
+  const imageCount = images.length;
   const [idx, setIdx]         = useState(Math.min(startIndex, Math.max(0, images.length - 1)));
   const [playing, setPlaying] = useState(true);
   const [imgKey, setImgKey]   = useState(0); // changes → restarts CSS animation
@@ -46,20 +47,20 @@ export function Slideshow({ photos, startIndex = 0, onClose }: Props) {
 
   const photo = images[idx];
 
-  const go = useCallback((n: number) => {
-    setIdx(n);
+  const advance = useCallback((delta: number) => {
+    setIdx(current => (current + delta + imageCount) % imageCount);
     setImgKey(k => k + 1);
-  }, []);
+  }, [imageCount]);
 
-  const prev = useCallback(() => go((idx - 1 + images.length) % images.length), [go, idx, images.length]);
-  const next = useCallback(() => go((idx + 1) % images.length), [go, idx, images.length]);
+  const prev = useCallback(() => advance(-1), [advance]);
+  const next = useCallback(() => advance(1), [advance]);
 
   // Auto-advance
   useEffect(() => {
-    if (!playing || images.length <= 1) return;
+    if (!playing || imageCount <= 1) return;
     const id = setTimeout(next, SLIDE_MS);
     return () => clearTimeout(id);
-  }, [playing, next, idx, images.length]);
+  }, [playing, next, idx, imageCount]);
 
   // Keyboard
   useEffect(() => {
@@ -94,10 +95,15 @@ export function Slideshow({ photos, startIndex = 0, onClose }: Props) {
         onTouchStart={e => { touchX.current = e.touches[0].clientX; }}
         onTouchEnd={e => {
           const dx = e.changedTouches[0].clientX - touchX.current;
-          if (Math.abs(dx) > 50) dx > 0 ? prev() : next();
+          if (Math.abs(dx) > 50) {
+            if (dx > 0) prev();
+            else next();
+          }
         }}
       >
         {/* Blurred ambient background */}
+        {/* Full-screen CDN media intentionally bypasses another optimization hop. */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={bunnyDisplayUrl(photo.thumbnailUrl ?? photo.blobUrl, 400, 30)}
           alt=""
@@ -107,6 +113,7 @@ export function Slideshow({ photos, startIndex = 0, onClose }: Props) {
         />
 
         {/* Main slide image */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           key={imgKey}
           src={bunnyDisplayUrl(photo.blobUrl, 2400, 90)}

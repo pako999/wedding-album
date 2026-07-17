@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/admin";
 import { db } from "@/lib/db";
 import { albums } from "@/lib/db/schema";
-import { eq, or, ilike } from "drizzle-orm";
+import { eq, ilike } from "drizzle-orm";
 import { getPayment, isPaidStatus, mollieConfigured } from "@/lib/mollie";
 import { applyPlanToAlbum } from "@/lib/paddle-reconcile";
 

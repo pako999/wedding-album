@@ -4,6 +4,7 @@ import { db } from "@/lib/db";
 import { albums } from "@/lib/db/schema";
 import { eq, or, desc, sql } from "drizzle-orm";
 import Link from "next/link";
+import Image from "next/image";
 import { DashboardNav } from "@/components/dashboard/DashboardNav";
 import { recordUserCountry } from "@/lib/user-country";
 import { htmlEscape, notifyTelegram } from "@/lib/telegram";
@@ -44,6 +45,8 @@ export default async function DashboardPage() {
   if (created) {
     try {
       const user = await currentUser();
+      // Server-only request code needs wall-clock time to identify a new user.
+      // eslint-disable-next-line react-hooks/purity
       const isFresh = user?.createdAt && Date.now() - user.createdAt < 48 * 60 * 60 * 1000;
       if (isFresh) {
         const name = [user.firstName, user.lastName].filter(Boolean).join(" ").trim() || "(brez imena)";
@@ -175,10 +178,12 @@ export default async function DashboardPage() {
                   style={{ background: "#EAEEF6" }}
                 >
                   {album.coverImageUrl ? (
-                    <img
+                    <Image
                       src={album.coverImageUrl}
                       alt=""
                       className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500"
+                      fill
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                     />
                   ) : (
                     <div className="absolute inset-0 flex flex-col items-center justify-center gap-2">

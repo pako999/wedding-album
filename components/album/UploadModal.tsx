@@ -419,7 +419,7 @@ async function saveUpload(slug: string, body: object) {
 
 // ── Component ─────────────────────────────────────────────────────────────────
 
-export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, currentCount, lang, onClose, onSuccess, onNameChange: _onNameChange, initialFiles, accent = "#C9820A", albumPassword = "", moments = [], defaultMomentId = null, referralCode = null }: Props) {
+export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, currentCount, lang, onClose, onSuccess, initialFiles, accent = "#C9820A", albumPassword = "", moments = [], defaultMomentId = null, referralCode = null }: Props) {
   const t = translations[lang];
   const [files, setFiles] = useState<UploadFile[]>([]);
   const [uploading, setUploading] = useState(false);
@@ -461,7 +461,9 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
   }, [files.length, remaining]);
 
   // Pre-load files captured before the modal opened (camera snap / pre-selected files)
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+  // Camera/file-picker input is external state intentionally imported once
+  // when this modal instance mounts.
+  // eslint-disable-next-line react-hooks/set-state-in-effect, react-hooks/exhaustive-deps
   useEffect(() => { if (initialFiles?.length) addFiles(initialFiles); }, []);
 
   // Block accidental tab/window close while uploading
@@ -595,12 +597,12 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
   useEffect(() => {
     if (!uploading && files.some(f => f.status === "idle")) {
       if (!navigator.onLine) {
+        // Synchronize queued status with the browser's external network state.
         // eslint-disable-next-line react-hooks/set-state-in-effect
         setFiles(prev => prev.map(f =>
           f.status === "idle" ? { ...f, status: "queued" } : f,
         ));
       } else {
-        // eslint-disable-next-line react-hooks/set-state-in-effect
         void uploadAll();
       }
     }
@@ -814,7 +816,11 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
                   <div className="w-12 h-12 rounded-xl overflow-hidden shrink-0 flex items-center justify-center" style={{ background: `${accent}1A` }}>
                     {f.isVideo
                       ? <svg className="w-6 h-6" style={{ color: accent }} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /><path strokeLinecap="round" strokeLinejoin="round" d="M15.91 11.672a.375.375 0 010 .656l-5.603 3.113a.375.375 0 01-.557-.328V8.887c0-.286.307-.466.557-.327l5.603 3.112z" /></svg>
-                      : f.preview ? <img src={f.preview} alt="" className="w-full h-full object-cover" /> : null}
+                      : f.preview ? (
+                        // Object URLs are local previews and cannot use the Next image optimizer.
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src={f.preview} alt="" className="w-full h-full object-cover" />
+                      ) : null}
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="font-sans text-sm text-[#0F1729] truncate font-medium">{f.file.name}</p>

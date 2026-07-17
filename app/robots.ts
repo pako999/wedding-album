@@ -20,10 +20,10 @@ export default function robots(): MetadataRoute.Robots {
       // content (blog/SEO landings) because that's how we get cited.
       //
       // Album guest pages (/<slug>) are blocked *additionally* at the
-      // HTTP-header level via X-Robots-Tag in middleware.ts — we can't
+      // HTTP-header level via X-Robots-Tag in proxy.ts — we can't
       // list every album slug here (they're dynamic) and a blanket
       // Disallow: / would block the public marketing pages too. The
-      // per-page noindex meta + middleware header pair handles it.
+      // per-page noindex meta + proxy header pair handles it.
       {
         userAgent: "*",
         allow: "/",
@@ -61,10 +61,13 @@ export default function robots(): MetadataRoute.Robots {
           // before deciding whether to quote us. Also allow the localised
           // homepages + blog + contact so we're citeable in every language.
           allow: [
+            // `$` makes this an exact homepage rule; plain `/` would also
+            // match every private root-level album URL.
+            "/$",
             "/llms.txt",
             "/.well-known/",
             "/blog",
-            "/sl/", "/hr/", "/sr/", "/de/", "/en/", "/es/",
+            "/sl", "/hr", "/sr", "/de", "/en", "/es",
             "/contact",
           ],
           disallow: ["/"],

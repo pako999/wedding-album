@@ -156,7 +156,7 @@ function FilmGenerator({
 
   const [allPhotos, setAllPhotos]         = useState<PhotoItem[]>([]);
   const [selectedIds, setSelectedIds]     = useState<Set<string>>(new Set());
-  const [photosLoading, setPhotosLoading] = useState(false);
+  const [photosLoading, setPhotosLoading] = useState(true);
   const [pickerOpen, setPickerOpen]       = useState(true);
 
   // ── Poll status ─────────────────────────────────────────────────────────────
@@ -176,12 +176,12 @@ function FilmGenerator({
   }, [album.slug]);
 
   useEffect(() => {
-    fetchStatus();
+    const initialPoll = window.setTimeout(fetchStatus, 0);
+    return () => window.clearTimeout(initialPoll);
   }, [fetchStatus]);
 
   // ── Load photos for the picker ──────────────────────────────────────────────
   useEffect(() => {
-    setPhotosLoading(true);
     fetch(`/api/albums/${album.slug}/photos`)
       .then(r => r.json())
       .then((d: { photos?: PhotoItem[] }) => {
@@ -196,13 +196,13 @@ function FilmGenerator({
   }, [album.slug, tierLimit]);
 
   // ── Keep polling while the montage is rendering ─────────────────────────────
+  const generationStatus = generation?.status;
   useEffect(() => {
-    if (!generation) return;
-    if (generation.status === "processing" || generation.status === "queued") {
+    if (generationStatus === "processing" || generationStatus === "queued") {
       pollRef.current = setInterval(fetchStatus, POLL_MS);
     }
     return () => { if (pollRef.current) clearInterval(pollRef.current); };
-  }, [generation?.status, fetchStatus]);
+  }, [generationStatus, fetchStatus]);
 
   // ── Toggle photo selection ──────────────────────────────────────────────────
   const togglePhoto = (id: string) => {

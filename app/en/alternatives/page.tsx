@@ -1,18 +1,17 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { ALTERNATIVES_HREFLANG, LanguageSwitcher } from "@/components/LanguageSwitcher";
-import { GuestcamLogo } from "@/components/GuestcamLogo";
+import { ALTERNATIVES_HREFLANG } from "@/components/LanguageSwitcher";
 import { SeoFooter } from "@/components/SeoFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { OG_IMAGE_URL, ogImage } from "@/lib/og";
 
 export const metadata: Metadata = {
-  title: "Best Wedding Photo Sharing App Alternatives 2025",
+  title: "Best Wedding Photo Sharing App Alternatives 2026",
   description:
     "Guestcam vs Google Photos vs WhatsApp vs Dropbox vs HoneyCam. Find the right wedding photo sharing app for your day — honest side-by-side.",
   openGraph: {
     url: "https://www.guestcam.si/en/alternatives",
-    title: "Best Wedding Photo Sharing App Alternatives 2025",
+    title: "Best Wedding Photo Sharing App Alternatives 2026",
     description:
       "Honest comparison of wedding photo sharing solutions. See which app wins on quality, ease of use, privacy and price.",
     type: "article",
@@ -20,7 +19,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Best Wedding Photo Sharing App Alternatives 2025",
+    title: "Best Wedding Photo Sharing App Alternatives 2026",
     description: "Honest comparison of wedding photo sharing solutions.",
     images: [OG_IMAGE_URL],
   },
@@ -39,26 +38,6 @@ export const metadata: Metadata = {
 };
 
 
-function SiteFooter() {
-  return (
-    <footer className="bg-[#0F1729] text-white py-8 mt-20">
-      <div className="max-w-5xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-gray-400">
-        <p>© 2025 Sport group d.o.o. · SI72133449</p>
-        <div className="flex items-center gap-5">
-          <Link href="/privacy" className="hover:text-white transition-colors">
-            Privacy
-          </Link>
-          <Link href="/terms" className="hover:text-white transition-colors">
-            Terms
-          </Link>
-          <a href="mailto:hello@guestcam.me" className="hover:text-white transition-colors">
-            Contact
-          </a>
-        </div>
-      </div>
-    </footer>
-  );
-}
 
 function Check() {
   return (
@@ -96,7 +75,7 @@ export default function AlternativesPage() {
             className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold mb-5 uppercase tracking-widest"
             style={{ background: "rgba(255,201,77,0.1)", color: "#C9820A" }}
           >
-            Comparison · English · 2025
+            Comparison · English · 2026
           </div>
           <h1 className="font-serif text-4xl md:text-5xl font-bold text-[#0F1729] leading-tight mb-5">
             Best Wedding Photo Sharing App Alternatives
@@ -119,7 +98,7 @@ export default function AlternativesPage() {
               <svg className="w-4 h-4 text-[#C9820A]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z" />
               </svg>
-              Updated: January 2025
+              Updated: January 2026
             </span>
           </div>
         </div>
@@ -246,7 +225,7 @@ export default function AlternativesPage() {
             </table>
           </div>
           <p className="text-xs text-gray-400 mt-3 text-center">
-            Based on public features as of January 2025. Partial means the feature exists but with significant limitations for wedding use cases.
+            Based on public features as of January 2026. Partial means the feature exists but with significant limitations for wedding use cases.
           </p>
         </section>
 

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { auth } from "@clerk/nextjs/server";
 import { GuestcamLogo } from "@/components/GuestcamLogo";
 import { DemoButton } from "@/components/DemoButton";
@@ -9,6 +10,7 @@ import { HeaderAuthButtons } from "@/components/HeaderAuthButtons";
 import { EventCard } from "@/components/EventCard";
 import { TrackViewContent } from "@/components/TrackViewContent";
 import { safeJsonLd } from "@/lib/seo/jsonld-safe";
+import { SITE_URL } from "@/lib/urls";
 
 export const metadata: Metadata = {
   alternates: {
@@ -34,10 +36,12 @@ const jsonLd = {
   "@graph": [
     {
       "@type": "Organization",
-      "@id": "https://www.guestcam.si/#organization",
-      name: "Guestcam",
-      url: "https://www.guestcam.si",
-      logo: "https://www.guestcam.si/icon-512.png",
+      "@id": `${SITE_URL}/#organization`,
+      name: "Guestcam.si",
+      legalName: "Sport group d.o.o.",
+      alternateName: ["Guestcam Slovenija", "Guestcam"],
+      url: SITE_URL,
+      logo: `${SITE_URL}/icon-512.png`,
       sameAs: [
         "https://www.instagram.com/guestcam.si",
         "https://www.facebook.com/guestcam.si",
@@ -45,19 +49,20 @@ const jsonLd = {
     },
     {
       "@type": "WebSite",
-      "@id": "https://www.guestcam.si/#website",
-      name: "Guestcam",
-      url: "https://www.guestcam.si",
+      "@id": `${SITE_URL}/#website`,
+      name: "Guestcam.si",
+      alternateName: ["Guestcam Slovenija", "Guestcam", "guestcam.si"],
+      url: SITE_URL,
       inLanguage: "sl-SI",
-      publisher: { "@id": "https://www.guestcam.si/#organization" },
+      publisher: { "@id": `${SITE_URL}/#organization` },
     },
     {
       "@type": "SoftwareApplication",
-      "@id": "https://www.guestcam.si/#app",
+      "@id": `${SITE_URL}/#app`,
       name: "Guestcam",
       applicationCategory: "PhotographyApplication",
       operatingSystem: "Web, iOS, Android (browser)",
-      url: "https://www.guestcam.si",
+      url: SITE_URL,
       description:
         "Z eno QR kodo zberite vse fotografije in videe gostov v eni zasebni galeriji. Za poroke, rojstne dneve, obletnice in druge dogodke.",
       offers: [
@@ -331,7 +336,6 @@ export default async function HomePage() {
           {/* Edge-to-edge hero image — desktop landscape, mobile portrait variant via <picture>.
               Contains the visible headline, 3-step story, and trust badges. */}
           <div className="overflow-hidden bg-white">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
             <picture>
               <source media="(max-width: 640px)" srcSet="/hero/guestcam-hero-mobile.webp" />
               <img
@@ -442,10 +446,12 @@ export default async function HomePage() {
               <div key={t.name} className="group relative rounded-2xl overflow-hidden cursor-pointer" style={{ boxShadow: '0 4px 20px rgba(0,0,0,0.12)' }}>
                 {/* Background photo */}
                 <div className="relative" style={{ height: 300 }}>
-                  <img
+                  <Image
                     src={`https://images.unsplash.com/${t.bg}?w=400&h=500&fit=crop&q=80`}
                     alt={t.name}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    fill
+                    sizes="(max-width: 768px) 50vw, 25vw"
                   />
                   {/* Slight overlay */}
                   <div className="absolute inset-0" style={{ background: 'rgba(0,0,0,0.18)' }} />
@@ -534,10 +540,12 @@ export default async function HomePage() {
             <div className="rounded-3xl overflow-hidden flex flex-col" style={{ background: '#070A12' }}>
               {/* Photo area */}
               <div className="relative overflow-hidden" style={{ height: 280 }}>
-                <img
+                <Image
                   src="https://images.unsplash.com/photo-1606216794074-735e91aa2c92?w=600&h=560&fit=crop&q=80"
                   alt="Ustvari galerijo"
                   className="w-full h-full object-cover"
+                  fill
+                  sizes="(max-width: 768px) 100vw, 33vw"
                 />
                 <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, transparent 40%, rgba(23,18,6,0.95) 100%)' }} />
                 {/* Icon badge */}
@@ -563,10 +571,12 @@ export default async function HomePage() {
             {/* Card 2 — Share QR */}
             <div className="rounded-3xl overflow-hidden flex flex-col" style={{ background: '#070A12' }}>
               <div className="relative overflow-hidden" style={{ height: 280 }}>
-                <img
+                <Image
                   src="https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=600&h=560&fit=crop&q=80"
                   alt="Deli QR kodo"
                   className="w-full h-full object-cover"
+                  fill
+                  sizes="(max-width: 768px) 100vw, 33vw"
                 />
                 <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, transparent 40%, rgba(23,18,6,0.95) 100%)' }} />
                 {/* Icon badge */}
@@ -592,10 +602,12 @@ export default async function HomePage() {
             {/* Card 3 — Enjoy */}
             <div className="rounded-3xl overflow-hidden flex flex-col" style={{ background: '#070A12' }}>
               <div className="relative overflow-hidden" style={{ height: 280 }}>
-                <img
+                <Image
                   src="https://images.unsplash.com/photo-1529634806980-85c3dd6d34ac?w=600&h=560&fit=crop&q=80"
                   alt="Uživaj v fotografijah"
                   className="w-full h-full object-cover"
+                  fill
+                  sizes="(max-width: 768px) 100vw, 33vw"
                 />
                 <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, transparent 40%, rgba(23,18,6,0.95) 100%)' }} />
                 {/* Icon badge */}

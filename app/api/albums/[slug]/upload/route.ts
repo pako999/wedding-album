@@ -17,7 +17,6 @@ const ALLOWED_VIDEOS = [
 ];
 const ALLOWED_TYPES = [...ALLOWED_IMAGES, ...ALLOWED_VIDEOS];
 
-const MAX_IMAGE_SIZE = 50 * 1024 * 1024;   //  50 MB
 const MAX_VIDEO_SIZE = 500 * 1024 * 1024;  // 500 MB
 
 export async function POST(

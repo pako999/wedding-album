@@ -1,6 +1,5 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
 
 const isProtectedRoute = createRouteMatcher(["/dashboard(.*)"]);
 
@@ -20,6 +19,7 @@ const PUBLIC_ROOTS = new Set([
   "admin", "dashboard", "api", "sign-in", "sign-up", "dev",
   "sl", "hr", "sr", "de", "en", "es",
   "robots.txt", "sitemap.xml", "favicon.ico", "manifest.json",
+  "icon", "apple-icon", "icon-192.png", "icon-512.png",
   "opengraph-image", "_next",
 ]);
 
@@ -104,7 +104,14 @@ export default clerkMiddleware(async (auth, req) => {
 
   // ── Dashboard requires Clerk auth ──────────────────────────────────────────
   if (isProtectedRoute(req)) {
-    await auth.protect();
+    const { userId } = await auth();
+    if (!userId) {
+      const signInUrl = req.nextUrl.clone();
+      signInUrl.pathname = "/sign-in";
+      signInUrl.search = "";
+      signInUrl.searchParams.set("redirect_url", `${pathname}${req.nextUrl.search}`);
+      return NextResponse.redirect(signInUrl);
+    }
   }
 
   // ── Expose pathname for Server Components ─────────────────────────────────
@@ -123,7 +130,7 @@ export default clerkMiddleware(async (auth, req) => {
   // modes the cookie-only shortcut had:
   //   • Bogus codes (typos, tampering) would lock the cookie for 30 days
   //     and block the real affiliate's later link from attributing.
-  //   • The middleware can't safely talk to Neon on every request.
+  //   • Proxy can't safely talk to Neon on every request.
   // The tracker endpoint redirects back to the original path with the
   // `?ref` stripped, so the user never sees the tracking URL.
   const refParam = req.nextUrl.searchParams.get("ref");

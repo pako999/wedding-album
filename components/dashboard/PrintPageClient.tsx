@@ -118,8 +118,6 @@ function TableCard({
 }) {
   const c = getColors(template.style);
   const isPreview = size === "preview";
-  const scale = isPreview ? 0.45 : 1;
-
   const card = (
     <div
       style={{

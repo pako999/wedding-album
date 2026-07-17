@@ -14,7 +14,6 @@ import { ImageResponse } from "next/og";
  * live in their own routes.
  */
 
-export const runtime = "edge";
 export const size = { width: 48, height: 48 };
 export const contentType = "image/png";
 

@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import { LegalPage } from "@/components/LegalPage";
 
 export const metadata: Metadata = {
-  title: "Prava prema GDPR-u",
+  title: "GDPR prava — Hrvatska",
   alternates: { canonical: "https://www.guestcam.si/hr/gdpr" },
-  openGraph: { url: "https://www.guestcam.si/hr/gdpr", title: "Prava prema GDPR-u", images: ["/og-image.png?v=2"] },
+  openGraph: { url: "https://www.guestcam.si/hr/gdpr", title: "GDPR prava — Hrvatska", images: ["/og-image.png?v=2"] },
   robots: { index: true, follow: true },
 };
 

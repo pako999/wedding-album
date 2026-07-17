@@ -307,7 +307,7 @@ const de: AffiliateUiStrings = {
 
 const hr: AffiliateUiStrings = {
   apply: {
-    pageTitle: "Postanite GuestCam partner — zaradite 20%",
+    pageTitle: "GuestCam partnerski program — Hrvatska",
     metaDescription: "Pridružite se GuestCam partnerskom programu i zaradite 20% provizije za svaku preporučenu narudžbu.",
     badge: "🤝 Partnerski program",
     headingLine1: "Preporučite GuestCam.",
@@ -381,7 +381,7 @@ const hr: AffiliateUiStrings = {
 
 const sr: AffiliateUiStrings = {
   apply: {
-    pageTitle: "Postanite GuestCam partner — zaradite 20%",
+    pageTitle: "GuestCam partnerski program — Srbija",
     metaDescription: "Pridružite se GuestCam partnerskom programu i zaradite 20% provizije za svaku preporučenu porudžbinu.",
     badge: "🤝 Partnerski program",
     headingLine1: "Preporučite GuestCam.",
