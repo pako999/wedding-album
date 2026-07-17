@@ -644,7 +644,7 @@ export const EVENT_TOPICS: Partial<Record<EventLocale, Record<EventTopicKey, Eve
       cluster: "baby-shower-slike",
       slug: "baby-shower-fotografije",
       category: "babyshower",
-      title: "Baby shower fotografije — jednostavno skupljanje od gostiju",
+      title: "Baby shower fotografije — skupljanje u Hrvatskoj",
       description: "Kako skupiti baby shower fotografije od svih gostiju u jednu galeriju. QR kod za stolove, bez aplikacije. Ideje za poruke i čestitke.",
       h1: "Baby shower fotografije: kako napraviti zajedničku galeriju",
       intro:
@@ -921,7 +921,7 @@ export const EVENT_TOPICS: Partial<Record<EventLocale, Record<EventTopicKey, Eve
       cluster: "baby-shower-slike",
       slug: "baby-shower-fotografije",
       category: "babyshower",
-      title: "Baby shower fotografije — jednostavno skupljanje od gostiju",
+      title: "Baby shower fotografije — sakupljanje u Srbiji",
       description: "Kako sakupiti baby shower fotografije od svih gostiju u jednu galeriju. QR kod za stolove, bez aplikacije. Ideje za poruke i čestitke.",
       h1: "Baby shower fotografije: kako napraviti zajedničku galeriju",
       intro:

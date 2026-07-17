@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 /**
  * scripts/generate-blog-post.ts
  *

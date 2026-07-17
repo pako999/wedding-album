@@ -31,11 +31,6 @@ interface UserRow {
 
 const PLAN_RANK: Record<PlanTier, number> = { free: 0, basic: 1, plus: 2, premium: 3 };
 
-/** Pick the higher-value of two plans. */
-function betterPlan(a: PlanTier, b: PlanTier): PlanTier {
-  return PLAN_RANK[a] >= PLAN_RANK[b] ? a : b;
-}
-
 export default async function AdminUsers() {
   // Source of truth = Clerk (every registered user, even if they never
   // created a gallery). Per-album detail is joined in so we can show the

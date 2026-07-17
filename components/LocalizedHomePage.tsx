@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { auth } from "@clerk/nextjs/server";
 import { LanguageSwitcher, HOME_HREFLANG, type LangCode } from "@/components/LanguageSwitcher";
 import { SeoFooter } from "@/components/SeoFooter";
@@ -698,7 +699,6 @@ export async function LocalizedHomePage({ lang }: { lang: Lang }) {
           <div className="w-full">
             <h1 className="sr-only">{heroImage.srOnlyH1}</h1>
             <div className="overflow-hidden bg-white">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
               <picture>
                 <source media="(max-width: 640px)" srcSet={heroImage.mobile} />
                 <img
@@ -880,10 +880,12 @@ export async function LocalizedHomePage({ lang }: { lang: Lang }) {
               return (
                 <div key={tpl.name} className="group relative rounded-2xl overflow-hidden cursor-pointer" style={{ boxShadow: "0 4px 20px rgba(0,0,0,0.12)" }}>
                   <div className="relative" style={{ height: 300 }}>
-                    <img
+                    <Image
                       src={`https://images.unsplash.com/${v.bg}?w=400&h=500&fit=crop&q=80`}
                       alt={tpl.name}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      fill
+                      sizes="(max-width: 768px) 50vw, 25vw"
                     />
                     <div className="absolute inset-0" style={{ background: "rgba(0,0,0,0.18)" }} />
                     <div className="absolute inset-0 flex items-center justify-center">

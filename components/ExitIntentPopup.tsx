@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import type { LangCode } from "@/components/LanguageSwitcher";
 
 const DISCOUNT_CODE = "WELCOME15";
@@ -182,14 +183,14 @@ export function ExitIntentPopup({ lang }: { lang: LangCode }) {
           </div>
 
           {/* CTA */}
-          <a
+          <Link
             href="/dashboard/new"
             onClick={close}
             className="block w-full text-center py-3.5 rounded-xl font-bold text-[#0F1729] text-sm transition-opacity hover:opacity-90"
             style={{ background: "linear-gradient(135deg, #FFD966 0%, #FFC94D 55%, #F0B429 100%)" }}
           >
             {t.cta}
-          </a>
+          </Link>
 
           {/* Dismiss */}
           <button

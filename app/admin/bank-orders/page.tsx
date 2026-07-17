@@ -93,7 +93,7 @@ export default async function AdminBankOrders() {
             {orders.length === 0 && (
               <tr>
                 <td colSpan={6} className="px-4 py-12 text-center text-sm text-gray-400">
-                  Še ni naročil po predračunu. Kliknite "+ Dodaj ročno" za vnos.
+                  Še ni naročil po predračunu. Kliknite &ldquo;+ Dodaj ročno&rdquo; za vnos.
                 </td>
               </tr>
             )}

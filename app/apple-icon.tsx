@@ -7,7 +7,6 @@ import { ImageResponse } from "next/og";
  * `<link rel="apple-touch-icon" sizes="180x180">` automatically.
  */
 
-export const runtime = "edge";
 export const size = { width: 180, height: 180 };
 export const contentType = "image/png";
 

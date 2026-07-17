@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useSyncExternalStore } from "react";
 
 /**
  * SaveToPhotosButton
@@ -40,36 +40,33 @@ interface MediaFile { name: string; url: string }
  *  silently drop attachments. */
 const SHARE_BATCH = 10;
 
+const subscribeToBrowserCapabilities = () => () => {};
+
+function supportsFileShare(): boolean {
+  if (typeof navigator === "undefined") return false;
+  if (!("share" in navigator) || !("canShare" in navigator)) return false;
+  const canShare = (navigator as Navigator & {
+    canShare?: (data: ShareData) => boolean;
+  }).canShare;
+  if (typeof canShare !== "function") return false;
+  try {
+    return canShare.call(navigator, {
+      files: [new File([new Blob([])], "probe.txt", { type: "text/plain" })],
+    });
+  } catch {
+    return false;
+  }
+}
+
 export function SaveToPhotosButton({ albumSlug, className }: Props) {
   const [phase, setPhase] = useState<Phase>("idle");
   const [progress, setProgress] = useState({ done: 0, total: 0 });
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
-  const [supportsShare, setSupportsShare] = useState(false);
-
-  // Feature-detect Web Share API with files. We only check on the
-  // client; SSR rendering returns false until the effect runs.
-  useEffect(() => {
-    if (typeof navigator === "undefined") return;
-    const can =
-      "share" in navigator &&
-      "canShare" in navigator &&
-      typeof (navigator as Navigator & {
-        canShare?: (data: ShareData) => boolean;
-      }).canShare === "function" &&
-      // Probe with an empty file to see if files are accepted at all
-      (() => {
-        try {
-          return (navigator as Navigator & {
-            canShare?: (data: ShareData) => boolean;
-          }).canShare!({
-            files: [new File([new Blob([])], "probe.txt", { type: "text/plain" })],
-          });
-        } catch {
-          return false;
-        }
-      })();
-    setSupportsShare(can);
-  }, []);
+  const supportsShare = useSyncExternalStore(
+    subscribeToBrowserCapabilities,
+    supportsFileShare,
+    () => false,
+  );
 
   async function fetchFile(url: string, name: string): Promise<File | null> {
     try {

@@ -1,19 +1,18 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { ALTERNATIVES_HREFLANG, LanguageSwitcher } from "@/components/LanguageSwitcher";
-import { GuestcamLogo } from "@/components/GuestcamLogo";
+import { ALTERNATIVES_HREFLANG } from "@/components/LanguageSwitcher";
 import { SeoFooter } from "@/components/SeoFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { OG_IMAGE_URL, ogImage } from "@/lib/og";
 import { safeJsonLd } from "@/lib/seo/jsonld-safe";
 
 export const metadata: Metadata = {
-  title: "Beste Apps zum Teilen von Hochzeitsfotos 2025",
+  title: "Beste Apps zum Teilen von Hochzeitsfotos 2026",
   description:
     "Guestcam vs Google Photos vs WhatsApp vs Dropbox. Welche App sammelt Hochzeitsfotos am besten? Ehrlicher Vergleich der Vor- und Nachteile.",
   openGraph: {
     url: "https://www.guestcam.si/de/alternativen",
-    title: "Beste Apps zum Teilen von Hochzeitsfotos 2025",
+    title: "Beste Apps zum Teilen von Hochzeitsfotos 2026",
     description:
       "Ehrlicher Vergleich der Lösungen für Hochzeitsfotos. Qualität, Datenschutz, Preis — alles auf einen Blick.",
     type: "article",
@@ -21,7 +20,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Beste Apps zum Teilen von Hochzeitsfotos 2025",
+    title: "Beste Apps zum Teilen von Hochzeitsfotos 2026",
     description: "Ehrlicher Vergleich der Lösungen für Hochzeitsfotos.",
     images: [OG_IMAGE_URL],
   },
@@ -42,7 +41,7 @@ export const metadata: Metadata = {
 const articleSchema = {
   "@context": "https://schema.org",
   "@type": "Article",
-  headline: "Beste Apps zum Teilen von Hochzeitsfotos 2025",
+  headline: "Beste Apps zum Teilen von Hochzeitsfotos 2026",
   description:
     "Vergleich: Guestcam vs Google Photos vs WhatsApp vs Dropbox. Welche App eignet sich am besten zum Sammeln von Hochzeitsfotos?",
   inLanguage: "de-DE",
@@ -56,21 +55,6 @@ const articleSchema = {
 };
 
 
-function SiteFooter() {
-  return (
-    <footer className="bg-[#0F1729] text-white py-8 mt-20">
-      <div className="max-w-5xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-gray-400">
-        <p>© 2025 Sport group d.o.o. · SI72133449</p>
-        <div className="flex items-center gap-5">
-          <Link href="/privacy" className="hover:text-white transition-colors">Datenschutz</Link>
-          <Link href="/terms" className="hover:text-white transition-colors">AGB</Link>
-          <Link href="/cookies" className="hover:text-white transition-colors">Cookies</Link>
-          <a href="mailto:info@guestcam.si" className="hover:text-white transition-colors">Kontakt</a>
-        </div>
-      </div>
-    </footer>
-  );
-}
 
 function Check() {
   return (
@@ -107,7 +91,7 @@ export default function AlternativenPage() {
         {/* Hero */}
         <div className="mb-12">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold mb-5 uppercase tracking-widest bg-[#FFF3CC] text-[#C9820A]">
-            Vergleich · Deutschland · 2025
+            Vergleich · Deutschland · 2026
           </div>
           <h1 className="font-serif text-4xl md:text-5xl font-bold text-[#0F1729] leading-tight mb-5">
             Beste Apps zum Teilen von Hochzeitsfotos
@@ -131,7 +115,7 @@ export default function AlternativenPage() {
               <svg className="w-4 h-4 text-[#C9820A]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75M16.5 6.108c1.131.094 1.976 1.057 1.976 2.192V18A2.25 2.25 0 0116.226 20.25H7.5A2.25 2.25 0 015.25 18V8.3c0-1.135.844-2.098 1.976-2.192" />
               </svg>
-              Aktualisiert: Januar 2025
+              Aktualisiert: Januar 2026
             </span>
           </div>
         </div>
@@ -212,7 +196,7 @@ export default function AlternativenPage() {
               </table>
             </div>
             <p className="text-xs text-gray-400 mt-3 text-center">
-              Daten basieren auf öffentlich verfügbaren Funktionen, Stand Januar 2025. »Teilweise« bedeutet, dass die Funktion vorhanden ist, aber mit erheblichen Einschränkungen für Hochzeitsszenarien.
+              Daten basieren auf öffentlich verfügbaren Funktionen, Stand Januar 2026. »Teilweise« bedeutet, dass die Funktion vorhanden ist, aber mit erheblichen Einschränkungen für Hochzeitsszenarien.
             </p>
           </div>
         </section>

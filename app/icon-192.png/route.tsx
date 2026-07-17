@@ -10,7 +10,6 @@ import { ImageResponse } from "next/og";
  * matches public/icon.svg exactly (#FFC94D yellow + #C9820A amber).
  */
 
-export const runtime = "edge";
 
 export function GET() {
   return new ImageResponse(

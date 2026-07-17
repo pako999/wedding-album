@@ -1,6 +1,6 @@
 import { db } from "@/lib/db";
 import { albums, photos, referralConversions, guestEmails } from "@/lib/db/schema";
-import { sql, desc, and, ne, count, eq, isNotNull, gt, or, like, isNull } from "drizzle-orm";
+import { sql, desc, and, ne, count, isNotNull, gt, or, like, isNull } from "drizzle-orm";
 
 export const dynamic = "force-dynamic";
 

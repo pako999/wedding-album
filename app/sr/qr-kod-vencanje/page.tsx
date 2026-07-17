@@ -1,11 +1,10 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { GUIDE_HREFLANG, LanguageSwitcher } from "@/components/LanguageSwitcher";
-import { GuestcamLogo } from "@/components/GuestcamLogo";
+import { GUIDE_HREFLANG } from "@/components/LanguageSwitcher";
 import { SeoFooter } from "@/components/SeoFooter";
 import { SiteHeader } from "@/components/SiteHeader";
+import { GuideArticleJsonLd } from "@/components/seo/GuideArticleJsonLd";
 import { OG_IMAGE_URL, ogImage } from "@/lib/og";
-import { safeJsonLd } from "@/lib/seo/jsonld-safe";
 
 export const metadata: Metadata = {
   title: "QR kod za venčanje i svadbu — slike gostiju 2026",
@@ -39,39 +38,6 @@ export const metadata: Metadata = {
   },
 };
 
-const articleSchema = {
-  "@context": "https://schema.org",
-  "@type": "Article",
-  headline: "QR kod za venčanje — Potpuni vodič 2025",
-  description:
-    "Sve što treba da znate o QR kodu za venčanje: kako funkcioniše, zašto vam treba i kako ga za 2 minuta postavite sa Guestcam.",
-  inLanguage: "sr-RS",
-  author: { "@type": "Organization", name: "Guestcam" },
-  publisher: {
-    "@type": "Organization",
-    name: "Guestcam",
-    logo: "https://www.guestcam.si/icon-512.png",
-  },
-  mainEntityOfPage: "https://www.guestcam.si/sr/qr-kod-vencanje",
-};
-
-
-function SiteFooter() {
-  return (
-    <footer className="bg-[#0F1729] text-white py-8 mt-20">
-      <div className="max-w-5xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-gray-400">
-        <p>© 2025 Sport group d.o.o. · SI72133449</p>
-        <div className="flex items-center gap-5">
-          <Link href="/privacy" className="hover:text-white transition-colors">Privatnost</Link>
-          <Link href="/terms" className="hover:text-white transition-colors">Uslovi</Link>
-          <Link href="/cookies" className="hover:text-white transition-colors">Kolačići</Link>
-          <a href="mailto:info@guestcam.si" className="hover:text-white transition-colors">Kontakt</a>
-        </div>
-      </div>
-    </footer>
-  );
-}
-
 function CtaBox() {
   return (
     <div className="rounded-3xl p-8 my-12 text-center bg-[#FFF9EC] border border-[#FFE08A]">
@@ -94,9 +60,11 @@ function CtaBox() {
 export default function QrKodVencanjePage() {
   return (
     <div className="min-h-screen bg-white text-[#0F1729] font-sans">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: safeJsonLd(articleSchema) }}
+      <GuideArticleJsonLd
+        headline="QR kod za venčanje i svadbu — sakupite sve slike gostiju"
+        description="Vodič za sakupljanje slika sa svadbe jednim QR kodom, bez aplikacije i u punom kvalitetu."
+        inLanguage="sr-RS"
+        path="/sr/qr-kod-vencanje"
       />
       <SiteHeader lang="sr" hreflang={GUIDE_HREFLANG} />
 
@@ -104,7 +72,7 @@ export default function QrKodVencanjePage() {
         {/* Hero */}
         <div className="mb-12">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold mb-5 uppercase tracking-widest bg-[#FFF3CC] text-[#C9820A]">
-            Vodič · Srbija · 2025
+            Vodič · Srbija · 2026
           </div>
           <h1 className="font-serif text-4xl md:text-5xl font-bold text-[#0F1729] leading-tight mb-5">
             QR kod za venčanje i svadbu — sakupite sve slike gostiju
@@ -127,7 +95,7 @@ export default function QrKodVencanjePage() {
               <svg className="w-4 h-4 text-[#C9820A]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75M16.5 6.108c1.131.094 1.976 1.057 1.976 2.192V18A2.25 2.25 0 0116.226 20.25H7.5A2.25 2.25 0 015.25 18V8.3c0-1.135.844-2.098 1.976-2.192" />
               </svg>
-              Ažurirano: januar 2025
+              Ažurirano: januar 2026
             </span>
           </div>
         </div>

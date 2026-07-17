@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { ContactPage } from "@/components/ContactPage";
 
 export const metadata: Metadata = {
-  title: "Kontakt",
+  title: "Kontakt in podpora",
   description: "Pišite nam — email, WhatsApp, Premium podpora za vašo poročno galerijo.",
   alternates: {
     canonical: "https://www.guestcam.si/contact",
@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     url: "https://www.guestcam.si/contact",
-    title: "Kontakt",
+    title: "Kontakt in podpora",
     description: "Pišite nam — email, WhatsApp, Premium podpora za vašo poročno galerijo.",
     images: ["/og-image.png?v=2"],
   },

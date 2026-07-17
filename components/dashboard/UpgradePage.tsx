@@ -60,7 +60,6 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
   const [discountInput, setDiscountInput] = useState("");
   const [discountStatus, setDiscountStatus] = useState<"idle" | "checking" | "valid" | "invalid">("idle");
   const [discountPercent, setDiscountPercent] = useState<number>(0);
-  const [discountCodeId, setDiscountCodeId] = useState<string>("");
   const [appliedCode, setAppliedCode] = useState<string>("");
 
   const chosen = PLANS.find((p) => p.id === selectedPlan)!;
@@ -70,7 +69,6 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
     setSelectedPlan(id);
     setDiscountStatus("idle");
     setDiscountPercent(0);
-    setDiscountCodeId("");
     setAppliedCode("");
     setDiscountInput("");
   };
@@ -94,7 +92,6 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
       if (data.valid && data.percentOff && data.discountCodeId) {
         setDiscountStatus("valid");
         setDiscountPercent(data.percentOff);
-        setDiscountCodeId(data.discountCodeId);
         setAppliedCode(discountInput.trim().toUpperCase());
       } else {
         setDiscountStatus("invalid");
@@ -308,7 +305,6 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
                   onClick={() => {
                     setDiscountStatus("idle");
                     setDiscountPercent(0);
-                    setDiscountCodeId("");
                     setAppliedCode("");
                     setDiscountInput("");
                   }}
@@ -545,7 +541,7 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
                       });
                       const data = await res.json() as { paymentUrl?: string; error?: string };
                       if (!res.ok || !data.paymentUrl) throw new Error(data.error ?? "no payment URL");
-                      window.location.href = data.paymentUrl;
+                      window.location.assign(data.paymentUrl);
                     }
                   } catch (err) {
                     console.error("[checkout]", err);

@@ -750,13 +750,17 @@ function MediaThumb({
           className={`w-full ${heightClass} object-cover rounded-xl bg-gray-100 pointer-events-none`}
         />
       ) : (
-        <img
-          src={bunnyDisplayUrl(thumbSrc)}
-          alt={photo.caption ?? ""}
-          loading="lazy"
-          onError={onError}
-          className={`w-full ${heightClass} object-cover rounded-xl bg-gray-100`}
-        />
+        <>
+          {/* User media keeps its CDN error fallback behavior. */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={bunnyDisplayUrl(thumbSrc)}
+            alt={photo.caption ?? ""}
+            loading="lazy"
+            onError={onError}
+            className={`w-full ${heightClass} object-cover rounded-xl bg-gray-100`}
+          />
+        </>
       )}
       {isVideo && (
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
@@ -889,6 +893,8 @@ function OverviewTab({
           </a>
           <div className="flex flex-col items-center gap-3">
             <div className="text-gray-300 text-xl select-none">↓</div>
+            {/* Externally generated QR pixels should not be recompressed. */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={qrUrl}
               alt="QR koda"
@@ -1120,6 +1126,7 @@ function QrTab({
   return (
     <div className="max-w-lg">
       <div className="bg-white rounded-2xl border border-gray-100 p-6 flex flex-col items-center gap-5">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={qrUrl}
           alt="QR koda"
@@ -1998,4 +2005,3 @@ function DnsRow({ label, value }: { label: string; value: string }) {
     </div>
   );
 }
-

@@ -1,9 +1,9 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { GUIDE_HREFLANG, LanguageSwitcher } from "@/components/LanguageSwitcher";
-import { GuestcamLogo } from "@/components/GuestcamLogo";
+import { GUIDE_HREFLANG } from "@/components/LanguageSwitcher";
 import { SeoFooter } from "@/components/SeoFooter";
 import { SiteHeader } from "@/components/SiteHeader";
+import { GuideArticleJsonLd } from "@/components/seo/GuideArticleJsonLd";
 import { OG_IMAGE_URL, ogImage } from "@/lib/og";
 
 export const metadata: Metadata = {
@@ -39,27 +39,6 @@ export const metadata: Metadata = {
 };
 
 
-function SiteFooter() {
-  return (
-    <footer className="bg-[#0F1729] text-white py-8 mt-20">
-      <div className="max-w-5xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-gray-400">
-        <p>© 2025 Sport group d.o.o. · SI72133449</p>
-        <div className="flex items-center gap-5">
-          <Link href="/privacy" className="hover:text-white transition-colors">
-            Privacy
-          </Link>
-          <Link href="/terms" className="hover:text-white transition-colors">
-            Terms
-          </Link>
-          <a href="mailto:hello@guestcam.me" className="hover:text-white transition-colors">
-            Contact
-          </a>
-        </div>
-      </div>
-    </footer>
-  );
-}
-
 function CtaBox() {
   return (
     <div
@@ -89,6 +68,12 @@ function CtaBox() {
 export default function WeddingPhotoSharingPage() {
   return (
     <div className="min-h-screen bg-[#F2F4F8] text-[#0F1729] font-sans">
+      <GuideArticleJsonLd
+        headline="Wedding QR code: collect every guest photo"
+        description="A guide to collecting every wedding guest photo with one QR code, without an app and at full resolution."
+        inLanguage="en-GB"
+        path="/en/wedding-photo-sharing"
+      />
       <SiteHeader lang="en" hreflang={GUIDE_HREFLANG} />
 
       <main className="max-w-3xl mx-auto px-6 py-16">
@@ -98,7 +83,7 @@ export default function WeddingPhotoSharingPage() {
             className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold mb-5 uppercase tracking-widest"
             style={{ background: "rgba(255,201,77,0.1)", color: "#C9820A" }}
           >
-            Guide · English · 2025
+            Guide · English · 2026
           </div>
           <h1 className="font-serif text-4xl md:text-5xl font-bold text-[#0F1729] leading-tight mb-5">
             Wedding QR Code: collect every guest photo (no app required)
@@ -120,7 +105,7 @@ export default function WeddingPhotoSharingPage() {
               <svg className="w-4 h-4 text-[#C9820A]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z" />
               </svg>
-              Updated: January 2025
+              Updated: January 2026
             </span>
           </div>
         </div>

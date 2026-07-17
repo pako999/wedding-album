@@ -3,7 +3,7 @@ import type { LegalDoc } from "./types";
 
 /** Shared GDPR legal-basis table — identical content across languages,
  *  only the column labels and row text are translated. */
-const legalBasisRows: Record<LangCode, { headers: [string, string]; rows: [string, string][] }> = {
+export const legalBasisRows: Record<LangCode, { headers: [string, string]; rows: [string, string][] }> = {
   sl: {
     headers: ["Namen", "Pravna podlaga"],
     rows: [
