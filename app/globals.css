@@ -20,9 +20,20 @@
   --font-serif: var(--font-cormorant);
 }
 
-body {
+html, body {
   background: #ffffff;
   color: var(--charcoal);
+  /* Site-wide guard against horizontal overflow on mobile — a single
+     too-wide element (a chip row, a glow div, a long unbroken string)
+     otherwise makes the whole page scroll sideways and pokes past the
+     screen edge. `clip` clips without establishing a scroll container,
+     so sticky headers keep working (unlike overflow:hidden). The
+     `hidden` line is a fallback for older Safari that predates `clip`.
+     Designated horizontal scrollers still use their own overflow-x-auto
+     on an inner container. */
+  max-width: 100%;
+  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 /* Masonry grid for photo albums */
