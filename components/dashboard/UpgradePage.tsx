@@ -53,7 +53,7 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
   const [isLoading, setIsLoading] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState<"card" | "invoice">("card");
   const [invoiceDone, setInvoiceDone] = useState(false);
-  const [billing, setBilling] = useState({ name: "", companyName: "", email: "", address: "", city: "", taxId: "" });
+  const [billing, setBilling] = useState({ name: "", companyName: "", email: "", phone: "", address: "", postalCode: "", city: "", taxId: "" });
   const [termsAccepted, setTermsAccepted] = useState(false);
 
   // Discount code state
@@ -404,18 +404,25 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
             </div>
           </div>
 
-          {/* ── Billing form (invoice only) ───────────────────────────── */}
-          {paymentMethod === "invoice" && (
+          {/* ── Billing form ──────────────────────────────────────────────
+              Shown for BOTH payment methods now — Mollie's hosted card
+              checkout doesn't collect a billing address, so this form is
+              the only source of the data needed to issue an invoice. */}
+          {(paymentMethod === "invoice" || paymentMethod === "card") && (
             <div className="bg-white rounded-2xl border border-gray-100 p-5 mb-4">
-              <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-3">{u.billingTitle}</p>
+              <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-3">
+                {paymentMethod === "invoice" ? u.billingTitle : u.billingCardTitle}
+              </p>
               <div className="space-y-2.5">
                 {[
-                  { key: "name",        placeholder: u.billingName,    type: "text"  },
-                  { key: "companyName", placeholder: u.billingCompany, type: "text"  },
-                  { key: "email",       placeholder: u.billingEmail,   type: "email" },
-                  { key: "address",     placeholder: u.billingAddress, type: "text"  },
-                  { key: "city",        placeholder: u.billingCity,    type: "text"  },
-                  { key: "taxId",       placeholder: u.billingTaxId,   type: "text"  },
+                  { key: "name",        placeholder: u.billingName,       type: "text"  },
+                  { key: "companyName", placeholder: u.billingCompany,    type: "text"  },
+                  { key: "email",       placeholder: u.billingEmail,      type: "email" },
+                  { key: "phone",       placeholder: u.billingPhone,      type: "tel"   },
+                  { key: "address",     placeholder: u.billingAddress,    type: "text"  },
+                  { key: "postalCode",  placeholder: u.billingPostalCode, type: "text"  },
+                  { key: "city",        placeholder: u.billingCity,       type: "text"  },
+                  { key: "taxId",       placeholder: u.billingTaxId,      type: "text"  },
                 ].map(({ key, placeholder, type }) => (
                   <input
                     key={key}
@@ -524,6 +531,13 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
                       setInvoiceDone(true);
                       setIsLoading(false);
                     } else {
+                      // Billing required on card too — it's the only source
+                      // of invoice data (Mollie doesn't collect an address).
+                      if (!billing.name.trim() || !billing.phone.trim() || !billing.address.trim() || !billing.postalCode.trim() || !billing.city.trim()) {
+                        alert(u.alertMissingFields);
+                        setIsLoading(false);
+                        return;
+                      }
                       // Meta Pixel funnel: user is committing to pay —
                       // fire BEFORE the redirect to Mollie so the event
                       // isn't lost to navigation. value = what they will
@@ -541,6 +555,16 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
                           planId: selectedPlan,
                           albumSlug: album.slug,
                           discountCode: discountStatus === "valid" ? appliedCode : undefined,
+                          billing: {
+                            name:        billing.name.trim(),
+                            companyName: billing.companyName.trim() || undefined,
+                            email:       billing.email.trim() || undefined,
+                            phone:       billing.phone.trim(),
+                            address:     billing.address.trim(),
+                            postalCode:  billing.postalCode.trim(),
+                            city:        billing.city.trim(),
+                            taxId:       billing.taxId.trim() || undefined,
+                          },
                         }),
                       });
                       const data = await res.json() as { paymentUrl?: string; error?: string };
