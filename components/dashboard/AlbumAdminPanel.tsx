@@ -825,8 +825,9 @@ function OverviewTab({
         </div>
       )}
 
-      {/* Stat cards */}
-      <div className="grid grid-cols-3 gap-4">
+      {/* Stat cards — one per row on phones so numbers + labels aren't
+          cramped; three across from sm up. */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
         {[
           {
             icon: (
@@ -871,8 +872,10 @@ function OverviewTab({
         ))}
       </div>
 
-      {/* 2-col grid */}
-      <div className="grid grid-cols-2 gap-6">
+      {/* QR code + recent uploads — stacked on phones (each full width so
+          the QR and the download buttons aren't squeezed), side by side
+          from lg up. */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
         {/* QR Card */}
         <div className="bg-white rounded-2xl border border-gray-100 p-5 flex flex-col gap-4">
           <div>
@@ -1142,19 +1145,20 @@ function QrTab({
           </button>
         </div>
 
-        {/* Download buttons */}
-        <div className="w-full flex gap-2">
+        {/* Download buttons — stacked full-width on phones so the labels
+            don't wrap to three cramped lines; side by side from sm up. */}
+        <div className="w-full flex flex-col sm:flex-row gap-2">
           <a
             href={`/api/albums/${album.slug}/qr?format=png&design=1`}
             download={`qr-design-${album.slug}.png`}
-            className="flex-1 py-2.5 text-sm text-center text-gray-600 border border-gray-200 rounded-lg hover:border-gray-300 transition-colors"
+            className="flex-1 py-2.5 px-3 text-sm text-center text-gray-600 border border-gray-200 rounded-lg hover:border-gray-300 transition-colors"
           >
             Prenesi QR kodo z designom
           </a>
           <a
             href={`/api/albums/${album.slug}/qr?format=png`}
             download={`qr-${album.slug}.png`}
-            className="flex-1 py-2.5 text-sm text-center text-gray-600 border border-gray-200 rounded-lg hover:border-gray-300 transition-colors"
+            className="flex-1 py-2.5 px-3 text-sm text-center text-gray-600 border border-gray-200 rounded-lg hover:border-gray-300 transition-colors"
           >
             Prenesi samo QR kodo
           </a>
