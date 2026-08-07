@@ -267,6 +267,25 @@ export async function runMigrations() {
     )
   `);
   await run("bank_orders idx",          (q) => q`CREATE INDEX IF NOT EXISTS bank_orders_slug_idx ON bank_orders (album_slug)`);
+
+  // ── Card-payment billing (invoicing data Mollie doesn't collect) ──────────
+  await run("create card_billing", (q) => q`
+    CREATE TABLE IF NOT EXISTS card_billing (
+      id                 TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
+      mollie_payment_id  TEXT NOT NULL UNIQUE,
+      album_slug         VARCHAR(80) NOT NULL,
+      name               TEXT,
+      email              TEXT,
+      phone              TEXT,
+      address            TEXT,
+      postal_code        TEXT,
+      city               TEXT,
+      company_name       TEXT,
+      tax_id             TEXT,
+      created_at         TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )
+  `);
+  await run("card_billing idx", (q) => q`CREATE INDEX IF NOT EXISTS card_billing_payment_idx ON card_billing (mollie_payment_id)`);
   await run("bank_orders.company_name", (q) => q`ALTER TABLE bank_orders ADD COLUMN IF NOT EXISTS billing_company_name TEXT`);
   await run("bank_orders.email",        (q) => q`ALTER TABLE bank_orders ADD COLUMN IF NOT EXISTS billing_email TEXT`);
 

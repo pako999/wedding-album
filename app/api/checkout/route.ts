@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { db } from "@/lib/db";
-import { albums } from "@/lib/db/schema";
+import { albums, cardBilling } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { createPayment, mollieConfigured, MollieError } from "@/lib/mollie";
 import { validateDiscount } from "@/lib/discount";
@@ -41,8 +41,18 @@ export async function POST(req: NextRequest) {
     albumSlug: string;
     tableStands?: boolean;
     discountCode?: string;
+    billing?: {
+      name?: string;
+      email?: string;
+      phone?: string;
+      address?: string;
+      postalCode?: string;
+      city?: string;
+      companyName?: string;
+      taxId?: string;
+    };
   };
-  const { planId, albumSlug, tableStands, discountCode } = body;
+  const { planId, albumSlug, tableStands, discountCode, billing } = body;
 
   if (!planId || !albumSlug || !(planId in PLAN_CONFIG)) {
     return NextResponse.json({ error: "Invalid request" }, { status: 400 });
@@ -133,6 +143,25 @@ export async function POST(req: NextRequest) {
     await db.update(albums)
       .set({ stripeSessionId: id })
       .where(eq(albums.slug, albumSlug));
+
+    // Persist the billing details for invoicing — Mollie's hosted checkout
+    // doesn't collect an address, so this form is the only source. Keyed by
+    // the Mollie payment id; admin/payments + the paid webhook read it back.
+    if (billing) {
+      const clean = (v?: string) => (v?.trim() ? v.trim() : null);
+      await db.insert(cardBilling).values({
+        molliePaymentId: id,
+        albumSlug,
+        name:        clean(billing.name),
+        email:       clean(billing.email),
+        phone:       clean(billing.phone),
+        address:     clean(billing.address),
+        postalCode:  clean(billing.postalCode),
+        city:        clean(billing.city),
+        companyName: clean(billing.companyName),
+        taxId:       clean(billing.taxId),
+      }).onConflictDoNothing().catch((err) => console.error("[checkout] billing insert failed:", err));
+    }
 
     return NextResponse.json({ paymentUrl: checkoutUrl });
   } catch (err) {

@@ -1,6 +1,6 @@
 import { listPayments, mollieConfigured, isPaidStatus, type MolliePayment } from "@/lib/mollie";
 import { db } from "@/lib/db";
-import { albums } from "@/lib/db/schema";
+import { albums, cardBilling } from "@/lib/db/schema";
 import { inArray } from "drizzle-orm";
 import { clerkClient } from "@clerk/nextjs/server";
 import { ReconcileAllButton } from "@/components/admin/ReconcileAllButton";
@@ -12,6 +12,7 @@ interface EnrichedPayment extends MolliePayment {
   ownerEmail: string | null;
   ownerFirstName: string | null;
   ownerLastName: string | null;
+  billing: typeof cardBilling.$inferSelect | null;
 }
 
 async function safeList(): Promise<MolliePayment[]> {
@@ -31,7 +32,7 @@ async function enrichWithOwner(payments: MolliePayment[]): Promise<EnrichedPayme
   )];
 
   if (slugs.length === 0) {
-    return payments.map((p) => ({ ...p, ownerEmail: null, ownerFirstName: null, ownerLastName: null }));
+    return payments.map((p) => ({ ...p, ownerEmail: null, ownerFirstName: null, ownerLastName: null, billing: null }));
   }
 
   // Fetch matching albums from DB
@@ -41,6 +42,21 @@ async function enrichWithOwner(payments: MolliePayment[]): Promise<EnrichedPayme
     .where(inArray(albums.slug, slugs));
 
   const slugToClerkId = new Map(albumRows.map((a) => [a.slug, { clerkId: a.ownerClerkId, email: a.ownerEmail }]));
+
+  // Card billing captured at checkout, keyed by Mollie payment id.
+  const billingByPayment = new Map<string, typeof cardBilling.$inferSelect>();
+  try {
+    const paymentIds = payments.map((p) => p.id);
+    if (paymentIds.length > 0) {
+      const rows = await db
+        .select()
+        .from(cardBilling)
+        .where(inArray(cardBilling.molliePaymentId, paymentIds));
+      for (const r of rows) billingByPayment.set(r.molliePaymentId, r);
+    }
+  } catch (err) {
+    console.warn("[admin/payments] card_billing query failed (run migrate?):", err);
+  }
 
   // Batch-fetch Clerk users for unique clerk IDs
   const uniqueClerkIds = [...new Set(albumRows.map((a) => a.ownerClerkId))];
@@ -71,6 +87,7 @@ async function enrichWithOwner(payments: MolliePayment[]): Promise<EnrichedPayme
       ownerEmail: clerkUser?.email ?? owner?.email ?? null,
       ownerFirstName: clerkUser?.firstName ?? null,
       ownerLastName: clerkUser?.lastName ?? null,
+      billing: billingByPayment.get(p.id) ?? null,
     };
   });
 }
@@ -115,6 +132,7 @@ export default async function AdminPayments() {
               <th className="px-4 py-3 font-medium">Paket</th>
               <th className="px-4 py-3 font-medium">Znesek</th>
               <th className="px-4 py-3 font-medium">Status</th>
+              <th className="px-4 py-3 font-medium">Podatki za račun</th>
               <th className="px-4 py-3 font-medium">Datum</th>
               <th className="px-4 py-3 font-medium text-right">ID</th>
             </tr>
@@ -148,6 +166,21 @@ export default async function AdminPayments() {
                     {p.status}
                   </span>
                 </td>
+                <td className="px-4 py-3 text-xs text-gray-600 min-w-[180px]">
+                  {p.billing ? (
+                    <div className="leading-relaxed">
+                      <div className="font-semibold text-[#0F1729]">{p.billing.name ?? "—"}</div>
+                      {p.billing.companyName && <div>{p.billing.companyName}</div>}
+                      {p.billing.phone && <div>📞 {p.billing.phone}</div>}
+                      {p.billing.email && <div className="text-gray-500">{p.billing.email}</div>}
+                      <div>{p.billing.address}</div>
+                      <div>{[p.billing.postalCode, p.billing.city].filter(Boolean).join(" ")}</div>
+                      {p.billing.taxId && <div className="text-gray-500">Davčna: {p.billing.taxId}</div>}
+                    </div>
+                  ) : (
+                    <span className="text-gray-300">—</span>
+                  )}
+                </td>
                 <td className="px-4 py-3 text-xs text-gray-500">
                   {p.createdAt ? new Date(p.createdAt).toLocaleString("sl-SI") : "—"}
                 </td>
@@ -158,7 +191,7 @@ export default async function AdminPayments() {
             ))}
             {enriched.length === 0 && (
               <tr>
-                <td colSpan={8} className="px-4 py-12 text-center text-sm text-gray-400">
+                <td colSpan={9} className="px-4 py-12 text-center text-sm text-gray-400">
                   Ni Mollie transakcij.
                 </td>
               </tr>

@@ -7,7 +7,7 @@ import { htmlEscape, notifyTelegram } from "@/lib/telegram";
 import { sendAdminPaymentEmail, sendAffiliateCommissionEmail, sendAdminAffiliateSaleEmail } from "@/lib/email/notifications";
 import { incrementDiscountUsage } from "@/lib/discount";
 import { db } from "@/lib/db";
-import { affiliates, affiliateCommissions, affiliateClicks, albums } from "@/lib/db/schema";
+import { affiliates, affiliateCommissions, affiliateClicks, albums, cardBilling } from "@/lib/db/schema";
 import { eq, sql, and, isNull, or } from "drizzle-orm";
 
 export const runtime = "nodejs";
@@ -174,11 +174,31 @@ export async function POST(req: NextRequest) {
   const currency = payment.amount.currency;
   const { emoji, text } = planLabel(planId);
 
+  // Billing captured at checkout — include it in the ping so you have
+  // everything needed to issue the invoice without opening the admin.
+  let billingLines = "";
+  try {
+    const b = await db.query.cardBilling.findFirst({
+      where: eq(cardBilling.molliePaymentId, paymentId),
+    });
+    if (b) {
+      billingLines =
+        `\n👤 <b>Podatki za račun:</b>\n` +
+        `Ime: ${htmlEscape(b.name ?? "—")}` +
+        (b.companyName ? `\nPodjetje: ${htmlEscape(b.companyName)}` : "") +
+        (b.phone   ? `\nTel: ${htmlEscape(b.phone)}` : "") +
+        (b.email   ? `\nEmail: ${htmlEscape(b.email)}` : "") +
+        `\nNaslov: ${htmlEscape(b.address ?? "—")}, ${htmlEscape(b.postalCode ?? "")} ${htmlEscape(b.city ?? "")}` +
+        (b.taxId   ? `\nDavčna: ${htmlEscape(b.taxId)}` : "");
+    }
+  } catch { /* best-effort */ }
+
   await Promise.all([
     notifyTelegram(
       `${emoji} <b>Plačilo: ${text}</b>\n` +
       `${amount} ${currency}\n` +
-      `Album: <code>${htmlEscape(albumSlug)}</code>`,
+      `Album: <code>${htmlEscape(albumSlug)}</code>` +
+      billingLines,
     ),
     sendAdminPaymentEmail({
       albumSlug,

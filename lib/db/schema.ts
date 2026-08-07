@@ -463,6 +463,31 @@ export const bankOrders = pgTable(
   (t) => [index("bank_orders_slug_idx").on(t.albumSlug)]
 );
 
+// ─── Card-payment billing (for invoicing) ────────────────────────────────────
+// Mollie's hosted checkout does NOT collect a billing address, so we gather
+// it in our own checkout form and persist it here at payment-creation time
+// (keyed by the Mollie payment id). Admin/payments joins on this to show the
+// full invoice data, and the paid-webhook Telegram/email include it too.
+
+export const cardBilling = pgTable(
+  "card_billing",
+  {
+    id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+    molliePaymentId: text("mollie_payment_id").notNull().unique(),
+    albumSlug: varchar("album_slug", { length: 80 }).notNull(),
+    name: text("name"),
+    email: text("email"),
+    phone: text("phone"),
+    address: text("address"),
+    postalCode: text("postal_code"),
+    city: text("city"),
+    companyName: text("company_name"),
+    taxId: text("tax_id"),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+  },
+  (t) => [index("card_billing_payment_idx").on(t.molliePaymentId)]
+);
+
 export type BankOrder = typeof bankOrders.$inferSelect;
 export type NewBankOrder = typeof bankOrders.$inferInsert;
 
