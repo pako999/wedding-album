@@ -3,6 +3,7 @@ import { db } from "@/lib/db";
 import { albums } from "@/lib/db/schema";
 import { inArray } from "drizzle-orm";
 import { clerkClient } from "@clerk/nextjs/server";
+import { ReconcileAllButton } from "@/components/admin/ReconcileAllButton";
 
 export const dynamic = "force-dynamic";
 export const metadata = { robots: { index: false, follow: false } };
@@ -85,11 +86,17 @@ export default async function AdminPayments() {
 
   return (
     <div className="space-y-6">
-      <header>
-        <h1 className="font-serif text-3xl text-[#0F1729]">Plačila</h1>
-        <p className="text-sm text-gray-500 mt-1">
-          Zadnjih {enriched.length} transakcij iz Mollie · skupaj plačano {totalEur.toFixed(2)}€
-        </p>
+      <header className="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <h1 className="font-serif text-3xl text-[#0F1729]">Plačila</h1>
+          <p className="text-sm text-gray-500 mt-1">
+            Zadnjih {enriched.length} transakcij iz Mollie · skupaj plačano {totalEur.toFixed(2)}€
+          </p>
+        </div>
+        {/* One-click repair for the "paid but still FREE" bug — re-checks
+            every album with a Mollie payment id that's still on free and
+            applies the plan. Idempotent. */}
+        <ReconcileAllButton />
       </header>
 
       {!configured && (
