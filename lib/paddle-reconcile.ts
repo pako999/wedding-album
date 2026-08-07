@@ -14,9 +14,16 @@ const PLAN_CONFIG: Record<string, { maxPhotos: number; daysAccess: number }> = {
  * `paymentRef` is stored in the `stripe_session_id` column (a generic payment
  * reference that historically also held Stripe cs_… and Paddle txn_… IDs).
  *
- * Idempotent: if the album already carries this exact payment ref, returns
- * "already_applied" without writing — duplicate or replayed webhooks won't
- * push expiresAt forward again.
+ * Idempotent: returns "already_applied" without writing when the album ALREADY
+ * carries this payment ref AND the target effect is already present (plan
+ * upgraded / film tier granted).
+ *
+ * CRITICAL: the guard must NOT be `stripeSessionId === paymentRef` alone.
+ * Checkout pre-writes the payment id onto the album BEFORE payment (so the
+ * return page can reconcile). With the id-only guard, the first real webhook
+ * saw a matching id while the plan was still `free` and returned
+ * "already_applied" — so the plan was NEVER upgraded and paid customers stayed
+ * on free. The guard now also requires the effect to be in place.
  */
 export async function applyPlanToAlbum(
   albumSlug: string,
@@ -26,8 +33,22 @@ export async function applyPlanToAlbum(
   const existing = await db.query.albums.findFirst({
     where: eq(albums.slug, albumSlug),
   });
+
+  // "Already applied" = same payment ref AND the intended effect is present:
+  //  • film purchase → filmTier already at the target tier
+  //  • plan purchase → plan already the target plan
+  // A duplicate/replayed webhook hits this and no-ops; the first webhook
+  // after a checkout-prewritten id does NOT (plan is still free), so it
+  // applies correctly.
   if (existing && existing.stripeSessionId === paymentRef) {
-    return { plan: existing.plan, status: "already_applied" };
+    const filmTarget =
+      planId === "film_pro" ? "pro" : planId === "film_premium" ? "premium" : null;
+    const alreadyApplied = filmTarget
+      ? existing.filmTier === filmTarget
+      : existing.plan === planId;
+    if (alreadyApplied) {
+      return { plan: existing.plan, status: "already_applied" };
+    }
   }
 
   if (planId === "film_pro" || planId === "film_premium") {
