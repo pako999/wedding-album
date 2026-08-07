@@ -55,6 +55,21 @@ function eventIcon(eventType: string): string {
   }
 }
 
+/**
+ * Format the event date as day. month. year (e.g. "5. 9. 2026").
+ * The DB stores an ISO string ("2026-09-05"); showing that raw reads as
+ * year-first, which is confusing for guests. Parses the ISO date without
+ * timezone drift (noon UTC) and falls back to the raw string if it isn't
+ * a parseable YYYY-MM-DD.
+ */
+function formatEventDate(raw: string | null | undefined): string {
+  if (!raw) return "";
+  const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(raw.trim());
+  if (!m) return raw;
+  const [, y, mo, d] = m;
+  return `${Number(d)}. ${Number(mo)}. ${y}`;
+}
+
 /** Human-readable relative/absolute upload time, localized via translations */
 function formatUploadTime(date: Date | string | null | undefined, t: Translations): string {
   if (!date) return "";
@@ -501,7 +516,7 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
             <div className="text-center mb-8">
               <div className="text-5xl mb-3">{evtIcon}</div>
               <h1 className="text-2xl font-bold" style={{ color: BRAND.dark }}>{album.coupleName}</h1>
-              <p className="text-sm mt-1" style={{ color: BRAND.muted }}>{album.weddingDate}{album.location ? ` · ${album.location}` : ""}</p>
+              <p className="text-sm mt-1" style={{ color: BRAND.muted }}>{formatEventDate(album.weddingDate)}{album.location ? ` · ${album.location}` : ""}</p>
             </div>
             <div className="bg-white rounded-2xl border p-8" style={{ borderColor: BRAND.border }}>
               <div className="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-4" style={{ background: accentTint }}>
@@ -580,7 +595,7 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
             <div className="absolute bottom-0 inset-x-0 px-6 pb-8 sm:px-10">
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-2 leading-tight">{album.coupleName}</h1>
               <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-white/70 text-sm">
-                <span>{album.weddingDate}</span>
+                <span>{formatEventDate(album.weddingDate)}</span>
                 {album.location && <><span>·</span><span>{album.location}</span></>}
                 <span>·</span>
                 <span>{t.photoCount(photoCount)}{videoCount > 0 ? ` · ${t.videoCount(videoCount)}` : ""}</span>
@@ -620,7 +635,7 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
               <div className="flex items-center justify-center gap-3 sm:gap-4 mb-6">
                 <span className="h-px w-8 sm:w-12" style={{ background: "rgba(255,255,255,0.3)" }} />
                 <div className="flex flex-wrap items-center justify-center gap-x-2.5 gap-y-0.5 text-white/75 text-xs sm:text-sm uppercase tracking-[0.14em]">
-                  <span>{album.weddingDate}</span>
+                  <span>{formatEventDate(album.weddingDate)}</span>
                   {album.location && <><span className="text-white/40">·</span><span>{album.location}</span></>}
                 </div>
                 <span className="h-px w-8 sm:w-12" style={{ background: "rgba(255,255,255,0.3)" }} />

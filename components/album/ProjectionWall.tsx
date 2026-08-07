@@ -46,6 +46,16 @@ function buildStreamProjectionSrc(blobUrl: string): string {
   }
 }
 
+/** Event date as day. month. year — the DB stores ISO ("2026-09-05"),
+ *  which reads year-first on the wall. Falls back to raw if unparseable. */
+function fmtEventDate(raw: string | null | undefined): string {
+  if (!raw) return "";
+  const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(raw.trim());
+  if (!m) return raw;
+  const [, y, mo, d] = m;
+  return `${Number(d)}. ${Number(mo)}. ${y}`;
+}
+
 function fmtTime(d: Date | string | null | undefined): string {
   if (!d) return "";
   const dt = typeof d === "string" ? new Date(d) : d;
@@ -230,7 +240,7 @@ export function ProjectionWall({ album, photos, onClose }: Props) {
           <div>
             <h1 className="text-white font-bold text-xl leading-tight tracking-tight">{album.coupleName}</h1>
             <p className="text-white/35 text-xs mt-0.5">
-              {album.weddingDate}{album.location ? ` · ${album.location}` : ""}
+              {fmtEventDate(album.weddingDate)}{album.location ? ` · ${album.location}` : ""}
             </p>
           </div>
         </div>
