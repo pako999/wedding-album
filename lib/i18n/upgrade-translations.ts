@@ -41,6 +41,7 @@ export interface UpgradeCopy {
   // Billing form
   billingTitle: string;
   billingCardTitle: string;   // heading when shown on the card path
+  billingCompanyToggle: string; // "I need a company invoice" checkbox
   billingName: string;
   billingCompany: string;
   billingEmail: string;
@@ -132,6 +133,7 @@ export const UPGRADE_COPY: Record<Lang, UpgradeCopy> = {
     billingTitle: "Podatki za predračun",
     billingCardTitle: "Podatki za račun (za izdajo računa)",
     billingName: "Ime in priimek *",
+    billingCompanyToggle: "Potrebujem račun na podjetje",
     billingCompany: "Naziv podjetja (neobvezno)",
     billingEmail: "E-poštni naslov *",
     billingPhone: "Telefon *",
@@ -205,6 +207,7 @@ export const UPGRADE_COPY: Record<Lang, UpgradeCopy> = {
     billingTitle: "Podaci za predračun",
     billingCardTitle: "Podaci za račun (za izdavanje računa)",
     billingName: "Ime i prezime *",
+    billingCompanyToggle: "Trebam račun na tvrtku",
     billingCompany: "Naziv tvrtke (neobvezno)",
     billingEmail: "E-mail adresa *",
     billingPhone: "Telefon *",
@@ -278,6 +281,7 @@ export const UPGRADE_COPY: Record<Lang, UpgradeCopy> = {
     billingTitle: "Podaci za predračun",
     billingCardTitle: "Podaci za račun (za izdavanje računa)",
     billingName: "Ime i prezime *",
+    billingCompanyToggle: "Treba mi račun na firmu",
     billingCompany: "Naziv firme (opciono)",
     billingEmail: "E-mail adresa *",
     billingPhone: "Telefon *",
@@ -351,6 +355,7 @@ export const UPGRADE_COPY: Record<Lang, UpgradeCopy> = {
     billingTitle: "Invoice details",
     billingCardTitle: "Billing details (for your invoice)",
     billingName: "Full name *",
+    billingCompanyToggle: "I need a company invoice",
     billingCompany: "Company name (optional)",
     billingEmail: "Email address *",
     billingPhone: "Phone *",
@@ -424,6 +429,7 @@ export const UPGRADE_COPY: Record<Lang, UpgradeCopy> = {
     billingTitle: "Rechnungsdaten",
     billingCardTitle: "Rechnungsdaten (für Ihre Rechnung)",
     billingName: "Vor- und Nachname *",
+    billingCompanyToggle: "Ich benötige eine Firmenrechnung",
     billingCompany: "Firmenname (optional)",
     billingEmail: "E-Mail-Adresse *",
     billingPhone: "Telefon *",
@@ -497,6 +503,7 @@ export const UPGRADE_COPY: Record<Lang, UpgradeCopy> = {
     billingTitle: "Datos de facturación",
     billingCardTitle: "Datos de facturación (para tu factura)",
     billingName: "Nombre y apellidos *",
+    billingCompanyToggle: "Necesito factura de empresa",
     billingCompany: "Nombre de la empresa (opcional)",
     billingEmail: "Correo electrónico *",
     billingPhone: "Teléfono *",

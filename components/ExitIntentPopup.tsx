@@ -84,9 +84,16 @@ export function ExitIntentPopup({ lang }: { lang: LangCode }) {
     if (typeof window === "undefined") return;
     if (sessionStorage.getItem(STORAGE_KEY)) return;
 
-    // Don't trigger on dashboard / album pages — only marketing pages
-    const path = window.location.pathname;
-    if (path.startsWith("/dashboard") || path.startsWith("/api")) return;
+    // Suppressed on dashboard / checkout / album / affiliate pages — the
+    // exit-intent discount is a MARKETING nudge; a customer already on the
+    // upgrade page is committed to buying and shouldn't be handed a code.
+    const isSuppressedPath = (p: string) =>
+      p.startsWith("/dashboard") ||
+      p.startsWith("/api") ||
+      p.startsWith("/admin") ||
+      /\/affiliate(?:\/|$)/.test(p);
+
+    if (isSuppressedPath(window.location.pathname)) return;
 
     const timer = setTimeout(() => {
       readyRef.current = true;
@@ -94,6 +101,11 @@ export function ExitIntentPopup({ lang }: { lang: LangCode }) {
 
     const onMouseLeave = (e: MouseEvent) => {
       if (!readyRef.current) return;
+      // Re-check the LIVE path: the root layout doesn't re-run on client-
+      // side navigation, so this component can persist from a marketing
+      // page onto the checkout page. Never fire once the user has moved
+      // to a suppressed path.
+      if (isSuppressedPath(window.location.pathname)) return;
       if (e.clientY <= 2) {
         setVisible(true);
         readyRef.current = false; // fire only once
