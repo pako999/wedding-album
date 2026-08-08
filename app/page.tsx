@@ -739,11 +739,11 @@ export default async function HomePage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 items-start">
 
             {/* FREE */}
-            <div className="bg-gray-50 border border-gray-200 rounded-3xl p-7 flex flex-col opacity-80">
-              <p className="font-extrabold text-lg text-gray-400 mb-1">Brezplačno</p>
+            <div className="bg-white border border-gray-200 rounded-3xl p-7 flex flex-col">
+              <p className="font-extrabold text-lg text-[#0F1729] mb-1">Brezplačno</p>
               <p className="text-sm text-gray-400 mb-6">Preizkusite brez tveganja</p>
               <div className="flex items-end gap-2 mb-7">
-                <span className="font-extrabold text-[3rem] leading-none text-gray-400">0€</span>
+                <span className="font-extrabold text-[3rem] leading-none text-[#0F1729]">0€</span>
               </div>
               <ul className="space-y-3 flex-1 mb-8">
                 {[
@@ -754,12 +754,12 @@ export default async function HomePage() {
                   "Brez varnostne kopije",
                 ].map(f => (
                   <li key={f} className="flex items-center gap-2.5">
-                    <svg className="w-4 h-4 shrink-0 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
-                    <span className="text-sm text-gray-400">{f}</span>
+                    <svg className="w-4 h-4 shrink-0 text-[#C9820A]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+                    <span className="text-sm text-gray-600">{f}</span>
                   </li>
                 ))}
               </ul>
-              <Link href="/dashboard/new" className="block text-center py-3.5 rounded-2xl font-bold text-sm text-gray-400 transition-colors bg-white hover:bg-gray-100" style={{ border: '1.5px solid #e5e7eb' }}>
+              <Link href="/dashboard/new" className="block text-center py-3.5 rounded-2xl font-bold text-sm text-[#0F1729] transition-colors hover:bg-gray-50" style={{ border: '1.5px solid #e5e7eb' }}>
                 Začni brezplačno
               </Link>
             </div>
