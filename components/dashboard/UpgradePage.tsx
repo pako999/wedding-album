@@ -54,6 +54,9 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
   const [paymentMethod, setPaymentMethod] = useState<"card" | "invoice">("card");
   const [invoiceDone, setInvoiceDone] = useState(false);
   const [billing, setBilling] = useState({ name: "", companyName: "", email: "", phone: "", address: "", postalCode: "", city: "", taxId: "" });
+  // Company invoice toggle — company name + tax ID only appear (and are
+  // only sent) when the customer says they need a business invoice.
+  const [companyInvoice, setCompanyInvoice] = useState(false);
   const [termsAccepted, setTermsAccepted] = useState(false);
 
   // Discount code state
@@ -414,15 +417,14 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
                 {paymentMethod === "invoice" ? u.billingTitle : u.billingCardTitle}
               </p>
               <div className="space-y-2.5">
+                {/* Personal / always-required fields */}
                 {[
                   { key: "name",        placeholder: u.billingName,       type: "text"  },
-                  { key: "companyName", placeholder: u.billingCompany,    type: "text"  },
                   { key: "email",       placeholder: u.billingEmail,      type: "email" },
                   { key: "phone",       placeholder: u.billingPhone,      type: "tel"   },
                   { key: "address",     placeholder: u.billingAddress,    type: "text"  },
                   { key: "postalCode",  placeholder: u.billingPostalCode, type: "text"  },
                   { key: "city",        placeholder: u.billingCity,       type: "text"  },
-                  { key: "taxId",       placeholder: u.billingTaxId,      type: "text"  },
                 ].map(({ key, placeholder, type }) => (
                   <input
                     key={key}
@@ -434,6 +436,39 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
                     style={{ borderColor: "#e5e7eb" }}
                   />
                 ))}
+
+                {/* Company invoice toggle — reveals company name + tax ID */}
+                <label className="flex items-center gap-2.5 pt-1 cursor-pointer select-none">
+                  <input
+                    type="checkbox"
+                    checked={companyInvoice}
+                    onChange={(e) => {
+                      setCompanyInvoice(e.target.checked);
+                      if (!e.target.checked) setBilling(b => ({ ...b, companyName: "", taxId: "" }));
+                    }}
+                    className="w-4 h-4 rounded accent-[#FFC94D] shrink-0 cursor-pointer"
+                  />
+                  <span className="text-sm font-medium text-[#0F1729]">{u.billingCompanyToggle}</span>
+                </label>
+
+                {companyInvoice && (
+                  <div className="space-y-2.5 pt-1">
+                    {[
+                      { key: "companyName", placeholder: u.billingCompany, type: "text" },
+                      { key: "taxId",       placeholder: u.billingTaxId,   type: "text" },
+                    ].map(({ key, placeholder, type }) => (
+                      <input
+                        key={key}
+                        type={type}
+                        placeholder={placeholder}
+                        value={billing[key as keyof typeof billing]}
+                        onChange={e => setBilling(b => ({ ...b, [key]: e.target.value }))}
+                        className="w-full px-3 py-2.5 text-sm border rounded-xl focus:outline-none focus:border-[#FFC94D] focus:ring-1 focus:ring-[#FFC94D] transition-colors"
+                        style={{ borderColor: "#e5e7eb" }}
+                      />
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           )}

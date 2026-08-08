@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { usePathname } from "next/navigation";
 import type { LangCode } from "@/components/LanguageSwitcher";
 
 const DISCOUNT_CODE = "WELCOME15";
@@ -41,11 +42,21 @@ const COPY: Record<LangCode, { text: string; cta: string; copied: string }> = {
 
 export function DiscountBanner({ lang }: { lang: LangCode }) {
   const t = COPY[lang] ?? COPY.en;
+  const pathname = usePathname();
   const [closed, setClosed] = useState(() => {
     if (typeof window === "undefined") return false;
     return !!sessionStorage.getItem(STORAGE_KEY);
   });
   const [copied, setCopied] = useState(false);
+
+  // Live path check — the root layout doesn't re-render on client-side
+  // navigation, so this banner can persist onto the checkout/dashboard.
+  // Hide it there: a customer on the upgrade page is already buying.
+  if (
+    pathname.startsWith("/dashboard") ||
+    pathname.startsWith("/admin") ||
+    /\/affiliate(?:\/|$)/.test(pathname)
+  ) return null;
 
   if (closed) return null;
 
