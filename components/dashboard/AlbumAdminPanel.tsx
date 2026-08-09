@@ -11,7 +11,7 @@ import { bunnyDisplayUrl } from "@/lib/storage/bunny";
 import { ZipDownloader } from "@/components/dashboard/ZipDownloader";
 import { CoverPhotoSettings } from "@/components/dashboard/CoverPhotoSettings";
 import { FilmStudio } from "@/components/dashboard/FilmStudio";
-import { ALBUM_THEMES } from "@/lib/album-themes";
+import { ALBUM_THEMES, themesForEvent } from "@/lib/album-themes";
 import { fbEvent } from "@/lib/fbpixel";
 
 /**
@@ -1423,8 +1423,9 @@ function AlbumSettingsForm({ album, children }: { album: Album; children?: React
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">Tema galerije</label>
         <p className="text-xs text-gray-400 mb-2.5">Izberite barvno temo za javno stran galerije.</p>
-        <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5">
-          {ALBUM_THEMES.map((tm) => {
+        {(() => {
+          const { recommended, others } = themesForEvent(eventType);
+          const renderTheme = (tm: (typeof ALBUM_THEMES)[number]) => {
             const selected = theme === tm.id;
             return (
               <button
@@ -1466,8 +1467,31 @@ function AlbumSettingsForm({ album, children }: { album: Album; children?: React
                 </span>
               </button>
             );
-          })}
-        </div>
+          };
+          // Recommended-for-this-event group first, everything else below.
+          // Follows the live `eventType` select above, so switching event
+          // type instantly re-groups the themes.
+          return recommended.length > 0 ? (
+            <>
+              <p className="text-[11px] font-bold uppercase tracking-widest text-[#C9820A] mb-2">
+                ✨ Priporočene za vaš dogodek
+              </p>
+              <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5 mb-4">
+                {recommended.map(renderTheme)}
+              </div>
+              <p className="text-[11px] font-bold uppercase tracking-widest text-gray-400 mb-2">
+                Vse teme
+              </p>
+              <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5">
+                {others.map(renderTheme)}
+              </div>
+            </>
+          ) : (
+            <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5">
+              {ALBUM_THEMES.map(renderTheme)}
+            </div>
+          );
+        })()}
       </div>
 
       <div className="flex flex-col gap-3 pt-1">
