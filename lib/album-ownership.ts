@@ -1,6 +1,25 @@
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { requireAdmin } from "@/lib/admin";
 
+type ClerkUser = Awaited<ReturnType<typeof currentUser>>;
+
+/**
+ * The lowercased set of a Clerk user's VERIFIED email addresses.
+ *
+ * Security-critical: Clerk keeps email-address resources on the user
+ * object even while they are `unverified` (a user can add an email they
+ * don't control and it sits there pending verification). Matching an
+ * album's ownerEmail against ALL addresses would let an attacker take
+ * over an album by adding the victim's email unverified. Only compare
+ * against addresses whose `verification.status === "verified"`.
+ */
+export function verifiedEmails(user: ClerkUser): string[] {
+  return (user?.emailAddresses ?? [])
+    .filter((e) => e.verification?.status === "verified")
+    .map((e) => e.emailAddress?.toLowerCase())
+    .filter((e): e is string => !!e);
+}
+
 /**
  * Album-ownership check used by every album-mutation API route.
  *
@@ -21,9 +40,10 @@ import { requireAdmin } from "@/lib/admin";
  * mutation routes a regular owner uses; without this branch every
  * admin action 403s once they hit a non-owned album.
  *
- * Security: Clerk only attaches an email to a user after verification,
- * so user.emailAddresses[*].emailAddress is always a verified address
- * the user demonstrably controls. The platform-admin branch requires
+ * Security: the email fallback compares ONLY against verified addresses
+ * (verifiedEmails()) — Clerk keeps unverified emails on the user object,
+ * so matching all of them would allow album takeover by adding the
+ * victim's email unverified. The platform-admin branch requires
  * the password second-factor cookie (requireAdmin, not just
  * requireAdminEmail), so casual sign-in alone doesn't grant edit
  * access to other people's albums.
@@ -68,12 +88,10 @@ export async function checkAlbumOwnership(album: OwnableAlbum | null | undefined
     return { ok: false, status: 403, error: "Forbidden" };
   }
 
-  // Email-match fallback (verified emails on the Clerk user).
+  // Email-match fallback — VERIFIED emails only (see verifiedEmails).
   if (album.ownerEmail) {
-    const verified = user?.emailAddresses ?? [];
     const wanted = album.ownerEmail.toLowerCase();
-    const match = verified.some((e) => e.emailAddress?.toLowerCase() === wanted);
-    if (match) return { ok: true, userId };
+    if (verifiedEmails(user).includes(wanted)) return { ok: true, userId };
   }
 
   // Platform-admin impersonation — Clerk-authenticated AND allowlisted
@@ -108,9 +126,8 @@ export async function isAdminImpersonating(
   if (album.ownerEmail) {
     try {
       const u = await currentUser();
-      const verified = u?.emailAddresses ?? [];
       const wanted = album.ownerEmail.toLowerCase();
-      if (verified.some((e) => e.emailAddress?.toLowerCase() === wanted)) return false;
+      if (verifiedEmails(u).includes(wanted)) return false;
     } catch { /* */ }
   }
   try {

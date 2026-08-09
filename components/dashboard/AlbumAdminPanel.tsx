@@ -1321,10 +1321,11 @@ function AlbumSettingsForm({ album, children }: { album: Album; children?: React
   const [weddingDate, setWeddingDate]         = useState(album.weddingDate);
   const [location, setLocation]               = useState(album.location ?? "");
   const [notifyEmail, setNotifyEmail]         = useState(album.notifyEmail ?? "");
-  // Password stays in state so existing galleries preserve theirs on save,
-  // but the UI field was removed to reduce confusion — most couples never
-  // want a password. Owners who need one can still add via API.
-  const [password]                            = useState(album.password ?? "");
+  // NOTE: the password hash is deliberately NOT sent to this client
+  // component (see lib/album-view.ts → toOwnerAlbum) and is NOT part of
+  // the settings save body. The settings PATCH route treats an absent
+  // `password` as "leave unchanged", so existing galleries keep theirs.
+  // Owners who need to set/clear a password do so via the API.
   const [moderationEnabled, setModerationEnabled] = useState(album.moderationEnabled);
   const [isPublished, setIsPublished]         = useState(album.isPublished);
   const [eventType, setEventType]             = useState(album.eventType ?? "wedding");
@@ -1340,7 +1341,6 @@ function AlbumSettingsForm({ album, children }: { album: Album; children?: React
         weddingDate,
         location,
         notifyEmail,
-        password,
         moderationEnabled,
         isPublished,
         eventType,

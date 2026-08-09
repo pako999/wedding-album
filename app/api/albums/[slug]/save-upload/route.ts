@@ -4,8 +4,26 @@ import { albums, photos, moments } from "@/lib/db/schema";
 import { eq, and, sql } from "drizzle-orm";
 import { sendNewPhotoNotification } from "@/lib/email/notifications";
 import { bunnyStreamThumbnailUrl, bunnyStreamIframeUrl } from "@/lib/storage/bunny";
+import { verifyAlbumPassword } from "@/lib/album-password";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
+
+// Accepted upload MIME types — mirrors /upload-url. A record whose type
+// isn't a real image/video has no place in a gallery.
+const ALLOWED_IMAGE_TYPES = new Set([
+  "image/jpeg", "image/jpg", "image/png", "image/webp",
+  "image/heic", "image/heif", "image/gif",
+]);
+const ALLOWED_VIDEO_TYPES = new Set([
+  "video/mp4", "video/quicktime", "video/mov",
+  "video/webm", "video/mpeg", "video/3gpp", "video/avi",
+]);
+
+// Bound free-text fields a guest controls so a record can't carry a
+// megabyte of attacker-supplied text into the DB / owner notifications.
+const MAX_UPLOADER_NAME = 80;
+const MAX_FILENAME = 255;
 
 interface SaveBody {
   // R2 / Vercel Blob upload
@@ -38,8 +56,15 @@ export async function POST(
   { params }: { params: Promise<{ slug: string }> }
 ) {
   const { slug } = await params;
+
+  // Rate limit — this endpoint writes a DB row + can fire an owner email
+  // per call. Cap it so a script can't flood a gallery or the owner's
+  // inbox. 60/min per IP covers a real batch upload.
+  const rl = await checkRateLimit("save-upload", 60, 60_000);
+  if (!rl.ok) return rl.response;
+
   const body: SaveBody = await req.json();
-  const { blobUrl, cfStreamVideoId, mimeType, originalFilename, sizeBytes, uploaderName, momentId } = body;
+  const { blobUrl, cfStreamVideoId, mimeType, originalFilename, sizeBytes, momentId } = body;
 
   if (!blobUrl && !cfStreamVideoId) {
     return NextResponse.json({ error: "blobUrl or cfStreamVideoId required" }, { status: 400 });
@@ -49,6 +74,22 @@ export async function POST(
   }
   if (!mimeType) {
     return NextResponse.json({ error: "mimeType required" }, { status: 400 });
+  }
+  // MIME must be a real, whitelisted image/video type.
+  if (!ALLOWED_IMAGE_TYPES.has(mimeType) && !ALLOWED_VIDEO_TYPES.has(mimeType)) {
+    return NextResponse.json({ error: "Unsupported file type" }, { status: 400 });
+  }
+
+  // Bound guest-controlled free text. uploaderName is required.
+  const uploaderName = (typeof body.uploaderName === "string" ? body.uploaderName : "").trim();
+  if (!uploaderName) {
+    return NextResponse.json({ error: "uploaderName required" }, { status: 400 });
+  }
+  if (uploaderName.length > MAX_UPLOADER_NAME) {
+    return NextResponse.json({ error: "uploaderName too long" }, { status: 400 });
+  }
+  if (typeof originalFilename === "string" && originalFilename.length > MAX_FILENAME) {
+    return NextResponse.json({ error: "originalFilename too long" }, { status: 400 });
   }
 
   // Belt-and-suspenders: even if the upload-url pre-check was bypassed,
@@ -68,6 +109,23 @@ export async function POST(
   const album = await db.query.albums.findFirst({ where: eq(albums.slug, slug) }).catch(() => null);
   if (!album || !album.isPublished) {
     return NextResponse.json({ error: "Album not found" }, { status: 404 });
+  }
+
+  // Password gate — ONLY when the album actually has a password set.
+  // Open link/QR albums (the default) accept uploads with no password,
+  // matching /upload-url and /bunny-upload.
+  if (album.password) {
+    const provided = req.headers.get("x-album-password") ?? "";
+    const ok = await verifyAlbumPassword(provided, album.password);
+    if (!ok) {
+      return NextResponse.json({ error: "Wrong album password" }, { status: 403 });
+    }
+  }
+
+  // Enforce the plan's photo cap here too — /upload-url checks it, but
+  // this endpoint is a separate request and must not be bypassable.
+  if (album.photoCount >= album.maxPhotos) {
+    return NextResponse.json({ error: "Album photo limit reached" }, { status: 403 });
   }
 
   // Skip duplicates — an identical file (same name + size) is already in this album.

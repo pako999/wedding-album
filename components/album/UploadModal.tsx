@@ -199,7 +199,7 @@ async function uploadFile(
       sizeBytes: file.size,
       uploaderName,
       momentId,
-    });
+    }, albumPassword);
     onProgress(100);
     return "uploaded";
   }
@@ -211,6 +211,7 @@ async function uploadFile(
       file,
       // Scale to 0-90 % so the final save step fills the last 10 %
       pct => onProgress(Math.round(pct * 0.9)),
+      albumPassword,
     );
     onProgress(92);
     await saveUpload(albumSlug, {
@@ -220,7 +221,7 @@ async function uploadFile(
       sizeBytes: file.size,
       uploaderName,
       momentId,
-    });
+    }, albumPassword);
     onProgress(100);
     return "uploaded";
   }
@@ -242,7 +243,7 @@ async function uploadFile(
       sizeBytes: file.size,
       uploaderName,
       momentId,
-    });
+    }, albumPassword);
     onProgress(100);
     return "uploaded";
   }
@@ -257,7 +258,7 @@ async function uploadFile(
       sizeBytes: file.size,
       uploaderName,
       momentId,
-    });
+    }, albumPassword);
     onProgress(100);
     return "uploaded";
   }
@@ -284,7 +285,7 @@ async function uploadFile(
     sizeBytes: file.size,
     uploaderName,
     momentId,
-  });
+  }, albumPassword);
   onProgress(100);
   return "uploaded";
 }
@@ -358,6 +359,7 @@ function xhrUpload(
   url: string,
   file: File,
   onProgress: (pct: number) => void,
+  albumPassword = "",
 ): Promise<string> {
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
@@ -403,15 +405,23 @@ function xhrUpload(
 
     xhr.open("PUT", url);
     xhr.setRequestHeader("Content-Type", file.type);
+    // Password-protected albums gate the storage proxy too — forward the
+    // guest's album password (empty string for open albums, which the
+    // server ignores).
+    if (albumPassword) xhr.setRequestHeader("x-album-password", albumPassword);
     resetStall(); // start the stall clock immediately on send
     xhr.send(file);
   });
 }
 
-async function saveUpload(slug: string, body: object) {
+async function saveUpload(slug: string, body: object, albumPassword = "") {
+  const headers: Record<string, string> = { "Content-Type": "application/json" };
+  // Password-protected albums gate save-upload too — forward the album
+  // password (empty for open albums, which the server ignores).
+  if (albumPassword) headers["x-album-password"] = albumPassword;
   const res = await fetch(`/api/albums/${slug}/save-upload`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers,
     body: JSON.stringify(body),
   });
   if (!res.ok) throw new Error(`Save failed: ${res.status}`);

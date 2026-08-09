@@ -7,6 +7,8 @@ import { withSchemaHealing } from "@/lib/db/bootstrap";
 import { AlbumGuestView } from "@/components/album/AlbumGuestView";
 import { type Lang } from "@/lib/i18n/translations";
 import { hashAlbumPassword, needsRehash, verifyAlbumPassword } from "@/lib/album-password";
+import { verifiedEmails } from "@/lib/album-ownership";
+import { toPublicAlbum } from "@/lib/album-view";
 import type { Metadata } from "next";
 
 export const dynamic = "force-dynamic";
@@ -130,9 +132,13 @@ export default async function AlbumPage({ params, searchParams }: Props) {
       if (session.userId === album.ownerClerkId) {
         isOwner = true;
       } else if (album.ownerEmail) {
+        // VERIFIED emails only — Clerk keeps unverified addresses on the
+        // user object, so matching all of them would let an attacker claim
+        // owner status (and the password bypass) by adding the owner's
+        // email unverified. Mirrors lib/album-ownership.ts.
         const user = await currentUser();
-        const email = user?.emailAddresses?.[0]?.emailAddress;
-        if (email && email.toLowerCase() === album.ownerEmail.toLowerCase()) {
+        const wanted = album.ownerEmail.toLowerCase();
+        if (verifiedEmails(user).includes(wanted)) {
           isOwner = true;
         }
       }
@@ -184,7 +190,7 @@ export default async function AlbumPage({ params, searchParams }: Props) {
           exists while a gallery route is mounted. */}
       <style>{`#CookiebotWidget { display: none !important; }`}</style>
       <AlbumGuestView
-        album={album}
+        album={toPublicAlbum(album)}
         photos={albumPhotos}
         moments={albumMoments}
         passwordRequired={passwordRequired}

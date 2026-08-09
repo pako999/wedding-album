@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { albums, photoLikes, photoComments } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
+import { verifyAlbumPassword } from "@/lib/album-password";
 
 export const runtime = "nodejs";
 
@@ -16,7 +17,7 @@ export const runtime = "nodejs";
  *   }
  */
 export async function GET(
-  _req: NextRequest,
+  req: NextRequest,
   { params }: { params: Promise<{ slug: string }> }
 ) {
   const { slug } = await params;
@@ -27,6 +28,20 @@ export async function GET(
 
   if (!album) {
     return NextResponse.json({ likes: {}, comments: {} });
+  }
+
+  // Comments carry guest names + free text. On a password-protected
+  // album that content is behind the gate, so an anonymous caller with no
+  // (or the wrong) password must not read it. Open link/QR albums (the
+  // default, no password) return reactions to everyone as before. We
+  // return empty maps rather than a 4xx so the gallery still renders
+  // cleanly for anyone who somehow reaches this without the password.
+  if (album.password) {
+    const provided = req.headers.get("x-album-password") ?? "";
+    const ok = await verifyAlbumPassword(provided, album.password);
+    if (!ok) {
+      return NextResponse.json({ likes: {}, comments: {} });
+    }
   }
 
   const [likes, comments] = await Promise.all([

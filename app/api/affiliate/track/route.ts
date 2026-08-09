@@ -26,9 +26,23 @@ export async function GET(req: NextRequest) {
   const code = url.searchParams.get("ref");
   const to = url.searchParams.get("to") ?? "/";
 
-  // Make sure `to` is a same-origin relative path so we can't be used as
-  // an open redirector.
-  const safeTo = to.startsWith("/") && !to.startsWith("//") ? to : "/";
+  // Make sure `to` resolves to a same-origin path so we can't be used as
+  // an open redirector. A prefix check like `startsWith("/") &&
+  // !startsWith("//")` is not enough: the URL parser treats backslashes
+  // as slashes for special schemes, so `to=/\evil.com` (or `/%5Cevil.com`)
+  // slips past it and resolves to https://evil.com. Resolve against the
+  // request origin and confirm the ORIGIN still matches; on any mismatch
+  // (or parse failure) fall back to "/".
+  const reqOrigin = new URL(req.url).origin;
+  let safeTo = "/";
+  try {
+    const candidate = new URL(to, req.url);
+    if (candidate.origin === reqOrigin) {
+      safeTo = candidate.pathname + candidate.search + candidate.hash;
+    }
+  } catch {
+    // malformed `to` — keep the "/" fallback
+  }
   const redirectUrl = new URL(safeTo, req.url);
 
   if (!code) {

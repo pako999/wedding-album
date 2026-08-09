@@ -218,14 +218,19 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
       if (storedName) setUploaderName(prev => prev || storedName);
     } catch { /* ignore */ }
 
-    fetch(`/api/albums/${album.slug}/reactions`)
+    fetch(`/api/albums/${album.slug}/reactions`, {
+      // Password-protected albums gate reactions too — forward the album
+      // password the guest already provided (undefined header for open
+      // albums, which the server ignores).
+      headers: providedPassword ? { "x-album-password": providedPassword } : undefined,
+    })
       .then(r => r.json())
       .then((data: { likes: Record<string, number>; comments: Record<string, CommentItem[]> }) => {
         setLikeCounts(data.likes ?? {});
         setCommentMap(data.comments ?? {});
       })
       .catch(() => { /* non-fatal */ });
-  }, [album.slug]);
+  }, [album.slug, providedPassword]);
 
   // ── Load completed montage film ───────────────────────────────────────────
   useEffect(() => {
