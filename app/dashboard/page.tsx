@@ -6,6 +6,7 @@ import { eq, or, desc, sql } from "drizzle-orm";
 import Link from "next/link";
 import { DashboardNav } from "@/components/dashboard/DashboardNav";
 import { recordUserCountry } from "@/lib/user-country";
+import { recordSignupAttribution } from "@/lib/attribution/record";
 import { htmlEscape, notifyTelegram } from "@/lib/telegram";
 import { sendAdminNewUserEmail } from "@/lib/email/notifications";
 
@@ -14,12 +15,14 @@ export const dynamic = "force-dynamic";
 export default async function DashboardPage() {
   let userId: string | null = null;
   let userEmail: string | null = null;
+  let userCreatedAt: number | null = null;
   try {
     const session = await auth();
     userId = session.userId;
     if (userId) {
       const user = await currentUser();
       userEmail = user?.emailAddresses?.[0]?.emailAddress ?? null;
+      userCreatedAt = user?.createdAt ?? null;
     }
   } catch {
     redirect("/sign-in");
@@ -32,6 +35,17 @@ export default async function DashboardPage() {
   // the response ends — a dangling promise would silently never commit.
   // recordUserCountry never throws, so it can't break the render.
   const { created } = await recordUserCountry(userId);
+
+  // Stamp the account's acquisition source (Google/Meta ads, affiliate,
+  // referral, organic, direct…) from the first-touch cookies the browser
+  // is carrying. Only for genuinely new signups (account < 7 days) so an
+  // existing user's later visit isn't mislabeled from current cookies;
+  // the write is first-touch/onConflictDoNothing, so it's safe to re-run.
+  const isFreshAccount =
+    userCreatedAt != null && Date.now() - userCreatedAt < 7 * 24 * 60 * 60 * 1000;
+  if (isFreshAccount) {
+    await recordSignupAttribution(userId);
+  }
 
   // Fallback new-user notification. The Clerk webhook is the primary
   // signal, but it silently misses every signup when the endpoint is

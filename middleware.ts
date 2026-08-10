@@ -1,6 +1,12 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import {
+  SIGNUP_ATTR_COOKIE,
+  ATTR_COOKIE_MAX_AGE,
+  collectAttribution,
+  serializeAttr,
+} from "@/lib/attribution/signup";
 
 const isProtectedRoute = createRouteMatcher(["/dashboard(.*)"]);
 
@@ -116,6 +122,31 @@ export default clerkMiddleware(async (auth, req) => {
   requestHeaders.set("x-pathname", pathname);
   const res = NextResponse.next({ request: { headers: requestHeaders } });
 
+  // ── First-touch marketing attribution capture ────────────────────────────
+  // Stash utm_*, gclid/fbclid and the external referrer into a first-touch
+  // cookie the first time we see this browser, so we can attribute the
+  // account's acquisition channel at signup (read in
+  // lib/attribution/record.ts → shown in /admin/users). First-touch wins:
+  // only set when the cookie is absent, never overwrite. We do NOT strip
+  // the utm params (analytics tools read them client-side) or redirect —
+  // this just sets a cookie on the existing response.
+  if (!pathname.startsWith("/api/") && !req.cookies.get(SIGNUP_ATTR_COOKIE)) {
+    const attr = collectAttribution(
+      req.nextUrl.searchParams,
+      req.headers.get("referer"),
+      pathname,
+    );
+    if (attr) {
+      res.cookies.set(SIGNUP_ATTR_COOKIE, serializeAttr(attr), {
+        maxAge: ATTR_COOKIE_MAX_AGE,
+        path: "/",
+        httpOnly: true, // read server-side only (middleware + record.ts)
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+      });
+    }
+  }
+
   // ── Affiliate ref param capture ──────────────────────────────────────────
   // Any link with ?ref=CODE on any non-API page is forwarded to
   // /api/affiliate/track which validates the code against the active
@@ -150,7 +181,11 @@ export default clerkMiddleware(async (auth, req) => {
     trackerUrl.search = "";
     trackerUrl.searchParams.set("ref", refParam);
     trackerUrl.searchParams.set("to", to);
-    return NextResponse.redirect(trackerUrl);
+    const redirected = NextResponse.redirect(trackerUrl);
+    // Preserve any cookie we set above (e.g. first-touch attribution) across
+    // this redirect so it isn't lost on links that carry both ?ref and utm_*.
+    for (const c of res.cookies.getAll()) redirected.cookies.set(c);
+    return redirected;
   }
 
   // Guest referral capture (P0 of the viral engine). Different from the

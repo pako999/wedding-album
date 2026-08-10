@@ -431,6 +431,25 @@ export async function runMigrations() {
     )
   `);
 
+  await run("create user_attribution", (q) => q`
+    CREATE TABLE IF NOT EXISTS user_attribution (
+      clerk_id      TEXT PRIMARY KEY,
+      channel       VARCHAR(24),
+      utm_source    TEXT,
+      utm_medium    TEXT,
+      utm_campaign  TEXT,
+      utm_term      TEXT,
+      utm_content   TEXT,
+      gclid         TEXT,
+      fbclid        TEXT,
+      affiliate_ref TEXT,
+      referral_code TEXT,
+      referrer_url  TEXT,
+      landing_page  TEXT,
+      created_at    TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )
+  `);
+
   // Cleanup: delete any user_plan_overrides for users who already own
   // an album — the override is redundant and only serves to show a
   // misleading "next gallery: X" badge on the admin Uporabniki page.
