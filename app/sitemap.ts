@@ -2,6 +2,11 @@ import type { MetadataRoute } from "next";
 import fs from "node:fs/promises";
 import path from "node:path";
 import { SITE_URL } from "@/lib/urls";
+import {
+  getEventTopic,
+  localesForTopic,
+  type EventTopicKey,
+} from "@/lib/seo/event-topics";
 
 type ChangeFreq = "always" | "hourly" | "daily" | "weekly" | "monthly" | "yearly" | "never";
 
@@ -39,51 +44,63 @@ type Locale = (typeof LOCALES)[number];
  *  across the 6 locales. Google reads this as hreflang signals straight
  *  from the sitemap, in addition to the per-page <head> tags. The x-default
  *  always points to the SL master so search engines have a deterministic
- *  fallback when none of the user's preferred languages match. */
-function clusterLinks(slugs: Record<Locale, string>): Record<string, string> {
+ *  fallback when none of the user's preferred languages match.
+ *
+ *  Callers pass the FULL path per locale (including any locale prefix).
+ *  No implicit prefixing: the SL variant sometimes lives at root
+ *  (homepage, legal, blog, contact) and sometimes under /sl (SEO
+ *  landings, alternatives). The earlier implicit "sl gets no prefix"
+ *  rule emitted hreflang sl/x-default URLs like /qr-koda-poroka that
+ *  resolve as 404 album slugs with a noindex header — broken alternates
+ *  that contradict the on-page tags and make Google distrust the whole
+ *  language cluster (a prime suspect for non-SL pages not ranking). */
+function clusterLinks(paths: Record<Locale, string>): Record<string, string> {
   const out: Record<string, string> = {};
   for (const lang of LOCALES) {
-    const slug = slugs[lang];
-    out[lang] = `${SITE_URL}${lang === "sl" ? "" : `/${lang}`}${slug}`;
+    out[lang] = `${SITE_URL}${paths[lang]}`;
   }
   out["x-default"] = out.sl;
   return out;
 }
 
-const HOMEPAGE_CLUSTER = clusterLinks({ sl: "", hr: "", sr: "", de: "", en: "", es: "" });
+const HOMEPAGE_CLUSTER = clusterLinks({
+  sl: "", hr: "/hr", sr: "/sr", de: "/de", en: "/en", es: "/es",
+});
 
 const SEO_LANDING_CLUSTER = clusterLinks({
-  sl: "/qr-koda-poroka",
-  hr: "/qr-kod-vjencanje",
-  sr: "/qr-kod-vencanje",
-  de: "/hochzeitsfotos-sammeln",
-  en: "/wedding-photo-sharing",
-  es: "/fotos-boda-qr",
+  sl: "/sl/qr-koda-poroka",
+  hr: "/hr/qr-kod-vjencanje",
+  sr: "/sr/qr-kod-vencanje",
+  de: "/de/hochzeitsfotos-sammeln",
+  en: "/en/wedding-photo-sharing",
+  es: "/es/fotos-boda-qr",
 });
 
 const ALTERNATIVES_CLUSTER = clusterLinks({
-  sl: "/alternative-aplikacije",
-  hr: "/alternativne-aplikacije",
-  sr: "/alternativne-aplikacije",
-  de: "/alternativen",
-  en: "/alternatives",
-  es: "/alternativas",
+  sl: "/sl/alternative-aplikacije",
+  hr: "/hr/alternativne-aplikacije",
+  sr: "/sr/alternativne-aplikacije",
+  de: "/de/alternativen",
+  en: "/en/alternatives",
+  es: "/es/alternativas",
 });
 
 const CONTACT_CLUSTER = clusterLinks({
-  sl: "/contact", hr: "/contact", sr: "/contact",
-  de: "/contact", en: "/contact", es: "/contact",
+  sl: "/contact", hr: "/hr/contact", sr: "/sr/contact",
+  de: "/de/contact", en: "/en/contact", es: "/es/contact",
 });
 
 const AFFILIATE_APPLY_CLUSTER = clusterLinks({
-  sl: "/affiliate/apply", hr: "/affiliate/apply", sr: "/affiliate/apply",
-  de: "/affiliate/apply", en: "/affiliate/apply", es: "/affiliate/apply",
+  sl: "/affiliate/apply", hr: "/hr/affiliate/apply", sr: "/sr/affiliate/apply",
+  de: "/de/affiliate/apply", en: "/en/affiliate/apply", es: "/es/affiliate/apply",
 });
 
-/** Per-document legal clusters (same slug across all 6 langs). */
+/** Per-document legal clusters (same slug across all 6 langs; SL at root). */
 function legalCluster(doc: string): Record<string, string> {
-  const slugs: Record<Locale, string> = { sl: `/${doc}`, hr: `/${doc}`, sr: `/${doc}`, de: `/${doc}`, en: `/${doc}`, es: `/${doc}` };
-  return clusterLinks(slugs);
+  return clusterLinks({
+    sl: `/${doc}`, hr: `/hr/${doc}`, sr: `/sr/${doc}`,
+    de: `/de/${doc}`, en: `/en/${doc}`, es: `/es/${doc}`,
+  });
 }
 
 /**
@@ -91,9 +108,10 @@ function legalCluster(doc: string): Record<string, string> {
  * using its real publishedAt/updatedAt timestamps.
  */
 /** Shared cluster: the blog index has the same slug across all languages
- *  (just under different locale prefixes). */
+ *  (just under different locale prefixes; SL at root). */
 const BLOG_INDEX_CLUSTER = clusterLinks({
-  sl: "/blog", hr: "/blog", sr: "/blog", de: "/blog", en: "/blog", es: "/blog",
+  sl: "/blog", hr: "/hr/blog", sr: "/sr/blog",
+  de: "/de/blog", en: "/en/blog", es: "/es/blog",
 });
 
 async function blogEntries(): Promise<PageEntry[]> {
@@ -186,6 +204,53 @@ async function blogEntries(): Promise<PageEntry[]> {
 }
 
 /**
+ * Event-topic landing entries, generated from lib/seo/event-topics.ts —
+ * the same data source eventTopicMetadata() uses for each page's
+ * canonical + hreflang. One entry per translated locale per topic, with
+ * the full hreflang cluster attached. Priorities mirror the previous
+ * hand-maintained list: wedding topics 0.75 (SL) / 0.7 (intl), birthday
+ * & baby-shower 0.7 (SL) / 0.65 (intl).
+ */
+const EVENT_TOPIC_KEYS: EventTopicKey[] = [
+  "slike-s-poroke",
+  "qr-koda-za-poroko",
+  "porocni-album",
+  "zbiranje-slik-s-poroke",
+  "slike-z-rojstnega-dne",
+  "baby-shower-slike",
+];
+const MINOR_EVENT_TOPICS: ReadonlySet<EventTopicKey> = new Set([
+  "slike-z-rojstnega-dne",
+  "baby-shower-slike",
+]);
+
+function eventTopicEntries(): PageEntry[] {
+  const out: PageEntry[] = [];
+  for (const key of EVENT_TOPIC_KEYS) {
+    const locales = localesForTopic(key);
+    if (locales.length === 0) continue;
+
+    const cluster: Record<string, string> = {};
+    for (const loc of locales) {
+      cluster[loc] = `${SITE_URL}/${loc}/${getEventTopic(loc, key)!.slug}`;
+    }
+    cluster["x-default"] = cluster.sl ?? cluster.en ?? Object.values(cluster)[0];
+
+    const minor = MINOR_EVENT_TOPICS.has(key);
+    for (const loc of locales) {
+      out.push({
+        path: `/${loc}/${getEventTopic(loc, key)!.slug}`,
+        priority: loc === "sl" ? (minor ? 0.7 : 0.75) : (minor ? 0.65 : 0.7),
+        changeFrequency: "monthly",
+        lastModified: LAST_EDITED.seoLandings,
+        alternates: cluster,
+      });
+    }
+  }
+  return out;
+}
+
+/**
  * Public sitemap. Lists only marketing / content pages — album galleries
  * and the dashboard are private (noindex) and intentionally excluded.
  */
@@ -212,53 +277,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { path: "/en/wedding-photo-sharing",  priority: 0.8, changeFrequency: "monthly", lastModified: LAST_EDITED.seoLandings, alternates: SEO_LANDING_CLUSTER },
     { path: "/es/fotos-boda-qr",          priority: 0.8, changeFrequency: "monthly", lastModified: LAST_EDITED.seoLandings, alternates: SEO_LANDING_CLUSTER },
 
-    // Alternatives / comparison pages
-    // Event topic landings — new SEO cluster targeting long-tail SL
-    // keywords. HR/SR/DE/EN/ES variants can be added by extending
-    // lib/seo/event-topics.ts and adding matching route files.
-    // Event topic landings — 6 topics × 6 locales. hreflang cluster is
-    // auto-attached by the eventTopicMetadata() helper on each page.
-    { path: "/sl/slike-s-poroke",          priority: 0.75, changeFrequency: "monthly" },
-    { path: "/sl/qr-koda-za-poroko",       priority: 0.75, changeFrequency: "monthly" },
-    { path: "/sl/porocni-album",           priority: 0.75, changeFrequency: "monthly" },
-    { path: "/sl/zbiranje-slik-s-poroke",  priority: 0.75, changeFrequency: "monthly" },
-    { path: "/sl/slike-z-rojstnega-dne",   priority: 0.7,  changeFrequency: "monthly" },
-    { path: "/sl/baby-shower-slike",       priority: 0.7,  changeFrequency: "monthly" },
-
-    { path: "/hr/fotografije-s-vjencanja",        priority: 0.7,  changeFrequency: "monthly" },
-    { path: "/hr/qr-kod-za-vjencanje-kako",       priority: 0.7,  changeFrequency: "monthly" },
-    { path: "/hr/vjencani-album",                 priority: 0.7,  changeFrequency: "monthly" },
-    { path: "/hr/skupljanje-fotografija-vjencanje", priority: 0.7, changeFrequency: "monthly" },
-    { path: "/hr/fotografije-s-rodjendana",       priority: 0.65, changeFrequency: "monthly" },
-    { path: "/hr/baby-shower-fotografije",        priority: 0.65, changeFrequency: "monthly" },
-
-    { path: "/sr/slike-sa-vencanja",              priority: 0.7,  changeFrequency: "monthly" },
-    { path: "/sr/qr-kod-za-vencanje-kako",        priority: 0.7,  changeFrequency: "monthly" },
-    { path: "/sr/vencani-album",                  priority: 0.7,  changeFrequency: "monthly" },
-    { path: "/sr/skupljanje-fotografija-vencanje", priority: 0.7, changeFrequency: "monthly" },
-    { path: "/sr/slike-sa-rodjendana",            priority: 0.65, changeFrequency: "monthly" },
-    { path: "/sr/baby-shower-fotografije",        priority: 0.65, changeFrequency: "monthly" },
-
-    { path: "/de/hochzeitsfotos-gaeste",              priority: 0.7,  changeFrequency: "monthly" },
-    { path: "/de/qr-code-hochzeit-erstellen",         priority: 0.7,  changeFrequency: "monthly" },
-    { path: "/de/digitales-hochzeitsalbum",           priority: 0.7,  changeFrequency: "monthly" },
-    { path: "/de/hochzeitsfotos-von-gaesten-sammeln", priority: 0.7,  changeFrequency: "monthly" },
-    { path: "/de/geburtstagsfotos-sammeln",           priority: 0.65, changeFrequency: "monthly" },
-    { path: "/de/babyparty-fotos",                    priority: 0.65, changeFrequency: "monthly" },
-
-    { path: "/en/wedding-photos-from-guests",     priority: 0.7,  changeFrequency: "monthly" },
-    { path: "/en/how-to-make-wedding-qr-code",    priority: 0.7,  changeFrequency: "monthly" },
-    { path: "/en/digital-wedding-album",          priority: 0.7,  changeFrequency: "monthly" },
-    { path: "/en/collect-wedding-photos-guests",  priority: 0.7,  changeFrequency: "monthly" },
-    { path: "/en/birthday-photos-guests",         priority: 0.65, changeFrequency: "monthly" },
-    { path: "/en/baby-shower-photos-guests",      priority: 0.65, changeFrequency: "monthly" },
-
-    { path: "/es/fotos-boda-invitados",           priority: 0.7,  changeFrequency: "monthly" },
-    { path: "/es/como-hacer-codigo-qr-boda",      priority: 0.7,  changeFrequency: "monthly" },
-    { path: "/es/album-de-boda-digital",          priority: 0.7,  changeFrequency: "monthly" },
-    { path: "/es/recopilar-fotos-boda-invitados", priority: 0.7,  changeFrequency: "monthly" },
-    { path: "/es/fotos-cumpleanos-invitados",     priority: 0.65, changeFrequency: "monthly" },
-    { path: "/es/fotos-baby-shower",              priority: 0.65, changeFrequency: "monthly" },
+    // Event topic landings — 6 topics × 6 locales, generated straight
+    // from lib/seo/event-topics.ts so the sitemap URLs can never drift
+    // from the real routes, and each entry carries the same hreflang
+    // cluster the page's <head> declares (sitemap + on-page signals must
+    // agree or Google discounts both).
+    ...eventTopicEntries(),
 
     { path: "/sl/alternative-aplikacije",  priority: 0.7, changeFrequency: "monthly", lastModified: LAST_EDITED.alternatives, alternates: ALTERNATIVES_CLUSTER },
     { path: "/hr/alternativne-aplikacije", priority: 0.7, changeFrequency: "monthly", lastModified: LAST_EDITED.alternatives, alternates: ALTERNATIVES_CLUSTER },
