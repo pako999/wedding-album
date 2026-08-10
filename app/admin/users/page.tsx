@@ -1,13 +1,24 @@
 import { db } from "@/lib/db";
-import { albums, userPlanOverrides, userMeta } from "@/lib/db/schema";
+import { albums, userPlanOverrides, userMeta, userAttribution } from "@/lib/db/schema";
 import { clerkClient } from "@clerk/nextjs/server";
 import { UserUpgradeMenu } from "@/components/admin/UserUpgradeMenu";
 import { countryFlag, inferCountryFromLocation } from "@/lib/user-country";
+import type { Channel } from "@/lib/attribution/signup";
 
 export const dynamic = "force-dynamic";
 
 type PlanTier = "free" | "basic" | "plus" | "premium";
 type PlanSource = "none" | "paid" | "admin" | "inherit";
+
+/** Acquisition-source row surfaced per user (null = signed up before we
+ *  started tracking, or not yet captured). */
+interface SourceInfo {
+  channel: Channel | null;
+  utmSource: string | null;
+  utmCampaign: string | null;
+  affiliateRef: string | null;
+  referrerUrl: string | null;
+}
 
 interface UserRow {
   clerkId: string;
@@ -27,6 +38,8 @@ interface UserRow {
    *  (reliable), "location" = inferred from album location text. */
   country: string | null;
   countrySource: "ip" | "location" | null;
+  /** Where they came from when they registered (null = pre-tracking). */
+  source: SourceInfo | null;
 }
 
 const PLAN_RANK: Record<PlanTier, number> = { free: 0, basic: 1, plus: 2, premium: 3 };
@@ -140,6 +153,34 @@ export default async function AdminUsers() {
     console.warn("[admin/users] user_meta query failed (run /api/migrate?):", err);
   }
 
+  // Signup acquisition source (first-touch channel + details). try/catch so
+  // a not-yet-migrated DB (no user_attribution table) doesn't crash the
+  // page — the Vir column just shows "—" until migration runs.
+  const sources = new Map<string, SourceInfo>();
+  try {
+    const rows = await db
+      .select({
+        clerkId: userAttribution.clerkId,
+        channel: userAttribution.channel,
+        utmSource: userAttribution.utmSource,
+        utmCampaign: userAttribution.utmCampaign,
+        affiliateRef: userAttribution.affiliateRef,
+        referrerUrl: userAttribution.referrerUrl,
+      })
+      .from(userAttribution);
+    for (const r of rows) {
+      sources.set(r.clerkId, {
+        channel: (r.channel as Channel | null) ?? null,
+        utmSource: r.utmSource,
+        utmCampaign: r.utmCampaign,
+        affiliateRef: r.affiliateRef,
+        referrerUrl: r.referrerUrl,
+      });
+    }
+  } catch (err) {
+    console.warn("[admin/users] user_attribution query failed (run /api/migrate?):", err);
+  }
+
   // Pull every Clerk user (paginate; the API caps each page at 500).
   const client = await clerkClient();
   const clerkUsers: Awaited<ReturnType<typeof client.users.getUserList>>["data"] = [];
@@ -169,6 +210,7 @@ export default async function AdminUsers() {
       isComp: stats?.isComp ?? false,
       country: ipCountry ?? stats?.inferredCountry ?? null,
       countrySource: ipCountry ? "ip" : stats?.inferredCountry ? "location" : null,
+      source: sources.get(u.id) ?? null,
     };
   });
 
@@ -190,6 +232,7 @@ export default async function AdminUsers() {
       isComp: stats.isComp,
       country: ipCountry ?? stats.inferredCountry,
       countrySource: ipCountry ? "ip" : stats.inferredCountry ? "location" : null,
+      source: sources.get(clerkId) ?? null,
     });
   }
 
@@ -213,6 +256,7 @@ export default async function AdminUsers() {
               <th className="px-4 py-3 font-medium">Uporabnik</th>
               <th className="px-4 py-3 font-medium">Email</th>
               <th className="px-4 py-3 font-medium">Država</th>
+              <th className="px-4 py-3 font-medium">Vir</th>
               <th className="px-4 py-3 font-medium">Galerije</th>
               <th className="px-4 py-3 font-medium">Paket</th>
               <th className="px-4 py-3 font-medium">Registracija</th>
@@ -247,6 +291,7 @@ export default async function AdminUsers() {
                     <span className="text-xs text-gray-300">—</span>
                   )}
                 </td>
+                <td className="px-4 py-3"><SourceBadge source={u.source} /></td>
                 <td className="px-4 py-3 text-gray-700 font-semibold">{u.albumCount}</td>
                 <td className="px-4 py-3">
                   <PlanBadge
@@ -270,7 +315,7 @@ export default async function AdminUsers() {
             ))}
             {enriched.length === 0 && (
               <tr>
-                <td colSpan={7} className="px-4 py-12 text-center text-sm text-gray-400">
+                <td colSpan={8} className="px-4 py-12 text-center text-sm text-gray-400">
                   Ni uporabnikov.
                 </td>
               </tr>
@@ -332,6 +377,57 @@ function PlanBadge({
       </span>
       {labelBySource[source] && (
         <span className="text-[10px] text-gray-400 lowercase">{labelBySource[source]}</span>
+      )}
+    </div>
+  );
+}
+
+/** Acquisition-source badge for the Vir column. Shows the derived channel
+ *  with a colour, and the most useful detail underneath (campaign,
+ *  affiliate code, or referring host). Full details on hover (title). */
+function SourceBadge({ source }: { source: SourceInfo | null }) {
+  if (!source || !source.channel) {
+    return <span className="text-xs text-gray-300">—</span>;
+  }
+
+  const meta: Record<Channel, { label: string; cls: string }> = {
+    google_ads:     { label: "Google Ads", cls: "bg-blue-100 text-blue-700" },
+    meta_ads:       { label: "Meta Ads",   cls: "bg-indigo-100 text-indigo-700" },
+    affiliate:      { label: "Affiliate",  cls: "bg-fuchsia-100 text-fuchsia-700" },
+    referral:       { label: "Priporočilo", cls: "bg-emerald-100 text-emerald-700" },
+    organic_search: { label: "Organsko",   cls: "bg-green-100 text-green-700" },
+    social:         { label: "Družbeno",   cls: "bg-sky-100 text-sky-700" },
+    referral_web:   { label: "Povezava",   cls: "bg-teal-100 text-teal-700" },
+    campaign:       { label: "Kampanja",   cls: "bg-amber-100 text-amber-700" },
+    direct:         { label: "Direktno",   cls: "bg-gray-100 text-gray-500" },
+  };
+  const m = meta[source.channel];
+
+  // Best single detail to show under the badge.
+  let host = "";
+  if (source.referrerUrl) {
+    try { host = new URL(source.referrerUrl.startsWith("http") ? source.referrerUrl : `https://${source.referrerUrl}`).hostname.replace(/^www\./, ""); } catch { /* */ }
+  }
+  const detail =
+    source.affiliateRef ? source.affiliateRef :
+    source.utmCampaign  ? source.utmCampaign  :
+    source.utmSource    ? source.utmSource    :
+    host                ? host                : null;
+
+  const tip = [
+    source.utmSource && `utm_source=${source.utmSource}`,
+    source.utmCampaign && `utm_campaign=${source.utmCampaign}`,
+    source.affiliateRef && `ref=${source.affiliateRef}`,
+    source.referrerUrl && `referrer=${source.referrerUrl}`,
+  ].filter(Boolean).join(" · ") || m.label;
+
+  return (
+    <div className="flex flex-col gap-0.5" title={tip}>
+      <span className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide w-fit ${m.cls}`}>
+        {m.label}
+      </span>
+      {detail && (
+        <span className="text-[10px] text-gray-400 truncate max-w-[140px]">{detail}</span>
       )}
     </div>
   );

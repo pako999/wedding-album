@@ -5,6 +5,8 @@ import { albums, photos } from "@/lib/db/schema";
 import { eq, and, countDistinct } from "drizzle-orm";
 import { AlbumAdminPanel } from "@/components/dashboard/AlbumAdminPanel";
 import { requireAdmin } from "@/lib/admin";
+import { verifiedEmails } from "@/lib/album-ownership";
+import { toOwnerAlbum } from "@/lib/album-view";
 
 export const dynamic = "force-dynamic";
 
@@ -63,9 +65,7 @@ export default async function AlbumAdminPage({ params, searchParams }: Props) {
   let viewerEmails: string[] = [];
   try {
     const u = await currentUser();
-    viewerEmails = (u?.emailAddresses ?? [])
-      .map((e) => e.emailAddress?.toLowerCase())
-      .filter((e): e is string => !!e);
+    viewerEmails = verifiedEmails(u);
   } catch {
     // ignore — fall back to ID-only match
   }
@@ -165,7 +165,7 @@ export default async function AlbumAdminPage({ params, searchParams }: Props) {
 
   return (
     <AlbumAdminPanel
-      album={album}
+      album={toOwnerAlbum(album)}
       photos={albumPhotos}
       pendingCount={pendingCount}
       guestCount={guestCount}

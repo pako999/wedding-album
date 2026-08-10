@@ -756,7 +756,7 @@ export async function LocalizedHomePage({ lang }: { lang: Lang }) {
                   ))}
                 </div>
 
-                <div className="flex flex-wrap items-center gap-4">
+                <div className="flex flex-wrap items-center justify-center gap-4">
                   <Link href="/dashboard/new" className="inline-flex items-center gap-3 px-10 py-5 rounded-full text-[#0F1729] font-bold text-lg transition-all duration-200 hover:scale-[1.02]"
                     style={{ background: "linear-gradient(135deg, #FFD966 0%, #FFC94D 55%, #F0B429 100%)", boxShadow: "0 14px 40px rgba(255,201,77,0.42)" }}>
                     {t.heroPrimary}

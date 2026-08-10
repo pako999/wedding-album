@@ -199,7 +199,7 @@ async function uploadFile(
       sizeBytes: file.size,
       uploaderName,
       momentId,
-    });
+    }, albumPassword);
     onProgress(100);
     return "uploaded";
   }
@@ -211,6 +211,7 @@ async function uploadFile(
       file,
       // Scale to 0-90 % so the final save step fills the last 10 %
       pct => onProgress(Math.round(pct * 0.9)),
+      albumPassword,
     );
     onProgress(92);
     await saveUpload(albumSlug, {
@@ -220,7 +221,7 @@ async function uploadFile(
       sizeBytes: file.size,
       uploaderName,
       momentId,
-    });
+    }, albumPassword);
     onProgress(100);
     return "uploaded";
   }
@@ -242,7 +243,7 @@ async function uploadFile(
       sizeBytes: file.size,
       uploaderName,
       momentId,
-    });
+    }, albumPassword);
     onProgress(100);
     return "uploaded";
   }
@@ -257,7 +258,7 @@ async function uploadFile(
       sizeBytes: file.size,
       uploaderName,
       momentId,
-    });
+    }, albumPassword);
     onProgress(100);
     return "uploaded";
   }
@@ -284,7 +285,7 @@ async function uploadFile(
     sizeBytes: file.size,
     uploaderName,
     momentId,
-  });
+  }, albumPassword);
   onProgress(100);
   return "uploaded";
 }
@@ -358,6 +359,7 @@ function xhrUpload(
   url: string,
   file: File,
   onProgress: (pct: number) => void,
+  albumPassword = "",
 ): Promise<string> {
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
@@ -403,15 +405,23 @@ function xhrUpload(
 
     xhr.open("PUT", url);
     xhr.setRequestHeader("Content-Type", file.type);
+    // Password-protected albums gate the storage proxy too — forward the
+    // guest's album password (empty string for open albums, which the
+    // server ignores).
+    if (albumPassword) xhr.setRequestHeader("x-album-password", albumPassword);
     resetStall(); // start the stall clock immediately on send
     xhr.send(file);
   });
 }
 
-async function saveUpload(slug: string, body: object) {
+async function saveUpload(slug: string, body: object, albumPassword = "") {
+  const headers: Record<string, string> = { "Content-Type": "application/json" };
+  // Password-protected albums gate save-upload too — forward the album
+  // password (empty for open albums, which the server ignores).
+  if (albumPassword) headers["x-album-password"] = albumPassword;
   const res = await fetch(`/api/albums/${slug}/save-upload`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers,
     body: JSON.stringify(body),
   });
   if (!res.ok) throw new Error(`Save failed: ${res.status}`);
@@ -643,27 +653,30 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-6">
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-6 overflow-x-hidden">
       <div className="absolute inset-0 bg-[#0F1729]/70 backdrop-blur-sm" onClick={!uploading ? onClose : undefined} />
 
-      <div className="relative w-full sm:max-w-lg bg-white rounded-t-3xl sm:rounded-2xl shadow-xl max-h-[92vh] flex flex-col overflow-hidden"
+      <div className="relative w-full max-w-[100vw] sm:max-w-lg bg-white rounded-t-3xl sm:rounded-2xl shadow-xl max-h-[92vh] flex flex-col overflow-hidden"
         style={{ maxHeight: "92dvh", paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
       >
-        {/* Header */}
-        <div className="flex items-center justify-between gap-2 px-4 sm:px-6 py-4 border-b border-gray-100 shrink-0 min-w-0">
-          <div className="min-w-0 flex-1">
-            <h2 className="font-serif text-xl font-light text-[#0F1729] truncate">{t.uploadModalTitle}</h2>
-            <div className="flex items-center gap-2 sm:gap-3 mt-0.5 flex-wrap">
-              <span className="text-[10px] text-[#0F1729]/40 px-2 py-0.5 rounded-full font-medium whitespace-nowrap" style={{ background: `${accent}1A` }}>📷 {t.maxImageSize(MAX_IMAGE_MB)}</span>
-              <span className="text-[10px] text-[#0F1729]/40 px-2 py-0.5 rounded-full font-medium whitespace-nowrap" style={{ background: `${accent}1A` }}>📹 {t.maxVideoSize(MAX_VIDEO_MB)}</span>
-              <span className="text-[10px] text-green-600 font-medium whitespace-nowrap">{t.fullQuality}</span>
-            </div>
+        {/* Header — title + close on the first row, size chips wrap onto
+            their own row below so they can never push the header wider
+            than the screen (which was clipping the title/close off the
+            edges on narrow phones). */}
+        <div className="px-4 sm:px-6 py-4 border-b border-gray-100 shrink-0 overflow-hidden">
+          <div className="flex items-center justify-between gap-2 min-w-0">
+            <h2 className="min-w-0 flex-1 font-serif text-xl font-light text-[#0F1729] truncate">{t.uploadModalTitle}</h2>
+            <button onClick={onClose} disabled={uploading} className="shrink-0 w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 disabled:opacity-40">
+              <svg className="w-4 h-4 text-[#0F1729]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
           </div>
-          <button onClick={onClose} disabled={uploading} className="shrink-0 w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 disabled:opacity-40">
-            <svg className="w-4 h-4 text-[#0F1729]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
+          <div className="flex items-center gap-2 mt-1.5 flex-wrap">
+            <span className="text-[10px] text-[#0F1729]/40 px-2 py-0.5 rounded-full font-medium whitespace-nowrap" style={{ background: `${accent}1A` }}>📷 {t.maxImageSize(MAX_IMAGE_MB)}</span>
+            <span className="text-[10px] text-[#0F1729]/40 px-2 py-0.5 rounded-full font-medium whitespace-nowrap" style={{ background: `${accent}1A` }}>📹 {t.maxVideoSize(MAX_VIDEO_MB)}</span>
+            <span className="text-[10px] text-green-600 font-medium whitespace-nowrap">{t.fullQuality}</span>
+          </div>
         </div>
 
         {isOffline && (

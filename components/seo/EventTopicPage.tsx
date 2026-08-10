@@ -94,14 +94,18 @@ export function EventTopicPage({ locale, topicKey }: Props) {
     "@type": "Article",
     headline: entry.h1,
     description: entry.description,
-    inLanguage: `${locale}-${locale.toUpperCase()}`,
+    // Bare BCP-47 language code — schema.org accepts it, and deriving a
+    // region by doubling the code produced invalid tags (en-EN, sl-SL).
+    inLanguage: locale,
     author: { "@type": "Organization", name: "Guestcam" },
     publisher: {
       "@type": "Organization",
       name: "Guestcam",
       logo: `${SITE_URL}/icon-512.png`,
     },
-    mainEntityOfPage: `${SITE_URL}${locale === "sl" ? `/${entry.slug}` : `/${locale}/${entry.slug}`}`,
+    // Must match the canonical (every locale lives under its prefix,
+    // including /sl — the old no-prefix SL URL 404s as an album slug).
+    mainEntityOfPage: `${SITE_URL}/${locale}/${entry.slug}`,
   };
   const faqSchema = {
     "@context": "https://schema.org",

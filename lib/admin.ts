@@ -93,7 +93,10 @@ function pickAllowlistedEmail(
 ): string | null {
   if (!user) return null;
   const allowed = new Set(adminEmails().map((e) => e.toLowerCase()));
+  // VERIFIED emails only — an unverified email attached to a Clerk user
+  // must never satisfy the admin allowlist (see verifiedEmails()).
   const candidates = (user.emailAddresses ?? [])
+    .filter((e) => e.verification?.status === "verified")
     .map((e) => e.emailAddress?.toLowerCase())
     .filter((e): e is string => !!e);
   for (const e of candidates) {

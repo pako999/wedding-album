@@ -428,6 +428,33 @@ export const userMeta = pgTable("user_meta", {
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
+// ─── Signup acquisition attribution ─────────────────────────────────────────
+// First-touch marketing source per user, captured from the `gc_attr`
+// cookie (utm_*, gclid/fbclid, referrer) plus the affiliate/referral
+// cookies, at the user's first authenticated request. One row per Clerk
+// user (first-touch wins — inserts are onConflictDoNothing). Surfaced in
+// /admin/users so we can see which channel brings paying customers.
+
+export const userAttribution = pgTable("user_attribution", {
+  clerkId: text("clerk_id").primaryKey(),
+  /** Derived acquisition channel — see lib/attribution/signup.ts Channel. */
+  channel: varchar("channel", { length: 24 }),
+  utmSource: text("utm_source"),
+  utmMedium: text("utm_medium"),
+  utmCampaign: text("utm_campaign"),
+  utmTerm: text("utm_term"),
+  utmContent: text("utm_content"),
+  gclid: text("gclid"),
+  fbclid: text("fbclid"),
+  /** Affiliate code (gc_ref) present at signup, if any. */
+  affiliateRef: text("affiliate_ref"),
+  /** Guest-referral code (gc_gref) present at signup, if any. */
+  referralCode: text("referral_code"),
+  referrerUrl: text("referrer_url"),
+  landingPage: text("landing_page"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
 // ─── Onboarding nudges ───────────────────────────────────────────────────────
 // One row per Clerk user that has received the "you signed up but never
 // created a gallery" reminder. We never want to spam — one PK on clerkId
