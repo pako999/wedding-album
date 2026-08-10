@@ -23,7 +23,7 @@ interface ContactCopy {
   formCta: string;
   faqTitle: string;
   faqs: { q: string; a: string }[];
-  responseNote: string;
+  company: { title: string; lines: string[] };
 }
 
 const COPY: Record<LangCode, ContactCopy> = {
@@ -52,7 +52,16 @@ const COPY: Record<LangCode, ContactCopy> = {
       { q: "Imam težavo z nalaganjem fotografij — kaj zdaj?", a: "Najpogostejši vzrok je počasna mobilna povezava. Preverite, da ste povezani na WiFi, ali pa nam pišite — fotografije lahko po dogodku ročno dodamo iz vaše naprave." },
       { q: "Lahko se srečamo v živo?", a: "Poslujemo online, po predhodnem dogovoru pa se rade volje srečamo na video klicu ali v Ljubljani — še posebej za velike dogodke, agencije in wedding planerje." },
     ],
-    responseNote: "Sport group d.o.o. · DDV ID: SI12345678 · Sedež: Ljubljana, Slovenija",
+    company: {
+      title: "Podatki o podjetju",
+      lines: [
+        "Sport group d.o.o.",
+        "Osojnikova 4a, 2000 Maribor, Slovenija",
+        "Davčna številka: SI72133449",
+        "Email: info@guestcam.si",
+        "Telefon: +386 71 604 980",
+      ],
+    },
   },
   hr: {
     eyebrow: "Kontakt",
@@ -79,7 +88,16 @@ const COPY: Record<LangCode, ContactCopy> = {
       { q: "Imam problem s učitavanjem fotografija — što sada?", a: "Najčešći uzrok je spora mobilna veza. Provjerite jeste li spojeni na WiFi, ili nam pišite — fotografije možemo nakon događaja ručno dodati s vašeg uređaja." },
       { q: "Možemo li se sastati uživo?", a: "Poslujemo online, uz prethodni dogovor rado se sastajemo na video pozivu ili u Ljubljani — posebno za velike događaje, agencije i wedding planere." },
     ],
-    responseNote: "Sport group d.o.o. · PDV ID: SI12345678 · Sjedište: Ljubljana, Slovenija",
+    company: {
+      title: "Podaci o tvrtki",
+      lines: [
+        "Sport group d.o.o.",
+        "Osojnikova 4a, 2000 Maribor, Slovenija",
+        "OIB / PDV broj: SI72133449",
+        "Email: info@guestcam.si",
+        "Telefon: +386 71 604 980",
+      ],
+    },
   },
   sr: {
     eyebrow: "Kontakt",
@@ -106,7 +124,16 @@ const COPY: Record<LangCode, ContactCopy> = {
       { q: "Imam problem sa otpremanjem fotografija — šta sad?", a: "Najčešći uzrok je spora mobilna veza. Proverite da li ste povezani na WiFi, ili nam pišite — fotografije možemo posle događaja ručno dodati sa vašeg uređaja." },
       { q: "Možemo li se sastati uživo?", a: "Poslujemo online, uz prethodni dogovor rado se sastajemo na video pozivu ili u Ljubljani — posebno za velike događaje, agencije i wedding planere." },
     ],
-    responseNote: "Sport group d.o.o. · PDV ID: SI12345678 · Sedište: Ljubljana, Slovenija",
+    company: {
+      title: "Podaci o firmi",
+      lines: [
+        "Sport group d.o.o.",
+        "Osojnikova 4a, 2000 Maribor, Slovenija",
+        "PIB / PDV broj: SI72133449",
+        "Email: info@guestcam.si",
+        "Telefon: +386 71 604 980",
+      ],
+    },
   },
   de: {
     eyebrow: "Kontakt",
@@ -133,7 +160,16 @@ const COPY: Record<LangCode, ContactCopy> = {
       { q: "Ich habe Probleme beim Hochladen von Fotos — was nun?", a: "Häufigste Ursache ist eine langsame Mobilverbindung. Prüfen Sie, ob Sie mit WLAN verbunden sind, oder schreiben Sie uns — wir können Fotos nach der Veranstaltung manuell von Ihrem Gerät einspielen." },
       { q: "Können wir uns persönlich treffen?", a: "Wir arbeiten online; nach Absprache treffen wir uns gerne per Videoanruf oder in Ljubljana — insbesondere für große Veranstaltungen, Agenturen und Wedding Planner." },
     ],
-    responseNote: "Sport group d.o.o. · USt-IdNr.: SI12345678 · Sitz: Ljubljana, Slowenien",
+    company: {
+      title: "Firmenangaben",
+      lines: [
+        "Sport group d.o.o.",
+        "Osojnikova 4a, 2000 Maribor, Slowenien",
+        "USt-IdNr.: SI72133449",
+        "E-Mail: info@guestcam.si",
+        "Telefon: +386 71 604 980",
+      ],
+    },
   },
   en: {
     eyebrow: "Contact",
@@ -160,7 +196,16 @@ const COPY: Record<LangCode, ContactCopy> = {
       { q: "I'm having trouble uploading photos — what now?", a: "The most common cause is slow mobile data. Check you're on WiFi, or message us — we can manually add photos from your device after the event." },
       { q: "Can we meet in person?", a: "We operate online; with prior arrangement we're happy to meet by video call or in Ljubljana — especially for large events, agencies and wedding planners." },
     ],
-    responseNote: "Sport group d.o.o. · VAT ID: SI12345678 · Registered office: Ljubljana, Slovenia",
+    company: {
+      title: "Company information",
+      lines: [
+        "Sport group d.o.o.",
+        "Osojnikova 4a, 2000 Maribor, Slovenia",
+        "VAT ID: SI72133449",
+        "Email: info@guestcam.si",
+        "Phone: +386 71 604 980",
+      ],
+    },
   },
   es: {
     eyebrow: "Contacto",
@@ -187,7 +232,16 @@ const COPY: Record<LangCode, ContactCopy> = {
       { q: "Tengo problemas para subir fotos — ¿qué hago?", a: "La causa más común es una conexión móvil lenta. Comprueba que estés en WiFi, o escríbenos — podemos añadir manualmente las fotos desde tu dispositivo después del evento." },
       { q: "¿Podemos vernos en persona?", a: "Trabajamos online; con cita previa nos encanta vernos por videollamada o en Liubliana — especialmente para grandes eventos, agencias y wedding planners." },
     ],
-    responseNote: "Sport group d.o.o. · CIF: SI12345678 · Domicilio social: Liubliana, Eslovenia",
+    company: {
+      title: "Datos de la empresa",
+      lines: [
+        "Sport group d.o.o.",
+        "Osojnikova 4a, 2000 Maribor, Eslovenia",
+        "CIF / NIF: SI72133449",
+        "Email: info@guestcam.si",
+        "Teléfono: +386 71 604 980",
+      ],
+    },
   },
 };
 
@@ -289,7 +343,23 @@ export function ContactPage({ lang }: { lang: LangCode }) {
                 </details>
               ))}
             </div>
-            <p className="text-[11px] text-gray-400 mt-8 text-center">{t.responseNote}</p>
+          </div>
+        </section>
+
+        {/* Company info */}
+        <section className="pb-16 bg-white">
+          <div className="max-w-2xl mx-auto px-6">
+            <div className="rounded-2xl border border-gray-200 bg-[#FFF9EC]/40 p-6 sm:p-7 text-center">
+              <h2 className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-3">{t.company.title}</h2>
+              <p className="text-sm text-gray-600 leading-relaxed">
+                {t.company.lines.map((line, i) => (
+                  <span key={line}>
+                    {line}
+                    {i < t.company.lines.length - 1 && <span className="mx-2 text-gray-300">·</span>}
+                  </span>
+                ))}
+              </p>
+            </div>
           </div>
         </section>
       </main>
