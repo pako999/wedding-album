@@ -330,7 +330,10 @@ export default async function HomePage() {
           <div className="grid lg:grid-cols-12 gap-10 lg:gap-12 items-center pb-12 sm:pb-16">
 
             {/* ── LEFT — copy ─────────────────────────────────────────── */}
-            <div className="lg:col-span-6 order-2 lg:order-1">
+            {/* Mobile: single column, everything centered (headline, steps
+                block, CTAs, trust row). Desktop (lg+): back to left-aligned
+                two-column layout. */}
+            <div className="lg:col-span-6 order-2 lg:order-1 text-center lg:text-left">
               {/* Eyebrow */}
               <div className="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-gray-50 px-3.5 py-1.5 mb-6">
                 <span className="relative flex h-2 w-2">
@@ -354,13 +357,16 @@ export default async function HomePage() {
                 .
               </h1>
 
-              <p className="mt-6 text-base sm:text-lg text-gray-500 leading-relaxed max-w-lg">
+              <p className="mt-6 text-base sm:text-lg text-gray-500 leading-relaxed max-w-lg mx-auto lg:mx-0">
                 Vse fotografije in videji tvojih gostov se samodejno zberejo
                 v en zaseben album — v polni kakovosti.
               </p>
 
-              {/* 3-step mini flow — the entire product in one glance */}
-              <div className="mt-8 space-y-0 max-w-lg">
+              {/* 3-step mini flow — the entire product in one glance.
+                  Block centers on mobile (mx-auto + w-fit) while the rows
+                  inside stay left-aligned — icon/connector rows read wrong
+                  if their text is centered too. */}
+              <div className="mt-8 space-y-0 max-w-lg w-fit mx-auto lg:w-auto lg:mx-0 text-left">
                 {[
                   {
                     n: 1,
@@ -416,7 +422,7 @@ export default async function HomePage() {
               </div>
 
               {/* CTA row */}
-              <div className="mt-9 flex flex-wrap items-center gap-3 sm:gap-4">
+              <div className="mt-9 flex flex-wrap items-center justify-center lg:justify-start gap-3 sm:gap-4">
                 <Link
                   href="/dashboard/new"
                   className="inline-flex items-center gap-2.5 px-7 sm:px-8 py-3.5 sm:py-4 rounded-xl text-[#0F1729] font-bold text-base transition-all duration-200 hover:scale-[1.02] hover:shadow-[0_18px_44px_rgba(255,201,77,0.5)]"
@@ -429,7 +435,7 @@ export default async function HomePage() {
                 </Link>
                 <DemoButton variant="hero" />
               </div>
-              <div className="mt-4 flex items-center gap-2 text-xs sm:text-sm text-gray-400">
+              <div className="mt-4 flex items-center justify-center lg:justify-start gap-2 text-xs sm:text-sm text-gray-400">
                 <svg className="w-4 h-4 text-emerald-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
