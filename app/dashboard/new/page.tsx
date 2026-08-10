@@ -6,6 +6,7 @@ import { albums } from "@/lib/db/schema";
 import { eq, desc } from "drizzle-orm";
 import { DashboardNav } from "@/components/dashboard/DashboardNav";
 import { CreateEventWizard } from "@/components/dashboard/CreateEventWizard";
+import { getAlbumCreationGate } from "@/lib/album-limits";
 
 export const dynamic = "force-dynamic";
 
@@ -45,6 +46,48 @@ export default async function NewAlbumPage({ searchParams }: { searchParams: Pro
   // empty), so the "back" link would loop. Only show it once they have
   // a real gallery to return to.
   const hasGalleries = !!existing;
+
+  // Free and Basic accounts are capped at one gallery. Once they already
+  // have a gallery and haven't upgraded it to Plus/Premium, don't show the
+  // creation wizard — send them to upgrade their existing gallery instead.
+  const gate = await getAlbumCreationGate(userId);
+
+  if (!gate.allowed) {
+    return (
+      <div className="min-h-screen" style={{ background: "#F4F6FB" }}>
+        <DashboardNav />
+
+        <main className="max-w-xl mx-auto px-4 sm:px-6 py-14">
+          <Link href="/dashboard" className="inline-flex items-center gap-1.5 text-sm text-gray-400 hover:text-[#0F1729] transition-colors mb-8">
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            Nazaj na nadzorno ploščo
+          </Link>
+
+          <div className="bg-white rounded-2xl border border-gray-200 p-8 sm:p-10 text-center">
+            <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-5" style={{ background: "rgba(255,201,77,0.12)" }}>
+              <svg className="w-7 h-7" style={{ color: "#C9820A" }} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+              </svg>
+            </div>
+            <h1 className="font-serif text-2xl font-light text-[#0F1729] mb-2">Za več galerij nadgradite paket</h1>
+            <p className="text-sm text-[#0F1729]/50 max-w-sm mx-auto mb-8">
+              Brezplačni in Basic paket omogočata eno galerijo na račun. Za dodatne galerije nadgradite obstoječo
+              galerijo na paket Plus ali Premium — nato lahko ustvarite neomejeno novih galerij.
+            </p>
+            <Link
+              href={`/dashboard/${gate.mostRecentSlug}/upgrade`}
+              className="inline-flex items-center gap-2 px-6 py-3 text-sm font-semibold rounded-xl text-[#0F1729] transition-all duration-200 hover:brightness-95"
+              style={{ background: "#FFC94D" }}
+            >
+              Nadgradi paket →
+            </Link>
+          </div>
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen" style={{ background: "#F4F6FB" }}>
