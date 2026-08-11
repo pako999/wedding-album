@@ -54,7 +54,38 @@ interface Props {
    *  forget they're viewing a customer's gallery and any destructive
    *  action they take applies to that customer's data. */
   viewingAsAdmin?: boolean;
+  /** Result of a just-completed Google Drive export, forwarded by
+   *  /api/google-drive/callback's redirect (?drive=ok|partial|denied|
+   *  empty|notconfigured|error). Undefined outside that redirect. */
+  driveResult?: string;
+  /** Number of files uploaded, forwarded alongside driveResult="ok"|"partial". */
+  driveCount?: string;
 }
+
+/** Copy + tone for the one-time Google Drive result banner. */
+function driveBannerCopy(result: string, count?: string): { tone: "success" | "warning" | "neutral" | "error"; text: string } {
+  switch (result) {
+    case "ok":
+      return { tone: "success", text: `Galerija je shranjena v Google Drive${count ? ` (${count} datotek)` : ""}.` };
+    case "partial":
+      return { tone: "warning", text: `Del galerije je shranjen v Google Drive${count ? ` (${count} datotek)` : ""} — nekaj datotek ni bilo mogoče prenesti. Poskusite znova.` };
+    case "denied":
+      return { tone: "neutral", text: "Shranjevanje v Google Drive je bilo preklicano." };
+    case "empty":
+      return { tone: "neutral", text: "Galerija še nima objavljenih fotografij za shranjevanje v Google Drive." };
+    case "notconfigured":
+      return { tone: "error", text: "Shranjevanje v Google Drive trenutno ni na voljo. Kontaktirajte nas na info@guestcam.si." };
+    default:
+      return { tone: "error", text: "Prišlo je do napake pri shranjevanju v Google Drive. Poskusite znova ali nas kontaktirajte na info@guestcam.si." };
+  }
+}
+
+const DRIVE_BANNER_STYLES: Record<"success" | "warning" | "neutral" | "error", { bg: string; border: string; text: string; icon: string }> = {
+  success: { bg: "#f0fdf4", border: "#86efac", text: "#15803d", icon: "✅" },
+  warning: { bg: "#FFF9EC", border: "#FFC94D", text: "#92600A", icon: "⚠️" },
+  neutral: { bg: "#F9FAFB", border: "#E5E7EB", text: "#4B5563", icon: "ℹ️" },
+  error:   { bg: "#FEF2F2", border: "#FCA5A5", text: "#B91C1C", icon: "⚠️" },
+};
 
 // ─── Success Screen ───────────────────────────────────────────────────────────
 
@@ -247,13 +278,24 @@ function NewAlbumSuccess({ album, paidPlan }: { album: Album; paidPlan?: "basic"
 
 // ─── Main Panel ───────────────────────────────────────────────────────────────
 
-export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activeTab, isNew, isUpgraded, paidAmount, paidPlan, ownerEmail, viewingAsAdmin }: Props) {
+export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activeTab, isNew, isUpgraded, paidAmount, paidPlan, ownerEmail, viewingAsAdmin, driveResult, driveCount }: Props) {
   const router = useRouter();
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://www.guestcam.si";
   const albumUrl = `${appUrl}/${album.slug}`;
   // Mobile sidebar drawer — hidden by default on small screens.
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [linkCopied, setLinkCopied] = useState(false);
+
+  // ── Google Drive export result banner ───────────────────────────────
+  // driveResult arrives once, via the redirect from /api/google-drive/
+  // callback. Show it, then strip ?drive=&n= from the URL so a page
+  // refresh doesn't keep re-showing it.
+  const [driveBanner, setDriveBanner] = useState(driveResult);
+  useEffect(() => {
+    if (!driveResult) return;
+    router.replace(`/dashboard/${album.slug}?tab=${activeTab}`, { scroll: false });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(albumUrl).then(() => {
@@ -642,8 +684,42 @@ export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activ
               </svg>
               Prenesi ZIP
             </ZipDownloader>
+            <a
+              href={`/api/google-drive/auth?slug=${album.slug}`}
+              className="flex items-center gap-1.5 px-3 py-2 text-sm text-gray-600 border border-gray-200 rounded-lg hover:border-gray-300 transition-colors bg-white"
+              title="Shrani vse fotografije v svoj Google Drive"
+            >
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3 15a4 4 0 001 7.874M3 15a4 4 0 011-7.874M3 15h13.5M17 22a4 4 0 002-7.472M17 22a4 4 0 01-2-7.472m2 7.472H8m9-14.945A5.5 5.5 0 008.5 7.528M17 7.055A5.5 5.5 0 0110.5 12" />
+              </svg>
+              Shrani v Google Drive
+            </a>
           </div>
         </div>
+
+        {driveBanner && (() => {
+          const copy = driveBannerCopy(driveBanner, driveCount);
+          const style = DRIVE_BANNER_STYLES[copy.tone];
+          return (
+            <div
+              className="mx-4 sm:mx-8 mb-4 flex items-start gap-3 rounded-2xl border px-5 py-4"
+              style={{ background: style.bg, borderColor: style.border }}
+            >
+              <span className="text-lg shrink-0">{style.icon}</span>
+              <p className="text-sm flex-1" style={{ color: style.text }}>{copy.text}</p>
+              <button
+                onClick={() => setDriveBanner(undefined)}
+                className="shrink-0 p-1 rounded-lg hover:bg-black/5"
+                style={{ color: style.text }}
+                aria-label="Zapri"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+          );
+        })()}
 
 
         {/* ── TAB CONTENT ── */}

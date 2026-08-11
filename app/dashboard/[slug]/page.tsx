@@ -12,7 +12,7 @@ export const dynamic = "force-dynamic";
 
 interface Props {
   params: Promise<{ slug: string }>;
-  searchParams: Promise<{ tab?: string; new?: string; upgraded?: string; plan?: string; amount?: string }>;
+  searchParams: Promise<{ tab?: string; new?: string; upgraded?: string; plan?: string; amount?: string; drive?: string; n?: string }>;
 }
 
 export default async function AlbumAdminPage({ params, searchParams }: Props) {
@@ -33,6 +33,8 @@ export default async function AlbumAdminPage({ params, searchParams }: Props) {
     upgraded: isUpgradedParam,
     plan: planParam,
     amount: amountParam,
+    drive: driveResult,
+    n: driveCount,
   } = await searchParams;
   const isNew = isNewParam === "1";
   const isUpgraded = isUpgradedParam === "1";
@@ -176,6 +178,8 @@ export default async function AlbumAdminPage({ params, searchParams }: Props) {
       paidPlan={paidPlan}
       ownerEmail={ownerEmail}
       viewingAsAdmin={viewingAsAdmin}
+      driveResult={driveResult}
+      driveCount={driveCount}
     />
   );
 }
