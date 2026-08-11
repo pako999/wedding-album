@@ -42,6 +42,15 @@
   85%  { opacity: 1; }
   100% { transform: translateY(-560%); opacity: 0; }
 }
+/* Confetti hero (components/ConfettiHero.tsx) */
+@keyframes gc-confetti-bob {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50%      { transform: translateY(-14px) rotate(10deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .gc-confetti { animation: none !important; }
+}
+
 @keyframes gc-float {
   0%, 100% { transform: translateY(0); }
   50%      { transform: translateY(-9px); }

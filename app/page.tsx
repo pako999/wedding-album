@@ -10,6 +10,7 @@ import { EventCard } from "@/components/EventCard";
 import { TrackViewContent } from "@/components/TrackViewContent";
 import { safeJsonLd } from "@/lib/seo/jsonld-safe";
 import { WallMiniDemo } from "@/components/WallMiniDemo";
+import { ConfettiHero } from "@/components/ConfettiHero";
 
 export const metadata: Metadata = {
   alternates: {
@@ -326,171 +327,20 @@ export default async function HomePage() {
           floating live-album UI chips that show the product working. Trust
           band below in brand navy. A first-time visitor should be able to
           explain the product back after 5 seconds. */}
-      <section className="overflow-hidden" style={{ background: "linear-gradient(180deg,#FFF9EC 0%,#FFFDF6 55%,#FFFFFF 100%)" }}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-0 sm:pt-16 lg:pt-20">
-          <div className="grid lg:grid-cols-12 gap-10 lg:gap-12 items-center pb-12 sm:pb-16">
-
-            {/* ── LEFT — copy ─────────────────────────────────────────── */}
-            {/* Mobile: single column, everything centered (headline, steps
-                block, CTAs, trust row). Desktop (lg+): back to left-aligned
-                two-column layout. */}
-            <div className="lg:col-span-6 order-2 lg:order-1 text-center lg:text-left">
-              {/* Eyebrow */}
-              <div className="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-gray-50 px-3.5 py-1.5 mb-6">
-                <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#C9820A] opacity-60" />
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-[#C9820A]" />
-                </span>
-                <p className="text-[11px] sm:text-xs font-semibold tracking-wide text-gray-600">
-                  QR foto album za poroke in dogodke
-                </p>
-              </div>
-
-              <h1 className="text-[2.7rem] sm:text-6xl lg:text-[4.15rem] font-extrabold leading-[1.04] text-[#0F1729] tracking-tight">
-                Ne izgubi slik{" "}
-                <span className="relative whitespace-nowrap">
-                  <span className="relative z-[1]">svojega dogodka</span>
-                  {/* hand-drawn underline accent */}
-                  <svg className="absolute left-0 -bottom-1 w-full" viewBox="0 0 300 12" fill="none" preserveAspectRatio="none" aria-hidden>
-                    <path d="M3 9C60 3 180 2 297 7" stroke="#FFC94D" strokeWidth="5" strokeLinecap="round" />
-                  </svg>
-                </span>
-                .
-              </h1>
-
-              <p className="mt-6 text-base sm:text-lg text-gray-500 leading-relaxed max-w-lg mx-auto lg:mx-0">
-                Vse fotografije in videji tvojih gostov se samodejno zberejo
-                v en zaseben album — v polni kakovosti.
-              </p>
-
-              {/* 3-step mini flow — the entire product in one glance.
-                  Block centers on mobile (mx-auto + w-fit) while the rows
-                  inside stay left-aligned — icon/connector rows read wrong
-                  if their text is centered too. */}
-              <div className="mt-8 space-y-0 max-w-lg w-fit mx-auto lg:w-auto lg:mx-0 text-left">
-                {[
-                  {
-                    n: 1,
-                    title: "Postavi QR kodo na mize",
-                    sub: "Natisni kartico — pripravljena v 2 minutah.",
-                    icon: (
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.7} strokeLinecap="round" strokeLinejoin="round" className="w-[18px] h-[18px]">
-                        <rect x="3" y="3" width="7" height="7" rx="1" /><rect x="14" y="3" width="7" height="7" rx="1" />
-                        <rect x="3" y="14" width="7" height="7" rx="1" />
-                        <path d="M14 14h3v3h-3zM20 14h1M14 20h1M20 20h1" />
-                      </svg>
-                    ),
-                  },
-                  {
-                    n: 2,
-                    title: "Gostje skenirajo in naložijo",
-                    sub: "Brez aplikacije, brez registracije — deluje na vsakem telefonu.",
-                    icon: (
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.7} strokeLinecap="round" strokeLinejoin="round" className="w-[18px] h-[18px]">
-                        <rect x="7" y="2" width="10" height="20" rx="2.5" />
-                        <path d="M12 18h.01" />
-                      </svg>
-                    ),
-                  },
-                  {
-                    n: 3,
-                    title: "Vse slike prejmeš na enem mestu",
-                    sub: "Spremljaš v živo, preneseš vse v ZIP z enim klikom.",
-                    icon: (
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.7} strokeLinecap="round" strokeLinejoin="round" className="w-[18px] h-[18px]">
-                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                        <path d="M7 10l5 5 5-5M12 15V3" />
-                      </svg>
-                    ),
-                  },
-                ].map((step, i, arr) => (
-                  <div key={step.n} className="flex gap-4">
-                    {/* Number + connector line */}
-                    <div className="flex flex-col items-center">
-                      <div className="w-9 h-9 rounded-full flex items-center justify-center text-[#0F1729] shrink-0 border border-[#FFC94D]/50" style={{ background: 'linear-gradient(135deg, #FFF3CC 0%, #FFE9A8 100%)' }}>
-                        {step.icon}
-                      </div>
-                      {i < arr.length - 1 && (
-                        <div className="w-px flex-1 my-1 bg-gradient-to-b from-[#FFC94D]/50 to-[#FFC94D]/10" />
-                      )}
-                    </div>
-                    <div className={i < arr.length - 1 ? "pb-5" : ""}>
-                      <p className="text-[15px] font-bold text-[#0F1729] leading-snug pt-1.5">{step.title}</p>
-                      <p className="text-sm text-gray-500 mt-0.5 leading-snug">{step.sub}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              {/* CTA row */}
-              <div className="mt-9 flex flex-wrap items-center justify-center lg:justify-start gap-3 sm:gap-4">
-                <Link
-                  href="/dashboard/new"
-                  className="inline-flex items-center gap-2.5 px-8 sm:px-10 py-4 sm:py-5 rounded-full text-[#0F1729] font-bold text-base sm:text-lg transition-all duration-200 hover:scale-[1.02] hover:shadow-[0_18px_44px_rgba(255,201,77,0.5)]"
-                  style={{ background: 'linear-gradient(135deg, #FFD966 0%, #FFC94D 55%, #F0B429 100%)', boxShadow: '0 14px 36px rgba(255,201,77,0.4)' }}
-                >
-                  Ustvari svoj QR album
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                  </svg>
-                </Link>
-                <DemoButton variant="hero" />
-              </div>
-              <div className="mt-4 flex items-center justify-center lg:justify-start gap-2 text-xs sm:text-sm text-gray-400">
-                <svg className="w-4 h-4 text-emerald-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                Brezplačen začetek · Brez kreditne kartice · Pripravljeno v 2 minutah
-              </div>
-            </div>
-
-            {/* ── RIGHT — hero photo ──────────────────────────────────── */}
-            {/* Photo-only crop of the ad visual (QR card + phone at the
-                wedding table). The "live album" UI — notification toast +
-                photo strip — is part of the image itself, so no overlay
-                chips are needed here. */}
-            <div className="lg:col-span-6 order-1 lg:order-2">
-              <div className="relative max-w-md mx-auto lg:max-w-none">
-                {/* Soft glow behind the visual */}
-                <div className="absolute -inset-6 rounded-[2.5rem] opacity-60" style={{ background: 'radial-gradient(ellipse at 50% 40%, rgba(255,201,77,0.25) 0%, transparent 70%)' }} aria-hidden />
-
-                <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden shadow-[0_24px_70px_rgba(15,23,41,0.18)] ring-1 ring-black/5 bg-white">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src="/hero/guestcam-hero-photo.webp"
-                    alt="Gost skenira QR kodo na poročni mizi — nova fotografija se takoj doda v skupni album"
-                    className="block w-full h-auto"
-                    width={794}
-                    height={930}
-                    fetchPriority="high"
-                  />
-                </div>
-
-                {/* Floating "new photo" toast — the product's magic moment */}
-                <div
-                  className="absolute -top-4 right-2 sm:right-6 z-20 flex items-center gap-2.5 bg-white rounded-full pl-2 pr-4 py-2 shadow-[0_14px_36px_rgba(15,23,41,0.18)] ring-1 ring-black/5"
-                  style={{ animation: "gc-float 5s ease-in-out infinite" }}
-                >
-                  <span className="w-7 h-7 rounded-full bg-emerald-100 flex items-center justify-center">
-                    <svg className="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                    </svg>
-                  </span>
-                  <span className="text-xs sm:text-sm font-semibold text-[#0F1729]">Nova fotografija · <span className="text-[#C9820A]">Ana</span></span>
-                </div>
-
-                {/* Live Foto stena, overlapping the photo — sells the TV
-                    experience before the visitor even scrolls */}
-                <div
-                  className="absolute -bottom-8 -left-2 sm:-left-8 z-20 w-44 sm:w-60 lg:w-64"
-                  style={{ transform: "rotate(-4deg)", animation: "gc-float 6.5s ease-in-out -2s infinite" }}
-                >
-                  <WallMiniDemo />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+      <section className="overflow-hidden">
+        {/* Confetti — bright party-invitation hero (see ConfettiHero). */}
+        <ConfettiHero
+          eyebrow="QR foto album za poroke in dogodke"
+          headLead="Ne izgubi slik"
+          headAccent="svojega dogodka"
+          headTrail="."
+          lead="Vse fotografije in videji tvojih gostov se samodejno zberejo v en zaseben album — v polni kakovosti."
+          ctaHref="/dashboard/new"
+          ctaLabel="Ustvari svoj QR album"
+          note="Brezplačen začetek · Brez kreditne kartice · Pripravljeno v 2 minutah"
+          sticker="500+ 🎉"
+          demoSlot={<DemoButton variant="hero" />}
+        />
 
         {/* ── Trust band — full-width navy, structured like the ad ─────── */}
         <div style={{ background: '#0F1729' }}>
