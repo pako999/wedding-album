@@ -11,6 +11,7 @@ import { bunnyDisplayUrl } from "@/lib/storage/bunny";
 import { ZipDownloader } from "@/components/dashboard/ZipDownloader";
 import { CoverPhotoSettings } from "@/components/dashboard/CoverPhotoSettings";
 import { FilmStudio } from "@/components/dashboard/FilmStudio";
+import { PhotoWallCard } from "@/components/dashboard/PhotoWallCard";
 import { ALBUM_THEMES, themesForEvent } from "@/lib/album-themes";
 import { fbEvent } from "@/lib/fbpixel";
 
@@ -882,13 +883,6 @@ function OverviewTab({
   // gallery's slug-based albumUrl — see lib/wall-token.ts.
   const wallAppUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://www.guestcam.si";
   const wallUrl = `${wallAppUrl}/wall/${wallToken}`;
-  const [wallLinkCopied, setWallLinkCopied] = useState(false);
-  const handleCopyWallLink = () => {
-    navigator.clipboard.writeText(wallUrl).then(() => {
-      setWallLinkCopied(true);
-      setTimeout(() => setWallLinkCopied(false), 2000);
-    });
-  };
 
   return (
     <div className="space-y-6">
@@ -1041,51 +1035,7 @@ function OverviewTab({
       </div>
 
       {/* Photo Wall — TV / tablet live display */}
-      <div className="bg-white rounded-2xl border border-gray-100 p-5">
-        <div className="flex items-start justify-between gap-4 flex-wrap mb-4">
-          <div>
-            <h3 className="font-semibold text-gray-900 text-sm">📺 Foto stena</h3>
-            <p className="text-xs text-gray-400 mt-0.5 max-w-md">
-              Ločena povezava od vaše galerije — varna za prikaz na skupnem zaslonu. Odprite jo na TV-ju,
-              tablici ali projektorju in jo pustite predvajati — nove fotografije se pojavijo same, brez da bi
-              kdo pri zaslonu karkoli naredil. QR koda v kotu gostom omogoča, da takoj dodajo svoje slike.
-            </p>
-          </div>
-        </div>
-        <div className="flex flex-col sm:flex-row gap-2">
-          <div className="flex-1 min-w-0 px-3 py-2.5 text-sm text-gray-500 bg-gray-50 border border-gray-200 rounded-lg truncate">
-            {wallUrl}
-          </div>
-          <div className="flex gap-2 shrink-0">
-            <button
-              onClick={handleCopyWallLink}
-              className="flex items-center gap-1.5 px-3 py-2 text-sm border rounded-lg transition-all"
-              style={wallLinkCopied
-                ? { background: "#f0fdf4", borderColor: "#86efac", color: "#15803d" }
-                : { background: "white", borderColor: "#e5e7eb", color: "#4b5563" }
-              }
-            >
-              {wallLinkCopied ? "Kopirano!" : "Kopiraj povezavo"}
-            </button>
-            <a
-              href={wallUrl}
-              target="_blank"
-              rel="noreferrer"
-              className="flex items-center gap-1.5 px-4 py-2 text-sm font-semibold rounded-lg text-[#0F1729] transition-all hover:brightness-95"
-              style={{ background: "#FFC94D" }}
-            >
-              Odpri →
-            </a>
-          </div>
-        </div>
-        {hasPassword && (
-          <p className="text-[11px] text-gray-400 mt-3">
-            Galerija je zaščitena z geslom — povezavi dodajte <code className="bg-gray-100 px-1 rounded">?pw=vaše-geslo</code>,
-            da stena na TV-ju deluje brez ponovnega vnosa. Če ste geslo pravkar nastavili v Nastavitvah,
-            je pripravljena povezava že tam.
-          </p>
-        )}
-      </div>
+      <PhotoWallCard wallUrl={wallUrl} hasPassword={hasPassword} />
     </div>
   );
 }

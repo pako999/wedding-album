@@ -16,7 +16,32 @@ const INITIAL_WALL_PHOTOS = 60;
 
 interface Props {
   params: Promise<{ token: string }>;
-  searchParams: Promise<{ pw?: string }>;
+  searchParams: Promise<{
+    pw?: string;
+    /** Seconds each photo holds the centre stage. */
+    dur?: string;
+    /** "0" hides: side collage / QR / uploader names / event title / branding. */
+    sides?: string;
+    qr?: string;
+    names?: string;
+    title?: string;
+    brand?: string;
+  }>;
+}
+
+/** Display options live in the wall URL rather than the database on
+ *  purpose: the owner can tune the screen (or undo a change) mid-event
+ *  by editing the link, the settings are shareable/bookmarkable, and
+ *  adding an option needs no migration. Defaults are "everything on",
+ *  so a bare /wall/<token> link behaves exactly as before. */
+const flagOn = (v: string | undefined) => v !== "0";
+
+function parseSlideMs(raw: string | undefined): number {
+  const n = Number.parseFloat(raw ?? "");
+  // Clamp to something sane — a 0.2s slideshow on a venue TV is a
+  // strobe hazard, and 10 minutes is indistinguishable from frozen.
+  if (!Number.isFinite(n)) return 6_000;
+  return Math.round(Math.min(120, Math.max(2, n)) * 1000);
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -38,7 +63,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function PhotoWallPage({ params, searchParams }: Props) {
   const { token } = await params;
-  const { pw } = await searchParams;
+  const sp = await searchParams;
+  const { pw } = sp;
+  const settings = {
+    slideMs: parseSlideMs(sp.dur),
+    showSides: flagOn(sp.sides),
+    showQr: flagOn(sp.qr),
+    showNames: flagOn(sp.names),
+    showTitle: flagOn(sp.title),
+    showBranding: flagOn(sp.brand),
+  };
 
   const album = await withSchemaHealing(() =>
     db.query.albums.findFirst({ where: eq(albums.wallToken, token) }),
@@ -90,6 +124,7 @@ export default async function PhotoWallPage({ params, searchParams }: Props) {
         thumbnailUrl: p.thumbnailUrl,
         uploaderName: p.uploaderName,
       }))}
+      settings={settings}
     />
   );
 }
