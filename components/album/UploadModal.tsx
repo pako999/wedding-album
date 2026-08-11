@@ -157,6 +157,30 @@ async function maybeCompress(file: File): Promise<File> {
 
 function fmt(bytes: number) { return (bytes / 1024 / 1024).toFixed(1) + " MB"; }
 
+/** Pixel dimensions of an image file, or null when they can't be read
+ *  (HEIC on some browsers, corrupt file …). Measured on the file we
+ *  actually upload — i.e. AFTER maybeCompress, which can resize — so the
+ *  stored numbers match the stored bytes. The lightbox uses these to
+ *  fit portrait photos correctly; without them it used to assume
+ *  landscape for everything. */
+async function readImageDims(file: File): Promise<{ width: number; height: number } | null> {
+  if (!file.type.startsWith("image/")) return null;
+  try {
+    const bmp = await createImageBitmap(file);
+    const dims = { width: bmp.width, height: bmp.height };
+    bmp.close();
+    return dims;
+  } catch {
+    return new Promise((resolve) => {
+      const url = URL.createObjectURL(file);
+      const img = new Image();
+      img.onload = () => { URL.revokeObjectURL(url); resolve({ width: img.naturalWidth, height: img.naturalHeight }); };
+      img.onerror = () => { URL.revokeObjectURL(url); resolve(null); };
+      img.src = url;
+    });
+  }
+}
+
 /** Upload a single file using the best available backend. */
 async function uploadFile(
   rawFile: File,
@@ -169,6 +193,7 @@ async function uploadFile(
 ): Promise<"uploaded" | "duplicate"> {
   // 0. Compress if the image is too large for Vercel's 4.5 MB proxy limit
   const file = await maybeCompress(rawFile);
+  const dims = await readImageDims(file);
 
   // 1. Ask server which upload path to use
   const urlRes = await fetch(`/api/albums/${albumSlug}/upload-url`, {
@@ -223,6 +248,7 @@ async function uploadFile(
     onProgress(92);
     await saveUpload(albumSlug, {
       blobUrl: publicUrl,
+      ...(dims ?? {}),
       mimeType: file.type,
       originalFilename: file.name,
       sizeBytes: file.size,
@@ -245,6 +271,7 @@ async function uploadFile(
     onProgress(80);
     await saveUpload(albumSlug, {
       blobUrl: urlData.publicUrl,
+      ...(dims ?? {}),
       mimeType: file.type,
       originalFilename: file.name,
       sizeBytes: file.size,
@@ -287,6 +314,7 @@ async function uploadFile(
   onProgress(88);
   await saveUpload(albumSlug, {
     blobUrl: blob.url,
+    ...(dims ?? {}),
     mimeType: file.type,
     originalFilename: file.name,
     sizeBytes: file.size,
