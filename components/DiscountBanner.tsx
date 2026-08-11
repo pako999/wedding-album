@@ -41,8 +41,21 @@ const COPY: Record<LangCode, { text: string; cta: string; copied: string }> = {
 };
 
 export function DiscountBanner({ lang }: { lang: LangCode }) {
-  const t = COPY[lang] ?? COPY.en;
   const pathname = usePathname();
+
+  // Language comes from the PATH, not the `lang` prop.
+  //
+  // The root layout derives that prop from request headers, which don't
+  // exist while a route is statically prerendered — so every localized
+  // static page (/es, /en, /de/blog …) fell back to "sl" and rendered
+  // this banner in Slovenian regardless of the page around it. The
+  // pathname is correct under both static and dynamic rendering.
+  // COPY is keyed by exactly the supported languages, so membership in
+  // it doubles as the validity check; anything else (/blog, /contact —
+  // the Slovenian routes) falls back to the prop.
+  const seg = pathname.split("/").filter(Boolean)[0] ?? "";
+  const effectiveLang: LangCode = (seg in COPY ? seg : lang) as LangCode;
+  const t = COPY[effectiveLang] ?? COPY.en;
   const [closed, setClosed] = useState(() => {
     if (typeof window === "undefined") return false;
     return !!sessionStorage.getItem(STORAGE_KEY);
