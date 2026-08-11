@@ -748,6 +748,7 @@ export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activ
               guestCount={guestCount}
               hasPassword={!!hasPassword}
               wallToken={wallToken}
+              guestDataCapture={guestDataCapture}
             />
           )}
 
@@ -784,7 +785,6 @@ export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activ
                     field and the theme picker. */}
                 <CoverPhotoSettings album={album} photos={photos} />
               </AlbumSettingsForm>
-              <EventLeadsCard albumSlug={album.slug} initialEnabled={guestDataCapture} />
               <MomentsManager album={album} />
               <CustomDomainPanel album={album} />
               <DangerZone album={album} />
@@ -871,6 +871,7 @@ function OverviewTab({
   guestCount,
   hasPassword,
   wallToken,
+  guestDataCapture,
 }: {
   album: Album;
   photos: Photo[];
@@ -879,6 +880,7 @@ function OverviewTab({
   guestCount: number;
   hasPassword: boolean;
   wallToken: string;
+  guestDataCapture: boolean;
 }) {
   const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(albumUrl)}&bgcolor=ffffff&color=1a1a2e&qzone=2&format=png`;
   const last4 = photos.slice(0, 4);
@@ -1047,6 +1049,11 @@ function OverviewTab({
         pendingCount={album.pendingCount ?? 0}
         plan={album.plan}
       />
+
+      {/* Guest data capture sits with the wall settings: both are the
+          "running an event" controls, and an organiser configuring the
+          screen is the same person who wants the lead list. */}
+      <EventLeadsCard albumSlug={album.slug} initialEnabled={guestDataCapture} />
     </div>
   );
 }
