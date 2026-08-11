@@ -35,6 +35,7 @@ const LAST_EDITED = {
   legalSl:     "2026-07-01",
   legalIntl:   "2026-07-01",
   contact:     "2026-07-01",
+  corporateLandings: "2026-08-11",
 };
 
 const LOCALES = ["sl", "hr", "sr", "de", "en", "es"] as const;
@@ -75,6 +76,17 @@ const SEO_LANDING_CLUSTER = clusterLinks({
   en: "/en/wedding-photo-sharing",
   es: "/es/fotos-boda-qr",
 });
+
+// SL-only for now — the corporate-events landing page hasn't been
+// translated into the other 5 locales yet. Built by hand instead of via
+// clusterLinks() because that helper requires all 6 locales; add the
+// other 5 keys here (and switch the page's own hreflang map, see the
+// NOTE at the top of app/sl/qr-koda-za-poslovne-dogodke/page.tsx) once
+// they exist.
+const CORPORATE_LANDING_CLUSTER: Record<string, string> = {
+  sl: `${SITE_URL}/sl/qr-koda-za-poslovne-dogodke`,
+  "x-default": `${SITE_URL}/sl/qr-koda-za-poslovne-dogodke`,
+};
 
 const ALTERNATIVES_CLUSTER = clusterLinks({
   sl: "/sl/alternative-aplikacije",
@@ -276,6 +288,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { path: "/de/hochzeitsfotos-sammeln", priority: 0.8, changeFrequency: "monthly", lastModified: LAST_EDITED.seoLandings, alternates: SEO_LANDING_CLUSTER },
     { path: "/en/wedding-photo-sharing",  priority: 0.8, changeFrequency: "monthly", lastModified: LAST_EDITED.seoLandings, alternates: SEO_LANDING_CLUSTER },
     { path: "/es/fotos-boda-qr",          priority: 0.8, changeFrequency: "monthly", lastModified: LAST_EDITED.seoLandings, alternates: SEO_LANDING_CLUSTER },
+
+    // SEO corporate-events landing — SL only until translated
+    { path: "/sl/qr-koda-za-poslovne-dogodke", priority: 0.7, changeFrequency: "monthly", lastModified: LAST_EDITED.corporateLandings, alternates: CORPORATE_LANDING_CLUSTER },
 
     // Event topic landings — 6 topics × 6 locales, generated straight
     // from lib/seo/event-topics.ts so the sitemap URLs can never drift
