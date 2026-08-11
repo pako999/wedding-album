@@ -180,6 +180,7 @@ export default async function AlbumAdminPage({ params, searchParams }: Props) {
       viewingAsAdmin={viewingAsAdmin}
       driveResult={driveResult}
       driveCount={driveCount}
+      hasPassword={!!album.password}
     />
   );
 }

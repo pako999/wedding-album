@@ -60,6 +60,11 @@ interface Props {
   driveResult?: string;
   /** Number of files uploaded, forwarded alongside driveResult="ok"|"partial". */
   driveCount?: string;
+  /** Whether the album currently has a password set. Computed server-side
+   *  from the raw (unstripped) row — `album.password` itself never reaches
+   *  this client component (see lib/album-view.ts → toOwnerAlbum), so this
+   *  boolean is the only password-related signal the dashboard gets. */
+  hasPassword?: boolean;
 }
 
 /** Copy + tone for the one-time Google Drive result banner. */
@@ -278,7 +283,7 @@ function NewAlbumSuccess({ album, paidPlan }: { album: Album; paidPlan?: "basic"
 
 // ─── Main Panel ───────────────────────────────────────────────────────────────
 
-export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activeTab, isNew, isUpgraded, paidAmount, paidPlan, ownerEmail, viewingAsAdmin, driveResult, driveCount }: Props) {
+export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activeTab, isNew, isUpgraded, paidAmount, paidPlan, ownerEmail, viewingAsAdmin, driveResult, driveCount, hasPassword }: Props) {
   const router = useRouter();
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://www.guestcam.si";
   const albumUrl = `${appUrl}/${album.slug}`;
@@ -733,6 +738,7 @@ export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activ
               albumUrl={albumUrl}
               lastUploadDate={lastUploadDate}
               guestCount={guestCount}
+              hasPassword={!!hasPassword}
             />
           )}
 
@@ -763,7 +769,7 @@ export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activ
           {activeTab === "settings" && (
             <div className="max-w-lg space-y-6">
               <AccountInfoCard ownerEmail={ownerEmail ?? null} />
-              <AlbumSettingsForm album={album}>
+              <AlbumSettingsForm album={album} albumUrl={albumUrl} hasPassword={!!hasPassword}>
                 {/* Cover-photo picker injected into the settings form so it
                     sits inside the same card chrome, between the password
                     field and the theme picker. */}
@@ -853,12 +859,14 @@ function OverviewTab({
   albumUrl,
   lastUploadDate,
   guestCount,
+  hasPassword,
 }: {
   album: Album;
   photos: Photo[];
   albumUrl: string;
   lastUploadDate: string;
   guestCount: number;
+  hasPassword: boolean;
 }) {
   const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(albumUrl)}&bgcolor=ffffff&color=1a1a2e&qzone=2&format=png`;
   const last4 = photos.slice(0, 4);
@@ -1060,10 +1068,13 @@ function OverviewTab({
             </a>
           </div>
         </div>
-        <p className="text-[11px] text-gray-400 mt-3">
-          Če je galerija zaščitena z geslom, povezavi dodajte <code className="bg-gray-100 px-1 rounded">?pw=vaše-geslo</code>,
-          da stena na TV-ju deluje brez ponovnega vnosa.
-        </p>
+        {hasPassword && (
+          <p className="text-[11px] text-gray-400 mt-3">
+            Galerija je zaščitena z geslom — povezavi dodajte <code className="bg-gray-100 px-1 rounded">?pw=vaše-geslo</code>,
+            da stena na TV-ju deluje brez ponovnega vnosa. Če ste geslo pravkar nastavili v Nastavitvah,
+            je pripravljena povezava že tam.
+          </p>
+        )}
       </div>
     </div>
   );
@@ -1440,7 +1451,7 @@ function AccountInfoCard({ ownerEmail }: { ownerEmail: string | null }) {
   );
 }
 
-function AlbumSettingsForm({ album, children }: { album: Album; children?: React.ReactNode }) {
+function AlbumSettingsForm({ album, children, albumUrl, hasPassword }: { album: Album; children?: React.ReactNode; albumUrl: string; hasPassword: boolean }) {
   const router = useRouter();
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -1449,32 +1460,58 @@ function AlbumSettingsForm({ album, children }: { album: Album; children?: React
   const [weddingDate, setWeddingDate]         = useState(album.weddingDate);
   const [location, setLocation]               = useState(album.location ?? "");
   const [notifyEmail, setNotifyEmail]         = useState(album.notifyEmail ?? "");
-  // NOTE: the password hash is deliberately NOT sent to this client
-  // component (see lib/album-view.ts → toOwnerAlbum) and is NOT part of
-  // the settings save body. The settings PATCH route treats an absent
-  // `password` as "leave unchanged", so existing galleries keep theirs.
-  // Owners who need to set/clear a password do so via the API.
   const [moderationEnabled, setModerationEnabled] = useState(album.moderationEnabled);
   const [isPublished, setIsPublished]         = useState(album.isPublished);
   const [eventType, setEventType]             = useState(album.eventType ?? "wedding");
   const [theme, setTheme]                     = useState(album.theme ?? "navy");
 
+  // NOTE: the password hash itself is deliberately NOT sent to this client
+  // component (see lib/album-view.ts → toOwnerAlbum) — only the boolean
+  // `hasPassword` prop, computed server-side. This form is write-only for
+  // the password: `passwordDraft` holds a NEW plaintext value the owner is
+  // typing (never the current one, which can't be recovered from its hash),
+  // and `hasPasswordNow` tracks local state so the UI updates immediately
+  // after a save without waiting on the router.refresh() round-trip.
+  const [passwordDraft, setPasswordDraft]     = useState("");
+  const [removePassword, setRemovePassword]   = useState(false);
+  const [hasPasswordNow, setHasPasswordNow]   = useState(hasPassword);
+  // Kept in memory only, just long enough to show a copyable Photo Wall
+  // link with ?pw= filled in — the one moment the plaintext actually
+  // exists anywhere, since the owner just typed it themselves.
+  const [justSetPassword, setJustSetPassword] = useState<string | null>(null);
+
   const save = async () => {
     setSaving(true);
+    const body: Record<string, unknown> = {
+      coupleName,
+      weddingDate,
+      location,
+      notifyEmail,
+      moderationEnabled,
+      isPublished,
+      eventType,
+      theme,
+    };
+    const newPassword = passwordDraft.trim();
+    if (removePassword) {
+      body.password = ""; // PATCH route treats empty string as "clear"
+    } else if (newPassword) {
+      body.password = newPassword;
+    } // else: omit `password` entirely → PATCH route leaves it unchanged
     await fetch(`/api/albums/${album.slug}/settings`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        coupleName,
-        weddingDate,
-        location,
-        notifyEmail,
-        moderationEnabled,
-        isPublished,
-        eventType,
-        theme,
-      }),
+      body: JSON.stringify(body),
     });
+    if (removePassword) {
+      setHasPasswordNow(false);
+      setRemovePassword(false);
+      setJustSetPassword(null);
+    } else if (newPassword) {
+      setHasPasswordNow(true);
+      setJustSetPassword(newPassword);
+      setPasswordDraft("");
+    }
     setSaving(false);
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
@@ -1541,6 +1578,58 @@ function AlbumSettingsForm({ album, children }: { album: Album; children?: React
           placeholder="Dobrodošli! Naložite svoje fotografije in delite spomine."
           className={`${inputClass} resize-none`}
         />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Geslo galerije</label>
+        <p className="text-xs text-gray-400 mb-2.5">
+          {hasPasswordNow
+            ? "Galerija je trenutno zaščitena z geslom — brez njega je nihče ne more odpreti."
+            : "Privzeto brez gesla — galerija je dostopna vsakomur s povezavo ali QR kodo."}
+        </p>
+        {!removePassword && (
+          <input
+            type="password"
+            value={passwordDraft}
+            onChange={(e) => setPasswordDraft(e.target.value)}
+            placeholder={hasPasswordNow ? "Novo geslo (pustite prazno, če ne spreminjate)" : "Nastavite geslo (neobvezno)"}
+            className={inputClass}
+            autoComplete="new-password"
+          />
+        )}
+        {hasPasswordNow && (
+          <label className="flex items-center gap-2 mt-2 text-xs text-gray-500">
+            <input
+              type="checkbox"
+              checked={removePassword}
+              onChange={(e) => {
+                setRemovePassword(e.target.checked);
+                if (e.target.checked) setPasswordDraft("");
+              }}
+            />
+            Odstrani geslo — galerija bo dostopna vsakomur s povezavo
+          </label>
+        )}
+        {justSetPassword && (
+          <div className="mt-3 rounded-xl border p-3" style={{ background: "#f0fdf4", borderColor: "#86efac" }}>
+            <p className="text-xs font-medium mb-1.5" style={{ color: "#15803d" }}>
+              Geslo shranjeno. Pripravljena povezava za Foto steno (z vključenim geslom, brez ponovnega vnosa na TV-ju):
+            </p>
+            <div className="flex items-center gap-2">
+              <code className="flex-1 min-w-0 truncate bg-white/70 px-2 py-1 rounded text-[11px]" style={{ color: "#15803d" }}>
+                {`${albumUrl}/wall?pw=${justSetPassword}`}
+              </code>
+              <button
+                type="button"
+                onClick={() => navigator.clipboard.writeText(`${albumUrl}/wall?pw=${encodeURIComponent(justSetPassword)}`)}
+                className="shrink-0 px-2 py-1 text-[11px] rounded bg-white border hover:bg-green-50"
+                style={{ borderColor: "#86efac", color: "#15803d" }}
+              >
+                Kopiraj
+              </button>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Slot for the cover-photo picker — passed in from AlbumAdminPanel.
