@@ -42,6 +42,21 @@
   85%  { opacity: 1; }
   100% { transform: translateY(-560%); opacity: 0; }
 }
+/* Full-screen hero drift — viewport-based travel, unlike gc-drift's
+   self-relative travel in the mini demo. Cards park just below the fold
+   (top:100%) and cross the whole stage. */
+@keyframes gc-drift-hero {
+  0%   { transform: translateY(0); opacity: 0; }
+  6%   { opacity: 1; }
+  90%  { opacity: 1; }
+  100% { transform: translateY(-130vh); opacity: 0; }
+}
+/* The drifting cards are decoration — remove them entirely for people
+   who asked the OS for less motion, rather than freezing them mid-air. */
+@media (prefers-reduced-motion: reduce) {
+  .gc-hero-card { display: none; }
+}
+
 @keyframes gc-float {
   0%, 100% { transform: translateY(0); }
   50%      { transform: translateY(-9px); }
