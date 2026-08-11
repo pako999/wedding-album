@@ -11,6 +11,7 @@
  */
 
 import { useState, useEffect, useRef } from "react";
+import { WallMiniDemo } from "@/components/WallMiniDemo";
 
 interface Sponsor {
   id: string;
@@ -160,15 +161,21 @@ export function PhotoWallCard({ wallUrl, hasPassword, albumSlug, moderationEnabl
   ];
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 p-5">
-      <div className="mb-4">
-        <h3 className="font-semibold text-gray-900 text-sm">📺 Foto stena</h3>
-        <p className="text-xs text-gray-400 mt-0.5 max-w-lg">
+    <div className="rounded-2xl border border-gray-100 overflow-hidden bg-white">
+      {/* Product-card header — tinted, with a live mini demo of the wall
+          so the owner instantly understands what the link opens. */}
+      <div className="p-5 sm:p-6" style={{ background: "linear-gradient(180deg,#FFF9EC 0%,#FFFDF6 100%)" }}>
+        <h3 className="font-bold text-gray-900 text-base">📺 Foto stena</h3>
+        <p className="text-xs text-gray-500 mt-1 max-w-lg">
           Ločena povezava od vaše galerije — varna za prikaz na skupnem zaslonu. Odprite jo na TV-ju,
-          tablici ali projektorju in jo pustite predvajati. Nove fotografije priletijo ob strani, nato se
-          premešajo med ostale — brez da bi kdo pri zaslonu karkoli naredil.
+          tablici ali projektorju in jo pustite predvajati: nove fotografije priletijo same, v živo.
         </p>
+        <div className="max-w-xs mx-auto mt-5">
+          <WallMiniDemo />
+        </div>
       </div>
+
+      <div className="p-5">
 
       {/* Premium notice. The wall stays fully usable on every plan on
           purpose — an owner should be able to set it up on the venue TV
@@ -238,6 +245,16 @@ export function PhotoWallCard({ wallUrl, hasPassword, albumSlug, moderationEnabl
           </div>
         </div>
       )}
+
+      {/* All display options folded away — the common flow is copy link /
+          open; tuning is occasional. */}
+      <details className="group">
+        <summary className="flex items-center justify-between gap-3 py-3 border-t border-gray-100 cursor-pointer list-none text-sm font-medium text-gray-700">
+          <span>⚙️ Prilagodi prikaz <span className="text-gray-400 font-normal">(trajanje, ozadje, sponzorji …)</span></span>
+          <svg className="w-4 h-4 text-gray-400 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+          </svg>
+        </summary>
 
       {/* Slide duration */}
       <div className="flex items-center justify-between gap-4 py-3 border-t border-gray-100">
@@ -480,6 +497,8 @@ export function PhotoWallCard({ wallUrl, hasPassword, albumSlug, moderationEnabl
         )}
       </div>
 
+      </details>
+
       {/* Generated link */}
       <div className="pt-4 border-t border-gray-100">
         <div className="flex flex-col sm:flex-row gap-2">
@@ -512,6 +531,7 @@ export function PhotoWallCard({ wallUrl, hasPassword, albumSlug, moderationEnabl
         <p className="text-[11px] text-gray-400 mt-2">
           Nastavitve so shranjene v sami povezavi — kopirajte to povezavo na napravo, kjer bo stena tekla.
         </p>
+      </div>
       </div>
     </div>
   );

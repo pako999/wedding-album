@@ -7,6 +7,7 @@ import { EventCard } from "@/components/EventCard";
 import { HeaderAuthButtons } from "@/components/HeaderAuthButtons";
 import { HomeMobileMenu } from "@/components/HomeMobileMenu";
 import { TrackViewContent } from "@/components/TrackViewContent";
+import { WallMiniDemo } from "@/components/WallMiniDemo";
 
 type Lang = Exclude<LangCode, "sl">;
 
@@ -117,6 +118,10 @@ interface Copy {
   howSubtitle: string;
   howCta: string;
   howSteps: { label: string; title: string; desc: string }[];
+  /** Photo Wall showcase — the live TV-demo section. */
+  wall: { eyebrow: string; titleLead: string; titleAccent: string; sub: string; points: string[]; cta: string };
+  /** Sticky mobile bottom CTA. */
+  stickyCta: string;
   whyTitle: string;
   whySubtitle: string;
   whyCards: { icon: string; title: string; desc: string }[];
@@ -184,6 +189,11 @@ const COPY: Record<Lang, Copy> = {
       { label: "KORAK 02", title: "Gosti dijele fotografije", desc: "Gosti samo skeniraju QR kod i odmah počinju dijeliti fotografije i videozapise u punoj kvaliteti. Bez aplikacije i bez prijave." },
       { label: "KORAK 03", title: "Uživajte u uspomenama", desc: "Pogledajte sve fotografije i videozapise na jednom mjestu i preuzmite ih u punoj kvaliteti kad god želite." },
     ],
+    wall: { eyebrow: "Novo · Foto zid", titleLead: "Vaš događaj uživo", titleAccent: "na velikom ekranu",
+      sub: "Spojite TV ili projektor i pustite da se zid vrti sam — svaka nova fotografija doleti na ekran u nekoliko sekundi.",
+      points: ["Nove fotografije na ekranu za ~3 sekunde", "QR kod na samom zidu — gosti odmah sudjeluju", "Sponzorske slike između fotografija za poslovne događaje"],
+      cta: "Isprobaj Foto zid" },
+    stickyCta: "Kreiraj galeriju — besplatno",
     whyTitle: "Svaki gost fotografira. Vi te slike nikada ne vidite.",
     whySubtitle: "Svaki gost uhvati drugačije trenutke. Većina tih fotografija ostane na njihovim telefonima.",
     whyCards: [
@@ -271,6 +281,11 @@ const COPY: Record<Lang, Copy> = {
       { label: "KORAK 02", title: "Gosti dele fotografije", desc: "Gosti samo skeniraju QR kod i odmah počinju da dele fotografije i video snimke u punom kvalitetu. Bez aplikacije i bez prijave." },
       { label: "KORAK 03", title: "Uživajte u uspomenama", desc: "Pogledajte sve fotografije i video snimke na jednom mestu i preuzmite ih u punom kvalitetu kad god želite." },
     ],
+    wall: { eyebrow: "Novo · Foto zid", titleLead: "Vaš događaj uživo", titleAccent: "na velikom ekranu",
+      sub: "Povežite TV ili projektor i pustite da se zid vrti sam — svaka nova fotografija doleti na ekran za nekoliko sekundi.",
+      points: ["Nove fotografije na ekranu za ~3 sekunde", "QR kod na samom zidu — gosti odmah učestvuju", "Sponzorske slike između fotografija za poslovne događaje"],
+      cta: "Isprobaj Foto zid" },
+    stickyCta: "Napravi galeriju — besplatno",
     whyTitle: "Svaki gost fotografiše. Vi te slike nikada ne vidite.",
     whySubtitle: "Svaki gost uhvati drugačije trenutke. Većina tih fotografija ostane na njihovim telefonima.",
     whyCards: [
@@ -358,6 +373,11 @@ const COPY: Record<Lang, Copy> = {
       { label: "SCHRITT 02", title: "Gäste teilen Fotos", desc: "Gäste scannen einfach den QR-Code und beginnen sofort, Fotos und Videos in voller Qualität zu teilen. Keine App, keine Anmeldung." },
       { label: "SCHRITT 03", title: "Erinnerungen genießen", desc: "Schauen Sie sich alle Fotos und Videos an einem Ort an und laden Sie sie jederzeit in voller Qualität herunter." },
     ],
+    wall: { eyebrow: "Neu · Foto-Wall", titleLead: "Ihr Event live", titleAccent: "auf dem großen Bildschirm",
+      sub: "TV oder Beamer verbinden und die Wall laufen lassen — jedes neue Foto erscheint in Sekunden auf dem Bildschirm.",
+      points: ["Neue Fotos in ~3 Sekunden auf dem Bildschirm", "QR-Code direkt auf der Wall — Gäste machen sofort mit", "Sponsorenbilder zwischen den Fotos für Firmenevents"],
+      cta: "Foto-Wall ausprobieren" },
+    stickyCta: "Galerie erstellen — kostenlos",
     whyTitle: "Jeder Gast fotografiert. Sie sehen diese Fotos nie.",
     whySubtitle: "Jeder Gast hält andere Momente fest. Die meisten dieser Fotos bleiben auf den Handys.",
     whyCards: [
@@ -445,6 +465,11 @@ const COPY: Record<Lang, Copy> = {
       { label: "STEP 02", title: "Guests share photos", desc: "Guests just scan the QR code and start uploading photos and videos in full quality right away. No app, no sign-up." },
       { label: "STEP 03", title: "Enjoy the memories", desc: "View every photo and video in one place — and download them in full quality whenever you want." },
     ],
+    wall: { eyebrow: "New · Photo Wall", titleLead: "Your event live", titleAccent: "on the big screen",
+      sub: "Connect a TV or projector and let the wall run itself — every new photo flies onto the screen within seconds.",
+      points: ["New photos on screen in ~3 seconds", "QR code right on the wall — guests join in instantly", "Sponsor slides between photos for corporate events"],
+      cta: "Try the Photo Wall" },
+    stickyCta: "Create a gallery — free",
     whyTitle: "Every guest takes photos. You never see them.",
     whySubtitle: "Every guest captures different moments. Most of those photos stay on their phones.",
     whyCards: [
@@ -532,6 +557,11 @@ const COPY: Record<Lang, Copy> = {
       { label: "PASO 02", title: "Los invitados comparten fotos", desc: "Los invitados escanean el QR y empiezan a subir fotos y vídeos en calidad completa al instante. Sin app, sin registro." },
       { label: "PASO 03", title: "Disfruta los recuerdos", desc: "Ve todas las fotos y vídeos en un único lugar y descárgalos en calidad completa cuando quieras." },
     ],
+    wall: { eyebrow: "Nuevo · Muro de fotos", titleLead: "Tu evento en directo", titleAccent: "en la gran pantalla",
+      sub: "Conecta una TV o un proyector y deja que el muro gire solo — cada foto nueva vuela a la pantalla en segundos.",
+      points: ["Fotos nuevas en pantalla en ~3 segundos", "Código QR en el propio muro — los invitados participan al instante", "Diapositivas de patrocinadores entre fotos para eventos de empresa"],
+      cta: "Prueba el Muro de fotos" },
+    stickyCta: "Crea tu galería — gratis",
     whyTitle: "Cada invitado hace fotos. Tú no las ves nunca.",
     whySubtitle: "Cada invitado captura momentos distintos. La mayoría se quedan en sus móviles.",
     whyCards: [
@@ -968,6 +998,54 @@ export async function LocalizedHomePage({ lang }: { lang: Lang }) {
       </section>
 
       {/* Why you need it */}
+      {/* Photo Wall showcase — live CSS demo of the differentiator */}
+      <section id="wall" className="py-24 bg-white overflow-hidden">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+            <div className="relative order-1">
+              <div className="absolute -inset-10 opacity-70" style={{ background: "radial-gradient(ellipse at 50% 45%, rgba(255,201,77,0.22) 0%, transparent 70%)" }} aria-hidden />
+              <div className="relative"><WallMiniDemo /></div>
+            </div>
+            <div className="order-2 text-center lg:text-left">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-widest mb-5"
+                style={{ background: "rgba(255,201,77,0.15)", color: "#C9820A" }}>
+                {t.wall.eyebrow}
+              </div>
+              <h2 className="text-[2.2rem] sm:text-[2.6rem] font-extrabold leading-[1.1] text-[#0F1729] mb-5">
+                {t.wall.titleLead}{" "}
+<span
+                  className="relative z-[1]"
+                  style={{ boxShadow: "inset 0 -0.32em 0 rgba(255,201,77,0.6)", boxDecorationBreak: "clone", WebkitBoxDecorationBreak: "clone" }}
+                >{t.wall.titleAccent}</span>
+              </h2>
+              <p className="text-gray-500 text-base sm:text-lg leading-relaxed mb-8 max-w-md mx-auto lg:mx-0">{t.wall.sub}</p>
+              <ul className="space-y-3.5 w-fit mx-auto lg:mx-0 text-left mb-9">
+                {t.wall.points.map((b) => (
+                  <li key={b} className="flex items-start gap-3">
+                    <span className="mt-0.5 w-6 h-6 rounded-full flex items-center justify-center shrink-0" style={{ background: "#FFF3CC" }}>
+                      <svg className="w-3.5 h-3.5 text-[#C9820A]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={3}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                      </svg>
+                    </span>
+                    <span className="text-[15px] text-gray-600">{b}</span>
+                  </li>
+                ))}
+              </ul>
+              <Link
+                href="/dashboard/new"
+                className="inline-flex items-center gap-2.5 px-8 py-4 rounded-xl text-[#0F1729] font-bold text-base transition-all duration-200 hover:scale-[1.02]"
+                style={{ background: "linear-gradient(135deg, #FFD966 0%, #FFC94D 55%, #F0B429 100%)", boxShadow: "0 14px 36px rgba(255,201,77,0.4)" }}
+              >
+                {t.wall.cta}
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                </svg>
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section id="why" className="py-24" style={{ background: "#FFF9EC" }}>
         <div className="max-w-6xl mx-auto px-6">
           <h2 className="text-[2.5rem] font-extrabold text-center text-[#0F1729] mb-4">{t.whyTitle}</h2>
@@ -1142,6 +1220,21 @@ export async function LocalizedHomePage({ lang }: { lang: Lang }) {
       </section>
 
       <SeoFooter lang={lang} />
+
+      {/* Sticky mobile CTA — phones only; desktop sees CTAs often enough. */}
+      <div className="md:hidden fixed bottom-0 inset-x-0 z-40 px-4 pt-2 bg-gradient-to-t from-white via-white/95 to-transparent"
+        style={{ paddingBottom: "max(0.75rem, env(safe-area-inset-bottom))" }}>
+        <Link
+          href="/dashboard/new"
+          className="flex items-center justify-center gap-2 w-full py-3.5 rounded-xl text-[#0F1729] font-bold text-base"
+          style={{ background: "linear-gradient(135deg, #FFD966 0%, #FFC94D 55%, #F0B429 100%)", boxShadow: "0 10px 30px rgba(255,201,77,0.45)" }}
+        >
+          {t.stickyCta}
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+          </svg>
+        </Link>
+      </div>
     </div>
   );
 }

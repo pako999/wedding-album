@@ -977,11 +977,11 @@ function OverviewTab({
       {/* QR code + recent uploads — stacked on phones (each full width so
           the QR and the download buttons aren't squeezed), side by side
           from lg up. */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6 items-start">
         {/* QR Card */}
         <div className="bg-white rounded-2xl border border-gray-100 p-5 flex flex-col gap-4">
           <div>
-            <h3 className="font-semibold text-gray-900 text-sm">Tvoja QR koda</h3>
+            <h3 className="font-bold text-gray-900 text-base">📱 Tvoja galerija</h3>
             <p className="text-xs text-gray-400 mt-0.5">Natisni to kodo in jo postavi na mize.</p>
           </div>
           <a
@@ -1018,6 +1018,19 @@ function OverviewTab({
           </div>
         </div>
 
+        {/* Photo Wall — the second "product" beside the gallery, in the
+            Kululu two-card layout: album | wall. */}
+        <PhotoWallCard
+          wallUrl={wallUrl}
+          hasPassword={hasPassword}
+          albumSlug={album.slug}
+          moderationEnabled={album.moderationEnabled}
+          pendingCount={album.pendingCount ?? 0}
+          plan={album.plan}
+        />
+      </div>
+
+      <div className="grid grid-cols-1">
         {/* Recent photos card */}
         <div className="bg-white rounded-2xl border border-gray-100 p-5 flex flex-col gap-3">
           <div className="flex items-center justify-between">
@@ -1039,16 +1052,6 @@ function OverviewTab({
           )}
         </div>
       </div>
-
-      {/* Photo Wall — TV / tablet live display */}
-      <PhotoWallCard
-        wallUrl={wallUrl}
-        hasPassword={hasPassword}
-        albumSlug={album.slug}
-        moderationEnabled={album.moderationEnabled}
-        pendingCount={album.pendingCount ?? 0}
-        plan={album.plan}
-      />
 
       {/* Guest data capture sits with the wall settings: both are the
           "running an event" controls, and an organiser configuring the

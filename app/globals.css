@@ -20,6 +20,33 @@
   --font-serif: var(--font-cormorant);
 }
 
+/* ── Readability scale ────────────────────────────────────────────────
+   Tailwind sizes text, padding, gaps and radii in rem, so raising the
+   root font-size scales the whole UI proportionally — not just the
+   letters inside unchanged boxes. Percentages (not px) so a visitor's
+   own browser font-size preference still applies on top.
+   Mobile stays at the browser default: guest-gallery layouts are tight
+   and most guests are on phones — that surface must not risk overflow. */
+@media (min-width: 768px)  { html { font-size: 106.25%; } } /* 17px */
+@media (min-width: 1280px) { html { font-size: 112.5%;  } } /* 18px */
+
+/* ── Photo-wall mini demo (components/WallMiniDemo.tsx) ─────────────── */
+@keyframes gc-drift {
+  /* Thumbs start parked just below the stage (top:100%) and travel in
+     multiples of their OWN height — -560% clears the full 16:9 stage
+     even for the largest thumb; smaller ones simply exit earlier and
+     fade. Percent-of-self is the only unit that works here, since a
+     transform can't reference the parent's height. */
+  0%   { transform: translateY(0); opacity: 0; }
+  8%   { opacity: 1; }
+  85%  { opacity: 1; }
+  100% { transform: translateY(-560%); opacity: 0; }
+}
+@keyframes gc-pop {
+  0%, 100% { transform: translate(-50%, -50%) scale(1); }
+  50%      { transform: translate(-50%, -50%) scale(1.045); }
+}
+
 html, body {
   background: #ffffff;
   color: var(--charcoal);

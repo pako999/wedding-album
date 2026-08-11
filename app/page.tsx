@@ -9,6 +9,7 @@ import { HeaderAuthButtons } from "@/components/HeaderAuthButtons";
 import { EventCard } from "@/components/EventCard";
 import { TrackViewContent } from "@/components/TrackViewContent";
 import { safeJsonLd } from "@/lib/seo/jsonld-safe";
+import { WallMiniDemo } from "@/components/WallMiniDemo";
 
 export const metadata: Metadata = {
   alternates: {
@@ -792,6 +793,69 @@ export default async function HomePage() {
         </div>
       </section>
 
+      {/* ── Photo Wall showcase ─────────────────────────────────────────────── */}
+      {/* Our differentiator, demoed live: a CSS-animated miniature of the
+          real wall (no video, no images to load). Placed right after "How
+          it works" so the visitor has just understood the core loop and
+          now sees the wow-moment it unlocks on the venue screen. */}
+      <section id="wall" className="py-24 bg-white overflow-hidden">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+            {/* Demo — first on mobile so the visual leads */}
+            <div className="relative order-1">
+              <div className="absolute -inset-10 opacity-70" style={{ background: 'radial-gradient(ellipse at 50% 45%, rgba(255,201,77,0.22) 0%, transparent 70%)' }} aria-hidden />
+              <div className="relative">
+                <WallMiniDemo />
+              </div>
+            </div>
+
+            <div className="order-2 text-center lg:text-left">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-widest mb-5"
+                style={{ background: 'rgba(255,201,77,0.15)', color: '#C9820A' }}>
+                Novo · Foto stena
+              </div>
+              <h2 className="text-[2.2rem] sm:text-[2.6rem] font-extrabold leading-[1.1] text-[#0F1729] mb-5">
+                Vaš dogodek v živo{' '}
+<span
+                  className="relative z-[1]"
+                  style={{ boxShadow: "inset 0 -0.32em 0 rgba(255,201,77,0.6)", boxDecorationBreak: "clone", WebkitBoxDecorationBreak: "clone" }}
+                >na velikem zaslonu</span>
+              </h2>
+              <p className="text-gray-500 text-base sm:text-lg leading-relaxed mb-8 max-w-md mx-auto lg:mx-0">
+                Povežite TV ali projektor in pustite, da se stena vrti sama —
+                vsaka nova fotografija prileti na zaslon v nekaj sekundah.
+              </p>
+              <ul className="space-y-3.5 w-fit mx-auto lg:mx-0 text-left mb-9">
+                {[
+                  'Nove fotografije na zaslonu v ~3 sekundah',
+                  'QR koda kar na steni — gostje takoj sodelujejo',
+                  'Sponzorske slike med fotografijami za poslovne dogodke',
+                ].map((b) => (
+                  <li key={b} className="flex items-start gap-3">
+                    <span className="mt-0.5 w-6 h-6 rounded-full flex items-center justify-center shrink-0" style={{ background: '#FFF3CC' }}>
+                      <svg className="w-3.5 h-3.5 text-[#C9820A]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={3}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                      </svg>
+                    </span>
+                    <span className="text-[15px] text-gray-600">{b}</span>
+                  </li>
+                ))}
+              </ul>
+              <Link
+                href="/dashboard/new"
+                className="inline-flex items-center gap-2.5 px-8 py-4 rounded-xl text-[#0F1729] font-bold text-base transition-all duration-200 hover:scale-[1.02]"
+                style={{ background: 'linear-gradient(135deg, #FFD966 0%, #FFC94D 55%, #F0B429 100%)', boxShadow: '0 14px 36px rgba(255,201,77,0.4)' }}
+              >
+                Preizkusi Foto steno
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                </svg>
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* ── Why you need it ─────────────────────────────────────────────────── */}
       <section id="why" className="py-24" style={{ background: '#FFF9EC' }}>
         <div className="max-w-6xl mx-auto px-6">
@@ -1208,6 +1272,24 @@ export default async function HomePage() {
 
         </div>
       </footer>
+
+      {/* ── Sticky mobile CTA ─────────────────────────────────────────────── */}
+      {/* Phones only: the primary conversion action rides along as the
+          visitor scrolls, instead of living 6 screens up in the hero.
+          Hidden from md up — desktop has the CTA in view often enough. */}
+      <div className="md:hidden fixed bottom-0 inset-x-0 z-40 px-4 pt-2 bg-gradient-to-t from-white via-white/95 to-transparent"
+        style={{ paddingBottom: 'max(0.75rem, env(safe-area-inset-bottom))' }}>
+        <Link
+          href="/dashboard/new"
+          className="flex items-center justify-center gap-2 w-full py-3.5 rounded-xl text-[#0F1729] font-bold text-base"
+          style={{ background: 'linear-gradient(135deg, #FFD966 0%, #FFC94D 55%, #F0B429 100%)', boxShadow: '0 10px 30px rgba(255,201,77,0.45)' }}
+        >
+          Ustvari galerijo — brezplačno
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+          </svg>
+        </Link>
+      </div>
 
     </div>
   );
