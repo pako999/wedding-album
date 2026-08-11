@@ -776,7 +776,7 @@ export async function LocalizedHomePage({ lang }: { lang: Lang }) {
                   <p className="text-sm text-gray-600">{t.trustText} <span className="font-bold text-[#0F1729]">{t.trust500}</span></p>
                 </div>
                 <p className="text-xs font-bold uppercase tracking-[0.18em] text-gray-400 mb-5">{t.heroEyebrow}</p>
-                <h1 className="font-extrabold leading-[1.15] tracking-tight text-[#0F1729] mb-8" style={{ fontSize: "clamp(1.9rem, 3.6vw, 3.15rem)" }}>
+                <h1 className="font-extrabold leading-[1.15] tracking-tight text-[#0F1729] mb-8" style={{ fontSize: "clamp(2rem, 4vw, 3.7rem)", lineHeight: 1.06 }}>
                   {t.heroHead.lead}{" "}<span style={{ color: "#C9820A" }}>{t.heroHead.accent}</span>{t.heroHead.trail}
                 </h1>
                 <p className="text-lg text-gray-500 leading-relaxed mb-8 max-w-[500px]">{t.heroLead}</p>
@@ -828,6 +828,10 @@ export async function LocalizedHomePage({ lang }: { lang: Lang }) {
                     loading="lazy"
                     className="w-full h-full object-cover"
                   />
+                </div>
+                {/* Live Foto stena demo layered into the collage */}
+                <div className="absolute" style={{ bottom: -8, left: 12, width: 300, transform: "rotate(3deg)", zIndex: 40, animation: "gc-float 6.5s ease-in-out -2s infinite" }}>
+                  <WallMiniDemo />
                 </div>
                 <div className="absolute rounded-2xl overflow-hidden shadow-2xl" style={{ bottom: 20, right: 24, width: 252, height: 252, transform: "rotate(4deg)", zIndex: 30 }}>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -1048,7 +1052,7 @@ export async function LocalizedHomePage({ lang }: { lang: Lang }) {
 
       <section id="why" className="py-24" style={{ background: "#FFF9EC" }}>
         <div className="max-w-6xl mx-auto px-6">
-          <h2 className="text-[2.5rem] font-extrabold text-center text-[#0F1729] mb-4">{t.whyTitle}</h2>
+          <h2 className="text-4xl sm:text-[3.3rem] leading-[1.08] tracking-tight font-extrabold text-center text-[#0F1729] mb-4">{t.whyTitle}</h2>
           <p className="text-center text-gray-400 text-base mb-14 max-w-md mx-auto">{t.whySubtitle}</p>
           <div className="grid md:grid-cols-3 gap-6">
             {t.whyCards.map((c) => (
@@ -1065,7 +1069,7 @@ export async function LocalizedHomePage({ lang }: { lang: Lang }) {
       {/* Features */}
       <section id="features" className="py-24 bg-white">
         <div className="max-w-6xl mx-auto px-6">
-          <h2 className="text-[2.5rem] font-extrabold text-center text-[#0F1729] mb-4">{t.featuresTitle}</h2>
+          <h2 className="text-4xl sm:text-[3.3rem] leading-[1.08] tracking-tight font-extrabold text-center text-[#0F1729] mb-4">{t.featuresTitle}</h2>
           <p className="text-center text-gray-500 mb-14 max-w-lg mx-auto leading-relaxed">
             {t.featuresLead1}<br /><span className="text-gray-400">{t.featuresLead2}</span>
           </p>
@@ -1090,7 +1094,7 @@ export async function LocalizedHomePage({ lang }: { lang: Lang }) {
       {/* Testimonials */}
       <section id="reviews" className="py-24" style={{ background: "#FFF9EC" }}>
         <div className="max-w-6xl mx-auto px-6">
-          <h2 className="text-[2.5rem] font-extrabold text-center text-[#0F1729] mb-14">{t.reviewsTitle}</h2>
+          <h2 className="text-4xl sm:text-[3.3rem] leading-[1.08] tracking-tight font-extrabold text-center text-[#0F1729] mb-14">{t.reviewsTitle}</h2>
           <div className="grid md:grid-cols-3 gap-5">
             {t.reviews.map((r) => (
               <div key={r.name} className="bg-white border border-gray-100 rounded-2xl p-6 shadow-sm">
@@ -1120,7 +1124,7 @@ export async function LocalizedHomePage({ lang }: { lang: Lang }) {
         <div className="max-w-5xl mx-auto px-6">
           {/* Meta Pixel funnel: ViewContent when the plans are seen */}
           <TrackViewContent name="Pricing" category="plans" />
-          <h2 className="text-[2.5rem] font-extrabold text-center text-[#0F1729] mb-4">{t.pricingTitle}</h2>
+          <h2 className="text-4xl sm:text-[3.3rem] leading-[1.08] tracking-tight font-extrabold text-center text-[#0F1729] mb-4">{t.pricingTitle}</h2>
           <p className="text-center text-gray-400 mb-14">{t.pricingSubtitle}</p>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 items-start">
             {([
@@ -1188,7 +1192,7 @@ export async function LocalizedHomePage({ lang }: { lang: Lang }) {
       {/* FAQ */}
       <section id="faq" className="py-24" style={{ background: "#FFF9EC" }}>
         <div className="max-w-2xl mx-auto px-6">
-          <h2 className="text-[2.5rem] font-extrabold text-center text-[#0F1729] mb-12">{t.faqTitle}</h2>
+          <h2 className="text-4xl sm:text-[3.3rem] leading-[1.08] tracking-tight font-extrabold text-center text-[#0F1729] mb-12">{t.faqTitle}</h2>
           <div className="space-y-3">
             {t.faqs.map((faq) => (
               <details key={faq.q} className="bg-white border border-gray-100 rounded-2xl group">

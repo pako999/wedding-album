@@ -326,7 +326,7 @@ export default async function HomePage() {
           floating live-album UI chips that show the product working. Trust
           band below in brand navy. A first-time visitor should be able to
           explain the product back after 5 seconds. */}
-      <section className="overflow-hidden bg-white">
+      <section className="overflow-hidden" style={{ background: "linear-gradient(180deg,#FFF9EC 0%,#FFFDF6 55%,#FFFFFF 100%)" }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-0 sm:pt-16 lg:pt-20">
           <div className="grid lg:grid-cols-12 gap-10 lg:gap-12 items-center pb-12 sm:pb-16">
 
@@ -346,7 +346,7 @@ export default async function HomePage() {
                 </p>
               </div>
 
-              <h1 className="text-[2.6rem] sm:text-5xl lg:text-[3.5rem] font-extrabold leading-[1.06] text-[#0F1729] tracking-tight">
+              <h1 className="text-[2.7rem] sm:text-6xl lg:text-[4.15rem] font-extrabold leading-[1.04] text-[#0F1729] tracking-tight">
                 Ne izgubi slik{" "}
                 <span className="relative whitespace-nowrap">
                   <span className="relative z-[1]">svojega dogodka</span>
@@ -426,7 +426,7 @@ export default async function HomePage() {
               <div className="mt-9 flex flex-wrap items-center justify-center lg:justify-start gap-3 sm:gap-4">
                 <Link
                   href="/dashboard/new"
-                  className="inline-flex items-center gap-2.5 px-7 sm:px-8 py-3.5 sm:py-4 rounded-xl text-[#0F1729] font-bold text-base transition-all duration-200 hover:scale-[1.02] hover:shadow-[0_18px_44px_rgba(255,201,77,0.5)]"
+                  className="inline-flex items-center gap-2.5 px-8 sm:px-10 py-4 sm:py-5 rounded-full text-[#0F1729] font-bold text-base sm:text-lg transition-all duration-200 hover:scale-[1.02] hover:shadow-[0_18px_44px_rgba(255,201,77,0.5)]"
                   style={{ background: 'linear-gradient(135deg, #FFD966 0%, #FFC94D 55%, #F0B429 100%)', boxShadow: '0 14px 36px rgba(255,201,77,0.4)' }}
                 >
                   Ustvari svoj QR album
@@ -464,6 +464,28 @@ export default async function HomePage() {
                     height={930}
                     fetchPriority="high"
                   />
+                </div>
+
+                {/* Floating "new photo" toast — the product's magic moment */}
+                <div
+                  className="absolute -top-4 right-2 sm:right-6 z-20 flex items-center gap-2.5 bg-white rounded-full pl-2 pr-4 py-2 shadow-[0_14px_36px_rgba(15,23,41,0.18)] ring-1 ring-black/5"
+                  style={{ animation: "gc-float 5s ease-in-out infinite" }}
+                >
+                  <span className="w-7 h-7 rounded-full bg-emerald-100 flex items-center justify-center">
+                    <svg className="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
+                  </span>
+                  <span className="text-xs sm:text-sm font-semibold text-[#0F1729]">Nova fotografija · <span className="text-[#C9820A]">Ana</span></span>
+                </div>
+
+                {/* Live Foto stena, overlapping the photo — sells the TV
+                    experience before the visitor even scrolls */}
+                <div
+                  className="absolute -bottom-8 -left-2 sm:-left-8 z-20 w-44 sm:w-60 lg:w-64"
+                  style={{ transform: "rotate(-4deg)", animation: "gc-float 6.5s ease-in-out -2s infinite" }}
+                >
+                  <WallMiniDemo />
                 </div>
               </div>
             </div>
@@ -859,7 +881,7 @@ export default async function HomePage() {
       {/* ── Why you need it ─────────────────────────────────────────────────── */}
       <section id="why" className="py-24" style={{ background: '#FFF9EC' }}>
         <div className="max-w-6xl mx-auto px-6">
-          <h2 className="text-[2.5rem] font-extrabold text-center text-[#0F1729] mb-4">Vsak gost fotografira. Vi pa teh slik nikoli ne vidite.</h2>
+          <h2 className="text-4xl sm:text-[3.3rem] leading-[1.08] tracking-tight font-extrabold text-center text-[#0F1729] mb-4">Vsak gost fotografira. Vi pa teh slik nikoli ne vidite.</h2>
           <p className="text-center text-gray-400 text-base mb-14 max-w-md mx-auto">
             Vsak gost ujame drugačne trenutke. Večina teh fotografij pa ostane na njihovih telefonih.
           </p>
@@ -884,7 +906,7 @@ export default async function HomePage() {
       {/* ── Features ────────────────────────────────────────────────────────── */}
       <section id="features" className="py-24 bg-white">
         <div className="max-w-6xl mx-auto px-6">
-          <h2 className="text-[2.5rem] font-extrabold text-center text-[#0F1729] mb-4">Zakaj izbrati Guestcam?</h2>
+          <h2 className="text-4xl sm:text-[3.3rem] leading-[1.08] tracking-tight font-extrabold text-center text-[#0F1729] mb-4">Zakaj izbrati Guestcam?</h2>
           <p className="text-center text-gray-500 mb-14 max-w-lg mx-auto leading-relaxed">
             Vse fotografije in videi vaših gostov. Na enem mestu.<br />
             <span className="text-gray-400">Brez aplikacij, brez pošiljanja po WhatsAppu in brez izgubljenih spominov.</span>
@@ -902,7 +924,7 @@ export default async function HomePage() {
             ].map(({ Icon, title, desc }) => (
               <div
                 key={title}
-                className="group rounded-2xl border border-gray-100 bg-white p-7 text-left transition-all duration-200 hover:border-[#FFC94D]/40 hover:shadow-[0_12px_36px_rgba(255,201,77,0.12)]"
+                className="group rounded-3xl border border-[#F5E9C9] p-7 text-left transition-all duration-200 hover:border-[#FFC94D]/60 hover:shadow-[0_12px_36px_rgba(255,201,77,0.16)]" style={{ background: "linear-gradient(180deg,#FFFDF6 0%,#FFFFFF 100%)" }}
               >
                 <div
                   className="w-14 h-14 rounded-2xl flex items-center justify-center mb-5 text-[#0F1729] transition-transform duration-200 group-hover:scale-105"
@@ -924,7 +946,7 @@ export default async function HomePage() {
       {/* ── Testimonials ────────────────────────────────────────────────────── */}
       <section id="reviews" className="py-24" style={{ background: '#FFF9EC' }}>
         <div className="max-w-6xl mx-auto px-6">
-          <h2 className="text-[2.5rem] font-extrabold text-center text-[#0F1729] mb-14">Mnenja naših parov</h2>
+          <h2 className="text-4xl sm:text-[3.3rem] leading-[1.08] tracking-tight font-extrabold text-center text-[#0F1729] mb-14">Mnenja naših parov</h2>
           <div className="grid md:grid-cols-3 gap-5">
             {[
               { text: "Noro dobra ideja! Dobila sva toliko spontanih fotografij, ki jih fotograf nikoli ne bi ujel. Gosti so bili navdušeni nad tem, kako enostavno je bilo.", name: "Tina & Luka",   date: "April 2026" },
@@ -958,7 +980,7 @@ export default async function HomePage() {
         <div className="max-w-5xl mx-auto px-6">
           {/* Meta Pixel funnel: ViewContent when the plans are seen */}
           <TrackViewContent name="Pricing" category="plans" />
-          <h2 className="text-[2.5rem] font-extrabold text-center text-[#0F1729] mb-4">Preprosti paketi</h2>
+          <h2 className="text-4xl sm:text-[3.3rem] leading-[1.08] tracking-tight font-extrabold text-center text-[#0F1729] mb-4">Preprosti paketi</h2>
           <p className="text-center text-gray-400 mb-14">Izberite paket, ki ustreza vašemu dogodku.</p>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 items-start">
@@ -1114,7 +1136,7 @@ export default async function HomePage() {
       {/* ── FAQ ─────────────────────────────────────────────────────────────── */}
       <section id="faq" className="py-24" style={{ background: '#FFF9EC' }}>
         <div className="max-w-2xl mx-auto px-6">
-          <h2 className="text-[2.5rem] font-extrabold text-center text-[#0F1729] mb-12">Pogosta vprašanja</h2>
+          <h2 className="text-4xl sm:text-[3.3rem] leading-[1.08] tracking-tight font-extrabold text-center text-[#0F1729] mb-12">Pogosta vprašanja</h2>
           <div className="space-y-3">
             {[
               { q: "Ali morajo gosti prenesti aplikacijo?",        a: "Ne. Gosti odprejo album direktno v brskalniku telefona — brez namestitve, brez prijave. Enostavno skenirajo QR kodo in takoj naložijo fotografijo." },

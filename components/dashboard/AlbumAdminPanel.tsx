@@ -979,7 +979,7 @@ function OverviewTab({
           from lg up. */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6 items-start">
         {/* QR Card */}
-        <div className="bg-white rounded-2xl border border-gray-100 p-5 flex flex-col gap-4">
+        <div className="rounded-2xl border border-gray-100 p-5 flex flex-col gap-4" style={{ background: "linear-gradient(180deg,#FFF9EC 0%,#FFFFFF 45%)" }}>
           <div>
             <h3 className="font-bold text-gray-900 text-base">📱 Tvoja galerija</h3>
             <p className="text-xs text-gray-400 mt-0.5">Natisni to kodo in jo postavi na mize.</p>
