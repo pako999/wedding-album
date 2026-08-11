@@ -51,6 +51,7 @@ const COPY: Record<Lang, FooterCopy> = {
       { label: "Zbiranje slik s poroke", url: "/sl/zbiranje-slik-s-poroke" },
       { label: "Slike z rojstnega dne",  url: "/sl/slike-z-rojstnega-dne" },
       { label: "Baby shower slike",      url: "/sl/baby-shower-slike" },
+      { label: "QR koda za poslovne dogodke", url: "/sl/qr-koda-za-poslovne-dogodke" },
     ],
     legal: "Pravno", privacy: "Zasebnost", terms: "Pogoji uporabe", cookies: "Piškotki", gdpr: "GDPR", refund: "Vračilo denarja", contact: "Kontakt",
   },
