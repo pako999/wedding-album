@@ -183,6 +183,12 @@ export default async function RootLayout({
     pathname.startsWith("/admin") ||
     pathname.startsWith("/sign-in") ||
     pathname.startsWith("/sign-up") ||
+    // Photo Wall (/wall/<token>) is an unattended TV/projector display —
+    // a "15% off" popup covering the couple's photos on a big screen in
+    // front of every guest is the worst possible place for it. Needs its
+    // own check because isAlbumGuestPath only matches single-segment
+    // /<slug> paths, and the wall is two segments.
+    pathname.startsWith("/wall") ||
     isAffiliatePath ||
     isAlbumGuestPath;
 
