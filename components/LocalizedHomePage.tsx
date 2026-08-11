@@ -685,11 +685,13 @@ export async function LocalizedHomePage({ lang }: { lang: Lang }) {
   return (
     <div className="min-h-screen bg-white text-[#0F1729] font-sans">
 
-      {/* Announcement bar */}
-      <div className="text-[#0F1729] text-center text-xs font-semibold py-2.5 px-4" style={{ background: "#FFC94D" }}>
-        {t.announce}{" "}
-        <Link href="/dashboard/new" className="underline font-bold ml-2">{t.announceLink}</Link>
-      </div>
+      {/* NOTE: the page-level announcement bar was removed — the root
+          layout already renders <DiscountBanner>, so localized pages
+          stacked two promo bars while the Slovenian homepage showed
+          one. The discount banner is the stronger offer (carries the
+          WELCOME15 code, is dismissible) and is now correctly localized,
+          so it is the single bar site-wide. t.announce / t.announceLink
+          are kept in the copy dictionary for reuse. */}
 
       {/* Navbar */}
       <header className="sticky top-0 z-40 border-b border-[#FFC94D]/30 bg-white/80 backdrop-blur-md">
