@@ -1,0 +1,106 @@
+{
+  "slug": "qr-code-karte-in-canva-gestalten",
+  "lang": "de",
+  "title": "Hochzeits-QR-Code-Karte in Canva gestalten (kostenlos, Schritt für Schritt)",
+  "description": "Gestalten Sie Ihre eigene Hochzeits-QR-Code-Karte in Canva in 10 Minuten — kostenlos, mit Schritt-für-Schritt-Anleitung und Tipps für einen QR-Code, der wirklich funktioniert.",
+  "translationKey": "wedding-qr-card-canva-design",
+  "publishedAt": "2026-08-11",
+  "updatedAt": "2026-08-11",
+  "author": "Guestcam Team",
+  "category": "vodnik",
+  "readingTime": 6,
+  "tags": ["QR-Code", "Canva", "Hochzeitsfotos", "Guestcam"],
+  "tldr": "Öffnen Sie ein kostenloses Canva-Design, fügen Sie Namen und Datum hinzu, laden Sie Ihr Guestcam-QR-Code-Bild hoch und exportieren Sie eine druckfertige PDF-Datei — in etwa 10 Minuten.",
+  "content": [
+    {
+      "type": "h2",
+      "text": "Warum eine eigene QR-Karte gestalten"
+    },
+    {
+      "type": "p",
+      "text": "Ein generisches gedrucktes QR-Code-Schild funktioniert, aber eine Karte, die Sie selbst in Canva gestalten, kann Farben, Schriften und Stil Ihrer Hochzeit aufgreifen — so wirkt sie wie Teil der Dekoration statt wie ein nachträglich aufgeklebter Zettel."
+    },
+    {
+      "type": "h2",
+      "text": "Was Sie vor dem Start brauchen"
+    },
+    {
+      "type": "ul",
+      "items": [
+        "Den QR-Code Ihrer Guestcam-Galerie, heruntergeladen als PNG (Dashboard → Tab „QR koda“ → „Prenesi samo QR kodo“ — die Guestcam-Dashboard-Oberfläche ist derzeit auf Slowenisch, das sind also genau die Bezeichnungen, die Sie sehen werden).",
+        "Ein kostenloses Canva-Konto — ein bezahltes Abo ist dafür nicht nötig.",
+        "Etwa 10 Minuten Zeit."
+      ]
+    },
+    {
+      "type": "image",
+      "src": "https://www.guestcam.si/blog/canva-qr-card/card-anatomy.svg",
+      "alt": "Aufbau einer Hochzeits-QR-Code-Karte: Namen und Datum oben, QR-Code in der Mitte, kurzer Hinweis darunter",
+      "caption": "Halten Sie es einfach: Namen, QR-Code, eine Anweisungszeile — mehr braucht eine Karte nicht.",
+      "credit": "Guestcam"
+    },
+    {
+      "type": "h2",
+      "text": "Schritt für Schritt: die Karte in Canva gestalten"
+    },
+    {
+      "type": "ol",
+      "items": [
+        "Öffnen Sie canva.com und starten Sie ein neues Design — suchen Sie nach „Postkarte“ oder legen Sie eine eigene Größe von 10 × 15 cm fest (eine gute Größe für Tischkarten).",
+        "Wählen Sie eine beliebige Vorlage als Ausgangspunkt oder beginnen Sie mit einer leeren Fläche.",
+        "Fügen Sie ein Textfeld mit den Namen des Brautpaars hinzu, darunter ein zweites mit dem Hochzeitsdatum.",
+        "Klicken Sie auf Uploads → Dateien hochladen und fügen Sie die PNG-Datei des QR-Codes hinzu, die Sie aus Ihrem Guestcam-Dashboard heruntergeladen haben.",
+        "Platzieren Sie den QR-Code mittig, mindestens 3 × 3 cm groß, damit das Smartphone ihn leicht erfassen kann.",
+        "Fügen Sie darunter eine kurze Anweisung hinzu, z. B. „Scannen und Fotos teilen!“",
+        "Passen Sie Schriften und Farben an Ihre Einladungskarten an und klicken Sie dann auf Teilen → Herunterladen → PDF Druck."
+      ]
+    },
+    {
+      "type": "h2",
+      "text": "Gestaltungstipps für einen QR-Code, der wirklich scannt"
+    },
+    {
+      "type": "ul",
+      "items": [
+        "Lassen Sie mindestens 8 mm freien Raum (die „Ruhezone“) rund um den QR-Code — das Smartphone nutzt diesen Rand, um zu fokussieren.",
+        "Verkleinern Sie den Code auf einer Tischkarte nicht unter etwa 3 × 3 cm, auf einem Namensschild nicht unter 2 × 2 cm.",
+        "Der QR-Code sollte dunkel auf hellem Hintergrund sein — geringer Kontrast ist der häufigste Grund, warum ein Code nicht funktioniert.",
+        "Platzieren Sie den QR-Code nie über einem unruhigen Foto oder Muster.",
+        "Drucken Sie zuerst eine Testkarte und scannen Sie sie selbst mit zwei oder drei verschiedenen Smartphones, bevor Sie die gesamte Auflage drucken."
+      ]
+    },
+    {
+      "type": "h2",
+      "text": "Keine Zeit zum Gestalten? Nutzen Sie eine fertige Vorlage"
+    },
+    {
+      "type": "p",
+      "text": "Wenn Sie sich die Gestaltung lieber sparen möchten: Guestcam enthält 8 fertige QR-Kartenvorlagen, die Namen und Datum automatisch einfügen — laden Sie sie direkt aus Ihrem Dashboard als druckfertige PDF-Datei herunter."
+    },
+    {
+      "type": "cta",
+      "text": "Kostenlose Hochzeitsgalerie erstellen",
+      "href": "https://www.guestcam.si/dashboard/new"
+    },
+    {
+      "type": "faq",
+      "q": "Brauche ich Canva Pro für eine QR-Code-Karte?",
+      "a": "Nein. Ein kostenloses Canva-Konto deckt alles aus dieser Anleitung ab — eigene Größen, das Hochladen Ihres eigenen QR-Code-Bilds und den PDF-Druck-Export."
+    },
+    {
+      "type": "faq",
+      "q": "Wo finde ich das QR-Code-Bild meiner Hochzeit?",
+      "a": "In Ihrem Guestcam-Dashboard: öffnen Sie Ihre Galerie, gehen Sie zum Tab „QR koda“ und klicken Sie auf „Prenesi samo QR kodo“, um es als PNG herunterzuladen."
+    },
+    {
+      "type": "faq",
+      "q": "Welche Größe sollte ich drucken?",
+      "a": "A6 (etwa 10,5 × 14,8 cm) eignet sich gut für Tischkarten. Für ein größeres Schild am Eingang oder am Geschenktisch nutzen Sie A5 oder A4."
+    },
+    {
+      "type": "faq",
+      "q": "Warum hat mein gedruckter QR-Code nicht funktioniert?",
+      "a": "Die häufigsten Ursachen sind ein Bild in niedriger Auflösung (verwenden Sie immer die heruntergeladene Datei, nie einen Screenshot), zu wenig freier Raum um den Code oder eine zu kleine Größe. Testen Sie den Scan, bevor Sie die gesamte Auflage drucken."
+    }
+  ]
+}
