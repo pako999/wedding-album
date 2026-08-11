@@ -909,6 +909,7 @@ export default async function HomePage() {
               <ul className="space-y-3 flex-1 mb-8">
                 {[
                   "Unikatna QR koda",
+                  "Prenos slik v polni kakovosti",
                   "Do 20 fotografij",
                   "1 videoposnetek",
                   "Dostop 30 dni",
@@ -936,6 +937,7 @@ export default async function HomePage() {
               <ul className="space-y-3 flex-1 mb-8">
                 {[
                   "Unikatna QR koda",
+                  "Prenos slik v polni kakovosti",
                   "Do 1000 fotografij",
                   "Do 10 videoposnetkov",
                   "Dostop do galerije 3 mesece",
@@ -966,6 +968,7 @@ export default async function HomePage() {
               <ul className="space-y-3 flex-1 mb-8">
                 {[
                   "Unikatna QR koda",
+                  "Prenos slik v polni kakovosti",
                   "Neomejeno število gostov",
                   "Do 5000 fotografij",
                   "Do 100 videoposnetkov",
@@ -997,6 +1000,7 @@ export default async function HomePage() {
               <ul className="space-y-3 flex-1 mb-8">
                 {[
                   "Unikatna QR koda",
+                  "Prenos slik v polni kakovosti",
                   "Neomejeno število gostov",
                   "Neomejeno fotografij",
                   "Do 100 videoposnetkov",
@@ -1026,6 +1030,18 @@ export default async function HomePage() {
               <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
             </svg>
             30-dnevna garancija vračila denarja – brez vprašanj.
+          </div>
+
+          {/* Trust badges — data protection */}
+          <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3 mt-6 text-sm text-gray-400">
+            {["GDPR skladno", "Strežniki v EU", "SSL šifriranje"].map((label) => (
+              <span key={label} className="flex items-center gap-1.5">
+                <svg className="w-4 h-4 shrink-0" style={{ color: "#16A34A" }} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+                </svg>
+                {label}
+              </span>
+            ))}
           </div>
         </div>
       </section>

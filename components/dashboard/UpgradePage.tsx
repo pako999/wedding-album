@@ -207,7 +207,7 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
           </div>
 
           {/* ── Trust strip ───────────────────────────────────────────── */}
-          <div className="grid grid-cols-3 gap-2 mb-6">
+          <div className="grid grid-cols-3 gap-2 mb-3">
             {[
               { icon: "🛡️", label: u.trustRefund },
               { icon: "🔒", label: u.trustSecure },
@@ -216,6 +216,18 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
               <div key={item.label} className="bg-white rounded-xl border border-gray-100 p-3 text-center">
                 <div className="text-lg mb-1">{item.icon}</div>
                 <p className="text-xs text-gray-600 font-medium leading-tight">{item.label}</p>
+              </div>
+            ))}
+          </div>
+
+          {/* ── Trust strip — data protection ────────────────────────── */}
+          <div className="grid grid-cols-3 gap-2 mb-6">
+            {[u.trustGdpr, u.trustEuServers, u.trustEncryption].map((label) => (
+              <div key={label} className="bg-white rounded-xl border border-gray-100 p-3 text-center flex flex-col items-center">
+                <svg className="w-4 h-4 mb-1" style={{ color: "#16A34A" }} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+                </svg>
+                <p className="text-xs text-gray-600 font-medium leading-tight">{label}</p>
               </div>
             ))}
           </div>

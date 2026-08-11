@@ -133,6 +133,10 @@ interface Copy {
   plus: { label: string; tagline: string; price: string; was: string; features: string[]; cta: string; ribbon: string };
   premium: { label: string; tagline: string; price: string; was: string; features: string[]; cta: string };
   guarantee: string;
+  /** Data-protection trust badges shown under the pricing grid. */
+  trustGdpr: string;
+  trustEuServers: string;
+  trustEncryption: string;
   faqTitle: string;
   faqs: { q: string; a: string }[];
   ctaTitle: { line1: string; accent: string };
@@ -208,14 +212,15 @@ const COPY: Record<Lang, Copy> = {
     ],
     pricingTitle: "Jednostavni paketi", pricingSubtitle: "Odaberite paket koji odgovara vašem događaju.",
     free: { label: "Besplatno", tagline: "Isprobajte bez rizika", price: "0€",
-      features: ["Jedinstveni QR kod", "Do 20 fotografija", "1 videozapis", "Pristup 30 dana", "Bez sigurnosne kopije"], cta: "Započni besplatno" },
+      features: ["Jedinstveni QR kod", "Preuzimanje slika u punoj kvaliteti", "Do 20 fotografija", "1 videozapis", "Pristup 30 dana", "Bez sigurnosne kopije"], cta: "Započni besplatno" },
     basic: { label: "Basic", tagline: "Za manje događaje", price: "39€", was: "55€",
-      features: ["Jedinstveni QR kod", "Do 1000 fotografija", "Do 10 videozapisa", "Pristup galeriji 3 mjeseca", "Preuzimanje svih slika (ZIP)"], cta: "Odaberi Basic" },
+      features: ["Jedinstveni QR kod", "Preuzimanje slika u punoj kvaliteti", "Do 1000 fotografija", "Do 10 videozapisa", "Pristup galeriji 3 mjeseca", "Preuzimanje svih slika (ZIP)"], cta: "Odaberi Basic" },
     plus: { label: "Plus", tagline: "Za veće događaje i vjenčanja", price: "49€", was: "69€",
-      features: ["Jedinstveni QR kod", "Neograničen broj gostiju", "Do 5000 fotografija", "Do 100 videozapisa", "Pristup galeriji 1 godinu", "Preuzimanje svih slika (ZIP)", "Live galerija (projekcija)", "Personalizirana stranica s imenima", "E-mail obavijesti za par"], cta: "Odaberi Plus", ribbon: "NAJPOPULARNIJE" },
+      features: ["Jedinstveni QR kod", "Preuzimanje slika u punoj kvaliteti", "Neograničen broj gostiju", "Do 5000 fotografija", "Do 100 videozapisa", "Pristup galeriji 1 godinu", "Preuzimanje svih slika (ZIP)", "Live galerija (projekcija)", "Personalizirana stranica s imenima", "E-mail obavijesti za par"], cta: "Odaberi Plus", ribbon: "NAJPOPULARNIJE" },
     premium: { label: "Premium", tagline: "Za one koji žele sve", price: "99€", was: "149€",
-      features: ["Jedinstveni QR kod", "Neograničen broj gostiju", "Neograničeno fotografija", "Do 100 videozapisa", "Pristup galeriji 2 godine", "Preuzimanje svih slika (ZIP)", "Live galerija (projekcija)", "Personalizirana stranica s imenima", "Vlastita domena (foto.vaše-ime.si)", "Premium dizajn predlošci", "Prioritetna podrška"], cta: "Odaberi Premium" },
+      features: ["Jedinstveni QR kod", "Preuzimanje slika u punoj kvaliteti", "Neograničen broj gostiju", "Neograničeno fotografija", "Do 100 videozapisa", "Pristup galeriji 2 godine", "Preuzimanje svih slika (ZIP)", "Live galerija (projekcija)", "Personalizirana stranica s imenima", "Vlastita domena (foto.vaše-ime.si)", "Premium dizajn predlošci", "Prioritetna podrška"], cta: "Odaberi Premium" },
     guarantee: "30-dnevno jamstvo povrata novca – bez pitanja.",
+    trustGdpr: "GDPR sukladno", trustEuServers: "Poslužitelji u EU", trustEncryption: "SSL enkripcija",
     faqTitle: "Često postavljana pitanja",
     faqs: [
       { q: "Moraju li gosti preuzeti aplikaciju?", a: "Ne. Gosti otvore album direktno u pregledniku telefona — bez instalacije, bez prijave. Samo skeniraju QR kod i odmah učitavaju fotografije." },
@@ -294,14 +299,15 @@ const COPY: Record<Lang, Copy> = {
     ],
     pricingTitle: "Jednostavni paketi", pricingSubtitle: "Izaberite paket koji odgovara vašem događaju.",
     free: { label: "Besplatno", tagline: "Isprobajte bez rizika", price: "0€",
-      features: ["Jedinstveni QR kod", "Do 20 fotografija", "1 video snimak", "Pristup 30 dana", "Bez rezervne kopije"], cta: "Započni besplatno" },
+      features: ["Jedinstveni QR kod", "Preuzimanje slika u punom kvalitetu", "Do 20 fotografija", "1 video snimak", "Pristup 30 dana", "Bez rezervne kopije"], cta: "Započni besplatno" },
     basic: { label: "Basic", tagline: "Za manje događaje", price: "39€", was: "55€",
-      features: ["Jedinstveni QR kod", "Do 1000 fotografija", "Do 10 video snimaka", "Pristup galeriji 3 meseca", "Preuzimanje svih slika (ZIP)"], cta: "Izaberi Basic" },
+      features: ["Jedinstveni QR kod", "Preuzimanje slika u punom kvalitetu", "Do 1000 fotografija", "Do 10 video snimaka", "Pristup galeriji 3 meseca", "Preuzimanje svih slika (ZIP)"], cta: "Izaberi Basic" },
     plus: { label: "Plus", tagline: "Za veće događaje i venčanja", price: "49€", was: "69€",
-      features: ["Jedinstveni QR kod", "Neograničen broj gostiju", "Do 5000 fotografija", "Do 100 video snimaka", "Pristup galeriji 1 godinu", "Preuzimanje svih slika (ZIP)", "Live galerija (projekcija)", "Personalizovana stranica sa imenima", "E-mail obaveštenja za par"], cta: "Izaberi Plus", ribbon: "NAJPOPULARNIJE" },
+      features: ["Jedinstveni QR kod", "Preuzimanje slika u punom kvalitetu", "Neograničen broj gostiju", "Do 5000 fotografija", "Do 100 video snimaka", "Pristup galeriji 1 godinu", "Preuzimanje svih slika (ZIP)", "Live galerija (projekcija)", "Personalizovana stranica sa imenima", "E-mail obaveštenja za par"], cta: "Izaberi Plus", ribbon: "NAJPOPULARNIJE" },
     premium: { label: "Premium", tagline: "Za one koji žele sve", price: "99€", was: "149€",
-      features: ["Jedinstveni QR kod", "Neograničen broj gostiju", "Neograničeno fotografija", "Do 100 video snimaka", "Pristup galeriji 2 godine", "Preuzimanje svih slika (ZIP)", "Live galerija (projekcija)", "Personalizovana stranica sa imenima", "Sopstveni domen (foto.vase-ime.si)", "Premium dizajn šabloni", "Prioritetna podrška"], cta: "Izaberi Premium" },
+      features: ["Jedinstveni QR kod", "Preuzimanje slika u punom kvalitetu", "Neograničen broj gostiju", "Neograničeno fotografija", "Do 100 video snimaka", "Pristup galeriji 2 godine", "Preuzimanje svih slika (ZIP)", "Live galerija (projekcija)", "Personalizovana stranica sa imenima", "Sopstveni domen (foto.vase-ime.si)", "Premium dizajn šabloni", "Prioritetna podrška"], cta: "Izaberi Premium" },
     guarantee: "30-dnevna garancija povraćaja novca – bez pitanja.",
+    trustGdpr: "GDPR usklađeno", trustEuServers: "Serveri u EU", trustEncryption: "SSL enkripcija",
     faqTitle: "Često postavljana pitanja",
     faqs: [
       { q: "Da li gosti moraju da preuzmu aplikaciju?", a: "Ne. Gosti otvaraju album direktno u pretraživaču telefona — bez instalacije, bez prijave. Samo skeniraju QR kod i odmah otpremaju fotografije." },
@@ -380,14 +386,15 @@ const COPY: Record<Lang, Copy> = {
     ],
     pricingTitle: "Einfache Pakete", pricingSubtitle: "Wählen Sie das Paket, das zu Ihrer Feier passt.",
     free: { label: "Kostenlos", tagline: "Risikolos testen", price: "0€",
-      features: ["Einzigartiger QR-Code", "Bis zu 20 Fotos", "1 Video", "30 Tage Zugriff", "Keine Sicherung"], cta: "Kostenlos starten" },
+      features: ["Einzigartiger QR-Code", "Fotodownload in voller Qualität", "Bis zu 20 Fotos", "1 Video", "30 Tage Zugriff", "Keine Sicherung"], cta: "Kostenlos starten" },
     basic: { label: "Basic", tagline: "Für kleinere Feiern", price: "39€", was: "55€",
-      features: ["Einzigartiger QR-Code", "Bis zu 1000 Fotos", "Bis zu 10 Videos", "3 Monate Galerie-Zugriff", "Download aller Bilder (ZIP)"], cta: "Basic wählen" },
+      features: ["Einzigartiger QR-Code", "Fotodownload in voller Qualität", "Bis zu 1000 Fotos", "Bis zu 10 Videos", "3 Monate Galerie-Zugriff", "Download aller Bilder (ZIP)"], cta: "Basic wählen" },
     plus: { label: "Plus", tagline: "Für größere Feiern und Hochzeiten", price: "49€", was: "69€",
-      features: ["Einzigartiger QR-Code", "Unbegrenzt Gäste", "Bis zu 5000 Fotos", "Bis zu 100 Videos", "1 Jahr Galerie-Zugriff", "Download aller Bilder (ZIP)", "Live-Galerie (Projektion)", "Personalisierte Seite mit Namen", "E-Mail-Benachrichtigungen"], cta: "Plus wählen", ribbon: "BELIEBTESTE" },
+      features: ["Einzigartiger QR-Code", "Fotodownload in voller Qualität", "Unbegrenzt Gäste", "Bis zu 5000 Fotos", "Bis zu 100 Videos", "1 Jahr Galerie-Zugriff", "Download aller Bilder (ZIP)", "Live-Galerie (Projektion)", "Personalisierte Seite mit Namen", "E-Mail-Benachrichtigungen"], cta: "Plus wählen", ribbon: "BELIEBTESTE" },
     premium: { label: "Premium", tagline: "Für alle, die alles wollen", price: "99€", was: "149€",
-      features: ["Einzigartiger QR-Code", "Unbegrenzt Gäste", "Unbegrenzt Fotos", "Bis zu 100 Videos", "2 Jahre Galerie-Zugriff", "Download aller Bilder (ZIP)", "Live-Galerie (Projektion)", "Personalisierte Seite mit Namen", "Eigene Domain (foto.ihr-name.si)", "Premium-Design-Vorlagen", "Prioritäts-Support"], cta: "Premium wählen" },
+      features: ["Einzigartiger QR-Code", "Fotodownload in voller Qualität", "Unbegrenzt Gäste", "Unbegrenzt Fotos", "Bis zu 100 Videos", "2 Jahre Galerie-Zugriff", "Download aller Bilder (ZIP)", "Live-Galerie (Projektion)", "Personalisierte Seite mit Namen", "Eigene Domain (foto.ihr-name.si)", "Premium-Design-Vorlagen", "Prioritäts-Support"], cta: "Premium wählen" },
     guarantee: "30-Tage-Geld-zurück-Garantie – ohne Wenn und Aber.",
+    trustGdpr: "DSGVO-konform", trustEuServers: "EU-Server", trustEncryption: "SSL-Verschlüsselung",
     faqTitle: "Häufige Fragen",
     faqs: [
       { q: "Müssen Gäste eine App herunterladen?", a: "Nein. Gäste öffnen das Album direkt im Browser ihres Handys — keine Installation, keine Anmeldung. Sie scannen einfach den QR-Code und laden sofort Fotos hoch." },
@@ -466,14 +473,15 @@ const COPY: Record<Lang, Copy> = {
     ],
     pricingTitle: "Simple plans", pricingSubtitle: "Pick the plan that fits your event.",
     free: { label: "Free", tagline: "Try risk-free", price: "€0",
-      features: ["Unique QR code", "Up to 20 photos", "1 video", "30-day access", "No backup"], cta: "Start free" },
+      features: ["Unique QR code", "Full-quality photo download", "Up to 20 photos", "1 video", "30-day access", "No backup"], cta: "Start free" },
     basic: { label: "Basic", tagline: "For smaller events", price: "€39", was: "€55",
-      features: ["Unique QR code", "Up to 1000 photos", "Up to 10 videos", "3-month gallery access", "Bulk download (ZIP)"], cta: "Choose Basic" },
+      features: ["Unique QR code", "Full-quality photo download", "Up to 1000 photos", "Up to 10 videos", "3-month gallery access", "Bulk download (ZIP)"], cta: "Choose Basic" },
     plus: { label: "Plus", tagline: "For bigger events and weddings", price: "€49", was: "€69",
-      features: ["Unique QR code", "Unlimited guests", "Up to 5,000 photos", "Up to 100 videos", "1-year gallery access", "Bulk download (ZIP)", "Live gallery (projection)", "Personalised page with names", "Email notifications"], cta: "Choose Plus", ribbon: "MOST POPULAR" },
+      features: ["Unique QR code", "Full-quality photo download", "Unlimited guests", "Up to 5,000 photos", "Up to 100 videos", "1-year gallery access", "Bulk download (ZIP)", "Live gallery (projection)", "Personalised page with names", "Email notifications"], cta: "Choose Plus", ribbon: "MOST POPULAR" },
     premium: { label: "Premium", tagline: "For those who want it all", price: "€99", was: "€149",
-      features: ["Unique QR code", "Unlimited guests", "Unlimited photos", "Up to 100 videos", "2-year gallery access", "Bulk download (ZIP)", "Live gallery (projection)", "Personalised page with names", "Custom domain (photos.yourname.com)", "Premium design templates", "Priority support"], cta: "Choose Premium" },
+      features: ["Unique QR code", "Full-quality photo download", "Unlimited guests", "Unlimited photos", "Up to 100 videos", "2-year gallery access", "Bulk download (ZIP)", "Live gallery (projection)", "Personalised page with names", "Custom domain (photos.yourname.com)", "Premium design templates", "Priority support"], cta: "Choose Premium" },
     guarantee: "30-day money-back guarantee — no questions asked.",
+    trustGdpr: "GDPR Compliant", trustEuServers: "EU Data Centers", trustEncryption: "SSL Encryption",
     faqTitle: "Frequently asked questions",
     faqs: [
       { q: "Do guests have to download an app?", a: "No. Guests open the album directly in their phone browser — no install, no sign-up. They just scan the QR code and upload photos instantly." },
@@ -552,14 +560,15 @@ const COPY: Record<Lang, Copy> = {
     ],
     pricingTitle: "Planes sencillos", pricingSubtitle: "Elige el plan que encaje con tu evento.",
     free: { label: "Gratis", tagline: "Pruébalo sin riesgos", price: "0€",
-      features: ["Código QR único", "Hasta 20 fotos", "1 vídeo", "Acceso 30 días", "Sin copia de seguridad"], cta: "Empezar gratis" },
+      features: ["Código QR único", "Descarga de fotos en calidad completa", "Hasta 20 fotos", "1 vídeo", "Acceso 30 días", "Sin copia de seguridad"], cta: "Empezar gratis" },
     basic: { label: "Basic", tagline: "Para eventos pequeños", price: "39€", was: "55€",
-      features: ["Código QR único", "Hasta 1000 fotos", "Hasta 10 vídeos", "Acceso 3 meses", "Descarga masiva (ZIP)"], cta: "Elegir Basic" },
+      features: ["Código QR único", "Descarga de fotos en calidad completa", "Hasta 1000 fotos", "Hasta 10 vídeos", "Acceso 3 meses", "Descarga masiva (ZIP)"], cta: "Elegir Basic" },
     plus: { label: "Plus", tagline: "Para eventos grandes y bodas", price: "49€", was: "69€",
-      features: ["Código QR único", "Invitados ilimitados", "Hasta 5000 fotos", "Hasta 100 vídeos", "Acceso 1 año", "Descarga masiva (ZIP)", "Galería en directo (proyección)", "Página personalizada con nombres", "Avisos por email"], cta: "Elegir Plus", ribbon: "MÁS POPULAR" },
+      features: ["Código QR único", "Descarga de fotos en calidad completa", "Invitados ilimitados", "Hasta 5000 fotos", "Hasta 100 vídeos", "Acceso 1 año", "Descarga masiva (ZIP)", "Galería en directo (proyección)", "Página personalizada con nombres", "Avisos por email"], cta: "Elegir Plus", ribbon: "MÁS POPULAR" },
     premium: { label: "Premium", tagline: "Para los que lo quieren todo", price: "99€", was: "149€",
-      features: ["Código QR único", "Invitados ilimitados", "Fotos ilimitadas", "Hasta 100 vídeos", "Acceso 2 años", "Descarga masiva (ZIP)", "Galería en directo (proyección)", "Página personalizada con nombres", "Dominio propio (fotos.tu-nombre.com)", "Plantillas premium", "Soporte prioritario"], cta: "Elegir Premium" },
+      features: ["Código QR único", "Descarga de fotos en calidad completa", "Invitados ilimitados", "Fotos ilimitadas", "Hasta 100 vídeos", "Acceso 2 años", "Descarga masiva (ZIP)", "Galería en directo (proyección)", "Página personalizada con nombres", "Dominio propio (fotos.tu-nombre.com)", "Plantillas premium", "Soporte prioritario"], cta: "Elegir Premium" },
     guarantee: "Garantía de devolución de 30 días — sin preguntas.",
+    trustGdpr: "Cumple GDPR", trustEuServers: "Servidores en la UE", trustEncryption: "Cifrado SSL",
     faqTitle: "Preguntas frecuentes",
     faqs: [
       { q: "¿Tienen que descargar una app los invitados?", a: "No. Los invitados abren el álbum en el navegador del móvil — sin instalar, sin registrarse. Escanean el QR y suben fotos al instante." },
@@ -1082,6 +1091,18 @@ export async function LocalizedHomePage({ lang }: { lang: Lang }) {
               <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
             </svg>
             {t.guarantee}
+          </div>
+
+          {/* Trust badges — data protection */}
+          <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3 mt-6 text-sm text-gray-400">
+            {[t.trustGdpr, t.trustEuServers, t.trustEncryption].map((label) => (
+              <span key={label} className="flex items-center gap-1.5">
+                <svg className="w-4 h-4 shrink-0" style={{ color: "#16A34A" }} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+                </svg>
+                {label}
+              </span>
+            ))}
           </div>
         </div>
       </section>

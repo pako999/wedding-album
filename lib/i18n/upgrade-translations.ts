@@ -22,6 +22,11 @@ export interface UpgradeCopy {
   trustSecure: string;    // "Secure payment"
   trustInstant: string;   // "Instant activation"
 
+  // Data-protection trust strip (second row)
+  trustGdpr: string;       // "GDPR Compliant"
+  trustEuServers: string;  // "EU Data Centers"
+  trustEncryption: string; // "SSL Encryption"
+
   // Testimonial
   testimonialQuote: string;
   testimonialAuthor: string;
@@ -100,6 +105,7 @@ export interface UpgradeCopy {
   featureVideos10:         string; // "Up to 10 videos"
   featureVideos100:        string; // "Up to 100 videos"
   featureQrCode:           string; // "QR code for tables"
+  featureFullQuality:      string; // "Full-quality photo download"
   featureZipDownload:      string; // "Download all photos (ZIP)"
   featureAccess3mo:        string; // "3-month access"
   featureAccess1yr:        string; // "1-year access"
@@ -120,6 +126,7 @@ export const UPGRADE_COPY: Record<Lang, UpgradeCopy> = {
     trustRefund: "30-dnevna garancija",
     trustSecure: "Varno plačilo",
     trustInstant: "Takojšnja aktivacija",
+    trustGdpr: "GDPR skladno", trustEuServers: "Strežniki v EU", trustEncryption: "SSL šifriranje",
     testimonialQuote: "Guestcam je bila najboljša odločitev za naš dan. Gostje so naložili čez 300 fotografij — brez aplikacij, brez zapletov. Vse fotografije so bile na enem mestu!",
     testimonialAuthor: "Ana & Marko",
     testimonialMeta: "500+ fotografij · 2026",
@@ -176,6 +183,7 @@ export const UPGRADE_COPY: Record<Lang, UpgradeCopy> = {
     featureVideos10:         "Do 10 videoposnetkov",
     featureVideos100:        "Do 100 videoposnetkov",
     featureQrCode:           "QR koda za mizo",
+    featureFullQuality:      "Prenos slik v polni kakovosti",
     featureZipDownload:      "Prenos vseh slik (ZIP)",
     featureAccess3mo:        "Dostop 3 mesece",
     featureAccess1yr:        "Dostop 1 leto",
@@ -194,6 +202,7 @@ export const UPGRADE_COPY: Record<Lang, UpgradeCopy> = {
     trustRefund: "30-dnevno jamstvo",
     trustSecure: "Sigurno plaćanje",
     trustInstant: "Trenutna aktivacija",
+    trustGdpr: "GDPR sukladno", trustEuServers: "Poslužitelji u EU", trustEncryption: "SSL enkripcija",
     testimonialQuote: "Guestcam je bio najbolja odluka za naš dan. Gosti su uploadali preko 300 fotografija — bez aplikacija, bez komplikacija. Sve fotografije na jednom mjestu!",
     testimonialAuthor: "Ana & Marko",
     testimonialMeta: "500+ fotografija · 2026",
@@ -250,6 +259,7 @@ export const UPGRADE_COPY: Record<Lang, UpgradeCopy> = {
     featureVideos10:         "Do 10 videa",
     featureVideos100:        "Do 100 videa",
     featureQrCode:           "QR kod za stol",
+    featureFullQuality:      "Preuzimanje slika u punoj kvaliteti",
     featureZipDownload:      "Preuzmi sve fotografije (ZIP)",
     featureAccess3mo:        "Pristup 3 mjeseca",
     featureAccess1yr:        "Pristup 1 godinu",
@@ -268,6 +278,7 @@ export const UPGRADE_COPY: Record<Lang, UpgradeCopy> = {
     trustRefund: "30-dnevna garancija",
     trustSecure: "Sigurno plaćanje",
     trustInstant: "Trenutna aktivacija",
+    trustGdpr: "GDPR usklađeno", trustEuServers: "Serveri u EU", trustEncryption: "SSL enkripcija",
     testimonialQuote: "Guestcam je bio najbolja odluka za naš dan. Gosti su uploadovali preko 300 fotografija — bez aplikacija, bez komplikacija. Sve fotografije na jednom mestu!",
     testimonialAuthor: "Ana & Marko",
     testimonialMeta: "500+ fotografija · 2026",
@@ -324,6 +335,7 @@ export const UPGRADE_COPY: Record<Lang, UpgradeCopy> = {
     featureVideos10:         "Do 10 video zapisa",
     featureVideos100:        "Do 100 video zapisa",
     featureQrCode:           "QR kod za sto",
+    featureFullQuality:      "Preuzimanje slika u punom kvalitetu",
     featureZipDownload:      "Preuzmi sve fotografije (ZIP)",
     featureAccess3mo:        "Pristup 3 meseca",
     featureAccess1yr:        "Pristup 1 godinu",
@@ -342,6 +354,7 @@ export const UPGRADE_COPY: Record<Lang, UpgradeCopy> = {
     trustRefund: "30-day guarantee",
     trustSecure: "Secure payment",
     trustInstant: "Instant activation",
+    trustGdpr: "GDPR Compliant", trustEuServers: "EU Data Centers", trustEncryption: "SSL Encryption",
     testimonialQuote: "Guestcam was the best decision for our day. Guests uploaded over 300 photos — no apps, no hassle. All the memories in one place!",
     testimonialAuthor: "Ana & Marko",
     testimonialMeta: "500+ photos · 2026",
@@ -398,6 +411,7 @@ export const UPGRADE_COPY: Record<Lang, UpgradeCopy> = {
     featureVideos10:         "Up to 10 videos",
     featureVideos100:        "Up to 100 videos",
     featureQrCode:           "QR code for tables",
+    featureFullQuality:      "Full-quality photo download",
     featureZipDownload:      "Download all photos (ZIP)",
     featureAccess3mo:        "3-month access",
     featureAccess1yr:        "1-year access",
@@ -416,6 +430,7 @@ export const UPGRADE_COPY: Record<Lang, UpgradeCopy> = {
     trustRefund: "30-Tage-Garantie",
     trustSecure: "Sichere Zahlung",
     trustInstant: "Sofortige Aktivierung",
+    trustGdpr: "DSGVO-konform", trustEuServers: "EU-Server", trustEncryption: "SSL-Verschlüsselung",
     testimonialQuote: "Guestcam war die beste Entscheidung für unseren Tag. Die Gäste haben über 300 Fotos hochgeladen — ohne App, ohne Umstände. Alle Erinnerungen an einem Ort!",
     testimonialAuthor: "Ana & Marko",
     testimonialMeta: "500+ Fotos · 2026",
@@ -472,6 +487,7 @@ export const UPGRADE_COPY: Record<Lang, UpgradeCopy> = {
     featureVideos10:         "Bis zu 10 Videos",
     featureVideos100:        "Bis zu 100 Videos",
     featureQrCode:           "QR-Code für den Tisch",
+    featureFullQuality:      "Fotodownload in voller Qualität",
     featureZipDownload:      "Alle Fotos herunterladen (ZIP)",
     featureAccess3mo:        "3 Monate Zugang",
     featureAccess1yr:        "1 Jahr Zugang",
@@ -490,6 +506,7 @@ export const UPGRADE_COPY: Record<Lang, UpgradeCopy> = {
     trustRefund: "Garantía de 30 días",
     trustSecure: "Pago seguro",
     trustInstant: "Activación inmediata",
+    trustGdpr: "Cumple GDPR", trustEuServers: "Servidores en la UE", trustEncryption: "Cifrado SSL",
     testimonialQuote: "Guestcam fue la mejor decisión para nuestro día. Los invitados subieron más de 300 fotos — sin apps, sin líos. ¡Todos los recuerdos en un solo lugar!",
     testimonialAuthor: "Ana & Marko",
     testimonialMeta: "500+ fotos · 2026",
@@ -546,6 +563,7 @@ export const UPGRADE_COPY: Record<Lang, UpgradeCopy> = {
     featureVideos10:         "Hasta 10 vídeos",
     featureVideos100:        "Hasta 100 vídeos",
     featureQrCode:           "Código QR para las mesas",
+    featureFullQuality:      "Descarga de fotos en calidad completa",
     featureZipDownload:      "Descarga todas las fotos (ZIP)",
     featureAccess3mo:        "Acceso 3 meses",
     featureAccess1yr:        "Acceso 1 año",
@@ -561,6 +579,7 @@ export const UPGRADE_COPY: Record<Lang, UpgradeCopy> = {
 /** Feature keys used by each plan — keyed the same way in every locale. */
 export const PLAN_FEATURE_KEYS: Record<"basic" | "plus" | "premium", (keyof UpgradeCopy)[]> = {
   basic: [
+    "featureFullQuality",
     "featurePhotos1000",
     "featureVideos10",
     "featureQrCode",
@@ -568,6 +587,7 @@ export const PLAN_FEATURE_KEYS: Record<"basic" | "plus" | "premium", (keyof Upgr
     "featureAccess3mo",
   ],
   plus: [
+    "featureFullQuality",
     "featurePhotos5000",
     "featureVideos100",
     "featureQrCode",
@@ -578,6 +598,7 @@ export const PLAN_FEATURE_KEYS: Record<"basic" | "plus" | "premium", (keyof Upgr
     "featurePremiumTemplates",
   ],
   premium: [
+    "featureFullQuality",
     "featurePhotosUnlimited",
     "featureVideos100",
     "featureQrCode",
