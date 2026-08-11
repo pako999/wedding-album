@@ -4,6 +4,7 @@ import { albums, photos } from "@/lib/db/schema";
 import { eq, and, desc } from "drizzle-orm";
 import { verifyAlbumPassword } from "@/lib/album-password";
 import { absoluteUrl } from "@/lib/urls";
+import { withSchemaHealing } from "@/lib/db/bootstrap";
 import { PhotoWall } from "@/components/album/PhotoWall";
 import type { Metadata } from "next";
 
@@ -14,14 +15,14 @@ export const dynamic = "force-dynamic";
 const INITIAL_WALL_PHOTOS = 60;
 
 interface Props {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ token: string }>;
   searchParams: Promise<{ pw?: string }>;
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug } = await params;
-  const album = await db.query.albums.findFirst({ where: eq(albums.slug, slug) }).catch(() => null);
-  if (!album) return { title: "Album not found" };
+  const { token } = await params;
+  const album = await db.query.albums.findFirst({ where: eq(albums.wallToken, token) }).catch(() => null);
+  if (!album) return { title: "Wall not found" };
   return {
     title: `${album.coupleName} — Photo Wall`,
     // Same private, link-only stance as the guest gallery — this is a
@@ -36,10 +37,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function PhotoWallPage({ params, searchParams }: Props) {
-  const { slug } = await params;
+  const { token } = await params;
   const { pw } = await searchParams;
 
-  const album = await db.query.albums.findFirst({ where: eq(albums.slug, slug) }).catch(() => null);
+  const album = await withSchemaHealing(() =>
+    db.query.albums.findFirst({ where: eq(albums.wallToken, token) }),
+  ).catch(() => null);
   if (!album || !album.isPublished) notFound();
 
   if (album.password) {
@@ -70,11 +73,14 @@ export default async function PhotoWallPage({ params, searchParams }: Props) {
     .filter((p) => !p.mimeType?.startsWith("video/"))
     .reverse(); // oldest of the batch first, so the wall plays forward in time
 
-  const albumUrl = absoluteUrl(`/${slug}${pw ? `?pw=${encodeURIComponent(pw)}` : ""}`);
+  // The QR on the wall always points at the main gallery (for uploads),
+  // not at this wall page — that link is deliberately the album's own
+  // slug-based URL, separate from the wall's token-based one.
+  const albumUrl = absoluteUrl(`/${album.slug}${pw ? `?pw=${encodeURIComponent(pw)}` : ""}`);
 
   return (
     <PhotoWall
-      slug={slug}
+      token={token}
       pw={pw}
       coupleName={album.coupleName}
       albumUrl={albumUrl}

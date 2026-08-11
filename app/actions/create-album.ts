@@ -11,6 +11,7 @@ import { attributeNewAlbumFromCookie } from "@/lib/referral/attribution";
 import { inferLangFromLocation } from "@/lib/i18n/infer-lang";
 import { recordUserCountry } from "@/lib/user-country";
 import { getAlbumCreationGate } from "@/lib/album-limits";
+import { generateWallToken } from "@/lib/wall-token";
 
 function slugify(text: string): string {
   return text
@@ -154,6 +155,7 @@ export async function createAlbum(formData: FormData) {
     expiresAt:         inheritedExpiry,
     stripeSessionId:   inheritedSessionId,
     referralCode,
+    wallToken:         generateWallToken(),
   }).returning({ id: albums.id });
 
   // If this user showed up via a ?ref= link from another album's guest,

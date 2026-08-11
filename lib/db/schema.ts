@@ -83,6 +83,13 @@ export const albums = pgTable(
     // the owner can share the album's referral link.
     referralCode: varchar("referral_code", { length: 20 }).unique(),
 
+    // Photo Wall access token — a separate secret from `slug`. The wall
+    // (meant to run all night on a shared venue TV) gets its own link at
+    // /wall/<wallToken> so it's never derivable from the main gallery
+    // link or vice versa. Lazily backfilled for pre-existing albums by
+    // getOrCreateWallToken() in lib/wall-token.ts.
+    wallToken: text("wall_token").unique(),
+
     // Attribution — when THIS album's owner signed up because a guest at
     // some OTHER album clicked the referral link.
     referralSourceAlbumId: text("referral_source_album_id"),
@@ -95,6 +102,7 @@ export const albums = pgTable(
     index("albums_owner_idx").on(t.ownerClerkId),
     index("albums_slug_idx").on(t.slug),
     index("albums_referral_code_idx").on(t.referralCode),
+    index("albums_wall_token_idx").on(t.wallToken),
   ]
 );
 

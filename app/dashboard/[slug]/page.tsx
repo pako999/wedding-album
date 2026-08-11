@@ -7,6 +7,7 @@ import { AlbumAdminPanel } from "@/components/dashboard/AlbumAdminPanel";
 import { requireAdmin } from "@/lib/admin";
 import { verifiedEmails } from "@/lib/album-ownership";
 import { toOwnerAlbum } from "@/lib/album-view";
+import { getOrCreateWallToken } from "@/lib/wall-token";
 
 export const dynamic = "force-dynamic";
 
@@ -181,6 +182,7 @@ export default async function AlbumAdminPage({ params, searchParams }: Props) {
       driveResult={driveResult}
       driveCount={driveCount}
       hasPassword={!!album.password}
+      wallToken={await getOrCreateWallToken(album.id, album.wallToken)}
     />
   );
 }

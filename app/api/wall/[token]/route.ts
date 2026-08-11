@@ -3,6 +3,7 @@ import { db } from "@/lib/db";
 import { albums, photos } from "@/lib/db/schema";
 import { eq, and } from "drizzle-orm";
 import { verifyAlbumPassword } from "@/lib/album-password";
+import { withSchemaHealing } from "@/lib/db/bootstrap";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -13,26 +14,28 @@ export const dynamic = "force-dynamic";
 const WALL_PHOTO_LIMIT = 60;
 
 /**
- * GET /api/albums/[slug]/wall?pw=<password>
+ * GET /api/wall/[token]?pw=<password>
  *
  * Public, unauthenticated endpoint polled every few seconds by the
- * TV-facing Photo Wall page (app/[slug]/wall) so newly uploaded photos
- * appear on the wall without anyone touching the TV. Same privacy model
- * as the guest gallery: unpublished albums 404, password-protected
+ * TV-facing Photo Wall page (app/wall/[token]). Looked up by the
+ * album's dedicated wallToken — a secret separate from `slug`, so this
+ * link (displayed on a shared venue screen all night) can't be derived
+ * from the main gallery link or vice versa. Same privacy model beyond
+ * that as the guest gallery: unpublished albums 404, password-protected
  * albums require a matching ?pw= — the wall link the owner copies from
  * their dashboard already carries it, since there's no on-screen
  * keyboard to type one in on a TV.
  */
 export async function GET(
   req: NextRequest,
-  { params }: { params: Promise<{ slug: string }> },
+  { params }: { params: Promise<{ token: string }> },
 ) {
-  const { slug } = await params;
+  const { token } = await params;
   const pw = req.nextUrl.searchParams.get("pw") ?? "";
 
-  const album = await db.query.albums
-    .findFirst({ where: eq(albums.slug, slug) })
-    .catch(() => null);
+  const album = await withSchemaHealing(() =>
+    db.query.albums.findFirst({ where: eq(albums.wallToken, token) }),
+  ).catch(() => null);
 
   if (!album || !album.isPublished) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });

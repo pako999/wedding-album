@@ -26,14 +26,14 @@ export interface WallPhoto {
 }
 
 interface Props {
-  slug: string;
+  token: string;
   pw?: string;
   coupleName: string;
   albumUrl: string;
   initialPhotos: WallPhoto[];
 }
 
-export function PhotoWall({ slug, pw, coupleName, albumUrl, initialPhotos }: Props) {
+export function PhotoWall({ token, pw, coupleName, albumUrl, initialPhotos }: Props) {
   const [photos, setPhotos] = useState<WallPhoto[]>(initialPhotos);
   const [idx, setIdx] = useState(0);
   const [imgKey, setImgKey] = useState(0);
@@ -42,7 +42,7 @@ export function PhotoWall({ slug, pw, coupleName, albumUrl, initialPhotos }: Pro
   // Poll for new uploads. New photos are appended so they join the
   // rotation without resetting whatever is currently on screen.
   useEffect(() => {
-    const pollUrl = `/api/albums/${slug}/wall${pw ? `?pw=${encodeURIComponent(pw)}` : ""}`;
+    const pollUrl = `/api/wall/${token}${pw ? `?pw=${encodeURIComponent(pw)}` : ""}`;
     const id = setInterval(async () => {
       try {
         const res = await fetch(pollUrl, { cache: "no-store" });
@@ -59,7 +59,7 @@ export function PhotoWall({ slug, pw, coupleName, albumUrl, initialPhotos }: Pro
       }
     }, POLL_MS);
     return () => clearInterval(id);
-  }, [slug, pw]);
+  }, [token, pw]);
 
   const advance = useCallback(() => {
     setIdx((i) => (photos.length > 0 ? (i + 1) % photos.length : 0));

@@ -577,6 +577,21 @@ export async function runMigrations() {
   await run("guest_emails d3 due idx",  (q) => q`CREATE INDEX IF NOT EXISTS guest_emails_d3_due_idx  ON guest_emails (d3_sent_at)`);
   await run("guest_emails d21 due idx", (q) => q`CREATE INDEX IF NOT EXISTS guest_emails_d21_due_idx ON guest_emails (d21_sent_at)`);
 
+  // ── Photo Wall access token ───────────────────────────────────────────────
+  // A secret separate from `slug` so the wall link (displayed all night on
+  // a shared venue TV) can never be derived from the main gallery link, or
+  // vice versa. Backfilled for every pre-existing album so the dashboard
+  // always has a token to show immediately, no lazy on-demand generation.
+  await run("albums.wall_token", (q) => q`ALTER TABLE albums ADD COLUMN IF NOT EXISTS wall_token TEXT`);
+  await run("backfill albums.wall_token", (q) => q`
+    UPDATE albums
+       SET wall_token = REPLACE(gen_random_uuid()::text, '-', '')
+     WHERE wall_token IS NULL
+  `);
+  await run("albums.wall_token unique", (q) => q`
+    CREATE UNIQUE INDEX IF NOT EXISTS albums_wall_token_unique ON albums (wall_token)
+  `);
+
   // Backfill: give every existing album a referral code. Done in the DB
   // (not app-side) so we don't need N round-trips. Uses UPPER + regex
   // fold + album.id suffix for uniqueness.

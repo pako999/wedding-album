@@ -65,6 +65,10 @@ interface Props {
    *  this client component (see lib/album-view.ts → toOwnerAlbum), so this
    *  boolean is the only password-related signal the dashboard gets. */
   hasPassword?: boolean;
+  /** Photo Wall access token (see lib/wall-token.ts) — a secret separate
+   *  from `album.slug`, guaranteed non-null by getOrCreateWallToken() on
+   *  the server before this prop is ever passed down. */
+  wallToken: string;
 }
 
 /** Copy + tone for the one-time Google Drive result banner. */
@@ -283,7 +287,7 @@ function NewAlbumSuccess({ album, paidPlan }: { album: Album; paidPlan?: "basic"
 
 // ─── Main Panel ───────────────────────────────────────────────────────────────
 
-export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activeTab, isNew, isUpgraded, paidAmount, paidPlan, ownerEmail, viewingAsAdmin, driveResult, driveCount, hasPassword }: Props) {
+export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activeTab, isNew, isUpgraded, paidAmount, paidPlan, ownerEmail, viewingAsAdmin, driveResult, driveCount, hasPassword, wallToken }: Props) {
   const router = useRouter();
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://www.guestcam.si";
   const albumUrl = `${appUrl}/${album.slug}`;
@@ -739,6 +743,7 @@ export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activ
               lastUploadDate={lastUploadDate}
               guestCount={guestCount}
               hasPassword={!!hasPassword}
+              wallToken={wallToken}
             />
           )}
 
@@ -769,7 +774,7 @@ export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activ
           {activeTab === "settings" && (
             <div className="max-w-lg space-y-6">
               <AccountInfoCard ownerEmail={ownerEmail ?? null} />
-              <AlbumSettingsForm album={album} albumUrl={albumUrl} hasPassword={!!hasPassword}>
+              <AlbumSettingsForm album={album} wallToken={wallToken} hasPassword={!!hasPassword}>
                 {/* Cover-photo picker injected into the settings form so it
                     sits inside the same card chrome, between the password
                     field and the theme picker. */}
@@ -860,6 +865,7 @@ function OverviewTab({
   lastUploadDate,
   guestCount,
   hasPassword,
+  wallToken,
 }: {
   album: Album;
   photos: Photo[];
@@ -867,11 +873,15 @@ function OverviewTab({
   lastUploadDate: string;
   guestCount: number;
   hasPassword: boolean;
+  wallToken: string;
 }) {
   const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(albumUrl)}&bgcolor=ffffff&color=1a1a2e&qzone=2&format=png`;
   const last4 = photos.slice(0, 4);
   const usedPct = album.plan === "free" ? Math.min(100, Math.round(((album.photoCount ?? 0) / (album.maxPhotos ?? 20)) * 100)) : 0;
-  const wallUrl = `${albumUrl}/wall`;
+  // A dedicated token-based link, deliberately separate from the main
+  // gallery's slug-based albumUrl — see lib/wall-token.ts.
+  const wallAppUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://www.guestcam.si";
+  const wallUrl = `${wallAppUrl}/wall/${wallToken}`;
   const [wallLinkCopied, setWallLinkCopied] = useState(false);
   const handleCopyWallLink = () => {
     navigator.clipboard.writeText(wallUrl).then(() => {
@@ -1036,9 +1046,9 @@ function OverviewTab({
           <div>
             <h3 className="font-semibold text-gray-900 text-sm">📺 Foto stena</h3>
             <p className="text-xs text-gray-400 mt-0.5 max-w-md">
-              Odprite to povezavo na TV-ju, tablici ali projektorju in jo pustite predvajati — nove fotografije
-              se pojavijo same, brez da bi kdo pri zaslonu karkoli naredil. QR koda v kotu gostom omogoča,
-              da takoj dodajo svoje slike.
+              Ločena povezava od vaše galerije — varna za prikaz na skupnem zaslonu. Odprite jo na TV-ju,
+              tablici ali projektorju in jo pustite predvajati — nove fotografije se pojavijo same, brez da bi
+              kdo pri zaslonu karkoli naredil. QR koda v kotu gostom omogoča, da takoj dodajo svoje slike.
             </p>
           </div>
         </div>
@@ -1451,7 +1461,9 @@ function AccountInfoCard({ ownerEmail }: { ownerEmail: string | null }) {
   );
 }
 
-function AlbumSettingsForm({ album, children, albumUrl, hasPassword }: { album: Album; children?: React.ReactNode; albumUrl: string; hasPassword: boolean }) {
+function AlbumSettingsForm({ album, children, wallToken, hasPassword }: { album: Album; children?: React.ReactNode; wallToken: string; hasPassword: boolean }) {
+  const wallAppUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://www.guestcam.si";
+  const wallUrl = `${wallAppUrl}/wall/${wallToken}`;
   const router = useRouter();
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -1617,11 +1629,11 @@ function AlbumSettingsForm({ album, children, albumUrl, hasPassword }: { album: 
             </p>
             <div className="flex items-center gap-2">
               <code className="flex-1 min-w-0 truncate bg-white/70 px-2 py-1 rounded text-[11px]" style={{ color: "#15803d" }}>
-                {`${albumUrl}/wall?pw=${justSetPassword}`}
+                {`${wallUrl}?pw=${justSetPassword}`}
               </code>
               <button
                 type="button"
-                onClick={() => navigator.clipboard.writeText(`${albumUrl}/wall?pw=${encodeURIComponent(justSetPassword)}`)}
+                onClick={() => navigator.clipboard.writeText(`${wallUrl}?pw=${encodeURIComponent(justSetPassword)}`)}
                 className="shrink-0 px-2 py-1 text-[11px] rounded bg-white border hover:bg-green-50"
                 style={{ borderColor: "#86efac", color: "#15803d" }}
               >
