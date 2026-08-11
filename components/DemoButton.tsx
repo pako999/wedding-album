@@ -8,7 +8,7 @@ import { useState, useEffect } from "react";
  */
 const DEMO_SLUG = "ana-marko-13ka";
 
-export function DemoButton({ variant = "hero" }: { variant?: "hero" | "nav" }) {
+export function DemoButton({ variant = "hero" }: { variant?: "hero" | "nav" | "heroEditorial" }) {
   const [open, setOpen] = useState(false);
 
   // Resolve the demo URL from the actual host the visitor is on — works on
@@ -24,7 +24,19 @@ export function DemoButton({ variant = "hero" }: { variant?: "hero" | "nav" }) {
 
   return (
     <>
-      {variant === "hero" ? (
+      {variant === "heroEditorial" ? (
+        <button
+          type="button"
+          onClick={() => setOpen(true)}
+          className="inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.22em] transition-all duration-300 border-b pb-1 hover:gap-3"
+          style={{ color: "#20242C", borderColor: "#C9B896" }}
+        >
+          <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor" style={{ color: "#B08D4F" }}>
+            <path d="M8 5v14l11-7z" />
+          </svg>
+          Poglej demo
+        </button>
+      ) : variant === "hero" ? (
         <button
           type="button"
           onClick={() => setOpen(true)}
