@@ -150,6 +150,71 @@ export const wallSponsors = pgTable(
   (t) => [index("wall_sponsors_album_idx").on(t.albumId)]
 );
 
+// ─── Per-album feature flags ─────────────────────────────────────────────────
+
+/**
+ * Opt-in feature switches, in their own table rather than as columns on
+ * `albums`.
+ *
+ * Drizzle selects every column of `albums` on every album query, so a
+ * column that exists in code but not yet in the database takes the whole
+ * app down. Keeping flags here means the worst case for a deploy that
+ * lands ahead of its migration is "the flag reads as off" — every read
+ * goes through lib/album-flags.ts, which swallows the error and returns
+ * defaults. Future flags should be added here, not to `albums`.
+ */
+export const albumFeatureFlags = pgTable("album_feature_flags", {
+  albumId: text("album_id")
+    .primaryKey()
+    .references(() => albums.id, { onDelete: "cascade" }),
+  /** Require name + surname + email from guests before they can upload.
+   *  Sold as the events/business package — off for ordinary galleries. */
+  guestDataCapture: boolean("guest_data_capture").notNull().default(false),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+// ─── Event leads ─────────────────────────────────────────────────────────────
+
+/**
+ * Guest details captured at upload time when `guestDataCapture` is on.
+ *
+ * Deliberately NOT merged into `guest_emails`. That table is Guestcam's
+ * OWN marketing list (the d3/d21 sequence, where Guestcam is the data
+ * controller). These rows belong to the event organiser — they are the
+ * controller, we are the processor, and they export and use the list.
+ * Different controller, different purpose, different retention: keeping
+ * them apart is what makes each one's GDPR story coherent.
+ *
+ * `marketingConsent` is the organiser's marketing opt-in and is always
+ * optional — GDPR Art. 7(4) requires consent to be freely given, so it
+ * can never be a condition of uploading a photo.
+ */
+export const eventLeads = pgTable(
+  "event_leads",
+  {
+    id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+    albumId: text("album_id")
+      .notNull()
+      .references(() => albums.id, { onDelete: "cascade" }),
+    firstName: text("first_name").notNull(),
+    lastName: text("last_name").notNull(),
+    email: text("email").notNull(),
+    /** Opt-in for the ORGANISER's marketing. Optional by design. */
+    marketingConsent: boolean("marketing_consent").notNull().default(false),
+    /** When consent was given — GDPR requires proof of when/what. */
+    consentTimestamp: timestamp("consent_timestamp"),
+    /** Exact wording the guest agreed to, stored so the organiser can
+     *  evidence what was consented to even after the copy changes. */
+    consentText: text("consent_text"),
+    locale: varchar("locale", { length: 5 }),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+  },
+  (t) => [
+    index("event_leads_album_idx").on(t.albumId),
+    unique("event_leads_album_email_unique").on(t.albumId, t.email),
+  ],
+);
+
 // ─── Photos ──────────────────────────────────────────────────────────────────
 
 export const photos = pgTable(

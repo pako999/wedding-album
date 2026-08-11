@@ -31,6 +31,9 @@ interface Props {
   initialLang: Lang;
   /** True when the signed-in viewer owns this album — shows the back-to-admin bar. */
   isOwner?: boolean;
+  /** Events/business package: require name, surname and email before a
+   *  guest can upload. Resolved server-side from the album's flags. */
+  requireGuestData?: boolean;
 }
 
 type FilterTab = "all" | "photos" | "videos";
@@ -125,7 +128,7 @@ function AvatarBubble({ name, size = 5, accent = BRAND.accent }: { name: string;
   );
 }
 
-export function AlbumGuestView({ album, photos, moments, passwordRequired, passwordCorrect, providedPassword, initialLang, isOwner = false }: Props) {
+export function AlbumGuestView({ album, photos, moments, passwordRequired, passwordCorrect, providedPassword, initialLang, isOwner = false, requireGuestData = false }: Props) {
   const router = useRouter();
   const [lang, setLang]                 = useState<Lang>(initialLang);
   const [lightboxIndex, setLightboxIndex] = useState(-1);
@@ -1931,6 +1934,8 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
           defaultMomentId={selectedMomentId}
           initialFiles={cameraFilesRef.current}
           referralCode={album.referralCode ?? null}
+          requireGuestData={requireGuestData}
+          organiserName={album.coupleName}
           onClose={() => { cameraFilesRef.current = null; setUploadOpen(false); }}
           onNameChange={(name) => setUploaderName(name)}
           onSuccess={(info) => {

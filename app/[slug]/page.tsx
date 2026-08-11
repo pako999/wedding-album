@@ -9,6 +9,7 @@ import { type Lang } from "@/lib/i18n/translations";
 import { hashAlbumPassword, needsRehash, verifyAlbumPassword } from "@/lib/album-password";
 import { verifiedEmails } from "@/lib/album-ownership";
 import { toPublicAlbum } from "@/lib/album-view";
+import { getAlbumFlags } from "@/lib/album-flags";
 import type { Metadata } from "next";
 
 export const dynamic = "force-dynamic";
@@ -173,6 +174,10 @@ export default async function AlbumPage({ params, searchParams }: Props) {
       })
     : [];
 
+  // Events/business package flag. getAlbumFlags never throws — if the
+  // table isn't there yet the feature simply reads as off.
+  const flags = await getAlbumFlags(album.id);
+
   // Fetch the album's moments (named sub-galleries)
   const albumMoments = await db.query.moments.findMany({
     where: eq(moments.albumId, album.id),
@@ -198,6 +203,7 @@ export default async function AlbumPage({ params, searchParams }: Props) {
         providedPassword={pw}
         initialLang={lang}
         isOwner={isOwner}
+        requireGuestData={flags.guestDataCapture}
       />
     </>
   );

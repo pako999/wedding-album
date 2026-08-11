@@ -8,6 +8,7 @@ import { requireAdmin } from "@/lib/admin";
 import { verifiedEmails } from "@/lib/album-ownership";
 import { toOwnerAlbum } from "@/lib/album-view";
 import { getOrCreateWallToken } from "@/lib/wall-token";
+import { getAlbumFlags } from "@/lib/album-flags";
 
 export const dynamic = "force-dynamic";
 
@@ -183,6 +184,7 @@ export default async function AlbumAdminPage({ params, searchParams }: Props) {
       driveCount={driveCount}
       hasPassword={!!album.password}
       wallToken={await getOrCreateWallToken(album.id, album.wallToken)}
+      guestDataCapture={(await getAlbumFlags(album.id)).guestDataCapture}
     />
   );
 }

@@ -12,6 +12,7 @@ import { ZipDownloader } from "@/components/dashboard/ZipDownloader";
 import { CoverPhotoSettings } from "@/components/dashboard/CoverPhotoSettings";
 import { FilmStudio } from "@/components/dashboard/FilmStudio";
 import { PhotoWallCard } from "@/components/dashboard/PhotoWallCard";
+import { EventLeadsCard } from "@/components/dashboard/EventLeadsCard";
 import { ALBUM_THEMES, themesForEvent } from "@/lib/album-themes";
 import { fbEvent } from "@/lib/fbpixel";
 
@@ -70,6 +71,8 @@ interface Props {
    *  from `album.slug`, guaranteed non-null by getOrCreateWallToken() on
    *  the server before this prop is ever passed down. */
   wallToken: string;
+  /** Events/business package: guests must leave name/surname/email. */
+  guestDataCapture?: boolean;
 }
 
 /** Copy + tone for the one-time Google Drive result banner. */
@@ -288,7 +291,7 @@ function NewAlbumSuccess({ album, paidPlan }: { album: Album; paidPlan?: "basic"
 
 // ─── Main Panel ───────────────────────────────────────────────────────────────
 
-export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activeTab, isNew, isUpgraded, paidAmount, paidPlan, ownerEmail, viewingAsAdmin, driveResult, driveCount, hasPassword, wallToken }: Props) {
+export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activeTab, isNew, isUpgraded, paidAmount, paidPlan, ownerEmail, viewingAsAdmin, driveResult, driveCount, hasPassword, wallToken, guestDataCapture = false }: Props) {
   const router = useRouter();
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://www.guestcam.si";
   const albumUrl = `${appUrl}/${album.slug}`;
@@ -781,6 +784,7 @@ export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activ
                     field and the theme picker. */}
                 <CoverPhotoSettings album={album} photos={photos} />
               </AlbumSettingsForm>
+              <EventLeadsCard albumSlug={album.slug} initialEnabled={guestDataCapture} />
               <MomentsManager album={album} />
               <CustomDomainPanel album={album} />
               <DangerZone album={album} />

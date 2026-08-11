@@ -607,6 +607,38 @@ export async function runMigrations() {
     CREATE INDEX IF NOT EXISTS wall_sponsors_album_idx ON wall_sponsors (album_id)
   `);
 
+  // ── Per-album feature flags ───────────────────────────────────────────────
+  // Own table, never columns on `albums` — see the note in schema.ts.
+  await run("create album_feature_flags", (q) => q`
+    CREATE TABLE IF NOT EXISTS album_feature_flags (
+      album_id            TEXT PRIMARY KEY REFERENCES albums(id) ON DELETE CASCADE,
+      guest_data_capture  BOOLEAN NOT NULL DEFAULT FALSE,
+      updated_at          TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )
+  `);
+
+  // ── Event lead capture ────────────────────────────────────────────────────
+  await run("create event_leads", (q) => q`
+    CREATE TABLE IF NOT EXISTS event_leads (
+      id                 TEXT PRIMARY KEY,
+      album_id           TEXT NOT NULL REFERENCES albums(id) ON DELETE CASCADE,
+      first_name         TEXT NOT NULL,
+      last_name          TEXT NOT NULL,
+      email              TEXT NOT NULL,
+      marketing_consent  BOOLEAN NOT NULL DEFAULT FALSE,
+      consent_timestamp  TIMESTAMPTZ,
+      consent_text       TEXT,
+      locale             VARCHAR(5),
+      created_at         TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )
+  `);
+  await run("event_leads idx", (q) => q`
+    CREATE INDEX IF NOT EXISTS event_leads_album_idx ON event_leads (album_id)
+  `);
+  await run("event_leads unique", (q) => q`
+    CREATE UNIQUE INDEX IF NOT EXISTS event_leads_album_email_unique ON event_leads (album_id, email)
+  `);
+
   // Backfill: give every existing album a referral code. Done in the DB
   // (not app-side) so we don't need N round-trips. Uses UPPER + regex
   // fold + album.id suffix for uniqueness.
