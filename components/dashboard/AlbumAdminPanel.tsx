@@ -1035,7 +1035,13 @@ function OverviewTab({
       </div>
 
       {/* Photo Wall — TV / tablet live display */}
-      <PhotoWallCard wallUrl={wallUrl} hasPassword={hasPassword} />
+      <PhotoWallCard
+        wallUrl={wallUrl}
+        hasPassword={hasPassword}
+        albumSlug={album.slug}
+        moderationEnabled={album.moderationEnabled}
+        pendingCount={album.pendingCount ?? 0}
+      />
     </div>
   );
 }

@@ -5,7 +5,14 @@ import { eq, and, desc } from "drizzle-orm";
 import { verifyAlbumPassword } from "@/lib/album-password";
 import { absoluteUrl } from "@/lib/urls";
 import { withSchemaHealing } from "@/lib/db/bootstrap";
-import { PhotoWall } from "@/components/album/PhotoWall";
+import {
+  PhotoWall,
+  WALL_BACKGROUNDS,
+  WALL_TRANSITIONS,
+  type WallBackground,
+  type WallTransition,
+  type WallOrientation,
+} from "@/components/album/PhotoWall";
 import type { Metadata } from "next";
 
 export const dynamic = "force-dynamic";
@@ -26,6 +33,12 @@ interface Props {
     names?: string;
     title?: string;
     brand?: string;
+    /** Background preset: photo | dark | light | warm. */
+    bg?: string;
+    /** Centre transition: fade | slide | kenburns. */
+    fx?: string;
+    /** Layout: auto | landscape | portrait. */
+    orient?: string;
   }>;
 }
 
@@ -72,6 +85,11 @@ export default async function PhotoWallPage({ params, searchParams }: Props) {
     showNames: flagOn(sp.names),
     showTitle: flagOn(sp.title),
     showBranding: flagOn(sp.brand),
+    background: (sp.bg && sp.bg in WALL_BACKGROUNDS ? sp.bg : "photo") as WallBackground,
+    transition: (sp.fx && sp.fx in WALL_TRANSITIONS ? sp.fx : "fade") as WallTransition,
+    orientation: (sp.orient === "landscape" || sp.orient === "portrait"
+      ? sp.orient
+      : "auto") as WallOrientation,
   };
 
   const album = await withSchemaHealing(() =>

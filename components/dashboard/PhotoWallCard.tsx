@@ -17,11 +17,36 @@ interface Props {
   wallUrl: string;
   /** Whether the album is password-protected (needs ?pw= on the link). */
   hasPassword: boolean;
+  /** Album slug, for deep-linking to the moderation queue. */
+  albumSlug: string;
+  /** Whether photos need approval before they appear anywhere public. */
+  moderationEnabled: boolean;
+  /** How many photos are currently awaiting approval. */
+  pendingCount: number;
 }
 
 const DEFAULT_SECONDS = 6;
 
-export function PhotoWallCard({ wallUrl, hasPassword }: Props) {
+const BACKGROUNDS = [
+  { id: "photo", label: "Fotografija", swatch: "linear-gradient(135deg,#1f2937,#0F1729)" },
+  { id: "dark",  label: "Temna",       swatch: "#0F1729" },
+  { id: "light", label: "Svetla",      swatch: "#F2F4F8" },
+  { id: "warm",  label: "Kremna",      swatch: "#FFF9EC" },
+] as const;
+
+const TRANSITIONS = [
+  { id: "fade",     label: "Zatemnitev" },
+  { id: "slide",    label: "Podrsaj" },
+  { id: "kenburns", label: "Počasen zoom" },
+] as const;
+
+const ORIENTATIONS = [
+  { id: "auto",      label: "Samodejno" },
+  { id: "landscape", label: "Ležeče" },
+  { id: "portrait",  label: "Pokončno" },
+] as const;
+
+export function PhotoWallCard({ wallUrl, hasPassword, albumSlug, moderationEnabled, pendingCount }: Props) {
   const [seconds, setSeconds] = useState(DEFAULT_SECONDS);
   const [showSides, setShowSides] = useState(true);
   const [showQr, setShowQr] = useState(true);
@@ -30,6 +55,9 @@ export function PhotoWallCard({ wallUrl, hasPassword }: Props) {
   const [showBrand, setShowBrand] = useState(true);
   const [pw, setPw] = useState("");
   const [copied, setCopied] = useState(false);
+  const [background, setBackground] = useState<string>("photo");
+  const [transition, setTransition] = useState<string>("fade");
+  const [orientation, setOrientation] = useState<string>("auto");
 
   const params = new URLSearchParams();
   if (seconds !== DEFAULT_SECONDS) params.set("dur", String(seconds));
@@ -38,6 +66,9 @@ export function PhotoWallCard({ wallUrl, hasPassword }: Props) {
   if (!showNames) params.set("names", "0");
   if (!showTitle) params.set("title", "0");
   if (!showBrand) params.set("brand", "0");
+  if (background !== "photo") params.set("bg", background);
+  if (transition !== "fade") params.set("fx", transition);
+  if (orientation !== "auto") params.set("orient", orientation);
   if (pw.trim()) params.set("pw", pw.trim());
   const qs = params.toString();
   const finalUrl = qs ? `${wallUrl}?${qs}` : wallUrl;
@@ -68,6 +99,47 @@ export function PhotoWallCard({ wallUrl, hasPassword }: Props) {
         </p>
       </div>
 
+      {/* Moderation warning. Without this the owner sets up the TV, sees
+          nothing appear all night, and has no idea why — every upload is
+          sitting in the approval queue. */}
+      {moderationEnabled && (
+        <div
+          className="mb-4 flex items-start gap-3 rounded-xl border p-3.5"
+          style={{ background: "#FFF9EC", borderColor: "#FFC94D" }}
+        >
+          <span className="text-lg shrink-0">⚠️</span>
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-semibold" style={{ color: "#92600A" }}>
+              Moderacija je vklopljena
+            </p>
+            <p className="text-xs mt-0.5" style={{ color: "#92600A" }}>
+              Fotografije se na steni prikažejo šele, ko jih potrdite — dokler jih ne odobrite, zaslon ostane prazen.
+              {pendingCount > 0
+                ? ` Trenutno čaka ${pendingCount} ${pendingCount === 1 ? "fotografija" : "fotografij"}.`
+                : " Med dogodkom jih boste morali sproti potrjevati."}
+            </p>
+            <div className="flex flex-wrap gap-3 mt-2">
+              {pendingCount > 0 && (
+                <a
+                  href={`/dashboard/${albumSlug}?tab=pending`}
+                  className="text-xs font-semibold underline"
+                  style={{ color: "#92600A" }}
+                >
+                  Poglej čakajoče →
+                </a>
+              )}
+              <a
+                href={`/dashboard/${albumSlug}?tab=settings`}
+                className="text-xs font-semibold underline"
+                style={{ color: "#92600A" }}
+              >
+                Izklopi moderacijo v nastavitvah →
+              </a>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Slide duration */}
       <div className="flex items-center justify-between gap-4 py-3 border-t border-gray-100">
         <div>
@@ -87,6 +159,86 @@ export function PhotoWallCard({ wallUrl, hasPassword }: Props) {
             className="w-20 px-3 py-1.5 border border-gray-200 rounded-lg text-sm text-gray-800 text-center outline-none focus:border-[#FFC94D]"
           />
           <span className="text-xs text-gray-400">sekund</span>
+        </div>
+      </div>
+
+      {/* Background */}
+      <div className="py-3 border-t border-gray-100">
+        <p className="text-sm font-medium text-gray-700">Ozadje</p>
+        <p className="text-xs text-gray-400 mb-2.5">
+          Privzeto zamegljena trenutna fotografija; ravne barve so mirnejše na velikem zaslonu.
+        </p>
+        <div className="flex flex-wrap gap-2">
+          {BACKGROUNDS.map((b) => (
+            <button
+              key={b.id}
+              type="button"
+              onClick={() => setBackground(b.id)}
+              aria-pressed={background === b.id}
+              className="flex items-center gap-2 pl-1.5 pr-3 py-1.5 rounded-lg border text-xs font-medium transition-colors"
+              style={{
+                borderColor: background === b.id ? "#FFC94D" : "#e5e7eb",
+                background: background === b.id ? "#FFF9EC" : "white",
+                color: "#374151",
+              }}
+            >
+              <span
+                className="w-5 h-5 rounded border border-gray-200 shrink-0"
+                style={{ background: b.swatch }}
+              />
+              {b.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Transition */}
+      <div className="py-3 border-t border-gray-100">
+        <p className="text-sm font-medium text-gray-700">Prehod</p>
+        <p className="text-xs text-gray-400 mb-2.5">Kako se menjajo fotografije na sredini.</p>
+        <div className="flex flex-wrap gap-2">
+          {TRANSITIONS.map((t) => (
+            <button
+              key={t.id}
+              type="button"
+              onClick={() => setTransition(t.id)}
+              aria-pressed={transition === t.id}
+              className="px-3 py-1.5 rounded-lg border text-xs font-medium transition-colors"
+              style={{
+                borderColor: transition === t.id ? "#FFC94D" : "#e5e7eb",
+                background: transition === t.id ? "#FFF9EC" : "white",
+                color: "#374151",
+              }}
+            >
+              {t.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Orientation */}
+      <div className="py-3 border-t border-gray-100">
+        <p className="text-sm font-medium text-gray-700">Postavitev zaslona</p>
+        <p className="text-xs text-gray-400 mb-2.5">
+          Samodejno se prilagodi zaslonu. Pokončno je za navpične zaslone in toteme.
+        </p>
+        <div className="flex flex-wrap gap-2">
+          {ORIENTATIONS.map((o) => (
+            <button
+              key={o.id}
+              type="button"
+              onClick={() => setOrientation(o.id)}
+              aria-pressed={orientation === o.id}
+              className="px-3 py-1.5 rounded-lg border text-xs font-medium transition-colors"
+              style={{
+                borderColor: orientation === o.id ? "#FFC94D" : "#e5e7eb",
+                background: orientation === o.id ? "#FFF9EC" : "white",
+                color: "#374151",
+              }}
+            >
+              {o.label}
+            </button>
+          ))}
         </div>
       </div>
 
