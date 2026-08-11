@@ -1041,6 +1041,7 @@ function OverviewTab({
         albumSlug={album.slug}
         moderationEnabled={album.moderationEnabled}
         pendingCount={album.pendingCount ?? 0}
+        plan={album.plan}
       />
     </div>
   );

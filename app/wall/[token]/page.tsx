@@ -4,6 +4,9 @@ import { albums, photos } from "@/lib/db/schema";
 import { eq, and, desc } from "drizzle-orm";
 import { verifyAlbumPassword } from "@/lib/album-password";
 import { absoluteUrl } from "@/lib/urls";
+import { getSponsors } from "@/lib/wall-sponsors";
+import { WALL_COPY } from "@/lib/i18n/wall-translations";
+import type { Lang } from "@/lib/i18n/translations";
 import { withSchemaHealing } from "@/lib/db/bootstrap";
 import {
   PhotoWall,
@@ -39,6 +42,10 @@ interface Props {
     fx?: string;
     /** Layout: auto | landscape | portrait. */
     orient?: string;
+    /** Minutes between sponsor slides. 0 / absent = no sponsor slides. */
+    admin?: string;
+    /** Seconds a sponsor slide holds the centre stage. */
+    addur?: string;
   }>;
 }
 
@@ -55,6 +62,22 @@ function parseSlideMs(raw: string | undefined): number {
   // strobe hazard, and 10 minutes is indistinguishable from frozen.
   if (!Number.isFinite(n)) return 6_000;
   return Math.round(Math.min(120, Math.max(2, n)) * 1000);
+}
+
+/** Sponsor cadence, in MINUTES. 0 (or absent/invalid) turns sponsor
+ *  slides off entirely — that's the default, so a wall never shows ads
+ *  unless the organiser deliberately asked for them. */
+function parseAdEveryMs(raw: string | undefined): number {
+  const n = Number.parseFloat(raw ?? "");
+  if (!Number.isFinite(n) || n <= 0) return 0;
+  return Math.round(Math.min(120, Math.max(0.5, n)) * 60_000);
+}
+
+/** Sponsor slide duration, in SECONDS. */
+function parseAdDurMs(raw: string | undefined): number {
+  const n = Number.parseFloat(raw ?? "");
+  if (!Number.isFinite(n)) return 8_000;
+  return Math.round(Math.min(60, Math.max(2, n)) * 1000);
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -90,12 +113,22 @@ export default async function PhotoWallPage({ params, searchParams }: Props) {
     orientation: (sp.orient === "landscape" || sp.orient === "portrait"
       ? sp.orient
       : "auto") as WallOrientation,
+    adEveryMs: parseAdEveryMs(sp.admin),
+    adDurMs: parseAdDurMs(sp.addur),
   };
 
   const album = await withSchemaHealing(() =>
     db.query.albums.findFirst({ where: eq(albums.wallToken, token) }),
   ).catch(() => null);
   if (!album || !album.isPublished) notFound();
+
+  // The wall follows the ALBUM's language — it's shown to guests in the
+  // venue, not to the (Slovenian-dashboard) owner.
+  const VALID: Lang[] = ["sl", "hr", "sr", "de", "en", "es"];
+  const wallLang: Lang = (VALID as string[]).includes(album.defaultLang)
+    ? (album.defaultLang as Lang)
+    : "sl";
+  const t = WALL_COPY[wallLang];
 
   if (album.password) {
     const ok = await verifyAlbumPassword(pw ?? "", album.password);
@@ -106,7 +139,7 @@ export default async function PhotoWallPage({ params, searchParams }: Props) {
         <div className="fixed inset-0 bg-black flex flex-col items-center justify-center text-center px-8">
           <p className="font-serif text-white text-3xl mb-3">{album.coupleName}</p>
           <p className="text-white/50 text-lg max-w-sm">
-            Ta galerija je zaščitena z geslom. Odprite povezavo za steno neposredno iz nadzorne plošče.
+            {t.passwordNeeded}
           </p>
         </div>
       );
@@ -130,6 +163,10 @@ export default async function PhotoWallPage({ params, searchParams }: Props) {
   // slug-based URL, separate from the wall's token-based one.
   const albumUrl = absoluteUrl(`/${album.slug}${pw ? `?pw=${encodeURIComponent(pw)}` : ""}`);
 
+  // Sponsor slides. getSponsors never throws — if the table isn't there
+  // yet the wall simply runs without them.
+  const sponsors = settings.adEveryMs > 0 ? await getSponsors(album.id) : [];
+
   return (
     <PhotoWall
       token={token}
@@ -142,7 +179,10 @@ export default async function PhotoWallPage({ params, searchParams }: Props) {
         thumbnailUrl: p.thumbnailUrl,
         uploaderName: p.uploaderName,
       }))}
+      sponsors={sponsors}
       settings={settings}
+      t={t}
+      isPremium={album.plan === "premium"}
     />
   );
 }

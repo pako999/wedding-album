@@ -114,6 +114,7 @@ export interface UpgradeCopy {
   featureCustomPage:       string; // "Personalized page"
   featurePremiumTemplates: string; // "Premium templates"
   featureCustomQrText:     string; // "Custom text on QR card"
+  featurePhotoWall:        string; // "Photo Wall for TV / projector"
   featurePrioritySupport:  string; // "Priority support"
 }
 
@@ -192,6 +193,7 @@ export const UPGRADE_COPY: Record<Lang, UpgradeCopy> = {
     featureCustomPage:       "Personalizirana stran",
     featurePremiumTemplates: "Premium predloge",
     featureCustomQrText:     "Lasten napis na QR kartici",
+    featurePhotoWall:        "Foto stena za TV / projektor",
     featurePrioritySupport:  "Prioritetna podpora",
   },
   hr: {
@@ -268,6 +270,7 @@ export const UPGRADE_COPY: Record<Lang, UpgradeCopy> = {
     featureCustomPage:       "Personalizirana stranica",
     featurePremiumTemplates: "Premium predlošci",
     featureCustomQrText:     "Vlastiti tekst na QR kartici",
+    featurePhotoWall:        "Foto zid za TV / projektor",
     featurePrioritySupport:  "Prioritetna podrška",
   },
   sr: {
@@ -344,6 +347,7 @@ export const UPGRADE_COPY: Record<Lang, UpgradeCopy> = {
     featureCustomPage:       "Personalizovana stranica",
     featurePremiumTemplates: "Premium šabloni",
     featureCustomQrText:     "Sopstveni tekst na QR kartici",
+    featurePhotoWall:        "Foto zid za TV / projektor",
     featurePrioritySupport:  "Prioritetna podrška",
   },
   en: {
@@ -420,6 +424,7 @@ export const UPGRADE_COPY: Record<Lang, UpgradeCopy> = {
     featureCustomPage:       "Personalized page",
     featurePremiumTemplates: "Premium templates",
     featureCustomQrText:     "Custom text on the QR card",
+    featurePhotoWall:        "Photo Wall for TV / projector",
     featurePrioritySupport:  "Priority support",
   },
   de: {
@@ -496,6 +501,7 @@ export const UPGRADE_COPY: Record<Lang, UpgradeCopy> = {
     featureCustomPage:       "Personalisierte Seite",
     featurePremiumTemplates: "Premium-Vorlagen",
     featureCustomQrText:     "Eigener Text auf der QR-Karte",
+    featurePhotoWall:        "Foto-Wall für TV / Beamer",
     featurePrioritySupport:  "Prioritäts-Support",
   },
   es: {
@@ -572,6 +578,7 @@ export const UPGRADE_COPY: Record<Lang, UpgradeCopy> = {
     featureCustomPage:       "Página personalizada",
     featurePremiumTemplates: "Plantillas premium",
     featureCustomQrText:     "Texto propio en la tarjeta QR",
+    featurePhotoWall:        "Muro de fotos para TV / proyector",
     featurePrioritySupport:  "Soporte prioritario",
   },
 };
@@ -608,6 +615,7 @@ export const PLAN_FEATURE_KEYS: Record<"basic" | "plus" | "premium", (keyof Upgr
     "featureCustomPage",
     "featurePremiumTemplates",
     "featureCustomQrText",
+    "featurePhotoWall",
     "featurePrioritySupport",
   ],
 };

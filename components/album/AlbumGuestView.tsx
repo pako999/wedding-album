@@ -503,6 +503,52 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
   // Photo currently shown in the lightbox (drives the info panel)
   const lightboxPhoto: Photo | undefined = lightboxOpen ? filteredImages[lightboxViewIndex] : undefined;
 
+  // ── Vertical swipe to change photo ──────────────────────────────────
+  // The lightbox already pages on horizontal swipes; this adds the
+  // vertical gesture people expect from Reels/TikTok (up = next,
+  // down = previous).
+  //
+  // The listener is scoped to `.yarl__slide` — the photo area — so it
+  // can't hijack scrolling in the info/comments panel, which the
+  // lightbox renders in its `controls` slot as a SIBLING of the slide
+  // (so a closest() check from a panel touch never matches). We also
+  // require the gesture to be clearly vertical, otherwise a slightly
+  // diagonal horizontal swipe would advance twice: once here and once
+  // from the lightbox's own paging.
+  useEffect(() => {
+    if (!lightboxOpen) return;
+    const total = lightboxSlides.length;
+    if (total <= 1) return;
+
+    let startX = 0;
+    let startY = 0;
+    let tracking = false;
+
+    const onStart = (e: TouchEvent) => {
+      const target = e.target as HTMLElement | null;
+      tracking = !!target?.closest(".yarl__slide");
+      if (!tracking) return;
+      startX = e.touches[0].clientX;
+      startY = e.touches[0].clientY;
+    };
+    const onEnd = (e: TouchEvent) => {
+      if (!tracking) return;
+      tracking = false;
+      const dx = e.changedTouches[0].clientX - startX;
+      const dy = e.changedTouches[0].clientY - startY;
+      if (Math.abs(dy) < 70 || Math.abs(dy) < Math.abs(dx) * 1.5) return;
+      // Wrap around, matching the lightbox's own infinite paging.
+      setLightboxIndex((i) => (dy < 0 ? (i + 1) % total : (i - 1 + total) % total));
+    };
+
+    document.addEventListener("touchstart", onStart, { passive: true });
+    document.addEventListener("touchend", onEnd, { passive: true });
+    return () => {
+      document.removeEventListener("touchstart", onStart);
+      document.removeEventListener("touchend", onEnd);
+    };
+  }, [lightboxOpen, lightboxSlides.length]);
+
   // Keep the comment pipeline pointed at the lightbox's current photo while open.
   useEffect(() => {
     if (lightboxOpen && lightboxPhoto) {

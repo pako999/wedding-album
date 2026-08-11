@@ -592,6 +592,21 @@ export async function runMigrations() {
     CREATE UNIQUE INDEX IF NOT EXISTS albums_wall_token_unique ON albums (wall_token)
   `);
 
+  // ── Photo Wall sponsor slides ─────────────────────────────────────────────
+  await run("create wall_sponsors", (q) => q`
+    CREATE TABLE IF NOT EXISTS wall_sponsors (
+      id          TEXT PRIMARY KEY,
+      album_id    TEXT NOT NULL REFERENCES albums(id) ON DELETE CASCADE,
+      image_url   TEXT NOT NULL,
+      caption     TEXT,
+      sort_order  INTEGER NOT NULL DEFAULT 0,
+      created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )
+  `);
+  await run("wall_sponsors idx", (q) => q`
+    CREATE INDEX IF NOT EXISTS wall_sponsors_album_idx ON wall_sponsors (album_id)
+  `);
+
   // Backfill: give every existing album a referral code. Done in the DB
   // (not app-side) so we don't need N round-trips. Uses UPPER + regex
   // fold + album.id suffix for uniqueness.

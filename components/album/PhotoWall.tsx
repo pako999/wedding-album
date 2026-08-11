@@ -3,36 +3,39 @@
 /**
  * PhotoWall — the TV-facing "photo wall" display.
  *
- * Meant to be opened once on a smart TV / Chromecast / tablet and left
- * running for the whole event: no controls, no interaction required.
+ * Opened once on a smart TV / Chromecast / tablet and left running for
+ * the whole event: no controls, no interaction required.
  *
  * Layout: one large photo holds the centre stage while smaller recent
- * shots sit scattered down both sides. Newly uploaded photos FLY IN from
- * the nearest edge into a side slot (with a brief highlight ring) so the
- * room notices the moment someone shares something, then get shuffled
- * into the general rotation like everything else.
+ * shots drift continuously past it — up the left and right columns on a
+ * landscape screen, across the top and bottom bands in portrait. Each
+ * thumbnail picks up a different photo every time it recycles, so the
+ * collage keeps changing on its own.
  *
- * Everything is driven off a poll of the wall API, so nobody ever has to
- * touch the screen. A QR code stays pinned in the corner the whole time
- * for anyone who wants to add their own photos.
+ * A freshly uploaded photo is dropped into a drifting slot with a
+ * highlight ring and then promoted to the centre stage, so the room sees
+ * it arrive. Sponsor slides (if the organiser uploaded any) take the
+ * centre stage on a timer in between guest photos.
  */
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import { bunnyDisplayUrl } from "@/lib/storage/bunny";
 import { GuestcamLogo } from "@/components/GuestcamLogo";
+import type { WallCopy } from "@/lib/i18n/wall-translations";
 
-const POLL_MS = 8_000;     // how often we check for new uploads
-const SHUFFLE_MS = 11_000; // how often the side thumbnails reshuffle
-/** Fly-in animation length. A freshly uploaded photo is promoted to the
- *  centre stage once its fly-in finishes, so the room gets both the
- *  arrival animation AND the big reveal. */
-const FLY_MS = 1_150;
+const POLL_MS = 8_000; // how often we check for new uploads
 
 export interface WallPhoto {
   id: string;
   blobUrl: string;
   thumbnailUrl: string | null;
   uploaderName: string | null;
+}
+
+export interface WallSponsor {
+  id: string;
+  imageUrl: string;
+  caption: string | null;
 }
 
 /** Background presets. `photo` (the default) uses a blurred copy of the
@@ -49,13 +52,46 @@ export type WallBackground = keyof typeof WALL_BACKGROUNDS;
 
 /** Centre-stage transition styles. `kenburns` runs for the whole slide
  *  duration rather than a fixed length, so its animation is composed at
- *  render time from settings.slideMs. */
+ *  render time from the slide duration. */
 export const WALL_TRANSITIONS = {
   fade:     "wallCenterFade .7s cubic-bezier(.4,0,.2,1) forwards",
   slide:    "wallCenterSlide .75s cubic-bezier(.22,1,.36,1) forwards",
-  kenburns: null, // composed below — needs the slide duration
+  kenburns: null,
 } as const;
 export type WallTransition = keyof typeof WALL_TRANSITIONS;
+
+export type WallOrientation = "auto" | "landscape" | "portrait";
+
+/**
+ * Drifting thumbnail tracks.
+ *
+ * Landscape: fixed x near an edge, travelling vertically. The columns sit
+ * inside the 16% margin the centre stage leaves free, so a thumbnail
+ * never crosses the main photo.
+ *
+ * Portrait: fixed y in the top/bottom band, travelling horizontally —
+ * a tall screen has no room for side columns without squeezing the stage
+ * to nothing.
+ *
+ * Negative delays start each track partway through its cycle so the
+ * screen is already populated on load instead of everything entering
+ * together. Durations are deliberately uneven so the tracks never fall
+ * into a visible lockstep.
+ */
+const DRIFT_TRACKS = [
+  { side: "left",  edge: "2.5%", band: "8%",  size: 132, rot: -4, dur: 46, delay: -2 },
+  { side: "left",  edge: "6%",   band: "26%", size: 106, rot:  3, dur: 38, delay: -15 },
+  { side: "left",  edge: "2%",   band: "44%", size: 140, rot: -2, dur: 53, delay: -30 },
+  { side: "right", edge: "3%",   band: "62%", size: 120, rot:  4, dur: 44, delay: -8 },
+  { side: "right", edge: "1.5%", band: "78%", size: 148, rot: -3, dur: 50, delay: -24 },
+  { side: "right", edge: "5%",   band: "90%", size: 110, rot:  2, dur: 41, delay: -36 },
+] as const;
+
+const SLOT_COUNT = DRIFT_TRACKS.length;
+
+/** Thumbnail height as a multiple of its width — keeps the collage tidy
+ *  regardless of each photo's real aspect ratio. */
+const THUMB_RATIO = 1.15;
 
 /** Display options, all driven by query params on the wall URL so the
  *  owner can tune the screen without a redeploy or a DB write. */
@@ -70,60 +106,22 @@ export interface WallSettings {
   background: WallBackground;
   transition: WallTransition;
   orientation: WallOrientation;
+  /** Milliseconds between sponsor slides. 0 disables them entirely. */
+  adEveryMs: number;
+  /** Milliseconds a sponsor slide holds the centre stage. */
+  adDurMs: number;
 }
 
-/** Scatter positions for the side thumbnails. Deliberately hand-placed
- *  (rather than an even grid) so the wall reads as a collage instead of
- *  a filmstrip — sizes and tilts vary to keep it lively.
- *
- *  The vertical bands dodge the fixed overlays: the branding pill sits
- *  top-left and the QR card bottom-left, so the left column is kept
- *  between roughly 12% and 70% of the viewport height. Thumbnails also
- *  render at a FIXED height (see THUMB_RATIO) — letting a 9:16 phone
- *  photo size itself would push the lowest left thumbnail straight into
- *  the QR card on shorter screens. */
-const SIDE_SLOTS = [
-  { side: "left",  top: "12%", edge: "2.5%", size: 132, rot: -4 },
-  { side: "left",  top: "36%", edge: "5.5%", size: 106, rot:  3 },
-  { side: "left",  top: "56%", edge: "2%",   size: 140, rot: -2 },
-  { side: "right", top: "13%", edge: "3%",   size: 120, rot:  4 },
-  { side: "right", top: "41%", edge: "1.5%", size: 148, rot: -3 },
-  { side: "right", top: "69%", edge: "5%",   size: 110, rot:  2 },
-] as const;
-
-/** Portrait equivalent, for vertical screens and totems. A tall screen
- *  has no room for side columns without squeezing the centre stage to
- *  nothing, so the collage moves into bands above and below it. Left/
- *  right here means which half of the band the thumbnail sits in; the
- *  fly-in still comes from the nearer horizontal edge. */
-const PORTRAIT_SLOTS = [
-  { side: "left",  top: "8%",  edge: "6%",  size: 118, rot: -4 },
-  { side: "right", top: "9%",  edge: "8%",  size: 100, rot:  3 },
-  { side: "right", top: "18%", edge: "28%", size:  92, rot: -2 },
-  { side: "left",  top: "74%", edge: "7%",  size: 118, rot:  3 },
-  { side: "right", top: "75%", edge: "6%",  size: 108, rot: -3 },
-  { side: "left",  top: "70%", edge: "30%", size:  92, rot:  2 },
-] as const;
-
-/** Both layouts expose the same number of slots, so the slot STATE is
- *  orientation-agnostic — only the positions differ at render time. */
-const SLOT_COUNT = SIDE_SLOTS.length;
-
-/** Thumbnail height as a multiple of its width. Keeps the collage tidy
- *  and, more importantly, makes the layout predictable regardless of
- *  each photo's real aspect ratio. */
-const THUMB_RATIO = 1.15;
-
-export type WallOrientation = "auto" | "landscape" | "portrait";
-
-type SlotAnim = "fly" | "fade" | "none";
 interface SlotState {
   photo: WallPhoto | null;
-  anim: SlotAnim;
-  /** Bumped on every change so React remounts the <img> and the CSS
-   *  animation restarts from frame 0. */
-  key: number;
+  /** Highlight ring, set when a brand-new upload lands in this slot. */
+  ring: boolean;
 }
+
+/** What the centre stage is currently showing. */
+type CenterItem =
+  | { kind: "photo"; photo: WallPhoto; isNew: boolean }
+  | { kind: "ad"; sponsor: WallSponsor };
 
 function shuffled<T>(arr: T[]): T[] {
   const a = [...arr];
@@ -140,19 +138,33 @@ interface Props {
   coupleName: string;
   albumUrl: string;
   initialPhotos: WallPhoto[];
+  sponsors: WallSponsor[];
   settings: WallSettings;
+  t: WallCopy;
+  /** False for Free/Basic/Plus — the wall still runs (so owners can try
+   *  it before buying) but carries a Premium notice. */
+  isPremium: boolean;
 }
 
-export function PhotoWall({ token, pw, coupleName, albumUrl, initialPhotos, settings }: Props) {
+export function PhotoWall({
+  token,
+  pw,
+  coupleName,
+  albumUrl,
+  initialPhotos,
+  sponsors,
+  settings,
+  t,
+  isPremium,
+}: Props) {
   const [photos, setPhotos] = useState<WallPhoto[]>(initialPhotos);
   // initialPhotos arrives oldest-first, so the last entry is the newest.
-  const [center, setCenter] = useState<WallPhoto | null>(
-    initialPhotos.length ? initialPhotos[initialPhotos.length - 1] : null,
+  const [center, setCenter] = useState<CenterItem | null>(
+    initialPhotos.length
+      ? { kind: "photo", photo: initialPhotos[initialPhotos.length - 1], isNew: false }
+      : null,
   );
   const [centerKey, setCenterKey] = useState(0);
-  /** True while the centre stage is showing a just-uploaded photo, so we
-   *  can badge it. Cleared by the next ordinary rotation. */
-  const [centerIsNew, setCenterIsNew] = useState(false);
 
   const knownIds = useRef(new Set(initialPhotos.map((p) => p.id)));
   const keyCounter = useRef(0);
@@ -164,6 +176,12 @@ export function PhotoWall({ token, pw, coupleName, albumUrl, initialPhotos, sett
   /** Pending "promote to centre" timers, cleared on unmount. */
   const promoteTimers = useRef<ReturnType<typeof setTimeout>[]>([]);
   useEffect(() => () => promoteTimers.current.forEach(clearTimeout), []);
+  /** When the next sponsor slide is due, and which one is next up. */
+  const nextAdAt = useRef<number>(Date.now() + settings.adEveryMs);
+  const adCursor = useRef(0);
+  /** Latest photo pool, for callbacks that must not re-subscribe. */
+  const photosRef = useRef(photos);
+  useEffect(() => { photosRef.current = photos; }, [photos]);
 
   // ── Orientation ─────────────────────────────────────────────────────
   // "auto" follows the actual screen so the same link works on a
@@ -184,16 +202,13 @@ export function PhotoWall({ token, pw, coupleName, albumUrl, initialPhotos, sett
 
   const [slots, setSlots] = useState<SlotState[]>(() => {
     const recent = [...initialPhotos].reverse(); // newest first
-    return SIDE_SLOTS.map((_, i) => ({
+    return DRIFT_TRACKS.map((_, i) => ({
       photo: recent.length ? recent[i % recent.length] : null,
-      anim: "none" as SlotAnim,
-      key: 0,
+      ring: false,
     }));
   });
 
   // ── Poll for new uploads ────────────────────────────────────────────
-  // Fresh photos are appended to the pool AND flown into a side slot, so
-  // the room sees them arrive rather than waiting for the rotation.
   useEffect(() => {
     const pollUrl = `/api/wall/${token}${pw ? `?pw=${encodeURIComponent(pw)}` : ""}`;
     const id = setInterval(async () => {
@@ -207,24 +222,25 @@ export function PhotoWall({ token, pw, coupleName, albumUrl, initialPhotos, sett
         // API returns newest first — flip so they play in upload order.
         const arrivals = fresh.reverse();
         setPhotos((prev) => [...prev, ...arrivals]);
+        // Drop each arrival into a drifting slot, ringed so the room
+        // notices it join the wall.
         setSlots((prev) => {
           const next = [...prev];
           arrivals.forEach((p) => {
             const i = slotCursor.current % SLOT_COUNT;
             slotCursor.current += 1;
-            next[i] = { photo: p, anim: "fly", key: nextKey() };
+            next[i] = { photo: p, ring: true };
           });
           return next;
         });
-        // Once the fly-in lands, promote the newest arrival to the centre
-        // stage. Seeing your own photo go big within seconds of sharing is
-        // the single biggest driver of more uploads from the room.
+        // Then give the newest one the centre stage. Seeing your own
+        // photo go big within seconds of sharing is the single biggest
+        // driver of more uploads from the room.
         const newest = arrivals[arrivals.length - 1];
         const t = setTimeout(() => {
-          setCenter(newest);
+          setCenter({ kind: "photo", photo: newest, isNew: true });
           setCenterKey(nextKey());
-          setCenterIsNew(true);
-        }, FLY_MS);
+        }, 900);
         promoteTimers.current.push(t);
       } catch {
         // Offline TV / flaky venue wifi — just try again on the next tick.
@@ -235,47 +251,56 @@ export function PhotoWall({ token, pw, coupleName, albumUrl, initialPhotos, sett
 
   // ── Centre stage rotation ───────────────────────────────────────────
   const advance = useCallback(() => {
-    if (photos.length === 0) return;
-    if (queue.current.length === 0) queue.current = shuffled(photos);
+    const pool = photosRef.current;
+
+    // A sponsor slide is due? Show it instead of the next photo. Guarded
+    // on there being at least one photo so an empty wall still shows the
+    // "scan me" call to action rather than an ad reel.
+    if (settings.adEveryMs > 0 && sponsors.length > 0 && pool.length > 0 && Date.now() >= nextAdAt.current) {
+      const sponsor = sponsors[adCursor.current % sponsors.length];
+      adCursor.current += 1;
+      nextAdAt.current = Date.now() + settings.adEveryMs + settings.adDurMs;
+      setCenter({ kind: "ad", sponsor });
+      setCenterKey(nextKey());
+      return;
+    }
+
+    if (pool.length === 0) return;
+    if (queue.current.length === 0) queue.current = shuffled(pool);
     let next = queue.current.pop() ?? null;
     // Avoid showing the same photo twice in a row when the pool is big
     // enough for it to matter.
-    if (next && center && next.id === center.id && photos.length > 1) {
-      if (queue.current.length === 0) queue.current = shuffled(photos);
+    if (next && center?.kind === "photo" && next.id === center.photo.id && pool.length > 1) {
+      if (queue.current.length === 0) queue.current = shuffled(pool);
       next = queue.current.pop() ?? next;
     }
     if (!next) return;
-    setCenter(next);
+    setCenter({ kind: "photo", photo: next, isNew: false });
     setCenterKey(nextKey());
-    setCenterIsNew(false);
-  }, [photos, center]);
+  }, [center, sponsors, settings.adEveryMs, settings.adDurMs]);
 
   useEffect(() => {
-    if (photos.length <= 1) return;
-    const t = setTimeout(advance, settings.slideMs);
+    if (photos.length === 0) return;
+    const hold = center?.kind === "ad" ? settings.adDurMs : settings.slideMs;
+    const t = setTimeout(advance, hold);
     return () => clearTimeout(t);
-  }, [advance, centerKey, photos.length, settings.slideMs]);
+  }, [advance, centerKey, photos.length, settings.slideMs, settings.adDurMs, center?.kind]);
 
-  // ── Reshuffle the side thumbnails ───────────────────────────────────
-  useEffect(() => {
-    if (!settings.showSides || photos.length === 0) return;
-    const id = setInterval(() => {
-      setSlots((prev) => {
-        // Prefer photos that aren't currently centre stage so the wall
-        // isn't showing the same shot big and small simultaneously.
-        const pool = shuffled(
-          photos.length > 1 && center ? photos.filter((p) => p.id !== center.id) : photos,
-        );
-        if (pool.length === 0) return prev;
-        return prev.map((s, i) => ({
-          photo: pool[i % pool.length],
-          anim: "fade" as SlotAnim,
-          key: nextKey(),
-        }));
-      });
-    }, SHUFFLE_MS);
-    return () => clearInterval(id);
-  }, [photos, center, settings.showSides]);
+  /** Recycle a drifting slot each time it completes a lap. */
+  const recycleSlot = useCallback((i: number) => {
+    setSlots((prev) => {
+      const pool = photosRef.current;
+      if (pool.length === 0) return prev;
+      const currentId = center?.kind === "photo" ? center.photo.id : null;
+      // Prefer something that isn't already centre stage, so the wall
+      // isn't showing the same shot big and small at once.
+      const candidates = pool.length > 1 && currentId ? pool.filter((p) => p.id !== currentId) : pool;
+      const pick = candidates[Math.floor(Math.random() * candidates.length)];
+      const next = [...prev];
+      next[i] = { photo: pick ?? prev[i].photo, ring: false };
+      return next;
+    });
+  }, [center]);
 
   const qrSrc =
     `https://api.qrserver.com/v1/create-qr-code/?size=260x260&qzone=1&format=png` +
@@ -293,16 +318,17 @@ export function PhotoWall({ token, pw, coupleName, albumUrl, initialPhotos, sett
 
   // Ken Burns drifts for the full slide, so it can't be a fixed-length
   // constant like the other two.
+  const holdMs = center?.kind === "ad" ? settings.adDurMs : settings.slideMs;
   const centerAnimation =
     settings.transition === "kenburns"
-      ? `wallCenterFade .7s cubic-bezier(.4,0,.2,1) forwards, wallKenBurns ${settings.slideMs}ms ease-out forwards`
+      ? `wallCenterFade .7s cubic-bezier(.4,0,.2,1) forwards, wallKenBurns ${holdMs}ms ease-out forwards`
       : (WALL_TRANSITIONS[settings.transition] ?? WALL_TRANSITIONS.fade);
 
+  const centerPhoto = center?.kind === "photo" ? center.photo : null;
+  const centerAd = center?.kind === "ad" ? center.sponsor : null;
+
   return (
-    <div
-      className="fixed inset-0 overflow-hidden select-none"
-      style={{ background: bg.css }}
-    >
+    <div className="fixed inset-0 overflow-hidden select-none" style={{ background: bg.css }}>
       <style>{`
         @keyframes wallCenterFade {
           from { opacity: 0; transform: scale(1.04); }
@@ -317,24 +343,25 @@ export function PhotoWall({ token, pw, coupleName, albumUrl, initialPhotos, sett
           from { transform: scale(1) translate3d(0, 0, 0); }
           to   { transform: scale(1.09) translate3d(-1.2%, -1.2%, 0); }
         }
-        @keyframes wallFlyLeft {
-          0%   { opacity: 0; transform: translate3d(-60vw, 12vh, 0) scale(.45); }
-          70%  { opacity: 1; }
-          100% { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
+        /* Continuous travel for the side collage. Starts and ends fully
+           off-screen so a thumbnail never pops in or out mid-air, and
+           fades at both ends so the entry/exit is soft. */
+        @keyframes wallDriftUp {
+          0%   { transform: translate3d(0, 118vh, 0); opacity: 0; }
+          8%   { opacity: 1; }
+          92%  { opacity: 1; }
+          100% { transform: translate3d(0, -45vh, 0); opacity: 0; }
         }
-        @keyframes wallFlyRight {
-          0%   { opacity: 0; transform: translate3d(60vw, 12vh, 0) scale(.45); }
-          70%  { opacity: 1; }
-          100% { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
+        @keyframes wallDriftAcross {
+          0%   { transform: translate3d(115vw, 0, 0); opacity: 0; }
+          8%   { opacity: 1; }
+          92%  { opacity: 1; }
+          100% { transform: translate3d(-45vw, 0, 0); opacity: 0; }
         }
-        @keyframes wallSlotFade {
-          from { opacity: 0; transform: scale(.94); }
-          to   { opacity: 1; transform: scale(1); }
-        }
-        /* Highlight ring that pulses once as a new photo lands. */
+        /* Highlight ring that pulses as a new photo joins the wall. */
         @keyframes wallNewRing {
-          0%   { box-shadow: 0 0 0 0 rgba(255,201,77,.85); }
-          100% { box-shadow: 0 0 0 22px rgba(255,201,77,0); }
+          0%   { box-shadow: 0 0 0 0 rgba(255,201,77,.9); }
+          100% { box-shadow: 0 0 0 24px rgba(255,201,77,0); }
         }
         @keyframes wallBadgeIn {
           from { opacity: 0; transform: translateY(14px) scale(.9); }
@@ -345,20 +372,22 @@ export function PhotoWall({ token, pw, coupleName, albumUrl, initialPhotos, sett
       {center ? (
         <>
           {/* Blurred ambient background fills any letterboxing. Only for
-              the "photo" preset — the flat presets stay flat on purpose. */}
-          {bg.blur && (
+              the "photo" preset — the flat presets stay flat on purpose.
+              Never derived from a sponsor slide. */}
+          {bg.blur && centerPhoto && (
             <img
-              src={bunnyDisplayUrl(center.thumbnailUrl ?? center.blobUrl, 400, 30)}
+              src={bunnyDisplayUrl(centerPhoto.thumbnailUrl ?? centerPhoto.blobUrl, 400, 30)}
               alt=""
               aria-hidden
               className="absolute inset-0 w-full h-full object-cover scale-110"
               style={{ filter: "blur(34px)", opacity: 0.28 }}
             />
           )}
+
           {/* Centre stage. Inset so the collage has room to breathe —
               side columns in landscape, top/bottom bands in portrait. */}
           <div
-            className="absolute flex items-center justify-center"
+            className="absolute flex items-center justify-center z-[2]"
             style={
               isPortrait
                 ? { top: "30%", bottom: "32%", left: "5%", right: "5%" }
@@ -367,7 +396,7 @@ export function PhotoWall({ token, pw, coupleName, albumUrl, initialPhotos, sett
           >
             <img
               key={centerKey}
-              src={bunnyDisplayUrl(center.blobUrl, 2000, 90)}
+              src={centerAd ? centerAd.imageUrl : bunnyDisplayUrl(centerPhoto!.blobUrl, 2000, 90)}
               alt=""
               className="max-w-full max-h-full object-contain rounded-2xl"
               style={{
@@ -376,34 +405,52 @@ export function PhotoWall({ token, pw, coupleName, albumUrl, initialPhotos, sett
               }}
             />
           </div>
-          {(centerIsNew || (settings.showNames && center.uploaderName)) && (
-            <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-3">
-              {centerIsNew && (
+
+          {/* Caption strip under the stage */}
+          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-3 z-[3]">
+            {centerAd ? (
+              <>
                 <span
-                  className="px-4 py-2 rounded-full text-sm font-bold uppercase tracking-wider text-[#0F1729]"
-                  style={{ background: "#FFC94D", animation: "wallBadgeIn .5s cubic-bezier(.2,1.2,.3,1) forwards" }}
+                  className="px-3.5 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-widest"
+                  style={{ background: pillStyle.background, color: mutedColor }}
                 >
-                  Pravkar deljeno
+                  {t.sponsor}
                 </span>
-              )}
-              {settings.showNames && center.uploaderName && (
-                <span className="backdrop-blur-sm px-5 py-2 rounded-full text-lg" style={pillStyle}>
-                  {center.uploaderName}
-                </span>
-              )}
-            </div>
-          )}
+                {centerAd.caption && (
+                  <span className="backdrop-blur-sm px-5 py-2 rounded-full text-lg" style={pillStyle}>
+                    {centerAd.caption}
+                  </span>
+                )}
+              </>
+            ) : (
+              <>
+                {center.kind === "photo" && center.isNew && (
+                  <span
+                    className="px-4 py-2 rounded-full text-sm font-bold uppercase tracking-wider text-[#0F1729]"
+                    style={{ background: "#FFC94D", animation: "wallBadgeIn .5s cubic-bezier(.2,1.2,.3,1) forwards" }}
+                  >
+                    {t.justShared}
+                  </span>
+                )}
+                {settings.showNames && centerPhoto?.uploaderName && (
+                  <span className="backdrop-blur-sm px-5 py-2 rounded-full text-lg" style={pillStyle}>
+                    {centerPhoto.uploaderName}
+                  </span>
+                )}
+              </>
+            )}
+          </div>
         </>
       ) : (
         // No photos yet. Early in the event this screen has exactly one
         // job — get the first guest to scan — so the QR goes full size,
         // centred, instead of sitting small in the corner.
-        <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-8">
+        <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-8 z-[2]">
           <p className="font-serif text-5xl mb-3" style={{ color: isLight ? "#0F1729" : "#ffffff" }}>
             {coupleName}
           </p>
           <p className="text-2xl mb-10" style={{ color: mutedColor }}>
-            Skenirajte in delite prve fotografije
+            {t.emptyPrompt}
           </p>
           {settings.showQr && (
             <img
@@ -416,39 +463,39 @@ export function PhotoWall({ token, pw, coupleName, albumUrl, initialPhotos, sett
         </div>
       )}
 
-      {/* ── Side collage ─────────────────────────────────────────────── */}
+      {/* ── Drifting side collage ────────────────────────────────────── */}
       {settings.showSides &&
-        (isPortrait ? PORTRAIT_SLOTS : SIDE_SLOTS).map((slot, i) => {
+        DRIFT_TRACKS.map((track, i) => {
           const state = slots[i];
           if (!state?.photo) return null;
-          const pos =
-            slot.side === "left"
-              ? { top: slot.top, left: slot.edge }
-              : { top: slot.top, right: slot.edge };
-          const anim =
-            state.anim === "fly"
-              ? `${slot.side === "left" ? "wallFlyLeft" : "wallFlyRight"} 1.15s cubic-bezier(.16,.9,.3,1) forwards`
-              : state.anim === "fade"
-                ? "wallSlotFade .8s ease-out forwards"
-                : undefined;
+          // Landscape: pinned near a side edge, travelling vertically.
+          // Portrait: pinned in a horizontal band, travelling across.
+          const pos: React.CSSProperties = isPortrait
+            ? { top: track.band, left: 0 }
+            : track.side === "left"
+              ? { left: track.edge, top: 0 }
+              : { right: track.edge, top: 0 };
           return (
             <div
               key={i}
-              className="absolute"
-              style={{ ...pos, width: slot.size, transform: `rotate(${slot.rot}deg)` }}
+              className="absolute z-[1]"
+              style={{
+                ...pos,
+                width: track.size,
+                animation: `${isPortrait ? "wallDriftAcross" : "wallDriftUp"} ${track.dur}s linear ${track.delay}s infinite`,
+                willChange: "transform",
+              }}
+              onAnimationIteration={() => recycleSlot(i)}
             >
               <img
-                key={state.key}
                 src={bunnyDisplayUrl(state.photo.thumbnailUrl ?? state.photo.blobUrl, 320, 78)}
                 alt=""
                 className="w-full rounded-xl border-2 border-white/80 object-cover"
                 style={{
-                  height: Math.round(slot.size * THUMB_RATIO),
-                  animation: anim,
+                  height: Math.round(track.size * THUMB_RATIO),
+                  transform: `rotate(${track.rot}deg)`,
                   boxShadow: isLight ? "0 8px 26px rgba(15,23,41,.22)" : "0 10px 34px rgba(0,0,0,.55)",
-                  ...(state.anim === "fly"
-                    ? { animationName: `${slot.side === "left" ? "wallFlyLeft" : "wallFlyRight"}, wallNewRing` }
-                    : null),
+                  animation: state.ring ? "wallNewRing 1.6s ease-out" : undefined,
                 }}
               />
             </div>
@@ -459,7 +506,7 @@ export function PhotoWall({ token, pw, coupleName, albumUrl, initialPhotos, sett
           Hidden while the wall is empty, where the name is already the
           headline of the centred call-to-action. */}
       {settings.showTitle && center && (
-        <div className="absolute top-6 right-6 backdrop-blur-sm px-5 py-2.5 rounded-full" style={pillStyle}>
+        <div className="absolute top-6 right-6 backdrop-blur-sm px-5 py-2.5 rounded-full z-[3]" style={pillStyle}>
           <p className="font-serif text-xl">{coupleName}</p>
         </div>
       )}
@@ -470,7 +517,7 @@ export function PhotoWall({ token, pw, coupleName, albumUrl, initialPhotos, sett
           href="https://www.guestcam.si"
           target="_blank"
           rel="noreferrer"
-          className="absolute top-6 left-6 flex items-center gap-2.5 backdrop-blur-sm pl-3 pr-4 py-2 rounded-full no-underline"
+          className="absolute top-6 left-6 flex items-center gap-2.5 backdrop-blur-sm pl-3 pr-4 py-2 rounded-full no-underline z-[3]"
           style={{ background: pillStyle.background }}
         >
           <GuestcamLogo size="sm" variant={isLight ? "onLight" : "onDark"} />
@@ -480,11 +527,26 @@ export function PhotoWall({ token, pw, coupleName, albumUrl, initialPhotos, sett
         </a>
       )}
 
+      {/* Premium notice. The wall deliberately still runs on every plan so
+          an owner can set it up and see it working before paying — this
+          just makes clear it ships with Premium. Bottom-right, opposite
+          the QR, so it never covers the call to action. */}
+      {!isPremium && (
+        <div
+          className="absolute bottom-6 right-6 px-4 py-2 rounded-full backdrop-blur-sm z-[3]"
+          style={{ background: pillStyle.background }}
+        >
+          <p className="text-xs" style={{ color: mutedColor }}>
+            <span style={{ color: "#FFC94D" }}>★</span> {t.premiumOnly}
+          </p>
+        </div>
+      )}
+
       {/* Persistent QR overlay — bottom-left. Suppressed while the wall is
           empty, where the full-size centred QR above takes over. */}
       {settings.showQr && center && (
         <div
-          className="absolute bottom-6 left-6 flex items-center gap-4 backdrop-blur-sm rounded-2xl p-4"
+          className="absolute bottom-6 left-6 flex items-center gap-4 backdrop-blur-sm rounded-2xl p-4 z-[3]"
           style={{ background: isLight ? "rgba(255,255,255,.85)" : "rgba(0,0,0,.55)" }}
         >
           <img
@@ -494,7 +556,7 @@ export function PhotoWall({ token, pw, coupleName, albumUrl, initialPhotos, sett
           />
           <div className="max-w-[220px]">
             <p className="font-semibold text-base leading-snug" style={{ color: pillStyle.color }}>
-              Skenirajte in delite svoje fotografije!
+              {t.qrPrompt}
             </p>
           </div>
         </div>

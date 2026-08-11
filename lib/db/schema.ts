@@ -122,6 +122,34 @@ export const moments = pgTable(
   (t) => [index("moments_album_idx").on(t.albumId)]
 );
 
+// ─── Wall sponsors ───────────────────────────────────────────────────────────
+
+/**
+ * Sponsor / partner slides shown on the Photo Wall in between guest
+ * photos. Deliberately its own table rather than columns on `albums`:
+ * Drizzle selects every column of `albums` on every album query, so a
+ * column that exists in code but not yet in the database takes the whole
+ * app down (as the wall_token deploy did). A missing TABLE can only
+ * break queries that touch it — and every read here is wrapped in a
+ * try/catch that degrades to "no sponsors".
+ */
+export const wallSponsors = pgTable(
+  "wall_sponsors",
+  {
+    id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+    albumId: text("album_id")
+      .notNull()
+      .references(() => albums.id, { onDelete: "cascade" }),
+    /** Public CDN URL of the uploaded sponsor image. */
+    imageUrl: text("image_url").notNull(),
+    /** Optional label shown under the slide (e.g. the sponsor's name). */
+    caption: text("caption"),
+    sortOrder: integer("sort_order").notNull().default(0),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+  },
+  (t) => [index("wall_sponsors_album_idx").on(t.albumId)]
+);
+
 // ─── Photos ──────────────────────────────────────────────────────────────────
 
 export const photos = pgTable(

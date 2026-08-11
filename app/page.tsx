@@ -1008,6 +1008,7 @@ export default async function HomePage() {
                   "Prenos vseh slik (ZIP)",
                   "Live galerija (projekcija)",
                   "Personalizirana stran z imeni",
+                  "Foto stena za TV / projektor",
                   "Lastna domena (foto.vase-ime.si)",
                   "Premium design predloge",
                   "Prioritetna podpora",
