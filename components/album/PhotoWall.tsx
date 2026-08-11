@@ -23,7 +23,22 @@ import { bunnyDisplayUrl } from "@/lib/storage/bunny";
 import { GuestcamLogo } from "@/components/GuestcamLogo";
 import type { WallCopy } from "@/lib/i18n/wall-translations";
 
-const POLL_MS = 8_000; // how often we check for new uploads
+/**
+ * Adaptive polling.
+ *
+ * The gap between a guest tapping upload and their photo hitting the big
+ * screen is almost entirely this interval, and that moment is what makes
+ * the room keep shooting — so while photos are actually flowing we poll
+ * fast. When the album goes quiet (speeches, dinner, the small hours) we
+ * back off instead of hammering the endpoint all night from a TV that
+ * nobody is watching. Any new arrival snaps straight back to FAST.
+ */
+const POLL_FAST_MS = 3_000;
+const POLL_IDLE_MS = 8_000;
+const POLL_QUIET_MS = 20_000;
+/** Empty polls before stepping down a gear. */
+const IDLE_AFTER = 5;
+const QUIET_AFTER = 20;
 
 export interface WallPhoto {
   id: string;
@@ -209,44 +224,64 @@ export function PhotoWall({
   });
 
   // ── Poll for new uploads ────────────────────────────────────────────
+  // setTimeout-chained rather than setInterval so the delay can change
+  // between ticks, and so a slow request can never stack up behind the
+  // previous one on flaky venue wifi.
   useEffect(() => {
     const pollUrl = `/api/wall/${token}${pw ? `?pw=${encodeURIComponent(pw)}` : ""}`;
-    const id = setInterval(async () => {
+    let timer: ReturnType<typeof setTimeout>;
+    let cancelled = false;
+    let emptyPolls = 0;
+
+    const nextDelay = () =>
+      emptyPolls >= QUIET_AFTER ? POLL_QUIET_MS
+      : emptyPolls >= IDLE_AFTER ? POLL_IDLE_MS
+      : POLL_FAST_MS;
+
+    const tick = async () => {
       try {
         const res = await fetch(pollUrl, { cache: "no-store" });
-        if (!res.ok) return;
-        const data = (await res.json()) as { photos: WallPhoto[] };
-        const fresh = data.photos.filter((p) => !knownIds.current.has(p.id));
-        if (fresh.length === 0) return;
-        fresh.forEach((p) => knownIds.current.add(p.id));
-        // API returns newest first — flip so they play in upload order.
-        const arrivals = fresh.reverse();
-        setPhotos((prev) => [...prev, ...arrivals]);
-        // Drop each arrival into a drifting slot, ringed so the room
-        // notices it join the wall.
-        setSlots((prev) => {
-          const next = [...prev];
-          arrivals.forEach((p) => {
-            const i = slotCursor.current % SLOT_COUNT;
-            slotCursor.current += 1;
-            next[i] = { photo: p, ring: true };
-          });
-          return next;
-        });
-        // Then give the newest one the centre stage. Seeing your own
-        // photo go big within seconds of sharing is the single biggest
-        // driver of more uploads from the room.
-        const newest = arrivals[arrivals.length - 1];
-        const t = setTimeout(() => {
-          setCenter({ kind: "photo", photo: newest, isNew: true });
-          setCenterKey(nextKey());
-        }, 900);
-        promoteTimers.current.push(t);
+        if (res.ok) {
+          const data = (await res.json()) as { photos: WallPhoto[] };
+          const fresh = data.photos.filter((p) => !knownIds.current.has(p.id));
+          if (fresh.length > 0) {
+            emptyPolls = 0; // back to fast polling
+            fresh.forEach((p) => knownIds.current.add(p.id));
+            // API returns newest first — flip so they play in upload order.
+            const arrivals = fresh.reverse();
+            setPhotos((prev) => [...prev, ...arrivals]);
+            // Drop each arrival into a drifting slot, ringed so the room
+            // notices it join the wall.
+            setSlots((prev) => {
+              const next = [...prev];
+              arrivals.forEach((p) => {
+                const i = slotCursor.current % SLOT_COUNT;
+                slotCursor.current += 1;
+                next[i] = { photo: p, ring: true };
+              });
+              return next;
+            });
+            // Then give the newest one the centre stage. Seeing your own
+            // photo go big within seconds of sharing is the single biggest
+            // driver of more uploads from the room.
+            const newest = arrivals[arrivals.length - 1];
+            const t = setTimeout(() => {
+              setCenter({ kind: "photo", photo: newest, isNew: true });
+              setCenterKey(nextKey());
+            }, 900);
+            promoteTimers.current.push(t);
+          } else {
+            emptyPolls += 1;
+          }
+        }
       } catch {
         // Offline TV / flaky venue wifi — just try again on the next tick.
       }
-    }, POLL_MS);
-    return () => clearInterval(id);
+      if (!cancelled) timer = setTimeout(tick, nextDelay());
+    };
+
+    timer = setTimeout(tick, POLL_FAST_MS);
+    return () => { cancelled = true; clearTimeout(timer); };
   }, [token, pw]);
 
   // ── Centre stage rotation ───────────────────────────────────────────
