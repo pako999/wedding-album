@@ -37,6 +37,9 @@ interface SaveBody {
   uploaderName: string;
   // Optional sub-gallery / moment the photo is uploaded into
   momentId?: string;
+  // Pixel dimensions measured client-side (images only)
+  width?: number;
+  height?: number;
 }
 
 /**
@@ -65,6 +68,14 @@ export async function POST(
 
   const body: SaveBody = await req.json();
   const { blobUrl, cfStreamVideoId, mimeType, originalFilename, sizeBytes, momentId } = body;
+  // Optional pixel dimensions, measured client-side on the uploaded file.
+  // Clamped; anything implausible is dropped rather than stored.
+  const asDim = (v: unknown) => {
+    const n = typeof v === "number" ? Math.round(v) : NaN;
+    return Number.isFinite(n) && n > 0 && n <= 20000 ? n : null;
+  };
+  const width = asDim(body.width);
+  const height = asDim(body.height);
 
   if (!blobUrl && !cfStreamVideoId) {
     return NextResponse.json({ error: "blobUrl or cfStreamVideoId required" }, { status: 400 });
@@ -190,6 +201,8 @@ export async function POST(
     mimeType,
     sizeBytes,
     originalFilename,
+    width: width && height ? width : null,
+    height: width && height ? height : null,
     status,
   }).returning();
 

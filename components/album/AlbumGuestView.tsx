@@ -9,6 +9,7 @@ import "yet-another-react-lightbox/styles.css";
 import Download from "yet-another-react-lightbox/plugins/download";
 import Counter from "yet-another-react-lightbox/plugins/counter";
 import "yet-another-react-lightbox/plugins/counter.css";
+import Zoom from "yet-another-react-lightbox/plugins/zoom";
 import { UploadModal } from "./UploadModal";
 import { ReminderModal } from "./ReminderModal";
 import { CountdownTimer } from "./CountdownTimer";
@@ -493,8 +494,10 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
   // ── Lightbox slides — mirror the currently displayed images (filtered+sorted) ──
   const lightboxSlides = filteredImages.map(p => ({
     src: bunnyDisplayUrl(p.blobUrl, 2400, 90),
-    width: p.width ?? 2400,
-    height: p.height ?? 1600,
+    // Real dimensions when the upload recorded them; otherwise none —
+    // the old 2400x1600 fallback told the lightbox every photo was
+    // landscape, which broke fit and zoom maths for portrait shots.
+    ...(p.width && p.height ? { width: p.width, height: p.height } : {}),
     download: { url: bunnyOriginalUrl(p.blobUrl), filename: p.originalFilename ?? "photo.jpg" },
     description: p.caption ?? undefined,
   }));
@@ -505,6 +508,10 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
   const lightboxOpen = lightboxIndex >= 0;
   // Photo currently shown in the lightbox (drives the info panel)
   const lightboxPhoto: Photo | undefined = lightboxOpen ? filteredImages[lightboxViewIndex] : undefined;
+
+  /** Current lightbox zoom level — vertical swipe must not change the
+   *  photo while the guest is panning a zoomed-in image. */
+  const lightboxZoomRef = useRef(1);
 
   // ── Vertical swipe to change photo ──────────────────────────────────
   // The lightbox already pages on horizontal swipes; this adds the
@@ -528,6 +535,8 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
     let tracking = false;
 
     const onStart = (e: TouchEvent) => {
+      // A second finger means pinch (zoom) — never treat it as a swipe.
+      if (e.touches.length > 1) { tracking = false; return; }
       const target = e.target as HTMLElement | null;
       tracking = !!target?.closest(".yarl__slide");
       if (!tracking) return;
@@ -537,6 +546,8 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
     const onEnd = (e: TouchEvent) => {
       if (!tracking) return;
       tracking = false;
+      // Zoomed in: vertical movement is the guest PANNING the photo.
+      if (lightboxZoomRef.current > 1.01) return;
       const dx = e.changedTouches[0].clientX - startX;
       const dy = e.changedTouches[0].clientY - startY;
       if (Math.abs(dy) < 70 || Math.abs(dy) < Math.abs(dx) * 1.5) return;
@@ -1750,11 +1761,21 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
             close={() => { setLightboxIndex(-1); setLightboxPanelOpen(false); setLightboxDesktopPanelOpen(true); setOpenCommentsPhoto(null); setLightboxNamePrompt(false); pendingLikeRef.current = null; }}
             index={lightboxIndex}
             slides={lightboxSlides}
-            plugins={[Download, Counter]}
+            plugins={[Download, Counter, Zoom]}
+            /* Pinch-to-zoom handled INSIDE the lightbox. Without this,
+               a guest's instinctive pinch on a photo hit Safari itself
+               and zoomed the whole fixed-position page — leaving the
+               photo (and every control) cropped outside the screen with
+               no obvious way back. The plugin captures the gesture and
+               zooms the image instead. */
+            zoom={{ maxZoomPixelRatio: 3, scrollToZoom: false }}
             /* Keep the controlled `index` in sync with swipes/arrows — without
                this, the controlled prop snaps every swipe back to the photo
                the lightbox was opened on. */
-            on={{ view: ({ index }) => { setLightboxViewIndex(index); setLightboxIndex(index); } }}
+            on={{
+              view: ({ index }) => { setLightboxViewIndex(index); setLightboxIndex(index); lightboxZoomRef.current = 1; },
+              zoom: ({ zoom }) => { lightboxZoomRef.current = zoom; },
+            }}
             styles={{ container: { backgroundColor: "rgba(0,0,0,0.97)" } }}
             /* When the desktop panel is OPEN the container also carries
                `guestcam-lightbox--panel`; globals.css scopes the right-padding
