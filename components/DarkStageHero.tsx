@@ -30,14 +30,18 @@ interface DriftCard {
   desktopOnly?: boolean;
 }
 
+// Real wedding photographs (customer-provided), not product-UI shots —
+// the stage is meant to look like a live wall at an actual wedding.
+// The four FRONT lanes each get a distinct photo; the blurred back lanes
+// carry the remaining two plus one repeat, where the blur hides it.
 const CARDS: DriftCard[] = [
-  { lane: "3%",  size: 170, aspect: "3/4", rot: "-6deg", dur: "38s", delay: "-6s",  src: "/hero/scan.webp" },
-  { lane: "16%", size: 120, aspect: "1/1", rot: "5deg",  dur: "47s", delay: "-24s", src: "/hero/gallery.webp", back: true },
-  { lane: "30%", size: 145, aspect: "4/5", rot: "-4deg", dur: "42s", delay: "-33s", src: "/hero/cards.webp", desktopOnly: true },
-  { lane: "44%", size: 110, aspect: "1/1", rot: "6deg",  dur: "50s", delay: "-12s", src: "/hero/guestcam-hero-photo.webp", back: true, desktopOnly: true },
-  { lane: "58%", size: 160, aspect: "3/4", rot: "4deg",  dur: "40s", delay: "-19s", src: "/hero/gallery.webp" },
-  { lane: "72%", size: 125, aspect: "1/1", rot: "-5deg", dur: "46s", delay: "-38s", src: "/hero/scan.webp", back: true, desktopOnly: true },
-  { lane: "84%", size: 175, aspect: "4/5", rot: "5deg",  dur: "36s", delay: "-28s", src: "/hero/guestcam-hero-photo.webp" },
+  { lane: "3%",  size: 170, aspect: "3/4", rot: "-6deg", dur: "38s", delay: "-6s",  src: "/hero/wedding-walk.webp" },
+  { lane: "16%", size: 120, aspect: "1/1", rot: "5deg",  dur: "47s", delay: "-24s", src: "/hero/wedding-stairs.webp", back: true },
+  { lane: "30%", size: 145, aspect: "4/5", rot: "-4deg", dur: "42s", delay: "-33s", src: "/hero/wedding-lift.webp", desktopOnly: true },
+  { lane: "44%", size: 110, aspect: "1/1", rot: "6deg",  dur: "50s", delay: "-12s", src: "/hero/wedding-castle.webp", back: true, desktopOnly: true },
+  { lane: "58%", size: 160, aspect: "3/4", rot: "4deg",  dur: "40s", delay: "-19s", src: "/hero/wedding-avenue.webp" },
+  { lane: "72%", size: 125, aspect: "1/1", rot: "-5deg", dur: "46s", delay: "-38s", src: "/hero/wedding-walk.webp", back: true, desktopOnly: true },
+  { lane: "84%", size: 175, aspect: "4/5", rot: "5deg",  dur: "36s", delay: "-28s", src: "/hero/wedding-kiss.webp" },
 ];
 
 interface Props {

@@ -5,16 +5,16 @@
  *
  * Mirrors the real wall's anatomy: dark stage, one large "photo" in the
  * centre, small thumbnails drifting up the sides, LIVE badge, uploader
- * pill and a QR chip in the corner. The "photos" are warm gradients —
+ * pill and a QR chip in the corner. The photos are real wedding shots —
  * abstract on purpose, so the demo never competes with real content
  * around it. Keyframes live in globals.css (gc-drift, gc-pop).
  */
 
 const THUMBS = [
-  { left: "4%",  size: "16%", dur: "11s", delay: "-2s",  rot: "-5deg", bg: "linear-gradient(135deg,#F59E0B,#F97316)" },
-  { left: "13%", size: "12%", dur: "14s", delay: "-9s",  rot: "4deg",  bg: "linear-gradient(135deg,#38BDF8,#6366F1)" },
-  { right: "5%", size: "17%", dur: "12s", delay: "-6s",  rot: "5deg",  bg: "linear-gradient(135deg,#F472B6,#C084FC)" },
-  { right: "14%", size: "11%", dur: "15s", delay: "-12s", rot: "-4deg", bg: "linear-gradient(135deg,#34D399,#14B8A6)" },
+  { left: "4%",  size: "16%", dur: "11s", delay: "-2s",  rot: "-5deg", src: "/hero/wedding-kiss.webp" },
+  { left: "13%", size: "12%", dur: "14s", delay: "-9s",  rot: "4deg",  src: "/hero/wedding-stairs.webp" },
+  { right: "5%", size: "17%", dur: "12s", delay: "-6s",  rot: "5deg",  src: "/hero/wedding-lift.webp" },
+  { right: "14%", size: "11%", dur: "15s", delay: "-12s", rot: "-4deg", src: "/hero/wedding-castle.webp" },
 ] as const;
 
 export function WallMiniDemo({ label = "LIVE" }: { label?: string }) {
@@ -34,12 +34,14 @@ export function WallMiniDemo({ label = "LIVE" }: { label?: string }) {
                 right: "right" in t2 ? t2.right : undefined,
                 width: t2.size,
                 aspectRatio: "3/3.4",
-                background: t2.bg,
                 animation: `gc-drift ${t2.dur} linear ${t2.delay} infinite`,
                 rotate: t2.rot,
                 boxShadow: "0 6px 18px rgba(0,0,0,.45)",
               }}
-            />
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={t2.src} alt="" loading="lazy" className="w-full h-full object-cover rounded-md" />
+            </div>
           ))}
 
           {/* centre photo */}
@@ -50,10 +52,10 @@ export function WallMiniDemo({ label = "LIVE" }: { label?: string }) {
             className="absolute left-1/2 top-1/2 z-10 rounded-lg overflow-hidden border-[3px] border-white"
             style={{ height: "76%", aspectRatio: "3/4", boxShadow: "0 16px 40px rgba(0,0,0,.55)", animation: "gc-pop 7s ease-in-out infinite", transform: "translate(-50%,-50%)" }}
           >
-            <div className="absolute inset-0" style={{ background: "linear-gradient(160deg,#FDE68A 0%,#F59E0B 38%,#B45309 100%)" }} />
-            {/* silhouette-ish shapes to read as a "photo" */}
-            <div className="absolute bottom-0 inset-x-0 h-1/2" style={{ background: "linear-gradient(0deg, rgba(15,23,41,.55), transparent)" }} />
-            <div className="absolute bottom-[18%] left-1/2 -translate-x-1/2 w-[36%] aspect-square rounded-full bg-white/25 blur-[1px]" />
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/hero/wedding-walk-lg.webp" alt="" className="absolute inset-0 w-full h-full object-cover" />
+            {/* bottom scrim keeps the uploader pill legible over the photo */}
+            <div className="absolute bottom-0 inset-x-0 h-1/3" style={{ background: "linear-gradient(0deg, rgba(15,23,41,.55), transparent)" }} />
           </div>
 
           {/* uploader pill */}
