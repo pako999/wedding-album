@@ -11,7 +11,7 @@ import { EventCard } from "@/components/EventCard";
 import { TrackViewContent } from "@/components/TrackViewContent";
 import { safeJsonLd } from "@/lib/seo/jsonld-safe";
 import { WallMiniDemo } from "@/components/WallMiniDemo";
-import { DarkStageHero } from "@/components/DarkStageHero";
+import { NordicHero } from "@/components/NordicHero";
 import { STAND_VARIANTS, eur } from "@/lib/print-service";
 
 export const metadata: Metadata = {
@@ -329,39 +329,34 @@ export default async function HomePage() {
           floating live-album UI chips that show the product working. Trust
           band below in brand navy. A first-time visitor should be able to
           explain the product back after 5 seconds. */}
-      <section className="overflow-hidden">
-        {/* Dark Stage — the homepage IS the Photo Wall: real photos drift
-            behind a glowing headline; LIVE badge; the product as hero. */}
-        <DarkStageHero
-          eyebrow="QR foto album za poroke in dogodke"
-          headLead="Ne izgubi slik"
-          headAccent="svojega dogodka"
-          headTrail="."
-          lead="Vse fotografije in videji tvojih gostov se samodejno zberejo v en zaseben album, v polni kakovosti."
-          ctaHref="/dashboard/new"
-          ctaLabel="Ustvari svoj QR album"
-          note="Brezplačen začetek · Pripravljeno v 2 minutah"
-          toast="Pravkar deljeno · Ana"
-          demoSlot={<DemoButton variant="heroDark" />}
-          printOffer={
-            /* Full-service offer — printed stands are the thing customers
-               ask for once they've seen the QR. Saying so in the hero turns
-               a DIY chore into something we do for them. Dark-theme variant
-               of the light-hero card so it reads on the Photo Wall stage. */
-            <div
-              className="inline-flex items-start gap-3 rounded-2xl border px-4 py-3 text-left backdrop-blur-sm"
-              style={{ background: "rgba(255,201,77,0.10)", borderColor: "rgba(255,201,77,0.34)" }}
-            >
-              <p className="text-[13px] leading-snug text-white">
-                <span className="font-bold">Ne želite tiskati sami?</span>{" "}
-                <span className="text-gray-300">
-                  {`Natisnemo QR podstavke za mize in vam jih pošljemo domov: že od ${eur(Math.min(...STAND_VARIANTS.map((v) => v.unitCents)))} na kos, dodate jih ob nakupu paketa.`}
-                </span>
-              </p>
-            </div>
-          }
-        />
+      {/* Nordic hero: warm paper, editorial split, photography as the
+          only colour. Replaces the dark drift stage (see NordicHero). */}
+      <NordicHero
+        eyebrow="QR foto album za poroke in dogodke"
+        headLead="Ne izgubi slik"
+        headAccent="svojega dogodka"
+        headTrail="."
+        lead="Vse fotografije in videji tvojih gostov se samodejno zberejo v en zaseben album, v polni kakovosti."
+        ctaHref="/dashboard/new"
+        ctaLabel="Ustvari svoj QR album"
+        note="Brezplačen začetek · Pripravljeno v 2 minutah"
+        demoSlot={<DemoButton variant="hero" />}
+        primaryPhoto={{ src: "/hero/wedding-avenue.webp", alt: "Mladoporočenca v drevoredu, fotografija gosta" }}
+        secondaryPhoto={{ src: "/hero/wedding-walk-lg.webp", alt: "" }}
+        printOffer={
+          <div
+            className="inline-flex items-start gap-3 rounded-xl px-4 py-3 text-left"
+            style={{ background: "#FFFFFF", border: "1px solid var(--hairline)" }}
+          >
+            <p className="text-[13px] leading-snug" style={{ color: "var(--muted)" }}>
+              <span className="font-semibold" style={{ color: "var(--ink)" }}>Ne želite tiskati sami?</span>{" "}
+              {`Natisnemo QR podstavke za mize in vam jih pošljemo domov: že od ${eur(Math.min(...STAND_VARIANTS.map((v) => v.unitCents)))} na kos, dodate jih ob nakupu paketa.`}
+            </p>
+          </div>
+        }
+      />
 
+      <section className="overflow-hidden">
         {/* ── Trust band — full-width navy, structured like the ad ─────── */}
         <div style={{ background: '#0F1729' }}>
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 sm:py-6">

@@ -8,7 +8,7 @@ import { HeaderAuthButtons } from "@/components/HeaderAuthButtons";
 import { HomeMobileMenu } from "@/components/HomeMobileMenu";
 import { TrackViewContent } from "@/components/TrackViewContent";
 import { WallMiniDemo } from "@/components/WallMiniDemo";
-import { DarkStageHero } from "@/components/DarkStageHero";
+import { NordicHero } from "@/components/NordicHero";
 import { WALL_COPY } from "@/lib/i18n/wall-translations";
 import { STAND_VARIANTS, eur } from "@/lib/print-service";
 
@@ -754,8 +754,8 @@ export async function LocalizedHomePage({ lang }: { lang: Lang }) {
 
       {/* Hero */}
       <section className="overflow-hidden">
-        {/* Dark Stage — the homepage IS the Photo Wall (see DarkStageHero). */}
-        <DarkStageHero
+        {/* Nordic hero, shared by all five localized homepages. */}
+        <NordicHero
           eyebrow={t.heroEyebrow}
           headLead={t.heroHead.lead}
           headAccent={t.heroHead.accent}
@@ -764,21 +764,14 @@ export async function LocalizedHomePage({ lang }: { lang: Lang }) {
           ctaHref="/dashboard/new"
           ctaLabel={t.heroPrimary}
           note={t.heroNote}
-          toast={`${WALL_COPY[lang].justShared} · Ana`}
+          primaryPhoto={{ src: "/hero/wedding-avenue.webp", alt: t.heroHead.accent }}
+          secondaryPhoto={{ src: "/hero/wedding-walk-lg.webp", alt: "" }}
           printOffer={
-            /* Same full-service offer the SL homepage carries — it was
-               Slovenian-only, which meant five of six markets never saw
-               that we print and ship the stands at all. */
-            <div
-              className="inline-flex items-start gap-3 rounded-2xl border px-4 py-3 text-left backdrop-blur-sm"
-              style={{ background: "rgba(255,201,77,0.10)", borderColor: "rgba(255,201,77,0.34)" }}
-            >
-              <span className="text-xl leading-none mt-0.5" aria-hidden>🖨</span>
-              <p className="text-[13px] leading-snug text-white">
-                <span className="font-bold">{t.heroPrintOffer.title}</span>{" "}
-                <span className="text-gray-300">
-                  {t.heroPrintOffer.body(eur(Math.min(...STAND_VARIANTS.map((v) => v.unitCents))))}
-                </span>
+            <div className="inline-flex items-start gap-3 rounded-xl px-4 py-3 text-left"
+              style={{ background: "#FFFFFF", border: "1px solid var(--hairline)" }}>
+              <p className="text-[13px] leading-snug" style={{ color: "var(--muted)" }}>
+                <span className="font-semibold" style={{ color: "var(--ink)" }}>{t.heroPrintOffer.title}</span>{" "}
+                {t.heroPrintOffer.body(eur(Math.min(...STAND_VARIANTS.map((v) => v.unitCents))))}
               </p>
             </div>
           }
