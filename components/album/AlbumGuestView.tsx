@@ -227,6 +227,14 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
 
   const t       = translations[lang];
   const evtIcon = eventIcon(album.eventType ?? "other");
+  // Hero header background: the owner's chosen cover wins; otherwise the
+  // NEWEST uploaded photo takes the stage automatically, so the moment a
+  // guest adds the first picture the plain dark header becomes their
+  // photo. Videos are skipped (no still to show), and the uploader sees
+  // it immediately — the gallery refreshes after a successful upload.
+  const newestImage = photos.find((p) => !p.mimeType?.startsWith("video/"));
+  const headerCover = album.coverImageUrl
+    ?? (newestImage ? bunnyDisplayUrl(newestImage.blobUrl, 1600, 80) : null);
   const albumFull = album.plan === "free" && photos.length >= (album.maxPhotos ?? 20);
 
   // ── Demo album: uploads allowed, but a tester is capped at 5 photos ───────
@@ -722,9 +730,9 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
           HERO HEADER
       ════════════════════════════════════════════════════════════════════ */}
       <div className="relative">
-        {album.coverImageUrl ? (
+        {headerCover ? (
           <div className="relative h-72 sm:h-96 lg:h-[460px] w-full overflow-hidden">
-            <Image src={album.coverImageUrl} alt={album.coupleName} fill className="object-cover" priority />
+            <Image src={headerCover} alt={album.coupleName} fill className="object-cover" priority />
             <div className="absolute inset-0" style={{ background: "rgba(0,0,0,0.45)" }} />
             <div className="absolute top-0 inset-x-0 flex items-center justify-between px-6 pt-5">
               <div className="flex items-center gap-2 text-white/80 text-sm font-medium">
