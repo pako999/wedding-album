@@ -1,0 +1,254 @@
+{
+  "slug": "deljenje-fotografij-poroka-brez-aplikacije",
+  "lang": "sl",
+  "title": "Deljenje poročnih fotografij brez aplikacije – kako deluje v 2026",
+  "description": "Kako lahko gostje delijo fotografije z vaše poroke brez prenosa aplikacije? QR koda + brskalnik = preprosto za vse generacije.",
+  "translationKey": "wedding-photo-sharing-no-app",
+  "publishedAt": "2026-06-21",
+  "updatedAt": "2026-06-21",
+  "author": "Guestcam Team",
+  "category": "vodnik",
+  "readingTime": 7,
+  "tags": [
+    "deljenje fotografij poroka",
+    "brez aplikacije",
+    "QR koda",
+    "poročne fotografije",
+    "Guestcam"
+  ],
+  "tldr": "Gostje skenirajo QR kodo s kamero telefona in fotografije naložijo neposredno v brskalniku — brez prenosa aplikacije, brez registracije.",
+  "coverImage": "https://images.unsplash.com/photo-1606216794074-735e91aa2c92?w=1600&h=900&fit=crop&q=80&auto=format",
+  "coverAlt": "Gostje na poroki fotografirajo s telefoni in delijo spomine",
+  "content": [
+    {
+      "type": "p",
+      "text": "Predstavljajte si: na poroki prijatelja ste ujeli 200 trenutkov. Slavljenca prosita, da slike delite. Vidite povezavo do neke aplikacije, ugotovite, da jo morate namestiti, se registrirati, dovoliti dostop do kamere ... in odnehate. Točno to se zgodi na vsaki poroki, kjer zbiranje fotografij zahteva prenos aplikacije."
+    },
+    {
+      "type": "stat",
+      "value": "67 %",
+      "label": "gostov, ki opustijo deljenje fotografij, če je treba prenesti aplikacijo",
+      "source": "Guestcam interni podatki, 2025"
+    },
+    {
+      "type": "h2",
+      "text": "Zakaj aplikacija ubije sodelovanje gostov?"
+    },
+    {
+      "type": "p",
+      "text": "Namestitev aplikacije zveni nepomembno — v praksi je največja ovira. Na dan poroke so gostje v svečanih oblačilih, s kozarcem v roki, sredi pogovora. Nobeden od teh trenutkov ni primeren za:\n\n– iskanje aplikacije v Storu\n– vnos gesla ali registracijo\n– potrjevanje dovoljenj (kamera, shramba, lokacija ...)\n– čakanje na prenos"
+    },
+    {
+      "type": "callout",
+      "text": "Vsak korak v postopku deljenja zmanjša delež gostov, ki ga bodo dokončali. Aplikacija, ki zahteva namestitev, običajno izgubi 50–70 % potencialnih udeležencev, še preden sploh vidijo galerijo."
+    },
+    {
+      "type": "p",
+      "text": "Posebej pomembna je generacijska raznolikost na porokah. Starejši sorodniki, otroci in gostje brez tehničnih izkušenj — prav ti imajo najlepše spontane fotografije in najmanj volje za nameščanje novih aplikacij."
+    },
+    {
+      "type": "image",
+      "src": "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=1200&h=720&fit=crop&q=82&auto=format",
+      "alt": "Babica s telefonom fotografira mladoporočenca na poroki",
+      "caption": "Prav tisti gostje, ki ne nameščajo aplikacij, imajo fotografije, ki jih niste nikoli videli.",
+      "credit": "Foto: Unsplash"
+    },
+    {
+      "type": "h2",
+      "text": "Kako deljenje brez aplikacije sploh deluje?"
+    },
+    {
+      "type": "p",
+      "text": "Rešitev je kombinacija QR kode in spletnega brskalnika — tehnologij, ki sta vgrajeni v vsak sodoben telefon in ne zahtevata ničesar dodatnega. Postopek je videti takole:"
+    },
+    {
+      "type": "ol",
+      "items": [
+        "Gost opazi QR kodo na mizi (kartica, plakat ali zaslon).",
+        "Odpre kamero telefona in jo usmeri v QR kodo — enako kot za jedilnike v restavracijah.",
+        "Brskalnik se samodejno odpre s poročno galerijo.",
+        "Gost se dotakne »Dodaj fotografijo«, izbere slike iz kamere in klikne Naloži.",
+        "Fotografije so takoj vidne v skupni galeriji — brez registracije, brez gesla."
+      ]
+    },
+    {
+      "type": "p",
+      "text": "Vse se dogaja znotraj mobilnega brskalnika (Chrome, Safari, Firefox — vseeno katerega). Ni ničesar za namestiti. Gost zapre brskalnik in praznuje naprej."
+    },
+    {
+      "type": "image",
+      "src": "https://images.unsplash.com/photo-1531058020387-3be344556be6?w=1200&h=720&fit=crop&q=82&auto=format",
+      "alt": "QR koda na poročni mizi, ki jo gostje skenirajo s telefonom",
+      "caption": "QR koda na mizi — eno skeniranje, vsi gostje v isti galeriji.",
+      "credit": "Foto: Unsplash"
+    },
+    {
+      "type": "h2",
+      "text": "Primerjava: z aplikacijo proti brez aplikacije"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Merilo",
+        "Aplikacija potrebna",
+        "Brez aplikacije (Guestcam)"
+      ],
+      "rows": [
+        [
+          "Povprečen delež udeležencev",
+          "30–50 %",
+          "75–90 %"
+        ],
+        [
+          "Koraki do naložene fotografije",
+          "5–8",
+          "2–3"
+        ],
+        [
+          "Združljivost (starejši telefoni)",
+          "Omejena",
+          "Vsak telefon z brskalnikom"
+        ],
+        [
+          "Kapaciteta shrambe",
+          "Omejena s paketom",
+          "Originalna ločljivost"
+        ],
+        [
+          "Zasebnost galerije",
+          "Odvisno od aplikacije",
+          "Zasebna, samo s QR kodo"
+        ],
+        [
+          "Potreben internet za ogled",
+          "Da",
+          "Da"
+        ],
+        [
+          "Deluje na iPhonu in Androidu",
+          "Večinoma da",
+          "Vedno da"
+        ]
+      ]
+    },
+    {
+      "type": "h2",
+      "text": "Zakaj je to še posebej pomembno na porokah"
+    },
+    {
+      "type": "p",
+      "text": "Povprečna poroka združi 80–120 gostov iz treh ali štirih generacij hkrati. Mladi par ob mizi fotografira vsak trenutek; babica in dedek sedita dve mizi stran. Vsi imajo telefon v žepu — razlikuje se samo pripravljenost, da nanj namestijo nekaj novega."
+    },
+    {
+      "type": "p",
+      "text": "QR koda na mizi te razlike ne pozna: deluje enako za obe generaciji. Babici ni treba vedeti, kaj je »app store« — zna skenirati kodo, ker to počne že za jedilnike v restavracijah."
+    },
+    {
+      "type": "h2",
+      "text": "Kako nastaviti deljenje fotografij brez aplikacije za svojo poroko?"
+    },
+    {
+      "type": "p",
+      "text": "Guestcam je brezplačna platforma, ki deluje točno po tem principu — brez aplikacije za goste, brez registracije, brez tehničnih zapletov. Takole ga nastavite v manj kot 5 minutah:"
+    },
+    {
+      "type": "ol",
+      "items": [
+        "Pojdite na guestcam.si in kliknite »Ustvari galerijo«.",
+        "Vnesite ime para in datum poroke.",
+        "Prenesite QR kodo (PDF, pripravljen za tisk).",
+        "Natisnite kartice za mize ali velik plakat za vhod.",
+        "Na dan poroke gostje skenirajo in nalagajo — vi spremljate galerijo v živo."
+      ]
+    },
+    {
+      "type": "quote",
+      "text": "Nisem verjela, da bo delovalo. Moja 74-letna tašča je skenirala QR kodo in naložila slike brez vsake pomoči. Na koncu smo imeli 340 fotografij.",
+      "cite": "Ana P., nevesta iz Ljubljane, junij 2025"
+    },
+    {
+      "type": "h2",
+      "text": "Praktični nasveti za največji delež gostov"
+    },
+    {
+      "type": "p",
+      "text": "Tudi s QR kodo obstajajo načini, ki sodelovanje povečajo ali zmanjšajo. Tole res deluje:"
+    },
+    {
+      "type": "ul",
+      "items": [
+        "QR kodo postavite na vsako mizo — ne samo na vhod. Gost, ki je ob vstopu ne opazi, jo bo videl za mizo.",
+        "Naj DJ ali voditelj galerijo napove 2–3-krat med večerom: »Skenirajte QR kodo na mizi in delite svoje fotografije z mladoporočencema.«",
+        "Uporabite personalizirano besedilo pod QR kodo: »Ana & Marko – vaši spomini«.",
+        "Dan po poroki pošljite QR kodo prek WhatsAppa vsem gostom z besedilom »Imate še kakšno fotografijo, ki je niste delili?«.",
+        "Kartico s QR kodo vložite v zahvalo, ki jo gostje dobijo ob odhodu."
+      ]
+    },
+    {
+      "type": "callout",
+      "text": "Po naših podatkih poroke, ki imajo QR kodo na vsaki mizi IN DJ-ja oziroma voditelja, ki jo napove, zberejo povprečno 3× več fotografij od tistih z eno samo kodo na vhodu."
+    },
+    {
+      "type": "h2",
+      "text": "Kaj se s fotografijami zgodi po poroki?"
+    },
+    {
+      "type": "p",
+      "text": "Galerija ostane zasebna in dostopna samo vam in gostom, ki imajo QR kodo. Vse fotografije lahko prenesete v originalni ločljivosti — Guestcam slik ne stiska in ne spreminja. Premium paket vključuje:"
+    },
+    {
+      "type": "ul",
+      "items": [
+        "Neomejeno število fotografij in videov",
+        "Živo galerijo za projekcijo na zaslonu med večerom",
+        "Prenos vseh vsebin v ZIP z enim klikom",
+        "Hrambo do 1 leta",
+        "Moderacijo — vi odobrite, katere fotografije so vidne vsem"
+      ]
+    },
+    {
+      "type": "cta",
+      "text": "Ustvarite brezplačno galerijo brez aplikacije",
+      "href": "/dashboard/new"
+    },
+    {
+      "type": "h2",
+      "text": "Pogosta vprašanja"
+    },
+    {
+      "type": "faq",
+      "q": "Ali morajo gostje karkoli namestiti?",
+      "a": "Ne. Gostje skenirajo QR kodo s kamero telefona in galerija se odpre v brskalniku. Brez namestitve, brez registracije."
+    },
+    {
+      "type": "faq",
+      "q": "Ali deluje na starejših telefonih?",
+      "a": "Da, dokler ima telefon sodobnejši brskalnik (Chrome, Safari, Firefox). Skeniranje QR kod je vgrajena funkcija kamere na vseh novejših telefonih — iPhone (iOS 11+) in Android (8.0+)."
+    },
+    {
+      "type": "faq",
+      "q": "Koliko fotografij lahko zberem?",
+      "a": "Brezplačni paket podpira do 20 fotografij. Premium paket nima omejitev — idealen za poroke s 100+ gosti."
+    },
+    {
+      "type": "faq",
+      "q": "Je galerija zasebna?",
+      "a": "Da. Galerija je dostopna samo osebam z vašo QR kodo ali neposredno povezavo. Guestcam fotografij ne deli javno in jih ne uporablja za trženje."
+    },
+    {
+      "type": "faq",
+      "q": "Ali lahko spremljam, kdo nalaga fotografije?",
+      "a": "Vse fotografije vidite takoj, ko so naložene. V paketu Premium imate tudi moderacijo — vsako fotografijo lahko odobrite ali skrijete, preden postane vidna drugim gostom."
+    },
+    {
+      "type": "faq",
+      "q": "Kaj če gost nima bralnika QR kod?",
+      "a": "Vsaka sodobna kamera telefona samodejno prepozna QR kode — posebna aplikacija za branje ni potrebna. Lahko pa neposredno povezavo do galerije delite prek WhatsAppa ali SMS-a."
+    },
+    {
+      "type": "faq",
+      "q": "Kako prenesem vse fotografije gostov?",
+      "a": "V paketu Premium z enim klikom prenesete ZIP arhiv z vsemi fotografijami v originalni ločljivosti in z originalnimi metapodatki (datum, ura, naprava)."
+    }
+  ]
+}

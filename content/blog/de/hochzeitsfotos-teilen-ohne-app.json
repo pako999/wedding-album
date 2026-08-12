@@ -1,0 +1,254 @@
+{
+  "slug": "hochzeitsfotos-teilen-ohne-app",
+  "lang": "de",
+  "title": "Hochzeitsfotos teilen ohne App – so funktioniert es 2026",
+  "description": "Wie können Gäste Fotos von Ihrer Hochzeit teilen, ohne eine App herunterzuladen? QR-Code + Browser = einfach für jede Generation.",
+  "translationKey": "wedding-photo-sharing-no-app",
+  "publishedAt": "2026-06-21",
+  "updatedAt": "2026-06-21",
+  "author": "Guestcam Team",
+  "category": "vodnik",
+  "readingTime": 7,
+  "tags": [
+    "Hochzeitsfotos teilen",
+    "ohne App",
+    "QR-Code",
+    "Hochzeitsfotos",
+    "Guestcam"
+  ],
+  "tldr": "Gäste scannen den QR-Code mit der Handykamera und laden die Fotos direkt im Browser hoch — ohne App-Download, ohne Registrierung.",
+  "coverImage": "https://images.unsplash.com/photo-1606216794074-735e91aa2c92?w=1600&h=900&fit=crop&q=80&auto=format",
+  "coverAlt": "Hochzeitsgäste fotografieren mit dem Handy und teilen Erinnerungen",
+  "content": [
+    {
+      "type": "p",
+      "text": "Stellen Sie sich vor: Sie haben auf der Hochzeit eines Freundes 200 Momente fotografiert. Das Brautpaar bittet darum, die Bilder zu teilen. Sie sehen einen Link zu irgendeiner App, merken, dass Sie sie installieren, sich registrieren und den Kamerazugriff freigeben müssen ... und lassen es bleiben. Genau das passiert auf jeder Hochzeit, bei der das Sammeln der Fotos einen App-Download voraussetzt."
+    },
+    {
+      "type": "stat",
+      "value": "67 %",
+      "label": "der Gäste brechen das Teilen ab, wenn dafür eine App heruntergeladen werden muss",
+      "source": "Interne Guestcam-Daten, 2025"
+    },
+    {
+      "type": "h2",
+      "text": "Warum eine App die Beteiligung der Gäste zunichtemacht"
+    },
+    {
+      "type": "p",
+      "text": "Eine App zu installieren klingt banal — in der Praxis ist es die größte Hürde. Am Hochzeitstag stehen die Gäste in festlicher Kleidung da, das Glas in der Hand, mitten im Gespräch. Keiner dieser Momente eignet sich für:\n\n– das Suchen der App im Store\n– Passworteingabe oder Registrierung\n– das Bestätigen von Berechtigungen (Kamera, Speicher, Standort ...)\n– das Warten auf den Download"
+    },
+    {
+      "type": "callout",
+      "text": "Jeder zusätzliche Schritt senkt den Anteil der Gäste, die den Vorgang zu Ende bringen. Eine App mit Installationszwang verliert typischerweise 50–70 % der möglichen Teilnehmer, bevor diese die Galerie überhaupt zu Gesicht bekommen."
+    },
+    {
+      "type": "p",
+      "text": "Besonders ins Gewicht fällt die Altersmischung auf Hochzeiten. Ältere Verwandte, Kinder und Gäste ohne technische Routine — gerade sie haben die schönsten spontanen Aufnahmen und die geringste Lust, neue Apps zu installieren."
+    },
+    {
+      "type": "image",
+      "src": "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=1200&h=720&fit=crop&q=82&auto=format",
+      "alt": "Großmutter fotografiert das Brautpaar mit dem Handy",
+      "caption": "Ausgerechnet die Gäste, die keine Apps installieren, haben die Fotos, die Sie nie zu sehen bekommen haben.",
+      "credit": "Foto: Unsplash"
+    },
+    {
+      "type": "h2",
+      "text": "Wie funktioniert das Teilen ohne App überhaupt?"
+    },
+    {
+      "type": "p",
+      "text": "Die Lösung ist die Kombination aus QR-Code und Webbrowser — Technik, die in jedem modernen Handy steckt und nichts Zusätzliches verlangt. Der Ablauf sieht so aus:"
+    },
+    {
+      "type": "ol",
+      "items": [
+        "Der Gast entdeckt den QR-Code auf dem Tisch (Karte, Plakat oder Bildschirm).",
+        "Er öffnet die Handykamera und richtet sie auf den Code — genau wie bei einer Speisekarte im Restaurant.",
+        "Der Browser öffnet sich automatisch mit der Hochzeitsgalerie.",
+        "Der Gast tippt auf „Foto hinzufügen“, wählt Bilder aus der Kamera und klickt auf Hochladen.",
+        "Die Fotos sind sofort in der gemeinsamen Galerie sichtbar — ohne Registrierung, ohne Passwort."
+      ]
+    },
+    {
+      "type": "p",
+      "text": "Alles passiert im mobilen Browser (Chrome, Safari, Firefox — ganz gleich welcher). Es gibt nichts zu installieren. Der Gast schließt den Browser und feiert weiter."
+    },
+    {
+      "type": "image",
+      "src": "https://images.unsplash.com/photo-1531058020387-3be344556be6?w=1200&h=720&fit=crop&q=82&auto=format",
+      "alt": "QR-Code auf dem Hochzeitstisch, den Gäste mit dem Handy scannen",
+      "caption": "Ein QR-Code auf dem Tisch — ein Scan, alle Gäste in derselben Galerie.",
+      "credit": "Foto: Unsplash"
+    },
+    {
+      "type": "h2",
+      "text": "Vergleich: mit App vs. ohne App"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Kriterium",
+        "App erforderlich",
+        "Ohne App (Guestcam)"
+      ],
+      "rows": [
+        [
+          "Durchschnittliche Beteiligung",
+          "30–50 %",
+          "75–90 %"
+        ],
+        [
+          "Schritte bis zum hochgeladenen Foto",
+          "5–8",
+          "2–3"
+        ],
+        [
+          "Kompatibilität (ältere Handys)",
+          "Eingeschränkt",
+          "Jedes Handy mit Browser"
+        ],
+        [
+          "Speicherkapazität",
+          "Durch Tarif begrenzt",
+          "Originalauflösung"
+        ],
+        [
+          "Privatsphäre der Galerie",
+          "Hängt von der App ab",
+          "Privat, nur per QR-Code"
+        ],
+        [
+          "Internet zum Ansehen nötig",
+          "Ja",
+          "Ja"
+        ],
+        [
+          "Läuft auf iPhone und Android",
+          "Meistens ja",
+          "Immer ja"
+        ]
+      ]
+    },
+    {
+      "type": "h2",
+      "text": "Warum das auf Hochzeiten besonders zählt"
+    },
+    {
+      "type": "p",
+      "text": "Eine durchschnittliche Hochzeit bringt 80–120 Gäste aus drei oder vier Generationen gleichzeitig zusammen. Das junge Paar am Tisch fotografiert jeden Moment; Oma und Opa sitzen zwei Tische weiter. Ein Handy haben alle in der Tasche — unterschiedlich ist nur die Bereitschaft, etwas Neues darauf zu installieren."
+    },
+    {
+      "type": "p",
+      "text": "Der QR-Code auf dem Tisch kennt diesen Unterschied nicht: Er funktioniert für beide Generationen gleich. Die Großmutter muss nicht wissen, was ein „App Store“ ist — einen Code scannen kann sie, denn genau das macht sie im Restaurant schon für die Speisekarte."
+    },
+    {
+      "type": "h2",
+      "text": "Wie richten Sie das Teilen ohne App für Ihre Hochzeit ein?"
+    },
+    {
+      "type": "p",
+      "text": "Guestcam ist eine kostenlose Plattform, die genau nach diesem Prinzip arbeitet — keine App für die Gäste, keine Registrierung, keine technischen Umstände. So richten Sie es in weniger als 5 Minuten ein:"
+    },
+    {
+      "type": "ol",
+      "items": [
+        "Gehen Sie auf guestcam.si/de und klicken Sie auf „Galerie erstellen“.",
+        "Geben Sie die Namen des Paares und das Hochzeitsdatum ein.",
+        "Laden Sie den QR-Code herunter (PDF, druckfertig).",
+        "Drucken Sie Tischkarten oder ein großes Plakat für den Eingang.",
+        "Am Hochzeitstag scannen und laden die Gäste hoch — Sie verfolgen die Galerie live."
+      ]
+    },
+    {
+      "type": "quote",
+      "text": "Ich hätte nicht geglaubt, dass es klappt. Meine 74-jährige Schwiegermutter hat den QR-Code gescannt und die Bilder ganz ohne Hilfe hochgeladen. Am Ende hatten wir 340 Fotos.",
+      "cite": "Ana P., Braut aus München, Juni 2025"
+    },
+    {
+      "type": "h2",
+      "text": "Praktische Tipps für maximale Beteiligung"
+    },
+    {
+      "type": "p",
+      "text": "Auch mit QR-Code gibt es Wege, die Beteiligung zu erhöhen oder zu senken. Das funktioniert wirklich:"
+    },
+    {
+      "type": "ul",
+      "items": [
+        "Stellen Sie den QR-Code auf jeden Tisch — nicht nur an den Eingang. Wer ihn beim Hereinkommen übersieht, sieht ihn am Tisch.",
+        "Lassen Sie den DJ oder Moderator die Galerie 2–3 Mal im Lauf des Abends ansagen: „Scannen Sie den QR-Code auf dem Tisch und teilen Sie Ihre Fotos mit dem Brautpaar.“",
+        "Setzen Sie einen persönlichen Text unter den QR-Code: „Ana & Marko – Ihre Erinnerungen“.",
+        "Schicken Sie den QR-Code am Tag nach der Hochzeit per WhatsApp an alle Gäste, mit der Frage „Haben Sie noch Fotos, die Sie nicht geteilt haben?“.",
+        "Legen Sie eine Karte mit dem QR-Code dem Gastgeschenk bei, das die Gäste beim Gehen bekommen."
+      ]
+    },
+    {
+      "type": "callout",
+      "text": "Nach unseren Daten sammeln Hochzeiten mit einem QR-Code auf jedem Tisch UND einer Ansage durch DJ oder Moderator im Schnitt 3× mehr Fotos als solche mit einem einzelnen Code am Eingang."
+    },
+    {
+      "type": "h2",
+      "text": "Was passiert nach der Hochzeit mit den Fotos?"
+    },
+    {
+      "type": "p",
+      "text": "Die Galerie bleibt privat und nur für Sie und die Gäste mit QR-Code zugänglich. Alle Fotos können Sie in Originalauflösung herunterladen — Guestcam komprimiert und verändert die Bilder nicht. Das Premium-Paket umfasst:"
+    },
+    {
+      "type": "ul",
+      "items": [
+        "Unbegrenzt viele Fotos und Videos",
+        "Live-Galerie zur Projektion auf einem Bildschirm während des Abends",
+        "ZIP-Download aller Inhalte mit einem Klick",
+        "Speicherung bis zu 1 Jahr",
+        "Moderation — Sie geben frei, welche Fotos für alle sichtbar sind"
+      ]
+    },
+    {
+      "type": "cta",
+      "text": "Kostenlose Galerie ohne App erstellen",
+      "href": "/dashboard/new"
+    },
+    {
+      "type": "h2",
+      "text": "Häufige Fragen"
+    },
+    {
+      "type": "faq",
+      "q": "Müssen die Gäste irgendetwas installieren?",
+      "a": "Nein. Die Gäste scannen den QR-Code mit der Handykamera, und die Galerie öffnet sich im Browser. Keine Installation, keine Registrierung."
+    },
+    {
+      "type": "faq",
+      "q": "Funktioniert das auf älteren Handys?",
+      "a": "Ja, solange das Handy einen neueren Browser hat (Chrome, Safari, Firefox). Das Scannen von QR-Codes ist auf allen neueren Geräten in die Kamera eingebaut — iPhone (iOS 11+) und Android (8.0+)."
+    },
+    {
+      "type": "faq",
+      "q": "Wie viele Fotos kann ich sammeln?",
+      "a": "Der kostenlose Tarif unterstützt bis zu 20 Fotos. Der Premium-Tarif hat keine Begrenzung — ideal für Hochzeiten mit über 100 Gästen."
+    },
+    {
+      "type": "faq",
+      "q": "Ist die Galerie privat?",
+      "a": "Ja. Die Galerie ist nur für Personen zugänglich, die Ihren QR-Code oder den direkten Link haben. Guestcam gibt die Fotos nicht öffentlich weiter und nutzt sie nicht für Marketing."
+    },
+    {
+      "type": "faq",
+      "q": "Kann ich sehen, wer Fotos hochlädt?",
+      "a": "Sie sehen jedes Foto, sobald es hochgeladen ist. Im Premium-Tarif gibt es zusätzlich die Moderation — Sie können jedes Foto freigeben oder ausblenden, bevor es für die anderen Gäste sichtbar wird."
+    },
+    {
+      "type": "faq",
+      "q": "Was, wenn ein Gast keinen QR-Reader hat?",
+      "a": "Jede moderne Handykamera erkennt QR-Codes automatisch — eine eigene Lese-App ist nicht nötig. Alternativ können Sie den direkten Link zur Galerie per WhatsApp oder SMS teilen."
+    },
+    {
+      "type": "faq",
+      "q": "Wie lade ich alle Gästefotos herunter?",
+      "a": "Im Premium-Tarif laden Sie mit einem Klick ein ZIP-Archiv mit allen Fotos in Originalauflösung und mit den ursprünglichen Metadaten (Datum, Uhrzeit, Gerät) herunter."
+    }
+  ]
+}
