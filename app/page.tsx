@@ -352,7 +352,6 @@ export default async function HomePage() {
               className="inline-flex items-start gap-3 rounded-2xl border px-4 py-3 text-left backdrop-blur-sm"
               style={{ background: "rgba(255,201,77,0.10)", borderColor: "rgba(255,201,77,0.34)" }}
             >
-              <span className="text-xl leading-none mt-0.5" aria-hidden>🖨</span>
               <p className="text-[13px] leading-snug text-white">
                 <span className="font-bold">Ne želite tiskati sami?</span>{" "}
                 <span className="text-gray-300">
