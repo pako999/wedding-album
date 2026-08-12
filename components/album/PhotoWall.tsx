@@ -156,6 +156,8 @@ interface Props {
   initialPhotos: WallPhoto[];
   sponsors: WallSponsor[];
   settings: WallSettings;
+  /** Event logo (album_appearance) — corner chip on the wall. */
+  logoUrl?: string | null;
   t: WallCopy;
   /** False for Free/Basic/Plus — the wall still runs (so owners can try
    *  it before buying) but carries a Premium notice. */
@@ -171,6 +173,7 @@ function subscribeOrientation(cb: () => void) {
 }
 
 export function PhotoWall({
+  logoUrl,
   token,
   pw,
   coupleName,
@@ -380,6 +383,11 @@ export function PhotoWall({
 
   return (
     <div className="fixed inset-0 overflow-hidden select-none" style={{ background: bg.css }}>
+      {logoUrl && (
+        /* Event logo — bottom-left, clear of the LIVE badge and QR chip. */
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src={logoUrl} alt="" className="absolute bottom-5 left-5 z-30 w-14 h-14 rounded-xl object-cover border border-white/30 shadow-lg opacity-90" />
+      )}
       <style>{`
         @keyframes wallCenterFade {
           from { opacity: 0; transform: scale(1.04); }

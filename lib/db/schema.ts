@@ -214,6 +214,35 @@ export const wallCollaborators = pgTable(
 
 export type WallCollaborator = typeof wallCollaborators.$inferSelect;
 
+// ─── Album appearance & welcome screen ───────────────────────────────────────
+// Branding an event host controls: logo, accent colour, backgrounds and
+// the first-visit welcome screen. NEW table, guarded reads via
+// lib/album-appearance.ts — a lagging migration means "default look",
+// never a broken gallery.
+
+export const albumAppearance = pgTable("album_appearance", {
+  albumId: text("album_id")
+    .primaryKey()
+    .references(() => albums.id, { onDelete: "cascade" }),
+  /** Square event logo, shown on the guest album header and the wall. */
+  logoUrl: text("logo_url"),
+  /** Brand accent (hex) overriding the theme preset's accent on public pages. */
+  accentColor: varchar("accent_color", { length: 9 }),
+  /** Custom page background image for the guest album. */
+  backgroundUrl: text("background_url"),
+  // Welcome screen — shown once per guest on first visit.
+  welcomeEnabled: boolean("welcome_enabled").notNull().default(false),
+  welcomeTitle: text("welcome_title"),
+  welcomeText: text("welcome_text"),
+  welcomeButton: text("welcome_button"),
+  welcomeBgUrl: text("welcome_bg_url"),
+  /** One of the curated font pairings: elegant | modern | script | classic. */
+  welcomeFont: varchar("welcome_font", { length: 16 }).notNull().default("elegant"),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+export type AlbumAppearance = typeof albumAppearance.$inferSelect;
+
 // ─── Event leads ─────────────────────────────────────────────────────────────
 
 /**

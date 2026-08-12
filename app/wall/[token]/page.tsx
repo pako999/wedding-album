@@ -1,3 +1,4 @@
+import { getAlbumAppearance } from "@/lib/album-appearance";
 import { notFound } from "next/navigation";
 import { db } from "@/lib/db";
 import { albums, photos } from "@/lib/db/schema";
@@ -169,6 +170,7 @@ export default async function PhotoWallPage({ params, searchParams }: Props) {
 
   return (
     <PhotoWall
+      logoUrl={(await getAlbumAppearance(album.id))?.logoUrl ?? null}
       token={token}
       pw={pw}
       coupleName={album.coupleName}

@@ -344,6 +344,23 @@ export async function runMigrations() {
   await run("wall_collaborators idx",    (q) => q`CREATE INDEX IF NOT EXISTS wall_collaborators_album_idx ON wall_collaborators (album_id)`);
   await run("wall_collaborators unique", (q) => q`CREATE UNIQUE INDEX IF NOT EXISTS wall_collaborators_album_email ON wall_collaborators (album_id, email)`);
 
+  // ── Album appearance & welcome screen ─────────────────────────────────────
+  await run("create album_appearance", (q) => q`
+    CREATE TABLE IF NOT EXISTS album_appearance (
+      album_id        TEXT PRIMARY KEY,
+      logo_url        TEXT,
+      accent_color    VARCHAR(9),
+      background_url  TEXT,
+      welcome_enabled BOOLEAN NOT NULL DEFAULT FALSE,
+      welcome_title   TEXT,
+      welcome_text    TEXT,
+      welcome_button  TEXT,
+      welcome_bg_url  TEXT,
+      welcome_font    VARCHAR(16) NOT NULL DEFAULT 'elegant',
+      updated_at      TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )
+  `);
+
   // ── Discount codes ────────────────────────────────────────────────────────
   await run("create discount_codes", (q) => q`
     CREATE TABLE IF NOT EXISTS discount_codes (

@@ -17,6 +17,7 @@ import { STAND_VARIANTS, eur } from "@/lib/print-service";
 import type { AlbumFlags } from "@/lib/album-flags";
 import { EventModerationCard } from "@/components/dashboard/EventModerationCard";
 import { WallCollaboratorsCard } from "@/components/dashboard/WallCollaboratorsCard";
+import { EventAppearanceCard } from "@/components/dashboard/EventAppearanceCard";
 import { EventLeadsCard } from "@/components/dashboard/EventLeadsCard";
 import { ALBUM_THEMES, themesForEvent } from "@/lib/album-themes";
 import { fbEvent } from "@/lib/fbpixel";
@@ -1139,11 +1140,12 @@ function EventsTab({
   flags?: AlbumFlags;
   ownerEmail: string | null;
 }) {
-  const [sub, setSub] = useState<"wall" | "moderation" | "leads" | "collab">("wall");
+  const [sub, setSub] = useState<"wall" | "appearance" | "moderation" | "leads" | "collab">("wall");
   const wallAppUrl = process.env.NEXT_PUBLIC_APP_URL ?? SITE_URL;
   const wallUrl = `${wallAppUrl}/wall/${wallToken}`;
   const SUBTABS = [
     { id: "wall" as const,       label: "🖼 Foto stena" },
+    { id: "appearance" as const, label: "🎨 Videz" },
     { id: "moderation" as const, label: "🛡 Moderacija" },
     { id: "leads" as const,      label: "📇 Zajem podatkov" },
     { id: "collab" as const,     label: "👥 Sodelavci" },
@@ -1175,6 +1177,9 @@ function EventsTab({
           pendingCount={album.pendingCount ?? 0}
           plan={album.plan}
         />
+      )}
+      {sub === "appearance" && (
+        <EventAppearanceCard albumSlug={album.slug} coupleName={album.coupleName} />
       )}
       {sub === "moderation" && (
         <EventModerationCard

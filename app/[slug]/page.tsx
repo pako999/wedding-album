@@ -10,6 +10,7 @@ import { hashAlbumPassword, needsRehash, verifyAlbumPassword } from "@/lib/album
 import { verifiedEmails } from "@/lib/album-ownership";
 import { toPublicAlbum } from "@/lib/album-view";
 import { getAlbumFlags } from "@/lib/album-flags";
+import { getAlbumAppearance, WELCOME_FONT_STACKS, type WelcomeFont } from "@/lib/album-appearance";
 import type { Metadata } from "next";
 
 export const dynamic = "force-dynamic";
@@ -177,6 +178,7 @@ export default async function AlbumPage({ params, searchParams }: Props) {
   // Events/business package flag. getAlbumFlags never throws — if the
   // table isn't there yet the feature simply reads as off.
   const flags = await getAlbumFlags(album.id);
+  const appearance = await getAlbumAppearance(album.id);
 
   // Fetch the album's moments (named sub-galleries)
   const albumMoments = await db.query.moments.findMany({
@@ -205,6 +207,17 @@ export default async function AlbumPage({ params, searchParams }: Props) {
         isOwner={isOwner}
         requireGuestData={flags.guestDataCapture}
         eventFlags={flags}
+        appearance={appearance ? {
+          logoUrl: appearance.logoUrl,
+          accentColor: appearance.accentColor,
+          backgroundUrl: appearance.backgroundUrl,
+          welcomeEnabled: appearance.welcomeEnabled,
+          welcomeTitle: appearance.welcomeTitle,
+          welcomeText: appearance.welcomeText,
+          welcomeButton: appearance.welcomeButton,
+          welcomeBgUrl: appearance.welcomeBgUrl,
+          welcomeFontStack: WELCOME_FONT_STACKS[(appearance.welcomeFont as WelcomeFont)] ?? WELCOME_FONT_STACKS.elegant,
+        } : undefined}
       />
     </>
   );

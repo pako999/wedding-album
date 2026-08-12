@@ -1,5 +1,6 @@
 "use client";
 
+import { WelcomeScreen } from "@/components/album/WelcomeScreen";
 import { useState, useRef, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -35,6 +36,18 @@ interface Props {
   /** Events/business package: require name, surname and email before a
    *  guest can upload. Resolved server-side from the album's flags. */
   requireGuestData?: boolean;
+  /** Owner branding + welcome screen (album_appearance), resolved server-side. */
+  appearance?: {
+    logoUrl: string | null;
+    accentColor: string | null;
+    backgroundUrl: string | null;
+    welcomeEnabled: boolean;
+    welcomeTitle: string | null;
+    welcomeText: string | null;
+    welcomeButton: string | null;
+    welcomeBgUrl: string | null;
+    welcomeFontStack: string;
+  };
   /** Event moderation & permission flags, resolved server-side. */
   eventFlags?: {
     allowPhotos: boolean;
@@ -137,7 +150,7 @@ function AvatarBubble({ name, size = 5, accent = BRAND.accent }: { name: string;
   );
 }
 
-export function AlbumGuestView({ album, photos, moments, passwordRequired, passwordCorrect, providedPassword, initialLang, isOwner = false, requireGuestData = false, eventFlags }: Props) {
+export function AlbumGuestView({ album, photos, moments, passwordRequired, passwordCorrect, providedPassword, initialLang, isOwner = false, requireGuestData = false, eventFlags, appearance }: Props) {
   // Event permission gates. UI-side only — the real doors are in the
   // upload and like APIs; this keeps the guest page honest about them.
   const canUpload = eventFlags?.albumPermission !== "view_only";
@@ -225,7 +238,10 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
   }, []);
 
   // ── Owner-chosen theme (dark hero hue + accent color) ─────────────────────
-  const theme = getAlbumTheme(album.theme);
+  // Brand accent override: the owner's custom colour wins over the
+  // theme preset everywhere the accent is used.
+  const baseTheme = getAlbumTheme(album.theme);
+  const theme = appearance?.accentColor ? { ...baseTheme, accent: appearance.accentColor } : baseTheme;
   // Soft, flat tint of the accent for light-background accent elements
   const accentTint = `${theme.accent}14`; // ~8% alpha — flat tint, no gradient
 
@@ -650,6 +666,31 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
   }
 
   return (
+    <>
+      {appearance?.backgroundUrl && (
+        /* Custom album background — fixed, behind everything; the soft
+           white scrim keeps text readable on any photo. */
+        <div className="fixed inset-0 -z-10" aria-hidden>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={appearance.backgroundUrl} alt="" className="w-full h-full object-cover" />
+          <div className="absolute inset-0 bg-white/85" />
+        </div>
+      )}
+      {appearance?.welcomeEnabled && !isOwner && (
+        <WelcomeScreen
+          albumSlug={album.slug}
+          title={appearance.welcomeTitle || album.coupleName}
+          text={appearance.welcomeText}
+          button={appearance.welcomeButton || t.confirm || "OK"}
+          bgUrl={appearance.welcomeBgUrl}
+          fontStack={appearance.welcomeFontStack}
+          accent={theme.accent}
+          logoUrl={appearance.logoUrl}
+          initialName={uploaderName}
+          onDone={(name) => { if (name) setUploaderName(name); }}
+        />
+      )}
+    
     <div className="min-h-screen bg-white overflow-x-hidden">
 
       {/* Owner-only top bar — quick exit back to the admin dashboard while
@@ -2042,6 +2083,7 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
         />
       )}
     </div>
+    </>
   );
 }
 
