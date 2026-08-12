@@ -9,7 +9,10 @@ import { fbEvent } from "@/lib/fbpixel";
 import type { Album } from "@/lib/db/schema";
 import { translations, type Lang } from "@/lib/i18n/translations";
 import { UPGRADE_COPY, PLAN_FEATURE_KEYS } from "@/lib/i18n/upgrade-translations";
-import { TABLE_STANDS_CENTS, SHIPPING_COUNTRIES, quoteShipping, eur } from "@/lib/print-service";
+import {
+  SHIPPING_COUNTRIES, STAND_TIERS, DEFAULT_STAND_QTY,
+  quoteShipping, standsPriceCents, perStandCents, eur,
+} from "@/lib/print-service";
 
 type PlanId = "free" | "basic" | "plus" | "premium";
 
@@ -64,9 +67,13 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
   // Priced again server-side from the country; what we show here is only
   // a preview of that number so the customer sees the real total first.
   const [wantStands, setWantStands] = useState(false);
+  const [standsQty, setStandsQty] = useState<number>(DEFAULT_STAND_QTY);
   const [shipCountry, setShipCountry] = useState("SI");
   const shipQuote = quoteShipping(shipCountry);
-  const standsCents = wantStands ? TABLE_STANDS_CENTS + (shipQuote?.cents ?? 0) : 0;
+  // Bundle price comes from the tier table, never from a qty × unit
+  // multiplication — the tiers aren't a straight per-unit curve.
+  const standsGoodsCents = standsPriceCents(standsQty) ?? 0;
+  const standsCents = wantStands ? standsGoodsCents + (shipQuote?.cents ?? 0) : 0;
 
   // Discount code state
   const [discountInput, setDiscountInput] = useState("");
@@ -514,13 +521,23 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
                   onChange={(e) => setWantStands(e.target.checked)}
                   className="mt-1 w-5 h-5 shrink-0 accent-[#FFC94D]"
                 />
+                {/* Product shot — people don't buy a physical object from a
+                    line of text. Fixed box so ticking the add-on doesn't
+                    reflow the card. */}
+                <img
+                  src="/print/qr-stand.svg"
+                  alt={u.standsTitle}
+                  width={88}
+                  height={66}
+                  className="hidden sm:block w-22 h-16 shrink-0 rounded-lg object-cover border border-gray-100"
+                />
                 <div className="flex-1 min-w-0">
                   <div className="flex items-start justify-between gap-3">
                     <p className="font-semibold text-gray-900">
                       🖨 {u.standsTitle}
                     </p>
                     <span className="text-sm font-bold text-gray-900 whitespace-nowrap">
-                      {eur(TABLE_STANDS_CENTS)}
+                      {u.standsFrom} {eur(STAND_TIERS[0].cents)}
                     </span>
                   </div>
                   <p className="text-xs text-gray-500 mt-1">{u.standsDesc}</p>
@@ -529,6 +546,40 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
 
               {wantStands && (
                 <div className="mt-4 pt-4 border-t border-gray-100">
+                  {/* Quantity first: it drives the price, and the country
+                      picker below only adds postage on top. */}
+                  <label className="block text-xs font-semibold text-gray-600 mb-1.5">
+                    {u.standsQty}
+                  </label>
+                  <div className="grid grid-cols-3 gap-2 mb-4">
+                    {STAND_TIERS.map((tier) => {
+                      const active = standsQty === tier.qty;
+                      return (
+                        <button
+                          key={tier.qty}
+                          type="button"
+                          onClick={() => setStandsQty(tier.qty)}
+                          aria-pressed={active}
+                          className="rounded-xl border-2 px-2 py-2 text-center transition-all"
+                          style={{
+                            borderColor: active ? "#FFC94D" : "#e5e7eb",
+                            background: active ? "#FFF9EC" : "#fff",
+                          }}
+                        >
+                          <span className="block text-sm font-bold text-gray-900">
+                            {tier.qty}×
+                          </span>
+                          <span className="block text-xs font-semibold text-gray-700">
+                            {eur(tier.cents)}
+                          </span>
+                          <span className="block text-[10px] text-gray-400">
+                            {eur(perStandCents(tier.qty) ?? 0)}/{u.standsPiece}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+
                   <label className="block text-xs font-semibold text-gray-600 mb-1.5">
                     {u.standsCountry}
                   </label>
@@ -573,8 +624,8 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
             {wantStands && shipQuote && (
               <div className="space-y-1.5 mb-3 pb-3 border-b border-gray-100">
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-gray-600">🖨 {u.standsTitle}</span>
-                  <span className="text-gray-800">{eur(TABLE_STANDS_CENTS)}</span>
+                  <span className="text-gray-600">🖨 {u.standsTitle} · {standsQty}×</span>
+                  <span className="text-gray-800">{eur(standsGoodsCents)}</span>
                 </div>
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-gray-600">{u.standsShipping} · {shipQuote.carrier}</span>
@@ -647,6 +698,8 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
                           planId: selectedPlan,
                           albumSlug: album.slug,
                           tableStands: wantStands,
+
+                          standsQty,
                           discountCode: discountStatus === "valid" ? appliedCode : undefined,
                           billing: {
                             country: shipCountry,
@@ -688,6 +741,8 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
                           planId: selectedPlan,
                           albumSlug: album.slug,
                           tableStands: wantStands,
+
+                          standsQty,
                           discountCode: discountStatus === "valid" ? appliedCode : undefined,
                           billing: {
                             country:     shipCountry,

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { addOnTotalCents, quoteShipping } from "@/lib/print-service";
+import { addOnTotalCents, quoteShipping, standsPriceCents, DEFAULT_STAND_QTY } from "@/lib/print-service";
 import { auth } from "@clerk/nextjs/server";
 import { db } from "@/lib/db";
 import { albums, cardBilling } from "@/lib/db/schema";
@@ -41,6 +41,9 @@ export async function POST(req: NextRequest) {
     planId: PlanId;
     albumSlug: string;
     tableStands?: boolean;
+    /** Bundle size. Validated against STAND_TIERS server-side — an
+     *  unknown quantity is rejected, never repriced to a nearest match. */
+    standsQty?: number;
     discountCode?: string;
     billing?: {
       name?: string;
@@ -56,7 +59,7 @@ export async function POST(req: NextRequest) {
       country?: string;
     };
   };
-  const { planId, albumSlug, tableStands, discountCode, billing } = body;
+  const { planId, albumSlug, tableStands, standsQty, discountCode, billing } = body;
 
   if (!planId || !albumSlug || !(planId in PLAN_CONFIG)) {
     return NextResponse.json({ error: "Invalid request" }, { status: 400 });
@@ -124,14 +127,14 @@ export async function POST(req: NextRequest) {
   // same trust model the plan price already uses. A country we don't
   // ship to is rejected outright rather than silently charged a default
   // rate, which would lose money on every such parcel.
-  const addOnCents = addOnTotalCents(!!tableStands, billing?.country);
+  const addOnCents = addOnTotalCents(!!tableStands, billing?.country, standsQty);
   if (addOnCents === null) {
     return NextResponse.json({ error: "shipping_unavailable" }, { status: 400 });
   }
   const ship = tableStands ? quoteShipping(billing?.country) : null;
 
   const totalCents = baseCents + addOnCents;
-  const description = plan.name + (tableStands ? " + Podstavki za mizo (s poštnino)" : "");
+  const description = plan.name + (tableStands ? ` + ${standsQty ?? DEFAULT_STAND_QTY}× QR podstavki za mize (s poštnino)` : "");
 
   const baseUrl = req.nextUrl.origin;
   // Mollie redirects back to /api/mollie-return which does reconcile then bounces to dashboard.
@@ -156,6 +159,8 @@ export async function POST(req: NextRequest) {
         ...(tableStands
           ? {
               tableStands: "1",
+              standsQty: String(standsQty ?? DEFAULT_STAND_QTY),
+              standsCents: String(standsPriceCents(standsQty ?? DEFAULT_STAND_QTY) ?? 0),
               shipCountry: (billing?.country ?? "").toUpperCase(),
               shipCents: String(ship?.cents ?? 0),
               shipCarrier: ship?.carrier ?? "",

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { addOnTotalCents, quoteShipping, TABLE_STANDS_CENTS } from "@/lib/print-service";
+import { addOnTotalCents, quoteShipping, standsPriceCents, DEFAULT_STAND_QTY } from "@/lib/print-service";
 import { currentUser } from "@clerk/nextjs/server";
 import { db } from "@/lib/db";
 import { albums, bankOrders } from "@/lib/db/schema";
@@ -28,8 +28,9 @@ interface BillingDetails {
 }
 
 export async function POST(req: NextRequest) {
-  const { planId, albumSlug, billing, discountCode, tableStands } = await req.json() as {
+  const { planId, albumSlug, billing, discountCode, tableStands, standsQty } = await req.json() as {
     tableStands?: boolean;
+    standsQty?: number;
     planId: string;
     albumSlug: string;
     billing?: BillingDetails;
@@ -106,15 +107,16 @@ export async function POST(req: NextRequest) {
   // Physical add-on. Priced server-side exactly as on the card path, so
   // an invoice order can't be talked into free shipping. An unshippable
   // country is rejected rather than quietly invoiced without postage.
-  const standsCents = addOnTotalCents(!!tableStands, billing?.country);
+  const standsCents = addOnTotalCents(!!tableStands, billing?.country, standsQty);
   if (standsCents === null) {
     return NextResponse.json({ error: "shipping_unavailable" }, { status: 400 });
   }
   const standsQuote = tableStands ? quoteShipping(billing?.country) : null;
+  const standsQ = standsQty ?? DEFAULT_STAND_QTY;
   // Whoever raises the proforma has to know a parcel is owed — without
   // this the customer pays and nothing ever ships.
   const standsLines = tableStands && standsQuote
-    ? `\n📦 <b>Podstavki za mize:</b> ${(TABLE_STANDS_CENTS / 100).toFixed(2)} € + poštnina ${(standsQuote.cents / 100).toFixed(2)} € (${htmlEscape(standsQuote.carrier)})\nDržava dostave: ${htmlEscape((billing?.country ?? "").toUpperCase())}${standsQuote.customs ? "\n⚠️ Izven EU — potrebna carinska (komercialna) faktura" : ""}`
+    ? `\n📦 <b>Podstavki za mize:</b> ${standsQ}× — ${((standsPriceCents(standsQ) ?? 0) / 100).toFixed(2)} € + poštnina ${(standsQuote.cents / 100).toFixed(2)} € (${htmlEscape(standsQuote.carrier)})\nDržava dostave: ${htmlEscape((billing?.country ?? "").toUpperCase())}${standsQuote.customs ? "\n⚠️ Izven EU — potrebna carinska (komercialna) faktura" : ""}`
     : "";
 
   const billingLines = billing

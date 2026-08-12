@@ -119,10 +119,13 @@ export interface UpgradeCopy {
 
   // Printed QR table stands (physical add-on)
   standsTitle:    string; // "Printed QR table stands"
-  standsDesc:     string; // what's in the set
+  standsDesc:     string; // what we print and post
   standsCountry:  string; // "Delivery country"
   standsShipping: string; // "Shipping"
   standsTotal:    string; // "Total"
+  standsQty:      string; // "Number of stands"
+  standsPiece:    string; // unit in the per-stand hint, e.g. "ea" in "1,80 €/ea"
+  standsFrom:     string; // "from", prefixing the cheapest bundle price
 }
 
 export const UPGRADE_COPY: Record<Lang, UpgradeCopy> = {
@@ -203,10 +206,13 @@ export const UPGRADE_COPY: Record<Lang, UpgradeCopy> = {
     featurePhotoWall:        "Foto stena za TV / projektor",
     featurePrioritySupport:  "Prioritetna podpora",
     standsTitle:    "Natisnjeni QR podstavki za mize",
-    standsDesc:     "Natisnemo in dostavimo komplet elegantnih podstavkov z vašo QR kodo — pripravljeni za mize.",
+    standsDesc:     "Natisnemo podstavke z vašo QR kodo in vam jih pošljemo domov — pripravljeni za mize.",
     standsCountry:  "Država dostave",
     standsShipping: "Poštnina",
     standsTotal:    "Skupaj",
+    standsQty:      "Število podstavkov",
+    standsPiece:    "kos",
+    standsFrom:     "od",
   },
   hr: {
     back: "Natrag",
@@ -285,10 +291,13 @@ export const UPGRADE_COPY: Record<Lang, UpgradeCopy> = {
     featurePhotoWall:        "Foto zid za TV / projektor",
     featurePrioritySupport:  "Prioritetna podrška",
     standsTitle:    "Tiskani QR stalci za stolove",
-    standsDesc:     "Tiskamo i dostavljamo komplet elegantnih stalaka s vašim QR kodom — spremni za stolove.",
+    standsDesc:     "Tiskamo stalke s vašim QR kodom i šaljemo vam ih — spremni za stolove.",
     standsCountry:  "Država dostave",
     standsShipping: "Poštarina",
     standsTotal:    "Ukupno",
+    standsQty:      "Broj stalaka",
+    standsPiece:    "kom",
+    standsFrom:     "od",
   },
   sr: {
     back: "Nazad",
@@ -367,10 +376,13 @@ export const UPGRADE_COPY: Record<Lang, UpgradeCopy> = {
     featurePhotoWall:        "Foto zid za TV / projektor",
     featurePrioritySupport:  "Prioritetna podrška",
     standsTitle:    "Štampani QR stalci za stolove",
-    standsDesc:     "Štampamo i dostavljamo komplet elegantnih stalaka sa vašim QR kodom — spremni za stolove.",
+    standsDesc:     "Štampamo stalke sa vašim QR kodom i šaljemo vam ih — spremni za stolove.",
     standsCountry:  "Država dostave",
     standsShipping: "Poštarina",
     standsTotal:    "Ukupno",
+    standsQty:      "Broj stalaka",
+    standsPiece:    "kom",
+    standsFrom:     "od",
   },
   en: {
     back: "Back",
@@ -449,10 +461,13 @@ export const UPGRADE_COPY: Record<Lang, UpgradeCopy> = {
     featurePhotoWall:        "Photo Wall for TV / projector",
     featurePrioritySupport:  "Priority support",
     standsTitle:    "Printed QR table stands",
-    standsDesc:     "We print and ship a set of elegant stands with your QR code — ready for the tables.",
+    standsDesc:     "We print stands with your QR code and post them to you — ready for the tables.",
     standsCountry:  "Delivery country",
     standsShipping: "Shipping",
     standsTotal:    "Total",
+    standsQty:      "Number of stands",
+    standsPiece:    "ea",
+    standsFrom:     "from",
   },
   de: {
     back: "Zurück",
@@ -531,10 +546,13 @@ export const UPGRADE_COPY: Record<Lang, UpgradeCopy> = {
     featurePhotoWall:        "Foto-Wall für TV / Beamer",
     featurePrioritySupport:  "Prioritäts-Support",
     standsTitle:    "Gedruckte QR-Tischaufsteller",
-    standsDesc:     "Wir drucken und liefern ein Set eleganter Aufsteller mit Ihrem QR-Code — fertig für die Tische.",
+    standsDesc:     "Wir drucken Aufsteller mit Ihrem QR-Code und senden sie Ihnen zu — fertig für die Tische.",
     standsCountry:  "Lieferland",
     standsShipping: "Versand",
     standsTotal:    "Gesamt",
+    standsQty:      "Anzahl der Aufsteller",
+    standsPiece:    "St.",
+    standsFrom:     "ab",
   },
   es: {
     back: "Atrás",
@@ -613,10 +631,13 @@ export const UPGRADE_COPY: Record<Lang, UpgradeCopy> = {
     featurePhotoWall:        "Muro de fotos para TV / proyector",
     featurePrioritySupport:  "Soporte prioritario",
     standsTitle:    "Soportes de mesa QR impresos",
-    standsDesc:     "Imprimimos y enviamos un juego de soportes elegantes con tu código QR — listos para las mesas.",
+    standsDesc:     "Imprimimos soportes con tu código QR y te los enviamos — listos para las mesas.",
     standsCountry:  "País de entrega",
     standsShipping: "Envío",
     standsTotal:    "Total",
+    standsQty:      "Número de soportes",
+    standsPiece:    "ud",
+    standsFrom:     "desde",
   },
 };
 

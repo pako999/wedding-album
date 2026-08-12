@@ -11,10 +11,46 @@
  * All amounts are in cents to avoid floating-point money.
  */
 
-/** Price of one set of printed QR table stands. Matches the amount the
- *  checkout route already used for `tableStands` before this was wired
- *  up to a UI. */
-export const TABLE_STANDS_CENTS = 900;
+/**
+ * Printed QR table stands are sold in fixed bundles, not by the set —
+ * one stand per table, so the quantity a customer needs is driven by
+ * their table count.
+ *
+ * NOTE ON THE RATES: these are the prices as given, but they are not
+ * monotonic per unit — 50 works out at 1,40 €/stand while 100 works out
+ * at 1,60 €/stand. A customer who does the arithmetic orders 2×50 for
+ * 140 € instead of 100 for 160 €, and 4×50 for 280 € instead of 200 for
+ * 300 €. That is worth a second look; the code implements exactly what
+ * was specified rather than quietly "fixing" the 100 and 200 rows.
+ */
+export const STAND_TIERS: { qty: number; cents: number }[] = [
+  { qty: 1, cents: 200 },
+  { qty: 10, cents: 1800 },
+  { qty: 25, cents: 4000 },
+  { qty: 50, cents: 7000 },
+  { qty: 100, cents: 16000 },
+  { qty: 200, cents: 30000 },
+];
+
+/** Bundle preselected when someone ticks the add-on. Ten covers a
+ *  typical wedding's table count without being the biggest spend. */
+export const DEFAULT_STAND_QTY = 10;
+
+/**
+ * Price for a bundle, in cents, or null when the quantity isn't one we
+ * sell. Null rather than a nearest-match so a tampered-with quantity is
+ * rejected instead of silently repriced.
+ */
+export function standsPriceCents(qty: number): number | null {
+  const tier = STAND_TIERS.find((t) => t.qty === qty);
+  return tier ? tier.cents : null;
+}
+
+/** Per-stand price of a bundle, for the "x,xx € / kos" hint. */
+export function perStandCents(qty: number): number | null {
+  const total = standsPriceCents(qty);
+  return total === null ? null : Math.round(total / qty);
+}
 
 /** Shipping zones. Serbia is listed on its own because it is NOT in the
  *  EU, so it can't fall through to the EU rate.
@@ -113,16 +149,23 @@ export function quoteShipping(country: string | undefined | null): ShippingQuote
 }
 
 /**
- * Total for the physical add-on (product + shipping) in cents.
+ * Total for the physical add-on (bundle + shipping) in cents.
  * Returns 0 when the add-on wasn't selected, and null when it was but
- * the destination isn't serviceable — callers should treat null as
- * "reject the order" rather than "charge nothing".
+ * the quantity isn't a bundle we sell or the destination isn't
+ * serviceable — callers must treat null as "reject the order" rather
+ * than "charge nothing", or a tampered request ships stands for free.
  */
-export function addOnTotalCents(wanted: boolean, country: string | undefined | null): number | null {
+export function addOnTotalCents(
+  wanted: boolean,
+  country: string | undefined | null,
+  qty: number = DEFAULT_STAND_QTY,
+): number | null {
   if (!wanted) return 0;
+  const stands = standsPriceCents(qty);
+  if (stands === null) return null;
   const ship = quoteShipping(country);
   if (!ship) return null;
-  return TABLE_STANDS_CENTS + ship.cents;
+  return stands + ship.cents;
 }
 
 /** Formats cents as a plain euro string, e.g. 350 → "3,50 €". */
