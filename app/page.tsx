@@ -982,6 +982,39 @@ export default async function HomePage() {
             </div>
           </div>
 
+          {/* EVENTI — deliberately a teaser, not a feature list. The events
+              toolkit (wall, sponsors, lead capture, collaborators …) is a
+              competitive edge; the pricing page names the category and
+              routes serious buyers to a conversation instead of handing
+              competitors a spec sheet. */}
+          <div
+            className="mt-6 rounded-3xl p-7 sm:p-8 flex flex-col sm:flex-row items-start sm:items-center gap-5"
+            style={{ background: "radial-gradient(120% 160% at 50% 0%, #1B2842 0%, #0F1729 70%)" }}
+          >
+            <div className="flex-1 min-w-0">
+              <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#FFC94D] mb-1.5">Za organizatorje</p>
+              <p className="font-extrabold text-xl text-white">Eventi &amp; Business</p>
+              <p className="text-sm text-gray-300 mt-1.5 max-w-xl">
+                Živa foto stena na velikem zaslonu, sponzorske vsebine, zajem kontaktov
+                gostov, sodelavci in nadzor po meri — paket sestavimo za vaš dogodek,
+                od poslovne konference do festivala.
+              </p>
+            </div>
+            <div className="shrink-0 sm:text-right">
+              <p className="text-sm font-semibold text-gray-300 mb-2.5">Cena po dogovoru</p>
+              <Link
+                href="/contact"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl font-bold text-sm text-[#0F1729] hover:brightness-95 transition-all"
+                style={{ background: "linear-gradient(135deg,#FFD966,#FFC94D 60%,#F0B429)" }}
+              >
+                Kontaktirajte nas
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                </svg>
+              </Link>
+            </div>
+          </div>
+
           {/* Guarantee badge */}
           <div className="flex items-center justify-center gap-2 mt-10 text-sm text-gray-400">
             <svg className="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.8}>

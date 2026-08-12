@@ -17,6 +17,7 @@ import { albums, wallSponsors } from "@/lib/db/schema";
 import { eq, and } from "drizzle-orm";
 import { isBunnyStorageConfigured, deleteBunnyFile } from "@/lib/storage/bunny";
 import { checkAlbumOwnership } from "@/lib/album-ownership";
+import { isWallCollaborator } from "@/lib/wall-collaborators";
 import { getSponsors } from "@/lib/wall-sponsors";
 
 export const runtime = "nodejs";
@@ -37,12 +38,18 @@ const storageApiKey = () => process.env.BUNNY_STORAGE_API_KEY ?? "";
 const storageZone   = () => process.env.BUNNY_STORAGE_ZONE ?? "frank1";
 const cdnUrl        = () => process.env.BUNNY_CDN_URL ?? "https://frfr1.b-cdn.net";
 
-/** Resolve + authorize the album for every verb below. */
+/** Resolve + authorize the album for every verb below. The wall's
+ *  sponsor slides may be managed by the owner OR an invited wall
+ *  collaborator (a DJ / venue tech) — that is the entire point of the
+ *  collaborator role. Everything else stays owner-only. */
 async function requireOwnedAlbum(slug: string) {
   const album = await db.query.albums.findFirst({ where: eq(albums.slug, slug) }).catch(() => null);
   if (!album) return { error: NextResponse.json({ error: "Album not found" }, { status: 404 }) };
   const owner = await checkAlbumOwnership(album);
-  if (!owner.ok) return { error: NextResponse.json({ error: owner.error }, { status: owner.status }) };
+  if (!owner.ok) {
+    if (await isWallCollaborator(album.id)) return { album };
+    return { error: NextResponse.json({ error: owner.error }, { status: owner.status }) };
+  }
   return { album };
 }
 

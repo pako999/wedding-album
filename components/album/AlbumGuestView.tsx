@@ -35,6 +35,14 @@ interface Props {
   /** Events/business package: require name, surname and email before a
    *  guest can upload. Resolved server-side from the album's flags. */
   requireGuestData?: boolean;
+  /** Event moderation & permission flags, resolved server-side. */
+  eventFlags?: {
+    allowPhotos: boolean;
+    allowVideos: boolean;
+    albumPermission: "view_upload" | "view_only" | "upload_only";
+    disableDownload: boolean;
+    disableLikes: boolean;
+  };
 }
 
 type FilterTab = "all" | "photos" | "videos";
@@ -129,7 +137,17 @@ function AvatarBubble({ name, size = 5, accent = BRAND.accent }: { name: string;
   );
 }
 
-export function AlbumGuestView({ album, photos, moments, passwordRequired, passwordCorrect, providedPassword, initialLang, isOwner = false, requireGuestData = false }: Props) {
+export function AlbumGuestView({ album, photos, moments, passwordRequired, passwordCorrect, providedPassword, initialLang, isOwner = false, requireGuestData = false, eventFlags }: Props) {
+  // Event permission gates. UI-side only — the real doors are in the
+  // upload and like APIs; this keeps the guest page honest about them.
+  const canUpload = eventFlags?.albumPermission !== "view_only";
+  const canView = eventFlags?.albumPermission !== "upload_only";
+  const likesOn = !eventFlags?.disableLikes;
+  const downloadOn = !eventFlags?.disableDownload;
+  const uploadAccept = [
+    eventFlags?.allowPhotos === false ? null : "image/*",
+    eventFlags?.allowVideos === false ? null : "video/*",
+  ].filter(Boolean).join(",");
   const router = useRouter();
   const [lang, setLang]                 = useState<Lang>(initialLang);
   const [lightboxIndex, setLightboxIndex] = useState(-1);
@@ -202,6 +220,7 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
   const isDemo = album.slug === DEMO_ALBUM_SLUG;
   /** Open the upload modal. */
   const openUpload = useCallback(() => {
+    if (!canUpload) return;
     setUploadOpen(true);
   }, []);
 
@@ -375,6 +394,7 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
      name-entry field and remember which photo to like once confirmed, instead
      of being a dead disabled button. */
   const handleLightboxLike = useCallback((photoId: string) => {
+    if (!likesOn) return;
     if (uploaderName.trim() && nameConfirmed) {
       likeWithName(photoId, uploaderName);
       return;
@@ -431,7 +451,10 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
   const videoCount = photos.filter(p =>  p.mimeType?.startsWith("video/")).length;
 
   // ── Filtered collection (type + person + my reactions) ────────────────────
-  const filteredPhotos = photos
+  // upload_only events hide everyone's photos: guests land on the empty
+  // gallery state, which is exactly the upload-first screen we want.
+  const visibleSource = canView ? photos : [];
+  const filteredPhotos = visibleSource
     .filter(p => {
       if (filter === "photos" &&  p.mimeType?.startsWith("video/")) return false;
       if (filter === "videos" && !p.mimeType?.startsWith("video/")) return false;
@@ -508,7 +531,9 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
     // the old 2400x1600 fallback told the lightbox every photo was
     // landscape, which broke fit and zoom maths for portrait shots.
     ...(p.width && p.height ? { width: p.width, height: p.height } : {}),
-    download: { url: bunnyOriginalUrl(p.blobUrl), filename: p.originalFilename ?? "photo.jpg" },
+    // Omitted entirely when downloads are disabled — the custom download
+    // button below already renders null for slides without it.
+    ...(downloadOn ? { download: { url: bunnyOriginalUrl(p.blobUrl), filename: p.originalFilename ?? "photo.jpg" } } : {}),
     description: p.caption ?? undefined,
   }));
 
@@ -823,20 +848,20 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
                       <AvatarBubble name={uploaderName} size={7} accent={theme.accent} />
                       <button onClick={() => setNameConfirmed(false)} className="text-xs underline" style={{ color: BRAND.muted }}>{uploaderName}</button>
                     </div>
-                    <label className="relative flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-semibold text-white cursor-pointer transition-all hover:opacity-90" style={{ background: BRAND.dark }}>
+                    {canUpload && (<label className="relative flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-semibold text-white cursor-pointer transition-all hover:opacity-90" style={{ background: BRAND.dark }}>
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z" />
                         <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0z" />
                       </svg>
                       <span className="hidden sm:inline">{t.takePhoto}</span>
-                      <input type="file" accept="image/*,video/*" capture="environment" multiple className="absolute inset-0 opacity-0 cursor-pointer"
+                      <input type="file" accept={uploadAccept} capture="environment" multiple className="absolute inset-0 opacity-0 cursor-pointer"
                         onChange={(e) => {
-                          if (!e.target.files?.length) return;
+                          if (!canUpload || !e.target.files?.length) return;
                           setCameraFiles(e.target.files);
                           setUploadOpen(true);
                         }} />
-                    </label>
-                    <button onClick={openUpload}
+                    </label>)}
+                    {canUpload && (<button onClick={openUpload}
                       className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-sm font-semibold transition-all hover:bg-gray-50"
                       style={{ borderColor: BRAND.border, color: BRAND.dark }}
                     >
@@ -844,7 +869,7 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
                         <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
                       </svg>
                       <span className="hidden sm:inline">{t.uploadShort}</span>
-                    </button>
+                    </button>)}
                   </div>
               </div>
             )}
@@ -1248,21 +1273,21 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
                   </div>
                 ) : (
                   <div className="flex flex-col sm:flex-row items-center justify-center gap-2.5">
-                    <label className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-3 rounded-2xl text-sm font-semibold text-white cursor-pointer transition-all hover:opacity-90 relative"
+                    {canUpload && (<label className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-3 rounded-2xl text-sm font-semibold text-white cursor-pointer transition-all hover:opacity-90 relative"
                       style={{ background: theme.accent }}>
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z" />
                         <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0z" />
                       </svg>
                       {t.takePhoto}
-                      <input type="file" accept="image/*,video/*" capture="environment" multiple className="absolute inset-0 opacity-0 cursor-pointer"
+                      <input type="file" accept={uploadAccept} capture="environment" multiple className="absolute inset-0 opacity-0 cursor-pointer"
                         onChange={(e) => {
-                          if (!e.target.files?.length) return;
+                          if (!canUpload || !e.target.files?.length) return;
                           setCameraFiles(e.target.files);
                           setUploadOpen(true);
                         }} />
-                    </label>
-                    <button
+                    </label>)}
+                    {canUpload && (<button
                       onClick={openUpload}
                       className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-3 rounded-2xl border text-sm font-semibold transition-all hover:bg-gray-50"
                       style={{ borderColor: BRAND.border, color: BRAND.dark }}
@@ -1271,7 +1296,7 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
                         <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
                       </svg>
                       {t.uploadFromGallery}
-                    </button>
+                    </button>)}
                   </div>
                 )}
                 {/* Secondary actions: upload reminder */}
@@ -1368,6 +1393,7 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
                           </p>
                         </div>
                         {/* Like button */}
+                        {likesOn && (
                         <button
                           onClick={(e) => { e.stopPropagation(); toggleLike(photo.id); }}
                           title={myLikes.has(photo.id) ? t.unlike : t.like}
@@ -1382,7 +1408,7 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
                           {(likeCounts[photo.id] ?? 0) > 0 && (
                             <span>{likeCounts[photo.id]}</span>
                           )}
-                        </button>
+                        </button>)}
                         {/* Comment button */}
                         <button
                           onClick={(e) => { e.stopPropagation(); setOpenCommentsPhoto(photo.id); setCommentInput(""); }}
@@ -1410,26 +1436,26 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
       {/* ── Mobile floating upload FAB ────────────────────────────────────── */}
       {!albumFull && nameConfirmed && photos.length > 0 && (
         <div className="sm:hidden fixed bottom-5 right-5 z-30 flex flex-col items-end gap-2">
-          <label className="relative w-14 h-14 rounded-full flex items-center justify-center text-white shadow-lg cursor-pointer transition-all active:scale-95 hover:brightness-95"
+          {canUpload && (<label className="relative w-14 h-14 rounded-full flex items-center justify-center text-white shadow-lg cursor-pointer transition-all active:scale-95 hover:brightness-95"
             style={{ background: theme.accent }}>
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z" />
               <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0z" />
             </svg>
-            <input type="file" accept="image/*,video/*" capture="environment" multiple className="absolute inset-0 opacity-0 cursor-pointer"
+            <input type="file" accept={uploadAccept} capture="environment" multiple className="absolute inset-0 opacity-0 cursor-pointer"
               onChange={(e) => {
-                if (!e.target.files?.length) return;
+                if (!canUpload || !e.target.files?.length) return;
                 setCameraFiles(e.target.files);
                 setUploadOpen(true);
               }} />
-          </label>
-          <button onClick={openUpload}
+          </label>)}
+          {canUpload && (<button onClick={openUpload}
             className="w-14 h-14 rounded-full flex items-center justify-center text-white shadow-lg transition-all active:scale-95"
             style={{ background: BRAND.dark }}>
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021.75 18V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
             </svg>
-          </button>
+          </button>)}
         </div>
       )}
 
@@ -1641,7 +1667,7 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
               {/* Like button — full-width, prominent. Never disabled: when the
                   guest has no name yet, tapping it reveals the name-entry field
                   (see handleLightboxLike) instead of being a dead button. */}
-              <button
+              {likesOn && (<button
                 /* handleLightboxLike touches refs (pending-like id, the
                    name input to focus) — legal in an event handler; the
                    analyzer inlines the useCallback and misreads it as a
@@ -1664,7 +1690,7 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
                     {lbLikes}
                   </span>
                 )}
-              </button>
+              </button>)}
             </div>
 
             {/* ── Comment list ────────────────────────────────────────────── */}
@@ -1781,7 +1807,7 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
             close={() => { setLightboxIndex(-1); setLightboxPanelOpen(false); setLightboxDesktopPanelOpen(true); setOpenCommentsPhoto(null); setLightboxNamePrompt(false); pendingLikeRef.current = null; }}
             index={lightboxIndex}
             slides={lightboxSlides}
-            plugins={[Download, Counter, Zoom]}
+            plugins={downloadOn ? [Download, Counter, Zoom] : [Counter, Zoom]}
             /* Pinch-to-zoom handled INSIDE the lightbox. Without this,
                a guest's instinctive pinch on a photo hit Safari itself
                and zoomed the whole fixed-position page — leaving the

@@ -138,6 +138,9 @@ interface Copy {
   reviewsTitle: string;
   reviews: { text: string; name: string; date: string }[];
   pricingTitle: string;
+  /** Events teaser under the pricing grid — a category + contact CTA,
+   *  deliberately NOT a feature list (competitive edge stays private). */
+  eventsTeaser: { eyebrow: string; title: string; body: string; price: string; cta: string };
   pricingSubtitle: string;
   free: { label: string; tagline: string; price: string; features: string[]; cta: string };
   basic: { label: string; tagline: string; price: string; was: string; features: string[]; cta: string };
@@ -228,6 +231,7 @@ const COPY: Record<Lang, Copy> = {
       { text: "Konačno smo sve uspomene skupili na jednom mjestu. Gosti iz inozemstva su učitavali fotografije na svom jeziku bez ikakvih problema.", name: "Sara & David", date: "Rujan 2025" },
     ],
     pricingTitle: "Jednostavni paketi", pricingSubtitle: "Odaberite paket koji odgovara vašem događaju.",
+    eventsTeaser: { eyebrow: "Za organizatore", title: "Eventi & Business", body: "Živi foto zid na velikom ekranu, sponzorski sadržaji, prikupljanje kontakata gostiju, suradnici i prilagođena kontrola — paket slažemo za vaš događaj.", price: "Cijena po dogovoru", cta: "Kontaktirajte nas" },
     free: { label: "Besplatno", tagline: "Isprobajte bez rizika", price: "0€",
       features: ["Jedinstveni QR kod", "Preuzimanje slika u punoj kvaliteti", "Do 20 fotografija", "1 videozapis", "Pristup 30 dana", "Bez sigurnosne kopije"], cta: "Započni besplatno" },
     basic: { label: "Basic", tagline: "Za manje događaje", price: "39€", was: "55€",
@@ -321,6 +325,7 @@ const COPY: Record<Lang, Copy> = {
       { text: "Konačno smo sve uspomene sakupili na jednom mestu. Gosti iz inostranstva su otpremali fotografije na svom jeziku bez ikakvih problema.", name: "Sara & David", date: "Septembar 2025" },
     ],
     pricingTitle: "Jednostavni paketi", pricingSubtitle: "Izaberite paket koji odgovara vašem događaju.",
+    eventsTeaser: { eyebrow: "Za organizatore", title: "Eventi & Business", body: "Živi foto zid na velikom ekranu, sponzorski sadržaji, prikupljanje kontakata gostiju, saradnici i prilagođena kontrola — paket slažemo za vaš događaj.", price: "Cena po dogovoru", cta: "Kontaktirajte nas" },
     free: { label: "Besplatno", tagline: "Isprobajte bez rizika", price: "0€",
       features: ["Jedinstveni QR kod", "Preuzimanje slika u punom kvalitetu", "Do 20 fotografija", "1 video snimak", "Pristup 30 dana", "Bez rezervne kopije"], cta: "Započni besplatno" },
     basic: { label: "Basic", tagline: "Za manje događaje", price: "39€", was: "55€",
@@ -414,6 +419,7 @@ const COPY: Record<Lang, Copy> = {
       { text: "Endlich alle Erinnerungen an einem Ort. Internationale Gäste haben Fotos in ihrer Sprache problemlos hochgeladen.", name: "Sara & David", date: "September 2025" },
     ],
     pricingTitle: "Einfache Pakete", pricingSubtitle: "Wählen Sie das Paket, das zu Ihrer Feier passt.",
+    eventsTeaser: { eyebrow: "Für Veranstalter", title: "Events & Business", body: "Live-Foto-Wall auf großer Leinwand, Sponsoren-Inhalte, Gäste-Kontakterfassung, Mitwirkende und maßgeschneiderte Kontrolle — wir stellen das Paket für Ihre Veranstaltung zusammen.", price: "Preis auf Anfrage", cta: "Kontaktieren Sie uns" },
     free: { label: "Kostenlos", tagline: "Risikolos testen", price: "0€",
       features: ["Einzigartiger QR-Code", "Fotodownload in voller Qualität", "Bis zu 20 Fotos", "1 Video", "30 Tage Zugriff", "Keine Sicherung"], cta: "Kostenlos starten" },
     basic: { label: "Basic", tagline: "Für kleinere Feiern", price: "39€", was: "55€",
@@ -507,6 +513,7 @@ const COPY: Record<Lang, Copy> = {
       { text: "Finally, all our memories in one place. Even international guests uploaded photos in their own language without any issues.", name: "Sara & David", date: "September 2025" },
     ],
     pricingTitle: "Simple plans", pricingSubtitle: "Pick the plan that fits your event.",
+    eventsTeaser: { eyebrow: "For organisers", title: "Events & Business", body: "A live photo wall on the big screen, sponsor content, guest lead capture, collaborators and tailored controls — we put the package together for your event.", price: "Custom pricing", cta: "Contact us" },
     free: { label: "Free", tagline: "Try risk-free", price: "€0",
       features: ["Unique QR code", "Full-quality photo download", "Up to 20 photos", "1 video", "30-day access", "No backup"], cta: "Start free" },
     basic: { label: "Basic", tagline: "For smaller events", price: "€39", was: "€55",
@@ -600,6 +607,7 @@ const COPY: Record<Lang, Copy> = {
       { text: "Por fin todos los recuerdos en un sitio. Incluso los invitados internacionales subieron fotos en su idioma sin ningún problema.", name: "Sara & David", date: "Septiembre 2025" },
     ],
     pricingTitle: "Planes sencillos", pricingSubtitle: "Elige el plan que encaje con tu evento.",
+    eventsTeaser: { eyebrow: "Para organizadores", title: "Eventos & Business", body: "Muro de fotos en directo en pantalla grande, contenido de patrocinadores, captación de contactos, colaboradores y control a medida — montamos el paquete para tu evento.", price: "Precio a medida", cta: "Contáctanos" },
     free: { label: "Gratis", tagline: "Pruébalo sin riesgos", price: "0€",
       features: ["Código QR único", "Descarga de fotos en calidad completa", "Hasta 20 fotos", "1 vídeo", "Acceso 30 días", "Sin copia de seguridad"], cta: "Empezar gratis" },
     basic: { label: "Basic", tagline: "Para eventos pequeños", price: "39€", was: "55€",
@@ -1095,6 +1103,24 @@ export async function LocalizedHomePage({ lang }: { lang: Lang }) {
               );
             })}
           </div>
+          {/* Events teaser — category + contact CTA, not a spec sheet. */}
+          <div className="mt-6 rounded-3xl p-7 sm:p-8 flex flex-col sm:flex-row items-start sm:items-center gap-5"
+            style={{ background: "radial-gradient(120% 160% at 50% 0%, #1B2842 0%, #0F1729 70%)" }}>
+            <div className="flex-1 min-w-0">
+              <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#FFC94D] mb-1.5">{t.eventsTeaser.eyebrow}</p>
+              <p className="font-extrabold text-xl text-white">{t.eventsTeaser.title}</p>
+              <p className="text-sm text-gray-300 mt-1.5 max-w-xl">{t.eventsTeaser.body}</p>
+            </div>
+            <div className="shrink-0 sm:text-right">
+              <p className="text-sm font-semibold text-gray-300 mb-2.5">{t.eventsTeaser.price}</p>
+              <Link href={`/${lang}/contact`}
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl font-bold text-sm text-[#0F1729] hover:brightness-95 transition-all"
+                style={{ background: "linear-gradient(135deg,#FFD966,#FFC94D 60%,#F0B429)" }}>
+                {t.eventsTeaser.cta}
+              </Link>
+            </div>
+          </div>
+
           <div className="flex items-center justify-center gap-2 mt-10 text-sm text-gray-400">
             <svg className="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.8}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />

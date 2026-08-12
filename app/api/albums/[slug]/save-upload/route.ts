@@ -5,6 +5,7 @@ import { eq, and, sql } from "drizzle-orm";
 import { sendNewPhotoNotification } from "@/lib/email/notifications";
 import { bunnyStreamThumbnailUrl, bunnyStreamIframeUrl } from "@/lib/storage/bunny";
 import { verifyAlbumPassword } from "@/lib/album-password";
+import { getAlbumFlags } from "@/lib/album-flags";
 import { checkRateLimit } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
@@ -120,6 +121,24 @@ export async function POST(
   const album = await db.query.albums.findFirst({ where: eq(albums.slug, slug) }).catch(() => null);
   if (!album || !album.isPublished) {
     return NextResponse.json({ error: "Album not found" }, { status: 404 });
+  }
+
+  // Event permission gates. Enforced HERE, not only in the UI — hiding
+  // a button is decoration; this is the door. getAlbumFlags never
+  // throws, so a missing flags table degrades to "everything allowed",
+  // which is exactly the pre-feature behaviour.
+  {
+    const flags = await getAlbumFlags(album.id);
+    if (flags.albumPermission === "view_only") {
+      return NextResponse.json({ error: "uploads_disabled" }, { status: 403 });
+    }
+    const isVideoUpload = mimeType.startsWith("video/");
+    if (isVideoUpload && !flags.allowVideos) {
+      return NextResponse.json({ error: "videos_not_allowed" }, { status: 403 });
+    }
+    if (!isVideoUpload && !flags.allowPhotos) {
+      return NextResponse.json({ error: "photos_not_allowed" }, { status: 403 });
+    }
   }
 
   // Password gate — ONLY when the album actually has a password set.

@@ -14,6 +14,9 @@ import { CoverPhotoSettings } from "@/components/dashboard/CoverPhotoSettings";
 import { FilmStudio } from "@/components/dashboard/FilmStudio";
 import { PhotoWallCard } from "@/components/dashboard/PhotoWallCard";
 import { STAND_VARIANTS, eur } from "@/lib/print-service";
+import type { AlbumFlags } from "@/lib/album-flags";
+import { EventModerationCard } from "@/components/dashboard/EventModerationCard";
+import { WallCollaboratorsCard } from "@/components/dashboard/WallCollaboratorsCard";
 import { EventLeadsCard } from "@/components/dashboard/EventLeadsCard";
 import { ALBUM_THEMES, themesForEvent } from "@/lib/album-themes";
 import { fbEvent } from "@/lib/fbpixel";
@@ -31,7 +34,7 @@ const PLAN_PRICES_EUR: Record<"basic" | "plus" | "premium", number> = {
   premium: 99,
 };
 
-type Tab = "overview" | "gallery" | "qr" | "settings" | "pending" | "film";
+type Tab = "overview" | "gallery" | "qr" | "events" | "settings" | "pending" | "film";
 
 interface Props {
   album: Album;
@@ -75,6 +78,8 @@ interface Props {
   wallToken: string;
   /** Events/business package: guests must leave name/surname/email. */
   guestDataCapture?: boolean;
+  /** Event flags (moderation & permissions), read once server-side. */
+  flags?: AlbumFlags;
 }
 
 /** Copy + tone for the one-time Google Drive result banner. */
@@ -293,7 +298,7 @@ function NewAlbumSuccess({ album, paidPlan }: { album: Album; paidPlan?: "basic"
 
 // ─── Main Panel ───────────────────────────────────────────────────────────────
 
-export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activeTab, isNew, isUpgraded, paidAmount, paidPlan, ownerEmail, viewingAsAdmin, driveResult, driveCount, hasPassword, wallToken, guestDataCapture = false }: Props) {
+export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activeTab, isNew, isUpgraded, paidAmount, paidPlan, ownerEmail, viewingAsAdmin, driveResult, driveCount, hasPassword, wallToken, guestDataCapture = false, flags }: Props) {
   const router = useRouter();
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? SITE_URL;
   const albumUrl = `${appUrl}/${album.slug}`;
@@ -433,6 +438,7 @@ export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activ
     { id: "gallery",   label: "Fotografije",   icon: "🖼" },
     { id: "film",      label: "Film Studio", icon: "🎬" },
     { id: "qr",        label: "QR koda",    icon: "📱" },
+    { id: "events",    label: "Eventi",     icon: "🎪" },
     { id: "settings",  label: "Nastavitve", icon: "⚙️" },
   ];
 
@@ -646,6 +652,7 @@ export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activ
                 {activeTab === "gallery"   && "Fotografije"}
                 {activeTab === "film"      && "🎬 Film Studio"}
                 {activeTab === "qr"        && "QR koda"}
+                {activeTab === "events"    && "🎪 Eventi"}
                 {activeTab === "settings"  && "Nastavitve"}
                 {activeTab === "pending"   && "Čakajoče fotografije"}
               </h1>
@@ -775,6 +782,20 @@ export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activ
           {/* QR */}
           {activeTab === "qr" && (
             <QrTab album={album} albumUrl={albumUrl} copyToClipboard={copyToClipboard} />
+          )}
+
+          {/* EVENTS — all "running an event" controls in one place, in
+              sub-tabs: wall, moderation & permissions, lead capture,
+              collaborators. */}
+          {activeTab === "events" && (
+            <EventsTab
+              album={album}
+              wallToken={wallToken}
+              hasPassword={!!hasPassword}
+              guestDataCapture={guestDataCapture}
+              flags={flags}
+              ownerEmail={ownerEmail ?? null}
+            />
           )}
 
           {/* SETTINGS */}
@@ -1047,16 +1068,28 @@ function OverviewTab({
           </Link>
         </div>
 
-        {/* Photo Wall — the second "product" beside the gallery, in the
-            Kululu two-card layout: album | wall. */}
-        <PhotoWallCard
-          wallUrl={wallUrl}
-          hasPassword={hasPassword}
-          albumSlug={album.slug}
-          moderationEnabled={album.moderationEnabled}
-          pendingCount={album.pendingCount ?? 0}
-          plan={album.plan}
-        />
+        {/* Events pointer — the wall, moderation, leads and collaborators
+            now live under the Eventi tab; the overview keeps a compact
+            door to them instead of the full settings cards. */}
+        <Link
+          href={`/dashboard/${album.slug}?tab=events`}
+          className="rounded-2xl border border-gray-100 p-5 flex flex-col justify-between gap-3 hover:border-[#FFC94D] transition-colors"
+          style={{ background: "linear-gradient(180deg,#0F1729 0%,#1B2842 100%)" }}
+        >
+          <div>
+            <h3 className="font-bold text-white text-base">🎪 Eventi &amp; Foto stena</h3>
+            <p className="text-xs text-gray-300 mt-1">
+              Živa foto stena za TV, sponzorji, moderacija in dovoljenja, zajem
+              kontaktov gostov ter sodelavci — vse na enem mestu.
+            </p>
+          </div>
+          <span className="inline-flex items-center gap-1.5 text-sm font-bold text-[#FFC94D]">
+            Odpri nastavitve eventov
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+            </svg>
+          </span>
+        </Link>
       </div>
 
       <div className="grid grid-cols-1">
@@ -1082,10 +1115,87 @@ function OverviewTab({
         </div>
       </div>
 
-      {/* Guest data capture sits with the wall settings: both are the
-          "running an event" controls, and an organiser configuring the
-          screen is the same person who wants the lead list. */}
-      <EventLeadsCard albumSlug={album.slug} initialEnabled={guestDataCapture} />
+    </div>
+  );
+}
+
+// ─── Events Tab ──────────────────────────────────────────────────────────────
+// One home for every "running an event" control, in sub-tabs — the wall
+// itself, moderation & permissions, guest lead capture, and wall-scoped
+// collaborators.
+
+function EventsTab({
+  album,
+  wallToken,
+  hasPassword,
+  guestDataCapture,
+  flags,
+  ownerEmail,
+}: {
+  album: Album & { pendingCount?: number };
+  wallToken: string;
+  hasPassword: boolean;
+  guestDataCapture: boolean;
+  flags?: AlbumFlags;
+  ownerEmail: string | null;
+}) {
+  const [sub, setSub] = useState<"wall" | "moderation" | "leads" | "collab">("wall");
+  const wallAppUrl = process.env.NEXT_PUBLIC_APP_URL ?? SITE_URL;
+  const wallUrl = `${wallAppUrl}/wall/${wallToken}`;
+  const SUBTABS = [
+    { id: "wall" as const,       label: "🖼 Foto stena" },
+    { id: "moderation" as const, label: "🛡 Moderacija" },
+    { id: "leads" as const,      label: "📇 Zajem podatkov" },
+    { id: "collab" as const,     label: "👥 Sodelavci" },
+  ];
+  return (
+    <div className="max-w-3xl">
+      <div className="flex gap-1 mb-5 border-b border-gray-200 overflow-x-auto">
+        {SUBTABS.map((t) => (
+          <button
+            key={t.id}
+            onClick={() => setSub(t.id)}
+            className={`px-4 py-2.5 text-sm font-semibold whitespace-nowrap border-b-2 -mb-px transition-colors ${
+              sub === t.id
+                ? "border-[#FFC94D] text-[#C9820A]"
+                : "border-transparent text-gray-500 hover:text-gray-800"
+            }`}
+          >
+            {t.label}
+          </button>
+        ))}
+      </div>
+
+      {sub === "wall" && (
+        <PhotoWallCard
+          wallUrl={wallUrl}
+          hasPassword={hasPassword}
+          albumSlug={album.slug}
+          moderationEnabled={album.moderationEnabled}
+          pendingCount={album.pendingCount ?? 0}
+          plan={album.plan}
+        />
+      )}
+      {sub === "moderation" && (
+        <EventModerationCard
+          albumSlug={album.slug}
+          initialFlags={flags ?? {
+            guestDataCapture,
+            allowPhotos: true,
+            allowVideos: true,
+            albumPermission: "view_upload",
+            disableDownload: false,
+            disableLikes: false,
+          }}
+          initialModeration={album.moderationEnabled}
+        />
+      )}
+      {sub === "leads" && (
+        <EventLeadsCard albumSlug={album.slug} initialEnabled={guestDataCapture} />
+      )}
+      {sub === "collab" && (
+        <WallCollaboratorsCard albumSlug={album.slug} ownerEmail={ownerEmail} />
+      )}
     </div>
   );
 }

@@ -2,12 +2,32 @@ import { db } from "@/lib/db";
 import { albumFeatureFlags } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 
+export type AlbumPermission = "view_upload" | "view_only" | "upload_only";
+
 export interface AlbumFlags {
   /** Require name + surname + email from guests before uploading. */
   guestDataCapture: boolean;
+  /** Which media guests may upload. */
+  allowPhotos: boolean;
+  allowVideos: boolean;
+  /** What guests can do in the digital album. */
+  albumPermission: AlbumPermission;
+  /** Hide the download control from guests. */
+  disableDownload: boolean;
+  /** Turn off likes across the album. */
+  disableLikes: boolean;
 }
 
-const DEFAULTS: AlbumFlags = { guestDataCapture: false };
+const PERMISSIONS: AlbumPermission[] = ["view_upload", "view_only", "upload_only"];
+
+export const DEFAULTS: AlbumFlags = {
+  guestDataCapture: false,
+  allowPhotos: true,
+  allowVideos: true,
+  albumPermission: "view_upload",
+  disableDownload: false,
+  disableLikes: false,
+};
 
 /**
  * Per-album feature flags. NEVER throws.
@@ -22,7 +42,16 @@ export async function getAlbumFlags(albumId: string): Promise<AlbumFlags> {
       where: eq(albumFeatureFlags.albumId, albumId),
     });
     if (!row) return DEFAULTS;
-    return { guestDataCapture: row.guestDataCapture };
+    return {
+      guestDataCapture: row.guestDataCapture,
+      allowPhotos: row.allowPhotos,
+      allowVideos: row.allowVideos,
+      albumPermission: PERMISSIONS.includes(row.albumPermission as AlbumPermission)
+        ? (row.albumPermission as AlbumPermission)
+        : "view_upload",
+      disableDownload: row.disableDownload,
+      disableLikes: row.disableLikes,
+    };
   } catch (err) {
     console.warn("[album-flags] lookup failed (table missing?):", err);
     return DEFAULTS;
@@ -46,6 +75,37 @@ export async function setAlbumFlag<K extends keyof AlbumFlags>(
     return true;
   } catch (err) {
     console.error("[album-flags] write failed:", err);
+    return false;
+  }
+}
+
+/**
+ * Upsert several flags at once — one settings save, one write. Unknown
+ * keys are dropped and albumPermission is validated, so a hand-crafted
+ * request body can't write arbitrary columns.
+ */
+export async function setAlbumFlags(albumId: string, patch: Partial<AlbumFlags>): Promise<boolean> {
+  const clean: Partial<AlbumFlags> = {};
+  if (typeof patch.guestDataCapture === "boolean") clean.guestDataCapture = patch.guestDataCapture;
+  if (typeof patch.allowPhotos === "boolean") clean.allowPhotos = patch.allowPhotos;
+  if (typeof patch.allowVideos === "boolean") clean.allowVideos = patch.allowVideos;
+  if (typeof patch.disableDownload === "boolean") clean.disableDownload = patch.disableDownload;
+  if (typeof patch.disableLikes === "boolean") clean.disableLikes = patch.disableLikes;
+  if (patch.albumPermission && PERMISSIONS.includes(patch.albumPermission)) {
+    clean.albumPermission = patch.albumPermission;
+  }
+  if (Object.keys(clean).length === 0) return true;
+  try {
+    await db
+      .insert(albumFeatureFlags)
+      .values({ albumId, ...clean, updatedAt: new Date() })
+      .onConflictDoUpdate({
+        target: albumFeatureFlags.albumId,
+        set: { ...clean, updatedAt: new Date() },
+      });
+    return true;
+  } catch (err) {
+    console.error("[album-flags] bulk write failed:", err);
     return false;
   }
 }

@@ -170,8 +170,49 @@ export const albumFeatureFlags = pgTable("album_feature_flags", {
   /** Require name + surname + email from guests before they can upload.
    *  Sold as the events/business package — off for ordinary galleries. */
   guestDataCapture: boolean("guest_data_capture").notNull().default(false),
+  // ── Event moderation & permissions ─────────────────────────────────
+  // Columns on THIS table (not on albums) so a deploy landing before the
+  // migration degrades to defaults via lib/album-flags' guarded reads —
+  // every read of this table goes through getAlbumFlags, which never
+  // throws and falls back to DEFAULTS.
+  /** Which media guests may upload. Both on by default. */
+  allowPhotos: boolean("allow_photos").notNull().default(true),
+  allowVideos: boolean("allow_videos").notNull().default(true),
+  /** What guests can do in the digital album:
+   *  view_upload (default) | view_only | upload_only. */
+  albumPermission: text("album_permission").notNull().default("view_upload"),
+  /** Hide the download control from guests. */
+  disableDownload: boolean("disable_download").notNull().default(false),
+  /** Turn off likes across the album. */
+  disableLikes: boolean("disable_likes").notNull().default(false),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
+
+// ─── Wall collaborators ──────────────────────────────────────────────────────
+// People the owner invites to manage ONLY the Photo Wall (settings +
+// sponsors) — a DJ or venue tech, matched by their signed-in e-mail.
+// Deliberately wall-scoped: no access to photos, settings or billing.
+
+export const wallCollaborators = pgTable(
+  "wall_collaborators",
+  {
+    id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+    albumId: text("album_id")
+      .notNull()
+      .references(() => albums.id, { onDelete: "cascade" }),
+    /** Lowercased at write time; matched against Clerk VERIFIED e-mails
+     *  only, so typing someone else's address grants nothing. */
+    email: text("email").notNull(),
+    invitedBy: text("invited_by"),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+  },
+  (t) => [
+    index("wall_collaborators_album_idx").on(t.albumId),
+    unique("wall_collaborators_album_email").on(t.albumId, t.email),
+  ]
+);
+
+export type WallCollaborator = typeof wallCollaborators.$inferSelect;
 
 // ─── Event leads ─────────────────────────────────────────────────────────────
 

@@ -204,6 +204,7 @@ export default async function AlbumPage({ params, searchParams }: Props) {
         initialLang={lang}
         isOwner={isOwner}
         requireGuestData={flags.guestDataCapture}
+        eventFlags={flags}
       />
     </>
   );

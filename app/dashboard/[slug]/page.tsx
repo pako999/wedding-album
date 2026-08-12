@@ -138,6 +138,7 @@ export default async function AlbumAdminPage({ params, searchParams }: Props) {
     }
   } catch (err) {
     console.error("[album page] DB error:", err);
+
     return (
       <div className="min-h-screen flex items-center justify-center" style={{ background: "#F4F6FB" }}>
         <div className="bg-white rounded-2xl border border-amber-200 p-8 max-w-md text-center shadow">
@@ -158,6 +159,9 @@ export default async function AlbumAdminPage({ params, searchParams }: Props) {
     notFound();
   }
 
+  const albumFlags = await getAlbumFlags(album.id);
+
+
   // Settings tab shows "you're signed in as …". When admin-impersonating
   // we want it to show the ALBUM'S owner email (so the admin knows
   // whose account they're touching), not the admin's own. Otherwise
@@ -174,7 +178,7 @@ export default async function AlbumAdminPage({ params, searchParams }: Props) {
       photos={albumPhotos}
       pendingCount={pendingCount}
       guestCount={guestCount}
-      activeTab={tab as "overview" | "gallery" | "qr" | "settings" | "pending" | "film"}
+      activeTab={tab as "overview" | "gallery" | "qr" | "events" | "settings" | "pending" | "film"}
       isNew={isNew}
       isUpgraded={isUpgraded && album?.plan !== "free"}
       paidAmount={paidAmount}
@@ -185,7 +189,8 @@ export default async function AlbumAdminPage({ params, searchParams }: Props) {
       driveCount={driveCount}
       hasPassword={!!album.password}
       wallToken={await getOrCreateWallToken(album.id, album.wallToken)}
-      guestDataCapture={(await getAlbumFlags(album.id)).guestDataCapture}
+      guestDataCapture={albumFlags.guestDataCapture}
+      flags={albumFlags}
     />
   );
 }

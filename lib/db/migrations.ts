@@ -324,6 +324,26 @@ export async function runMigrations() {
   await run("stand_orders slug idx",   (q) => q`CREATE INDEX IF NOT EXISTS stand_orders_slug_idx ON stand_orders (album_slug)`);
   await run("stand_orders status idx", (q) => q`CREATE INDEX IF NOT EXISTS stand_orders_status_idx ON stand_orders (status)`);
 
+  // ── Event moderation & permission flags (see lib/album-flags.ts) ──────────
+  await run("flags.allow_photos",     (q) => q`ALTER TABLE album_feature_flags ADD COLUMN IF NOT EXISTS allow_photos BOOLEAN NOT NULL DEFAULT TRUE`);
+  await run("flags.allow_videos",     (q) => q`ALTER TABLE album_feature_flags ADD COLUMN IF NOT EXISTS allow_videos BOOLEAN NOT NULL DEFAULT TRUE`);
+  await run("flags.album_permission", (q) => q`ALTER TABLE album_feature_flags ADD COLUMN IF NOT EXISTS album_permission TEXT NOT NULL DEFAULT 'view_upload'`);
+  await run("flags.disable_download", (q) => q`ALTER TABLE album_feature_flags ADD COLUMN IF NOT EXISTS disable_download BOOLEAN NOT NULL DEFAULT FALSE`);
+  await run("flags.disable_likes",    (q) => q`ALTER TABLE album_feature_flags ADD COLUMN IF NOT EXISTS disable_likes BOOLEAN NOT NULL DEFAULT FALSE`);
+
+  // ── Wall collaborators (wall-scoped co-managers) ──────────────────────────
+  await run("create wall_collaborators", (q) => q`
+    CREATE TABLE IF NOT EXISTS wall_collaborators (
+      id          TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
+      album_id    TEXT NOT NULL,
+      email       TEXT NOT NULL,
+      invited_by  TEXT,
+      created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )
+  `);
+  await run("wall_collaborators idx",    (q) => q`CREATE INDEX IF NOT EXISTS wall_collaborators_album_idx ON wall_collaborators (album_id)`);
+  await run("wall_collaborators unique", (q) => q`CREATE UNIQUE INDEX IF NOT EXISTS wall_collaborators_album_email ON wall_collaborators (album_id, email)`);
+
   // ── Discount codes ────────────────────────────────────────────────────────
   await run("create discount_codes", (q) => q`
     CREATE TABLE IF NOT EXISTS discount_codes (

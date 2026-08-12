@@ -5,7 +5,7 @@ import { eq } from "drizzle-orm";
 import { ALBUM_THEMES } from "@/lib/album-themes";
 import { checkAlbumOwnership } from "@/lib/album-ownership";
 import { hashAlbumPassword, isHashed } from "@/lib/album-password";
-import { setAlbumFlag } from "@/lib/album-flags";
+import { setAlbumFlags } from "@/lib/album-flags";
 
 export async function PATCH(
   req: NextRequest,
@@ -21,7 +21,7 @@ export async function PATCH(
   if (!album) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
   const body = await req.json();
-  const { coupleName, location, notifyEmail, password, moderationEnabled, isPublished, coverImageUrl, eventType, theme, guestDataCapture } = body;
+  const { coupleName, location, notifyEmail, password, moderationEnabled, isPublished, coverImageUrl, eventType, theme, guestDataCapture, allowPhotos, allowVideos, albumPermission, disableDownload, disableLikes } = body;
 
   const ALLOWED_EVENT_TYPES = [
     "wedding",
@@ -78,9 +78,16 @@ export async function PATCH(
   // Feature flags live in their own table (see lib/album-flags.ts), so
   // this is a separate write and a failure here must not fail the whole
   // settings save.
-  if (typeof guestDataCapture === "boolean") {
-    await setAlbumFlag(album.id, "guestDataCapture", guestDataCapture);
-  }
+  // All event flags in one guarded write. setAlbumFlags validates every
+  // key and value, so unknown fields in the body are dropped.
+  await setAlbumFlags(album.id, {
+    ...(typeof guestDataCapture === "boolean" ? { guestDataCapture } : {}),
+    ...(typeof allowPhotos === "boolean" ? { allowPhotos } : {}),
+    ...(typeof allowVideos === "boolean" ? { allowVideos } : {}),
+    ...(typeof disableDownload === "boolean" ? { disableDownload } : {}),
+    ...(typeof disableLikes === "boolean" ? { disableLikes } : {}),
+    ...(typeof albumPermission === "string" ? { albumPermission: albumPermission as never } : {}),
+  });
 
   return NextResponse.json({ ok: true });
 }
