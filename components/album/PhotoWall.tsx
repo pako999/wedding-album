@@ -19,7 +19,7 @@
  */
 
 import { SITE_URL } from "@/lib/urls";
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, useSyncExternalStore } from "react";
 import { bunnyDisplayUrl } from "@/lib/storage/bunny";
 import { GuestcamLogo } from "@/components/GuestcamLogo";
 import type { WallCopy } from "@/lib/i18n/wall-translations";
@@ -162,6 +162,14 @@ interface Props {
   isPremium: boolean;
 }
 
+/** Wire orientation changes straight into React — see the wall's
+ *  useSyncExternalStore call. */
+function subscribeOrientation(cb: () => void) {
+  const mq = window.matchMedia("(orientation: portrait)");
+  mq.addEventListener("change", cb);
+  return () => mq.removeEventListener("change", cb);
+}
+
 export function PhotoWall({
   token,
   pw,
@@ -209,18 +217,19 @@ export function PhotoWall({
   // "auto" follows the actual screen so the same link works on a
   // landscape TV and a vertical totem; the explicit values let an owner
   // force a layout when the display reports something unhelpful.
-  const [isPortrait, setIsPortrait] = useState(settings.orientation === "portrait");
-  useEffect(() => {
-    if (settings.orientation !== "auto") {
-      setIsPortrait(settings.orientation === "portrait");
-      return;
-    }
-    const mq = window.matchMedia("(orientation: portrait)");
-    const apply = () => setIsPortrait(mq.matches);
-    apply();
-    mq.addEventListener("change", apply);
-    return () => mq.removeEventListener("change", apply);
-  }, [settings.orientation]);
+  // useSyncExternalStore instead of state+effect: the screen's real
+  // orientation IS an external store, and subscribing to it directly
+  // removes the mount-time setState pass. The server snapshot honours
+  // an explicit setting and defaults "auto" to landscape, which is what
+  // the old initial state did for TVs.
+  const screenPortrait = useSyncExternalStore(
+    subscribeOrientation,
+    () => window.matchMedia("(orientation: portrait)").matches,
+    () => settings.orientation === "portrait",
+  );
+  const isPortrait = settings.orientation === "auto"
+    ? screenPortrait
+    : settings.orientation === "portrait";
 
   const [slots, setSlots] = useState<SlotState[]>(() => {
     const recent = [...initialPhotos].reverse(); // newest first

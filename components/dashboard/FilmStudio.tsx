@@ -156,7 +156,9 @@ function FilmGenerator({
 
   const [allPhotos, setAllPhotos]         = useState<PhotoItem[]>([]);
   const [selectedIds, setSelectedIds]     = useState<Set<string>>(new Set());
-  const [photosLoading, setPhotosLoading] = useState(false);
+  // Starts true: the picker fetch below begins on mount, so initialising
+  // to loading removes the synchronous setState the effect used to open with.
+  const [photosLoading, setPhotosLoading] = useState(true);
   const [pickerOpen, setPickerOpen]       = useState(true);
 
   // ── Poll status ─────────────────────────────────────────────────────────────
@@ -176,12 +178,15 @@ function FilmGenerator({
   }, [album.slug]);
 
   useEffect(() => {
+    // Kicking off an async poll is what effects are for; every setState
+    // inside fetchStatus happens after `await fetch`, so nothing here is
+    // synchronous — the analyzer just can't see through the async callback.
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- all setState post-await
     fetchStatus();
   }, [fetchStatus]);
 
   // ── Load photos for the picker ──────────────────────────────────────────────
   useEffect(() => {
-    setPhotosLoading(true);
     fetch(`/api/albums/${album.slug}/photos`)
       .then(r => r.json())
       .then((d: { photos?: PhotoItem[] }) => {

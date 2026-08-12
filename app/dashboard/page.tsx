@@ -12,6 +12,15 @@ import { sendAdminNewUserEmail } from "@/lib/email/notifications";
 
 export const dynamic = "force-dynamic";
 
+
+/** True when `ts` is within `windowMs` of now. Module-level so the
+ *  clock read lives outside the component body — this is a server
+ *  component, evaluated once per request, and hoisting it also keeps
+ *  the compiler lint clean. */
+function isNewerThan(ts: number | null | undefined, windowMs: number): boolean {
+  return ts != null && Date.now() - ts < windowMs;
+}
+
 export default async function DashboardPage() {
   let userId: string | null = null;
   let userEmail: string | null = null;
@@ -41,8 +50,7 @@ export default async function DashboardPage() {
   // is carrying. Only for genuinely new signups (account < 7 days) so an
   // existing user's later visit isn't mislabeled from current cookies;
   // the write is first-touch/onConflictDoNothing, so it's safe to re-run.
-  const isFreshAccount =
-    userCreatedAt != null && Date.now() - userCreatedAt < 7 * 24 * 60 * 60 * 1000;
+  const isFreshAccount = isNewerThan(userCreatedAt, 7 * 24 * 60 * 60 * 1000);
   if (isFreshAccount) {
     await recordSignupAttribution(userId);
   }
@@ -58,7 +66,7 @@ export default async function DashboardPage() {
   if (created) {
     try {
       const user = await currentUser();
-      const isFresh = user?.createdAt && Date.now() - user.createdAt < 48 * 60 * 60 * 1000;
+      const isFresh = user != null && isNewerThan(user.createdAt, 48 * 60 * 60 * 1000);
       if (isFresh) {
         const name = [user.firstName, user.lastName].filter(Boolean).join(" ").trim() || "(brez imena)";
         const email = userEmail ?? "(brez e-pošte)";

@@ -472,17 +472,19 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
   // Remembered per album so a guest who uploads again later in the night
   // isn't asked for their details a second time.
   const leadStorageKey = `gc_lead_${albumSlug}`;
-  const [leadDone, setLeadDone] = useState(true); // assume done until we can check
-  useEffect(() => {
-    if (!requireGuestData) { setLeadDone(true); return; }
+  // Lazy initializer, not an effect: the modal only ever mounts in the
+  // browser (behind `uploadOpen &&` in AlbumGuestView), so localStorage
+  // is safe to read here and there is no SSR pass to mismatch against.
+  const [leadDone, setLeadDone] = useState(() => {
+    if (!requireGuestData) return true;
     try {
-      setLeadDone(localStorage.getItem(leadStorageKey) === "1");
+      return localStorage.getItem(leadStorageKey) === "1";
     } catch {
       // Private mode / storage blocked — ask once this session rather
       // than locking the guest out of uploading entirely.
-      setLeadDone(false);
+      return false;
     }
-  }, [requireGuestData, leadStorageKey]);
+  });
 
   const [leadFirst, setLeadFirst] = useState("");
   const [leadLast, setLeadLast] = useState("");
@@ -563,8 +565,12 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
     setFiles(p => [...p, ...toAdd]);
   }, [files.length, remaining]);
 
-  // Pre-load files captured before the modal opened (camera snap / pre-selected files)
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+  // Pre-load files captured before the modal opened (camera snap / pre-
+  // selected files). This must be an effect, not state initialisation:
+  // addFiles allocates object URLs, which is a side effect that needs
+  // the effect lifecycle. The synchronous setState inside is one
+  // intentional mount-time pass.
+  // eslint-disable-next-line react-hooks/exhaustive-deps, react-hooks/set-state-in-effect -- mount-once ingest; see comment
   useEffect(() => { if (initialFiles?.length) addFiles(initialFiles); }, []);
 
   // Block accidental tab/window close while uploading

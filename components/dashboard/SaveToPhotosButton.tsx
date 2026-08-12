@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useSyncExternalStore } from "react";
 
 /**
  * SaveToPhotosButton
@@ -40,36 +40,36 @@ interface MediaFile { name: string; url: string }
  *  silently drop attachments. */
 const SHARE_BATCH = 10;
 
+/** Share capability is fixed for the page's lifetime — no subscription. */
+function emptySubscribe() { return () => {}; }
+
+let shareProbeResult: boolean | null = null;
+/** Probe once whether navigator.share accepts files; cached because the
+ *  snapshot is re-read every render and the probe allocates a File. */
+function probeShareSupport(): boolean {
+  if (shareProbeResult !== null) return shareProbeResult;
+  const nav = navigator as Navigator & { canShare?: (data: ShareData) => boolean };
+  let can = "share" in navigator && typeof nav.canShare === "function";
+  if (can) {
+    try {
+      can = nav.canShare!({ files: [new File([new Blob([])], "probe.txt", { type: "text/plain" })] });
+    } catch {
+      can = false;
+    }
+  }
+  shareProbeResult = can;
+  return can;
+}
+
 export function SaveToPhotosButton({ albumSlug, className }: Props) {
   const [phase, setPhase] = useState<Phase>("idle");
   const [progress, setProgress] = useState({ done: 0, total: 0 });
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
-  const [supportsShare, setSupportsShare] = useState(false);
-
-  // Feature-detect Web Share API with files. We only check on the
-  // client; SSR rendering returns false until the effect runs.
-  useEffect(() => {
-    if (typeof navigator === "undefined") return;
-    const can =
-      "share" in navigator &&
-      "canShare" in navigator &&
-      typeof (navigator as Navigator & {
-        canShare?: (data: ShareData) => boolean;
-      }).canShare === "function" &&
-      // Probe with an empty file to see if files are accepted at all
-      (() => {
-        try {
-          return (navigator as Navigator & {
-            canShare?: (data: ShareData) => boolean;
-          }).canShare!({
-            files: [new File([new Blob([])], "probe.txt", { type: "text/plain" })],
-          });
-        } catch {
-          return false;
-        }
-      })();
-    setSupportsShare(can);
-  }, []);
+  // Feature-detect Web Share API with files via useSyncExternalStore:
+  // the server snapshot is false (matching the old initial state, so
+  // hydration is identical) and the client answer is probed once and
+  // cached at module level — browser capability can't change mid-page.
+  const supportsShare = useSyncExternalStore(emptySubscribe, probeShareSupport, () => false);
 
   async function fetchFile(url: string, name: string): Promise<File | null> {
     try {

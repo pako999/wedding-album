@@ -186,7 +186,11 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
 
   const nameInputRef  = useRef<HTMLInputElement>(null);
   const lbNameInputRef = useRef<HTMLInputElement>(null);
-  const cameraFilesRef = useRef<FileList | null>(null);
+  // State, not a ref: the value is passed as a prop (initialFiles) during
+  // render, and reading a ref during render is a compiler violation. Both
+  // writes happen in the same event handlers as setUploadOpen, so the
+  // updates batch and the modal still mounts with the files present.
+  const [cameraFiles, setCameraFiles] = useState<FileList | null>(null);
   const turnstileContainerRef = useRef<HTMLDivElement>(null);
   const sortMenuRef = useRef<HTMLDivElement>(null);
 
@@ -211,6 +215,11 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
     // Restore persisted likes for this album
     try {
       const stored = localStorage.getItem(`likes-${album.slug}`);
+      // This page is SSR'd, so localStorage hydration must happen in an
+      // effect — a lazy initializer would make the first client render
+      // differ from the server HTML. One mount-time pass is the
+      // documented React pattern for exactly this.
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- SSR-safe localStorage hydration
       if (stored) setMyLikes(new Set(JSON.parse(stored) as string[]));
     } catch { /* ignore */ }
 
@@ -219,6 +228,7 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
     // name prompt knows this name is legitimately theirs).
     try {
       const storedName = localStorage.getItem(`name-${album.slug}`);
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- SSR-safe localStorage hydration (see above)
       if (storedName) setUploaderName(prev => prev || storedName);
     } catch { /* ignore */ }
 
@@ -566,6 +576,11 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
   // Keep the comment pipeline pointed at the lightbox's current photo while open.
   useEffect(() => {
     if (lightboxOpen && lightboxPhoto) {
+      // Intentional cross-state sync when the lightbox opens or changes
+      // photo; converting to adjust-during-render would need open/photo
+      // prev-tracking woven through a 2000-line component for no
+      // behavioural gain.
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- deliberate sync on lightbox open
       setOpenCommentsPhoto(lightboxPhoto.id);
       setCommentInput("");
     }
@@ -817,7 +832,7 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
                       <input type="file" accept="image/*,video/*" capture="environment" multiple className="absolute inset-0 opacity-0 cursor-pointer"
                         onChange={(e) => {
                           if (!e.target.files?.length) return;
-                          cameraFilesRef.current = e.target.files;
+                          setCameraFiles(e.target.files);
                           setUploadOpen(true);
                         }} />
                     </label>
@@ -1243,7 +1258,7 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
                       <input type="file" accept="image/*,video/*" capture="environment" multiple className="absolute inset-0 opacity-0 cursor-pointer"
                         onChange={(e) => {
                           if (!e.target.files?.length) return;
-                          cameraFilesRef.current = e.target.files;
+                          setCameraFiles(e.target.files);
                           setUploadOpen(true);
                         }} />
                     </label>
@@ -1404,7 +1419,7 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
             <input type="file" accept="image/*,video/*" capture="environment" multiple className="absolute inset-0 opacity-0 cursor-pointer"
               onChange={(e) => {
                 if (!e.target.files?.length) return;
-                cameraFilesRef.current = e.target.files;
+                setCameraFiles(e.target.files);
                 setUploadOpen(true);
               }} />
           </label>
@@ -1627,6 +1642,11 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
                   guest has no name yet, tapping it reveals the name-entry field
                   (see handleLightboxLike) instead of being a dead button. */}
               <button
+                /* handleLightboxLike touches refs (pending-like id, the
+                   name input to focus) — legal in an event handler; the
+                   analyzer inlines the useCallback and misreads it as a
+                   render-time ref access. */
+                // eslint-disable-next-line react-hooks/refs -- refs touched inside the click handler only
                 onClick={() => handleLightboxLike(lightboxPhoto.id)}
                 title={lbLiked ? t.unlike : t.like}
                 className="mt-3 w-full flex items-center justify-center gap-2 py-2 rounded-xl text-sm font-semibold transition-all hover:opacity-90"
@@ -1953,14 +1973,14 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
           albumPassword={providedPassword ?? ""}
           moments={moments}
           defaultMomentId={selectedMomentId}
-          initialFiles={cameraFilesRef.current}
+          initialFiles={cameraFiles}
           referralCode={album.referralCode ?? null}
           requireGuestData={requireGuestData}
           organiserName={album.coupleName}
-          onClose={() => { cameraFilesRef.current = null; setUploadOpen(false); }}
+          onClose={() => { setCameraFiles(null); setUploadOpen(false); }}
           onNameChange={(name) => setUploaderName(name)}
           onSuccess={(info) => {
-            cameraFilesRef.current = null;
+            setCameraFiles(null);
             setUploadOpen(false);
             router.refresh();
             if (info?.emailCaptured) {

@@ -12,7 +12,7 @@
  *  • Swipe left/right on touch screens
  */
 
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import type { Photo } from "@/lib/db/schema";
 import { bunnyDisplayUrl } from "@/lib/storage/bunny";
 
@@ -46,13 +46,20 @@ export function Slideshow({ photos, startIndex = 0, onClose }: Props) {
 
   const photo = images[idx];
 
-  const go = useCallback((n: number) => {
-    setIdx(n);
+  // Plain functions, no manual memoization: the compiler could not
+  // preserve the useCallback wrappers (it cannot prove the `images` prop
+  // is never mutated) and was skipping the whole component because of
+  // it. With nothing to preserve it optimises freely; the effects below
+  // that list these in their deps re-arm on exactly the renders that
+  // matter (slide change, play toggle), which they already did.
+  const prev = () => {
+    setIdx(i => (i - 1 + images.length) % images.length);
     setImgKey(k => k + 1);
-  }, []);
-
-  const prev = useCallback(() => go((idx - 1 + images.length) % images.length), [go, idx, images.length]);
-  const next = useCallback(() => go((idx + 1) % images.length), [go, idx, images.length]);
+  };
+  const next = () => {
+    setIdx(i => (i + 1) % images.length);
+    setImgKey(k => k + 1);
+  };
 
   // Auto-advance
   useEffect(() => {

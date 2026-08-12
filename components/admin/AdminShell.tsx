@@ -22,10 +22,15 @@ export function AdminShell({ nav, adminEmail, children }: Props & { children: Re
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
 
-  // Close drawer on route change
-  useEffect(() => {
+  // Close the drawer on route change — done by adjusting state during
+  // render (the React-docs pattern) rather than in an effect: the closed
+  // drawer appears in the same paint as the new page instead of one
+  // frame later.
+  const [prevPathname, setPrevPathname] = useState(pathname);
+  if (prevPathname !== pathname) {
+    setPrevPathname(pathname);
     setOpen(false);
-  }, [pathname]);
+  }
 
   // Lock body scroll while drawer is open on mobile
   useEffect(() => {

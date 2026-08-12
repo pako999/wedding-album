@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useSyncExternalStore } from "react";
 
 /**
  * The album the demo QR code / link points at.
@@ -8,13 +8,23 @@ import { useState, useEffect } from "react";
  */
 const DEMO_SLUG = "ana-marko-13ka";
 
+
+/** The origin never changes during a page's lifetime — nothing to subscribe to. */
+function emptySubscribe() { return () => {}; }
+
 export function DemoButton({ variant = "hero" }: { variant?: "hero" | "nav" | "heroDark" }) {
   const [open, setOpen] = useState(false);
 
   // Resolve the demo URL from the actual host the visitor is on — works on
-  // localhost and production alike, with no dependency on a build-time env var.
-  const [origin, setOrigin] = useState("");
-  useEffect(() => { setOrigin(window.location.origin); }, []);
+  // localhost and production alike, with no dependency on a build-time env
+  // var. useSyncExternalStore instead of effect+setState: the server
+  // snapshot is "" (same as the old initial state, so hydration matches)
+  // and the client reads the origin without an extra render pass.
+  const origin = useSyncExternalStore(
+    emptySubscribe,
+    () => window.location.origin,
+    () => "",
+  );
 
   const demoUrl = `${origin}/${DEMO_SLUG}`;
   const qrSrc = origin
