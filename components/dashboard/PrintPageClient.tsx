@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { updateCardText } from "@/app/actions/update-card-text";
+import { PrintServicePromo } from "./PrintServicePromo";
 
 interface TemplateInfo {
   id: string;
@@ -325,6 +326,12 @@ export function PrintPageClient({ slug, coupleName, weddingDate, location, qrUrl
             {weddingDate}{location ? ` · ${location}` : ""} — Predloge za tisk
           </p>
         </div>
+
+        {/* Full-service offer, above the DIY tools. Someone on this page
+            is about to print and cut these by hand — this is the one
+            moment "or we'll do it for you" is genuinely useful rather
+            than an interruption. */}
+        <PrintServicePromo slug={slug} plan={plan} variant="banner" />
 
         <div className="flex flex-col lg:flex-row gap-8">
           {/* LEFT: Template selector */}

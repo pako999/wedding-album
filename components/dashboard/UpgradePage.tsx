@@ -11,7 +11,7 @@ import { translations, type Lang } from "@/lib/i18n/translations";
 import { UPGRADE_COPY, PLAN_FEATURE_KEYS } from "@/lib/i18n/upgrade-translations";
 import {
   SHIPPING_COUNTRIES, STAND_VARIANTS, DEFAULT_STAND_QTY, DEFAULT_STAND_VARIANT,
-  MAX_STAND_QTY, VOLUME_BREAKS, quoteShipping, standsPriceCents, effectiveUnitCents,
+  MAX_STAND_QTY, VOLUME_BREAKS, LEAD_TIME_DAYS, quoteShipping, standsPriceCents, effectiveUnitCents,
   betterVolumeOffer,
   volumeDiscountPercent, eur, type StandVariant,
 } from "@/lib/print-service";
@@ -84,6 +84,9 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
   const volumePercent = volumeDiscountPercent(standsQty);
   const cheapestUnitCents = Math.min(...STAND_VARIANTS.map((v) => v.unitCents));
   const betterOffer = betterVolumeOffer(standsQty, standsVariant);
+  /** Which product photo is open full size, if any. */
+  const [zoomVariant, setZoomVariant] = useState<StandVariant | null>(null);
+  const zoomed = zoomVariant ? STAND_VARIANTS.find((v) => v.id === zoomVariant) : null;
   const standsCents = wantStands ? standsGoodsCents + (shipQuote?.cents ?? 0) : 0;
 
   // Discount code state
@@ -140,6 +143,42 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
 
   return (
     <div className="min-h-screen flex flex-col" style={{ background: "#F5F5F7" }}>
+
+      {/* Full-size product preview. Fixed overlay rather than a new tab so
+          the customer never leaves a half-filled checkout form. Closes on
+          backdrop click, on the X, and on Escape. */}
+      {zoomed && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label={zoomVariant === "wood" ? u.standsWood : u.standsGold}
+          onClick={() => setZoomVariant(null)}
+          onKeyDown={(e) => { if (e.key === "Escape") setZoomVariant(null); }}
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
+        >
+          <img
+            src={zoomed.image}
+            alt={zoomVariant === "wood" ? u.standsWood : u.standsGold}
+            onClick={(e) => e.stopPropagation()}
+            onError={(e) => {
+              const img = e.currentTarget;
+              if (!img.src.endsWith(zoomed.imageFallback)) img.src = zoomed.imageFallback;
+            }}
+            className="max-w-full max-h-full object-contain rounded-xl shadow-2xl"
+          />
+          <button
+            type="button"
+            onClick={() => setZoomVariant(null)}
+            autoFocus
+            aria-label={u.standsClose}
+            className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/15 hover:bg-white/25 text-white flex items-center justify-center transition-colors"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+      )}
 
       {/* ── Top nav ─────────────────────────────────────────────────── */}
       <header className="bg-white border-b border-gray-100 sticky top-0 z-10">
@@ -557,46 +596,68 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
                   <div className="grid grid-cols-2 gap-3 mb-4">
                     {STAND_VARIANTS.map((v) => {
                       const active = standsVariant === v.id;
+                      const label = v.id === "wood" ? u.standsWood : u.standsGold;
                       return (
-                        <button
+                        <div
                           key={v.id}
-                          type="button"
-                          onClick={() => setStandsVariant(v.id)}
-                          aria-pressed={active}
                           className="rounded-xl border-2 p-2 text-center transition-all"
                           style={{
                             borderColor: active ? "#FFC94D" : "#e5e7eb",
                             background: active ? "#FFF9EC" : "#fff",
                           }}
                         >
-                          {/* Photo first, drawing as fallback — see the note
-                              on STAND_VARIANTS. object-contain, not cover, so
-                              a portrait product shot is never cropped through
-                              the QR card. Taller on desktop where there's room. */}
-                          <img
-                            src={v.image}
-                            alt={v.id === "wood" ? u.standsWood : u.standsGold}
-                            width={400}
-                            height={450}
-                            loading="lazy"
-                            onError={(e) => {
-                              const img = e.currentTarget;
-                              if (!img.src.endsWith(v.imageFallback)) img.src = v.imageFallback;
-                            }}
-                            /* object-contain, not cover: both shots are 2:3
-                               portrait and cover would crop away the base —
-                               which is the whole difference between the two
-                               products. No background colour, so the
-                               letterbox area takes the card's own fill. */
-                            className="w-full h-40 sm:h-52 object-contain rounded-lg mb-1.5"
-                          />
-                          <span className="block text-sm font-semibold text-gray-900">
-                            {v.id === "wood" ? u.standsWood : u.standsGold}
-                          </span>
-                          <span className="block text-xs text-gray-500">
-                            {eur(v.unitCents)}/{u.standsPiece}
-                          </span>
-                        </button>
+                          {/* Tapping the photo BOTH selects the material and
+                              opens it full size. Selecting as a side effect is
+                              deliberate: someone tapping the picture of the
+                              stand they want means "this one", and a preview
+                              that silently left the other material selected
+                              would be a trap. The image is its own button
+                              rather than the whole card being one, so the
+                              zoom control is a real button and not nested
+                              inside another. */}
+                          <button
+                            type="button"
+                            onClick={() => { setStandsVariant(v.id); setZoomVariant(v.id); }}
+                            aria-label={`${label} — ${u.standsZoom}`}
+                            className="relative block w-full rounded-lg overflow-hidden group cursor-zoom-in"
+                          >
+                            {/* Photo first, drawing as fallback — see the note
+                                on STAND_VARIANTS. object-contain, not cover, so
+                                a portrait shot is never cropped through the
+                                QR card, which is the whole product. */}
+                            <img
+                              src={v.image}
+                              alt={label}
+                              width={400}
+                              height={450}
+                              loading="lazy"
+                              onError={(e) => {
+                                const img = e.currentTarget;
+                                if (!img.src.endsWith(v.imageFallback)) img.src = v.imageFallback;
+                              }}
+                              className="w-full h-40 sm:h-52 object-contain"
+                            />
+                            <span
+                              aria-hidden
+                              className="absolute bottom-1.5 right-1.5 flex items-center justify-center w-7 h-7 rounded-full bg-black/45 text-white opacity-80 group-hover:opacity-100 transition-opacity"
+                            >
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.2-5.2m2.2-5.3a7.5 7.5 0 11-15 0 7.5 7.5 0 0115 0zM10.5 7.5v6m3-3h-6" />
+                              </svg>
+                            </span>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setStandsVariant(v.id)}
+                            aria-pressed={active}
+                            className="block w-full mt-1.5"
+                          >
+                            <span className="block text-sm font-semibold text-gray-900">{label}</span>
+                            <span className="block text-xs text-gray-500">
+                              {eur(v.unitCents)}/{u.standsPiece}
+                            </span>
+                          </button>
+                        </div>
                       );
                     })}
                   </div>
@@ -667,6 +728,21 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
                     </p>
                   )}
                   <p className="text-xs text-gray-400 mt-1.5">{u.standsVat}</p>
+
+                  {/* Lead time, at the point of purchase. A wedding date
+                      can't be moved, so someone ordering four days out has
+                      to read this BEFORE paying, not in the confirmation. */}
+                  <div
+                    className="flex items-start gap-2.5 rounded-xl border px-3 py-2.5 mt-3"
+                    style={{ background: "#FFF9EC", borderColor: "rgba(255,201,77,0.5)" }}
+                  >
+                    <svg className="w-4 h-4 shrink-0 mt-0.5 text-[#C9820A]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <p className="text-xs leading-relaxed text-[#7A5A12]">
+                      {u.standsLeadTime(LEAD_TIME_DAYS)}
+                    </p>
+                  </div>
                 </div>
               )}
             </div>

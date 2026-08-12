@@ -128,6 +128,12 @@ export interface UpgradeCopy {
   standsWood:     string; // "Wooden"
   standsGold:     string; // "Gold"
   standsVat:      string; // "Prices include VAT"
+  /** Lead time. Stated at the point of purchase, not in a confirmation
+   *  email — a wedding date can't move, so someone ordering four days
+   *  out has to know before they pay. */
+  standsLeadTime: (days: number) => string;
+  standsZoom:     string; // accessible label for the enlarge control
+  standsClose:    string; // accessible label for the preview close button
   /** "100+ pcs −15%, 200+ pcs −20%" — shown only until they qualify. */
   standsVolumeHint: (q1: number, p1: number, q2: number, p2: number) => string;
   /** "Order 100 and pay 21,00 € less" — thresholds mean a smaller order
@@ -215,7 +221,7 @@ export const UPGRADE_COPY: Record<Lang, UpgradeCopy> = {
     featurePhotoWall:        "Foto stena za TV / projektor",
     featurePrioritySupport:  "Prioritetna podpora",
     standsTitle:    "Natisnjeni QR podstavki za mize",
-    standsDesc:     "Natisnemo podstavke z vašo QR kodo in vam jih pošljemo domov — pripravljeni za mize.",
+    standsDesc:     "Natisnemo kartice z vašo QR kodo na 200 g papir, jih vstavimo v podstavke in pošljemo domov — pripravljeni za mize.",
     standsCountry:  "Država dostave",
     standsShipping: "Poštnina",
     standsTotal:    "Skupaj",
@@ -224,6 +230,9 @@ export const UPGRADE_COPY: Record<Lang, UpgradeCopy> = {
     standsWood:     "Leseni",
     standsGold:     "Zlati",
     standsVat:      "Cene vključujejo tisk in DDV.",
+    standsLeadTime: (d) => `Podstavke in tisk naročite vsaj ${d} dni pred dogodkom, da prispejo pravočasno. Za krajše roke nas takoj kontaktirajte — preverimo hitrejši tisk in dostavo.`,
+    standsZoom:     "Poglej v polni velikosti",
+    standsClose:    "Zapri",
     standsVolumeHint: (q1, p1, q2, p2) => `${q1}+ kosov −${p1}%, ${q2}+ kosov −${p2}%`,
     standsBetterOffer: (qty, save) => `Naročite ${qty} kosov in plačajte ${save} manj — kliknite za popravek.`,
     standsPiece:    "kos",
@@ -306,7 +315,7 @@ export const UPGRADE_COPY: Record<Lang, UpgradeCopy> = {
     featurePhotoWall:        "Foto zid za TV / projektor",
     featurePrioritySupport:  "Prioritetna podrška",
     standsTitle:    "Tiskani QR stalci za stolove",
-    standsDesc:     "Tiskamo stalke s vašim QR kodom i šaljemo vam ih — spremni za stolove.",
+    standsDesc:     "Tiskamo kartice s vašim QR kodom na 200 g papir, stavljamo ih u stalke i šaljemo vam — spremni za stolove.",
     standsCountry:  "Država dostave",
     standsShipping: "Poštarina",
     standsTotal:    "Ukupno",
@@ -315,6 +324,9 @@ export const UPGRADE_COPY: Record<Lang, UpgradeCopy> = {
     standsWood:     "Drveni",
     standsGold:     "Zlatni",
     standsVat:      "Cijene uključuju tisak i PDV.",
+    standsLeadTime: (d) => `Stalke i tisak naručite najmanje ${d} dana prije događaja kako bi stigli na vrijeme. Za kraće rokove kontaktirajte nas odmah — provjerit ćemo brži tisak i dostavu.`,
+    standsZoom:     "Pogledaj u punoj veličini",
+    standsClose:    "Zatvori",
     standsVolumeHint: (q1, p1, q2, p2) => `${q1}+ komada −${p1}%, ${q2}+ komada −${p2}%`,
     standsBetterOffer: (qty, save) => `Naručite ${qty} komada i platite ${save} manje — kliknite za ispravak.`,
     standsPiece:    "kom",
@@ -397,7 +409,7 @@ export const UPGRADE_COPY: Record<Lang, UpgradeCopy> = {
     featurePhotoWall:        "Foto zid za TV / projektor",
     featurePrioritySupport:  "Prioritetna podrška",
     standsTitle:    "Štampani QR stalci za stolove",
-    standsDesc:     "Štampamo stalke sa vašim QR kodom i šaljemo vam ih — spremni za stolove.",
+    standsDesc:     "Štampamo kartice sa vašim QR kodom na 200 g papir, stavljamo ih u stalke i šaljemo vam — spremni za stolove.",
     standsCountry:  "Država dostave",
     standsShipping: "Poštarina",
     standsTotal:    "Ukupno",
@@ -406,6 +418,9 @@ export const UPGRADE_COPY: Record<Lang, UpgradeCopy> = {
     standsWood:     "Drveni",
     standsGold:     "Zlatni",
     standsVat:      "Cene uključuju štampu i PDV.",
+    standsLeadTime: (d) => `Stalke i štampu naručite najmanje ${d} dana pre događaja kako bi stigli na vreme. Za kraće rokove kontaktirajte nas odmah — proverićemo bržu štampu i dostavu.`,
+    standsZoom:     "Pogledaj u punoj veličini",
+    standsClose:    "Zatvori",
     standsVolumeHint: (q1, p1, q2, p2) => `${q1}+ komada −${p1}%, ${q2}+ komada −${p2}%`,
     standsBetterOffer: (qty, save) => `Naručite ${qty} komada i platite ${save} manje — kliknite za ispravku.`,
     standsPiece:    "kom",
@@ -488,7 +503,7 @@ export const UPGRADE_COPY: Record<Lang, UpgradeCopy> = {
     featurePhotoWall:        "Photo Wall for TV / projector",
     featurePrioritySupport:  "Priority support",
     standsTitle:    "Printed QR table stands",
-    standsDesc:     "We print stands with your QR code and post them to you — ready for the tables.",
+    standsDesc:     "We print your QR card on 200 gsm paper, fit it into the stand and post it to you — ready for the tables.",
     standsCountry:  "Delivery country",
     standsShipping: "Shipping",
     standsTotal:    "Total",
@@ -497,6 +512,9 @@ export const UPGRADE_COPY: Record<Lang, UpgradeCopy> = {
     standsWood:     "Wooden",
     standsGold:     "Gold",
     standsVat:      "Prices include printing and VAT.",
+    standsLeadTime: (d) => `Order stands and printing at least ${d} days before your event so they arrive in time. For anything shorter, contact us straight away — we\u2019ll check express printing and delivery.`,
+    standsZoom:     "View full size",
+    standsClose:    "Close",
     standsVolumeHint: (q1, p1, q2, p2) => `${q1}+ pcs −${p1}%, ${q2}+ pcs −${p2}%`,
     standsBetterOffer: (qty, save) => `Order ${qty} and pay ${save} less — tap to change.`,
     standsPiece:    "ea",
@@ -579,7 +597,7 @@ export const UPGRADE_COPY: Record<Lang, UpgradeCopy> = {
     featurePhotoWall:        "Foto-Wall für TV / Beamer",
     featurePrioritySupport:  "Prioritäts-Support",
     standsTitle:    "Gedruckte QR-Tischaufsteller",
-    standsDesc:     "Wir drucken Aufsteller mit Ihrem QR-Code und senden sie Ihnen zu — fertig für die Tische.",
+    standsDesc:     "Wir drucken Ihre QR-Karte auf 200-g-Papier, setzen sie in den Aufsteller ein und senden sie Ihnen zu — fertig für die Tische.",
     standsCountry:  "Lieferland",
     standsShipping: "Versand",
     standsTotal:    "Gesamt",
@@ -588,6 +606,9 @@ export const UPGRADE_COPY: Record<Lang, UpgradeCopy> = {
     standsWood:     "Holz",
     standsGold:     "Gold",
     standsVat:      "Preise inkl. Druck und MwSt.",
+    standsLeadTime: (d) => `Bestellen Sie Aufsteller und Druck mindestens ${d} Tage vor Ihrer Veranstaltung, damit sie rechtzeitig ankommen. Bei kürzeren Fristen kontaktieren Sie uns sofort — wir prüfen Express-Druck und -Versand.`,
+    standsZoom:     "In voller Größe ansehen",
+    standsClose:    "Schließen",
     standsVolumeHint: (q1, p1, q2, p2) => `ab ${q1} Stk. −${p1}%, ab ${q2} Stk. −${p2}%`,
     standsBetterOffer: (qty, save) => `Bestellen Sie ${qty} Stück und zahlen Sie ${save} weniger — zum Ändern klicken.`,
     standsPiece:    "St.",
@@ -670,7 +691,7 @@ export const UPGRADE_COPY: Record<Lang, UpgradeCopy> = {
     featurePhotoWall:        "Muro de fotos para TV / proyector",
     featurePrioritySupport:  "Soporte prioritario",
     standsTitle:    "Soportes de mesa QR impresos",
-    standsDesc:     "Imprimimos soportes con tu código QR y te los enviamos — listos para las mesas.",
+    standsDesc:     "Imprimimos tu tarjeta QR en papel de 200 g, la montamos en el soporte y te lo enviamos — listo para las mesas.",
     standsCountry:  "País de entrega",
     standsShipping: "Envío",
     standsTotal:    "Total",
@@ -679,6 +700,9 @@ export const UPGRADE_COPY: Record<Lang, UpgradeCopy> = {
     standsWood:     "Madera",
     standsGold:     "Dorado",
     standsVat:      "Precios con impresión e IVA incluidos.",
+    standsLeadTime: (d) => `Pide los soportes y la impresión al menos ${d} días antes de tu evento para que lleguen a tiempo. Si tienes menos margen, contáctanos de inmediato — comprobaremos impresión y envío urgentes.`,
+    standsZoom:     "Ver a tamaño completo",
+    standsClose:    "Cerrar",
     standsVolumeHint: (q1, p1, q2, p2) => `${q1}+ uds −${p1}%, ${q2}+ uds −${p2}%`,
     standsBetterOffer: (qty, save) => `Pide ${qty} unidades y paga ${save} menos — toca para cambiar.`,
     standsPiece:    "ud",

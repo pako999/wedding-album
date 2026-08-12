@@ -12,6 +12,7 @@ import { ZipDownloader } from "@/components/dashboard/ZipDownloader";
 import { CoverPhotoSettings } from "@/components/dashboard/CoverPhotoSettings";
 import { FilmStudio } from "@/components/dashboard/FilmStudio";
 import { PhotoWallCard } from "@/components/dashboard/PhotoWallCard";
+import { STAND_VARIANTS, eur } from "@/lib/print-service";
 import { EventLeadsCard } from "@/components/dashboard/EventLeadsCard";
 import { ALBUM_THEMES, themesForEvent } from "@/lib/album-themes";
 import { fbEvent } from "@/lib/fbpixel";
@@ -1016,6 +1017,33 @@ function OverviewTab({
               ⬇ Prenesi samo QR kodo
             </a>
           </div>
+
+          {/* Sits directly under the two "download it yourself" buttons —
+              the alternative to doing it by hand belongs next to the
+              by-hand option, not on a page they may never open. */}
+          <Link
+            href={`/dashboard/${album.slug}/print`}
+            className="flex items-center gap-3 rounded-xl border p-3 hover:brightness-[0.98] transition-all"
+            style={{ background: "#FFF9EC", borderColor: "rgba(255,201,77,0.5)" }}
+          >
+            <img
+              src="/print/stand-wood.webp"
+              alt=""
+              width={44}
+              height={62}
+              loading="lazy"
+              className="w-11 h-14 object-contain rounded-md shrink-0"
+            />
+            <span className="flex-1 min-w-0">
+              <span className="block text-sm font-bold text-gray-900">🖨 Ne želite tiskati sami?</span>
+              <span className="block text-xs text-gray-500 mt-0.5">
+                Natisnemo in dostavimo QR podstavke za mize (tisk na 200 g papir) — že od {eur(Math.min(...STAND_VARIANTS.map((v) => v.unitCents)))} na kos.
+              </span>
+            </span>
+            <svg className="w-4 h-4 text-[#C9820A] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+            </svg>
+          </Link>
         </div>
 
         {/* Photo Wall — the second "product" beside the gallery, in the

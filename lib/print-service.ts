@@ -28,24 +28,29 @@
  */
 export type StandVariant = "wood" | "gold";
 
-/** Printing the QR card, charged per stand. It is NOT a separate line at
- *  checkout — it is added into the unit price so the customer sees one
- *  number per piece, which is what "printing included" has to mean for
- *  the price on the card to be the price they pay. */
-export const PRINTING_CENTS = 40;
+/** Weight of the printed card, quoted in the product description so
+ *  "printed" means something concrete to the buyer. */
+export const PAPER_GSM = 200;
+
+/** Minimum days between ordering and the event for standard print and
+ *  delivery. Stated at the point of purchase rather than buried in a
+ *  confirmation email — a wedding date cannot be moved, so someone
+ *  ordering four days out needs to know before they pay, not after. */
+export const LEAD_TIME_DAYS = 10;
 
 export const STAND_VARIANTS: {
   id: StandVariant;
-  /** The stand itself, before printing. Kept separate from unitCents so
-   *  a material price rise doesn't require re-deriving the total by hand. */
-  materialCents: number;
-  /** What the customer is charged per stand: material + printing. */
+  /**
+   * What the customer is charged per stand. These are the all-in retail
+   * prices: printing on 200 g paper is ALREADY inside them, so nothing
+   * is added on top here or anywhere downstream.
+   */
   unitCents: number;
   image: string;
   imageFallback: string;
 }[] = [
-  { id: "wood", materialCents: 150, unitCents: 150 + PRINTING_CENTS, image: "/print/stand-wood.webp", imageFallback: "/print/stand-wood.svg" },
-  { id: "gold", materialCents: 300, unitCents: 300 + PRINTING_CENTS, image: "/print/stand-gold.webp", imageFallback: "/print/stand-gold.svg" },
+  { id: "wood", unitCents: 300, image: "/print/stand-wood.webp", imageFallback: "/print/stand-wood.svg" },
+  { id: "gold", unitCents: 450, image: "/print/stand-gold.webp", imageFallback: "/print/stand-gold.svg" },
 ];
 
 /** Preselected material — the cheaper one, so the first number the
