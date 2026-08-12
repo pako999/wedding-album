@@ -12,44 +12,108 @@
  */
 
 /**
- * Printed QR table stands are sold in fixed bundles, not by the set —
- * one stand per table, so the quantity a customer needs is driven by
- * their table count.
+ * Stands come in two materials, priced per piece. There is deliberately
+ * NO volume discount: the price is a flat unit rate at any quantity, so
+ * the total is a straight multiplication. Amounts include VAT.
  *
- * NOTE ON THE RATES: these are the prices as given, but they are not
- * monotonic per unit — 50 works out at 1,40 €/stand while 100 works out
- * at 1,60 €/stand. A customer who does the arithmetic orders 2×50 for
- * 140 € instead of 100 for 160 €, and 4×50 for 280 € instead of 200 for
- * 300 €. That is worth a second look; the code implements exactly what
- * was specified rather than quietly "fixing" the 100 and 200 rows.
+ * `image` is the real product photograph; `imageFallback` is a drawn SVG
+ * of the same product. The checkout card requests the photo and swaps to
+ * the drawing only if it 404s, so the two photo files can be added to
+ * public/print/ at any time — including after this ships — and appear
+ * without a code change or a broken image in between.
+ *
+ * The photos want to be roughly 800×900 WebP (~2× the 400px card slot,
+ * so they stay sharp on phone retina screens as well as desktop) and
+ * shot portrait, since a table stand is taller than it is wide.
  */
-export const STAND_TIERS: { qty: number; cents: number }[] = [
-  { qty: 1, cents: 200 },
-  { qty: 10, cents: 1800 },
-  { qty: 25, cents: 4000 },
-  { qty: 50, cents: 7000 },
-  { qty: 100, cents: 16000 },
-  { qty: 200, cents: 30000 },
+export type StandVariant = "wood" | "gold";
+
+export const STAND_VARIANTS: {
+  id: StandVariant;
+  unitCents: number;
+  image: string;
+  imageFallback: string;
+}[] = [
+  { id: "wood", unitCents: 150, image: "/print/stand-wood.webp", imageFallback: "/print/stand-wood.svg" },
+  { id: "gold", unitCents: 300, image: "/print/stand-gold.webp", imageFallback: "/print/stand-gold.svg" },
 ];
 
-/** Bundle preselected when someone ticks the add-on. Ten covers a
- *  typical wedding's table count without being the biggest spend. */
+/** Preselected material — the cheaper one, so the first number the
+ *  customer sees is the lowest we charge. */
+export const DEFAULT_STAND_VARIANT: StandVariant = "wood";
+
+/** Quantity preselected when the add-on is ticked; roughly a typical
+ *  wedding's table count. */
 export const DEFAULT_STAND_QTY = 10;
 
-/**
- * Price for a bundle, in cents, or null when the quantity isn't one we
- * sell. Null rather than a nearest-match so a tampered-with quantity is
- * rejected instead of silently repriced.
- */
-export function standsPriceCents(qty: number): number | null {
-  const tier = STAND_TIERS.find((t) => t.qty === qty);
-  return tier ? tier.cents : null;
+/** Upper bound on a self-serve order. Past this it's a conversation
+ *  about lead time and a pallet, not a checkout button — and it stops a
+ *  mistyped quantity from becoming a five-figure charge. */
+export const MAX_STAND_QTY = 500;
+
+export function standUnitCents(variant: StandVariant): number | null {
+  return STAND_VARIANTS.find((v) => v.id === variant)?.unitCents ?? null;
 }
 
-/** Per-stand price of a bundle, for the "x,xx € / kos" hint. */
-export function perStandCents(qty: number): number | null {
-  const total = standsPriceCents(qty);
+/**
+ * Volume breaks. The unit price is flat at every quantity EXCEPT these
+ * two thresholds — there is no sliding scale in between. Ordered
+ * largest-first so the first match is the best one the order qualifies
+ * for; they are thresholds ("100 or more"), not exact counts, or 101
+ * stands would cost more than 100.
+ */
+export const VOLUME_BREAKS: { minQty: number; percentOff: number }[] = [
+  { minQty: 200, percentOff: 20 },
+  { minQty: 100, percentOff: 15 },
+];
+
+/** Discount percentage an order of `qty` qualifies for, 0 if none. */
+export function volumeDiscountPercent(qty: number): number {
+  return VOLUME_BREAKS.find((b) => qty >= b.minQty)?.percentOff ?? 0;
+}
+
+/**
+ * Price for `qty` stands of a material, in cents, or null when either
+ * input is one we don't sell. Null rather than a clamped or defaulted
+ * value so a tampered request is rejected instead of quietly repriced.
+ */
+export function standsPriceCents(qty: number, variant: StandVariant): number | null {
+  const unit = standUnitCents(variant);
+  if (unit === null) return null;
+  if (!Number.isInteger(qty) || qty < 1 || qty > MAX_STAND_QTY) return null;
+  const gross = unit * qty;
+  const off = volumeDiscountPercent(qty);
+  return off === 0 ? gross : Math.round(gross * (1 - off / 100));
+}
+
+/** Effective per-stand price after any volume break, for the "x,xx €/kos"
+ *  hint under the quantity field. */
+export function effectiveUnitCents(qty: number, variant: StandVariant): number | null {
+  const total = standsPriceCents(qty, variant);
   return total === null ? null : Math.round(total / qty);
+}
+
+/**
+ * Because the breaks are thresholds, an order just below one costs MORE
+ * than a bigger order: 99 stands is 148,50 € but 100 is 127,50 €. That
+ * is inherent to threshold pricing, not a rounding artefact — so rather
+ * than let a customer pay more for less, surface the better deal.
+ *
+ * Returns the quantity to suggest and what they'd save, or null when
+ * the current quantity is already the best price.
+ */
+export function betterVolumeOffer(
+  qty: number,
+  variant: StandVariant,
+): { qty: number; saveCents: number } | null {
+  const current = standsPriceCents(qty, variant);
+  if (current === null) return null;
+  for (const b of [...VOLUME_BREAKS].reverse()) {
+    if (qty >= b.minQty || b.minQty > MAX_STAND_QTY) continue;
+    const at = standsPriceCents(b.minQty, variant);
+    if (at !== null && at < current) return { qty: b.minQty, saveCents: current - at };
+  }
+  return null;
 }
 
 /** Shipping zones. Serbia is listed on its own because it is NOT in the
@@ -159,9 +223,10 @@ export function addOnTotalCents(
   wanted: boolean,
   country: string | undefined | null,
   qty: number = DEFAULT_STAND_QTY,
+  variant: StandVariant = DEFAULT_STAND_VARIANT,
 ): number | null {
   if (!wanted) return 0;
-  const stands = standsPriceCents(qty);
+  const stands = standsPriceCents(qty, variant);
   if (stands === null) return null;
   const ship = quoteShipping(country);
   if (!ship) return null;

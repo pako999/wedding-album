@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { addOnTotalCents, quoteShipping, standsPriceCents, DEFAULT_STAND_QTY } from "@/lib/print-service";
+import {
+  addOnTotalCents, quoteShipping, standsPriceCents,
+  DEFAULT_STAND_QTY, DEFAULT_STAND_VARIANT, type StandVariant,
+} from "@/lib/print-service";
 import { auth } from "@clerk/nextjs/server";
 import { db } from "@/lib/db";
 import { albums, cardBilling } from "@/lib/db/schema";
@@ -44,6 +47,10 @@ export async function POST(req: NextRequest) {
     /** Bundle size. Validated against STAND_TIERS server-side — an
      *  unknown quantity is rejected, never repriced to a nearest match. */
     standsQty?: number;
+    /** Material. Unknown values are rejected by standsPriceCents,
+     *  not defaulted — otherwise a bad value silently bills the
+     *  cheaper material for the dearer product. */
+    standsVariant?: StandVariant;
     discountCode?: string;
     billing?: {
       name?: string;
@@ -59,7 +66,7 @@ export async function POST(req: NextRequest) {
       country?: string;
     };
   };
-  const { planId, albumSlug, tableStands, standsQty, discountCode, billing } = body;
+  const { planId, albumSlug, tableStands, standsQty, standsVariant, discountCode, billing } = body;
 
   if (!planId || !albumSlug || !(planId in PLAN_CONFIG)) {
     return NextResponse.json({ error: "Invalid request" }, { status: 400 });
@@ -127,14 +134,16 @@ export async function POST(req: NextRequest) {
   // same trust model the plan price already uses. A country we don't
   // ship to is rejected outright rather than silently charged a default
   // rate, which would lose money on every such parcel.
-  const addOnCents = addOnTotalCents(!!tableStands, billing?.country, standsQty);
+  const addOnCents = addOnTotalCents(!!tableStands, billing?.country, standsQty, standsVariant);
   if (addOnCents === null) {
     return NextResponse.json({ error: "shipping_unavailable" }, { status: 400 });
   }
   const ship = tableStands ? quoteShipping(billing?.country) : null;
 
   const totalCents = baseCents + addOnCents;
-  const description = plan.name + (tableStands ? ` + ${standsQty ?? DEFAULT_STAND_QTY}× QR podstavki za mize (s poštnino)` : "");
+  const standsQ = standsQty ?? DEFAULT_STAND_QTY;
+  const standsV = standsVariant ?? DEFAULT_STAND_VARIANT;
+  const description = plan.name + (tableStands ? ` + ${standsQ}× QR podstavki za mize (${standsV === "gold" ? "zlati" : "leseni"}, s poštnino)` : "");
 
   const baseUrl = req.nextUrl.origin;
   // Mollie redirects back to /api/mollie-return which does reconcile then bounces to dashboard.
@@ -159,8 +168,9 @@ export async function POST(req: NextRequest) {
         ...(tableStands
           ? {
               tableStands: "1",
-              standsQty: String(standsQty ?? DEFAULT_STAND_QTY),
-              standsCents: String(standsPriceCents(standsQty ?? DEFAULT_STAND_QTY) ?? 0),
+              standsQty: String(standsQ),
+              standsVariant: standsV,
+              standsCents: String(standsPriceCents(standsQ, standsV) ?? 0),
               shipCountry: (billing?.country ?? "").toUpperCase(),
               shipCents: String(ship?.cents ?? 0),
               shipCarrier: ship?.carrier ?? "",

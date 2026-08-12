@@ -124,6 +124,15 @@ export interface UpgradeCopy {
   standsShipping: string; // "Shipping"
   standsTotal:    string; // "Total"
   standsQty:      string; // "Number of stands"
+  standsMaterial: string; // "Material"
+  standsWood:     string; // "Wooden"
+  standsGold:     string; // "Gold"
+  standsVat:      string; // "Prices include VAT"
+  /** "100+ pcs −15%, 200+ pcs −20%" — shown only until they qualify. */
+  standsVolumeHint: (q1: number, p1: number, q2: number, p2: number) => string;
+  /** "Order 100 and pay 21,00 € less" — thresholds mean a smaller order
+   *  can cost more, so offer the better deal rather than charge it. */
+  standsBetterOffer: (qty: number, save: string) => string;
   standsPiece:    string; // unit in the per-stand hint, e.g. "ea" in "1,80 €/ea"
   standsFrom:     string; // "from", prefixing the cheapest bundle price
 }
@@ -211,6 +220,12 @@ export const UPGRADE_COPY: Record<Lang, UpgradeCopy> = {
     standsShipping: "Poštnina",
     standsTotal:    "Skupaj",
     standsQty:      "Število podstavkov",
+    standsMaterial: "Material",
+    standsWood:     "Leseni",
+    standsGold:     "Zlati",
+    standsVat:      "Cene vključujejo DDV.",
+    standsVolumeHint: (q1, p1, q2, p2) => `${q1}+ kosov −${p1}%, ${q2}+ kosov −${p2}%`,
+    standsBetterOffer: (qty, save) => `Naročite ${qty} kosov in plačajte ${save} manj — kliknite za popravek.`,
     standsPiece:    "kos",
     standsFrom:     "od",
   },
@@ -296,6 +311,12 @@ export const UPGRADE_COPY: Record<Lang, UpgradeCopy> = {
     standsShipping: "Poštarina",
     standsTotal:    "Ukupno",
     standsQty:      "Broj stalaka",
+    standsMaterial: "Materijal",
+    standsWood:     "Drveni",
+    standsGold:     "Zlatni",
+    standsVat:      "Cijene uključuju PDV.",
+    standsVolumeHint: (q1, p1, q2, p2) => `${q1}+ komada −${p1}%, ${q2}+ komada −${p2}%`,
+    standsBetterOffer: (qty, save) => `Naručite ${qty} komada i platite ${save} manje — kliknite za ispravak.`,
     standsPiece:    "kom",
     standsFrom:     "od",
   },
@@ -381,6 +402,12 @@ export const UPGRADE_COPY: Record<Lang, UpgradeCopy> = {
     standsShipping: "Poštarina",
     standsTotal:    "Ukupno",
     standsQty:      "Broj stalaka",
+    standsMaterial: "Materijal",
+    standsWood:     "Drveni",
+    standsGold:     "Zlatni",
+    standsVat:      "Cene uključuju PDV.",
+    standsVolumeHint: (q1, p1, q2, p2) => `${q1}+ komada −${p1}%, ${q2}+ komada −${p2}%`,
+    standsBetterOffer: (qty, save) => `Naručite ${qty} komada i platite ${save} manje — kliknite za ispravku.`,
     standsPiece:    "kom",
     standsFrom:     "od",
   },
@@ -466,6 +493,12 @@ export const UPGRADE_COPY: Record<Lang, UpgradeCopy> = {
     standsShipping: "Shipping",
     standsTotal:    "Total",
     standsQty:      "Number of stands",
+    standsMaterial: "Material",
+    standsWood:     "Wooden",
+    standsGold:     "Gold",
+    standsVat:      "Prices include VAT.",
+    standsVolumeHint: (q1, p1, q2, p2) => `${q1}+ pcs −${p1}%, ${q2}+ pcs −${p2}%`,
+    standsBetterOffer: (qty, save) => `Order ${qty} and pay ${save} less — tap to change.`,
     standsPiece:    "ea",
     standsFrom:     "from",
   },
@@ -551,6 +584,12 @@ export const UPGRADE_COPY: Record<Lang, UpgradeCopy> = {
     standsShipping: "Versand",
     standsTotal:    "Gesamt",
     standsQty:      "Anzahl der Aufsteller",
+    standsMaterial: "Material",
+    standsWood:     "Holz",
+    standsGold:     "Gold",
+    standsVat:      "Preise inkl. MwSt.",
+    standsVolumeHint: (q1, p1, q2, p2) => `ab ${q1} Stk. −${p1}%, ab ${q2} Stk. −${p2}%`,
+    standsBetterOffer: (qty, save) => `Bestellen Sie ${qty} Stück und zahlen Sie ${save} weniger — zum Ändern klicken.`,
     standsPiece:    "St.",
     standsFrom:     "ab",
   },
@@ -636,6 +675,12 @@ export const UPGRADE_COPY: Record<Lang, UpgradeCopy> = {
     standsShipping: "Envío",
     standsTotal:    "Total",
     standsQty:      "Número de soportes",
+    standsMaterial: "Material",
+    standsWood:     "Madera",
+    standsGold:     "Dorado",
+    standsVat:      "Precios con IVA incluido.",
+    standsVolumeHint: (q1, p1, q2, p2) => `${q1}+ uds −${p1}%, ${q2}+ uds −${p2}%`,
+    standsBetterOffer: (qty, save) => `Pide ${qty} unidades y paga ${save} menos — toca para cambiar.`,
     standsPiece:    "ud",
     standsFrom:     "desde",
   },

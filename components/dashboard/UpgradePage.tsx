@@ -10,8 +10,10 @@ import type { Album } from "@/lib/db/schema";
 import { translations, type Lang } from "@/lib/i18n/translations";
 import { UPGRADE_COPY, PLAN_FEATURE_KEYS } from "@/lib/i18n/upgrade-translations";
 import {
-  SHIPPING_COUNTRIES, STAND_TIERS, DEFAULT_STAND_QTY,
-  quoteShipping, standsPriceCents, perStandCents, eur,
+  SHIPPING_COUNTRIES, STAND_VARIANTS, DEFAULT_STAND_QTY, DEFAULT_STAND_VARIANT,
+  MAX_STAND_QTY, VOLUME_BREAKS, quoteShipping, standsPriceCents, effectiveUnitCents,
+  betterVolumeOffer,
+  volumeDiscountPercent, eur, type StandVariant,
 } from "@/lib/print-service";
 
 type PlanId = "free" | "basic" | "plus" | "premium";
@@ -67,12 +69,21 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
   // Priced again server-side from the country; what we show here is only
   // a preview of that number so the customer sees the real total first.
   const [wantStands, setWantStands] = useState(false);
-  const [standsQty, setStandsQty] = useState<number>(DEFAULT_STAND_QTY);
+  const [standsVariant, setStandsVariant] = useState<StandVariant>(DEFAULT_STAND_VARIANT);
   const [shipCountry, setShipCountry] = useState("SI");
+  // Quantity is held as the raw string so the field can be empty or
+  // half-typed; `standsQty` is the sanitised number everything prices
+  // from, so a blank box can never charge for 0 stands.
+  const [qtyInput, setQtyInput] = useState(String(DEFAULT_STAND_QTY));
+  const standsQty = Math.min(
+    MAX_STAND_QTY,
+    Math.max(1, Math.floor(Number(qtyInput)) || DEFAULT_STAND_QTY),
+  );
   const shipQuote = quoteShipping(shipCountry);
-  // Bundle price comes from the tier table, never from a qty × unit
-  // multiplication — the tiers aren't a straight per-unit curve.
-  const standsGoodsCents = standsPriceCents(standsQty) ?? 0;
+  const standsGoodsCents = standsPriceCents(standsQty, standsVariant) ?? 0;
+  const volumePercent = volumeDiscountPercent(standsQty);
+  const cheapestUnitCents = Math.min(...STAND_VARIANTS.map((v) => v.unitCents));
+  const betterOffer = betterVolumeOffer(standsQty, standsVariant);
   const standsCents = wantStands ? standsGoodsCents + (shipQuote?.cents ?? 0) : 0;
 
   // Discount code state
@@ -521,23 +532,13 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
                   onChange={(e) => setWantStands(e.target.checked)}
                   className="mt-1 w-5 h-5 shrink-0 accent-[#FFC94D]"
                 />
-                {/* Product shot — people don't buy a physical object from a
-                    line of text. Fixed box so ticking the add-on doesn't
-                    reflow the card. */}
-                <img
-                  src="/print/qr-stand.svg"
-                  alt={u.standsTitle}
-                  width={88}
-                  height={66}
-                  className="hidden sm:block w-22 h-16 shrink-0 rounded-lg object-cover border border-gray-100"
-                />
                 <div className="flex-1 min-w-0">
                   <div className="flex items-start justify-between gap-3">
                     <p className="font-semibold text-gray-900">
                       🖨 {u.standsTitle}
                     </p>
                     <span className="text-sm font-bold text-gray-900 whitespace-nowrap">
-                      {u.standsFrom} {eur(STAND_TIERS[0].cents)}
+                      {u.standsFrom} {eur(cheapestUnitCents)}/{u.standsPiece}
                     </span>
                   </div>
                   <p className="text-xs text-gray-500 mt-1">{u.standsDesc}</p>
@@ -546,39 +547,101 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
 
               {wantStands && (
                 <div className="mt-4 pt-4 border-t border-gray-100">
-                  {/* Quantity first: it drives the price, and the country
-                      picker below only adds postage on top. */}
+                  {/* Material first — it sets the unit price that the
+                      quantity below multiplies. Each option leads with its
+                      product shot; nobody picks between "wood" and "gold"
+                      from the words alone. */}
                   <label className="block text-xs font-semibold text-gray-600 mb-1.5">
-                    {u.standsQty}
+                    {u.standsMaterial}
                   </label>
-                  <div className="grid grid-cols-3 gap-2 mb-4">
-                    {STAND_TIERS.map((tier) => {
-                      const active = standsQty === tier.qty;
+                  <div className="grid grid-cols-2 gap-3 mb-4">
+                    {STAND_VARIANTS.map((v) => {
+                      const active = standsVariant === v.id;
                       return (
                         <button
-                          key={tier.qty}
+                          key={v.id}
                           type="button"
-                          onClick={() => setStandsQty(tier.qty)}
+                          onClick={() => setStandsVariant(v.id)}
                           aria-pressed={active}
-                          className="rounded-xl border-2 px-2 py-2 text-center transition-all"
+                          className="rounded-xl border-2 p-2 text-center transition-all"
                           style={{
                             borderColor: active ? "#FFC94D" : "#e5e7eb",
                             background: active ? "#FFF9EC" : "#fff",
                           }}
                         >
-                          <span className="block text-sm font-bold text-gray-900">
-                            {tier.qty}×
+                          {/* Photo first, drawing as fallback — see the note
+                              on STAND_VARIANTS. object-contain, not cover, so
+                              a portrait product shot is never cropped through
+                              the QR card. Taller on desktop where there's room. */}
+                          <img
+                            src={v.image}
+                            alt={v.id === "wood" ? u.standsWood : u.standsGold}
+                            width={400}
+                            height={450}
+                            loading="lazy"
+                            onError={(e) => {
+                              const img = e.currentTarget;
+                              if (!img.src.endsWith(v.imageFallback)) img.src = v.imageFallback;
+                            }}
+                            className="w-full h-36 sm:h-48 object-contain rounded-lg mb-1.5 bg-[#FBF7F0]"
+                          />
+                          <span className="block text-sm font-semibold text-gray-900">
+                            {v.id === "wood" ? u.standsWood : u.standsGold}
                           </span>
-                          <span className="block text-xs font-semibold text-gray-700">
-                            {eur(tier.cents)}
-                          </span>
-                          <span className="block text-[10px] text-gray-400">
-                            {eur(perStandCents(tier.qty) ?? 0)}/{u.standsPiece}
+                          <span className="block text-xs text-gray-500">
+                            {eur(v.unitCents)}/{u.standsPiece}
                           </span>
                         </button>
                       );
                     })}
                   </div>
+
+                  <label htmlFor="standsQty" className="block text-xs font-semibold text-gray-600 mb-1.5">
+                    {u.standsQty}
+                  </label>
+                  <input
+                    id="standsQty"
+                    type="number"
+                    inputMode="numeric"
+                    min={1}
+                    max={MAX_STAND_QTY}
+                    value={qtyInput}
+                    onChange={(e) => setQtyInput(e.target.value)}
+                    /* Clamp on blur, not on every keystroke: correcting
+                       mid-typing makes "25" impossible to reach from "2". */
+                    onBlur={() => setQtyInput(String(standsQty))}
+                    className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm text-gray-800 bg-white outline-none focus:border-[#FFC94D] mb-1.5"
+                  />
+                  <p className="text-xs text-gray-500 mb-4 flex items-center justify-between gap-3">
+                    <span>
+                      {standsQty} × {eur(effectiveUnitCents(standsQty, standsVariant) ?? 0)}
+                      {volumePercent > 0 && (
+                        <span className="ml-1.5 font-bold text-green-700">
+                          −{volumePercent}%
+                        </span>
+                      )}
+                    </span>
+                    <span className="font-semibold text-gray-700">{eur(standsGoodsCents)}</span>
+                  </p>
+
+                  {/* Because the breaks are thresholds, an order just under
+                      one costs MORE than a bigger order. Offer the better
+                      deal instead of quietly charging the worse one. */}
+                  {betterOffer ? (
+                    <button
+                      type="button"
+                      onClick={() => setQtyInput(String(betterOffer.qty))}
+                      className="w-full text-left rounded-xl border px-3 py-2 -mt-2 mb-4 text-xs transition-colors hover:bg-green-100"
+                      style={{ background: "#F0FDF4", borderColor: "#BBF7D0", color: "#15803D" }}
+                    >
+                      {u.standsBetterOffer(betterOffer.qty, eur(betterOffer.saveCents))}
+                    </button>
+                  ) : volumePercent === 0 ? (
+                    <p className="text-xs text-gray-400 -mt-2 mb-4">
+                      {u.standsVolumeHint(VOLUME_BREAKS[1].minQty, VOLUME_BREAKS[1].percentOff,
+                                          VOLUME_BREAKS[0].minQty, VOLUME_BREAKS[0].percentOff)}
+                    </p>
+                  ) : null}
 
                   <label className="block text-xs font-semibold text-gray-600 mb-1.5">
                     {u.standsCountry}
@@ -598,6 +661,7 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
                       <span className="font-semibold text-gray-700">{eur(shipQuote.cents)}</span>
                     </p>
                   )}
+                  <p className="text-xs text-gray-400 mt-1.5">{u.standsVat}</p>
                 </div>
               )}
             </div>
@@ -624,7 +688,10 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
             {wantStands && shipQuote && (
               <div className="space-y-1.5 mb-3 pb-3 border-b border-gray-100">
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-gray-600">🖨 {u.standsTitle} · {standsQty}×</span>
+                  <span className="text-gray-600">
+                    🖨 {standsVariant === "wood" ? u.standsWood : u.standsGold} · {standsQty}×
+                    {volumePercent > 0 && <span className="ml-1.5 font-bold text-green-700">−{volumePercent}%</span>}
+                  </span>
                   <span className="text-gray-800">{eur(standsGoodsCents)}</span>
                 </div>
                 <div className="flex items-center justify-between text-sm">
@@ -700,6 +767,7 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
                           tableStands: wantStands,
 
                           standsQty,
+                          standsVariant,
                           discountCode: discountStatus === "valid" ? appliedCode : undefined,
                           billing: {
                             country: shipCountry,
@@ -743,6 +811,7 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
                           tableStands: wantStands,
 
                           standsQty,
+                          standsVariant,
                           discountCode: discountStatus === "valid" ? appliedCode : undefined,
                           billing: {
                             country:     shipCountry,
