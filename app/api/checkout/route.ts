@@ -159,6 +159,10 @@ export async function POST(req: NextRequest) {
               shipCountry: (billing?.country ?? "").toUpperCase(),
               shipCents: String(ship?.cents ?? 0),
               shipCarrier: ship?.carrier ?? "",
+              // Outside the EU customs union the parcel needs a
+              // commercial invoice — flag it here so whoever packs it
+              // doesn't have to re-derive it from the country code.
+              ...(ship?.customs ? { shipCustoms: "1" } : {}),
             }
           : {}),
       },

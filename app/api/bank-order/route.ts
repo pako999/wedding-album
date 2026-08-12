@@ -114,7 +114,7 @@ export async function POST(req: NextRequest) {
   // Whoever raises the proforma has to know a parcel is owed — without
   // this the customer pays and nothing ever ships.
   const standsLines = tableStands && standsQuote
-    ? `\n📦 <b>Podstavki za mize:</b> ${(TABLE_STANDS_CENTS / 100).toFixed(2)} € + poštnina ${(standsQuote.cents / 100).toFixed(2)} € (${htmlEscape(standsQuote.carrier)})\nDržava dostave: ${htmlEscape((billing?.country ?? "").toUpperCase())}`
+    ? `\n📦 <b>Podstavki za mize:</b> ${(TABLE_STANDS_CENTS / 100).toFixed(2)} € + poštnina ${(standsQuote.cents / 100).toFixed(2)} € (${htmlEscape(standsQuote.carrier)})\nDržava dostave: ${htmlEscape((billing?.country ?? "").toUpperCase())}${standsQuote.customs ? "\n⚠️ Izven EU — potrebna carinska (komercialna) faktura" : ""}`
     : "";
 
   const billingLines = billing
