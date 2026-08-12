@@ -331,7 +331,7 @@ export function PrintPageClient({ slug, coupleName, weddingDate, location, qrUrl
             is about to print and cut these by hand — this is the one
             moment "or we'll do it for you" is genuinely useful rather
             than an interruption. */}
-        <PrintServicePromo slug={slug} plan={plan} variant="banner" />
+        <PrintServicePromo slug={slug} variant="banner" />
 
         <div className="flex flex-col lg:flex-row gap-8">
           {/* LEFT: Template selector */}

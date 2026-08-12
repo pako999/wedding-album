@@ -12,19 +12,15 @@ import type { Lang } from "@/lib/i18n/translations";
  * the upgrade page and it never reaches the people already doing the job
  * by hand.
  *
- * WHERE THE CTA GOES depends on whether they've already paid, because
- * the stands add-on currently only exists inside the plan checkout:
- *   - free plan → /upgrade, where they can tick stands onto the purchase
- *   - already paid → contact, because there is no standalone stands
- *     order yet. Sending a paying customer to a plan-picker to buy a
- *     physical product would read as a bait-and-switch.
+ * Stands are sold ONLY as part of a plan purchase — there is no
+ * standalone order — so the CTA always points at the plan checkout,
+ * where the add-on is ticked on. The copy says "add stands to your
+ * plan" rather than "order stands" so that condition is visible before
+ * the click rather than discovered after it.
  */
 
 interface Props {
   slug: string;
-  /** Album plan. "free" (or absent) means they can still buy the add-on
-   *  as part of upgrading; anything else means they've already paid. */
-  plan?: string | null;
   lang?: Lang;
   /** "banner" is the full-width strip for the print-templates page;
    *  "card" is the compact version for the dashboard grid. */
@@ -37,7 +33,7 @@ interface Copy {
   body: string;
   bullets: [string, string, string];
   ctaUpgrade: string;
-  ctaContact: string;
+  onlyWithPlan: string;
   priceFrom: (price: string) => string;
   leadTime: (days: number) => string;
 }
@@ -49,7 +45,7 @@ const COPY: Record<Lang, Copy> = {
     body: "Oblikujemo, natisnemo in dostavimo QR podstavke za vaše mize — vi jih samo postavite.",
     bullets: ["Tisk na 200 g papir", "Lesen ali zlat podstavek", "Dostava na dom"],
     ctaUpgrade: "Dodaj podstavke k paketu",
-    ctaContact: "Naročite podstavke",
+    onlyWithPlan: "Na voljo samo ob nakupu paketa.",
     priceFrom: (p) => `že od ${p} na kos · s tiskom in DDV`,
     leadTime: (d) => `Naročite vsaj ${d} dni pred dogodkom. Za krajše roke nas takoj kontaktirajte — preverimo hitrejši tisk in dostavo.`,
   },
@@ -59,7 +55,7 @@ const COPY: Record<Lang, Copy> = {
     body: "Oblikujemo, tiskamo i dostavljamo QR stalke za vaše stolove — vi ih samo postavite.",
     bullets: ["Tisak na 200 g papir", "Drveni ili zlatni stalak", "Dostava na kućnu adresu"],
     ctaUpgrade: "Dodaj stalke paketu",
-    ctaContact: "Naručite stalke",
+    onlyWithPlan: "Dostupno samo uz kupnju paketa.",
     priceFrom: (p) => `već od ${p} po komadu · s tiskom i PDV-om`,
     leadTime: (d) => `Naručite najmanje ${d} dana prije događaja. Za kraće rokove kontaktirajte nas odmah — provjerit ćemo brži tisak i dostavu.`,
   },
@@ -69,7 +65,7 @@ const COPY: Record<Lang, Copy> = {
     body: "Dizajniramo, štampamo i dostavljamo QR stalke za vaše stolove — vi ih samo postavite.",
     bullets: ["Štampa na 200 g papir", "Drveni ili zlatni stalak", "Dostava na kućnu adresu"],
     ctaUpgrade: "Dodaj stalke paketu",
-    ctaContact: "Naručite stalke",
+    onlyWithPlan: "Dostupno samo uz kupovinu paketa.",
     priceFrom: (p) => `već od ${p} po komadu · sa štampom i PDV-om`,
     leadTime: (d) => `Naručite najmanje ${d} dana pre događaja. Za kraće rokove kontaktirajte nas odmah — proverićemo bržu štampu i dostavu.`,
   },
@@ -79,7 +75,7 @@ const COPY: Record<Lang, Copy> = {
     body: "We design, print and deliver the QR stands for your tables — all you do is put them out.",
     bullets: ["Printed on 200 gsm paper", "Wooden or gold stand", "Delivered to your door"],
     ctaUpgrade: "Add stands to your plan",
-    ctaContact: "Order stands",
+    onlyWithPlan: "Available only with a plan purchase.",
     priceFrom: (p) => `from ${p} each · printing and VAT included`,
     leadTime: (d) => `Order at least ${d} days before your event. For anything shorter, contact us straight away — we’ll check express printing and delivery.`,
   },
@@ -89,7 +85,7 @@ const COPY: Record<Lang, Copy> = {
     body: "Wir gestalten, drucken und liefern die QR-Aufsteller für Ihre Tische — Sie stellen sie nur auf.",
     bullets: ["Druck auf 200-g-Papier", "Holz- oder Gold-Aufsteller", "Lieferung nach Hause"],
     ctaUpgrade: "Aufsteller zum Paket hinzufügen",
-    ctaContact: "Aufsteller bestellen",
+    onlyWithPlan: "Nur zusammen mit einem Paket erhältlich.",
     priceFrom: (p) => `ab ${p} pro Stück · inkl. Druck und MwSt.`,
     leadTime: (d) => `Mindestens ${d} Tage vor der Veranstaltung bestellen. Bei kürzeren Fristen kontaktieren Sie uns sofort — wir prüfen Express-Druck und -Versand.`,
   },
@@ -99,21 +95,19 @@ const COPY: Record<Lang, Copy> = {
     body: "Diseñamos, imprimimos y enviamos los soportes QR para tus mesas — tú solo los colocas.",
     bullets: ["Impreso en papel de 200 g", "Soporte de madera o dorado", "Envío a tu domicilio"],
     ctaUpgrade: "Añadir soportes a tu plan",
-    ctaContact: "Pedir soportes",
+    onlyWithPlan: "Disponible solo al comprar un plan.",
     priceFrom: (p) => `desde ${p} por unidad · impresión e IVA incluidos`,
     leadTime: (d) => `Pide al menos ${d} días antes de tu evento. Si tienes menos margen, contáctanos de inmediato — comprobaremos impresión y envío urgentes.`,
   },
 };
 
-export function PrintServicePromo({ slug, plan, lang = "sl", variant = "banner" }: Props) {
+export function PrintServicePromo({ slug, lang = "sl", variant = "banner" }: Props) {
   const c = COPY[lang] ?? COPY.sl;
-  const hasPaid = !!plan && plan !== "free";
   const cheapest = Math.min(...STAND_VARIANTS.map((v) => v.unitCents));
 
-  const href = hasPaid
-    ? `/contact?subject=${encodeURIComponent("QR podstavki")}&album=${encodeURIComponent(slug)}`
-    : `/dashboard/${slug}/upgrade?lang=${lang}#stands`;
-  const ctaLabel = hasPaid ? c.ctaContact : c.ctaUpgrade;
+  // Always the plan checkout: stands can't be bought on their own.
+  const href = `/dashboard/${slug}/upgrade?lang=${lang}#stands`;
+  const ctaLabel = c.ctaUpgrade;
 
   const wood = STAND_VARIANTS.find((v) => v.id === "wood");
   const gold = STAND_VARIANTS.find((v) => v.id === "gold");
@@ -154,7 +148,10 @@ export function PrintServicePromo({ slug, plan, lang = "sl", variant = "banner" 
           </div>
           {thumbs}
         </div>
-        <p className="text-xs font-semibold text-[#C9820A]">{c.priceFrom(eur(cheapest))}</p>
+        <p className="text-xs font-semibold text-[#C9820A]">
+          {c.priceFrom(eur(cheapest))}
+          <span className="block font-normal text-gray-400 mt-0.5">{c.onlyWithPlan}</span>
+        </p>
         <p className="flex items-start gap-1.5 text-xs text-[#7A5A12]">
           <svg className="w-3.5 h-3.5 shrink-0 mt-0.5 text-[#C9820A]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
           {c.leadTime(LEAD_TIME_DAYS)}
@@ -206,7 +203,10 @@ export function PrintServicePromo({ slug, plan, lang = "sl", variant = "banner" 
           </p>
         </div>
         <div className="w-full sm:w-auto shrink-0 sm:text-right">
-          <p className="text-xs font-semibold text-[#C9820A] mb-2">{c.priceFrom(eur(cheapest))}</p>
+          <p className="text-xs font-semibold text-[#C9820A] mb-2">
+            {c.priceFrom(eur(cheapest))}
+            <span className="block font-normal text-gray-400 mt-0.5">{c.onlyWithPlan}</span>
+          </p>
           <Link
             href={href}
             className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl text-[#0F1729] text-sm font-bold hover:brightness-95 transition-all"

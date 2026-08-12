@@ -558,7 +558,8 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
           {/* ── Printed QR table stands (physical add-on) ──────────────── */}
           {!invoiceDone && (
             <div
-              className="rounded-2xl border-2 bg-white p-5 mb-4 transition-all"
+              id="stands"
+              className="rounded-2xl border-2 bg-white p-5 mb-4 transition-all scroll-mt-4"
               style={{
                 borderColor: wantStands ? "#FFC94D" : "#e5e7eb",
                 boxShadow: wantStands ? "0 0 0 3px rgba(255,201,77,0.15)" : "none",

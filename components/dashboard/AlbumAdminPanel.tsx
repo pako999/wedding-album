@@ -1022,7 +1022,7 @@ function OverviewTab({
               the alternative to doing it by hand belongs next to the
               by-hand option, not on a page they may never open. */}
           <Link
-            href={`/dashboard/${album.slug}/print`}
+            href={`/dashboard/${album.slug}/upgrade#stands`}
             className="flex items-center gap-3 rounded-xl border p-3 hover:brightness-[0.98] transition-all"
             style={{ background: "#FFF9EC", borderColor: "rgba(255,201,77,0.5)" }}
           >
@@ -1037,7 +1037,7 @@ function OverviewTab({
             <span className="flex-1 min-w-0">
               <span className="block text-sm font-bold text-gray-900">🖨 Ne želite tiskati sami?</span>
               <span className="block text-xs text-gray-500 mt-0.5">
-                Natisnemo in dostavimo QR podstavke za mize (tisk na 200 g papir) — že od {eur(Math.min(...STAND_VARIANTS.map((v) => v.unitCents)))} na kos.
+                Natisnemo in dostavimo QR podstavke za mize (tisk na 200 g papir) — že od {eur(Math.min(...STAND_VARIANTS.map((v) => v.unitCents)))} na kos, samo ob nakupu paketa.
               </span>
             </span>
             <svg className="w-4 h-4 text-[#C9820A] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
