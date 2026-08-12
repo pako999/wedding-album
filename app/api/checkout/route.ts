@@ -44,7 +44,7 @@ export async function POST(req: NextRequest) {
     planId: PlanId;
     albumSlug: string;
     tableStands?: boolean;
-    /** Bundle size. Validated against STAND_TIERS server-side — an
+    /** Number of stands. Validated server-side against the allowed range — an
      *  unknown quantity is rejected, never repriced to a nearest match. */
     standsQty?: number;
     /** Material. Unknown values are rejected by standsPriceCents,

@@ -10,6 +10,7 @@ import { TrackViewContent } from "@/components/TrackViewContent";
 import { WallMiniDemo } from "@/components/WallMiniDemo";
 import { DarkStageHero } from "@/components/DarkStageHero";
 import { WALL_COPY } from "@/lib/i18n/wall-translations";
+import { STAND_VARIANTS, eur } from "@/lib/print-service";
 
 type Lang = Exclude<LangCode, "sl">;
 
@@ -99,6 +100,9 @@ interface Copy {
   heroPrimary: string;
   heroDemoBtn: string;
   heroNote: string;
+  /** Printed-stands offer in the hero. Body takes the formatted
+   *  cheapest unit price so the number can't drift from the rate card. */
+  heroPrintOffer: { title: string; body: (price: string) => string };
   trustText: string;
   trust500: string;
   threeStep: { takePhoto: string; scanQr: string; upload: string };
@@ -162,6 +166,7 @@ const COPY: Record<Lang, Copy> = {
     heroHead: { lead: "Fotografije s vjenčanja koje", accent: "inače nikada ne biste vidjeli", trail: "." },
     heroLead: "Skupite sve fotografije i videozapise svojih gostiju u jednoj privatnoj galeriji. Gosti samo skeniraju QR kod i u nekoliko sekundi dijele svoje trenutke.",
     heroPrimary: "Započni besplatno", heroDemoBtn: "Pogledaj demo", heroNote: "Bez kreditne kartice • Spremno za manje od 2 minute",
+    heroPrintOffer: { title: "Ne želite sami tiskati?", body: (p) => `Tiskamo QR stalke za stolove i šaljemo vam ih — već od ${p} po komadu, dodajte ih uz kupnju paketa.` },
     trustText: "Povjerenje", trust500: "500+ događaja već prikupilo uspomene s Guestcam 📸",
     threeStep: { takePhoto: "Gosti fotografiraju", scanQr: "Skeniraju QR", upload: "Učitavaju fotografije" },
     statsCreated: "kreiranih galerija", statsRating: "na temelju prvih ocjena", statsPhotos: "prikupljenih fotografija",
@@ -254,6 +259,7 @@ const COPY: Record<Lang, Copy> = {
     heroHead: { lead: "Fotografije sa venčanja koje", accent: "inače nikada ne biste videli", trail: "." },
     heroLead: "Sakupite sve fotografije i video snimke svojih gostiju u jednoj privatnoj galeriji. Gosti samo skeniraju QR kod i za nekoliko sekundi dele svoje trenutke.",
     heroPrimary: "Započni besplatno", heroDemoBtn: "Pogledaj demo", heroNote: "Bez kreditne kartice • Spremno za manje od 2 minuta",
+    heroPrintOffer: { title: "Ne želite sami da štampate?", body: (p) => `Štampamo QR stalke za stolove i šaljemo vam ih — već od ${p} po komadu, dodajte ih uz kupovinu paketa.` },
     trustText: "Poverenje", trust500: "500+ događaja već prikupilo uspomene s Guestcam 📸",
     threeStep: { takePhoto: "Gosti fotografišu", scanQr: "Skeniraju QR", upload: "Otpremaju fotografije" },
     statsCreated: "napravljenih galerija", statsRating: "na osnovu prvih ocena", statsPhotos: "sakupljenih fotografija",
@@ -346,6 +352,7 @@ const COPY: Record<Lang, Copy> = {
     heroHead: { lead: "Hochzeitsfotos, die Sie sonst", accent: "nie zu sehen bekommen würden", trail: "." },
     heroLead: "Sammeln Sie alle Fotos und Videos Ihrer Gäste in einer privaten Galerie. Gäste scannen einfach den QR-Code und teilen ihre Momente in Sekunden.",
     heroPrimary: "Kostenlos starten", heroDemoBtn: "Demo ansehen", heroNote: "Keine Kreditkarte • Bereit in unter 2 Minuten",
+    heroPrintOffer: { title: "Lieber nicht selbst drucken?", body: (p) => `Wir drucken die QR-Aufsteller für Ihre Tische und senden sie Ihnen zu — ab ${p} pro Stück, zum Paket hinzufügbar.` },
     trustText: "Vertrauen von", trust500: "500+ Events haben bereits Erinnerungen mit Guestcam gesammelt 📸",
     threeStep: { takePhoto: "Gäste fotografieren", scanQr: "QR scannen", upload: "Fotos hochladen" },
     statsCreated: "erstellte Galerien", statsRating: "auf Basis erster Bewertungen", statsPhotos: "gesammelte Fotos",
@@ -438,6 +445,7 @@ const COPY: Record<Lang, Copy> = {
     heroHead: { lead: "The wedding photos you", accent: "would otherwise never see", trail: "." },
     heroLead: "Collect every photo and video your guests take into a single private gallery. Guests scan a QR code and share their moments in seconds.",
     heroPrimary: "Start for free", heroDemoBtn: "See live demo", heroNote: "No credit card • Ready in under 2 minutes",
+    heroPrintOffer: { title: "Rather not print it yourself?", body: (p) => `We print the QR stands for your tables and post them to you — from ${p} each, added with your plan.` },
     trustText: "Trusted by", trust500: "500+ events have already collected memories with Guestcam 📸",
     threeStep: { takePhoto: "Guests snap", scanQr: "Scan QR", upload: "Upload photos" },
     statsCreated: "galleries created", statsRating: "based on early reviews", statsPhotos: "photos collected",
@@ -530,6 +538,7 @@ const COPY: Record<Lang, Copy> = {
     heroHead: { lead: "Las fotos de tu boda que", accent: "de otra forma nunca verías", trail: "." },
     heroLead: "Reúne todas las fotos y vídeos de tus invitados en una sola galería privada. Tus invitados escanean un QR y comparten sus momentos en segundos.",
     heroPrimary: "Empezar gratis", heroDemoBtn: "Ver demo", heroNote: "Sin tarjeta • Listo en menos de 2 minutos",
+    heroPrintOffer: { title: "¿Prefieres no imprimirlo tú?", body: (p) => `Imprimimos los soportes QR para tus mesas y te los enviamos — desde ${p} por unidad, se añaden con tu plan.` },
     trustText: "Confianza de", trust500: "500+ eventos ya han coleccionado recuerdos con Guestcam 📸",
     threeStep: { takePhoto: "Los invitados fotografían", scanQr: "Escanean QR", upload: "Suben fotos" },
     statsCreated: "galerías creadas", statsRating: "según primeras valoraciones", statsPhotos: "fotos recopiladas",
@@ -748,6 +757,23 @@ export async function LocalizedHomePage({ lang }: { lang: Lang }) {
           ctaLabel={t.heroPrimary}
           note={t.heroNote}
           toast={`${WALL_COPY[lang].justShared} · Ana`}
+          printOffer={
+            /* Same full-service offer the SL homepage carries — it was
+               Slovenian-only, which meant five of six markets never saw
+               that we print and ship the stands at all. */
+            <div
+              className="inline-flex items-start gap-3 rounded-2xl border px-4 py-3 text-left backdrop-blur-sm"
+              style={{ background: "rgba(255,201,77,0.10)", borderColor: "rgba(255,201,77,0.34)" }}
+            >
+              <span className="text-xl leading-none mt-0.5" aria-hidden>🖨</span>
+              <p className="text-[13px] leading-snug text-white">
+                <span className="font-bold">{t.heroPrintOffer.title}</span>{" "}
+                <span className="text-gray-300">
+                  {t.heroPrintOffer.body(eur(Math.min(...STAND_VARIANTS.map((v) => v.unitCents))))}
+                </span>
+              </p>
+            </div>
+          }
         />
       </section>
 

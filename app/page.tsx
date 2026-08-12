@@ -11,6 +11,7 @@ import { TrackViewContent } from "@/components/TrackViewContent";
 import { safeJsonLd } from "@/lib/seo/jsonld-safe";
 import { WallMiniDemo } from "@/components/WallMiniDemo";
 import { DarkStageHero } from "@/components/DarkStageHero";
+import { STAND_VARIANTS, eur } from "@/lib/print-service";
 
 export const metadata: Metadata = {
   alternates: {
@@ -354,7 +355,7 @@ export default async function HomePage() {
               <p className="text-[13px] leading-snug text-white">
                 <span className="font-bold">Ne želite tiskati sami?</span>{" "}
                 <span className="text-gray-300">
-                  Natisnemo QR podstavke za mize in vam jih pošljemo domov — že od 3,00 € na kos, dodate jih ob nakupu paketa.
+                  {`Natisnemo QR podstavke za mize in vam jih pošljemo domov — že od ${eur(Math.min(...STAND_VARIANTS.map((v) => v.unitCents)))} na kos, dodate jih ob nakupu paketa.`}
                 </span>
               </p>
             </div>
