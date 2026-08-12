@@ -28,14 +28,24 @@
  */
 export type StandVariant = "wood" | "gold";
 
+/** Printing the QR card, charged per stand. It is NOT a separate line at
+ *  checkout — it is added into the unit price so the customer sees one
+ *  number per piece, which is what "printing included" has to mean for
+ *  the price on the card to be the price they pay. */
+export const PRINTING_CENTS = 40;
+
 export const STAND_VARIANTS: {
   id: StandVariant;
+  /** The stand itself, before printing. Kept separate from unitCents so
+   *  a material price rise doesn't require re-deriving the total by hand. */
+  materialCents: number;
+  /** What the customer is charged per stand: material + printing. */
   unitCents: number;
   image: string;
   imageFallback: string;
 }[] = [
-  { id: "wood", unitCents: 150, image: "/print/stand-wood.webp", imageFallback: "/print/stand-wood.svg" },
-  { id: "gold", unitCents: 300, image: "/print/stand-gold.webp", imageFallback: "/print/stand-gold.svg" },
+  { id: "wood", materialCents: 150, unitCents: 150 + PRINTING_CENTS, image: "/print/stand-wood.webp", imageFallback: "/print/stand-wood.svg" },
+  { id: "gold", materialCents: 300, unitCents: 300 + PRINTING_CENTS, image: "/print/stand-gold.webp", imageFallback: "/print/stand-gold.svg" },
 ];
 
 /** Preselected material — the cheaper one, so the first number the

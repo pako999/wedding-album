@@ -354,7 +354,7 @@ export default async function HomePage() {
               <p className="text-[13px] leading-snug text-white">
                 <span className="font-bold">Ne želite tiskati sami?</span>{" "}
                 <span className="text-gray-300">
-                  Natisnemo QR podstavke za mize in vam jih pošljemo domov — že od 1,50 € na kos, dodate jih ob nakupu paketa.
+                  Natisnemo QR podstavke za mize in vam jih pošljemo domov — že od 1,90 € na kos, dodate jih ob nakupu paketa.
                 </span>
               </p>
             </div>

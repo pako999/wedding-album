@@ -583,7 +583,12 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
                               const img = e.currentTarget;
                               if (!img.src.endsWith(v.imageFallback)) img.src = v.imageFallback;
                             }}
-                            className="w-full h-36 sm:h-48 object-contain rounded-lg mb-1.5 bg-[#FBF7F0]"
+                            /* object-contain, not cover: both shots are 2:3
+                               portrait and cover would crop away the base —
+                               which is the whole difference between the two
+                               products. No background colour, so the
+                               letterbox area takes the card's own fill. */
+                            className="w-full h-40 sm:h-52 object-contain rounded-lg mb-1.5"
                           />
                           <span className="block text-sm font-semibold text-gray-900">
                             {v.id === "wood" ? u.standsWood : u.standsGold}
