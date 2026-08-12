@@ -384,9 +384,11 @@ export function PhotoWall({
   return (
     <div className="fixed inset-0 overflow-hidden select-none" style={{ background: bg.css }}>
       {logoUrl && (
-        /* Event logo — bottom-left, clear of the LIVE badge and QR chip. */
+        /* Event logo — directly UNDER the Guestcam brand pill (top-6
+           left-6, ~40px tall), never bottom-left where it covered the
+           QR chip that lives in that corner. */
         // eslint-disable-next-line @next/next/no-img-element
-        <img src={logoUrl} alt="" className="absolute bottom-5 left-5 z-30 w-14 h-14 rounded-xl object-cover border border-white/30 shadow-lg opacity-90" />
+        <img src={logoUrl} alt="" className="absolute top-[4.7rem] left-6 z-[3] w-14 h-14 rounded-xl object-cover border border-white/30 shadow-lg opacity-90" />
       )}
       <style>{`
         @keyframes wallCenterFade {
