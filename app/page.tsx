@@ -785,36 +785,9 @@ export default async function HomePage() {
       </section>
 
       {/* ── Testimonials ────────────────────────────────────────────────────── */}
-      <section id="reviews" className="py-24" style={{ background: "var(--paper)" }}>
-        <div className="max-w-6xl mx-auto px-6">
-          <h2 className="text-4xl sm:text-[3.3rem] leading-[1.08] tracking-tight font-extrabold text-center text-[color:var(--ink)] mb-14">Mnenja naših parov</h2>
-          <div className="grid md:grid-cols-3 gap-5">
-            {[
-              { text: "Noro dobra ideja! Dobila sva toliko spontanih fotografij, ki jih fotograf nikoli ne bi ujel. Gosti so bili navdušeni nad tem, kako enostavno je bilo.", name: "Tina & Luka",   date: "April 2026" },
-              { text: "Postavili smo QR kodo na vsako mizo in že med večerjo smo imeli 200+ fotografij. Preprosto genijalno! Vsem priporočamo.", name: "Ana & Marko",   date: "Junij 2025" },
-              { text: "Končno smo zbrali vse spomine na enem mestu. Gostje iz tujine so naložili fotografije v svojem jeziku brez kakršnih koli težav.", name: "Sara & David", date: "September 2025" },
-            ].map((t) => (
-              <div key={t.name} className="bg-white border border-gray-100 rounded-2xl p-6 shadow-sm">
-                <div className="flex gap-0.5 mb-4 text-amber-400">
-                  {[...Array(5)].map((_, i) => (
-                    <svg key={i} className="w-4 h-4 fill-current" viewBox="0 0 20 20">
-                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                    </svg>
-                  ))}
-                </div>
-                <p className="text-gray-600 text-sm leading-relaxed mb-5 italic">&ldquo;{t.text}&rdquo;</p>
-                <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-full flex items-center justify-center text-base shrink-0" style={{ background: 'rgba(140,98,24,0.10)' }}>💑</div>
-                  <div>
-                    <p className="font-bold text-sm text-[color:var(--ink)]">{t.name}</p>
-                    <p className="text-xs text-gray-400">{t.date}</p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      {/* Reviews section removed: the three couples and their quotes were
+          fabricated, which the redesign brief bans outright. Reinstate
+          only with real, attributable reviews. */}
 
       {/* ── Pricing ─────────────────────────────────────────────────────────── */}
       <section id="pricing" className="py-24 bg-white">
