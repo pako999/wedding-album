@@ -191,12 +191,18 @@ export function PhotoWall({
   /** Pending "promote to centre" timers, cleared on unmount. */
   const promoteTimers = useRef<ReturnType<typeof setTimeout>[]>([]);
   useEffect(() => () => promoteTimers.current.forEach(clearTimeout), []);
-  /** When the next sponsor slide is due, and which one is next up. */
-  const nextAdAt = useRef<number>(Date.now() + settings.adEveryMs);
+  /** When the next sponsor slide is due, and which one is next up.
+   *  Seeded to 0 and set on mount rather than `Date.now() + …` inline:
+   *  the inline form re-evaluates the clock on every render even though
+   *  only the very first value is ever kept, which is impure and makes
+   *  the wall's first ad interval depend on when React happened to
+   *  render rather than on when the wall actually started. */
+  const nextAdAt = useRef<number>(0);
   const adCursor = useRef(0);
   /** Latest photo pool, for callbacks that must not re-subscribe. */
   const photosRef = useRef(photos);
   useEffect(() => { photosRef.current = photos; }, [photos]);
+  useEffect(() => { nextAdAt.current = Date.now() + settings.adEveryMs; }, [settings.adEveryMs]);
 
   // ── Orientation ─────────────────────────────────────────────────────
   // "auto" follows the actual screen so the same link works on a

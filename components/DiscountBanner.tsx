@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import { usePathname } from "next/navigation";
 import type { LangCode } from "@/components/LanguageSwitcher";
@@ -106,12 +107,12 @@ export function DiscountBanner({ lang }: { lang: LangCode }) {
       </span>
 
       {/* CTA */}
-      <a
+      <Link
         href="/dashboard/new"
         className="hidden sm:inline-flex items-center text-xs font-bold underline underline-offset-2 hover:opacity-70 transition-opacity whitespace-nowrap"
       >
         {t.cta}
-      </a>
+      </Link>
 
       {/* Close */}
       <button

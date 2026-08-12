@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { BlogPostPage } from "@/components/BlogPostPage";
 import { getAllSlugs, getPost, getTranslationMap, blogUrl } from "@/lib/blog";
 import { OG_IMAGE_URL, ogImage } from "@/lib/og";
+import { absoluteUrl } from "@/lib/urls";
 
 // Per-request dynamic — see app/blog/page.tsx for the rationale.
 export const revalidate = 3600;
@@ -17,7 +18,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const post = await getPost("sl", slug);
   if (!post) return {};
   const languages = await getTranslationMap(post.translationKey);
-  const canonical = `https://www.guestcam.si${blogUrl("sl", post.slug)}`;
+  const canonical = absoluteUrl(blogUrl("sl", post.slug));
   return {
     title: post.title,
     description: post.description,

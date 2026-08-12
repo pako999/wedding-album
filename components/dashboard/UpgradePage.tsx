@@ -917,7 +917,10 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
                       });
                       const data = await res.json() as { paymentUrl?: string; error?: string };
                       if (!res.ok || !data.paymentUrl) throw new Error(data.error ?? "no payment URL");
-                      window.location.href = data.paymentUrl;
+                      // assign() rather than `location.href = …`: same
+                      // navigation, but not a write to a value the React
+                      // Compiler treats as immutable.
+                      window.location.assign(data.paymentUrl);
                     }
                   } catch (err) {
                     console.error("[checkout]", err);

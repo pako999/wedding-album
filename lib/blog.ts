@@ -1,3 +1,4 @@
+import { absoluteUrl } from "@/lib/urls";
 import fs from "node:fs/promises";
 import path from "node:path";
 import type { LangCode } from "@/components/LanguageSwitcher";
@@ -116,7 +117,11 @@ export async function getTranslationMap(translationKey: string): Promise<Partial
     const match = posts.find((p) => p.translationKey === translationKey);
     if (match) {
       const path = lang === "sl" ? `/blog/${match.slug}` : `/${lang}/blog/${match.slug}`;
-      out[lang] = `https://www.guestcam.si${path}`;
+      // absoluteUrl, not a hardcoded host: these strings become hreflang
+      // alternates, which AGENTS.md calls out by name. It also lets a
+      // preview deploy canonicalise to itself via NEXT_PUBLIC_APP_URL
+      // instead of pointing every alternate at production.
+      out[lang] = absoluteUrl(path);
     }
   }
   return out;

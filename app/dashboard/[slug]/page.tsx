@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { notFound, redirect } from "next/navigation";
 import { db } from "@/lib/db";
@@ -145,9 +146,9 @@ export default async function AlbumAdminPage({ params, searchParams }: Props) {
           <p className="text-sm text-gray-500 mb-4">
             Prišlo je do napake z bazo podatkov. Poskusite znova čez trenutek.
           </p>
-          <a href="/dashboard" className="inline-block px-6 py-3 rounded-xl text-white text-sm font-semibold" style={{ background: "#FFC94D" }}>
+          <Link href="/dashboard" className="inline-block px-6 py-3 rounded-xl text-white text-sm font-semibold" style={{ background: "#FFC94D" }}>
             Nazaj na galerije
-          </a>
+          </Link>
         </div>
       </div>
     );
