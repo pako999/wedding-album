@@ -337,10 +337,10 @@ export default async function HomePage() {
           headLead="Ne izgubi slik"
           headAccent="svojega dogodka"
           headTrail="."
-          lead="Vse fotografije in videji tvojih gostov se samodejno zberejo v en zaseben album — v polni kakovosti."
+          lead="Vse fotografije in videji tvojih gostov se samodejno zberejo v en zaseben album, v polni kakovosti."
           ctaHref="/dashboard/new"
           ctaLabel="Ustvari svoj QR album"
-          note="Brezplačen začetek · Brez kreditne kartice · Pripravljeno v 2 minutah"
+          note="Brezplačen začetek · Pripravljeno v 2 minutah"
           toast="Pravkar deljeno · Ana"
           demoSlot={<DemoButton variant="heroDark" />}
           printOffer={
@@ -356,7 +356,7 @@ export default async function HomePage() {
               <p className="text-[13px] leading-snug text-white">
                 <span className="font-bold">Ne želite tiskati sami?</span>{" "}
                 <span className="text-gray-300">
-                  {`Natisnemo QR podstavke za mize in vam jih pošljemo domov — že od ${eur(Math.min(...STAND_VARIANTS.map((v) => v.unitCents)))} na kos, dodate jih ob nakupu paketa.`}
+                  {`Natisnemo QR podstavke za mize in vam jih pošljemo domov: že od ${eur(Math.min(...STAND_VARIANTS.map((v) => v.unitCents)))} na kos, dodate jih ob nakupu paketa.`}
                 </span>
               </p>
             </div>
@@ -996,7 +996,7 @@ export default async function HomePage() {
               <p className="font-extrabold text-xl text-white">Eventi &amp; Business</p>
               <p className="text-sm text-gray-300 mt-1.5 max-w-xl">
                 Živa foto stena na velikem zaslonu, sponzorske vsebine, zajem kontaktov
-                gostov, sodelavci in nadzor po meri — paket sestavimo za vaš dogodek,
+                gostov, sodelavci in nadzor po meri. Paket sestavimo za vaš dogodek,
                 od poslovne konference do festivala.
               </p>
             </div>
