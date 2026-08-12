@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { addOnTotalCents, quoteShipping } from "@/lib/print-service";
 import { auth } from "@clerk/nextjs/server";
 import { db } from "@/lib/db";
 import { albums, cardBilling } from "@/lib/db/schema";
@@ -50,6 +51,9 @@ export async function POST(req: NextRequest) {
       city?: string;
       companyName?: string;
       taxId?: string;
+      /** ISO-3166 alpha-2. Required when tableStands is true — it is what
+       *  the shipping rate is computed from. */
+      country?: string;
     };
   };
   const { planId, albumSlug, tableStands, discountCode, billing } = body;
@@ -115,8 +119,19 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  const totalCents = baseCents + (tableStands ? 900 : 0);
-  const description = plan.name + (tableStands ? " + Podstavki za mizo" : "");
+  // Physical add-on. Priced SERVER-SIDE from the destination country —
+  // the browser only says whether it wants stands and where to ship, the
+  // same trust model the plan price already uses. A country we don't
+  // ship to is rejected outright rather than silently charged a default
+  // rate, which would lose money on every such parcel.
+  const addOnCents = addOnTotalCents(!!tableStands, billing?.country);
+  if (addOnCents === null) {
+    return NextResponse.json({ error: "shipping_unavailable" }, { status: 400 });
+  }
+  const ship = tableStands ? quoteShipping(billing?.country) : null;
+
+  const totalCents = baseCents + addOnCents;
+  const description = plan.name + (tableStands ? " + Podstavki za mizo (s poštnino)" : "");
 
   const baseUrl = req.nextUrl.origin;
   // Mollie redirects back to /api/mollie-return which does reconcile then bounces to dashboard.
@@ -136,6 +151,16 @@ export async function POST(req: NextRequest) {
         ...(affiliateRef ? { affiliateRef } : {}),
         ...(guestRefCode ? { guestRefCode } : {}),
         ...(guestRefTouchpoint ? { guestRefTouchpoint } : {}),
+        // Fulfilment needs to know a parcel is owed and where it goes —
+        // the payment record is the only thing guaranteed to survive.
+        ...(tableStands
+          ? {
+              tableStands: "1",
+              shipCountry: (billing?.country ?? "").toUpperCase(),
+              shipCents: String(ship?.cents ?? 0),
+              shipCarrier: ship?.carrier ?? "",
+            }
+          : {}),
       },
     });
 

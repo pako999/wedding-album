@@ -435,6 +435,20 @@ export default async function HomePage() {
                 </Link>
                 <DemoButton variant="hero" />
               </div>
+              {/* Full-service offer — the printed stands are the thing
+                  customers ask for after they see the QR; saying so in the
+                  hero turns a DIY task into something we do for them. */}
+              <div className="mt-6 inline-flex items-start gap-3 rounded-2xl border px-4 py-3 text-left mx-auto lg:mx-0"
+                style={{ background: "#FFF9EC", borderColor: "rgba(255,201,77,0.45)" }}>
+                <span className="text-xl leading-none mt-0.5" aria-hidden>🖨</span>
+                <p className="text-[13px] leading-snug text-[#0F1729]">
+                  <span className="font-bold">Ne želite tiskati sami?</span>{" "}
+                  <span className="text-gray-600">
+                    Natisnemo QR podstavke za mize in vam jih pošljemo domov — dodate jih ob nakupu paketa.
+                  </span>
+                </p>
+              </div>
+
               <div className="mt-4 flex items-center justify-center lg:justify-start gap-2 text-xs sm:text-sm text-gray-400">
                 <svg className="w-4 h-4 text-emerald-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
