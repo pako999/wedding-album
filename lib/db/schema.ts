@@ -619,6 +619,73 @@ export const cardBilling = pgTable(
 export type BankOrder = typeof bankOrders.$inferSelect;
 export type NewBankOrder = typeof bankOrders.$inferInsert;
 
+// ─── Printed-stand orders (the physical fulfilment record) ───────────────────
+// Until now the only complete record of a stands order was the Mollie
+// payment metadata (card) or a Telegram message (invoice) — neither of
+// which is queryable, and neither of which holds a full delivery address.
+// Nobody could answer "what do I need to print and post this week?".
+//
+// A NEW TABLE on purpose, not columns on bank_orders / card_billing.
+// Drizzle SELECTs every column it knows about, so adding a column to a
+// table that existing queries already read means a deploy landing before
+// its migration breaks those queries outright — exactly what took the
+// dashboard down when albums.wall_token was added. A brand-new table can
+// only break reads of itself, and those are guarded (see lib/stand-orders).
+
+export const standOrders = pgTable(
+  "stand_orders",
+  {
+    id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+    albumSlug: varchar("album_slug", { length: 80 }).notNull(),
+    /** "card" = Mollie, "invoice" = bank transfer. */
+    source: text("source", { enum: ["card", "invoice"] }).notNull(),
+    /** Mollie payment id, or the bank_orders row id. Ties this parcel back
+     *  to the money so fulfilment can confirm payment before printing. */
+    orderRef: text("order_ref"),
+
+    planId: text("plan_id"),
+    planName: text("plan_name"),
+    planCents: integer("plan_cents"),
+
+    /** "wood" | "gold" — what to pull off the shelf. */
+    variant: text("variant").notNull(),
+    qty: integer("qty").notNull(),
+    /** Goods and postage kept apart: an invoice has to show them separately,
+     *  and the volume discount applies to the goods only. */
+    standsCents: integer("stands_cents").notNull(),
+    shipCents: integer("ship_cents").notNull(),
+    shipCarrier: text("ship_carrier"),
+    shipCountry: varchar("ship_country", { length: 2 }),
+    /** Outside the EU customs union — needs a commercial invoice. */
+    shipCustoms: boolean("ship_customs").notNull().default(false),
+    totalCents: integer("total_cents").notNull(),
+
+    // Delivery details. Held here rather than looked up through billing
+    // because a parcel needs a name, a phone (couriers demand one) and a
+    // postcode, and the invoice path never collected the last two.
+    recipientName: text("recipient_name"),
+    recipientPhone: text("recipient_phone"),
+    recipientEmail: text("recipient_email"),
+    address: text("address"),
+    postalCode: text("postal_code"),
+    city: text("city"),
+    companyName: text("company_name"),
+    taxId: text("tax_id"),
+
+    status: text("status", {
+      enum: ["pending", "paid", "printing", "shipped", "cancelled"],
+    }).notNull().default("pending"),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+  },
+  (t) => [
+    index("stand_orders_slug_idx").on(t.albumSlug),
+    index("stand_orders_status_idx").on(t.status),
+  ]
+);
+
+export type StandOrder = typeof standOrders.$inferSelect;
+export type NewStandOrder = typeof standOrders.$inferInsert;
+
 // ─── Affiliates ──────────────────────────────────────────────────────────────
 // Partner program: bloggers, agencies, customers refer GuestCam and earn
 // a commission (default 20%) on each paid order. All monetary fields use

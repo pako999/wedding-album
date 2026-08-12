@@ -11,6 +11,7 @@ import { createPayment, mollieConfigured, MollieError } from "@/lib/mollie";
 import { validateDiscount } from "@/lib/discount";
 import { getAffiliateRefFromCookie } from "@/lib/affiliate/attribution";
 import { getGuestRefFromCookie } from "@/lib/referral/attribution";
+import { recordStandOrder } from "@/lib/stand-orders";
 
 export const runtime = "nodejs";
 
@@ -205,6 +206,39 @@ export async function POST(req: NextRequest) {
         companyName: clean(billing.companyName),
         taxId:       clean(billing.taxId),
       }).onConflictDoNothing().catch((err) => console.error("[checkout] billing insert failed:", err));
+    }
+
+    // Physical fulfilment record. Written here rather than on the paid
+    // webhook so the parcel is on the books the moment it's ordered — a
+    // webhook that never fires would otherwise leave no queryable trace
+    // that stands are owed. Status starts "pending" and the webhook flips
+    // it to "paid"; admin filters on that so nothing ships unpaid.
+    if (tableStands) {
+      const clean = (v?: string) => (v?.trim() ? v.trim() : null);
+      await recordStandOrder({
+        albumSlug,
+        source: "card",
+        orderRef: id,
+        planId,
+        planName: plan.name,
+        planCents: baseCents,
+        variant: standsV,
+        qty: standsQ,
+        standsCents: standsPriceCents(standsQ, standsV) ?? 0,
+        shipCents: ship?.cents ?? 0,
+        shipCarrier: ship?.carrier ?? null,
+        shipCountry: (billing?.country ?? "").toUpperCase() || null,
+        shipCustoms: !!ship?.customs,
+        totalCents,
+        recipientName:  clean(billing?.name),
+        recipientPhone: clean(billing?.phone),
+        recipientEmail: clean(billing?.email),
+        address:        clean(billing?.address),
+        postalCode:     clean(billing?.postalCode),
+        city:           clean(billing?.city),
+        companyName:    clean(billing?.companyName),
+        taxId:          clean(billing?.taxId),
+      });
     }
 
     return NextResponse.json({ paymentUrl: checkoutUrl });

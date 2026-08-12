@@ -10,6 +10,7 @@ import { eq } from "drizzle-orm";
 import { sendBankOrderConfirmation, sendAdminBankOrderEmail } from "@/lib/email/notifications";
 import { notifyTelegram, htmlEscape } from "@/lib/telegram";
 import { validateDiscount, incrementDiscountUsage } from "@/lib/discount";
+import { recordStandOrder } from "@/lib/stand-orders";
 
 export const runtime = "nodejs";
 
@@ -23,6 +24,11 @@ interface BillingDetails {
   name: string;
   companyName?: string;
   email?: string;
+  /** Both only arrive when stands are in the order — a courier needs a
+   *  phone number and a postcode, and a digital-only invoice needs
+   *  neither, so the form asks for them conditionally. */
+  phone?: string;
+  postalCode?: string;
   address: string;
   city: string;
   taxId?: string;
@@ -123,6 +129,37 @@ export async function POST(req: NextRequest) {
   const standsLines = tableStands && standsQuote
     ? `\n📦 <b>Podstavki za mize:</b> ${standsQ}× ${standsV === "gold" ? "zlati" : "leseni"} — ${((standsPriceCents(standsQ, standsV) ?? 0) / 100).toFixed(2)} € + poštnina ${(standsQuote.cents / 100).toFixed(2)} € (${htmlEscape(standsQuote.carrier)})\nDržava dostave: ${htmlEscape((billing?.country ?? "").toUpperCase())}${standsQuote.customs ? "\n⚠️ Izven EU — potrebna carinska (komercialna) faktura" : ""}`
     : "";
+
+  // Physical fulfilment record — until now an invoice order's stands
+  // existed only inside a Telegram message, which nothing can query.
+  if (tableStands && standsQuote) {
+    const clean = (v?: string) => (v?.trim() ? v.trim() : null);
+    const goods = standsPriceCents(standsQ, standsV) ?? 0;
+    await recordStandOrder({
+      albumSlug,
+      source: "invoice",
+      orderRef: null,
+      planId,
+      planName: plan.name,
+      planCents: plan.price * 100,
+      variant: standsV,
+      qty: standsQ,
+      standsCents: goods,
+      shipCents: standsQuote.cents,
+      shipCarrier: standsQuote.carrier,
+      shipCountry: (billing?.country ?? "").toUpperCase() || null,
+      shipCustoms: standsQuote.customs,
+      totalCents: plan.price * 100 + goods + standsQuote.cents,
+      recipientName:  clean(billing?.name),
+      recipientPhone: clean(billing?.phone),
+      recipientEmail: clean(billing?.email) ?? email,
+      address:        clean(billing?.address),
+      postalCode:     clean(billing?.postalCode),
+      city:           clean(billing?.city),
+      companyName:    clean(billing?.companyName),
+      taxId:          clean(billing?.taxId),
+    });
+  }
 
   const billingLines = billing
     ? `\n👤 <b>Podatki za predračun:</b>\nIme: ${htmlEscape(billing.name)}${billing.companyName ? `\nPodjetje: ${htmlEscape(billing.companyName)}` : ""}${billing.email ? `\nEmail za račun: ${htmlEscape(billing.email)}` : ""}\nNaslov: ${htmlEscape(billing.address)}\nKraj: ${htmlEscape(billing.city)}${billing.taxId ? `\nDavčna: ${htmlEscape(billing.taxId)}` : ""}`

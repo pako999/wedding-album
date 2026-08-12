@@ -289,6 +289,41 @@ export async function runMigrations() {
   await run("bank_orders.company_name", (q) => q`ALTER TABLE bank_orders ADD COLUMN IF NOT EXISTS billing_company_name TEXT`);
   await run("bank_orders.email",        (q) => q`ALTER TABLE bank_orders ADD COLUMN IF NOT EXISTS billing_email TEXT`);
 
+  // ── Printed-stand orders (physical fulfilment) ────────────────────────────
+  // New table rather than columns on bank_orders / card_billing — see the
+  // note on standOrders in schema.ts for why that distinction matters here.
+  await run("create stand_orders", (q) => q`
+    CREATE TABLE IF NOT EXISTS stand_orders (
+      id               TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
+      album_slug       VARCHAR(80) NOT NULL,
+      source           TEXT NOT NULL,
+      order_ref        TEXT,
+      plan_id          TEXT,
+      plan_name        TEXT,
+      plan_cents       INTEGER,
+      variant          TEXT NOT NULL,
+      qty              INTEGER NOT NULL,
+      stands_cents     INTEGER NOT NULL,
+      ship_cents       INTEGER NOT NULL,
+      ship_carrier     TEXT,
+      ship_country     VARCHAR(2),
+      ship_customs     BOOLEAN NOT NULL DEFAULT FALSE,
+      total_cents      INTEGER NOT NULL,
+      recipient_name   TEXT,
+      recipient_phone  TEXT,
+      recipient_email  TEXT,
+      address          TEXT,
+      postal_code      TEXT,
+      city             TEXT,
+      company_name     TEXT,
+      tax_id           TEXT,
+      status           TEXT NOT NULL DEFAULT 'pending',
+      created_at       TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )
+  `);
+  await run("stand_orders slug idx",   (q) => q`CREATE INDEX IF NOT EXISTS stand_orders_slug_idx ON stand_orders (album_slug)`);
+  await run("stand_orders status idx", (q) => q`CREATE INDEX IF NOT EXISTS stand_orders_status_idx ON stand_orders (status)`);
+
   // ── Discount codes ────────────────────────────────────────────────────────
   await run("create discount_codes", (q) => q`
     CREATE TABLE IF NOT EXISTS discount_codes (

@@ -835,7 +835,12 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
                   setIsLoading(true);
                   try {
                     if (paymentMethod === "invoice") {
-                      if (!billing.name.trim() || !billing.email.trim() || !billing.address.trim() || !billing.city.trim()) {
+                      // A parcel needs a postcode and a phone (couriers
+                      // require one); an invoice with no stands does not.
+                      // Demanding them unconditionally would add friction to
+                      // every digital-only invoice order.
+                      const missingForParcel = wantStands && (!billing.postalCode.trim() || !billing.phone.trim());
+                      if (!billing.name.trim() || !billing.email.trim() || !billing.address.trim() || !billing.city.trim() || missingForParcel) {
                         alert(u.alertMissingFields);
                         setIsLoading(false);
                         return;
@@ -856,7 +861,9 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
                             name: billing.name.trim(),
                             companyName: billing.companyName.trim() || undefined,
                             email: billing.email.trim(),
+                            phone: billing.phone.trim() || undefined,
                             address: billing.address.trim(),
+                            postalCode: billing.postalCode.trim() || undefined,
                             city: billing.city.trim(),
                             taxId: billing.taxId.trim() || undefined,
                           },
