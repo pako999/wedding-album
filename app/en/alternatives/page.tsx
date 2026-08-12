@@ -1,3 +1,4 @@
+import { SITE_URL } from "@/lib/urls";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { ALTERNATIVES_HREFLANG, LanguageSwitcher } from "@/components/LanguageSwitcher";
@@ -11,7 +12,7 @@ export const metadata: Metadata = {
   description:
     "Guestcam vs Google Photos vs WhatsApp vs Dropbox vs HoneyCam. Find the right wedding photo sharing app for your day — honest side-by-side.",
   openGraph: {
-    url: "https://www.guestcam.si/en/alternatives",
+    url: `${SITE_URL}/en/alternatives`,
     title: "Best Wedding Photo Sharing App Alternatives 2025",
     description:
       "Honest comparison of wedding photo sharing solutions. See which app wins on quality, ease of use, privacy and price.",
@@ -25,15 +26,15 @@ export const metadata: Metadata = {
     images: [OG_IMAGE_URL],
   },
   alternates: {
-    canonical: "https://www.guestcam.si/en/alternatives",
+    canonical: `${SITE_URL}/en/alternatives`,
     languages: {
-      "sl": "https://www.guestcam.si/sl/alternative-aplikacije",
-      "hr": "https://www.guestcam.si/hr/alternativne-aplikacije",
-      "sr": "https://www.guestcam.si/sr/alternativne-aplikacije",
-      "de": "https://www.guestcam.si/de/alternativen",
-      "en": "https://www.guestcam.si/en/alternatives",
-      "es": "https://www.guestcam.si/es/alternativas",
-      "x-default": "https://www.guestcam.si/sl/alternative-aplikacije",
+      "sl": `${SITE_URL}/sl/alternative-aplikacije`,
+      "hr": `${SITE_URL}/hr/alternativne-aplikacije`,
+      "sr": `${SITE_URL}/sr/alternativne-aplikacije`,
+      "de": `${SITE_URL}/de/alternativen`,
+      "en": `${SITE_URL}/en/alternatives`,
+      "es": `${SITE_URL}/es/alternativas`,
+      "x-default": `${SITE_URL}/sl/alternative-aplikacije`,
     },
   },
 };

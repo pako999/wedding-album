@@ -1,5 +1,6 @@
 "use client";
 
+import { SITE_URL } from "@/lib/urls";
 import Link from "next/link";
 import { useState, useEffect, useRef } from "react";
 
@@ -125,12 +126,12 @@ export function LanguageSwitcher({ current, languages, ariaLabel }: Props) {
  * every other language has its own minimal landing page at `/<lang>`.
  */
 export const HOME_HREFLANG: Record<LangCode, string> = {
-  sl: "https://www.guestcam.si/",
-  hr: "https://www.guestcam.si/hr",
-  sr: "https://www.guestcam.si/sr",
-  de: "https://www.guestcam.si/de",
-  en: "https://www.guestcam.si/en",
-  es: "https://www.guestcam.si/es",
+  sl: `${SITE_URL}/`,
+  hr: `${SITE_URL}/hr`,
+  sr: `${SITE_URL}/sr`,
+  de: `${SITE_URL}/de`,
+  en: `${SITE_URL}/en`,
+  es: `${SITE_URL}/es`,
 };
 
 /**
@@ -138,20 +139,20 @@ export const HOME_HREFLANG: Record<LangCode, string> = {
  * Exported so guide pages and the homepage can share one source of truth.
  */
 export const GUIDE_HREFLANG: Record<LangCode, string> = {
-  sl: "https://www.guestcam.si/sl/qr-koda-poroka",
-  hr: "https://www.guestcam.si/hr/qr-kod-vjencanje",
-  sr: "https://www.guestcam.si/sr/qr-kod-vencanje",
-  de: "https://www.guestcam.si/de/hochzeitsfotos-sammeln",
-  en: "https://www.guestcam.si/en/wedding-photo-sharing",
-  es: "https://www.guestcam.si/es/fotos-boda-qr",
+  sl: `${SITE_URL}/sl/qr-koda-poroka`,
+  hr: `${SITE_URL}/hr/qr-kod-vjencanje`,
+  sr: `${SITE_URL}/sr/qr-kod-vencanje`,
+  de: `${SITE_URL}/de/hochzeitsfotos-sammeln`,
+  en: `${SITE_URL}/en/wedding-photo-sharing`,
+  es: `${SITE_URL}/es/fotos-boda-qr`,
 };
 
 /** Hreflang map for the "alternatives / comparison" landing pages. */
 export const ALTERNATIVES_HREFLANG: Record<LangCode, string> = {
-  sl: "https://www.guestcam.si/sl/alternative-aplikacije",
-  hr: "https://www.guestcam.si/hr/alternativne-aplikacije",
-  sr: "https://www.guestcam.si/sr/alternativne-aplikacije",
-  de: "https://www.guestcam.si/de/alternativen",
-  en: "https://www.guestcam.si/en/alternatives",
-  es: "https://www.guestcam.si/es/alternativas",
+  sl: `${SITE_URL}/sl/alternative-aplikacije`,
+  hr: `${SITE_URL}/hr/alternativne-aplikacije`,
+  sr: `${SITE_URL}/sr/alternativne-aplikacije`,
+  de: `${SITE_URL}/de/alternativen`,
+  en: `${SITE_URL}/en/alternatives`,
+  es: `${SITE_URL}/es/alternativas`,
 };

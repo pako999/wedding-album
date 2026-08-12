@@ -1,7 +1,8 @@
+import { SITE_URL } from "@/lib/urls";
 import { Resend } from "resend";
 
 const FROM = process.env.RESEND_FROM ?? "noreply@guestcam.si";
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://www.guestcam.si";
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? SITE_URL;
 
 /** Escape user-supplied values before interpolating them into email HTML. */
 function escapeHtml(s: string): string {

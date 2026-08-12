@@ -1,3 +1,4 @@
+import { SITE_URL } from "@/lib/urls";
 import type { Metadata } from "next";
 import { ContactPage } from "@/components/ContactPage";
 
@@ -5,19 +6,19 @@ export const metadata: Metadata = {
   title: "Contact",
   description: "Get in touch — email, WhatsApp, Premium wedding-day support.",
   alternates: {
-    canonical: "https://www.guestcam.si/en/contact",
+    canonical: `${SITE_URL}/en/contact`,
     languages: {
-      sl: "https://www.guestcam.si/contact",
-      hr: "https://www.guestcam.si/hr/contact",
-      sr: "https://www.guestcam.si/sr/contact",
-      de: "https://www.guestcam.si/de/contact",
-      en: "https://www.guestcam.si/en/contact",
-      es: "https://www.guestcam.si/es/contact",
-      "x-default": "https://www.guestcam.si/contact",
+      sl: `${SITE_URL}/contact`,
+      hr: `${SITE_URL}/hr/contact`,
+      sr: `${SITE_URL}/sr/contact`,
+      de: `${SITE_URL}/de/contact`,
+      en: `${SITE_URL}/en/contact`,
+      es: `${SITE_URL}/es/contact`,
+      "x-default": `${SITE_URL}/contact`,
     },
   },
   openGraph: {
-    url: "https://www.guestcam.si/en/contact",
+    url: `${SITE_URL}/en/contact`,
     title: "Contact",
     description: "Get in touch — email, WhatsApp, Premium wedding-day support.",
     images: ["/og-image.png?v=2"],

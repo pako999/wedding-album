@@ -1,3 +1,4 @@
+import { SITE_URL } from "@/lib/urls";
 import { NextRequest, NextResponse } from "next/server";
 import { getPayment, isPaidStatus, isRefundedStatus, mollieConfigured } from "@/lib/mollie";
 import { markStandOrderPaid } from "@/lib/stand-orders";
@@ -117,7 +118,7 @@ export async function POST(req: NextRequest) {
       value:          Number(payment.amount.value),
       currency:       payment.amount.currency,
       contentName:    planLabel(planId).text,
-      eventSourceUrl: "https://www.guestcam.si",
+      eventSourceUrl: SITE_URL,
       clientIp:       req.headers.get("x-vercel-forwarded-for")
                         ?? req.headers.get("x-forwarded-for")
                         ?? null,

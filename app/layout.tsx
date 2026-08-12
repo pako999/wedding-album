@@ -34,7 +34,7 @@ async function detectLang(): Promise<LangCode> {
     const path =
       h.get("x-pathname") ??
       h.get("next-url") ??
-      new URL(h.get("referer") ?? "https://www.guestcam.si").pathname;
+      new URL(h.get("referer") ?? SITE_URL).pathname;
     const first = path.split("/").filter(Boolean)[0] ?? "";
     if ((SUPPORTED_LANGS as string[]).includes(first)) {
       return first as LangCode;

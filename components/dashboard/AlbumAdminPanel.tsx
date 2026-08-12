@@ -1,5 +1,6 @@
 "use client";
 
+import { SITE_URL } from "@/lib/urls";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -104,7 +105,7 @@ const DRIVE_BANNER_STYLES: Record<"success" | "warning" | "neutral" | "error", {
 // ─── Success Screen ───────────────────────────────────────────────────────────
 
 function NewAlbumSuccess({ album, paidPlan }: { album: Album; paidPlan?: "basic" | "plus" | "premium" }) {
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://www.guestcam.si";
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? SITE_URL;
   const albumUrl = `${appUrl}/${album.slug}`;
   // Always route to the dashboard — the upgrade page is a separate flow.
   const dashboardUrl = `/dashboard/${album.slug}`;
@@ -294,7 +295,7 @@ function NewAlbumSuccess({ album, paidPlan }: { album: Album; paidPlan?: "basic"
 
 export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activeTab, isNew, isUpgraded, paidAmount, paidPlan, ownerEmail, viewingAsAdmin, driveResult, driveCount, hasPassword, wallToken, guestDataCapture = false }: Props) {
   const router = useRouter();
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://www.guestcam.si";
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? SITE_URL;
   const albumUrl = `${appUrl}/${album.slug}`;
   // Mobile sidebar drawer — hidden by default on small screens.
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -888,7 +889,7 @@ function OverviewTab({
   const usedPct = album.plan === "free" ? Math.min(100, Math.round(((album.photoCount ?? 0) / (album.maxPhotos ?? 20)) * 100)) : 0;
   // A dedicated token-based link, deliberately separate from the main
   // gallery's slug-based albumUrl — see lib/wall-token.ts.
-  const wallAppUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://www.guestcam.si";
+  const wallAppUrl = process.env.NEXT_PUBLIC_APP_URL ?? SITE_URL;
   const wallUrl = `${wallAppUrl}/wall/${wallToken}`;
 
   return (
@@ -1461,7 +1462,7 @@ function AccountInfoCard({ ownerEmail }: { ownerEmail: string | null }) {
 }
 
 function AlbumSettingsForm({ album, children, wallToken, hasPassword }: { album: Album; children?: React.ReactNode; wallToken: string; hasPassword: boolean }) {
-  const wallAppUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://www.guestcam.si";
+  const wallAppUrl = process.env.NEXT_PUBLIC_APP_URL ?? SITE_URL;
   const wallUrl = `${wallAppUrl}/wall/${wallToken}`;
   const router = useRouter();
   const [saving, setSaving] = useState(false);

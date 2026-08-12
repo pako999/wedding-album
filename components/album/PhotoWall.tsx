@@ -18,6 +18,7 @@
  * centre stage on a timer in between guest photos.
  */
 
+import { SITE_URL } from "@/lib/urls";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { bunnyDisplayUrl } from "@/lib/storage/bunny";
 import { GuestcamLogo } from "@/components/GuestcamLogo";
@@ -555,7 +556,7 @@ export function PhotoWall({
       {/* Branding — top-left */}
       {settings.showBranding && (
         <a
-          href="https://www.guestcam.si"
+          href={SITE_URL}
           target="_blank"
           rel="noreferrer"
           className="absolute top-6 left-6 flex items-center gap-2.5 backdrop-blur-sm pl-3 pr-4 py-2 rounded-full no-underline z-[3]"

@@ -1,10 +1,11 @@
+import { SITE_URL } from "@/lib/urls";
 import type { Metadata } from "next";
 import { LegalPage } from "@/components/LegalPage";
 
 export const metadata: Metadata = {
   title: "Nutzungsbedingungen",
-  alternates: { canonical: "https://www.guestcam.si/de/terms" },
-  openGraph: { url: "https://www.guestcam.si/de/terms", title: "Nutzungsbedingungen", images: ["/og-image.png?v=2"] },
+  alternates: { canonical: `${SITE_URL}/de/terms` },
+  openGraph: { url: `${SITE_URL}/de/terms`, title: "Nutzungsbedingungen", images: ["/og-image.png?v=2"] },
   robots: { index: true, follow: true },
 };
 

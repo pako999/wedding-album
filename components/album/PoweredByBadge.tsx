@@ -1,3 +1,4 @@
+import { SITE_URL } from "@/lib/urls";
 /**
  * PoweredByBadge — non-removable "Powered by Guestcam" pill shown in the
  * public gallery footer for ALL plans (including Premium). This is the
@@ -45,8 +46,8 @@ export function PoweredByBadge({ referralCode, lang }: Props) {
   // — they'll get one on the next admin bootstrap, but until then the link
   // is a plain "learn more" without attribution).
   const href = referralCode
-    ? `https://www.guestcam.si${localePrefix}?ref=${encodeURIComponent(referralCode)}&tp=gallery_footer`
-    : `https://www.guestcam.si${localePrefix}`;
+    ? `${SITE_URL}${localePrefix}?ref=${encodeURIComponent(referralCode)}&tp=gallery_footer`
+    : `${SITE_URL}${localePrefix}`;
 
   return (
     <a

@@ -1,3 +1,4 @@
+import { SITE_URL } from "@/lib/urls";
 import type { MetadataRoute } from "next";
 
 /**
@@ -71,7 +72,7 @@ export default function robots(): MetadataRoute.Robots {
         }),
       ),
     ],
-    sitemap: "https://www.guestcam.si/sitemap.xml",
-    host: "https://www.guestcam.si",
+    sitemap: `${SITE_URL}/sitemap.xml`,
+    host: SITE_URL,
   };
 }

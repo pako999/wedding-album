@@ -1,3 +1,4 @@
+import { SITE_URL } from "@/lib/urls";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { HOME_HREFLANG } from "@/components/LanguageSwitcher";
@@ -18,7 +19,7 @@ export const metadata: Metadata = {
   description:
     "Aplikacija za fotografije s poslovnih dogodkov: QR koda, brez aplikacije, GDPR-skladno. Zberite fotografije zaposlenih in gostov v polni kakovosti.",
   openGraph: {
-    url: "https://www.guestcam.si/sl/qr-koda-za-poslovne-dogodke",
+    url: `${SITE_URL}/sl/qr-koda-za-poslovne-dogodke`,
     title: "QR koda za poslovne dogodke — fotografije 2026",
     description:
       "Zberite vse fotografije udeležencev poslovnega dogodka z eno samo QR kodo. Brez aplikacije, moderacija pred objavo, GDPR-skladno.",
@@ -32,10 +33,10 @@ export const metadata: Metadata = {
     images: [OG_IMAGE_URL],
   },
   alternates: {
-    canonical: "https://www.guestcam.si/sl/qr-koda-za-poslovne-dogodke",
+    canonical: `${SITE_URL}/sl/qr-koda-za-poslovne-dogodke`,
     languages: {
-      "sl": "https://www.guestcam.si/sl/qr-koda-za-poslovne-dogodke",
-      "x-default": "https://www.guestcam.si/sl/qr-koda-za-poslovne-dogodke",
+      "sl": `${SITE_URL}/sl/qr-koda-za-poslovne-dogodke`,
+      "x-default": `${SITE_URL}/sl/qr-koda-za-poslovne-dogodke`,
     },
   },
 };

@@ -1,3 +1,4 @@
+import { SITE_URL } from "@/lib/urls";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { BlogIndexPage } from "@/components/BlogIndexPage";
@@ -44,13 +45,13 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     title: titles[langCode],
     description: descriptions[langCode],
     alternates: {
-      canonical: `https://www.guestcam.si/${langCode}/blog`,
+      canonical: `${SITE_URL}/${langCode}/blog`,
       languages: Object.fromEntries(
-        ALL_LANGS.map((l) => [l, l === "sl" ? "https://www.guestcam.si/blog" : `https://www.guestcam.si/${l}/blog`]),
+        ALL_LANGS.map((l) => [l, l === "sl" ? `${SITE_URL}/blog` : `${SITE_URL}/${l}/blog`]),
       ),
     },
     openGraph: {
-      url: `https://www.guestcam.si/${langCode}/blog`,
+      url: `${SITE_URL}/${langCode}/blog`,
       type: "website",
       locale: langCode,
       title: titles[langCode],

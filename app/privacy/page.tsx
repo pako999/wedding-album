@@ -1,3 +1,4 @@
+import { SITE_URL } from "@/lib/urls";
 import type { Metadata } from "next";
 import { LegalPage } from "@/components/LegalPage";
 
@@ -5,19 +6,19 @@ export const metadata: Metadata = {
   title: "Politika zasebnosti",
   description: "Politika zasebnosti storitve Guestcam. Izveste, katere podatke zbiramo, kako jih varujemo in kakšne so vaše pravice po GDPR.",
   alternates: {
-    canonical: "https://www.guestcam.si/privacy",
+    canonical: `${SITE_URL}/privacy`,
     languages: {
-      sl: "https://www.guestcam.si/privacy",
-      hr: "https://www.guestcam.si/hr/privacy",
-      sr: "https://www.guestcam.si/sr/privacy",
-      de: "https://www.guestcam.si/de/privacy",
-      en: "https://www.guestcam.si/en/privacy",
-      es: "https://www.guestcam.si/es/privacy",
-      "x-default": "https://www.guestcam.si/privacy",
+      sl: `${SITE_URL}/privacy`,
+      hr: `${SITE_URL}/hr/privacy`,
+      sr: `${SITE_URL}/sr/privacy`,
+      de: `${SITE_URL}/de/privacy`,
+      en: `${SITE_URL}/en/privacy`,
+      es: `${SITE_URL}/es/privacy`,
+      "x-default": `${SITE_URL}/privacy`,
     },
   },
   openGraph: {
-    url: "https://www.guestcam.si/privacy",
+    url: `${SITE_URL}/privacy`,
     title: "Politika zasebnosti",
     description: "Politika zasebnosti storitve Guestcam. Izveste, katere podatke zbiramo, kako jih varujemo in kakšne so vaše pravice po GDPR.",
     images: ["/og-image.png?v=2"],

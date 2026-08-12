@@ -1,3 +1,4 @@
+import { SITE_URL } from "@/lib/urls";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { auth } from "@clerk/nextjs/server";
@@ -15,15 +16,15 @@ import { STAND_VARIANTS, eur } from "@/lib/print-service";
 
 export const metadata: Metadata = {
   alternates: {
-    canonical: "https://www.guestcam.si",
+    canonical: SITE_URL,
     languages: {
-      sl: "https://www.guestcam.si/",
-      hr: "https://www.guestcam.si/hr",
-      sr: "https://www.guestcam.si/sr",
-      de: "https://www.guestcam.si/de",
-      en: "https://www.guestcam.si/en",
-      es: "https://www.guestcam.si/es",
-      "x-default": "https://www.guestcam.si/",
+      sl: `${SITE_URL}/`,
+      hr: `${SITE_URL}/hr`,
+      sr: `${SITE_URL}/sr`,
+      de: `${SITE_URL}/de`,
+      en: `${SITE_URL}/en`,
+      es: `${SITE_URL}/es`,
+      "x-default": `${SITE_URL}/`,
     },
   },
 };
@@ -37,10 +38,10 @@ const jsonLd = {
   "@graph": [
     {
       "@type": "Organization",
-      "@id": "https://www.guestcam.si/#organization",
+      "@id": `${SITE_URL}/#organization`,
       name: "Guestcam",
-      url: "https://www.guestcam.si",
-      logo: "https://www.guestcam.si/icon-512.png",
+      url: SITE_URL,
+      logo: `${SITE_URL}/icon-512.png`,
       sameAs: [
         "https://www.instagram.com/guestcam.si",
         "https://www.facebook.com/guestcam.si",
@@ -48,19 +49,19 @@ const jsonLd = {
     },
     {
       "@type": "WebSite",
-      "@id": "https://www.guestcam.si/#website",
+      "@id": `${SITE_URL}/#website`,
       name: "Guestcam",
-      url: "https://www.guestcam.si",
+      url: SITE_URL,
       inLanguage: "sl-SI",
-      publisher: { "@id": "https://www.guestcam.si/#organization" },
+      publisher: { "@id": `${SITE_URL}/#organization` },
     },
     {
       "@type": "SoftwareApplication",
-      "@id": "https://www.guestcam.si/#app",
+      "@id": `${SITE_URL}/#app`,
       name: "Guestcam",
       applicationCategory: "PhotographyApplication",
       operatingSystem: "Web, iOS, Android (browser)",
-      url: "https://www.guestcam.si",
+      url: SITE_URL,
       description:
         "Z eno QR kodo zberite vse fotografije in videe gostov v eni zasebni galeriji. Za poroke, rojstne dneve, obletnice in druge dogodke.",
       offers: [

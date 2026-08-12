@@ -1,3 +1,4 @@
+import { SITE_URL } from "@/lib/urls";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { ALTERNATIVES_HREFLANG, LanguageSwitcher } from "@/components/LanguageSwitcher";
@@ -12,7 +13,7 @@ export const metadata: Metadata = {
   description:
     "Guestcam vs Google Photos vs WhatsApp vs Dropbox. Katera aplikacija najbolje zbere poročne fotografije? Iskrena primerjava prednosti in pasti.",
   openGraph: {
-    url: "https://www.guestcam.si/sl/alternative-aplikacije",
+    url: `${SITE_URL}/sl/alternative-aplikacije`,
     title: "Najboljše aplikacije za poročne fotografije 2026",
     description:
       "Iskrena primerjava rešitev za zbiranje poročnih fotografij. Kakovost, zasebnost, cena — vse na enem mestu.",
@@ -26,15 +27,15 @@ export const metadata: Metadata = {
     images: [OG_IMAGE_URL],
   },
   alternates: {
-    canonical: "https://www.guestcam.si/sl/alternative-aplikacije",
+    canonical: `${SITE_URL}/sl/alternative-aplikacije`,
     languages: {
-      "sl": "https://www.guestcam.si/sl/alternative-aplikacije",
-      "hr": "https://www.guestcam.si/hr/alternativne-aplikacije",
-      "sr": "https://www.guestcam.si/sr/alternativne-aplikacije",
-      "de": "https://www.guestcam.si/de/alternativen",
-      "en": "https://www.guestcam.si/en/alternatives",
-      "es": "https://www.guestcam.si/es/alternativas",
-      "x-default": "https://www.guestcam.si/sl/alternative-aplikacije",
+      "sl": `${SITE_URL}/sl/alternative-aplikacije`,
+      "hr": `${SITE_URL}/hr/alternativne-aplikacije`,
+      "sr": `${SITE_URL}/sr/alternativne-aplikacije`,
+      "de": `${SITE_URL}/de/alternativen`,
+      "en": `${SITE_URL}/en/alternatives`,
+      "es": `${SITE_URL}/es/alternativas`,
+      "x-default": `${SITE_URL}/sl/alternative-aplikacije`,
     },
   },
 };
@@ -50,9 +51,9 @@ const articleSchema = {
   publisher: {
     "@type": "Organization",
     name: "Guestcam",
-    logo: "https://www.guestcam.si/icon-512.png",
+    logo: `${SITE_URL}/icon-512.png`,
   },
-  mainEntityOfPage: "https://www.guestcam.si/sl/alternative-aplikacije",
+  mainEntityOfPage: `${SITE_URL}/sl/alternative-aplikacije`,
 };
 
 
