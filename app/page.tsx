@@ -341,6 +341,24 @@ export default async function HomePage() {
           note="Brezplačen začetek · Brez kreditne kartice · Pripravljeno v 2 minutah"
           toast="Pravkar deljeno · Ana"
           demoSlot={<DemoButton variant="heroDark" />}
+          printOffer={
+            /* Full-service offer — printed stands are the thing customers
+               ask for once they've seen the QR. Saying so in the hero turns
+               a DIY chore into something we do for them. Dark-theme variant
+               of the light-hero card so it reads on the Photo Wall stage. */
+            <div
+              className="inline-flex items-start gap-3 rounded-2xl border px-4 py-3 text-left backdrop-blur-sm"
+              style={{ background: "rgba(255,201,77,0.10)", borderColor: "rgba(255,201,77,0.34)" }}
+            >
+              <span className="text-xl leading-none mt-0.5" aria-hidden>🖨</span>
+              <p className="text-[13px] leading-snug text-white">
+                <span className="font-bold">Ne želite tiskati sami?</span>{" "}
+                <span className="text-gray-300">
+                  Natisnemo QR podstavke za mize in vam jih pošljemo domov — dodate jih ob nakupu paketa.
+                </span>
+              </p>
+            </div>
+          }
         />
 
         {/* ── Trust band — full-width navy, structured like the ad ─────── */}

@@ -116,6 +116,13 @@ export interface UpgradeCopy {
   featureCustomQrText:     string; // "Custom text on QR card"
   featurePhotoWall:        string; // "Photo Wall for TV / projector"
   featurePrioritySupport:  string; // "Priority support"
+
+  // Printed QR table stands (physical add-on)
+  standsTitle:    string; // "Printed QR table stands"
+  standsDesc:     string; // what's in the set
+  standsCountry:  string; // "Delivery country"
+  standsShipping: string; // "Shipping"
+  standsTotal:    string; // "Total"
 }
 
 export const UPGRADE_COPY: Record<Lang, UpgradeCopy> = {
@@ -195,6 +202,11 @@ export const UPGRADE_COPY: Record<Lang, UpgradeCopy> = {
     featureCustomQrText:     "Lasten napis na QR kartici",
     featurePhotoWall:        "Foto stena za TV / projektor",
     featurePrioritySupport:  "Prioritetna podpora",
+    standsTitle:    "Natisnjeni QR podstavki za mize",
+    standsDesc:     "Natisnemo in dostavimo komplet elegantnih podstavkov z vašo QR kodo — pripravljeni za mize.",
+    standsCountry:  "Država dostave",
+    standsShipping: "Poštnina",
+    standsTotal:    "Skupaj",
   },
   hr: {
     back: "Natrag",
@@ -272,6 +284,11 @@ export const UPGRADE_COPY: Record<Lang, UpgradeCopy> = {
     featureCustomQrText:     "Vlastiti tekst na QR kartici",
     featurePhotoWall:        "Foto zid za TV / projektor",
     featurePrioritySupport:  "Prioritetna podrška",
+    standsTitle:    "Tiskani QR stalci za stolove",
+    standsDesc:     "Tiskamo i dostavljamo komplet elegantnih stalaka s vašim QR kodom — spremni za stolove.",
+    standsCountry:  "Država dostave",
+    standsShipping: "Poštarina",
+    standsTotal:    "Ukupno",
   },
   sr: {
     back: "Nazad",
@@ -349,6 +366,11 @@ export const UPGRADE_COPY: Record<Lang, UpgradeCopy> = {
     featureCustomQrText:     "Sopstveni tekst na QR kartici",
     featurePhotoWall:        "Foto zid za TV / projektor",
     featurePrioritySupport:  "Prioritetna podrška",
+    standsTitle:    "Štampani QR stalci za stolove",
+    standsDesc:     "Štampamo i dostavljamo komplet elegantnih stalaka sa vašim QR kodom — spremni za stolove.",
+    standsCountry:  "Država dostave",
+    standsShipping: "Poštarina",
+    standsTotal:    "Ukupno",
   },
   en: {
     back: "Back",
@@ -426,6 +448,11 @@ export const UPGRADE_COPY: Record<Lang, UpgradeCopy> = {
     featureCustomQrText:     "Custom text on the QR card",
     featurePhotoWall:        "Photo Wall for TV / projector",
     featurePrioritySupport:  "Priority support",
+    standsTitle:    "Printed QR table stands",
+    standsDesc:     "We print and ship a set of elegant stands with your QR code — ready for the tables.",
+    standsCountry:  "Delivery country",
+    standsShipping: "Shipping",
+    standsTotal:    "Total",
   },
   de: {
     back: "Zurück",
@@ -503,6 +530,11 @@ export const UPGRADE_COPY: Record<Lang, UpgradeCopy> = {
     featureCustomQrText:     "Eigener Text auf der QR-Karte",
     featurePhotoWall:        "Foto-Wall für TV / Beamer",
     featurePrioritySupport:  "Prioritäts-Support",
+    standsTitle:    "Gedruckte QR-Tischaufsteller",
+    standsDesc:     "Wir drucken und liefern ein Set eleganter Aufsteller mit Ihrem QR-Code — fertig für die Tische.",
+    standsCountry:  "Lieferland",
+    standsShipping: "Versand",
+    standsTotal:    "Gesamt",
   },
   es: {
     back: "Atrás",
@@ -580,6 +612,11 @@ export const UPGRADE_COPY: Record<Lang, UpgradeCopy> = {
     featureCustomQrText:     "Texto propio en la tarjeta QR",
     featurePhotoWall:        "Muro de fotos para TV / proyector",
     featurePrioritySupport:  "Soporte prioritario",
+    standsTitle:    "Soportes de mesa QR impresos",
+    standsDesc:     "Imprimimos y enviamos un juego de soportes elegantes con tu código QR — listos para las mesas.",
+    standsCountry:  "País de entrega",
+    standsShipping: "Envío",
+    standsTotal:    "Total",
   },
 };
 

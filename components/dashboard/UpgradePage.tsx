@@ -9,6 +9,7 @@ import { fbEvent } from "@/lib/fbpixel";
 import type { Album } from "@/lib/db/schema";
 import { translations, type Lang } from "@/lib/i18n/translations";
 import { UPGRADE_COPY, PLAN_FEATURE_KEYS } from "@/lib/i18n/upgrade-translations";
+import { TABLE_STANDS_CENTS, SHIPPING_COUNTRIES, quoteShipping, eur } from "@/lib/print-service";
 
 type PlanId = "free" | "basic" | "plus" | "premium";
 
@@ -59,6 +60,14 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
   const [companyInvoice, setCompanyInvoice] = useState(false);
   const [termsAccepted, setTermsAccepted] = useState(false);
 
+  // ── Printed QR table stands (physical add-on) ───────────────────────
+  // Priced again server-side from the country; what we show here is only
+  // a preview of that number so the customer sees the real total first.
+  const [wantStands, setWantStands] = useState(false);
+  const [shipCountry, setShipCountry] = useState("SI");
+  const shipQuote = quoteShipping(shipCountry);
+  const standsCents = wantStands ? TABLE_STANDS_CENTS + (shipQuote?.cents ?? 0) : 0;
+
   // Discount code state
   const [discountInput, setDiscountInput] = useState("");
   const [discountStatus, setDiscountStatus] = useState<"idle" | "checking" | "valid" | "invalid">("idle");
@@ -81,6 +90,10 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
   const discountedPrice = discountStatus === "valid"
     ? Math.round(chosen.price * (1 - discountPercent / 100))
     : chosen.price;
+  /** What the customer is actually charged: plan (post-discount) plus the
+   *  physical add-on. Discounts apply to the PLAN only — never to
+   *  shipping or printed goods, which are at cost. */
+  const grandTotalCents = discountedPrice * 100 + standsCents;
 
   async function applyDiscount() {
     if (!discountInput.trim()) return;
@@ -485,6 +498,60 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
             </div>
           )}
 
+          {/* ── Printed QR table stands (physical add-on) ──────────────── */}
+          {!invoiceDone && (
+            <div
+              className="rounded-2xl border-2 bg-white p-5 mb-4 transition-all"
+              style={{
+                borderColor: wantStands ? "#FFC94D" : "#e5e7eb",
+                boxShadow: wantStands ? "0 0 0 3px rgba(255,201,77,0.15)" : "none",
+              }}
+            >
+              <label className="flex items-start gap-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={wantStands}
+                  onChange={(e) => setWantStands(e.target.checked)}
+                  className="mt-1 w-5 h-5 shrink-0 accent-[#FFC94D]"
+                />
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-start justify-between gap-3">
+                    <p className="font-semibold text-gray-900">
+                      🖨 {u.standsTitle}
+                    </p>
+                    <span className="text-sm font-bold text-gray-900 whitespace-nowrap">
+                      {eur(TABLE_STANDS_CENTS)}
+                    </span>
+                  </div>
+                  <p className="text-xs text-gray-500 mt-1">{u.standsDesc}</p>
+                </div>
+              </label>
+
+              {wantStands && (
+                <div className="mt-4 pt-4 border-t border-gray-100">
+                  <label className="block text-xs font-semibold text-gray-600 mb-1.5">
+                    {u.standsCountry}
+                  </label>
+                  <select
+                    value={shipCountry}
+                    onChange={(e) => setShipCountry(e.target.value)}
+                    className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm text-gray-800 bg-white outline-none focus:border-[#FFC94D]"
+                  >
+                    {SHIPPING_COUNTRIES.map((c) => (
+                      <option key={c.code} value={c.code}>{c.name}</option>
+                    ))}
+                  </select>
+                  {shipQuote && (
+                    <p className="text-xs text-gray-500 mt-2 flex items-center justify-between gap-3">
+                      <span>{u.standsShipping} · {shipQuote.carrier}</span>
+                      <span className="font-semibold text-gray-700">{eur(shipQuote.cents)}</span>
+                    </p>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+
           {/* ── Order summary + CTA ───────────────────────────────────── */}
           <div className="bg-white rounded-2xl border border-gray-100 p-5 mb-4">
             <div className="flex items-center justify-between mb-3 pb-3 border-b border-gray-100">
@@ -502,6 +569,23 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
                 )}
               </div>
             </div>
+            {/* Physical add-on lines — only when it's actually in the order */}
+            {wantStands && shipQuote && (
+              <div className="space-y-1.5 mb-3 pb-3 border-b border-gray-100">
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-gray-600">🖨 {u.standsTitle}</span>
+                  <span className="text-gray-800">{eur(TABLE_STANDS_CENTS)}</span>
+                </div>
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-gray-600">{u.standsShipping} · {shipQuote.carrier}</span>
+                  <span className="text-gray-800">{eur(shipQuote.cents)}</span>
+                </div>
+                <div className="flex items-center justify-between pt-2">
+                  <span className="font-semibold text-gray-900">{u.standsTotal}</span>
+                  <span className="text-xl font-bold text-gray-900">{eur(grandTotalCents)}</span>
+                </div>
+              </div>
+            )}
             <div className="flex items-center justify-between text-xs text-gray-400 mb-4">
               <span>{u.vatIncluded}</span>
               <span>{u.onetimePayment}</span>
@@ -562,8 +646,10 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
                         body: JSON.stringify({
                           planId: selectedPlan,
                           albumSlug: album.slug,
+                          tableStands: wantStands,
                           discountCode: discountStatus === "valid" ? appliedCode : undefined,
                           billing: {
+                            country: shipCountry,
                             name: billing.name.trim(),
                             companyName: billing.companyName.trim() || undefined,
                             email: billing.email.trim(),
@@ -591,7 +677,7 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
                       // actually be charged (incl. discount). Consent-
                       // gated like all fbq calls (no-op pre-consent).
                       fbEvent("InitiateCheckout", {
-                        value: discountedPrice,
+                        value: grandTotalCents / 100,
                         currency: "EUR",
                         content_name: chosen.name,
                       });
@@ -601,8 +687,10 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
                         body: JSON.stringify({
                           planId: selectedPlan,
                           albumSlug: album.slug,
+                          tableStands: wantStands,
                           discountCode: discountStatus === "valid" ? appliedCode : undefined,
                           billing: {
+                            country:     shipCountry,
                             name:        billing.name.trim(),
                             companyName: billing.companyName.trim() || undefined,
                             email:       billing.email.trim() || undefined,

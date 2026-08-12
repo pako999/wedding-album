@@ -53,9 +53,14 @@ interface Props {
   toast: string;
   /** Optional secondary action (demo button), rendered beside the CTA. */
   demoSlot?: ReactNode;
+  /** Printed-stands offer. Sits BELOW the reassurance note rather than
+   *  above the CTA: it's an add-on, and pushing it between the headline
+   *  and the button would put a paid upsell in front of the free
+   *  sign-up the whole hero is built to win. */
+  printOffer?: ReactNode;
 }
 
-export function DarkStageHero({ eyebrow, headLead, headAccent, headTrail, lead, ctaHref, ctaLabel, note, toast, demoSlot }: Props) {
+export function DarkStageHero({ eyebrow, headLead, headAccent, headTrail, lead, ctaHref, ctaLabel, note, toast, demoSlot, printOffer }: Props) {
   return (
     <div
       className="relative overflow-hidden"
@@ -161,6 +166,8 @@ export function DarkStageHero({ eyebrow, headLead, headAccent, headTrail, lead, 
           </svg>
           {note}
         </p>
+
+        {printOffer ? <div className="mt-6 flex justify-center">{printOffer}</div> : null}
       </div>
     </div>
   );
