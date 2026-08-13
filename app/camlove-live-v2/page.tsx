@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import CamLoveFixedPage from "../camlove-fixed/page";
 
-const businessImage = "https://raw.githubusercontent.com/pako999/wedding-album/main/2.1.organizacija-dogodkov-dogodkey%20%281%29.jpg";
+const businessImage = "/events/organizacija-dogodkov-dogodek.webp";
 
 type Plan = {
   name: string;
@@ -49,8 +49,8 @@ export default function CamLoveLiveV2Page() {
 
       <section id="business" className="bg-[#171717] py-24 text-white">
         <div className="mx-auto grid max-w-[1320px] gap-12 px-5 sm:px-8 lg:grid-cols-2 lg:items-center">
-          <div className="min-h-[560px] overflow-hidden rounded-[30px] bg-black">
-            <img src={businessImage} alt="Poslovni dogodek" loading="lazy" decoding="async" className="h-[560px] w-full object-cover" />
+          <div className="relative min-h-[560px] overflow-hidden rounded-[30px] bg-black">
+            <Image src={businessImage} alt="Poslovni dogodek" fill sizes="50vw" className="object-cover" />
           </div>
           <div>
             <span className="rounded-full bg-[#F4B400] px-4 py-2 text-xs font-black uppercase tracking-[.15em] text-black">CamLove za podjetja</span>
