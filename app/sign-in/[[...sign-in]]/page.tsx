@@ -8,7 +8,7 @@ export default function SignInPage() {
         {/* Brand header */}
         <div className="text-center mb-8 flex flex-col items-center gap-2">
           <CamLoveLogo size="md" showMark={true} />
-          <p className="text-sm text-gray-400">Prijavite se za dostop do vaših albumov</p>
+          <p className="text-sm text-gray-600">Prijavite se za dostop do vaših albumov</p>
         </div>
         <SignIn
           fallbackRedirectUrl="/dashboard"
@@ -16,10 +16,10 @@ export default function SignInPage() {
           appearance={{
             elements: {
               rootBox: "w-full",
-              card: "shadow-md rounded-2xl border border-[#946D00]/15 bg-white",
+              card: "shadow-md rounded-2xl border border-[#8F6900]/15 bg-white",
               headerTitle: "font-serif text-[#111111]",
-              formButtonPrimary: "bg-[#111111] hover:bg-[#946D00] transition-colors rounded-xl",
-              footerActionLink: "text-[#946D00] hover:text-[#152C66]",
+              formButtonPrimary: "bg-[#111111] hover:bg-[#8F6900] transition-colors rounded-xl",
+              footerActionLink: "text-[#8F6900] hover:text-[#152C66]",
             },
           }}
         />

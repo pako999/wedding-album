@@ -52,7 +52,7 @@ export function DashboardClient({ affiliate, commissions, analytics }: Props) {
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="mb-6">
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#946D00] mb-1.5">
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#8F6900] mb-1.5">
             🤝 Partnerski program
           </p>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-[#111111]">

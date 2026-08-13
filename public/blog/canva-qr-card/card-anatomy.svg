@@ -13,7 +13,7 @@
   <!-- Names line -->
   <rect x="454" y="152" width="260" height="26" rx="8" fill="#111111" />
   <!-- Date line -->
-  <rect x="524" y="192" width="120" height="14" rx="6" fill="#946D00" opacity="0.7" />
+  <rect x="524" y="192" width="120" height="14" rx="6" fill="#8F6900" opacity="0.7" />
 
   <!-- QR code placeholder -->
   <g>

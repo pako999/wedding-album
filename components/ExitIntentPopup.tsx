@@ -161,7 +161,7 @@ export function ExitIntentPopup({ lang }: { lang: LangCode }) {
 
         <div className="px-8 pt-6 pb-8">
           {/* Eyebrow */}
-          <span className="inline-block text-xs font-bold uppercase tracking-widest text-[#946D00] mb-3">
+          <span className="inline-block text-xs font-bold uppercase tracking-widest text-[#8F6900] mb-3">
             {t.eyebrow}
           </span>
 
@@ -188,7 +188,7 @@ export function ExitIntentPopup({ lang }: { lang: LangCode }) {
               <span className="font-mono text-xl font-extrabold tracking-widest text-[#111111]">
                 {DISCOUNT_CODE}
               </span>
-              <span className="text-xs font-semibold text-[#946D00] group-hover:text-[#111111] transition-colors shrink-0">
+              <span className="text-xs font-semibold text-[#8F6900] group-hover:text-[#111111] transition-colors shrink-0">
                 {copied ? t.copied : "Copy"}
               </span>
             </button>

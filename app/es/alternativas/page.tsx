@@ -75,7 +75,7 @@ function SiteFooter() {
 
 function Check() {
   return (
-    <svg className="w-5 h-5 mx-auto text-[#946D00]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+    <svg className="w-5 h-5 mx-auto text-[#8F6900]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
       <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
     </svg>
   );
@@ -107,7 +107,7 @@ export default function AlternativasPage() {
       <main className="max-w-4xl mx-auto px-6 py-16">
         {/* Hero */}
         <div className="mb-12">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold mb-5 uppercase tracking-widest bg-[#FFECB8] text-[#946D00]">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold mb-5 uppercase tracking-widest bg-[#FFECB8] text-[#8F6900]">
             Comparativa · España · 2025
           </div>
           <h1 className="font-serif text-4xl md:text-5xl font-bold text-[#111111] leading-tight mb-5">
@@ -123,13 +123,13 @@ export default function AlternativasPage() {
           </p>
           <div className="flex flex-wrap gap-4 text-sm text-gray-500">
             <span className="flex items-center gap-1.5">
-              <svg className="w-4 h-4 text-[#946D00]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+              <svg className="w-4 h-4 text-[#8F6900]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
               Tiempo de lectura: ~8 minutos
             </span>
             <span className="flex items-center gap-1.5">
-              <svg className="w-4 h-4 text-[#946D00]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+              <svg className="w-4 h-4 text-[#8F6900]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75M16.5 6.108c1.131.094 1.976 1.057 1.976 2.192V18A2.25 2.25 0 0116.226 20.25H7.5A2.25 2.25 0 015.25 18V8.3c0-1.135.844-2.098 1.976-2.192" />
               </svg>
               Actualizado: enero 2025
@@ -158,7 +158,7 @@ export default function AlternativasPage() {
             ].map(({ title, desc }) => (
               <div key={title} className="bg-white border border-gray-100 rounded-2xl p-4 shadow-sm flex gap-3">
                 <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 bg-[#FFECB8]">
-                  <svg className="w-4 h-4 text-[#946D00]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                  <svg className="w-4 h-4 text-[#8F6900]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                   </svg>
                 </div>
@@ -228,7 +228,7 @@ export default function AlternativasPage() {
           <div className="bg-white rounded-3xl border-2 p-7 shadow-sm border-[#F4B400]">
             <div className="flex items-start justify-between gap-4 mb-4">
               <div>
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold mb-2 bg-[#FFECB8] text-[#946D00]">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold mb-2 bg-[#FFECB8] text-[#8F6900]">
                   Nuestra recomendación
                 </div>
                 <h3 className="font-serif text-2xl font-bold text-[#111111]">CamLove</h3>
@@ -259,7 +259,7 @@ export default function AlternativasPage() {
                     "Descarga de todas las fotos en ZIP con un clic",
                   ].map((item) => (
                     <li key={item} className="flex gap-2">
-                      <svg className="w-3.5 h-3.5 mt-0.5 shrink-0 text-[#946D00]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+                      <svg className="w-3.5 h-3.5 mt-0.5 shrink-0 text-[#8F6900]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                       </svg>
                       {item}
@@ -323,7 +323,7 @@ export default function AlternativasPage() {
                     "Capa gratuita generosa",
                   ].map((item) => (
                     <li key={item} className="flex gap-2">
-                      <svg className="w-3.5 h-3.5 mt-0.5 shrink-0 text-[#946D00]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+                      <svg className="w-3.5 h-3.5 mt-0.5 shrink-0 text-[#8F6900]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                       </svg>
                       {item}
@@ -390,7 +390,7 @@ export default function AlternativasPage() {
                     "Notificaciones en tiempo real",
                   ].map((item) => (
                     <li key={item} className="flex gap-2">
-                      <svg className="w-3.5 h-3.5 mt-0.5 shrink-0 text-[#946D00]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+                      <svg className="w-3.5 h-3.5 mt-0.5 shrink-0 text-[#8F6900]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                       </svg>
                       {item}
@@ -458,7 +458,7 @@ export default function AlternativasPage() {
                     "Funciona en todos los dispositivos",
                   ].map((item) => (
                     <li key={item} className="flex gap-2">
-                      <svg className="w-3.5 h-3.5 mt-0.5 shrink-0 text-[#946D00]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+                      <svg className="w-3.5 h-3.5 mt-0.5 shrink-0 text-[#8F6900]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                       </svg>
                       {item}

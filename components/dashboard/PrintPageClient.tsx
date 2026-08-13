@@ -88,9 +88,9 @@ function getColors(style: TemplateInfo["style"]) {
     case "dark":    return { bg: "#1C1917", text: "#F5F0EB", accent: "#D4A574", sub: "rgba(245,240,235,0.55)", border: "none", divider: "#D4A574" };
     case "cream":   return { bg: "#FEFBF3", text: "#111111", accent: "#8B6914", sub: "#9CA3AF", border: "1.5px solid rgba(139,105,20,0.25)", divider: "#C4A55A" };
     case "kraft":   return { bg: "#F0E8D8", text: "#3D2B1F", accent: "#8B5E3C", sub: "rgba(61,43,31,0.55)", border: "1.5px solid rgba(139,94,60,0.3)", divider: "#A0724A" };
-    case "blush":   return { bg: "#FDF0F3", text: "#111111", accent: "#946D00", sub: "#9CA3AF", border: "1.5px solid rgba(255,201,77,0.3)", divider: "#946D00" };
+    case "blush":   return { bg: "#FDF0F3", text: "#111111", accent: "#8F6900", sub: "#9CA3AF", border: "1.5px solid rgba(255,201,77,0.3)", divider: "#8F6900" };
     case "minimal": return { bg: "#FFFFFF", text: "#111111", accent: "#555555", sub: "#888888", border: "1px solid #E5E5E5", divider: "#CCCCCC" };
-    default:        return { bg: "#FFFFFF", text: "#111111", accent: "#946D00", sub: "#9CA3AF", border: "1.5px solid rgba(255,201,77,0.2)", divider: "#946D00" };
+    default:        return { bg: "#FFFFFF", text: "#111111", accent: "#8F6900", sub: "#9CA3AF", border: "1.5px solid rgba(255,201,77,0.2)", divider: "#8F6900" };
   }
 }
 
@@ -389,7 +389,7 @@ export function PrintPageClient({ slug, coupleName, weddingDate, location, qrUrl
                       onChange={(e) => setCustomHeadline(e.target.value)}
                       placeholder={selected.headline}
                       maxLength={200}
-                      className="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm text-[#111111] outline-none transition-colors focus:border-[#946D00]"
+                      className="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm text-[#111111] outline-none transition-colors focus:border-[#8F6900]"
                     />
                   </div>
                   <div>
@@ -399,7 +399,7 @@ export function PrintPageClient({ slug, coupleName, weddingDate, location, qrUrl
                       onChange={(e) => setCustomSubtitle(e.target.value)}
                       placeholder={selected.sub}
                       maxLength={200}
-                      className="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm text-[#111111] outline-none transition-colors focus:border-[#946D00]"
+                      className="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm text-[#111111] outline-none transition-colors focus:border-[#8F6900]"
                     />
                   </div>
                   <div>
@@ -409,7 +409,7 @@ export function PrintPageClient({ slug, coupleName, weddingDate, location, qrUrl
                       onChange={(e) => setCustomCta(e.target.value)}
                       placeholder={selected.cta}
                       maxLength={200}
-                      className="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm text-[#111111] outline-none transition-colors focus:border-[#946D00]"
+                      className="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm text-[#111111] outline-none transition-colors focus:border-[#8F6900]"
                     />
                   </div>
                 </div>
@@ -425,7 +425,7 @@ export function PrintPageClient({ slug, coupleName, weddingDate, location, qrUrl
             ) : (
               <div className="mt-6 bg-white rounded-2xl p-4 border border-gray-200">
                 <div className="flex items-center gap-1.5 mb-1">
-                  <svg className="w-3.5 h-3.5 text-[#946D00]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                  <svg className="w-3.5 h-3.5 text-[#8F6900]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
                   </svg>
                   <p className="text-xs font-bold text-[#111111]">Lasten napis na kartici</p>

@@ -83,7 +83,7 @@ export function EventAppearanceCard({ albumSlug, coupleName }: { albumSlug: stri
         // eslint-disable-next-line @next/next/no-img-element
         ? <img src={current} alt="" className="w-12 h-12 rounded-lg object-cover border border-gray-200" />
         : <span className="w-12 h-12 rounded-lg border border-dashed border-gray-300 flex items-center justify-center text-gray-300 text-xl">+</span>}
-      <span className="text-xs font-semibold text-[#946D00] underline underline-offset-2">{label}</span>
+      <span className="text-xs font-semibold text-[#8F6900] underline underline-offset-2">{label}</span>
       <input type="file" accept="image/jpeg,image/png,image/webp" className="hidden"
         onChange={(e) => { const f = e.target.files?.[0]; if (f) void upload(kind, f); e.target.value = ""; }} />
     </label>

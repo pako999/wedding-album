@@ -63,7 +63,7 @@ export function ReferralLinkCard({ affiliateId, referralCode, status, approvedAt
       </p>
 
       {resendMsg && (
-        <p className="text-xs text-[#946D00] mb-3">{resendMsg}</p>
+        <p className="text-xs text-[#8F6900] mb-3">{resendMsg}</p>
       )}
 
       {/* Clean share link — what partner posts on Instagram bio etc. */}
@@ -75,7 +75,7 @@ export function ReferralLinkCard({ affiliateId, referralCode, status, approvedAt
           <code className="flex-1 font-mono text-xs text-[#1E3A8A] truncate">{cleanShareLink}</code>
           <button
             onClick={() => copy(cleanShareLink, "clean")}
-            className="shrink-0 text-xs font-semibold text-[#946D00] hover:text-[#111111] transition-colors"
+            className="shrink-0 text-xs font-semibold text-[#8F6900] hover:text-[#111111] transition-colors"
           >
             {copiedKey === "clean" ? "✓" : "Kopiraj"}
           </button>
@@ -91,7 +91,7 @@ export function ReferralLinkCard({ affiliateId, referralCode, status, approvedAt
           <code className="flex-1 font-mono text-xs text-[#1E3A8A] truncate">{referralLink}</code>
           <button
             onClick={() => copy(referralLink, "full")}
-            className="shrink-0 text-xs font-semibold text-[#946D00] hover:text-[#111111] transition-colors"
+            className="shrink-0 text-xs font-semibold text-[#8F6900] hover:text-[#111111] transition-colors"
           >
             {copiedKey === "full" ? "✓" : "Kopiraj"}
           </button>

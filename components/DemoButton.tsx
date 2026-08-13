@@ -53,7 +53,7 @@ export function DemoButton({ variant = "hero" }: { variant?: "hero" | "nav" | "h
           className="inline-flex items-center gap-2.5 px-8 py-5 rounded-full font-bold text-lg border-2 transition-all duration-200 hover:scale-[1.02]"
           style={{ borderColor: "#F4B400", color: "#111111" }}
         >
-          <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor" style={{ color: "#946D00" }}>
+          <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor" style={{ color: "#8F6900" }}>
             <path d="M8 5v14l11-7z" />
           </svg>
           Poglej demo zdaj
@@ -126,7 +126,7 @@ export function DemoButton({ variant = "hero" }: { variant?: "hero" | "nav" | "h
                 <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
               </svg>
             </a>
-            <p className="mt-4 text-sm font-bold uppercase tracking-wide text-[#946D00]">
+            <p className="mt-4 text-sm font-bold uppercase tracking-wide text-[#8F6900]">
               Brez prijave · Brez aplikacije
             </p>
           </div>

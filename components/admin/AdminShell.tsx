@@ -93,7 +93,7 @@ export function AdminShell({ nav, adminEmail, children }: Props & { children: Re
             ×
           </button>
         </div>
-        <p className="px-5 pt-3 text-[10px] uppercase tracking-widest font-semibold text-[#946D00]">
+        <p className="px-5 pt-3 text-[10px] uppercase tracking-widest font-semibold text-[#8F6900]">
           Platform Admin
         </p>
 

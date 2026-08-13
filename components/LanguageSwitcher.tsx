@@ -103,7 +103,7 @@ export function LanguageSwitcher({ current, languages, ariaLabel }: Props) {
                 <span>{LANG_META[lang].label}</span>
                 {isCurrent && (
                   <svg
-                    className="w-3.5 h-3.5 ml-auto text-[#946D00]"
+                    className="w-3.5 h-3.5 ml-auto text-[#8F6900]"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"

@@ -265,7 +265,7 @@ export function ContactPage({ lang }: { lang: LangCode }) {
         <section className="bg-gradient-to-b from-[#FFF9E8] to-white py-20 sm:py-24">
           <div className="max-w-3xl mx-auto px-6 text-center">
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold mb-5 uppercase tracking-widest"
-              style={{ background: "rgba(255,201,77,0.18)", color: "#946D00" }}>
+              style={{ background: "rgba(255,201,77,0.18)", color: "#8F6900" }}>
               {t.eyebrow}
             </div>
             <h1 className="font-serif text-4xl sm:text-5xl font-extrabold text-[#111111] mb-5 leading-tight">
@@ -287,7 +287,7 @@ export function ContactPage({ lang }: { lang: LangCode }) {
                 <div className="text-3xl mb-3">{c.icon}</div>
                 <h3 className="font-bold text-[#111111] text-base mb-1">{c.title}</h3>
                 <p className="text-xs text-gray-500 mb-4">{c.desc}</p>
-                <p className="text-sm font-semibold text-[#946D00] group-hover:underline break-all">{c.value}</p>
+                <p className="text-sm font-semibold text-[#8F6900] group-hover:underline break-all">{c.value}</p>
               </a>
             ))}
           </div>
@@ -325,7 +325,7 @@ export function ContactPage({ lang }: { lang: LangCode }) {
                 <details key={f.q} className="group rounded-xl border border-gray-200 p-4 open:border-[#F4B400]/60 open:bg-[#FFF9E8]/40">
                   <summary className="font-semibold text-[#111111] cursor-pointer list-none flex items-center justify-between gap-3">
                     <span>{f.q}</span>
-                    <span className="text-[#946D00] transition-transform group-open:rotate-45">+</span>
+                    <span className="text-[#8F6900] transition-transform group-open:rotate-45">+</span>
                   </summary>
                   <p className="text-sm text-gray-600 mt-2.5 leading-relaxed">{f.a}</p>
                 </details>

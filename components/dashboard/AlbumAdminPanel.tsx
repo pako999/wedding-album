@@ -103,7 +103,7 @@ function driveBannerCopy(result: string, count?: string): { tone: "success" | "w
 
 const DRIVE_BANNER_STYLES: Record<"success" | "warning" | "neutral" | "error", { bg: string; border: string; text: string; icon: string }> = {
   success: { bg: "#f0fdf4", border: "#86efac", text: "#15803d", icon: "✅" },
-  warning: { bg: "#FFF9E8", border: "#F4B400", text: "#946D00", icon: "⚠️" },
+  warning: { bg: "#FFF9E8", border: "#F4B400", text: "#8F6900", icon: "⚠️" },
   neutral: { bg: "#F9FAFB", border: "#E5E7EB", text: "#4B5563", icon: "ℹ️" },
   error:   { bg: "#FEF2F2", border: "#FCA5A5", text: "#B91C1C", icon: "⚠️" },
 };
@@ -246,7 +246,7 @@ function NewAlbumSuccess({ album, paidPlan }: { album: Album; paidPlan?: "basic"
         {step === 3 && (
           <div className="text-center">
             <div className="flex items-center justify-center w-16 h-16 rounded-2xl bg-[#FFF9E8] mx-auto mb-4">
-              <svg className="w-8 h-8 text-[#946D00]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.8}>
+              <svg className="w-8 h-8 text-[#8F6900]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.8}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6.72 13.829c-.24.03-.48.062-.72.096m.72-.096a42.415 42.415 0 0110.56 0m-10.56 0L6.34 18m10.94-4.171c.24.03.48.062.72.096m-.72-.096L17.66 18m0 0l.229 2.523a1.125 1.125 0 01-1.12 1.227H7.231c-.662 0-1.18-.568-1.12-1.227L6.34 18m11.318 0h1.091A2.25 2.25 0 0021 15.75V9.456c0-1.081-.768-2.015-1.837-2.175a48.055 48.055 0 00-1.913-.247M6.34 18H5.25A2.25 2.25 0 013 15.75V9.456c0-1.081.768-2.015 1.837-2.175a48.041 48.041 0 011.913-.247m10.5 0a48.536 48.536 0 00-10.5 0m10.5 0V3.375c0-.621-.504-1.125-1.125-1.125h-8.25c-.621 0-1.125.504-1.125 1.125v3.659M18 10.5h.008v.008H18V10.5zm-3 0h.008v.008H15V10.5z" />
               </svg>
             </div>
@@ -539,7 +539,7 @@ export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activ
                 onClick={() => navigateTab(item.id)}
                 className={`w-full flex items-center gap-2.5 px-4 py-2.5 rounded-lg mx-0 text-sm font-medium transition-colors text-left ${
                   isActive
-                    ? "border-l-2 border-[#F4B400] bg-[#FFF9E8] text-[#946D00]"
+                    ? "border-l-2 border-[#F4B400] bg-[#FFF9E8] text-[#8F6900]"
                     : "text-gray-600 hover:bg-gray-50 hover:text-gray-800"
                 }`}
               >
@@ -553,7 +553,7 @@ export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activ
               onClick={() => navigateTab("pending")}
               className={`w-full flex items-center gap-2.5 px-4 py-2.5 rounded-lg text-sm font-medium transition-colors text-left ${
                 activeTab === "pending"
-                  ? "border-l-2 border-[#F4B400] bg-[#FFF9E8] text-[#946D00]"
+                  ? "border-l-2 border-[#F4B400] bg-[#FFF9E8] text-[#8F6900]"
                   : "text-gray-600 hover:bg-gray-50 hover:text-gray-800"
               }`}
             >
@@ -922,7 +922,7 @@ function OverviewTab({
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-1">
               <span className="text-sm font-bold text-indigo-800">📦 Brezplačni paket</span>
-              <span className="text-xs bg-[#FFECB8] text-[#946D00] px-2 py-0.5 rounded-full font-medium">
+              <span className="text-xs bg-[#FFECB8] text-[#8F6900] px-2 py-0.5 rounded-full font-medium">
                 {album.photoCount ?? 0} / {album.maxPhotos ?? 20} slik
               </span>
             </div>
@@ -935,7 +935,7 @@ function OverviewTab({
                 }}
               />
             </div>
-            <p className="text-xs text-[#946D00]">
+            <p className="text-xs text-[#8F6900]">
               {usedPct >= 100
                 ? "⚠️ Meja dosežena — nadgradi za neomejeno nalaganje"
                 : `Nadgradi za neomejene fotografije, videe in dostop 1 leto`}
@@ -991,7 +991,7 @@ function OverviewTab({
               <p className="text-3xl font-bold text-gray-900">{card.value}</p>
               <p className="text-xs font-medium uppercase tracking-wide text-gray-400 mt-1">{card.label}</p>
             </div>
-            <div className="w-9 h-9 rounded-lg flex items-center justify-center text-[#946D00] bg-[#FFF9E8] shrink-0">
+            <div className="w-9 h-9 rounded-lg flex items-center justify-center text-[#8F6900] bg-[#FFF9E8] shrink-0">
               {card.icon}
             </div>
           </div>
@@ -1012,7 +1012,7 @@ function OverviewTab({
             href={albumUrl}
             target="_blank"
             rel="noreferrer"
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs text-[#946D00] border border-[#FFE08A] rounded-lg hover:bg-[#FFF9E8] transition-colors self-start"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs text-[#8F6900] border border-[#FFE08A] rounded-lg hover:bg-[#FFF9E8] transition-colors self-start"
           >
             Skeniraj to QR kodo in preizkusi, kako deluje
           </a>
@@ -1063,7 +1063,7 @@ function OverviewTab({
                 Natisnemo in dostavimo QR podstavke za mize (tisk na 200 g papir) — že od {eur(Math.min(...STAND_VARIANTS.map((v) => v.unitCents)))} na kos, samo ob nakupu paketa.
               </span>
             </span>
-            <svg className="w-4 h-4 text-[#946D00] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+            <svg className="w-4 h-4 text-[#8F6900] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
             </svg>
           </Link>
@@ -1098,7 +1098,7 @@ function OverviewTab({
         <div className="bg-white rounded-2xl border border-gray-100 p-5 flex flex-col gap-3">
           <div className="flex items-center justify-between">
             <h3 className="font-semibold text-gray-900 text-sm">Zadnje naloženo</h3>
-            <Link href={`/dashboard/${album.slug}?tab=gallery`} className="text-xs text-[#946D00] hover:underline">
+            <Link href={`/dashboard/${album.slug}?tab=gallery`} className="text-xs text-[#8F6900] hover:underline">
               Poglej vse
             </Link>
           </div>
@@ -1159,7 +1159,7 @@ function EventsTab({
             onClick={() => setSub(t.id)}
             className={`px-4 py-2.5 text-sm font-semibold whitespace-nowrap border-b-2 -mb-px transition-colors ${
               sub === t.id
-                ? "border-[#F4B400] text-[#946D00]"
+                ? "border-[#F4B400] text-[#8F6900]"
                 : "border-transparent text-gray-500 hover:text-gray-800"
             }`}
           >
@@ -1806,7 +1806,7 @@ function AlbumSettingsForm({ album, children, wallToken, hasPassword }: { album:
                     </span>
                   )}
                 </span>
-                <span className={`text-[11px] text-center leading-tight ${selected ? "font-semibold text-[#946D00]" : "text-gray-600"}`}>
+                <span className={`text-[11px] text-center leading-tight ${selected ? "font-semibold text-[#8F6900]" : "text-gray-600"}`}>
                   {tm.name}
                 </span>
               </button>
@@ -1817,7 +1817,7 @@ function AlbumSettingsForm({ album, children, wallToken, hasPassword }: { album:
           // type instantly re-groups the themes.
           return recommended.length > 0 ? (
             <>
-              <p className="text-[11px] font-bold uppercase tracking-widest text-[#946D00] mb-2">
+              <p className="text-[11px] font-bold uppercase tracking-widest text-[#8F6900] mb-2">
                 ✨ Priporočene za vaš dogodek
               </p>
               <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5 mb-4">
@@ -2095,7 +2095,7 @@ interface DomainStatus {
   verification: DnsRecord[];
 }
 
-const ACCENT = "#946D00"; // black-blue accent
+const ACCENT = "#8F6900"; // black-blue accent
 
 function CustomDomainPanel({ album }: { album: Album }) {
   const isPremium = album.plan === "premium";

@@ -168,7 +168,7 @@ export function SeoFooter({ lang }: { lang: Lang }) {
 
           {/* Product */}
           <div>
-            <h3 className="text-xs font-bold uppercase tracking-widest text-gray-500 mb-4">{t.product}</h3>
+            <h3 className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4">{t.product}</h3>
             <ul className="space-y-2.5 text-sm text-gray-400">
               <li><a href={`${home}#how`} className="hover:text-white transition-colors">{t.howWorks}</a></li>
               <li><a href={`${home}#features`} className="hover:text-white transition-colors">{t.features}</a></li>
@@ -183,7 +183,7 @@ export function SeoFooter({ lang }: { lang: Lang }) {
           {/* Guides — only this language's guide + alternatives, so every label
               matches the page's language. */}
           <div>
-            <h3 className="text-xs font-bold uppercase tracking-widest text-gray-500 mb-4">{t.guides}</h3>
+            <h3 className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4">{t.guides}</h3>
             <ul className="space-y-2.5 text-sm text-gray-400">
               <li><Link href={t.guideUrl} className="hover:text-white transition-colors">{t.guideLabel}</Link></li>
               <li><Link href={t.altUrl} className="hover:text-white transition-colors">{t.altLabel}</Link></li>
@@ -197,7 +197,7 @@ export function SeoFooter({ lang }: { lang: Lang }) {
 
           {/* Legal */}
           <div>
-            <h3 className="text-xs font-bold uppercase tracking-widest text-gray-500 mb-4">{t.legal}</h3>
+            <h3 className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4">{t.legal}</h3>
             <ul className="space-y-2.5 text-sm text-gray-400">
               <li><Link href={lang === "sl" ? "/privacy" : `/${lang}/privacy`} className="hover:text-white transition-colors">{t.privacy}</Link></li>
               <li><Link href={lang === "sl" ? "/terms"   : `/${lang}/terms`}   className="hover:text-white transition-colors">{t.terms}</Link></li>
@@ -211,7 +211,7 @@ export function SeoFooter({ lang }: { lang: Lang }) {
         </div>
 
         {/* Bottom bar */}
-        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-gray-500">
+        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-gray-400">
           <p>© 2026 Sport group d.o.o. · SI72133449</p>
           <div className="flex items-center gap-4">
             <p>

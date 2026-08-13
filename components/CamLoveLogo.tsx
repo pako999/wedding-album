@@ -36,7 +36,7 @@ export function CamLoveLogo({
   const colors =
     variant === "onDark"
       ? { primary: "#FFFFFF", accent: "#F4B400" }
-      : { primary: "#111111", accent: "#946D00" };
+      : { primary: "#111111", accent: "#8F6900" };
   return (
     <span className={`inline-flex items-center gap-2 select-none ${className}`}>
       {showMark && <CamLoveMark size={markSize} />}

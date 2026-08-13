@@ -149,7 +149,7 @@ export function EventTopicPage({ locale, topicKey }: Props) {
               <ul className="space-y-2 mb-4">
                 {s.bullets.map((b, k) => (
                   <li key={k} className="text-gray-600 leading-relaxed pl-5 relative">
-                    <span className="absolute left-0 top-1.5 w-1.5 h-1.5 rounded-full bg-[#946D00]" />
+                    <span className="absolute left-0 top-1.5 w-1.5 h-1.5 rounded-full bg-[#8F6900]" />
                     {b}
                   </li>
                 ))}

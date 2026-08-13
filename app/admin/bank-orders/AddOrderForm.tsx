@@ -72,7 +72,7 @@ export function AddOrderForm() {
           <div className="flex gap-2">
             <input
               name="albumSlug" required placeholder="ana-jt2k"
-              className="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#946D00]"
+              className="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#8F6900]"
               onBlur={(e) => lookupAlbum(e.target.value)}
             />
             <button
@@ -100,7 +100,7 @@ export function AddOrderForm() {
           <input
             name="email" type="email" required placeholder="stranka@email.com"
             value={email} onChange={(e) => setEmail(e.target.value)}
-            className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#946D00]"
+            className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#8F6900]"
           />
         </div>
 
@@ -109,7 +109,7 @@ export function AddOrderForm() {
           <label className="block text-xs font-medium text-gray-500 mb-1">Paket *</label>
           <select
             name="planId" required value={planId} onChange={(e) => setPlanId(e.target.value)}
-            className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#946D00]"
+            className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#8F6900]"
           >
             <option value="basic">Basic — 39€</option>
             <option value="plus">Plus — 49€</option>
@@ -120,35 +120,35 @@ export function AddOrderForm() {
         <div>
           <label className="block text-xs font-medium text-gray-500 mb-1">Ime in priimek</label>
           <input name="billingName" placeholder="Ana Novak"
-            className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#946D00]" />
+            className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#8F6900]" />
         </div>
         <div>
           <label className="block text-xs font-medium text-gray-500 mb-1">Naziv podjetja (neobvezno)</label>
           <input name="billingCompanyName" placeholder="d.o.o. / s.p."
-            className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#946D00]" />
+            className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#8F6900]" />
         </div>
         <div>
           <label className="block text-xs font-medium text-gray-500 mb-1">Email za račun</label>
           <input name="billingEmail" type="email" placeholder="racuni@podjetje.si"
-            className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#946D00]" />
+            className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#8F6900]" />
         </div>
 
         <div>
           <label className="block text-xs font-medium text-gray-500 mb-1">Ulica in hišna številka</label>
           <input name="billingAddress" placeholder="Dunajska cesta 1"
-            className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#946D00]" />
+            className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#8F6900]" />
         </div>
 
         <div>
           <label className="block text-xs font-medium text-gray-500 mb-1">Poštna številka in kraj</label>
           <input name="billingCity" placeholder="1000 Ljubljana"
-            className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#946D00]" />
+            className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#8F6900]" />
         </div>
 
         <div>
           <label className="block text-xs font-medium text-gray-500 mb-1">Davčna številka</label>
           <input name="billingTaxId" placeholder="SI12345678"
-            className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#946D00]" />
+            className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#8F6900]" />
         </div>
 
         <div className="col-span-2 flex gap-2 justify-end pt-1">
@@ -157,7 +157,7 @@ export function AddOrderForm() {
             Prekliči
           </button>
           <button type="submit" disabled={saving}
-            className="px-5 py-2 bg-[#946D00] text-white text-sm font-semibold rounded-lg hover:bg-[#b57008] disabled:opacity-50 transition-colors">
+            className="px-5 py-2 bg-[#8F6900] text-white text-sm font-semibold rounded-lg hover:bg-[#b57008] disabled:opacity-50 transition-colors">
             {saving ? "Shranjujem…" : "Shrani"}
           </button>
         </div>

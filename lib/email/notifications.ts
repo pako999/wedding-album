@@ -285,7 +285,7 @@ export async function sendUploadReminder({
         <tr>
           <td style="padding:20px 32px;border-top:1px solid rgba(201,169,110,0.2);text-align:center;">
             <p style="margin:0;font-size:11px;color:#111111;opacity:0.4;">
-              CamLove · <a href="${APP_URL}" style="color:#946D00;text-decoration:none;">camlove.me</a>
+              CamLove · <a href="${APP_URL}" style="color:#8F6900;text-decoration:none;">camlove.me</a>
             </p>
           </td>
         </tr>
@@ -367,7 +367,7 @@ export async function sendBankOrderConfirmation({
           ${billingHtml}
           <table width="100%" cellpadding="0" cellspacing="0" style="background:#FFF9E8;border-radius:12px;border:1px solid #F4B400;margin-bottom:28px;">
             <tr><td style="padding:20px 24px;">
-              <p style="margin:0 0 4px;font-size:11px;font-weight:700;letter-spacing:2px;color:#946D00;text-transform:uppercase;">Povzetek narocila</p>
+              <p style="margin:0 0 4px;font-size:11px;font-weight:700;letter-spacing:2px;color:#8F6900;text-transform:uppercase;">Povzetek narocila</p>
               <table width="100%" cellpadding="0" cellspacing="0" style="margin-top:12px;">
                 <tr>
                   <td style="font-size:14px;color:#475569;padding:4px 0;">Paket</td>
@@ -394,12 +394,12 @@ export async function sendBankOrderConfirmation({
         <tr><td style="padding:0 36px 28px;">
           <p style="margin:0;font-size:13px;color:#94a3b8;line-height:1.6;">
             Vprasanja? Pisite nam na
-            <a href="mailto:info@camlove.me" style="color:#946D00;text-decoration:none;">info@camlove.me</a> - odgovorimo v 24 urah.
+            <a href="mailto:info@camlove.me" style="color:#8F6900;text-decoration:none;">info@camlove.me</a> - odgovorimo v 24 urah.
           </p>
         </td></tr>
         <tr><td style="padding:20px 36px;border-top:1px solid #f1f5f9;text-align:center;">
           <p style="margin:0;font-size:11px;color:#111111;opacity:0.4;">
-            CamLove &middot; <a href="${APP_URL}" style="color:#946D00;text-decoration:none;">camlove.me</a>
+            CamLove &middot; <a href="${APP_URL}" style="color:#8F6900;text-decoration:none;">camlove.me</a>
           </p>
         </td></tr>
       </table>
@@ -429,7 +429,7 @@ function adminEmailShell(subject: string, bodyRows: string): string {
           ${bodyRows}
         </td></tr>
         <tr><td style="padding:14px 24px;border-top:1px solid #F1F5F9;text-align:center;">
-          <p style="margin:0;font-size:11px;color:#94A3B8;">CamLove · <a href="${APP_URL}" style="color:#946D00;text-decoration:none;">camlove.me</a></p>
+          <p style="margin:0;font-size:11px;color:#94A3B8;">CamLove · <a href="${APP_URL}" style="color:#8F6900;text-decoration:none;">camlove.me</a></p>
         </td></tr>
       </table>
     </td></tr>
@@ -1243,7 +1243,7 @@ export async function sendOrganizerAgreementEmail({
           </table>
           <p style="margin:0 0 24px;font-size:14px;line-height:1.7;color:#475569;">
             Celotna politika zasebnosti, ki opisuje vloge organizatorja in CamLove, je dostopna na
-            <a href="${privacyUrl}" style="color:#946D00;text-decoration:none;font-weight:600;">camlove.me/gdpr</a>.
+            <a href="${privacyUrl}" style="color:#8F6900;text-decoration:none;font-weight:600;">camlove.me/gdpr</a>.
           </p>
           <p style="text-align:center;margin:0 0 8px;">
             <a href="${albumUrl}" style="display:inline-block;padding:14px 28px;background:#F4B400;color:#111111;text-decoration:none;border-radius:10px;font-weight:800;font-size:14px;">Odpri galerijo →</a>
@@ -1990,7 +1990,7 @@ export function guestEmailD21Html(p: D21Params & { locale: GuestLang }): string 
 
           <table width="100%" cellpadding="0" cellspacing="0" style="margin-top:24px;background:#FFF9E8;border:1.5px dashed #F4B400;border-radius:14px;">
             <tr><td style="padding:18px 22px;text-align:center;">
-              <p style="margin:0 0 6px;font-size:11px;letter-spacing:2px;color:#946D00;font-weight:700;">${t.codeLabel.toUpperCase()}</p>
+              <p style="margin:0 0 6px;font-size:11px;letter-spacing:2px;color:#8F6900;font-weight:700;">${t.codeLabel.toUpperCase()}</p>
               <p style="margin:0;font-size:24px;font-weight:800;letter-spacing:2px;color:#111111;font-family:'Courier New',monospace;">${escapeHtml(p.discountCode)}</p>
               <p style="margin:6px 0 0;font-size:12px;color:#94A3B8;">−${p.discountPct}%</p>
             </td></tr>

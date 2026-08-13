@@ -115,7 +115,7 @@ function formatUploadTime(date: Date | string | null | undefined, t: Translation
 }
 
 const BRAND = {
-  accent:      "#946D00",
+  accent:      "#8F6900",
   accentHover: "#152C66",
   accentLight: "#EAEEF6",
   dark:        "#111827",
@@ -1182,7 +1182,7 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
                         type="checkbox"
                         checked={bannerConsent}
                         onChange={(e) => setBannerConsent(e.target.checked)}
-                        className="mt-0.5 shrink-0 accent-[#946D00]"
+                        className="mt-0.5 shrink-0 accent-[#8F6900]"
                       />
                       <span className="text-[11px] text-gray-500 leading-snug">{t.marketingConsentLabel}</span>
                     </label>

@@ -154,7 +154,7 @@ export function ContactForm({ labels }: { labels: Labels }) {
         {siteKey ? (
           <div id={`turnstile-${widgetId}`} className="cf-turnstile" />
         ) : (
-          <p className="text-[11px] text-amber-600">
+          <p className="text-[11px] text-amber-700">
             (Captcha ni nastavljen — NEXT_PUBLIC_TURNSTILE_SITE_KEY manjka.)
           </p>
         )}

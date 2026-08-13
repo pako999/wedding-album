@@ -14,7 +14,7 @@ export function AffiliateApplyView({ lang }: { lang: AffiliateLang }) {
       <div className="max-w-2xl mx-auto">
         {/* Hero */}
         <div className="text-center mb-10">
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#946D00] mb-3">
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#8F6900] mb-3">
             {t.badge}
           </p>
           <h1 className="text-4xl sm:text-5xl font-extrabold text-[#111111] mb-3">

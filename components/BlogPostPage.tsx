@@ -73,7 +73,7 @@ function RenderBlock({ block }: { block: BlogBlock }) {
       return (
         <blockquote className="border-l-4 border-[#F4B400] pl-4 my-5 italic text-gray-700">
           “{block.text}”
-          {block.cite && <footer className="text-xs text-gray-500 mt-1 not-italic">— {block.cite}</footer>}
+          {block.cite && <footer className="text-xs text-gray-600 mt-1 not-italic">— {block.cite}</footer>}
         </blockquote>
       );
     case "callout":
@@ -85,10 +85,10 @@ function RenderBlock({ block }: { block: BlogBlock }) {
     case "stat":
       return (
         <div className="bg-white border border-gray-200 rounded-2xl p-5 my-5 flex items-center gap-4">
-          <p className="font-serif text-3xl font-bold text-[#946D00]">{block.value}</p>
+          <p className="font-serif text-3xl font-bold text-[#8F6900]">{block.value}</p>
           <div>
             <p className="text-sm font-medium text-[#111111]">{block.label}</p>
-            {block.source && <p className="text-[11px] text-gray-400 mt-0.5">{block.source}</p>}
+            {block.source && <p className="text-[11px] text-gray-600 mt-0.5">{block.source}</p>}
           </div>
         </div>
       );
@@ -144,12 +144,12 @@ function RenderBlock({ block }: { block: BlogBlock }) {
           {(block.caption || block.credit) && (
             <figcaption className="flex items-baseline justify-between gap-3 mt-2">
               {block.caption && (
-                <span className="text-xs italic text-gray-500 leading-relaxed">
+                <span className="text-xs italic text-gray-600 leading-relaxed">
                   {block.caption}
                 </span>
               )}
               {block.credit && (
-                <span className="text-[10px] text-gray-400 shrink-0 ml-auto">
+                <span className="text-[10px] text-gray-600 shrink-0 ml-auto">
                   {block.credit}
                 </span>
               )}
@@ -253,11 +253,11 @@ export async function BlogPostPage({ post }: Props) {
 
       <article className="max-w-3xl mx-auto px-6 py-12">
         {/* Back link */}
-        <Link href={blogUrl(post.lang)} className="text-sm text-gray-500 hover:text-[#111111]">{t.back}</Link>
+        <Link href={blogUrl(post.lang)} className="text-sm text-gray-600 hover:text-[#111111]">{t.back}</Link>
 
         {/* Header */}
         <header className="mt-6 mb-8">
-          <div className="flex items-center gap-3 text-xs text-gray-500 mb-4">
+          <div className="flex items-center gap-3 text-xs text-gray-600 mb-4">
             <span className={`px-2 py-0.5 rounded-full font-semibold ${CATEGORY_COLOR[post.category] ?? CATEGORY_COLOR.novice}`}>
               {post.category}
             </span>
@@ -268,23 +268,23 @@ export async function BlogPostPage({ post }: Props) {
           </div>
           <h1 className="font-serif text-4xl sm:text-5xl font-bold text-[#111111] leading-tight mb-4">{post.title}</h1>
           <p className="text-lg text-gray-600">{post.description}</p>
-          <p className="text-xs text-gray-400 mt-3">{t.by} <span className="font-medium text-gray-600">{post.author}</span></p>
+          <p className="text-xs text-gray-600 mt-3">{t.by} <span className="font-medium text-gray-600">{post.author}</span></p>
         </header>
 
         {/* TLDR box — AI engines love this */}
         <aside className="bg-[#F4B400]/20 border border-[#F4B400]/50 rounded-2xl p-5 mb-10">
-          <p className="text-xs font-bold uppercase tracking-widest text-[#946D00] mb-2">{t.inShort}</p>
+          <p className="text-xs font-bold uppercase tracking-widest text-[#8F6900] mb-2">{t.inShort}</p>
           <p className="text-base text-[#111111] leading-relaxed">{post.tldr}</p>
         </aside>
 
         {/* Table of contents */}
         {tocEntries.length >= 3 && (
           <nav className="bg-white border border-gray-200 rounded-2xl p-5 mb-10">
-            <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-3">{t.toc}</p>
+            <p className="text-xs font-bold uppercase tracking-widest text-gray-600 mb-3">{t.toc}</p>
             <ol className="space-y-1.5 text-sm">
               {tocEntries.map((entry, i) => (
                 <li key={i}>
-                  <a href={`#${entry.id}`} className="text-gray-700 hover:text-[#946D00]">
+                  <a href={`#${entry.id}`} className="text-gray-700 hover:text-[#8F6900]">
                     {i + 1}. {entry.text}
                   </a>
                 </li>
@@ -307,7 +307,7 @@ export async function BlogPostPage({ post }: Props) {
                 <details key={i} className="group rounded-xl bg-white border border-gray-200 p-4 open:border-[#F4B400]/60 open:bg-[#FFF9E8]/40">
                   <summary className="font-semibold text-[#111111] cursor-pointer list-none flex items-center justify-between gap-3">
                     <span>{f.q}</span>
-                    <span className="text-[#946D00] transition-transform group-open:rotate-45">+</span>
+                    <span className="text-[#8F6900] transition-transform group-open:rotate-45">+</span>
                   </summary>
                   <p className="text-sm text-gray-600 mt-2.5 leading-relaxed">{f.a}</p>
                 </details>
@@ -336,7 +336,7 @@ export async function BlogPostPage({ post }: Props) {
                     {p.category}
                   </span>
                   <h3 className="font-serif text-base font-bold text-[#111111] mt-3 mb-2 leading-snug">{p.title}</h3>
-                  <p className="text-xs text-gray-500 line-clamp-2">{p.tldr}</p>
+                  <p className="text-xs text-gray-600 line-clamp-2">{p.tldr}</p>
                 </Link>
               ))}
             </div>
@@ -346,10 +346,10 @@ export async function BlogPostPage({ post }: Props) {
         {/* Language switcher for this specific post */}
         {Object.keys(langMap).length > 1 && (
           <section className="mt-12 pt-8 border-t border-gray-200 text-center">
-            <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-3">Read in another language</p>
+            <p className="text-xs font-bold uppercase tracking-widest text-gray-600 mb-3">Read in another language</p>
             <div className="flex flex-wrap justify-center gap-3">
               {Object.entries(langMap).map(([lang, url]) => (
-                <a key={lang} href={url} className="px-3 py-1.5 text-xs font-semibold rounded-full bg-white border border-gray-200 hover:border-[#F4B400] hover:text-[#946D00]">
+                <a key={lang} href={url} className="px-3 py-1.5 text-xs font-semibold rounded-full bg-white border border-gray-200 hover:border-[#F4B400] hover:text-[#8F6900]">
                   {lang.toUpperCase()}
                 </a>
               ))}

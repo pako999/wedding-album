@@ -140,7 +140,7 @@ export function PrintServicePromo({ slug, lang = "sl", variant = "banner" }: Pro
       >
         <div className="flex items-start gap-3">
           <div className="flex-1 min-w-0">
-            <span className="inline-block text-[10px] font-bold uppercase tracking-widest text-[#946D00] mb-1">
+            <span className="inline-block text-[10px] font-bold uppercase tracking-widest text-[#8F6900] mb-1">
               {c.eyebrow}
             </span>
             <h3 className="font-bold text-gray-900 text-base leading-snug">🖨 {c.title}</h3>
@@ -148,12 +148,12 @@ export function PrintServicePromo({ slug, lang = "sl", variant = "banner" }: Pro
           </div>
           {thumbs}
         </div>
-        <p className="text-xs font-semibold text-[#946D00]">
+        <p className="text-xs font-semibold text-[#8F6900]">
           {c.priceFrom(eur(cheapest))}
           <span className="block font-normal text-gray-400 mt-0.5">{c.onlyWithPlan}</span>
         </p>
         <p className="flex items-start gap-1.5 text-xs text-[#7A5A12]">
-          <svg className="w-3.5 h-3.5 shrink-0 mt-0.5 text-[#946D00]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+          <svg className="w-3.5 h-3.5 shrink-0 mt-0.5 text-[#8F6900]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
           {c.leadTime(LEAD_TIME_DAYS)}
         </p>
         <Link
@@ -182,7 +182,7 @@ export function PrintServicePromo({ slug, lang = "sl", variant = "banner" }: Pro
       <div className="flex flex-col sm:flex-row items-start gap-5">
         {thumbs}
         <div className="flex-1 min-w-0">
-          <span className="inline-block text-[10px] font-bold uppercase tracking-widest text-[#946D00] mb-1">
+          <span className="inline-block text-[10px] font-bold uppercase tracking-widest text-[#8F6900] mb-1">
             {c.eyebrow}
           </span>
           <h2 className="font-bold text-gray-900 text-lg sm:text-xl leading-snug">🖨 {c.title}</h2>
@@ -198,12 +198,12 @@ export function PrintServicePromo({ slug, lang = "sl", variant = "banner" }: Pro
             ))}
           </ul>
           <p className="flex items-start gap-1.5 text-xs text-[#7A5A12] mt-3">
-            <svg className="w-3.5 h-3.5 shrink-0 mt-0.5 text-[#946D00]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+            <svg className="w-3.5 h-3.5 shrink-0 mt-0.5 text-[#8F6900]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
             {c.leadTime(LEAD_TIME_DAYS)}
           </p>
         </div>
         <div className="w-full sm:w-auto shrink-0 sm:text-right">
-          <p className="text-xs font-semibold text-[#946D00] mb-2">
+          <p className="text-xs font-semibold text-[#8F6900] mb-2">
             {c.priceFrom(eur(cheapest))}
             <span className="block font-normal text-gray-400 mt-0.5">{c.onlyWithPlan}</span>
           </p>

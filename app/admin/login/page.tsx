@@ -59,7 +59,7 @@ export default async function AdminLoginPage({
   return (
     <div className="min-h-screen flex items-center justify-center px-4" style={{ background: "#F4F6FB" }}>
       <div className="w-full max-w-sm bg-white rounded-2xl border border-gray-200 p-7 shadow-sm">
-        <p className="text-[10px] uppercase tracking-widest font-semibold text-[#946D00] mb-1">Platform Admin</p>
+        <p className="text-[10px] uppercase tracking-widest font-semibold text-[#8F6900] mb-1">Platform Admin</p>
         <h1 className="font-serif text-2xl text-[#111111] mb-2">Geslo skrbnika</h1>
         <p className="text-sm text-gray-500 mb-5">
           Drugi faktor poleg Clerk prijave. Prijavljeni ste kot{" "}

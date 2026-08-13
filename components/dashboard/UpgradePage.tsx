@@ -313,9 +313,9 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
             <div className="flex-shrink-0 w-14 h-14 rounded-full overflow-hidden" style={{ background: "linear-gradient(135deg,#FFECB8,#F4B400)" }}>
               <svg viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
                 {/* Head */}
-                <circle cx="28" cy="20" r="10" fill="#946D00" opacity="0.85" />
+                <circle cx="28" cy="20" r="10" fill="#8F6900" opacity="0.85" />
                 {/* Body */}
-                <ellipse cx="28" cy="44" rx="14" ry="10" fill="#946D00" opacity="0.85" />
+                <ellipse cx="28" cy="44" rx="14" ry="10" fill="#8F6900" opacity="0.85" />
                 {/* Face highlight */}
                 <circle cx="25" cy="18" r="2" fill="white" opacity="0.4" />
               </svg>
@@ -721,7 +721,7 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
                     className="flex items-start gap-2.5 rounded-xl border px-3 py-2.5 mt-3"
                     style={{ background: "#FFF9E8", borderColor: "rgba(255,201,77,0.5)" }}
                   >
-                    <svg className="w-4 h-4 shrink-0 mt-0.5 text-[#946D00]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                    <svg className="w-4 h-4 shrink-0 mt-0.5 text-[#8F6900]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                     <p className="text-xs leading-relaxed text-[#7A5A12]">

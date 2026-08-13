@@ -124,7 +124,7 @@ function FreeTierGate({ album }: { album: Album }) {
               onClick={unlock}
               disabled={unlocking}
               className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold border-2 transition-all hover:bg-blue-50 disabled:opacity-50"
-              style={{ borderColor: "#946D00", color: "#946D00" }}
+              style={{ borderColor: "#8F6900", color: "#8F6900" }}
             >
               {unlocking ? "Odklepanje…" : "🔓 Odkleni za 1 predstavitveni film"}
             </button>

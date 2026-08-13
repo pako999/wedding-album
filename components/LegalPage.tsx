@@ -107,7 +107,7 @@ function BlockRenderer({ block }: { block: Block }) {
                       <a
                         key={j}
                         href={`mailto:${part}`}
-                        className="text-[#946D00] hover:underline"
+                        className="text-[#8F6900] hover:underline"
                       >
                         {part}
                       </a>
@@ -134,7 +134,7 @@ function BlockRenderer({ block }: { block: Block }) {
     case "link":
       return (
         <p className="mb-3">
-          <Link href={block.href} className="text-[#946D00] hover:underline">
+          <Link href={block.href} className="text-[#8F6900] hover:underline">
             {block.text}
           </Link>
         </p>
@@ -170,13 +170,13 @@ export function LegalPage({ kind, lang }: { kind: LegalKind; lang: LegalLang }) 
         <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-8 md:p-12">
           {/* Title */}
           <div className="mb-10">
-            <p className="text-xs font-bold uppercase tracking-widest text-[#946D00] mb-3">
+            <p className="text-xs font-bold uppercase tracking-widest text-[#8F6900] mb-3">
               {doc.eyebrow}
             </p>
             <h1 className="font-serif text-4xl font-bold text-[#111111] mb-3">
               {doc.heading}
             </h1>
-            <p className="text-sm text-gray-400">{doc.lastUpdated}</p>
+            <p className="text-sm text-gray-500">{doc.lastUpdated}</p>
           </div>
 
           <div className="prose prose-gray max-w-none text-[#111111]">

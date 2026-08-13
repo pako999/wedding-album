@@ -260,8 +260,8 @@ export function ProjectionWall({ album, photos, onClose }: Props) {
           <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full"
             style={{ background:"rgba(255,201,77,0.12)", border:"1px solid rgba(255,201,77,0.35)" }}>
             <span className="w-2 h-2 rounded-full shrink-0"
-              style={{ background:"#946D00", animation:"pwLiveDot 1.4s ease-in-out infinite" }}/>
-            <span className="text-xs font-bold tracking-widest" style={{ color:"#946D00" }}>V ŽIVO</span>
+              style={{ background:"#8F6900", animation:"pwLiveDot 1.4s ease-in-out infinite" }}/>
+            <span className="text-xs font-bold tracking-widest" style={{ color:"#8F6900" }}>V ŽIVO</span>
           </div>
 
           {/* Clock */}

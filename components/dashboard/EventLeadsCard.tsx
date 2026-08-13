@@ -81,7 +81,7 @@ export function EventLeadsCard({ albumSlug, initialEnabled }: Props) {
       {enabled && (
         <p
           className="text-[11px] rounded-lg px-3 py-2 mt-3 leading-relaxed"
-          style={{ background: "#FFF9E8", color: "#946D00" }}
+          style={{ background: "#FFF9E8", color: "#8F6900" }}
         >
           Podatke zbirate vi kot organizator dogodka — vi ste upravljavec teh osebnih podatkov.
           Poskrbite, da imate ustrezno pravno podlago in politiko zasebnosti. CamLove podatke

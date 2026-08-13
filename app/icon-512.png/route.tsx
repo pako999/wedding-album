@@ -7,7 +7,7 @@ import { ImageResponse } from "next/og";
  * at that exact URL.
  *
  * Color was historically pink (#C4738A) — off-brand. Now matches
- * public/icon.svg exactly (#F4B400 yellow + #946D00 amber).
+ * public/icon.svg exactly (#F4B400 yellow + #8F6900 amber).
  */
 
 export const runtime = "edge";

@@ -9,11 +9,11 @@
   <!-- Axis: 0% at x=64, 100% at x=1136 → 10.72 px per % -->
 
   <!-- QR row -->
-  <circle cx="72" cy="186" r="6" fill="#946D00"/>
+  <circle cx="72" cy="186" r="6" fill="#8F6900"/>
   <text x="90" y="192" font-size="16" font-weight="700" fill="#111111">QR kod na svakom stolu</text>
   <rect x="64" y="208" width="1072" height="44" rx="4" fill="#F8FAFC"/>
   <!-- range 65–80%: x = 64 + 65*10.72 = 760.8, width = 15*10.72 = 160.8 -->
-  <rect x="761" y="208" width="161" height="44" rx="4" fill="#946D00"/>
+  <rect x="761" y="208" width="161" height="44" rx="4" fill="#8F6900"/>
   <text x="748" y="236" font-size="16" font-weight="800" fill="#111111" text-anchor="end">65&#160;%</text>
   <text x="934" y="236" font-size="16" font-weight="800" fill="#111111">80&#160;%</text>
 

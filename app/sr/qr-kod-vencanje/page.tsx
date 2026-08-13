@@ -104,7 +104,7 @@ export default function QrKodVencanjePage() {
       <main className="max-w-3xl mx-auto px-6 py-16">
         {/* Hero */}
         <div className="mb-12">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold mb-5 uppercase tracking-widest bg-[#FFECB8] text-[#946D00]">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold mb-5 uppercase tracking-widest bg-[#FFECB8] text-[#8F6900]">
             Vodič · Srbija · 2025
           </div>
           <h1 className="font-serif text-4xl md:text-5xl font-bold text-[#111111] leading-tight mb-5">
@@ -119,13 +119,13 @@ export default function QrKodVencanjePage() {
           </p>
           <div className="flex flex-wrap gap-4 text-sm text-gray-500">
             <span className="flex items-center gap-1.5">
-              <svg className="w-4 h-4 text-[#946D00]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+              <svg className="w-4 h-4 text-[#8F6900]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
               Vreme čitanja: ~5 minuta
             </span>
             <span className="flex items-center gap-1.5">
-              <svg className="w-4 h-4 text-[#946D00]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+              <svg className="w-4 h-4 text-[#8F6900]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75M16.5 6.108c1.131.094 1.976 1.057 1.976 2.192V18A2.25 2.25 0 0116.226 20.25H7.5A2.25 2.25 0 015.25 18V8.3c0-1.135.844-2.098 1.976-2.192" />
               </svg>
               Ažurirano: januar 2025
@@ -188,7 +188,7 @@ export default function QrKodVencanjePage() {
               ].map(({ title, desc }) => (
                 <div key={title} className="flex gap-4 p-4 rounded-2xl bg-white border border-gray-100 shadow-sm">
                   <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 bg-[#FFECB8]">
-                    <svg className="w-4 h-4 text-[#946D00]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                    <svg className="w-4 h-4 text-[#8F6900]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                     </svg>
                   </div>
@@ -279,7 +279,7 @@ export default function QrKodVencanjePage() {
             ].map((tip, i) => (
               <li key={i} className="flex gap-3">
                 <div className="w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5 bg-[#FFECB8]">
-                  <svg className="w-3 h-3 text-[#946D00]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={3}>
+                  <svg className="w-3 h-3 text-[#8F6900]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={3}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                   </svg>
                 </div>

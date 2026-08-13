@@ -464,7 +464,7 @@ async function saveUpload(slug: string, body: object, albumPassword = "") {
 
 // ── Component ─────────────────────────────────────────────────────────────────
 
-export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, currentCount, lang, onClose, onSuccess, onNameChange: _onNameChange, initialFiles, accent = "#946D00", albumPassword = "", moments = [], defaultMomentId = null, referralCode = null, requireGuestData = false, organiserName = "" }: Props) {
+export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, currentCount, lang, onClose, onSuccess, onNameChange: _onNameChange, initialFiles, accent = "#8F6900", albumPassword = "", moments = [], defaultMomentId = null, referralCode = null, requireGuestData = false, organiserName = "" }: Props) {
   const t = translations[lang];
   const lead = LEAD_COPY[lang];
 
@@ -814,14 +814,14 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
                   onChange={(e) => setLeadFirst(e.target.value)}
                   placeholder={lead.firstName}
                   autoComplete="given-name"
-                  className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm text-[#111111] bg-white outline-none focus:border-[#946D00]"
+                  className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm text-[#111111] bg-white outline-none focus:border-[#8F6900]"
                 />
                 <input
                   value={leadLast}
                   onChange={(e) => setLeadLast(e.target.value)}
                   placeholder={lead.lastName}
                   autoComplete="family-name"
-                  className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm text-[#111111] bg-white outline-none focus:border-[#946D00]"
+                  className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm text-[#111111] bg-white outline-none focus:border-[#8F6900]"
                 />
               </div>
               <input
@@ -831,14 +831,14 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
                 placeholder={lead.email}
                 autoComplete="email"
                 inputMode="email"
-                className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm text-[#111111] bg-white outline-none focus:border-[#946D00]"
+                className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm text-[#111111] bg-white outline-none focus:border-[#8F6900]"
               />
               <label className="flex items-start gap-2 cursor-pointer">
                 <input
                   type="checkbox"
                   checked={leadConsent}
                   onChange={(e) => setLeadConsent(e.target.checked)}
-                  className="mt-0.5 shrink-0 accent-[#946D00]"
+                  className="mt-0.5 shrink-0 accent-[#8F6900]"
                 />
                 <span className="text-[11px] text-[#111111]/60 leading-snug">
                   {lead.consentLabel(organiserName || "organizator")}
@@ -913,7 +913,7 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
                         type="checkbox"
                         checked={marketingConsent}
                         onChange={(e) => setMarketingConsent(e.target.checked)}
-                        className="mt-0.5 shrink-0 accent-[#946D00]"
+                        className="mt-0.5 shrink-0 accent-[#8F6900]"
                       />
                       <span className="text-[11px] text-[#111111]/60 leading-snug">
                         {t.marketingConsentLabel}

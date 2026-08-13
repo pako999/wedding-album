@@ -129,7 +129,7 @@ export default async function AdminOverview() {
                   {row.plan !== "free" && (
                     <>
                       <span className="text-[10px] text-gray-400 whitespace-nowrap">({real} plačanih)</span>{" "}
-                      <span className="ml-1 text-[#946D00] font-semibold whitespace-nowrap">
+                      <span className="ml-1 text-[#8F6900] font-semibold whitespace-nowrap">
                         {real * (PLAN_PRICES[row.plan] ?? 0)}€
                       </span>
                     </>
@@ -140,7 +140,7 @@ export default async function AdminOverview() {
           })}
           <div className="pt-3 mt-3 border-t border-gray-100 flex justify-between text-sm font-semibold">
             <span>Skupni prihodek (ocena)</span>
-            <span className="text-[#946D00]">{totalRevenue}€</span>
+            <span className="text-[#8F6900]">{totalRevenue}€</span>
           </div>
         </div>
       </section>
@@ -182,7 +182,7 @@ export default async function AdminOverview() {
                 </td>
                 <td className="py-2.5 text-gray-500">{new Date(a.createdAt).toLocaleDateString("sl-SI")}</td>
                 <td className="py-2.5 text-right">
-                  <a href={`/admin/albums?q=${a.slug}`} className="text-xs text-[#946D00] font-semibold hover:underline">
+                  <a href={`/admin/albums?q=${a.slug}`} className="text-xs text-[#8F6900] font-semibold hover:underline">
                     Uredi →
                   </a>
                 </td>
@@ -198,7 +198,7 @@ export default async function AdminOverview() {
 function MiniStat({ label, value, hint }: { label: string; value: number | string; hint?: string }) {
   return (
     <div className="bg-white/70 backdrop-blur rounded-xl border border-[#FFE3A2]/60 p-3">
-      <p className="text-[10px] uppercase tracking-wide text-[#946D00] font-bold mb-1">{label}</p>
+      <p className="text-[10px] uppercase tracking-wide text-[#8F6900] font-bold mb-1">{label}</p>
       <p className="font-serif text-2xl text-[#111111] leading-none">{value}</p>
       {hint && <p className="text-[10px] text-gray-400 mt-1">{hint}</p>}
     </div>

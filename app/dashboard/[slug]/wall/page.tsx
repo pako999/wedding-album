@@ -45,7 +45,7 @@ export default async function WallAdminPage({ params }: { params: Promise<{ slug
           <CamLoveLogo size="sm" showMark={false} />
           <span className="text-xs text-gray-400">
             {collaborator ? "Sodelavec · samo foto stena" : (
-              <Link href={`/dashboard/${album.slug}?tab=events`} className="text-[#946D00] hover:underline">
+              <Link href={`/dashboard/${album.slug}?tab=events`} className="text-[#8F6900] hover:underline">
                 ← Nazaj na nadzorno ploščo
               </Link>
             )}

@@ -95,7 +95,7 @@ export function WallCollaboratorsCard({ albumSlug, ownerEmail }: Props) {
           <div key={r.id} className="flex items-center justify-between px-4 py-2.5 text-sm">
             <span className="text-gray-800 break-all">{r.email}</span>
             <span className="flex items-center gap-3">
-              <span className="text-xs font-semibold text-[#946D00]">Foto stena</span>
+              <span className="text-xs font-semibold text-[#8F6900]">Foto stena</span>
               <button type="button" onClick={() => void remove(r.id)} className="text-xs text-gray-400 hover:text-red-600">
                 Odstrani
               </button>

@@ -76,7 +76,7 @@ async function renderDesignedCard(opts: {
             paddingBottom: 50,
           }}
         >
-          <div style={{ display: "flex", fontSize: 30, fontWeight: 700, letterSpacing: 6, color: "#946D00" }}>
+          <div style={{ display: "flex", fontSize: 30, fontWeight: 700, letterSpacing: 6, color: "#8F6900" }}>
             CAMLOVE
           </div>
           <div style={{ display: "flex", marginTop: 46, fontSize: 58, fontWeight: 700, color: "#111111", textAlign: "center" }}>
@@ -103,7 +103,7 @@ async function renderDesignedCard(opts: {
             <img src={qrPng} width={460} height={460} alt="" />
           </div>
 
-          <div style={{ display: "flex", marginTop: 56, fontSize: 26, fontWeight: 700, letterSpacing: 3, color: "#946D00" }}>
+          <div style={{ display: "flex", marginTop: 56, fontSize: 26, fontWeight: 700, letterSpacing: 3, color: "#8F6900" }}>
             SKENIRAJ · NALOŽI · DELI
           </div>
           <div style={{ display: "flex", marginTop: 18, fontSize: 24, color: "#94A3B8" }}>

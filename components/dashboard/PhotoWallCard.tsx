@@ -187,17 +187,17 @@ export function PhotoWallCard({ wallUrl, hasPassword, albumSlug, moderationEnabl
         >
           <span className="text-lg shrink-0">★</span>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-semibold" style={{ color: "#946D00" }}>
+            <p className="text-sm font-semibold" style={{ color: "#8F6900" }}>
               Foto stena je del paketa Premium
             </p>
-            <p className="text-xs mt-0.5" style={{ color: "#946D00" }}>
+            <p className="text-xs mt-0.5" style={{ color: "#8F6900" }}>
               Preizkusite jo brez omejitev — na zaslonu bo vidna opomba, da gre za predogled.
               Z nadgradnjo na Premium opomba izgine.
             </p>
             <a
               href={`/dashboard/${albumSlug}/upgrade?plan=premium`}
               className="inline-block text-xs font-semibold underline mt-2"
-              style={{ color: "#946D00" }}
+              style={{ color: "#8F6900" }}
             >
               Nadgradi na Premium →
             </a>
@@ -215,10 +215,10 @@ export function PhotoWallCard({ wallUrl, hasPassword, albumSlug, moderationEnabl
         >
           <span className="text-lg shrink-0">⚠️</span>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-semibold" style={{ color: "#946D00" }}>
+            <p className="text-sm font-semibold" style={{ color: "#8F6900" }}>
               Moderacija je vklopljena
             </p>
-            <p className="text-xs mt-0.5" style={{ color: "#946D00" }}>
+            <p className="text-xs mt-0.5" style={{ color: "#8F6900" }}>
               Fotografije se na steni prikažejo šele, ko jih potrdite — dokler jih ne odobrite, zaslon ostane prazen.
               {pendingCount > 0
                 ? ` Trenutno čaka ${pendingCount} ${pendingCount === 1 ? "fotografija" : "fotografij"}.`
@@ -229,7 +229,7 @@ export function PhotoWallCard({ wallUrl, hasPassword, albumSlug, moderationEnabl
                 <a
                   href={`/dashboard/${albumSlug}?tab=pending`}
                   className="text-xs font-semibold underline"
-                  style={{ color: "#946D00" }}
+                  style={{ color: "#8F6900" }}
                 >
                   Poglej čakajoče →
                 </a>
@@ -237,7 +237,7 @@ export function PhotoWallCard({ wallUrl, hasPassword, albumSlug, moderationEnabl
               <a
                 href={`/dashboard/${albumSlug}?tab=settings`}
                 className="text-xs font-semibold underline"
-                style={{ color: "#946D00" }}
+                style={{ color: "#8F6900" }}
               >
                 Izklopi moderacijo v nastavitvah →
               </a>

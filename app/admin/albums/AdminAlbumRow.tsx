@@ -65,7 +65,7 @@ export function AdminAlbumRow({ slug, coupleName, ownerEmail, plan, filmTier, ma
           href={galleryHref}
           target="_blank"
           rel="noreferrer"
-          className="inline-flex items-center gap-1 font-medium text-[#111111] underline decoration-[#F4B400] decoration-2 underline-offset-4 hover:text-[#946D00]"
+          className="inline-flex items-center gap-1 font-medium text-[#111111] underline decoration-[#F4B400] decoration-2 underline-offset-4 hover:text-[#8F6900]"
         >
           {coupleName}
           <svg className="w-3 h-3 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
@@ -78,7 +78,7 @@ export function AdminAlbumRow({ slug, coupleName, ownerEmail, plan, filmTier, ma
         {ownerEmail ? (
           <a
             href={`mailto:${ownerEmail}`}
-            className="text-xs text-gray-600 hover:text-[#946D00] hover:underline break-all"
+            className="text-xs text-gray-600 hover:text-[#8F6900] hover:underline break-all"
           >
             {ownerEmail}
           </a>

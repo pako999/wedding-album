@@ -7,9 +7,9 @@
   <text x="64" y="110" font-size="17" fill="#64748B">Podaci sa venčanja sa ~80 gostiju</text>
 
   <!-- CamLove bar: 340 → width 880 -->
-  <circle cx="72" cy="170" r="6" fill="#946D00"/>
+  <circle cx="72" cy="170" r="6" fill="#8F6900"/>
   <text x="90" y="176" font-size="16" font-weight="700" fill="#111111">QR kod na svakom stolu (CamLove)</text>
-  <rect x="64" y="192" width="880" height="52" rx="4" fill="#946D00"/>
+  <rect x="64" y="192" width="880" height="52" rx="4" fill="#8F6900"/>
   <text x="960" y="226" font-size="26" font-weight="800" fill="#111111">340</text>
 
   <!-- Traditional bar: 30 → width 880*30/340 = 78 -->
