@@ -66,13 +66,14 @@ export const WALL_BACKGROUNDS = {
 } as const;
 export type WallBackground = keyof typeof WALL_BACKGROUNDS;
 
-/** Centre-stage transition styles. `kenburns` runs for the whole slide
- *  duration rather than a fixed length, so its animation is composed at
- *  render time from the slide duration. */
+/** Centre-stage transition styles. Both run once at slide entry and then
+ *  hold a static frame. A third "kenburns" option (slow pan for the whole
+ *  slide) was removed: continuous full-screen motion made the wall
+ *  stutter when cast to a TV over WiFi, because the cast encoder has to
+ *  re-encode every frame instead of only slide changes. */
 export const WALL_TRANSITIONS = {
-  fade:     "wallCenterFade .7s cubic-bezier(.4,0,.2,1) forwards",
-  slide:    "wallCenterSlide .75s cubic-bezier(.22,1,.36,1) forwards",
-  kenburns: null,
+  fade:  "wallCenterFade .7s cubic-bezier(.4,0,.2,1) forwards",
+  slide: "wallCenterSlide .75s cubic-bezier(.22,1,.36,1) forwards",
 } as const;
 export type WallTransition = keyof typeof WALL_TRANSITIONS;
 
@@ -370,13 +371,8 @@ export function PhotoWall({
   };
   const mutedColor = isLight ? "rgba(15,23,41,.55)" : "rgba(255,255,255,.55)";
 
-  // Ken Burns drifts for the full slide, so it can't be a fixed-length
-  // constant like the other two.
-  const holdMs = center?.kind === "ad" ? settings.adDurMs : settings.slideMs;
   const centerAnimation =
-    settings.transition === "kenburns"
-      ? `wallCenterFade .7s cubic-bezier(.4,0,.2,1) forwards, wallKenBurns ${holdMs}ms ease-out forwards`
-      : (WALL_TRANSITIONS[settings.transition] ?? WALL_TRANSITIONS.fade);
+    WALL_TRANSITIONS[settings.transition] ?? WALL_TRANSITIONS.fade;
 
   const centerPhoto = center?.kind === "photo" ? center.photo : null;
   const centerAd = center?.kind === "ad" ? center.sponsor : null;
@@ -398,11 +394,6 @@ export function PhotoWall({
         @keyframes wallCenterSlide {
           from { opacity: 0; transform: translate3d(6vw, 0, 0); }
           to   { opacity: 1; transform: translate3d(0, 0, 0); }
-        }
-        /* Slow drift for the whole slide — the classic "Ken Burns" look. */
-        @keyframes wallKenBurns {
-          from { transform: scale(1) translate3d(0, 0, 0); }
-          to   { transform: scale(1.09) translate3d(-1.2%, -1.2%, 0); }
         }
         /* Continuous travel for the side collage. Starts and ends fully
            off-screen so a thumbnail never pops in or out mid-air, and
