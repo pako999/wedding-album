@@ -1,0 +1,4 @@
+main > section:first-of-type > div > div:last-child > div:nth-child(2) { background-image: url('https://drive.google.com/thumbnail?id=1fiLEfP6V1NPu0eqHbnMsCJ-K6g4l_uk3&sz=w1600'); background-size: cover; background-position: center; }
+main > section:first-of-type > div > div:last-child > div:nth-child(3) { background-image: url('https://drive.google.com/thumbnail?id=1e_wqGDTWpGnBmV9M7Pa8ideimLUnFTTl&sz=w1600'); background-size: cover; background-position: center; }
+main > section:first-of-type > div > div:last-child > div:nth-child(2) > img,
+main > section:first-of-type > div > div:last-child > div:nth-child(3) > img { opacity: 0; }
