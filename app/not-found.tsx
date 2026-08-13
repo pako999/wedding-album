@@ -36,10 +36,10 @@ export default function NotFound() {
           </Link>
         </div>
 
-        <p className="text-[88px] sm:text-[110px] leading-none font-serif font-light text-[#FFC94D] mb-2">
+        <p className="text-[88px] sm:text-[110px] leading-none font-serif font-light text-[#F4B400] mb-2">
           404
         </p>
-        <h1 className="font-serif text-2xl sm:text-3xl text-[#0F1729] mb-3">
+        <h1 className="font-serif text-2xl sm:text-3xl text-[#111111] mb-3">
           Stran ne obstaja
         </h1>
         <p className="text-sm text-gray-500 leading-relaxed mb-8">
@@ -50,9 +50,9 @@ export default function NotFound() {
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
           <Link
             href="/"
-            className="inline-flex items-center justify-center gap-1.5 w-full sm:w-auto px-6 py-3 rounded-full text-sm font-bold text-[#0F1729] transition-all duration-200 hover:scale-[1.03]"
+            className="inline-flex items-center justify-center gap-1.5 w-full sm:w-auto px-6 py-3 rounded-full text-sm font-bold text-[#111111] transition-all duration-200 hover:scale-[1.03]"
             style={{
-              background: "linear-gradient(135deg, #FFD966 0%, #FFC94D 55%, #F0B429 100%)",
+              background: "linear-gradient(135deg, #FFCC3D 0%, #F4B400 55%, #D69E00 100%)",
               boxShadow: "0 6px 18px rgba(255,201,77,0.45)",
             }}
           >
@@ -60,7 +60,7 @@ export default function NotFound() {
           </Link>
           <Link
             href="/blog"
-            className="inline-flex items-center justify-center w-full sm:w-auto px-6 py-3 rounded-full text-sm font-medium text-gray-700 border border-gray-200 hover:border-[#FFC94D] hover:text-[#0F1729] transition-colors"
+            className="inline-flex items-center justify-center w-full sm:w-auto px-6 py-3 rounded-full text-sm font-medium text-gray-700 border border-gray-200 hover:border-[#F4B400] hover:text-[#111111] transition-colors"
           >
             Pojdi na blog
           </Link>
@@ -68,7 +68,7 @@ export default function NotFound() {
 
         <p className="mt-10 text-xs text-gray-400">
           Iščete svojo galerijo?{" "}
-          <Link href="/dashboard" className="underline hover:text-[#0F1729]">
+          <Link href="/dashboard" className="underline hover:text-[#111111]">
             Prijavite se v nadzorno ploščo
           </Link>
         </p>

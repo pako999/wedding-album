@@ -92,16 +92,16 @@ export function GuestReferralCta({ referralCode, lang, sourceAlbumSlug }: Props)
 
   return (
     <div className="mt-5 pt-4 border-t border-gray-100 rounded-2xl">
-      <div className="rounded-2xl p-4 sm:p-5" style={{ background: "linear-gradient(135deg, #FFF3CC 0%, #FFE8A6 100%)" }}>
-        <p className="text-sm font-bold text-[#0F1729] mb-1">🎁 {t.headline}</p>
-        <p className="text-xs text-[#0F1729]/70 leading-relaxed mb-3">
+      <div className="rounded-2xl p-4 sm:p-5" style={{ background: "linear-gradient(135deg, #FFECB8 0%, #FFE8A6 100%)" }}>
+        <p className="text-sm font-bold text-[#111111] mb-1">🎁 {t.headline}</p>
+        <p className="text-xs text-[#111111]/70 leading-relaxed mb-3">
           {t.sub(code)}
         </p>
         <a
           href={href}
           onClick={onClick}
-          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-bold text-[#0F1729] transition-transform hover:scale-[1.02]"
-          style={{ background: "#0F1729", color: "#FFF" }}
+          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-bold text-[#111111] transition-transform hover:scale-[1.02]"
+          style={{ background: "#111111", color: "#FFF" }}
         >
           {t.button} →
         </a>

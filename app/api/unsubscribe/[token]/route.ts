@@ -109,7 +109,7 @@ function pageShell(lang: Lang, inner: string): string {
   <meta name="robots" content="noindex" />
   <title>${t.title}</title>
 </head>
-<body style="margin:0;padding:0;background:#F2F4F8;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;color:#0F1729;min-height:100vh;">
+<body style="margin:0;padding:0;background:#F2F4F8;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;color:#111111;min-height:100vh;">
   <div style="max-width:520px;margin:0 auto;padding:80px 20px 40px;text-align:center;">
     <div style="background:#ffffff;border-radius:18px;padding:44px 32px;box-shadow:0 4px 24px rgba(15,23,41,0.06);">
       ${inner}
@@ -123,10 +123,10 @@ function renderConfirm(lang: Lang, token: string): string {
   const t = COPY[lang];
   return pageShell(lang, `
       <div style="font-size:38px;line-height:1;margin-bottom:14px;">✉️</div>
-      <h1 style="margin:0 0 10px;font-size:22px;font-weight:800;color:#0F1729;">${t.headingConfirm}</h1>
+      <h1 style="margin:0 0 10px;font-size:22px;font-weight:800;color:#111111;">${t.headingConfirm}</h1>
       <p style="margin:0 0 26px;font-size:15px;line-height:1.6;color:#475569;">${t.bodyConfirm}</p>
       <form method="POST" action="/api/unsubscribe/${encodeURIComponent(token)}" style="margin:0;">
-        <button type="submit" style="display:inline-block;padding:13px 26px;background:#0F1729;color:#ffffff;border:none;border-radius:12px;font-weight:700;font-size:14px;cursor:pointer;">${t.buttonConfirm}</button>
+        <button type="submit" style="display:inline-block;padding:13px 26px;background:#111111;color:#ffffff;border:none;border-radius:12px;font-weight:700;font-size:14px;cursor:pointer;">${t.buttonConfirm}</button>
       </form>
       <p style="margin:22px 0 0;font-size:12px;">
         <a href="${APP_URL}" style="color:#94A3B8;text-decoration:none;">${t.home}</a>
@@ -137,9 +137,9 @@ function renderDone(lang: Lang): string {
   const t = COPY[lang];
   return pageShell(lang, `
       <div style="font-size:44px;line-height:1;margin-bottom:18px;">✓</div>
-      <h1 style="margin:0 0 12px;font-size:24px;font-weight:800;color:#0F1729;">${t.headingDone}</h1>
+      <h1 style="margin:0 0 12px;font-size:24px;font-weight:800;color:#111111;">${t.headingDone}</h1>
       <p style="margin:0 0 28px;font-size:15px;line-height:1.6;color:#475569;">${t.bodyDone}</p>
-      <a href="${APP_URL}" style="display:inline-block;padding:12px 24px;background:#0F1729;color:#ffffff;text-decoration:none;border-radius:12px;font-weight:700;font-size:14px;">${t.home}</a>`);
+      <a href="${APP_URL}" style="display:inline-block;padding:12px 24px;background:#111111;color:#ffffff;text-decoration:none;border-radius:12px;font-weight:700;font-size:14px;">${t.home}</a>`);
 }
 
 // UUID or similar opaque token — reject anything that isn't hex/dash.

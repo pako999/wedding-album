@@ -147,26 +147,26 @@ export function ExitIntentPopup({ lang }: { lang: LangCode }) {
         {/* Gold top strip */}
         <div
           className="h-2 w-full"
-          style={{ background: "linear-gradient(90deg, #FFD966 0%, #FFC94D 50%, #F0B429 100%)" }}
+          style={{ background: "linear-gradient(90deg, #FFCC3D 0%, #F4B400 50%, #D69E00 100%)" }}
         />
 
         {/* Close button */}
         <button
           onClick={close}
           aria-label="Close"
-          className="absolute top-4 right-4 w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-gray-500 hover:text-[#0F1729] transition-colors text-lg leading-none"
+          className="absolute top-4 right-4 w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-gray-500 hover:text-[#111111] transition-colors text-lg leading-none"
         >
           ×
         </button>
 
         <div className="px-8 pt-6 pb-8">
           {/* Eyebrow */}
-          <span className="inline-block text-xs font-bold uppercase tracking-widest text-[#C9820A] mb-3">
+          <span className="inline-block text-xs font-bold uppercase tracking-widest text-[#946D00] mb-3">
             {t.eyebrow}
           </span>
 
           {/* Heading */}
-          <h2 className="font-serif text-3xl font-bold text-[#0F1729] leading-tight mb-3">
+          <h2 className="font-serif text-3xl font-bold text-[#111111] leading-tight mb-3">
             {t.heading}
           </h2>
 
@@ -183,12 +183,12 @@ export function ExitIntentPopup({ lang }: { lang: LangCode }) {
             <button
               onClick={copyCode}
               className="w-full flex items-center justify-between gap-3 px-5 py-3 rounded-xl border-2 border-dashed transition-colors group"
-              style={{ borderColor: "#FFC94D", background: "#FFFBEE" }}
+              style={{ borderColor: "#F4B400", background: "#FFFBEE" }}
             >
-              <span className="font-mono text-xl font-extrabold tracking-widest text-[#0F1729]">
+              <span className="font-mono text-xl font-extrabold tracking-widest text-[#111111]">
                 {DISCOUNT_CODE}
               </span>
-              <span className="text-xs font-semibold text-[#C9820A] group-hover:text-[#0F1729] transition-colors shrink-0">
+              <span className="text-xs font-semibold text-[#946D00] group-hover:text-[#111111] transition-colors shrink-0">
                 {copied ? t.copied : "Copy"}
               </span>
             </button>
@@ -198,8 +198,8 @@ export function ExitIntentPopup({ lang }: { lang: LangCode }) {
           <Link
             href="/dashboard/new"
             onClick={close}
-            className="block w-full text-center py-3.5 rounded-xl font-bold text-[#0F1729] text-sm transition-opacity hover:opacity-90"
-            style={{ background: "linear-gradient(135deg, #FFD966 0%, #FFC94D 55%, #F0B429 100%)" }}
+            className="block w-full text-center py-3.5 rounded-xl font-bold text-[#111111] text-sm transition-opacity hover:opacity-90"
+            style={{ background: "linear-gradient(135deg, #FFCC3D 0%, #F4B400 55%, #D69E00 100%)" }}
           >
             {t.cta}
           </Link>

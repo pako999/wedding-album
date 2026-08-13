@@ -57,7 +57,7 @@ export default async function AdminAlbums({ searchParams }: PageProps) {
     <div className="space-y-6">
       <header className="flex items-end justify-between">
         <div>
-          <h1 className="font-serif text-3xl text-[#0F1729]">Galerije</h1>
+          <h1 className="font-serif text-3xl text-[#111111]">Galerije</h1>
           <p className="text-sm text-gray-500 mt-1">
             {rows.length} galerij{search ? ` — iskanje "${search}"` : ""}
           </p>
@@ -67,9 +67,9 @@ export default async function AdminAlbums({ searchParams }: PageProps) {
             name="q"
             defaultValue={search}
             placeholder="slug, ime ali email…"
-            className="px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:border-[#FFC94D] focus:ring-1 focus:ring-[#FFC94D]"
+            className="px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:border-[#F4B400] focus:ring-1 focus:ring-[#F4B400]"
           />
-          <button className="px-4 py-2 bg-[#FFC94D] text-[#0F1729] font-semibold text-sm rounded-lg hover:opacity-90">
+          <button className="px-4 py-2 bg-[#F4B400] text-[#111111] font-semibold text-sm rounded-lg hover:opacity-90">
             Išči
           </button>
         </form>

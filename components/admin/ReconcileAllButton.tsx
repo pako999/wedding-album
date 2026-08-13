@@ -50,7 +50,7 @@ export function ReconcileAllButton() {
         type="button"
         onClick={run}
         disabled={busy}
-        className="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white bg-[#0F1729] rounded-xl hover:opacity-90 transition-opacity disabled:opacity-50"
+        className="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white bg-[#111111] rounded-xl hover:opacity-90 transition-opacity disabled:opacity-50"
       >
         {busy ? "Preverjam…" : "🔄 Popravi plačane galerije"}
       </button>
@@ -59,7 +59,7 @@ export function ReconcileAllButton() {
 
       {result && (
         <div className="text-xs bg-white border border-gray-200 rounded-xl p-3 space-y-1.5">
-          <p className="font-semibold text-[#0F1729]">
+          <p className="font-semibold text-[#111111]">
             Pregledanih {result.examined} · nadgrajenih {result.fixedCount}
             {result.errors > 0 && ` · napak ${result.errors}`}
           </p>

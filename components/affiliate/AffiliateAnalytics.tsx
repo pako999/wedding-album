@@ -62,7 +62,7 @@ export async function AffiliateAnalytics({
   return (
     <div className="bg-white rounded-2xl border border-gray-200 p-5 space-y-6">
       <div className="flex items-baseline justify-between">
-        <h2 className="font-bold text-[#0F1729]">📊 {t.heading}</h2>
+        <h2 className="font-bold text-[#111111]">📊 {t.heading}</h2>
         <span className="text-xs text-gray-400">{t.windowSuffix(windowDays)}</span>
       </div>
 
@@ -86,7 +86,7 @@ export async function AffiliateAnalytics({
                 <div
                   key={d.date}
                   title={`${d.date}: ${d.clicks}`}
-                  className="flex-1 min-w-0 rounded-t bg-gradient-to-t from-[#FFC94D] to-[#FFD966] hover:opacity-80"
+                  className="flex-1 min-w-0 rounded-t bg-gradient-to-t from-[#F4B400] to-[#FFCC3D] hover:opacity-80"
                   style={{ height: `${(d.clicks / maxDaily) * 100}%`, minHeight: d.clicks > 0 ? "2px" : "0" }}
                 />
               ))}
@@ -127,7 +127,7 @@ export async function AffiliateAnalytics({
                 return (
                   <div key={d.label} className="flex-1 rounded-xl border border-gray-100 px-3 py-2 text-center">
                     <p className="text-[10px] text-gray-400 uppercase tracking-wider">{d.label}</p>
-                    <p className="font-bold text-[#0F1729]">{d.clicks}</p>
+                    <p className="font-bold text-[#111111]">{d.clicks}</p>
                     <p className="text-[10px] text-gray-400">{pct}%</p>
                   </div>
                 );
@@ -154,7 +154,7 @@ export async function AffiliateAnalytics({
                     {analytics.recentClicks.map((c) => (
                       <tr key={c.id} className="border-t border-gray-100">
                         <td className="px-3 py-2 text-gray-500 whitespace-nowrap">{fmtDateTime(c.clickedAt)}</td>
-                        <td className="px-3 py-2 text-[#0F1729] font-semibold">{c.source}</td>
+                        <td className="px-3 py-2 text-[#111111] font-semibold">{c.source}</td>
                         <td className="px-3 py-2 text-gray-600 font-mono truncate max-w-[200px]">{c.landingPage ?? "/"}</td>
                         <td className="px-3 py-2 text-gray-500">{c.device}</td>
                         <td className="px-3 py-2">
@@ -183,7 +183,7 @@ function FunnelCard({ label, value, hint }: { label: string; value: string; hint
   return (
     <div className="rounded-xl border border-gray-100 p-3">
       <p className="text-[10px] uppercase tracking-widest text-gray-400 mb-1">{label}</p>
-      <p className="text-lg font-extrabold text-[#0F1729] leading-tight">{value}</p>
+      <p className="text-lg font-extrabold text-[#111111] leading-tight">{value}</p>
       {hint && <p className="text-[10px] text-gray-400 mt-0.5">{hint}</p>}
     </div>
   );
@@ -193,13 +193,13 @@ function BarRow({ label, value, max, mono = false }: { label: string; value: num
   const pct = max > 0 ? (value / max) * 100 : 0;
   return (
     <div className="flex items-center gap-3">
-      <div className={`flex-1 min-w-0 text-xs truncate ${mono ? "font-mono text-gray-600" : "text-[#0F1729] font-semibold"}`} title={label}>
+      <div className={`flex-1 min-w-0 text-xs truncate ${mono ? "font-mono text-gray-600" : "text-[#111111] font-semibold"}`} title={label}>
         {label}
       </div>
       <div className="w-32 h-2.5 bg-gray-100 rounded-full overflow-hidden">
-        <div className="h-full bg-gradient-to-r from-[#FFD966] to-[#F0B429]" style={{ width: `${pct}%` }} />
+        <div className="h-full bg-gradient-to-r from-[#FFCC3D] to-[#D69E00]" style={{ width: `${pct}%` }} />
       </div>
-      <span className="text-xs font-bold text-[#0F1729] w-8 text-right">{value}</span>
+      <span className="text-xs font-bold text-[#111111] w-8 text-right">{value}</span>
     </div>
   );
 }

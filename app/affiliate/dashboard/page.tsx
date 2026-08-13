@@ -29,14 +29,14 @@ export default async function AffiliateDashboardPage() {
       <div className="min-h-screen bg-[#F5F5F7] flex items-center justify-center px-4">
         <div className="max-w-md text-center bg-white rounded-2xl border border-gray-100 p-8">
           <div className="text-4xl mb-3">🤝</div>
-          <h1 className="text-xl font-extrabold text-[#0F1729] mb-2">Še niste partner</h1>
+          <h1 className="text-xl font-extrabold text-[#111111] mb-2">Še niste partner</h1>
           <p className="text-sm text-gray-500 mb-5">
             Pridružite se CamLove partnerskemu programu in zaslužite 20% provizije.
           </p>
           <Link
             href="/affiliate/apply"
             className="inline-block px-5 py-2.5 rounded-xl text-sm font-bold"
-            style={{ background: "#FFC94D", color: "#0F1729" }}
+            style={{ background: "#F4B400", color: "#111111" }}
           >
             Prijava →
           </Link>
@@ -50,7 +50,7 @@ export default async function AffiliateDashboardPage() {
       <div className="min-h-screen bg-[#F5F5F7] flex items-center justify-center px-4">
         <div className="max-w-md text-center bg-white rounded-2xl border border-gray-100 p-8">
           <div className="text-4xl mb-3">⏳</div>
-          <h1 className="text-xl font-extrabold text-[#0F1729] mb-2">Prijava v obdelavi</h1>
+          <h1 className="text-xl font-extrabold text-[#111111] mb-2">Prijava v obdelavi</h1>
           <p className="text-sm text-gray-500">
             Vašo prijavo pregledujemo. Odgovorili vam bomo v 2 delovnih dneh.
           </p>
@@ -64,7 +64,7 @@ export default async function AffiliateDashboardPage() {
       <div className="min-h-screen bg-[#F5F5F7] flex items-center justify-center px-4">
         <div className="max-w-md text-center bg-white rounded-2xl border border-gray-100 p-8">
           <div className="text-4xl mb-3">🚫</div>
-          <h1 className="text-xl font-extrabold text-[#0F1729] mb-2">
+          <h1 className="text-xl font-extrabold text-[#111111] mb-2">
             {affiliate.status === "suspended" ? "Partnerski račun ustavljen" : "Prijava zavrnjena"}
           </h1>
           <p className="text-sm text-gray-500">

@@ -38,7 +38,7 @@ export function ApplyForm({ lang }: Props) {
     return (
       <div className="text-center py-10">
         <div className="text-5xl mb-4">✅</div>
-        <h3 className="text-xl font-extrabold text-[#0F1729] mb-2">{t.successTitle}</h3>
+        <h3 className="text-xl font-extrabold text-[#111111] mb-2">{t.successTitle}</h3>
         <p className="text-sm text-gray-500 max-w-md mx-auto">{t.successBody}</p>
       </div>
     );
@@ -67,7 +67,7 @@ export function ApplyForm({ lang }: Props) {
     }
   }
 
-  const inputClass = "w-full px-3.5 py-2.5 text-sm border rounded-xl focus:outline-none focus:border-[#FFC94D] focus:ring-1 focus:ring-[#FFC94D] transition-colors";
+  const inputClass = "w-full px-3.5 py-2.5 text-sm border rounded-xl focus:outline-none focus:border-[#F4B400] focus:ring-1 focus:ring-[#F4B400] transition-colors";
   const req = <span className="text-red-500">*</span>;
 
   return (
@@ -203,7 +203,7 @@ export function ApplyForm({ lang }: Props) {
         type="submit"
         disabled={submitting}
         className="w-full mt-4 py-3.5 rounded-xl font-bold text-sm transition-all hover:opacity-90 disabled:opacity-60"
-        style={{ background: "#FFC94D", color: "#0F1729" }}
+        style={{ background: "#F4B400", color: "#111111" }}
       >
         {submitting ? t.formSubmitting : t.formSubmit}
       </button>

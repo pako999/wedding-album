@@ -103,7 +103,7 @@ function driveBannerCopy(result: string, count?: string): { tone: "success" | "w
 
 const DRIVE_BANNER_STYLES: Record<"success" | "warning" | "neutral" | "error", { bg: string; border: string; text: string; icon: string }> = {
   success: { bg: "#f0fdf4", border: "#86efac", text: "#15803d", icon: "✅" },
-  warning: { bg: "#FFF9EC", border: "#FFC94D", text: "#92600A", icon: "⚠️" },
+  warning: { bg: "#FFF9E8", border: "#F4B400", text: "#946D00", icon: "⚠️" },
   neutral: { bg: "#F9FAFB", border: "#E5E7EB", text: "#4B5563", icon: "ℹ️" },
   error:   { bg: "#FEF2F2", border: "#FCA5A5", text: "#B91C1C", icon: "⚠️" },
 };
@@ -155,7 +155,7 @@ function NewAlbumSuccess({ album, paidPlan }: { album: Album; paidPlan?: "basic"
             <div
               key={n}
               className="flex-1 h-1.5 rounded-full transition-colors"
-              style={{ background: n <= step ? "#FFC94D" : "#E5E7EB" }}
+              style={{ background: n <= step ? "#F4B400" : "#E5E7EB" }}
             />
           ))}
         </div>
@@ -181,7 +181,7 @@ function NewAlbumSuccess({ album, paidPlan }: { album: Album; paidPlan?: "basic"
             <button
               onClick={() => setStep(2)}
               className="flex items-center justify-center gap-2 w-full py-3.5 rounded-xl text-white font-bold text-base transition-opacity hover:opacity-90"
-              style={{ background: "#FFC94D" }}
+              style={{ background: "#F4B400" }}
             >
               Naprej
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
@@ -216,7 +216,7 @@ function NewAlbumSuccess({ album, paidPlan }: { album: Album; paidPlan?: "basic"
                 href={`/api/albums/${album.slug}/qr?format=png&design=1`}
                 download={`qr-${album.slug}.png`}
                 className="flex items-center justify-center gap-1.5 py-3 text-sm font-medium text-white rounded-xl transition-opacity hover:opacity-90"
-                style={{ background: "#FFC94D" }}
+                style={{ background: "#F4B400" }}
               >
                 ⬇ Prenesi QR kodo
               </a>
@@ -231,7 +231,7 @@ function NewAlbumSuccess({ album, paidPlan }: { album: Album; paidPlan?: "basic"
               <button
                 onClick={() => setStep(3)}
                 className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-white font-bold text-sm transition-opacity hover:opacity-90"
-                style={{ background: "#FFC94D" }}
+                style={{ background: "#F4B400" }}
               >
                 Naprej
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
@@ -245,8 +245,8 @@ function NewAlbumSuccess({ album, paidPlan }: { album: Album; paidPlan?: "basic"
         {/* ── Step 3 — Print template ────────────────────────────────── */}
         {step === 3 && (
           <div className="text-center">
-            <div className="flex items-center justify-center w-16 h-16 rounded-2xl bg-[#FFF9EC] mx-auto mb-4">
-              <svg className="w-8 h-8 text-[#C9820A]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.8}>
+            <div className="flex items-center justify-center w-16 h-16 rounded-2xl bg-[#FFF9E8] mx-auto mb-4">
+              <svg className="w-8 h-8 text-[#946D00]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.8}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6.72 13.829c-.24.03-.48.062-.72.096m.72-.096a42.415 42.415 0 0110.56 0m-10.56 0L6.34 18m10.94-4.171c.24.03.48.062.72.096m-.72-.096L17.66 18m0 0l.229 2.523a1.125 1.125 0 01-1.12 1.227H7.231c-.662 0-1.18-.568-1.12-1.227L6.34 18m11.318 0h1.091A2.25 2.25 0 0021 15.75V9.456c0-1.081-.768-2.015-1.837-2.175a48.055 48.055 0 00-1.913-.247M6.34 18H5.25A2.25 2.25 0 013 15.75V9.456c0-1.081.768-2.015 1.837-2.175a48.041 48.041 0 011.913-.247m10.5 0a48.536 48.536 0 00-10.5 0m10.5 0V3.375c0-.621-.504-1.125-1.125-1.125h-8.25c-.621 0-1.125.504-1.125 1.125v3.659M18 10.5h.008v.008H18V10.5zm-3 0h.008v.008H15V10.5z" />
               </svg>
             </div>
@@ -258,7 +258,7 @@ function NewAlbumSuccess({ album, paidPlan }: { album: Album; paidPlan?: "basic"
             <Link
               href={`/dashboard/${album.slug}/print`}
               className="flex items-center justify-center gap-2 w-full py-3.5 rounded-xl text-white font-bold text-base mb-3 transition-opacity hover:opacity-90"
-              style={{ background: "#FFC94D" }}
+              style={{ background: "#F4B400" }}
             >
               🖨️ Odpri predloge za tisk
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
@@ -285,7 +285,7 @@ function NewAlbumSuccess({ album, paidPlan }: { album: Album; paidPlan?: "basic"
               </button>
               <Link
                 href={dashboardUrl}
-                className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl text-sm font-bold border-2 border-[#0F1729] text-[#0F1729] hover:bg-[#0F1729] hover:text-white transition-colors"
+                className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl text-sm font-bold border-2 border-[#111111] text-[#111111] hover:bg-[#111111] hover:text-white transition-colors"
               >
                 Pojdi na nadzorno ploščo →
               </Link>
@@ -425,7 +425,7 @@ export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activ
       : album.plan === "plus"
       ? "bg-gray-900 text-white"
       : album.plan === "basic"
-      ? "bg-[#FFC94D] text-white"
+      ? "bg-[#F4B400] text-white"
       : "bg-gray-100 text-gray-600";
 
   // Last uploaded photo date
@@ -451,7 +451,7 @@ export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activ
       {viewingAsAdmin && (
         <div
           className="fixed top-0 inset-x-0 z-[60] flex items-center justify-between gap-3 px-4 py-2 text-sm font-semibold text-white shadow-md"
-          style={{ background: "#0F1729" }}
+          style={{ background: "#111111" }}
           role="status"
           aria-live="polite"
         >
@@ -463,7 +463,7 @@ export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activ
           </div>
           <Link
             href="/admin/albums"
-            className="shrink-0 inline-flex items-center gap-1 rounded-md bg-[#FFC94D] text-[#0F1729] px-2.5 py-1 text-xs font-bold hover:opacity-90"
+            className="shrink-0 inline-flex items-center gap-1 rounded-md bg-[#F4B400] text-[#111111] px-2.5 py-1 text-xs font-bold hover:opacity-90"
           >
             ← Nazaj na admin
           </Link>
@@ -539,7 +539,7 @@ export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activ
                 onClick={() => navigateTab(item.id)}
                 className={`w-full flex items-center gap-2.5 px-4 py-2.5 rounded-lg mx-0 text-sm font-medium transition-colors text-left ${
                   isActive
-                    ? "border-l-2 border-[#FFC94D] bg-[#FFF9EC] text-[#C9820A]"
+                    ? "border-l-2 border-[#F4B400] bg-[#FFF9E8] text-[#946D00]"
                     : "text-gray-600 hover:bg-gray-50 hover:text-gray-800"
                 }`}
               >
@@ -553,7 +553,7 @@ export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activ
               onClick={() => navigateTab("pending")}
               className={`w-full flex items-center gap-2.5 px-4 py-2.5 rounded-lg text-sm font-medium transition-colors text-left ${
                 activeTab === "pending"
-                  ? "border-l-2 border-[#FFC94D] bg-[#FFF9EC] text-[#C9820A]"
+                  ? "border-l-2 border-[#F4B400] bg-[#FFF9E8] text-[#946D00]"
                   : "text-gray-600 hover:bg-gray-50 hover:text-gray-800"
               }`}
             >
@@ -569,7 +569,7 @@ export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activ
         {/* Sign out — clear, visible button (not a faint text link) */}
         <div className="px-4 pb-5 pt-3 border-t border-gray-100">
           <SignOutButton>
-            <button className="w-full flex items-center justify-center gap-2 px-3 py-2.5 text-sm font-semibold text-[#0F1729] bg-white border border-gray-200 rounded-lg hover:bg-[#FFF9EC] hover:border-[#FFC94D] transition-colors">
+            <button className="w-full flex items-center justify-center gap-2 px-3 py-2.5 text-sm font-semibold text-[#111111] bg-white border border-gray-200 rounded-lg hover:bg-[#FFF9E8] hover:border-[#F4B400] transition-colors">
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
               </svg>
@@ -606,28 +606,28 @@ export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activ
             >
               <div className="flex items-center gap-3 min-w-0">
                 <div className="flex items-center gap-2 shrink-0">
-                  <span className="text-sm font-bold" style={{ color: atLimit ? "#DC2626" : "#FFC94D" }}>
+                  <span className="text-sm font-bold" style={{ color: atLimit ? "#DC2626" : "#F4B400" }}>
                     {used} / {max}
                   </span>
-                  <span className="text-xs" style={{ color: atLimit ? "#DC2626" : "#FFC94D" }}>slik</span>
+                  <span className="text-xs" style={{ color: atLimit ? "#DC2626" : "#F4B400" }}>slik</span>
                 </div>
                 <div className="w-28 h-1.5 rounded-full bg-gray-200 hidden sm:block">
                   <div
                     className="h-full rounded-full transition-all"
                     style={{
                       width: `${pct}%`,
-                      background: atLimit ? "#DC2626" : pct > 70 ? "#F59E0B" : "#FFC94D",
+                      background: atLimit ? "#DC2626" : pct > 70 ? "#F59E0B" : "#F4B400",
                     }}
                   />
                 </div>
-                <span className="text-xs hidden md:block" style={{ color: atLimit ? "#DC2626" : "#FFC94D" }}>
+                <span className="text-xs hidden md:block" style={{ color: atLimit ? "#DC2626" : "#F4B400" }}>
                   {atLimit ? "⚠️ Dosežena meja — gostje ne morejo več nalagati!" : "Brezplačni paket"}
                 </span>
               </div>
               <Link
                 href={`/dashboard/${album.slug}/upgrade`}
                 className="flex-shrink-0 px-4 py-1.5 rounded-lg text-white text-xs font-bold transition-opacity hover:opacity-90 whitespace-nowrap"
-                style={{ background: atLimit ? "#DC2626" : "#FFC94D" }}
+                style={{ background: atLimit ? "#DC2626" : "#F4B400" }}
               >
                 {atLimit ? "Odkleni takoj →" : "Odkleni galerijo →"}
               </Link>
@@ -918,24 +918,24 @@ function OverviewTab({
     <div className="space-y-6">
       {/* Upgrade nudge card — free plan only */}
       {album.plan === "free" && (
-        <div className="bg-[#FFF9EC] border border-indigo-100 rounded-2xl p-5 flex flex-col sm:flex-row sm:items-center gap-4">
+        <div className="bg-[#FFF9E8] border border-indigo-100 rounded-2xl p-5 flex flex-col sm:flex-row sm:items-center gap-4">
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-1">
               <span className="text-sm font-bold text-indigo-800">📦 Brezplačni paket</span>
-              <span className="text-xs bg-[#FFF3CC] text-[#C9820A] px-2 py-0.5 rounded-full font-medium">
+              <span className="text-xs bg-[#FFECB8] text-[#946D00] px-2 py-0.5 rounded-full font-medium">
                 {album.photoCount ?? 0} / {album.maxPhotos ?? 20} slik
               </span>
             </div>
-            <div className="w-full h-2 bg-[#FFF3CC] rounded-full mb-2">
+            <div className="w-full h-2 bg-[#FFECB8] rounded-full mb-2">
               <div
                 className="h-full rounded-full transition-all"
                 style={{
                   width: `${usedPct}%`,
-                  background: usedPct >= 100 ? "#DC2626" : usedPct > 70 ? "#F59E0B" : "#FFC94D",
+                  background: usedPct >= 100 ? "#DC2626" : usedPct > 70 ? "#F59E0B" : "#F4B400",
                 }}
               />
             </div>
-            <p className="text-xs text-[#C9820A]">
+            <p className="text-xs text-[#946D00]">
               {usedPct >= 100
                 ? "⚠️ Meja dosežena — nadgradi za neomejeno nalaganje"
                 : `Nadgradi za neomejene fotografije, videe in dostop 1 leto`}
@@ -944,7 +944,7 @@ function OverviewTab({
           <Link
             href={`/dashboard/${album.slug}/upgrade`}
             className="flex-shrink-0 px-5 py-2.5 rounded-xl text-white text-sm font-bold transition-all hover:opacity-90 hover:brightness-95 shadow-sm"
-            style={{ background: "#FFC94D" }}
+            style={{ background: "#F4B400" }}
           >
             Poglej pakete →
           </Link>
@@ -991,7 +991,7 @@ function OverviewTab({
               <p className="text-3xl font-bold text-gray-900">{card.value}</p>
               <p className="text-xs font-medium uppercase tracking-wide text-gray-400 mt-1">{card.label}</p>
             </div>
-            <div className="w-9 h-9 rounded-lg flex items-center justify-center text-[#C9820A] bg-[#FFF9EC] shrink-0">
+            <div className="w-9 h-9 rounded-lg flex items-center justify-center text-[#946D00] bg-[#FFF9E8] shrink-0">
               {card.icon}
             </div>
           </div>
@@ -1003,7 +1003,7 @@ function OverviewTab({
           from lg up. */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6 items-start">
         {/* QR Card */}
-        <div className="rounded-2xl border border-gray-100 p-5 flex flex-col gap-4" style={{ background: "linear-gradient(180deg,#FFF9EC 0%,#FFFFFF 45%)" }}>
+        <div className="rounded-2xl border border-gray-100 p-5 flex flex-col gap-4" style={{ background: "linear-gradient(180deg,#FFF9E8 0%,#FFFFFF 45%)" }}>
           <div>
             <h3 className="font-bold text-gray-900 text-base">📱 Tvoja galerija</h3>
             <p className="text-xs text-gray-400 mt-0.5">Natisni to kodo in jo postavi na mize.</p>
@@ -1012,7 +1012,7 @@ function OverviewTab({
             href={albumUrl}
             target="_blank"
             rel="noreferrer"
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs text-[#C9820A] border border-[#FFE08A] rounded-lg hover:bg-[#FFF9EC] transition-colors self-start"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs text-[#946D00] border border-[#FFE08A] rounded-lg hover:bg-[#FFF9E8] transition-colors self-start"
           >
             Skeniraj to QR kodo in preizkusi, kako deluje
           </a>
@@ -1047,7 +1047,7 @@ function OverviewTab({
           <Link
             href={`/dashboard/${album.slug}/upgrade#stands`}
             className="flex items-center gap-3 rounded-xl border p-3 hover:brightness-[0.98] transition-all"
-            style={{ background: "#FFF9EC", borderColor: "rgba(255,201,77,0.5)" }}
+            style={{ background: "#FFF9E8", borderColor: "rgba(255,201,77,0.5)" }}
           >
             <img
               src="/print/stand-wood.webp"
@@ -1063,7 +1063,7 @@ function OverviewTab({
                 Natisnemo in dostavimo QR podstavke za mize (tisk na 200 g papir) — že od {eur(Math.min(...STAND_VARIANTS.map((v) => v.unitCents)))} na kos, samo ob nakupu paketa.
               </span>
             </span>
-            <svg className="w-4 h-4 text-[#C9820A] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+            <svg className="w-4 h-4 text-[#946D00] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
             </svg>
           </Link>
@@ -1074,8 +1074,8 @@ function OverviewTab({
             door to them instead of the full settings cards. */}
         <Link
           href={`/dashboard/${album.slug}?tab=events`}
-          className="rounded-2xl border border-gray-100 p-5 flex flex-col justify-between gap-3 hover:border-[#FFC94D] transition-colors"
-          style={{ background: "linear-gradient(180deg,#0F1729 0%,#1B2842 100%)" }}
+          className="rounded-2xl border border-gray-100 p-5 flex flex-col justify-between gap-3 hover:border-[#F4B400] transition-colors"
+          style={{ background: "linear-gradient(180deg,#111111 0%,#1B2842 100%)" }}
         >
           <div>
             <h3 className="font-bold text-white text-base">🎪 Eventi &amp; Foto stena</h3>
@@ -1084,7 +1084,7 @@ function OverviewTab({
               kontaktov gostov ter sodelavci — vse na enem mestu.
             </p>
           </div>
-          <span className="inline-flex items-center gap-1.5 text-sm font-bold text-[#FFC94D]">
+          <span className="inline-flex items-center gap-1.5 text-sm font-bold text-[#F4B400]">
             Odpri nastavitve eventov
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
@@ -1098,7 +1098,7 @@ function OverviewTab({
         <div className="bg-white rounded-2xl border border-gray-100 p-5 flex flex-col gap-3">
           <div className="flex items-center justify-between">
             <h3 className="font-semibold text-gray-900 text-sm">Zadnje naloženo</h3>
-            <Link href={`/dashboard/${album.slug}?tab=gallery`} className="text-xs text-[#C9820A] hover:underline">
+            <Link href={`/dashboard/${album.slug}?tab=gallery`} className="text-xs text-[#946D00] hover:underline">
               Poglej vse
             </Link>
           </div>
@@ -1159,7 +1159,7 @@ function EventsTab({
             onClick={() => setSub(t.id)}
             className={`px-4 py-2.5 text-sm font-semibold whitespace-nowrap border-b-2 -mb-px transition-colors ${
               sub === t.id
-                ? "border-[#FFC94D] text-[#C9820A]"
+                ? "border-[#F4B400] text-[#946D00]"
                 : "border-transparent text-gray-500 hover:text-gray-800"
             }`}
           >
@@ -1403,7 +1403,7 @@ function QrTab({
           <button
             onClick={handleCopy}
             className="px-4 py-2.5 text-sm font-semibold rounded-lg text-white transition-colors whitespace-nowrap"
-            style={{ background: copied ? "#22c55e" : "#FFC94D" }}
+            style={{ background: copied ? "#22c55e" : "#F4B400" }}
           >
             {copied ? "Kopirano!" : "Kopiraj"}
           </button>
@@ -1434,7 +1434,7 @@ function QrTab({
           </p>
           <Link
             href={`/dashboard/${album.slug}/print`}
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#FFC94D] text-white text-sm font-semibold hover:bg-[#F0B429] transition-colors shadow-sm"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#F4B400] text-white text-sm font-semibold hover:bg-[#D69E00] transition-colors shadow-sm"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M6.72 13.829c-.24.03-.48.062-.72.096m.72-.096a42.415 42.415 0 0110.56 0m-10.56 0L6.34 18m10.94-4.171c.24.03.48.062.72.096m-.72-.096L17.66 18m0 0l.229 2.523a1.125 1.125 0 01-1.12 1.227H7.231c-.662 0-1.18-.568-1.12-1.227L6.34 18m11.318 0h1.091A2.25 2.25 0 0021 15.75V9.456c0-1.081-.768-2.015-1.837-2.175a48.055 48.055 0 00-1.913-.247M6.34 18H5.25A2.25 2.25 0 013 15.75V9.456c0-1.081.768-2.015 1.837-2.175a48.041 48.041 0 011.913-.247m10.5 0a48.536 48.536 0 00-10.5 0m10.5 0V3.375c0-.621-.504-1.125-1.125-1.125h-8.25c-.621 0-1.125.504-1.125 1.125v3.659M18 10.5h.008v.008H18V10.5zm-3 0h.008v.008H15V10.5z" />
@@ -1563,11 +1563,11 @@ function AccountInfoCard({ ownerEmail }: { ownerEmail: string | null }) {
       <div className="flex items-center justify-between gap-4">
         <div className="min-w-0">
           <p className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-1">Prijavljeni račun</p>
-          <p className="text-sm font-semibold text-[#0F1729] truncate">{ownerEmail ?? "—"}</p>
+          <p className="text-sm font-semibold text-[#111111] truncate">{ownerEmail ?? "—"}</p>
           <p className="text-xs text-gray-400 mt-0.5">Ta galerija je vezana na ta račun.</p>
         </div>
         <SignOutButton>
-          <button className="flex-shrink-0 px-3 py-2 text-xs font-semibold text-[#0F1729] border border-gray-200 rounded-lg hover:bg-[#FFF9EC] hover:border-[#FFC94D] transition-colors">
+          <button className="flex-shrink-0 px-3 py-2 text-xs font-semibold text-[#111111] border border-gray-200 rounded-lg hover:bg-[#FFF9E8] hover:border-[#F4B400] transition-colors">
             Odjava
           </button>
         </SignOutButton>
@@ -1646,7 +1646,7 @@ function AlbumSettingsForm({ album, children, wallToken, hasPassword }: { album:
   };
 
   const inputClass =
-    "w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm text-gray-800 bg-white outline-none focus:border-[#FFC94D] transition-colors";
+    "w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm text-gray-800 bg-white outline-none focus:border-[#F4B400] transition-colors";
 
   return (
     <div className="bg-white rounded-2xl border border-gray-100 p-6 space-y-5">
@@ -1780,7 +1780,7 @@ function AlbumSettingsForm({ album, children, wallToken, hasPassword }: { album:
                 title={tm.name}
                 className={`group flex flex-col items-center gap-1.5 rounded-xl p-1.5 transition-all ${
                   selected
-                    ? "ring-2 ring-[#FFC94D] ring-offset-1"
+                    ? "ring-2 ring-[#F4B400] ring-offset-1"
                     : "ring-1 ring-gray-200 hover:ring-gray-300"
                 }`}
               >
@@ -1799,14 +1799,14 @@ function AlbumSettingsForm({ album, children, wallToken, hasPassword }: { album:
                     ))}
                   </span>
                   {selected && (
-                    <span className="absolute top-1 right-1 w-4 h-4 rounded-full bg-[#FFC94D] text-[#0F1729] flex items-center justify-center shadow">
+                    <span className="absolute top-1 right-1 w-4 h-4 rounded-full bg-[#F4B400] text-[#111111] flex items-center justify-center shadow">
                       <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={3.5}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                       </svg>
                     </span>
                   )}
                 </span>
-                <span className={`text-[11px] text-center leading-tight ${selected ? "font-semibold text-[#C9820A]" : "text-gray-600"}`}>
+                <span className={`text-[11px] text-center leading-tight ${selected ? "font-semibold text-[#946D00]" : "text-gray-600"}`}>
                   {tm.name}
                 </span>
               </button>
@@ -1817,7 +1817,7 @@ function AlbumSettingsForm({ album, children, wallToken, hasPassword }: { album:
           // type instantly re-groups the themes.
           return recommended.length > 0 ? (
             <>
-              <p className="text-[11px] font-bold uppercase tracking-widest text-[#C9820A] mb-2">
+              <p className="text-[11px] font-bold uppercase tracking-widest text-[#946D00] mb-2">
                 ✨ Priporočene za vaš dogodek
               </p>
               <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5 mb-4">
@@ -1844,7 +1844,7 @@ function AlbumSettingsForm({ album, children, wallToken, hasPassword }: { album:
             role="switch"
             aria-checked={isPublished}
             onClick={() => setIsPublished(!isPublished)}
-            className={`relative w-10 h-5 rounded-full transition-colors ${isPublished ? "bg-[#FFC94D]" : "bg-gray-200"}`}
+            className={`relative w-10 h-5 rounded-full transition-colors ${isPublished ? "bg-[#F4B400]" : "bg-gray-200"}`}
           >
             <span className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white shadow transition-transform ${isPublished ? "translate-x-5" : "translate-x-0"}`} />
           </button>
@@ -1857,7 +1857,7 @@ function AlbumSettingsForm({ album, children, wallToken, hasPassword }: { album:
               role="switch"
               aria-checked={moderationEnabled}
               onClick={() => setModerationEnabled(!moderationEnabled)}
-              className={`relative w-10 h-5 rounded-full transition-colors ${moderationEnabled ? "bg-[#FFC94D]" : "bg-gray-200"}`}
+              className={`relative w-10 h-5 rounded-full transition-colors ${moderationEnabled ? "bg-[#F4B400]" : "bg-gray-200"}`}
             >
               <span className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white shadow transition-transform ${moderationEnabled ? "translate-x-5" : "translate-x-0"}`} />
             </button>
@@ -1869,7 +1869,7 @@ function AlbumSettingsForm({ album, children, wallToken, hasPassword }: { album:
       <button
         onClick={save}
         disabled={saving}
-        className="w-full py-3 rounded-xl text-white text-sm font-semibold disabled:opacity-50 transition-colors bg-[#FFC94D] hover:bg-[#F0B429]"
+        className="w-full py-3 rounded-xl text-white text-sm font-semibold disabled:opacity-50 transition-colors bg-[#F4B400] hover:bg-[#D69E00]"
       >
         {saving ? "Shranjevanje…" : saved ? "✓ Shranjeno" : "Shrani spremembe"}
       </button>
@@ -1991,7 +1991,7 @@ function MomentsManager({ album }: { album: Album }) {
   };
 
   const inputClass =
-    "w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm text-gray-800 bg-white outline-none focus:border-[#FFC94D] transition-colors";
+    "w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm text-gray-800 bg-white outline-none focus:border-[#F4B400] transition-colors";
 
   return (
     <div className="bg-white rounded-2xl border border-gray-100 p-6 space-y-4">
@@ -2013,7 +2013,7 @@ function MomentsManager({ album }: { album: Album }) {
         <button
           onClick={addMoment}
           disabled={busy || !newName.trim()}
-          className="flex-shrink-0 px-4 py-2.5 rounded-xl text-white text-sm font-semibold bg-[#FFC94D] hover:bg-[#F0B429] transition-colors disabled:opacity-40"
+          className="flex-shrink-0 px-4 py-2.5 rounded-xl text-white text-sm font-semibold bg-[#F4B400] hover:bg-[#D69E00] transition-colors disabled:opacity-40"
         >
           {t.momentAdd}
         </button>
@@ -2044,7 +2044,7 @@ function MomentsManager({ album }: { album: Album }) {
                   <button
                     onClick={() => renameMoment(m.id)}
                     disabled={busy || !editName.trim()}
-                    className="flex-shrink-0 px-3 py-1.5 rounded-lg text-white text-xs font-semibold bg-[#FFC94D] hover:bg-[#F0B429] transition-colors disabled:opacity-40"
+                    className="flex-shrink-0 px-3 py-1.5 rounded-lg text-white text-xs font-semibold bg-[#F4B400] hover:bg-[#D69E00] transition-colors disabled:opacity-40"
                   >
                     {t.momentRename}
                   </button>
@@ -2095,7 +2095,7 @@ interface DomainStatus {
   verification: DnsRecord[];
 }
 
-const ACCENT = "#C9820A"; // black-blue accent
+const ACCENT = "#946D00"; // black-blue accent
 
 function CustomDomainPanel({ album }: { album: Album }) {
   const isPremium = album.plan === "premium";
@@ -2199,7 +2199,7 @@ function CustomDomainPanel({ album }: { album: Album }) {
   };
 
   const inputClass =
-    "w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm text-gray-800 bg-white outline-none focus:border-[#FFC94D] transition-colors";
+    "w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm text-gray-800 bg-white outline-none focus:border-[#F4B400] transition-colors";
 
   // ── Locked panel (non-Premium) ──────────────────────────────────────────────
   if (!isPremium) {

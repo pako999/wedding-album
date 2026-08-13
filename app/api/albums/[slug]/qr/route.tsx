@@ -44,7 +44,7 @@ async function renderDesignedCard(opts: {
     QRCode.toDataURL(opts.albumUrl, {
       width: 480,
       margin: 1,
-      color: { dark: "#0F1729", light: "#FFFFFF" },
+      color: { dark: "#111111", light: "#FFFFFF" },
       errorCorrectionLevel: "M",
     }),
   ]);
@@ -70,19 +70,19 @@ async function renderDesignedCard(opts: {
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
-            border: "3px solid #FFC94D",
+            border: "3px solid #F4B400",
             borderRadius: 26,
             paddingTop: 70,
             paddingBottom: 50,
           }}
         >
-          <div style={{ display: "flex", fontSize: 30, fontWeight: 700, letterSpacing: 6, color: "#C9820A" }}>
+          <div style={{ display: "flex", fontSize: 30, fontWeight: 700, letterSpacing: 6, color: "#946D00" }}>
             CAMLOVE
           </div>
-          <div style={{ display: "flex", marginTop: 46, fontSize: 58, fontWeight: 700, color: "#0F1729", textAlign: "center" }}>
+          <div style={{ display: "flex", marginTop: 46, fontSize: 58, fontWeight: 700, color: "#111111", textAlign: "center" }}>
             {opts.coupleName}
           </div>
-          <div style={{ display: "flex", marginTop: 26, fontSize: 38, fontWeight: 700, color: "#0F1729", textAlign: "center" }}>
+          <div style={{ display: "flex", marginTop: 26, fontSize: 38, fontWeight: 700, color: "#111111", textAlign: "center" }}>
             {opts.headline}
           </div>
           <div style={{ display: "flex", marginTop: 20, fontSize: 26, color: "#64748B", textAlign: "center", maxWidth: 700 }}>
@@ -103,7 +103,7 @@ async function renderDesignedCard(opts: {
             <img src={qrPng} width={460} height={460} alt="" />
           </div>
 
-          <div style={{ display: "flex", marginTop: 56, fontSize: 26, fontWeight: 700, letterSpacing: 3, color: "#C9820A" }}>
+          <div style={{ display: "flex", marginTop: 56, fontSize: 26, fontWeight: 700, letterSpacing: 3, color: "#946D00" }}>
             SKENIRAJ · NALOŽI · DELI
           </div>
           <div style={{ display: "flex", marginTop: 18, fontSize: 24, color: "#94A3B8" }}>
@@ -155,7 +155,7 @@ export async function GET(
     type: "svg",
     margin: 2,
     color: {
-      dark: "#0F1729",
+      dark: "#111111",
       light: "#F2F4F8",
     },
   });
@@ -184,7 +184,7 @@ export async function GET(
       type: "png",
       width: 400,
       margin: 2,
-      color: { dark: "#0F1729", light: "#F2F4F8" },
+      color: { dark: "#111111", light: "#F2F4F8" },
     });
     return new NextResponse(new Uint8Array(png), {
       headers: {

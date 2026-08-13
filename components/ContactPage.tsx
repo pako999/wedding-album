@@ -257,18 +257,18 @@ export function ContactPage({ lang }: { lang: LangCode }) {
   const t = COPY[lang];
 
   return (
-    <div className="min-h-screen bg-white text-[#0F1729]">
+    <div className="min-h-screen bg-white text-[#111111]">
       <SiteHeader lang={lang} />
 
       <main>
         {/* Hero */}
-        <section className="bg-gradient-to-b from-[#FFF9EC] to-white py-20 sm:py-24">
+        <section className="bg-gradient-to-b from-[#FFF9E8] to-white py-20 sm:py-24">
           <div className="max-w-3xl mx-auto px-6 text-center">
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold mb-5 uppercase tracking-widest"
-              style={{ background: "rgba(255,201,77,0.18)", color: "#C9820A" }}>
+              style={{ background: "rgba(255,201,77,0.18)", color: "#946D00" }}>
               {t.eyebrow}
             </div>
-            <h1 className="font-serif text-4xl sm:text-5xl font-extrabold text-[#0F1729] mb-5 leading-tight">
+            <h1 className="font-serif text-4xl sm:text-5xl font-extrabold text-[#111111] mb-5 leading-tight">
               {t.heading}
             </h1>
             <p className="text-base sm:text-lg text-gray-500 max-w-xl mx-auto leading-relaxed">{t.lead}</p>
@@ -282,22 +282,22 @@ export function ContactPage({ lang }: { lang: LangCode }) {
               <a
                 key={c.title}
                 href={c.href}
-                className="group relative bg-white rounded-2xl border border-gray-200 p-6 hover:border-[#FFC94D] hover:shadow-md transition-all"
+                className="group relative bg-white rounded-2xl border border-gray-200 p-6 hover:border-[#F4B400] hover:shadow-md transition-all"
               >
                 <div className="text-3xl mb-3">{c.icon}</div>
-                <h3 className="font-bold text-[#0F1729] text-base mb-1">{c.title}</h3>
+                <h3 className="font-bold text-[#111111] text-base mb-1">{c.title}</h3>
                 <p className="text-xs text-gray-500 mb-4">{c.desc}</p>
-                <p className="text-sm font-semibold text-[#C9820A] group-hover:underline break-all">{c.value}</p>
+                <p className="text-sm font-semibold text-[#946D00] group-hover:underline break-all">{c.value}</p>
               </a>
             ))}
           </div>
         </section>
 
         {/* Message form */}
-        <section className="py-14 bg-[#FFF9EC]/40">
+        <section className="py-14 bg-[#FFF9E8]/40">
           <div className="max-w-2xl mx-auto px-6">
             <div className="bg-white rounded-2xl border border-gray-200 p-7 sm:p-10 shadow-sm">
-              <h2 className="font-serif text-2xl sm:text-3xl font-bold text-[#0F1729] mb-2">{t.formTitle}</h2>
+              <h2 className="font-serif text-2xl sm:text-3xl font-bold text-[#111111] mb-2">{t.formTitle}</h2>
               <p className="text-sm text-gray-500 mb-6">{t.formLead}</p>
 
               <ContactForm
@@ -319,13 +319,13 @@ export function ContactPage({ lang }: { lang: LangCode }) {
         {/* FAQ */}
         <section className="py-14 bg-white">
           <div className="max-w-2xl mx-auto px-6">
-            <h2 className="font-serif text-2xl sm:text-3xl font-bold text-[#0F1729] mb-6">{t.faqTitle}</h2>
+            <h2 className="font-serif text-2xl sm:text-3xl font-bold text-[#111111] mb-6">{t.faqTitle}</h2>
             <div className="space-y-2">
               {t.faqs.map((f) => (
-                <details key={f.q} className="group rounded-xl border border-gray-200 p-4 open:border-[#FFC94D]/60 open:bg-[#FFF9EC]/40">
-                  <summary className="font-semibold text-[#0F1729] cursor-pointer list-none flex items-center justify-between gap-3">
+                <details key={f.q} className="group rounded-xl border border-gray-200 p-4 open:border-[#F4B400]/60 open:bg-[#FFF9E8]/40">
+                  <summary className="font-semibold text-[#111111] cursor-pointer list-none flex items-center justify-between gap-3">
                     <span>{f.q}</span>
-                    <span className="text-[#C9820A] transition-transform group-open:rotate-45">+</span>
+                    <span className="text-[#946D00] transition-transform group-open:rotate-45">+</span>
                   </summary>
                   <p className="text-sm text-gray-600 mt-2.5 leading-relaxed">{f.a}</p>
                 </details>
@@ -337,7 +337,7 @@ export function ContactPage({ lang }: { lang: LangCode }) {
         {/* Company info */}
         <section className="pb-16 bg-white">
           <div className="max-w-2xl mx-auto px-6">
-            <div className="rounded-2xl border border-gray-200 bg-[#FFF9EC]/40 p-6 sm:p-7 text-center">
+            <div className="rounded-2xl border border-gray-200 bg-[#FFF9E8]/40 p-6 sm:p-7 text-center">
               <h2 className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-3">{t.company.title}</h2>
               <p className="text-sm text-gray-600 leading-relaxed">
                 {t.company.lines.map((line, i) => (

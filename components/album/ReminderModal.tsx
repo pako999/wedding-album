@@ -52,7 +52,7 @@ export function ReminderModal({ albumSlug, lang, accent, onClose }: Props) {
   return (
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-6">
       <div
-        className="absolute inset-0 bg-[#0F1729]/70 backdrop-blur-sm"
+        className="absolute inset-0 bg-[#111111]/70 backdrop-blur-sm"
         onClick={!sending ? onClose : undefined}
       />
 

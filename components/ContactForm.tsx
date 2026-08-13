@@ -96,9 +96,9 @@ export function ContactForm({ labels }: { labels: Labels }) {
 
   if (done) {
     return (
-      <div className="bg-[#FFF9EC] border border-[#FFC94D]/40 rounded-2xl p-8 text-center">
+      <div className="bg-[#FFF9E8] border border-[#F4B400]/40 rounded-2xl p-8 text-center">
         <div className="text-3xl mb-3">✓</div>
-        <h3 className="font-serif text-xl font-bold text-[#0F1729] mb-2">{labels.successTitle}</h3>
+        <h3 className="font-serif text-xl font-bold text-[#111111] mb-2">{labels.successTitle}</h3>
         <p className="text-sm text-gray-600">{labels.successBody}</p>
       </div>
     );
@@ -121,7 +121,7 @@ export function ContactForm({ labels }: { labels: Labels }) {
             <input
               name="name"
               required
-              className="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-[#FFC94D] focus:ring-1 focus:ring-[#FFC94D]"
+              className="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-[#F4B400] focus:ring-1 focus:ring-[#F4B400]"
             />
           </label>
           <label className="block">
@@ -130,7 +130,7 @@ export function ContactForm({ labels }: { labels: Labels }) {
               type="email"
               name="email"
               required
-              className="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-[#FFC94D] focus:ring-1 focus:ring-[#FFC94D]"
+              className="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-[#F4B400] focus:ring-1 focus:ring-[#F4B400]"
             />
           </label>
         </div>
@@ -138,7 +138,7 @@ export function ContactForm({ labels }: { labels: Labels }) {
           <span className="block text-xs font-medium text-gray-500 mb-1">{labels.subject}</span>
           <input
             name="subject"
-            className="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-[#FFC94D] focus:ring-1 focus:ring-[#FFC94D]"
+            className="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-[#F4B400] focus:ring-1 focus:ring-[#F4B400]"
           />
         </label>
         <label className="block">
@@ -147,7 +147,7 @@ export function ContactForm({ labels }: { labels: Labels }) {
             name="message"
             rows={5}
             required
-            className="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-[#FFC94D] focus:ring-1 focus:ring-[#FFC94D] resize-y"
+            className="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-[#F4B400] focus:ring-1 focus:ring-[#F4B400] resize-y"
           />
         </label>
 
@@ -164,9 +164,9 @@ export function ContactForm({ labels }: { labels: Labels }) {
         <button
           type="submit"
           disabled={busy || (!!siteKey && !token)}
-          className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-sm font-bold text-[#0F1729] disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-sm font-bold text-[#111111] disabled:opacity-50 disabled:cursor-not-allowed"
           style={{
-            background: "linear-gradient(135deg, #FFD966 0%, #FFC94D 55%, #F0B429 100%)",
+            background: "linear-gradient(135deg, #FFCC3D 0%, #F4B400 55%, #D69E00 100%)",
             boxShadow: "0 6px 18px rgba(255,201,77,0.45)",
           }}
         >

@@ -115,7 +115,7 @@ function formatUploadTime(date: Date | string | null | undefined, t: Translation
 }
 
 const BRAND = {
-  accent:      "#C9820A",
+  accent:      "#946D00",
   accentHover: "#152C66",
   accentLight: "#EAEEF6",
   dark:        "#111827",
@@ -704,9 +704,9 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
       {/* Owner-only top bar — quick exit back to the admin dashboard while
           previewing the public gallery. */}
       {isOwner && (
-        <div className="bg-[#FFC94D] border-b border-[#F0B429]">
+        <div className="bg-[#F4B400] border-b border-[#D69E00]">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 py-2 flex items-center justify-between gap-3">
-            <p className="flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-[#0F1729]">
+            <p className="flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-[#111111]">
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
                 <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -715,7 +715,7 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
             </p>
             <Link
               href={`/dashboard/${album.slug}`}
-              className="inline-flex items-center gap-1.5 px-3 sm:px-4 py-1.5 rounded-full bg-[#0F1729] text-white text-xs sm:text-sm font-bold hover:brightness-125 transition-all"
+              className="inline-flex items-center gap-1.5 px-3 sm:px-4 py-1.5 rounded-full bg-[#111111] text-white text-xs sm:text-sm font-bold hover:brightness-125 transition-all"
             >
               <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
@@ -1182,7 +1182,7 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
                         type="checkbox"
                         checked={bannerConsent}
                         onChange={(e) => setBannerConsent(e.target.checked)}
-                        className="mt-0.5 shrink-0 accent-[#C9820A]"
+                        className="mt-0.5 shrink-0 accent-[#946D00]"
                       />
                       <span className="text-[11px] text-gray-500 leading-snug">{t.marketingConsentLabel}</span>
                     </label>

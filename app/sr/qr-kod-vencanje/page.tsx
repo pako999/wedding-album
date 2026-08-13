@@ -59,7 +59,7 @@ const articleSchema = {
 
 function SiteFooter() {
   return (
-    <footer className="bg-[#0F1729] text-white py-8 mt-20">
+    <footer className="bg-[#111111] text-white py-8 mt-20">
       <div className="max-w-5xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-gray-400">
         <p>© 2025 Sport group d.o.o. · SI72133449</p>
         <div className="flex items-center gap-5">
@@ -75,8 +75,8 @@ function SiteFooter() {
 
 function CtaBox() {
   return (
-    <div className="rounded-3xl p-8 my-12 text-center bg-[#FFF9EC] border border-[#FFE08A]">
-      <p className="font-serif text-2xl font-bold text-[#0F1729] mb-3">
+    <div className="rounded-3xl p-8 my-12 text-center bg-[#FFF9E8] border border-[#FFE08A]">
+      <p className="font-serif text-2xl font-bold text-[#111111] mb-3">
         Spremite QR kod za vaše venčanje
       </p>
       <p className="text-gray-600 mb-6 max-w-md mx-auto">
@@ -84,7 +84,7 @@ function CtaBox() {
       </p>
       <Link
         href="/dashboard/new"
-        className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-[#FFC94D] text-[#0F1729] font-bold text-base transition-all duration-200 hover:scale-[1.02] hover:brightness-95"
+        className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-[#F4B400] text-[#111111] font-bold text-base transition-all duration-200 hover:scale-[1.02] hover:brightness-95"
       >
         Započni besplatno →
       </Link>
@@ -94,7 +94,7 @@ function CtaBox() {
 
 export default function QrKodVencanjePage() {
   return (
-    <div className="min-h-screen bg-white text-[#0F1729] font-sans">
+    <div className="min-h-screen bg-white text-[#111111] font-sans">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: safeJsonLd(articleSchema) }}
@@ -104,10 +104,10 @@ export default function QrKodVencanjePage() {
       <main className="max-w-3xl mx-auto px-6 py-16">
         {/* Hero */}
         <div className="mb-12">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold mb-5 uppercase tracking-widest bg-[#FFF3CC] text-[#C9820A]">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold mb-5 uppercase tracking-widest bg-[#FFECB8] text-[#946D00]">
             Vodič · Srbija · 2025
           </div>
-          <h1 className="font-serif text-4xl md:text-5xl font-bold text-[#0F1729] leading-tight mb-5">
+          <h1 className="font-serif text-4xl md:text-5xl font-bold text-[#111111] leading-tight mb-5">
             QR kod za venčanje i svadbu — sakupite sve slike gostiju
           </h1>
           <p className="text-lg text-gray-600 leading-relaxed mb-6">
@@ -119,13 +119,13 @@ export default function QrKodVencanjePage() {
           </p>
           <div className="flex flex-wrap gap-4 text-sm text-gray-500">
             <span className="flex items-center gap-1.5">
-              <svg className="w-4 h-4 text-[#C9820A]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+              <svg className="w-4 h-4 text-[#946D00]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
               Vreme čitanja: ~5 minuta
             </span>
             <span className="flex items-center gap-1.5">
-              <svg className="w-4 h-4 text-[#C9820A]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+              <svg className="w-4 h-4 text-[#946D00]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75M16.5 6.108c1.131.094 1.976 1.057 1.976 2.192V18A2.25 2.25 0 0116.226 20.25H7.5A2.25 2.25 0 015.25 18V8.3c0-1.135.844-2.098 1.976-2.192" />
               </svg>
               Ažurirano: januar 2025
@@ -135,7 +135,7 @@ export default function QrKodVencanjePage() {
 
         {/* What is */}
         <section className="mb-10">
-          <h2 className="font-serif text-2xl font-bold text-[#0F1729] mb-4">
+          <h2 className="font-serif text-2xl font-bold text-[#111111] mb-4">
             Šta je QR kod za svadbu i venčanje?
           </h2>
           <p className="text-gray-600 leading-relaxed mb-4">
@@ -157,9 +157,9 @@ export default function QrKodVencanjePage() {
         <CtaBox />
 
         {/* Why it works */}
-        <section className="mb-10 -mx-6 px-6 py-12 bg-[#FFF9EC]">
+        <section className="mb-10 -mx-6 px-6 py-12 bg-[#FFF9E8]">
           <div className="max-w-3xl mx-auto">
-            <h2 className="font-serif text-2xl font-bold text-[#0F1729] mb-4">
+            <h2 className="font-serif text-2xl font-bold text-[#111111] mb-4">
               Zašto QR kod na venčanju zaista funkcioniše
             </h2>
             <p className="text-gray-600 leading-relaxed mb-6">
@@ -187,13 +187,13 @@ export default function QrKodVencanjePage() {
                 },
               ].map(({ title, desc }) => (
                 <div key={title} className="flex gap-4 p-4 rounded-2xl bg-white border border-gray-100 shadow-sm">
-                  <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 bg-[#FFF3CC]">
-                    <svg className="w-4 h-4 text-[#C9820A]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                  <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 bg-[#FFECB8]">
+                    <svg className="w-4 h-4 text-[#946D00]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                     </svg>
                   </div>
                   <div>
-                    <p className="font-semibold text-[#0F1729]">{title}</p>
+                    <p className="font-semibold text-[#111111]">{title}</p>
                     <p className="text-sm text-gray-600 mt-0.5">{desc}</p>
                   </div>
                 </div>
@@ -209,7 +209,7 @@ export default function QrKodVencanjePage() {
 
         {/* Benefits */}
         <section className="mb-10">
-          <h2 className="font-serif text-2xl font-bold text-[#0F1729] mb-4">
+          <h2 className="font-serif text-2xl font-bold text-[#111111] mb-4">
             Prednosti QR koda za venčanje
           </h2>
           <div className="grid sm:grid-cols-2 gap-4">
@@ -223,7 +223,7 @@ export default function QrKodVencanjePage() {
             ].map(({ icon, title, desc }) => (
               <div key={title} className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
                 <div className="text-2xl mb-3">{icon}</div>
-                <p className="font-semibold text-[#0F1729] mb-1">{title}</p>
+                <p className="font-semibold text-[#111111] mb-1">{title}</p>
                 <p className="text-sm text-gray-600 leading-relaxed">{desc}</p>
               </div>
             ))}
@@ -231,9 +231,9 @@ export default function QrKodVencanjePage() {
         </section>
 
         {/* Step by step */}
-        <section className="mb-10 -mx-6 px-6 py-12 bg-[#FFF9EC]">
+        <section className="mb-10 -mx-6 px-6 py-12 bg-[#FFF9E8]">
           <div className="max-w-3xl mx-auto">
-            <h2 className="font-serif text-2xl font-bold text-[#0F1729] mb-4">
+            <h2 className="font-serif text-2xl font-bold text-[#111111] mb-4">
               Kako podesiti QR kod za venčanje sa CamLove — korak po korak
             </h2>
             <p className="text-gray-600 leading-relaxed mb-6">
@@ -250,11 +250,11 @@ export default function QrKodVencanjePage() {
                 { step: "07", title: "Preuzmite sve jednim klikom", desc: "Posle venčanja se prijavite u kontrolnu tablu i kliknete »Preuzmi sve«. Sve fotografije i video snimci stižu kao ZIP arhiva — u punom kvalitetu." },
               ].map(({ step, title, desc }) => (
                 <div key={step} className="flex gap-5">
-                  <div className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm shrink-0 mt-0.5 bg-[#FFC94D] text-[#0F1729]">
+                  <div className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm shrink-0 mt-0.5 bg-[#F4B400] text-[#111111]">
                     {step}
                   </div>
                   <div className="bg-white border border-gray-100 rounded-2xl p-5 flex-1 shadow-sm">
-                    <p className="font-semibold text-[#0F1729] mb-1">{title}</p>
+                    <p className="font-semibold text-[#111111] mb-1">{title}</p>
                     <p className="text-sm text-gray-600 leading-relaxed">{desc}</p>
                   </div>
                 </div>
@@ -265,7 +265,7 @@ export default function QrKodVencanjePage() {
 
         {/* Tips */}
         <section className="mb-10">
-          <h2 className="font-serif text-2xl font-bold text-[#0F1729] mb-4">
+          <h2 className="font-serif text-2xl font-bold text-[#111111] mb-4">
             Saveti za najbolje rezultate
           </h2>
           <ul className="space-y-3 text-gray-600">
@@ -278,8 +278,8 @@ export default function QrKodVencanjePage() {
               "Za projekciju tokom slavlja uključite opciju »Prikaži fotografije uživo« u podešavanjima galerije.",
             ].map((tip, i) => (
               <li key={i} className="flex gap-3">
-                <div className="w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5 bg-[#FFF3CC]">
-                  <svg className="w-3 h-3 text-[#C9820A]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={3}>
+                <div className="w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5 bg-[#FFECB8]">
+                  <svg className="w-3 h-3 text-[#946D00]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={3}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                   </svg>
                 </div>
@@ -291,7 +291,7 @@ export default function QrKodVencanjePage() {
 
         {/* FAQ */}
         <section className="mb-10">
-          <h2 className="font-serif text-2xl font-bold text-[#0F1729] mb-4">
+          <h2 className="font-serif text-2xl font-bold text-[#111111] mb-4">
             Često postavljana pitanja
           </h2>
           <div className="space-y-3">
@@ -318,7 +318,7 @@ export default function QrKodVencanjePage() {
               },
             ].map(({ q, a }) => (
               <details key={q} className="bg-white border border-gray-100 rounded-2xl group">
-                <summary className="flex items-center justify-between px-5 py-4 cursor-pointer font-semibold text-[#0F1729] list-none text-sm">
+                <summary className="flex items-center justify-between px-5 py-4 cursor-pointer font-semibold text-[#111111] list-none text-sm">
                   {q}
                   <svg className="w-4 h-4 text-gray-400 shrink-0 group-open:rotate-180 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
@@ -331,7 +331,7 @@ export default function QrKodVencanjePage() {
         </section>
 
         {/* Final dark CTA */}
-        <div className="rounded-3xl p-8 text-center bg-[#0F1729]">
+        <div className="rounded-3xl p-8 text-center bg-[#111111]">
           <p className="font-serif text-3xl font-bold text-white mb-3">
             Vaše venčanje zaslužuje sve uspomene
           </p>
@@ -340,7 +340,7 @@ export default function QrKodVencanjePage() {
           </p>
           <Link
             href="/dashboard/new"
-            className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-[#FFC94D] text-[#0F1729] font-bold text-base transition-all duration-200 hover:scale-[1.02] hover:brightness-95"
+            className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-[#F4B400] text-[#111111] font-bold text-base transition-all duration-200 hover:scale-[1.02] hover:brightness-95"
           >
             Započni besplatno →
           </Link>

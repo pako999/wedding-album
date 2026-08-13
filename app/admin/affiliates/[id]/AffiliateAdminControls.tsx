@@ -36,7 +36,7 @@ export function AffiliateAdminControls({ affiliate }: { affiliate: Affiliate }) 
 
   return (
     <div className="bg-white rounded-2xl border border-gray-200 p-5 space-y-4">
-      <h2 className="font-bold text-[#0F1729]">Upravljanje</h2>
+      <h2 className="font-bold text-[#111111]">Upravljanje</h2>
 
       <div className="flex flex-wrap gap-2">
         {affiliate.status !== "active" && (
@@ -89,7 +89,7 @@ export function AffiliateAdminControls({ affiliate }: { affiliate: Affiliate }) 
                 patch({ commissionRate: n });
               }}
               disabled={pending || rate === String(affiliate.commissionRate)}
-              className="px-3 py-2 rounded-xl bg-[#0F1729] text-white text-xs font-bold disabled:opacity-50"
+              className="px-3 py-2 rounded-xl bg-[#111111] text-white text-xs font-bold disabled:opacity-50"
             >
               Shrani
             </button>
@@ -107,7 +107,7 @@ export function AffiliateAdminControls({ affiliate }: { affiliate: Affiliate }) 
             <button
               onClick={() => patch({ notes })}
               disabled={pending || notes === (affiliate.notes ?? "")}
-              className="px-3 py-2 rounded-xl bg-[#0F1729] text-white text-xs font-bold disabled:opacity-50"
+              className="px-3 py-2 rounded-xl bg-[#111111] text-white text-xs font-bold disabled:opacity-50"
             >
               Shrani
             </button>

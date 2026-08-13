@@ -11,7 +11,7 @@ import type { ReactNode } from "react";
  * not a decoration. Pure CSS animation — zero JS, and the drifting
  * cards are hidden entirely under prefers-reduced-motion.
  *
- * The section fades to #0F1729 at the bottom so the navy trust band
+ * The section fades to #111111 at the bottom so the navy trust band
  * that follows on both homepages continues seamlessly.
  */
 
@@ -68,7 +68,7 @@ export function DarkStageHero({ eyebrow, headLead, headAccent, headTrail, lead, 
   return (
     <div
       className="relative overflow-hidden"
-      style={{ background: "radial-gradient(130% 100% at 50% 0%, #1B2842 0%, #0B1220 62%, #0F1729 100%)" }}
+      style={{ background: "radial-gradient(130% 100% at 50% 0%, #1B2842 0%, #0B1220 62%, #111111 100%)" }}
     >
       {/* ── Drifting photo layer ─────────────────────────────────────── */}
       <div className="absolute inset-0" aria-hidden>
@@ -118,12 +118,12 @@ export function DarkStageHero({ eyebrow, headLead, headAccent, headTrail, lead, 
             <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
           </svg>
         </span>
-        <span className="text-sm font-semibold text-[#0F1729]">{toast}</span>
+        <span className="text-sm font-semibold text-[#111111]">{toast}</span>
       </div>
 
       {/* ── Centre content ───────────────────────────────────────────── */}
       <div className="relative z-10 max-w-4xl mx-auto px-5 sm:px-6 pt-24 pb-20 sm:pt-32 sm:pb-28 lg:pt-36 lg:pb-32 text-center">
-        <p className="text-[11px] sm:text-xs font-bold uppercase tracking-[0.24em] mb-6" style={{ color: "#FFC94D" }}>
+        <p className="text-[11px] sm:text-xs font-bold uppercase tracking-[0.24em] mb-6" style={{ color: "#F4B400" }}>
           {eyebrow}
         </p>
 
@@ -134,7 +134,7 @@ export function DarkStageHero({ eyebrow, headLead, headAccent, headTrail, lead, 
           {headLead}{" "}
           <span
             style={{
-              color: "#FFC94D",
+              color: "#F4B400",
               textShadow: "0 0 28px rgba(255,201,77,.55), 0 0 90px rgba(255,201,77,.28)",
             }}
           >
@@ -150,9 +150,9 @@ export function DarkStageHero({ eyebrow, headLead, headAccent, headTrail, lead, 
         <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
           <Link
             href={ctaHref}
-            className="inline-flex items-center gap-2.5 px-9 sm:px-11 py-4 sm:py-5 rounded-full text-[#0F1729] font-bold text-base sm:text-lg transition-all duration-200 hover:scale-[1.03]"
+            className="inline-flex items-center gap-2.5 px-9 sm:px-11 py-4 sm:py-5 rounded-full text-[#111111] font-bold text-base sm:text-lg transition-all duration-200 hover:scale-[1.03]"
             style={{
-              background: "linear-gradient(135deg, #FFD966 0%, #FFC94D 55%, #F0B429 100%)",
+              background: "linear-gradient(135deg, #FFCC3D 0%, #F4B400 55%, #D69E00 100%)",
               boxShadow: "0 0 44px rgba(255,201,77,.5), 0 14px 36px rgba(255,201,77,.35)",
             }}
           >

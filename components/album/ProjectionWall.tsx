@@ -260,8 +260,8 @@ export function ProjectionWall({ album, photos, onClose }: Props) {
           <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full"
             style={{ background:"rgba(255,201,77,0.12)", border:"1px solid rgba(255,201,77,0.35)" }}>
             <span className="w-2 h-2 rounded-full shrink-0"
-              style={{ background:"#C9820A", animation:"pwLiveDot 1.4s ease-in-out infinite" }}/>
-            <span className="text-xs font-bold tracking-widest" style={{ color:"#C9820A" }}>V ŽIVO</span>
+              style={{ background:"#946D00", animation:"pwLiveDot 1.4s ease-in-out infinite" }}/>
+            <span className="text-xs font-bold tracking-widest" style={{ color:"#946D00" }}>V ŽIVO</span>
           </div>
 
           {/* Clock */}
@@ -387,7 +387,7 @@ export function ProjectionWall({ album, photos, onClose }: Props) {
                           width:      isNewest ? "28px" : "20px",
                           height:     isNewest ? "28px" : "20px",
                           fontSize:   isNewest ? "11px" : "8px",
-                          background: "#FFC94D",
+                          background: "#F4B400",
                         }}
                       >
                         {photo.uploaderName.charAt(0).toUpperCase()}
@@ -410,7 +410,7 @@ export function ProjectionWall({ album, photos, onClose }: Props) {
                       <div
                         className="shrink-0 px-2.5 py-1 rounded-full text-white text-[11px] font-bold tracking-wide"
                         style={{
-                          background: "#FFC94D",
+                          background: "#F4B400",
                           animation: "pwBadge 0.4s cubic-bezier(.4,0,.2,1) 0.3s both",
                         }}
                       >
@@ -455,7 +455,7 @@ export function ProjectionWall({ album, photos, onClose }: Props) {
           className="inline-flex items-center gap-1.5"
           style={{ color: "rgba(255,255,255,0.5)", textDecoration: "none" }}
         >
-          <span className="inline-block w-1.5 h-1.5 rounded-full" style={{ background: "#FFC94D" }} aria-hidden />
+          <span className="inline-block w-1.5 h-1.5 rounded-full" style={{ background: "#F4B400" }} aria-hidden />
           <span style={{ fontWeight: 700, color: "rgba(255,255,255,0.75)" }}>CamLove</span>
           <span style={{ opacity: 0.55 }}>· camlove.me</span>
         </a>
@@ -541,8 +541,8 @@ export function ProjectionWall({ album, photos, onClose }: Props) {
               <div className="mt-4 flex items-center gap-3 text-white">
                 {lightboxPhoto.uploaderName && (
                   <div
-                    className="w-8 h-8 rounded-full flex items-center justify-center font-bold text-[#0F1729]"
-                    style={{ background: "#FFC94D" }}
+                    className="w-8 h-8 rounded-full flex items-center justify-center font-bold text-[#111111]"
+                    style={{ background: "#F4B400" }}
                   >
                     {lightboxPhoto.uploaderName.charAt(0).toUpperCase()}
                   </div>

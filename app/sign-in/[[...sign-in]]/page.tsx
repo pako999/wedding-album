@@ -16,10 +16,10 @@ export default function SignInPage() {
           appearance={{
             elements: {
               rootBox: "w-full",
-              card: "shadow-md rounded-2xl border border-[#C9820A]/15 bg-white",
-              headerTitle: "font-serif text-[#0F1729]",
-              formButtonPrimary: "bg-[#0F1729] hover:bg-[#C9820A] transition-colors rounded-xl",
-              footerActionLink: "text-[#C9820A] hover:text-[#152C66]",
+              card: "shadow-md rounded-2xl border border-[#946D00]/15 bg-white",
+              headerTitle: "font-serif text-[#111111]",
+              formButtonPrimary: "bg-[#111111] hover:bg-[#946D00] transition-colors rounded-xl",
+              footerActionLink: "text-[#946D00] hover:text-[#152C66]",
             },
           }}
         />

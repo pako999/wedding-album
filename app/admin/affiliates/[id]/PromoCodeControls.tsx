@@ -76,7 +76,7 @@ export function PromoCodeControls({ affiliateId, initialPromo }: Props) {
     <div className="bg-white rounded-2xl border border-gray-200 p-5 space-y-4">
       <div className="flex items-start justify-between gap-3 flex-wrap">
         <div>
-          <h2 className="font-bold text-[#0F1729]">🎁 Promo koda za stranke</h2>
+          <h2 className="font-bold text-[#111111]">🎁 Promo koda za stranke</h2>
           <p className="text-xs text-gray-500 mt-0.5">
             Koda, ki jo partner deli na družbenih omrežjih. Stranke prejmejo popust,
             partner pa še vedno dobi provizijo. Ob shranjevanju pošljemo partnerju email s podatki.
@@ -87,7 +87,7 @@ export function PromoCodeControls({ affiliateId, initialPromo }: Props) {
       {!editing && promo ? (
         <div className="space-y-3">
           <div className="flex items-center gap-3 flex-wrap">
-            <code className="px-3 py-2 rounded-xl font-mono font-extrabold text-[#0F1729] bg-[#FFF9EC] border border-[#FFC94D]/40 text-sm tracking-wider">
+            <code className="px-3 py-2 rounded-xl font-mono font-extrabold text-[#111111] bg-[#FFF9E8] border border-[#F4B400]/40 text-sm tracking-wider">
               {promo.code}
             </code>
             <span className="text-sm font-bold text-green-700">−{promo.percentOff}%</span>
@@ -144,7 +144,7 @@ export function PromoCodeControls({ affiliateId, initialPromo }: Props) {
             <button
               onClick={save}
               disabled={busy}
-              className="px-4 py-2 rounded-xl bg-[#0F1729] text-white text-xs font-bold disabled:opacity-60"
+              className="px-4 py-2 rounded-xl bg-[#111111] text-white text-xs font-bold disabled:opacity-60"
             >
               {busy ? "Shranjujem…" : promo ? "Shrani spremembe" : "Ustvari kodo + pošlji email"}
             </button>

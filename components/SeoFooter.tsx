@@ -145,7 +145,7 @@ export function SeoFooter({ lang }: { lang: Lang }) {
   // (no trailing slash — avoids Next's 308 normalization redirect).
   const home = lang === "sl" ? "/" : `/${lang}`;
   return (
-    <footer className="bg-[#0F1729] text-white pt-16 pb-8">
+    <footer className="bg-[#111111] text-white pt-16 pb-8">
       <div className="max-w-6xl mx-auto px-6">
 
         {/* Top grid */}
@@ -220,7 +220,7 @@ export function SeoFooter({ lang }: { lang: Lang }) {
                 href="https://www.futurecode.si"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="font-semibold text-[#FFC94D] hover:text-white transition-colors"
+                className="font-semibold text-[#F4B400] hover:text-white transition-colors"
               >
                 Futurecode.si
               </a>

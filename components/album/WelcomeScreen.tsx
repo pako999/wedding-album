@@ -70,7 +70,7 @@ export function WelcomeScreen({ albumSlug, title, text, button, bgUrl, fontStack
         <button
           type="button"
           onClick={done}
-          className="mt-4 w-full py-3.5 rounded-xl font-bold text-sm text-[#0F1729] transition-all hover:brightness-95"
+          className="mt-4 w-full py-3.5 rounded-xl font-bold text-sm text-[#111111] transition-all hover:brightness-95"
           style={{ background: accent }}
         >
           {button}

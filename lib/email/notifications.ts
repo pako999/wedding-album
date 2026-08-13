@@ -33,20 +33,20 @@ export function welcomeEmailHtml({ ownerName, coupleName, weddingDate, albumSlug
   return `<!DOCTYPE html>
 <html lang="sl">
 <head><meta charset="utf-8" /><title>Dobrodošli v CamLove</title></head>
-<body style="margin:0;padding:0;background:#F2F4F8;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;color:#0F1729;">
+<body style="margin:0;padding:0;background:#F2F4F8;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;color:#111111;">
   <table width="100%" cellpadding="0" cellspacing="0" style="background:#F2F4F8;padding:32px 16px;">
     <tr><td align="center">
       <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;background:#ffffff;border-radius:18px;overflow:hidden;box-shadow:0 4px 24px rgba(15,23,41,0.06);">
 
         <!-- Header -->
-        <tr><td style="background:linear-gradient(135deg,#FFC94D 0%,#FFD966 100%);padding:36px 36px 28px;">
-          <p style="margin:0 0 8px;font-size:12px;letter-spacing:3px;font-weight:700;color:#0F1729;">CAMLOVE</p>
-          <h1 style="margin:0;font-size:24px;line-height:1.25;color:#0F1729;font-weight:800;">🎉 Dobrodošli! Vaša galerija je pripravljena</h1>
+        <tr><td style="background:linear-gradient(135deg,#F4B400 0%,#FFCC3D 100%);padding:36px 36px 28px;">
+          <p style="margin:0 0 8px;font-size:12px;letter-spacing:3px;font-weight:700;color:#111111;">CAMLOVE</p>
+          <h1 style="margin:0;font-size:24px;line-height:1.25;color:#111111;font-weight:800;">🎉 Dobrodošli! Vaša galerija je pripravljena</h1>
         </td></tr>
 
         <!-- Greeting -->
         <tr><td style="padding:32px 36px 8px;">
-          <p style="margin:0 0 16px;font-size:16px;line-height:1.55;color:#0F1729;">Pozdravljeni${greeting},</p>
+          <p style="margin:0 0 16px;font-size:16px;line-height:1.55;color:#111111;">Pozdravljeni${greeting},</p>
           <p style="margin:0;font-size:15px;line-height:1.65;color:#475569;">
             Hvala, ker ste izbrali CamLove. Vaša prva galerija je ustvarjena
             in pripravljena, da skupaj zberete vse fotografije in videe vašega dogodka.
@@ -58,7 +58,7 @@ export function welcomeEmailHtml({ ownerName, coupleName, weddingDate, albumSlug
           <table width="100%" cellpadding="0" cellspacing="0" style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:14px;">
             <tr><td style="padding:20px 22px;">
               <p style="margin:0 0 4px;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#94A3B8;font-weight:700;">Vaša galerija</p>
-              <p style="margin:0 0 6px;font-size:20px;font-weight:800;color:#0F1729;">${escapeHtml(coupleName)}</p>
+              <p style="margin:0 0 6px;font-size:20px;font-weight:800;color:#111111;">${escapeHtml(coupleName)}</p>
               <p style="margin:0 0 14px;font-size:14px;color:#64748B;">${escapeHtml(weddingDate)}</p>
               <a href="${albumUrl}" style="display:inline-block;font-size:13px;color:#1E3A8A;font-weight:600;text-decoration:none;border-bottom:1px solid rgba(30,58,138,0.3);word-break:break-all;">${escapeHtml(albumUrl)}</a>
               <p style="margin:14px 0 0;font-size:13px;color:#64748B;line-height:1.55;">
@@ -70,18 +70,18 @@ export function welcomeEmailHtml({ ownerName, coupleName, weddingDate, albumSlug
 
         <!-- Primary CTAs -->
         <tr><td style="padding:24px 36px 0;text-align:center;">
-          <a href="${albumUrl}" style="display:inline-block;padding:14px 26px;background:#0F1729;color:#ffffff;text-decoration:none;border-radius:12px;font-weight:700;font-size:14px;margin:0 4px 8px;">Odpri svojo galerijo →</a>
-          <a href="${dashboardUrl}" style="display:inline-block;padding:14px 26px;background:#ffffff;color:#0F1729;border:1.5px solid #0F1729;text-decoration:none;border-radius:12px;font-weight:700;font-size:14px;margin:0 4px 8px;">Odpri nadzorno ploščo</a>
+          <a href="${albumUrl}" style="display:inline-block;padding:14px 26px;background:#111111;color:#ffffff;text-decoration:none;border-radius:12px;font-weight:700;font-size:14px;margin:0 4px 8px;">Odpri svojo galerijo →</a>
+          <a href="${dashboardUrl}" style="display:inline-block;padding:14px 26px;background:#ffffff;color:#111111;border:1.5px solid #111111;text-decoration:none;border-radius:12px;font-weight:700;font-size:14px;margin:0 4px 8px;">Odpri nadzorno ploščo</a>
         </td></tr>
 
         <!-- Steps -->
         <tr><td style="padding:32px 36px 0;">
-          <h2 style="margin:0 0 18px;font-size:18px;font-weight:800;color:#0F1729;">📋 Hitra navodila</h2>
-          <p style="margin:0 0 4px;font-size:13px;font-weight:700;color:#0F1729;">1 · Natisnite QR kartice</p>
+          <h2 style="margin:0 0 18px;font-size:18px;font-weight:800;color:#111111;">📋 Hitra navodila</h2>
+          <p style="margin:0 0 4px;font-size:13px;font-weight:700;color:#111111;">1 · Natisnite QR kartice</p>
           <p style="margin:0 0 18px;font-size:14px;line-height:1.6;color:#64748B;">V nadzorni plošči odprite zavihek »QR koda« → »Odpri predloge za tisk«. Izberite med 8 dizajni in natisnite kartice.</p>
-          <p style="margin:0 0 4px;font-size:13px;font-weight:700;color:#0F1729;">2 · Gostje skenirajo</p>
+          <p style="margin:0 0 4px;font-size:13px;font-weight:700;color:#111111;">2 · Gostje skenirajo</p>
           <p style="margin:0 0 18px;font-size:14px;line-height:1.6;color:#64748B;">Vaši gostje skenirajo QR kodo s telefonom — brez aplikacije, brez prijave — in naložijo fotografije v polni kakovosti.</p>
-          <p style="margin:0 0 4px;font-size:13px;font-weight:700;color:#0F1729;">3 · Spremljajte v živo</p>
+          <p style="margin:0 0 4px;font-size:13px;font-weight:700;color:#111111;">3 · Spremljajte v živo</p>
           <p style="margin:0;font-size:14px;line-height:1.6;color:#64748B;">Nove fotografije vidite v galeriji takoj. Po dogodku jih prenesete kot ZIP ali shranite v Google Drive.</p>
         </td></tr>
 
@@ -89,7 +89,7 @@ export function welcomeEmailHtml({ ownerName, coupleName, weddingDate, albumSlug
         <tr><td style="padding:32px 36px 0;">
           <table width="100%" cellpadding="0" cellspacing="0" style="background:#FFF8E1;border:1px solid #FFE08A;border-radius:14px;">
             <tr><td style="padding:18px 22px;">
-              <p style="margin:0 0 6px;font-size:14px;font-weight:700;color:#0F1729;">🔗 Delite povezavo z gosti</p>
+              <p style="margin:0 0 6px;font-size:14px;font-weight:700;color:#111111;">🔗 Delite povezavo z gosti</p>
               <p style="margin:0 0 10px;font-size:13px;line-height:1.55;color:#64748B;">QR koda je glavni način, a če gost ne more skenirati, lahko delite tudi neposredno povezavo prek WhatsApp, SMS-a ali e-pošte:</p>
               <a href="${albumUrl}" style="font-size:13px;color:#1E3A8A;font-weight:600;text-decoration:none;word-break:break-all;">${escapeHtml(albumUrl)}</a>
             </td></tr>
@@ -98,12 +98,12 @@ export function welcomeEmailHtml({ ownerName, coupleName, weddingDate, albumSlug
 
         <!-- Premium -->
         <tr><td style="padding:28px 36px 0;">
-          <table width="100%" cellpadding="0" cellspacing="0" style="background:#0F1729;border-radius:14px;">
+          <table width="100%" cellpadding="0" cellspacing="0" style="background:#111111;border-radius:14px;">
             <tr><td style="padding:22px 24px;color:#ffffff;">
-              <p style="margin:0 0 6px;font-size:11px;letter-spacing:2px;color:#FFC94D;font-weight:700;">💎 PREMIUM</p>
+              <p style="margin:0 0 6px;font-size:11px;letter-spacing:2px;color:#F4B400;font-weight:700;">💎 PREMIUM</p>
               <p style="margin:0 0 10px;font-size:16px;font-weight:700;">Neomejene fotografije, do 100 videoposnetkov in več</p>
               <p style="margin:0 0 14px;font-size:13px;line-height:1.55;color:rgba(255,255,255,0.7);">Z nadgradnjo na Premium dobite neomejeno fotografij, do 100 videoposnetkov, live galerijo, personalizirano stran, premium predloge in prioritetno podporo.</p>
-              <a href="${upgradeUrl}" style="display:inline-block;padding:11px 22px;background:#FFC94D;color:#0F1729;text-decoration:none;border-radius:10px;font-weight:700;font-size:13px;">Nadgradi paket →</a>
+              <a href="${upgradeUrl}" style="display:inline-block;padding:11px 22px;background:#F4B400;color:#111111;text-decoration:none;border-radius:10px;font-weight:700;font-size:13px;">Nadgradi paket →</a>
             </td></tr>
           </table>
         </td></tr>
@@ -111,7 +111,7 @@ export function welcomeEmailHtml({ ownerName, coupleName, weddingDate, albumSlug
         <!-- Help -->
         <tr><td style="padding:28px 36px 32px;">
           <p style="margin:0;font-size:13px;line-height:1.6;color:#64748B;"><strong>Vprašanje?</strong> Odgovorite na to e-pošto ali pišite na <a href="mailto:info@camlove.me" style="color:#1E3A8A;text-decoration:none;font-weight:600;">info@camlove.me</a>. Veselimo se vaših spominov!</p>
-          <p style="margin:14px 0 0;font-size:13px;color:#0F1729;font-weight:700;">— Ekipa CamLove</p>
+          <p style="margin:14px 0 0;font-size:13px;color:#111111;font-weight:700;">— Ekipa CamLove</p>
         </td></tr>
 
         <!-- Footer -->
@@ -187,23 +187,23 @@ export async function sendNewPhotoNotification({
         <tr>
           <td style="background:linear-gradient(135deg,#F2F4F8,#F0E8D8);padding:32px;text-align:center;border-bottom:1px solid rgba(201,169,110,0.2);">
             <p style="margin:0 0 8px;font-size:12px;color:#3551A8;letter-spacing:2px;text-transform:uppercase;">Poročni album</p>
-            <h1 style="margin:0;font-size:28px;font-weight:300;color:#0F1729;font-family:Georgia,serif;">${escapeHtml(coupleName)}</h1>
+            <h1 style="margin:0;font-size:28px;font-weight:300;color:#111111;font-family:Georgia,serif;">${escapeHtml(coupleName)}</h1>
           </td>
         </tr>
         <!-- Body -->
         <tr>
           <td style="padding:32px;">
-            <p style="margin:0 0 16px;font-size:15px;color:#0F1729;line-height:1.6;">
+            <p style="margin:0 0 16px;font-size:15px;color:#111111;line-height:1.6;">
               <strong>${escapeHtml(uploaderName)}</strong> je naložil/a novo fotografijo v vaš poročni album.
             </p>
-            <p style="margin:0 0 24px;font-size:14px;color:#0F1729;opacity:0.6;">
+            <p style="margin:0 0 24px;font-size:14px;color:#111111;opacity:0.6;">
               Album ima skupaj <strong>${photoCount}</strong> ${photoCount === 1 ? "fotografijo" : "fotografij"}.
             </p>
             <div style="text-align:center;margin:32px 0;">
-              <a href="${albumUrl}" style="display:inline-block;padding:14px 28px;background:#0F1729;color:#F2F4F8;text-decoration:none;border-radius:12px;font-size:14px;font-weight:500;margin-right:12px;">
+              <a href="${albumUrl}" style="display:inline-block;padding:14px 28px;background:#111111;color:#F2F4F8;text-decoration:none;border-radius:12px;font-size:14px;font-weight:500;margin-right:12px;">
                 Poglej album
               </a>
-              <a href="${dashboardUrl}" style="display:inline-block;padding:14px 28px;border:1px solid rgba(201,169,110,0.4);color:#0F1729;text-decoration:none;border-radius:12px;font-size:14px;">
+              <a href="${dashboardUrl}" style="display:inline-block;padding:14px 28px;border:1px solid rgba(201,169,110,0.4);color:#111111;text-decoration:none;border-radius:12px;font-size:14px;">
                 Upravljaj
               </a>
             </div>
@@ -212,7 +212,7 @@ export async function sendNewPhotoNotification({
         <!-- Footer -->
         <tr>
           <td style="padding:20px 32px;border-top:1px solid rgba(201,169,110,0.2);text-align:center;">
-            <p style="margin:0;font-size:11px;color:#0F1729;opacity:0.4;">
+            <p style="margin:0;font-size:11px;color:#111111;opacity:0.4;">
               CamLove · <a href="${APP_URL}" style="color:#3551A8;text-decoration:none;">camlove.me</a>
             </p>
           </td>
@@ -262,20 +262,20 @@ export async function sendUploadReminder({
         <tr>
           <td style="background:linear-gradient(135deg,#F2F4F8,#F0E8D8);padding:32px;text-align:center;border-bottom:1px solid rgba(201,169,110,0.2);">
             <p style="margin:0 0 8px;font-size:12px;color:#3551A8;letter-spacing:2px;text-transform:uppercase;">Poročni album</p>
-            <h1 style="margin:0;font-size:28px;font-weight:300;color:#0F1729;font-family:Georgia,serif;">${escapeHtml(coupleName)}</h1>
+            <h1 style="margin:0;font-size:28px;font-weight:300;color:#111111;font-family:Georgia,serif;">${escapeHtml(coupleName)}</h1>
           </td>
         </tr>
         <!-- Body -->
         <tr>
           <td style="padding:32px;">
-            <p style="margin:0 0 16px;font-size:15px;color:#0F1729;line-height:1.6;">
+            <p style="margin:0 0 16px;font-size:15px;color:#111111;line-height:1.6;">
               Ste posneli kakšno lepo fotografijo? Ne pozabite je naložiti v album!
             </p>
-            <p style="margin:0 0 24px;font-size:14px;color:#0F1729;opacity:0.6;">
+            <p style="margin:0 0 24px;font-size:14px;color:#111111;opacity:0.6;">
               Vaše fotografije so dragocen spomin za <strong>${escapeHtml(coupleName)}</strong>. Naložite jih, da jih bodo lahko videli vsi gostje.
             </p>
             <div style="text-align:center;margin:32px 0;">
-              <a href="${albumUrl}" style="display:inline-block;padding:14px 28px;background:#0F1729;color:#F2F4F8;text-decoration:none;border-radius:12px;font-size:14px;font-weight:500;">
+              <a href="${albumUrl}" style="display:inline-block;padding:14px 28px;background:#111111;color:#F2F4F8;text-decoration:none;border-radius:12px;font-size:14px;font-weight:500;">
                 Naloži fotografije
               </a>
             </div>
@@ -284,8 +284,8 @@ export async function sendUploadReminder({
         <!-- Footer -->
         <tr>
           <td style="padding:20px 32px;border-top:1px solid rgba(201,169,110,0.2);text-align:center;">
-            <p style="margin:0;font-size:11px;color:#0F1729;opacity:0.4;">
-              CamLove · <a href="${APP_URL}" style="color:#C9820A;text-decoration:none;">camlove.me</a>
+            <p style="margin:0;font-size:11px;color:#111111;opacity:0.4;">
+              CamLove · <a href="${APP_URL}" style="color:#946D00;text-decoration:none;">camlove.me</a>
             </p>
           </td>
         </tr>
@@ -335,7 +335,7 @@ export async function sendBankOrderConfirmation({
           <table width="100%" cellpadding="0" cellspacing="0" style="background:#F8FAFC;border-radius:12px;border:1px solid #E2E8F0;margin-bottom:28px;">
             <tr><td style="padding:18px 22px;">
               <p style="margin:0 0 10px;font-size:11px;font-weight:700;letter-spacing:2px;color:#64748B;text-transform:uppercase;">Podatki za predračun</p>
-              <p style="margin:0 0 4px;font-size:14px;font-weight:700;color:#0F1729;">${escapeHtml(billing.name)}</p>
+              <p style="margin:0 0 4px;font-size:14px;font-weight:700;color:#111111;">${escapeHtml(billing.name)}</p>
               <p style="margin:0 0 2px;font-size:13px;color:#475569;">${escapeHtml(billing.address)}</p>
               <p style="margin:0 0 2px;font-size:13px;color:#475569;">${escapeHtml(billing.city)}</p>
               ${billing.taxId ? `<p style="margin:6px 0 0;font-size:12px;color:#94A3B8;">Davčna: ${escapeHtml(billing.taxId)}</p>` : ""}
@@ -349,57 +349,57 @@ export async function sendBankOrderConfirmation({
     html: `<!DOCTYPE html>
 <html lang="sl">
 <head><meta charset="utf-8" /><title>Naročilo prejeto</title></head>
-<body style="margin:0;padding:0;background:#F2F4F8;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;color:#0F1729;">
+<body style="margin:0;padding:0;background:#F2F4F8;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;color:#111111;">
   <table width="100%" cellpadding="0" cellspacing="0" style="background:#F2F4F8;padding:32px 16px;">
     <tr><td align="center">
       <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;background:#ffffff;border-radius:18px;overflow:hidden;box-shadow:0 4px 24px rgba(15,23,41,0.06);">
-        <tr><td style="background:linear-gradient(135deg,#FFC94D 0%,#FFD966 100%);padding:36px 36px 28px;">
-          <p style="margin:0 0 8px;font-size:12px;letter-spacing:3px;font-weight:700;color:#0F1729;">CAMLOVE</p>
-          <h1 style="margin:0;font-size:24px;line-height:1.25;color:#0F1729;font-weight:800;">Vase narocilo je prejeto!</h1>
+        <tr><td style="background:linear-gradient(135deg,#F4B400 0%,#FFCC3D 100%);padding:36px 36px 28px;">
+          <p style="margin:0 0 8px;font-size:12px;letter-spacing:3px;font-weight:700;color:#111111;">CAMLOVE</p>
+          <h1 style="margin:0;font-size:24px;line-height:1.25;color:#111111;font-weight:800;">Vase narocilo je prejeto!</h1>
         </td></tr>
         <tr><td style="padding:32px 36px;">
-          <p style="margin:0 0 16px;font-size:16px;line-height:1.55;color:#0F1729;">
+          <p style="margin:0 0 16px;font-size:16px;line-height:1.55;color:#111111;">
             Hvala za vase narocilo za album <strong>${safe.coupleName}</strong>.
           </p>
           <p style="margin:0 0 24px;font-size:15px;line-height:1.65;color:#475569;">
             Prejeli smo vaso zahtevo za placilo po predracunu. V kratkem vam bomo poslali predracun na ta e-postni naslov. Po prejemu placila bo vas paket takoj aktiviran.
           </p>
           ${billingHtml}
-          <table width="100%" cellpadding="0" cellspacing="0" style="background:#FFF9EC;border-radius:12px;border:1px solid #FFC94D;margin-bottom:28px;">
+          <table width="100%" cellpadding="0" cellspacing="0" style="background:#FFF9E8;border-radius:12px;border:1px solid #F4B400;margin-bottom:28px;">
             <tr><td style="padding:20px 24px;">
-              <p style="margin:0 0 4px;font-size:11px;font-weight:700;letter-spacing:2px;color:#C9820A;text-transform:uppercase;">Povzetek narocila</p>
+              <p style="margin:0 0 4px;font-size:11px;font-weight:700;letter-spacing:2px;color:#946D00;text-transform:uppercase;">Povzetek narocila</p>
               <table width="100%" cellpadding="0" cellspacing="0" style="margin-top:12px;">
                 <tr>
                   <td style="font-size:14px;color:#475569;padding:4px 0;">Paket</td>
-                  <td align="right" style="font-size:14px;font-weight:700;color:#0F1729;padding:4px 0;">CamLove ${safe.planName}</td>
+                  <td align="right" style="font-size:14px;font-weight:700;color:#111111;padding:4px 0;">CamLove ${safe.planName}</td>
                 </tr>
                 <tr><td colspan="2" style="padding:6px 0;"><hr style="border:none;border-top:1px solid rgba(255,201,77,0.3);margin:0;" /></td></tr>
                 <tr>
-                  <td style="font-size:14px;font-weight:700;color:#0F1729;padding:4px 0;">Skupaj za placilo</td>
-                  <td align="right" style="font-size:18px;font-weight:800;color:#0F1729;padding:4px 0;">${planPrice}&euro;</td>
+                  <td style="font-size:14px;font-weight:700;color:#111111;padding:4px 0;">Skupaj za placilo</td>
+                  <td align="right" style="font-size:18px;font-weight:800;color:#111111;padding:4px 0;">${planPrice}&euro;</td>
                 </tr>
               </table>
             </td></tr>
           </table>
-          <p style="margin:0 0 12px;font-size:15px;font-weight:700;color:#0F1729;">Kaj sledi?</p>
+          <p style="margin:0 0 12px;font-size:15px;font-weight:700;color:#111111;">Kaj sledi?</p>
           <ol style="margin:0 0 28px;padding-left:20px;font-size:14px;line-height:1.9;color:#475569;">
             <li>V naslednjih 24 urah prejmete predracun za placilo.</li>
             <li>Poravnajte znesek na nas bancni racun (podatki so v predracunu).</li>
             <li>Po potrditvi placila bo vas paket <strong>${safe.planName}</strong> takoj aktiviran.</li>
           </ol>
-          <a href="${dashboardUrl}" style="display:inline-block;background:#FFC94D;color:#0F1729;font-weight:700;font-size:15px;padding:14px 28px;border-radius:12px;text-decoration:none;">
+          <a href="${dashboardUrl}" style="display:inline-block;background:#F4B400;color:#111111;font-weight:700;font-size:15px;padding:14px 28px;border-radius:12px;text-decoration:none;">
             Odpri nadzorno plosco &rarr;
           </a>
         </td></tr>
         <tr><td style="padding:0 36px 28px;">
           <p style="margin:0;font-size:13px;color:#94a3b8;line-height:1.6;">
             Vprasanja? Pisite nam na
-            <a href="mailto:info@camlove.me" style="color:#C9820A;text-decoration:none;">info@camlove.me</a> - odgovorimo v 24 urah.
+            <a href="mailto:info@camlove.me" style="color:#946D00;text-decoration:none;">info@camlove.me</a> - odgovorimo v 24 urah.
           </p>
         </td></tr>
         <tr><td style="padding:20px 36px;border-top:1px solid #f1f5f9;text-align:center;">
-          <p style="margin:0;font-size:11px;color:#0F1729;opacity:0.4;">
-            CamLove &middot; <a href="${APP_URL}" style="color:#C9820A;text-decoration:none;">camlove.me</a>
+          <p style="margin:0;font-size:11px;color:#111111;opacity:0.4;">
+            CamLove &middot; <a href="${APP_URL}" style="color:#946D00;text-decoration:none;">camlove.me</a>
           </p>
         </td></tr>
       </table>
@@ -418,18 +418,18 @@ function adminEmailShell(subject: string, bodyRows: string): string {
   return `<!DOCTYPE html>
 <html lang="sl">
 <head><meta charset="utf-8" /><title>${escapeHtml(subject)}</title></head>
-<body style="margin:0;padding:0;background:#F2F4F8;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;color:#0F1729;">
+<body style="margin:0;padding:0;background:#F2F4F8;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;color:#111111;">
   <table width="100%" cellpadding="0" cellspacing="0" style="background:#F2F4F8;padding:24px 16px;">
     <tr><td align="center">
       <table width="560" cellpadding="0" cellspacing="0" style="max-width:560px;background:#ffffff;border-radius:14px;overflow:hidden;border:1px solid #E2E8F0;">
-        <tr><td style="background:#0F1729;padding:18px 24px;">
-          <p style="margin:0;font-size:11px;letter-spacing:3px;color:#FFC94D;font-weight:700;">CAMLOVE · ADMIN</p>
+        <tr><td style="background:#111111;padding:18px 24px;">
+          <p style="margin:0;font-size:11px;letter-spacing:3px;color:#F4B400;font-weight:700;">CAMLOVE · ADMIN</p>
         </td></tr>
         <tr><td style="padding:24px;">
           ${bodyRows}
         </td></tr>
         <tr><td style="padding:14px 24px;border-top:1px solid #F1F5F9;text-align:center;">
-          <p style="margin:0;font-size:11px;color:#94A3B8;">CamLove · <a href="${APP_URL}" style="color:#C9820A;text-decoration:none;">camlove.me</a></p>
+          <p style="margin:0;font-size:11px;color:#94A3B8;">CamLove · <a href="${APP_URL}" style="color:#946D00;text-decoration:none;">camlove.me</a></p>
         </td></tr>
       </table>
     </td></tr>
@@ -459,12 +459,12 @@ export async function sendAdminNewUserEmail(params: {
   const { name, email, clerkId } = params;
   const html = adminEmailShell(
     `🆕 Nov uporabnik — ${name}`,
-    `<h2 style="margin:0 0 16px;font-size:18px;font-weight:800;color:#0F1729;">🆕 Nov uporabnik</h2>
+    `<h2 style="margin:0 0 16px;font-size:18px;font-weight:800;color:#111111;">🆕 Nov uporabnik</h2>
      <table cellpadding="0" cellspacing="0" style="font-size:14px;line-height:2;color:#475569;width:100%;">
-       <tr><td style="width:110px;font-weight:700;color:#0F1729;">Ime:</td><td>${escapeHtml(name)}</td></tr>
-       <tr><td style="font-weight:700;color:#0F1729;">Email:</td><td><a href="mailto:${escapeHtml(email)}" style="color:#1E3A8A;">${escapeHtml(email)}</a></td></tr>
-       <tr><td style="font-weight:700;color:#0F1729;">Clerk ID:</td><td style="font-family:monospace;font-size:12px;">${escapeHtml(clerkId)}</td></tr>
-       <tr><td style="font-weight:700;color:#0F1729;">Čas:</td><td>${new Date().toLocaleString("sl-SI")}</td></tr>
+       <tr><td style="width:110px;font-weight:700;color:#111111;">Ime:</td><td>${escapeHtml(name)}</td></tr>
+       <tr><td style="font-weight:700;color:#111111;">Email:</td><td><a href="mailto:${escapeHtml(email)}" style="color:#1E3A8A;">${escapeHtml(email)}</a></td></tr>
+       <tr><td style="font-weight:700;color:#111111;">Clerk ID:</td><td style="font-family:monospace;font-size:12px;">${escapeHtml(clerkId)}</td></tr>
+       <tr><td style="font-weight:700;color:#111111;">Čas:</td><td>${new Date().toLocaleString("sl-SI")}</td></tr>
      </table>`,
   );
   await sendAdminEmail(`🆕 Nov uporabnik — ${name} (${email})`, html);
@@ -484,14 +484,14 @@ export async function sendAdminPaymentEmail(params: {
   const methodLabel = method ?? "neznano";
   const html = adminEmailShell(
     `💳 Plačilo — ${albumSlug} — ${planId}`,
-    `<h2 style="margin:0 0 16px;font-size:18px;font-weight:800;color:#0F1729;">💳 Novo plačilo</h2>
+    `<h2 style="margin:0 0 16px;font-size:18px;font-weight:800;color:#111111;">💳 Novo plačilo</h2>
      <table cellpadding="0" cellspacing="0" style="font-size:14px;line-height:2;color:#475569;width:100%;">
-       <tr><td style="width:130px;font-weight:700;color:#0F1729;">Album:</td><td style="font-family:monospace;">${escapeHtml(albumSlug)}</td></tr>
-       <tr><td style="font-weight:700;color:#0F1729;">Paket:</td><td>${escapeHtml(planId)}</td></tr>
-       <tr><td style="font-weight:700;color:#0F1729;">Znesek:</td><td style="font-weight:800;font-size:16px;color:#0F1729;">${escapeHtml(amount)} ${escapeHtml(currency)}</td></tr>
-       <tr><td style="font-weight:700;color:#0F1729;">Način plačila:</td><td>${escapeHtml(methodLabel)}</td></tr>
-       <tr><td style="font-weight:700;color:#0F1729;">Mollie ID:</td><td style="font-family:monospace;font-size:12px;">${escapeHtml(paymentId)}</td></tr>
-       <tr><td style="font-weight:700;color:#0F1729;">Čas:</td><td>${new Date().toLocaleString("sl-SI")}</td></tr>
+       <tr><td style="width:130px;font-weight:700;color:#111111;">Album:</td><td style="font-family:monospace;">${escapeHtml(albumSlug)}</td></tr>
+       <tr><td style="font-weight:700;color:#111111;">Paket:</td><td>${escapeHtml(planId)}</td></tr>
+       <tr><td style="font-weight:700;color:#111111;">Znesek:</td><td style="font-weight:800;font-size:16px;color:#111111;">${escapeHtml(amount)} ${escapeHtml(currency)}</td></tr>
+       <tr><td style="font-weight:700;color:#111111;">Način plačila:</td><td>${escapeHtml(methodLabel)}</td></tr>
+       <tr><td style="font-weight:700;color:#111111;">Mollie ID:</td><td style="font-family:monospace;font-size:12px;">${escapeHtml(paymentId)}</td></tr>
+       <tr><td style="font-weight:700;color:#111111;">Čas:</td><td>${new Date().toLocaleString("sl-SI")}</td></tr>
      </table>
      <p style="margin:16px 0 0;font-size:13px;color:#64748B;">
        Preverite <a href="${APP_URL}/admin/payments" style="color:#1E3A8A;">admin/payments</a> za podrobnosti.
@@ -518,24 +518,24 @@ export async function sendAdminBankOrderEmail(params: {
 }) {
   const { albumSlug, planName, planPrice, customerEmail, billing } = params;
   const billingRows = billing ? `
-     <tr><td colspan="2" style="padding-top:12px;font-weight:700;color:#0F1729;font-size:13px;letter-spacing:1px;text-transform:uppercase;">Podatki za račun:</td></tr>
-     ${billing.name ? `<tr><td style="width:130px;font-weight:700;color:#0F1729;">Ime / Firma:</td><td>${escapeHtml(billing.name)}${billing.companyName ? ` / ${escapeHtml(billing.companyName)}` : ""}</td></tr>` : ""}
-     ${billing.email ? `<tr><td style="font-weight:700;color:#0F1729;">Email za račun:</td><td><a href="mailto:${escapeHtml(billing.email)}" style="color:#1E3A8A;">${escapeHtml(billing.email)}</a></td></tr>` : ""}
-     ${billing.address ? `<tr><td style="font-weight:700;color:#0F1729;">Naslov:</td><td>${escapeHtml(billing.address)}</td></tr>` : ""}
-     ${billing.city ? `<tr><td style="font-weight:700;color:#0F1729;">Kraj:</td><td>${escapeHtml(billing.city)}</td></tr>` : ""}
-     ${billing.taxId ? `<tr><td style="font-weight:700;color:#0F1729;">Davčna št.:</td><td>${escapeHtml(billing.taxId)}</td></tr>` : ""}
+     <tr><td colspan="2" style="padding-top:12px;font-weight:700;color:#111111;font-size:13px;letter-spacing:1px;text-transform:uppercase;">Podatki za račun:</td></tr>
+     ${billing.name ? `<tr><td style="width:130px;font-weight:700;color:#111111;">Ime / Firma:</td><td>${escapeHtml(billing.name)}${billing.companyName ? ` / ${escapeHtml(billing.companyName)}` : ""}</td></tr>` : ""}
+     ${billing.email ? `<tr><td style="font-weight:700;color:#111111;">Email za račun:</td><td><a href="mailto:${escapeHtml(billing.email)}" style="color:#1E3A8A;">${escapeHtml(billing.email)}</a></td></tr>` : ""}
+     ${billing.address ? `<tr><td style="font-weight:700;color:#111111;">Naslov:</td><td>${escapeHtml(billing.address)}</td></tr>` : ""}
+     ${billing.city ? `<tr><td style="font-weight:700;color:#111111;">Kraj:</td><td>${escapeHtml(billing.city)}</td></tr>` : ""}
+     ${billing.taxId ? `<tr><td style="font-weight:700;color:#111111;">Davčna št.:</td><td>${escapeHtml(billing.taxId)}</td></tr>` : ""}
   ` : "";
 
   const html = adminEmailShell(
     `🏦 Predračun — ${albumSlug} — ${planName}`,
-    `<h2 style="margin:0 0 16px;font-size:18px;font-weight:800;color:#0F1729;">🏦 Zahteva za predračun</h2>
+    `<h2 style="margin:0 0 16px;font-size:18px;font-weight:800;color:#111111;">🏦 Zahteva za predračun</h2>
      <table cellpadding="0" cellspacing="0" style="font-size:14px;line-height:2;color:#475569;width:100%;">
-       <tr><td style="width:130px;font-weight:700;color:#0F1729;">Album:</td><td style="font-family:monospace;">${escapeHtml(albumSlug)}</td></tr>
-       <tr><td style="font-weight:700;color:#0F1729;">Paket:</td><td>${escapeHtml(planName)}</td></tr>
-       <tr><td style="font-weight:700;color:#0F1729;">Znesek:</td><td style="font-weight:800;font-size:16px;color:#0F1729;">${planPrice}€</td></tr>
-       <tr><td style="font-weight:700;color:#0F1729;">Email stranke:</td><td><a href="mailto:${escapeHtml(customerEmail)}" style="color:#1E3A8A;">${escapeHtml(customerEmail)}</a></td></tr>
+       <tr><td style="width:130px;font-weight:700;color:#111111;">Album:</td><td style="font-family:monospace;">${escapeHtml(albumSlug)}</td></tr>
+       <tr><td style="font-weight:700;color:#111111;">Paket:</td><td>${escapeHtml(planName)}</td></tr>
+       <tr><td style="font-weight:700;color:#111111;">Znesek:</td><td style="font-weight:800;font-size:16px;color:#111111;">${planPrice}€</td></tr>
+       <tr><td style="font-weight:700;color:#111111;">Email stranke:</td><td><a href="mailto:${escapeHtml(customerEmail)}" style="color:#1E3A8A;">${escapeHtml(customerEmail)}</a></td></tr>
        ${billingRows}
-       <tr><td style="font-weight:700;color:#0F1729;">Čas:</td><td>${new Date().toLocaleString("sl-SI")}</td></tr>
+       <tr><td style="font-weight:700;color:#111111;">Čas:</td><td>${new Date().toLocaleString("sl-SI")}</td></tr>
      </table>
      <p style="margin:16px 0 0;font-size:13px;color:#64748B;">
        Pošljite predračun na email stranke in aktivirajte paket po plačilu prek
@@ -889,12 +889,12 @@ const AFF_STRINGS: Record<AffiliateLocale, AffiliateStrings> = {
 function affiliateShell(heading: string, body: string, footer: string): string {
   return `<!DOCTYPE html>
 <html><head><meta charset="utf-8" /><title>${heading}</title></head>
-<body style="margin:0;padding:0;background:#F2F4F8;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;color:#0F1729;">
+<body style="margin:0;padding:0;background:#F2F4F8;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;color:#111111;">
   <table width="100%" cellpadding="0" cellspacing="0" style="background:#F2F4F8;padding:32px 16px;">
     <tr><td align="center">
       <table width="560" cellpadding="0" cellspacing="0" style="max-width:560px;background:#ffffff;border-radius:14px;overflow:hidden;box-shadow:0 4px 20px rgba(15,23,41,0.06);">
-        <tr><td style="background:#0F1729;padding:28px 32px;">
-          <p style="margin:0 0 6px;font-size:11px;letter-spacing:3px;font-weight:700;color:#FFC94D;">CAMLOVE · PARTNERJI</p>
+        <tr><td style="background:#111111;padding:28px 32px;">
+          <p style="margin:0 0 6px;font-size:11px;letter-spacing:3px;font-weight:700;color:#F4B400;">CAMLOVE · PARTNERJI</p>
           <h1 style="margin:0;font-size:20px;color:#ffffff;font-weight:800;">${heading}</h1>
         </td></tr>
         <tr><td style="padding:28px 32px;font-size:14.5px;line-height:1.65;color:#475569;">
@@ -954,15 +954,15 @@ export async function sendAdminAffiliateApplicationEmail(params: {
 }) {
   const html = adminEmailShell(
     `🤝 Nova partnerska prijava — ${params.name}`,
-    `<h2 style="margin:0 0 16px;font-size:18px;font-weight:800;color:#0F1729;">🤝 Nova partnerska prijava</h2>
+    `<h2 style="margin:0 0 16px;font-size:18px;font-weight:800;color:#111111;">🤝 Nova partnerska prijava</h2>
      <table cellpadding="0" cellspacing="0" style="font-size:14px;line-height:1.9;color:#475569;width:100%;">
-       <tr><td style="width:130px;font-weight:700;color:#0F1729;">Ime:</td><td>${escapeHtml(params.name)}</td></tr>
-       <tr><td style="font-weight:700;color:#0F1729;">Email:</td><td><a href="mailto:${escapeHtml(params.email)}" style="color:#1E3A8A;">${escapeHtml(params.email)}</a></td></tr>
-       ${params.website ? `<tr><td style="font-weight:700;color:#0F1729;">Spletna stran:</td><td><a href="${escapeHtml(params.website)}" style="color:#1E3A8A;">${escapeHtml(params.website)}</a></td></tr>` : ""}
-       <tr><td style="vertical-align:top;font-weight:700;color:#0F1729;">Načrt promocije:</td><td>${escapeHtml(params.promotionPlan).replace(/\n/g, "<br>")}</td></tr>
+       <tr><td style="width:130px;font-weight:700;color:#111111;">Ime:</td><td>${escapeHtml(params.name)}</td></tr>
+       <tr><td style="font-weight:700;color:#111111;">Email:</td><td><a href="mailto:${escapeHtml(params.email)}" style="color:#1E3A8A;">${escapeHtml(params.email)}</a></td></tr>
+       ${params.website ? `<tr><td style="font-weight:700;color:#111111;">Spletna stran:</td><td><a href="${escapeHtml(params.website)}" style="color:#1E3A8A;">${escapeHtml(params.website)}</a></td></tr>` : ""}
+       <tr><td style="vertical-align:top;font-weight:700;color:#111111;">Načrt promocije:</td><td>${escapeHtml(params.promotionPlan).replace(/\n/g, "<br>")}</td></tr>
      </table>
      <p style="margin:16px 0 0;">
-       <a href="${APP_URL}/admin/affiliates/${params.affiliateId}" style="display:inline-block;padding:11px 22px;background:#0F1729;color:#fff;text-decoration:none;border-radius:8px;font-weight:700;font-size:13px;">Pregled v admin panelu →</a>
+       <a href="${APP_URL}/admin/affiliates/${params.affiliateId}" style="display:inline-block;padding:11px 22px;background:#111111;color:#fff;text-decoration:none;border-radius:8px;font-weight:700;font-size:13px;">Pregled v admin panelu →</a>
      </p>`,
   );
   await sendAdminEmail(`🤝 Nova partnerska prijava — ${params.name} (${params.email})`, html);
@@ -990,17 +990,17 @@ export async function sendAffiliateWelcomeEmail({
     ${t.welcomeBody(name)}
     <div style="margin:22px 0 8px;background:#F8FAFC;border:1px solid #E2E8F0;border-radius:12px;padding:18px 20px;">
       <p style="margin:0 0 4px;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#94A3B8;font-weight:700;">${t.welcomeCodeLabel}</p>
-      <p style="margin:0;font-family:monospace;font-size:22px;font-weight:800;color:#0F1729;letter-spacing:2px;">${escapeHtml(referralCode)}</p>
+      <p style="margin:0;font-family:monospace;font-size:22px;font-weight:800;color:#111111;letter-spacing:2px;">${escapeHtml(referralCode)}</p>
       <p style="margin:14px 0 4px;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#94A3B8;font-weight:700;">${t.welcomeLinkLabel}</p>
       <a href="${refLink}" style="font-size:13px;color:#1E3A8A;font-weight:600;word-break:break-all;">${refLink}</a>
     </div>
     <table cellpadding="0" cellspacing="0" style="font-size:14px;line-height:1.9;color:#475569;width:100%;margin-top:14px;">
-      <tr><td style="font-weight:700;color:#0F1729;">${t.welcomeRateLabel}:</td><td>${t.welcomeRateValue(commissionRate)}</td></tr>
-      <tr><td style="font-weight:700;color:#0F1729;">${t.welcomeLockLabel}:</td><td>${t.welcomeLockValue(lockDays)}</td></tr>
-      <tr><td style="font-weight:700;color:#0F1729;">${t.welcomeMinPayoutLabel}:</td><td>${t.welcomeMinPayoutValue(minPayoutEur)}</td></tr>
+      <tr><td style="font-weight:700;color:#111111;">${t.welcomeRateLabel}:</td><td>${t.welcomeRateValue(commissionRate)}</td></tr>
+      <tr><td style="font-weight:700;color:#111111;">${t.welcomeLockLabel}:</td><td>${t.welcomeLockValue(lockDays)}</td></tr>
+      <tr><td style="font-weight:700;color:#111111;">${t.welcomeMinPayoutLabel}:</td><td>${t.welcomeMinPayoutValue(minPayoutEur)}</td></tr>
     </table>
     <p style="margin:24px 0 0;text-align:center;">
-      <a href="${dashboardUrl}" style="display:inline-block;padding:14px 28px;background:#FFC94D;color:#0F1729;text-decoration:none;border-radius:10px;font-weight:800;font-size:14px;">${t.welcomeCta}</a>
+      <a href="${dashboardUrl}" style="display:inline-block;padding:14px 28px;background:#F4B400;color:#111111;text-decoration:none;border-radius:10px;font-weight:800;font-size:14px;">${t.welcomeCta}</a>
     </p>
   `;
   try {
@@ -1045,13 +1045,13 @@ export async function sendAffiliateCommissionEmail({
       <p style="margin:6px 0 0;color:#475569;font-size:12px;">${t.commissionAmountLabel(commissionRate)}</p>
     </div>
     <table cellpadding="0" cellspacing="0" style="font-size:14px;line-height:1.9;color:#475569;width:100%;">
-      <tr><td style="font-weight:700;color:#0F1729;">${t.commissionOrderLabel}:</td><td style="text-align:right;">${escapeHtml(orderDescription)}</td></tr>
-      <tr><td style="font-weight:700;color:#0F1729;">${t.commissionOrderValueLabel}:</td><td style="text-align:right;">${orderStr} EUR</td></tr>
-      <tr><td style="font-weight:700;color:#0F1729;">${t.commissionYourCutLabel}:</td><td style="text-align:right;color:#15803D;font-weight:800;">${commissionStr} EUR</td></tr>
+      <tr><td style="font-weight:700;color:#111111;">${t.commissionOrderLabel}:</td><td style="text-align:right;">${escapeHtml(orderDescription)}</td></tr>
+      <tr><td style="font-weight:700;color:#111111;">${t.commissionOrderValueLabel}:</td><td style="text-align:right;">${orderStr} EUR</td></tr>
+      <tr><td style="font-weight:700;color:#111111;">${t.commissionYourCutLabel}:</td><td style="text-align:right;color:#15803D;font-weight:800;">${commissionStr} EUR</td></tr>
     </table>
     <p style="margin:18px 0 0;font-size:13px;color:#64748B;">⏳ ${t.commissionLockNotice(lockStr)}</p>
     <p style="margin:24px 0 0;text-align:center;">
-      <a href="${dashboardUrl}" style="display:inline-block;padding:14px 28px;background:#0F1729;color:#fff;text-decoration:none;border-radius:10px;font-weight:800;font-size:14px;">${t.commissionCta}</a>
+      <a href="${dashboardUrl}" style="display:inline-block;padding:14px 28px;background:#111111;color:#fff;text-decoration:none;border-radius:10px;font-weight:800;font-size:14px;">${t.commissionCta}</a>
     </p>
   `;
   try {
@@ -1086,17 +1086,17 @@ export async function sendAffiliatePromoCodeEmail({
   const dashboardUrl = `${APP_URL}/affiliate/dashboard`;
   const body = `
     <p style="margin:0 0 12px;">${t.promoIntro(name)}</p>
-    <div style="margin:22px 0 8px;background:#FFF9EC;border:1px solid #FFC94D;border-radius:12px;padding:20px;text-align:center;">
+    <div style="margin:22px 0 8px;background:#FFF9E8;border:1px solid #F4B400;border-radius:12px;padding:20px;text-align:center;">
       <p style="margin:0 0 4px;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#94A3B8;font-weight:700;">${t.promoCodeLabel}</p>
-      <p style="margin:0;font-family:monospace;font-size:28px;font-weight:800;color:#0F1729;letter-spacing:3px;">${escapeHtml(code)}</p>
-      <p style="margin:14px 0 0;font-size:13px;color:#0F1729;font-weight:700;">${t.promoDiscountValue(percentOff)}</p>
+      <p style="margin:0;font-family:monospace;font-size:28px;font-weight:800;color:#111111;letter-spacing:3px;">${escapeHtml(code)}</p>
+      <p style="margin:14px 0 0;font-size:13px;color:#111111;font-weight:700;">${t.promoDiscountValue(percentOff)}</p>
     </div>
     <table cellpadding="0" cellspacing="0" style="font-size:14px;line-height:1.9;color:#475569;width:100%;">
-      <tr><td style="font-weight:700;color:#0F1729;width:160px;">${t.promoDiscountLabel}:</td><td>${t.promoDiscountValue(percentOff)}</td></tr>
-      <tr><td style="font-weight:700;color:#0F1729;">${t.promoPlansLabel}:</td><td>${t.promoPlansValue}</td></tr>
+      <tr><td style="font-weight:700;color:#111111;width:160px;">${t.promoDiscountLabel}:</td><td>${t.promoDiscountValue(percentOff)}</td></tr>
+      <tr><td style="font-weight:700;color:#111111;">${t.promoPlansLabel}:</td><td>${t.promoPlansValue}</td></tr>
     </table>
     <div style="margin:22px 0 0;padding:18px 20px;background:#F8FAFC;border-radius:10px;">
-      <p style="margin:0 0 6px;font-size:12px;font-weight:700;color:#0F1729;text-transform:uppercase;letter-spacing:1px;">${t.promoExampleHeading}</p>
+      <p style="margin:0 0 6px;font-size:12px;font-weight:700;color:#111111;text-transform:uppercase;letter-spacing:1px;">${t.promoExampleHeading}</p>
       <p style="margin:0;font-size:13.5px;color:#475569;line-height:1.6;">${t.promoExample(code, percentOff)}</p>
     </div>
     <div style="margin:14px 0 0;padding:18px 20px;background:#F0FDF4;border-radius:10px;">
@@ -1105,7 +1105,7 @@ export async function sendAffiliatePromoCodeEmail({
     </div>
     <p style="margin:18px 0 0;font-size:12px;color:#94A3B8;text-align:center;">${t.promoNote}</p>
     <p style="margin:24px 0 0;text-align:center;">
-      <a href="${dashboardUrl}" style="display:inline-block;padding:14px 28px;background:#FFC94D;color:#0F1729;text-decoration:none;border-radius:10px;font-weight:800;font-size:14px;">${t.promoCta}</a>
+      <a href="${dashboardUrl}" style="display:inline-block;padding:14px 28px;background:#F4B400;color:#111111;text-decoration:none;border-radius:10px;font-weight:800;font-size:14px;">${t.promoCta}</a>
     </p>
   `;
   try {
@@ -1140,20 +1140,20 @@ export async function sendAdminAffiliateSaleEmail(params: {
   const eur = (c: number) => `${(c / 100).toFixed(2)} €`;
   const html = adminEmailShell(
     `🤝 Partner prodaja — ${params.affiliateName} (+${eur(params.commissionAmountCents)})`,
-    `<h2 style="margin:0 0 16px;font-size:18px;font-weight:800;color:#0F1729;">🤝 Partnerska prodaja</h2>
+    `<h2 style="margin:0 0 16px;font-size:18px;font-weight:800;color:#111111;">🤝 Partnerska prodaja</h2>
      <table cellpadding="0" cellspacing="0" style="font-size:14px;line-height:2;color:#475569;width:100%;">
-       <tr><td style="width:160px;font-weight:700;color:#0F1729;">Partner:</td><td>${escapeHtml(params.affiliateName)}</td></tr>
-       <tr><td style="font-weight:700;color:#0F1729;">Email:</td><td><a href="mailto:${escapeHtml(params.affiliateEmail)}" style="color:#1E3A8A;">${escapeHtml(params.affiliateEmail)}</a></td></tr>
-       <tr><td style="font-weight:700;color:#0F1729;">Partnerska koda:</td><td style="font-family:monospace;">${escapeHtml(params.referralCode)}</td></tr>
-       ${params.promoCode ? `<tr><td style="font-weight:700;color:#0F1729;">Promo koda uporabljena:</td><td style="font-family:monospace;color:#15803D;font-weight:700;">${escapeHtml(params.promoCode)}</td></tr>` : ""}
-       <tr><td style="font-weight:700;color:#0F1729;">Album:</td><td style="font-family:monospace;">${escapeHtml(params.albumSlug)}</td></tr>
-       <tr><td style="font-weight:700;color:#0F1729;">Paket:</td><td>${escapeHtml(params.planName)}</td></tr>
-       <tr><td style="font-weight:700;color:#0F1729;">Vrednost naročila:</td><td style="font-weight:700;color:#0F1729;">${eur(params.orderAmountCents)}</td></tr>
-       <tr><td style="font-weight:700;color:#0F1729;">Provizija (${params.commissionRate}%):</td><td style="font-weight:800;color:#15803D;font-size:16px;">+${eur(params.commissionAmountCents)}</td></tr>
-       <tr><td style="font-weight:700;color:#0F1729;">Čas:</td><td>${new Date().toLocaleString("sl-SI")}</td></tr>
+       <tr><td style="width:160px;font-weight:700;color:#111111;">Partner:</td><td>${escapeHtml(params.affiliateName)}</td></tr>
+       <tr><td style="font-weight:700;color:#111111;">Email:</td><td><a href="mailto:${escapeHtml(params.affiliateEmail)}" style="color:#1E3A8A;">${escapeHtml(params.affiliateEmail)}</a></td></tr>
+       <tr><td style="font-weight:700;color:#111111;">Partnerska koda:</td><td style="font-family:monospace;">${escapeHtml(params.referralCode)}</td></tr>
+       ${params.promoCode ? `<tr><td style="font-weight:700;color:#111111;">Promo koda uporabljena:</td><td style="font-family:monospace;color:#15803D;font-weight:700;">${escapeHtml(params.promoCode)}</td></tr>` : ""}
+       <tr><td style="font-weight:700;color:#111111;">Album:</td><td style="font-family:monospace;">${escapeHtml(params.albumSlug)}</td></tr>
+       <tr><td style="font-weight:700;color:#111111;">Paket:</td><td>${escapeHtml(params.planName)}</td></tr>
+       <tr><td style="font-weight:700;color:#111111;">Vrednost naročila:</td><td style="font-weight:700;color:#111111;">${eur(params.orderAmountCents)}</td></tr>
+       <tr><td style="font-weight:700;color:#111111;">Provizija (${params.commissionRate}%):</td><td style="font-weight:800;color:#15803D;font-size:16px;">+${eur(params.commissionAmountCents)}</td></tr>
+       <tr><td style="font-weight:700;color:#111111;">Čas:</td><td>${new Date().toLocaleString("sl-SI")}</td></tr>
      </table>
      <p style="margin:16px 0 0;">
-       <a href="${APP_URL}/admin/affiliates/${params.affiliateId}" style="display:inline-block;padding:11px 22px;background:#0F1729;color:#fff;text-decoration:none;border-radius:8px;font-weight:700;font-size:13px;">Pregled partnerja →</a>
+       <a href="${APP_URL}/admin/affiliates/${params.affiliateId}" style="display:inline-block;padding:11px 22px;background:#111111;color:#fff;text-decoration:none;border-radius:8px;font-weight:700;font-size:13px;">Pregled partnerja →</a>
      </p>
      <p style="margin:14px 0 0;font-size:12px;color:#94A3B8;">Provizija je v 14-dnevnem zaklepu in se po izteku samodejno potrdi.</p>`,
   );
@@ -1175,7 +1175,7 @@ export async function sendAffiliateCommissionApprovedEmail({
   const body = `
     ${t.approvedBody(name, amountStr)}
     <p style="margin:24px 0 0;text-align:center;">
-      <a href="${payoutUrl}" style="display:inline-block;padding:14px 28px;background:#0F1729;color:#fff;text-decoration:none;border-radius:10px;font-weight:800;font-size:14px;">${t.approvedCta}</a>
+      <a href="${payoutUrl}" style="display:inline-block;padding:14px 28px;background:#111111;color:#fff;text-decoration:none;border-radius:10px;font-weight:800;font-size:14px;">${t.approvedCta}</a>
     </p>
   `;
   try {
@@ -1217,18 +1217,18 @@ export async function sendOrganizerAgreementEmail({
   const html = `<!DOCTYPE html>
 <html lang="sl">
 <head><meta charset="utf-8" /><title>Potrditev zasebnosti – CamLove</title></head>
-<body style="margin:0;padding:0;background:#F2F4F8;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;color:#0F1729;">
+<body style="margin:0;padding:0;background:#F2F4F8;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;color:#111111;">
   <table width="100%" cellpadding="0" cellspacing="0" style="background:#F2F4F8;padding:32px 16px;">
     <tr><td align="center">
       <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;background:#ffffff;border-radius:18px;overflow:hidden;box-shadow:0 4px 24px rgba(15,23,41,0.06);">
-        <tr><td style="background:#0F1729;padding:28px 32px;">
-          <p style="margin:0 0 6px;font-size:11px;letter-spacing:3px;font-weight:700;color:#FFC94D;">CAMLOVE</p>
+        <tr><td style="background:#111111;padding:28px 32px;">
+          <p style="margin:0 0 6px;font-size:11px;letter-spacing:3px;font-weight:700;color:#F4B400;">CAMLOVE</p>
           <h1 style="margin:0;font-size:20px;color:#ffffff;font-weight:800;">✅ Galerija ustvarjena – potrditev obveznosti</h1>
         </td></tr>
         <tr><td style="padding:32px;">
-          <p style="margin:0 0 16px;font-size:15px;line-height:1.6;color:#0F1729;">Pozdravljeni${greeting},</p>
+          <p style="margin:0 0 16px;font-size:15px;line-height:1.6;color:#111111;">Pozdravljeni${greeting},</p>
           <p style="margin:0 0 20px;font-size:14px;line-height:1.7;color:#475569;">
-            Uspešno ste ustvarili galerijo <strong style="color:#0F1729;">${escapeHtml(coupleName)}</strong>.
+            Uspešno ste ustvarili galerijo <strong style="color:#111111;">${escapeHtml(coupleName)}</strong>.
             S potrditvijo ob ustvarjanju ste sprejeli naslednje obveznosti kot organizator dogodka:
           </p>
           <table width="100%" cellpadding="0" cellspacing="0" style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:12px;margin:0 0 24px;">
@@ -1243,10 +1243,10 @@ export async function sendOrganizerAgreementEmail({
           </table>
           <p style="margin:0 0 24px;font-size:14px;line-height:1.7;color:#475569;">
             Celotna politika zasebnosti, ki opisuje vloge organizatorja in CamLove, je dostopna na
-            <a href="${privacyUrl}" style="color:#C9820A;text-decoration:none;font-weight:600;">camlove.me/gdpr</a>.
+            <a href="${privacyUrl}" style="color:#946D00;text-decoration:none;font-weight:600;">camlove.me/gdpr</a>.
           </p>
           <p style="text-align:center;margin:0 0 8px;">
-            <a href="${albumUrl}" style="display:inline-block;padding:14px 28px;background:#FFC94D;color:#0F1729;text-decoration:none;border-radius:10px;font-weight:800;font-size:14px;">Odpri galerijo →</a>
+            <a href="${albumUrl}" style="display:inline-block;padding:14px 28px;background:#F4B400;color:#111111;text-decoration:none;border-radius:10px;font-weight:800;font-size:14px;">Odpri galerijo →</a>
           </p>
         </td></tr>
         <tr><td style="padding:16px 32px 24px;border-top:1px solid #F2F4F8;">
@@ -1296,7 +1296,7 @@ export function contactFooterHtml(lang: EmailLang = "sl"): string {
     </td></tr>
     <tr><td style="padding:8px 36px 24px;">
       <p style="margin:0 0 10px;font-size:13px;line-height:1.6;color:#475569;">
-        <strong style="color:#0F1729;">${t.questions}</strong> ${t.reply}
+        <strong style="color:#111111;">${t.questions}</strong> ${t.reply}
         <a href="mailto:info@camlove.me" style="color:#1E3A8A;text-decoration:none;font-weight:600;">info@camlove.me</a>
         · <a href="tel:+38671604980" style="color:#1E3A8A;text-decoration:none;font-weight:600;">+386 71 604 980</a>
       </p>
@@ -1425,45 +1425,45 @@ export function onboardingNudgeHtml(lang: EmailLang, firstName?: string | null):
   return `<!DOCTYPE html>
 <html lang="${lang}">
 <head><meta charset="utf-8" /><title>${t.heading}</title></head>
-<body style="margin:0;padding:0;background:#F2F4F8;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;color:#0F1729;">
+<body style="margin:0;padding:0;background:#F2F4F8;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;color:#111111;">
   <table width="100%" cellpadding="0" cellspacing="0" style="background:#F2F4F8;padding:32px 16px;">
     <tr><td align="center">
       <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;background:#ffffff;border-radius:18px;overflow:hidden;box-shadow:0 4px 24px rgba(15,23,41,0.06);">
 
-        <tr><td style="background:linear-gradient(135deg,#FFC94D 0%,#FFD966 100%);padding:36px 36px 28px;">
-          <p style="margin:0 0 8px;font-size:12px;letter-spacing:3px;font-weight:700;color:#0F1729;">CAMLOVE</p>
-          <h1 style="margin:0;font-size:24px;line-height:1.25;color:#0F1729;font-weight:800;">${t.heading}</h1>
+        <tr><td style="background:linear-gradient(135deg,#F4B400 0%,#FFCC3D 100%);padding:36px 36px 28px;">
+          <p style="margin:0 0 8px;font-size:12px;letter-spacing:3px;font-weight:700;color:#111111;">CAMLOVE</p>
+          <h1 style="margin:0;font-size:24px;line-height:1.25;color:#111111;font-weight:800;">${t.heading}</h1>
         </td></tr>
 
         <tr><td style="padding:32px 36px 8px;">
-          <p style="margin:0 0 16px;font-size:16px;line-height:1.55;color:#0F1729;">${t.greeting(firstName)}</p>
+          <p style="margin:0 0 16px;font-size:16px;line-height:1.55;color:#111111;">${t.greeting(firstName)}</p>
           <p style="margin:0 0 22px;font-size:15px;line-height:1.65;color:#475569;">${t.intro}</p>
 
           <table width="100%" cellpadding="0" cellspacing="0" style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:14px;">
             <tr><td style="padding:18px 22px;">
-              <p style="margin:0 0 10px;font-size:13px;color:#475569;line-height:1.6;"><strong style="color:#0F1729;">1.</strong> ${t.bullet1}</p>
-              <p style="margin:0 0 10px;font-size:13px;color:#475569;line-height:1.6;"><strong style="color:#0F1729;">2.</strong> ${t.bullet2}</p>
-              <p style="margin:0;font-size:13px;color:#475569;line-height:1.6;"><strong style="color:#0F1729;">3.</strong> ${t.bullet3}</p>
+              <p style="margin:0 0 10px;font-size:13px;color:#475569;line-height:1.6;"><strong style="color:#111111;">1.</strong> ${t.bullet1}</p>
+              <p style="margin:0 0 10px;font-size:13px;color:#475569;line-height:1.6;"><strong style="color:#111111;">2.</strong> ${t.bullet2}</p>
+              <p style="margin:0;font-size:13px;color:#475569;line-height:1.6;"><strong style="color:#111111;">3.</strong> ${t.bullet3}</p>
             </td></tr>
           </table>
         </td></tr>
 
         <tr><td style="padding:26px 36px 0;text-align:center;">
-          <a href="${newAlbumUrl}" style="display:inline-block;padding:14px 28px;background:#0F1729;color:#ffffff;text-decoration:none;border-radius:12px;font-weight:700;font-size:14px;margin:0 4px 8px;">${t.ctaPrimary}</a>
-          <a href="${helpUrl}" style="display:inline-block;padding:14px 26px;background:#ffffff;color:#0F1729;border:1.5px solid #0F1729;text-decoration:none;border-radius:12px;font-weight:700;font-size:14px;margin:0 4px 8px;">${t.ctaSecondary}</a>
+          <a href="${newAlbumUrl}" style="display:inline-block;padding:14px 28px;background:#111111;color:#ffffff;text-decoration:none;border-radius:12px;font-weight:700;font-size:14px;margin:0 4px 8px;">${t.ctaPrimary}</a>
+          <a href="${helpUrl}" style="display:inline-block;padding:14px 26px;background:#ffffff;color:#111111;border:1.5px solid #111111;text-decoration:none;border-radius:12px;font-weight:700;font-size:14px;margin:0 4px 8px;">${t.ctaSecondary}</a>
         </td></tr>
 
         <tr><td style="padding:28px 36px 0;">
           <table width="100%" cellpadding="0" cellspacing="0" style="background:#FFF8E1;border:1px solid #FFE08A;border-radius:14px;">
             <tr><td style="padding:18px 22px;">
-              <p style="margin:0 0 6px;font-size:14px;font-weight:700;color:#0F1729;">💬 ${t.helpHeading}</p>
+              <p style="margin:0 0 6px;font-size:14px;font-weight:700;color:#111111;">💬 ${t.helpHeading}</p>
               <p style="margin:0;font-size:13px;line-height:1.55;color:#64748B;">${t.helpBody}</p>
             </td></tr>
           </table>
         </td></tr>
 
         <tr><td style="padding:28px 36px 6px;">
-          <p style="margin:0;font-size:13px;color:#0F1729;font-weight:700;">${t.signoff}</p>
+          <p style="margin:0;font-size:13px;color:#111111;font-weight:700;">${t.signoff}</p>
         </td></tr>
 
         ${contactFooterHtml(lang)}
@@ -1627,18 +1627,18 @@ export function accountUpgradedHtml(
   return `<!DOCTYPE html>
 <html lang="${lang}">
 <head><meta charset="utf-8" /><title>${t.heading}</title></head>
-<body style="margin:0;padding:0;background:#F2F4F8;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;color:#0F1729;">
+<body style="margin:0;padding:0;background:#F2F4F8;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;color:#111111;">
   <table width="100%" cellpadding="0" cellspacing="0" style="background:#F2F4F8;padding:32px 16px;">
     <tr><td align="center">
       <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;background:#ffffff;border-radius:18px;overflow:hidden;box-shadow:0 4px 24px rgba(15,23,41,0.06);">
 
-        <tr><td style="background:linear-gradient(135deg,#FFC94D 0%,#FFD966 100%);padding:36px 36px 28px;">
-          <p style="margin:0 0 8px;font-size:12px;letter-spacing:3px;font-weight:700;color:#0F1729;">CAMLOVE · ${planLabel.toUpperCase()}</p>
-          <h1 style="margin:0;font-size:24px;line-height:1.25;color:#0F1729;font-weight:800;">${t.heading}</h1>
+        <tr><td style="background:linear-gradient(135deg,#F4B400 0%,#FFCC3D 100%);padding:36px 36px 28px;">
+          <p style="margin:0 0 8px;font-size:12px;letter-spacing:3px;font-weight:700;color:#111111;">CAMLOVE · ${planLabel.toUpperCase()}</p>
+          <h1 style="margin:0;font-size:24px;line-height:1.25;color:#111111;font-weight:800;">${t.heading}</h1>
         </td></tr>
 
         <tr><td style="padding:32px 36px 8px;">
-          <p style="margin:0 0 16px;font-size:16px;line-height:1.55;color:#0F1729;">${t.greeting(firstName)}</p>
+          <p style="margin:0 0 16px;font-size:16px;line-height:1.55;color:#111111;">${t.greeting(firstName)}</p>
           <p style="margin:0 0 22px;font-size:15px;line-height:1.65;color:#475569;">${t.intro(planLabel)}</p>
 
           <table width="100%" cellpadding="0" cellspacing="0" style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:14px;">
@@ -1658,11 +1658,11 @@ export function accountUpgradedHtml(
         </td></tr>` : ""}
 
         <tr><td style="padding:28px 36px 0;text-align:center;">
-          <a href="${dashboardUrl}" style="display:inline-block;padding:14px 28px;background:#0F1729;color:#ffffff;text-decoration:none;border-radius:12px;font-weight:700;font-size:14px;">${ctaLabel}</a>
+          <a href="${dashboardUrl}" style="display:inline-block;padding:14px 28px;background:#111111;color:#ffffff;text-decoration:none;border-radius:12px;font-weight:700;font-size:14px;">${ctaLabel}</a>
         </td></tr>
 
         <tr><td style="padding:28px 36px 6px;">
-          <p style="margin:0;font-size:13px;color:#0F1729;font-weight:700;">${t.signoff}</p>
+          <p style="margin:0;font-size:13px;color:#111111;font-weight:700;">${t.signoff}</p>
         </td></tr>
 
         ${contactFooterHtml(lang)}
@@ -1797,19 +1797,19 @@ export function guestEmailD3Html(p: D3Params & { locale: GuestLang }): string {
   return `<!DOCTYPE html>
 <html lang="${p.locale}">
 <head><meta charset="utf-8" /><title>${t.heading}</title></head>
-<body style="margin:0;padding:0;background:#F2F4F8;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;color:#0F1729;">
+<body style="margin:0;padding:0;background:#F2F4F8;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;color:#111111;">
   <table width="100%" cellpadding="0" cellspacing="0" style="background:#F2F4F8;padding:32px 16px;">
     <tr><td align="center">
       <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;background:#ffffff;border-radius:18px;overflow:hidden;box-shadow:0 4px 24px rgba(15,23,41,0.06);">
-        <tr><td style="background:linear-gradient(135deg,#FFC94D 0%,#FFD966 100%);padding:32px 36px 26px;">
-          <p style="margin:0 0 8px;font-size:11px;letter-spacing:3px;font-weight:700;color:#0F1729;">CAMLOVE</p>
-          <h1 style="margin:0;font-size:22px;line-height:1.3;color:#0F1729;font-weight:800;">${t.heading}</h1>
+        <tr><td style="background:linear-gradient(135deg,#F4B400 0%,#FFCC3D 100%);padding:32px 36px 26px;">
+          <p style="margin:0 0 8px;font-size:11px;letter-spacing:3px;font-weight:700;color:#111111;">CAMLOVE</p>
+          <h1 style="margin:0;font-size:22px;line-height:1.3;color:#111111;font-weight:800;">${t.heading}</h1>
         </td></tr>
         <tr><td style="padding:28px 36px 8px;">
-          <p style="margin:0 0 14px;font-size:15px;line-height:1.55;color:#0F1729;">${t.greeting}</p>
+          <p style="margin:0 0 14px;font-size:15px;line-height:1.55;color:#111111;">${t.greeting}</p>
           <p style="margin:0 0 22px;font-size:15px;line-height:1.65;color:#475569;">${t.intro(p.coupleName, p.photoCount)}</p>
           <p style="margin:0 0 24px;text-align:center;">
-            <a href="${albumUrl}" style="display:inline-block;padding:13px 26px;background:#0F1729;color:#ffffff;text-decoration:none;border-radius:12px;font-weight:700;font-size:14px;">${t.cta}</a>
+            <a href="${albumUrl}" style="display:inline-block;padding:13px 26px;background:#111111;color:#ffffff;text-decoration:none;border-radius:12px;font-weight:700;font-size:14px;">${t.cta}</a>
           </p>
           <p style="margin:0;font-size:14px;line-height:1.6;color:#64748B;">${t.outro}</p>
         </td></tr>
@@ -1968,16 +1968,16 @@ export function guestEmailD21Html(p: D21Params & { locale: GuestLang }): string 
   return `<!DOCTYPE html>
 <html lang="${p.locale}">
 <head><meta charset="utf-8" /><title>${t.heading}</title></head>
-<body style="margin:0;padding:0;background:#F2F4F8;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;color:#0F1729;">
+<body style="margin:0;padding:0;background:#F2F4F8;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;color:#111111;">
   <table width="100%" cellpadding="0" cellspacing="0" style="background:#F2F4F8;padding:32px 16px;">
     <tr><td align="center">
       <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;background:#ffffff;border-radius:18px;overflow:hidden;box-shadow:0 4px 24px rgba(15,23,41,0.06);">
-        <tr><td style="background:linear-gradient(135deg,#FFC94D 0%,#FFD966 100%);padding:32px 36px 26px;">
-          <p style="margin:0 0 8px;font-size:11px;letter-spacing:3px;font-weight:700;color:#0F1729;">CAMLOVE</p>
-          <h1 style="margin:0;font-size:22px;line-height:1.3;color:#0F1729;font-weight:800;">${t.heading}</h1>
+        <tr><td style="background:linear-gradient(135deg,#F4B400 0%,#FFCC3D 100%);padding:32px 36px 26px;">
+          <p style="margin:0 0 8px;font-size:11px;letter-spacing:3px;font-weight:700;color:#111111;">CAMLOVE</p>
+          <h1 style="margin:0;font-size:22px;line-height:1.3;color:#111111;font-weight:800;">${t.heading}</h1>
         </td></tr>
         <tr><td style="padding:28px 36px 8px;">
-          <p style="margin:0 0 14px;font-size:15px;line-height:1.55;color:#0F1729;">${t.greeting}</p>
+          <p style="margin:0 0 14px;font-size:15px;line-height:1.55;color:#111111;">${t.greeting}</p>
           <p style="margin:0 0 22px;font-size:15px;line-height:1.65;color:#475569;">${t.intro(p.fromCoupleName)}</p>
 
           <table width="100%" cellpadding="0" cellspacing="0" style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:14px;">
@@ -1988,16 +1988,16 @@ export function guestEmailD21Html(p: D21Params & { locale: GuestLang }): string 
             </td></tr>
           </table>
 
-          <table width="100%" cellpadding="0" cellspacing="0" style="margin-top:24px;background:#FFF9EC;border:1.5px dashed #FFC94D;border-radius:14px;">
+          <table width="100%" cellpadding="0" cellspacing="0" style="margin-top:24px;background:#FFF9E8;border:1.5px dashed #F4B400;border-radius:14px;">
             <tr><td style="padding:18px 22px;text-align:center;">
-              <p style="margin:0 0 6px;font-size:11px;letter-spacing:2px;color:#C9820A;font-weight:700;">${t.codeLabel.toUpperCase()}</p>
-              <p style="margin:0;font-size:24px;font-weight:800;letter-spacing:2px;color:#0F1729;font-family:'Courier New',monospace;">${escapeHtml(p.discountCode)}</p>
+              <p style="margin:0 0 6px;font-size:11px;letter-spacing:2px;color:#946D00;font-weight:700;">${t.codeLabel.toUpperCase()}</p>
+              <p style="margin:0;font-size:24px;font-weight:800;letter-spacing:2px;color:#111111;font-family:'Courier New',monospace;">${escapeHtml(p.discountCode)}</p>
               <p style="margin:6px 0 0;font-size:12px;color:#94A3B8;">−${p.discountPct}%</p>
             </td></tr>
           </table>
 
           <p style="margin:24px 0 0;text-align:center;">
-            <a href="${createUrl}" style="display:inline-block;padding:14px 28px;background:#0F1729;color:#ffffff;text-decoration:none;border-radius:12px;font-weight:700;font-size:14px;">${t.cta}</a>
+            <a href="${createUrl}" style="display:inline-block;padding:14px 28px;background:#111111;color:#ffffff;text-decoration:none;border-radius:12px;font-weight:700;font-size:14px;">${t.cta}</a>
           </p>
           <p style="margin:14px 0 0;font-size:12px;color:#94A3B8;text-align:center;">${t.disclaimer}</p>
         </td></tr>

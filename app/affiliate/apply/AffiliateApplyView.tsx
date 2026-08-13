@@ -14,10 +14,10 @@ export function AffiliateApplyView({ lang }: { lang: AffiliateLang }) {
       <div className="max-w-2xl mx-auto">
         {/* Hero */}
         <div className="text-center mb-10">
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#C9820A] mb-3">
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#946D00] mb-3">
             {t.badge}
           </p>
-          <h1 className="text-4xl sm:text-5xl font-extrabold text-[#0F1729] mb-3">
+          <h1 className="text-4xl sm:text-5xl font-extrabold text-[#111111] mb-3">
             {t.headingLine1}<br />
             {t.headingLine2}
           </h1>
@@ -31,7 +31,7 @@ export function AffiliateApplyView({ lang }: { lang: AffiliateLang }) {
           {t.benefits.map((b) => (
             <div key={b.title} className="bg-white rounded-2xl border border-gray-100 p-5">
               <div className="text-2xl mb-2">{BENEFIT_ICONS[b.title.split(" ")[0]] ?? "✨"}</div>
-              <p className="font-bold text-[#0F1729] text-sm mb-1">{b.title}</p>
+              <p className="font-bold text-[#111111] text-sm mb-1">{b.title}</p>
               <p className="text-xs text-gray-500 leading-relaxed">{b.body}</p>
             </div>
           ))}
@@ -39,7 +39,7 @@ export function AffiliateApplyView({ lang }: { lang: AffiliateLang }) {
 
         {/* Form */}
         <div className="bg-white rounded-2xl border border-gray-100 p-6 sm:p-8 shadow-sm">
-          <h2 className="text-xl font-extrabold text-[#0F1729] mb-1">{t.formTitle}</h2>
+          <h2 className="text-xl font-extrabold text-[#111111] mb-1">{t.formTitle}</h2>
           <p className="text-sm text-gray-500 mb-6">{t.formSubtitle}</p>
           <ApplyForm lang={lang} />
         </div>

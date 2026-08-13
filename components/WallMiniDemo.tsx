@@ -21,7 +21,7 @@ export function WallMiniDemo({ label = "LIVE" }: { label?: string }) {
   return (
     <div className="relative w-full select-none" aria-hidden>
       {/* TV frame */}
-      <div className="rounded-2xl bg-[#0F1729] p-2 sm:p-2.5 shadow-[0_24px_60px_rgba(15,23,41,0.35)]">
+      <div className="rounded-2xl bg-[#111111] p-2 sm:p-2.5 shadow-[0_24px_60px_rgba(15,23,41,0.35)]">
         <div className="relative aspect-video rounded-xl overflow-hidden" style={{ background: "radial-gradient(120% 120% at 50% 0%, #1E2A44 0%, #0B1220 60%)" }}>
 
           {/* drifting side thumbnails */}
@@ -60,7 +60,7 @@ export function WallMiniDemo({ label = "LIVE" }: { label?: string }) {
 
           {/* uploader pill */}
           <div className="absolute bottom-[6%] left-1/2 -translate-x-1/2 z-20 flex items-center gap-1.5">
-            <span className="px-2 py-0.5 rounded-full text-[8px] sm:text-[9px] font-bold uppercase tracking-wide text-[#0F1729] bg-[#FFC94D]">
+            <span className="px-2 py-0.5 rounded-full text-[8px] sm:text-[9px] font-bold uppercase tracking-wide text-[#111111] bg-[#F4B400]">
               ✓ Ana
             </span>
           </div>
@@ -79,15 +79,15 @@ export function WallMiniDemo({ label = "LIVE" }: { label?: string }) {
             <div
               className="w-6 h-6 sm:w-8 sm:h-8 rounded-[3px] bg-white p-[2px]"
             >
-              <div className="w-full h-full" style={{ background: "repeating-conic-gradient(#0F1729 0% 25%, #fff 0% 50%) 50% / 25% 25%" }} />
+              <div className="w-full h-full" style={{ background: "repeating-conic-gradient(#111111 0% 25%, #fff 0% 50%) 50% / 25% 25%" }} />
             </div>
             <span className="hidden sm:block text-[8px] leading-tight text-white/85 font-semibold pr-1">Skeniraj<br />& deli</span>
           </div>
         </div>
       </div>
       {/* stand */}
-      <div className="mx-auto w-[18%] h-1.5 sm:h-2 rounded-b-xl bg-[#0F1729]/85" />
-      <div className="mx-auto mt-0.5 w-[30%] h-1 rounded-full bg-[#0F1729]/20" />
+      <div className="mx-auto w-[18%] h-1.5 sm:h-2 rounded-b-xl bg-[#111111]/85" />
+      <div className="mx-auto mt-0.5 w-[30%] h-1 rounded-full bg-[#111111]/20" />
     </div>
   );
 }

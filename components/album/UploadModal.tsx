@@ -464,7 +464,7 @@ async function saveUpload(slug: string, body: object, albumPassword = "") {
 
 // ── Component ─────────────────────────────────────────────────────────────────
 
-export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, currentCount, lang, onClose, onSuccess, onNameChange: _onNameChange, initialFiles, accent = "#C9820A", albumPassword = "", moments = [], defaultMomentId = null, referralCode = null, requireGuestData = false, organiserName = "" }: Props) {
+export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, currentCount, lang, onClose, onSuccess, onNameChange: _onNameChange, initialFiles, accent = "#946D00", albumPassword = "", moments = [], defaultMomentId = null, referralCode = null, requireGuestData = false, organiserName = "" }: Props) {
   const t = translations[lang];
   const lead = LEAD_COPY[lang];
 
@@ -753,7 +753,7 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
 
   return (
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-6 overflow-x-hidden">
-      <div className="absolute inset-0 bg-[#0F1729]/70 backdrop-blur-sm" onClick={!uploading ? onClose : undefined} />
+      <div className="absolute inset-0 bg-[#111111]/70 backdrop-blur-sm" onClick={!uploading ? onClose : undefined} />
 
       <div className="relative w-full max-w-[100vw] sm:max-w-lg bg-white rounded-t-3xl sm:rounded-2xl shadow-xl max-h-[92vh] flex flex-col overflow-hidden"
         style={{ maxHeight: "92dvh", paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
@@ -764,16 +764,16 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
             edges on narrow phones). */}
         <div className="px-4 sm:px-6 py-4 border-b border-gray-100 shrink-0 overflow-hidden">
           <div className="flex items-center justify-between gap-2 min-w-0">
-            <h2 className="min-w-0 flex-1 font-serif text-xl font-light text-[#0F1729] truncate">{t.uploadModalTitle}</h2>
+            <h2 className="min-w-0 flex-1 font-serif text-xl font-light text-[#111111] truncate">{t.uploadModalTitle}</h2>
             <button onClick={onClose} disabled={uploading} className="shrink-0 w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 disabled:opacity-40">
-              <svg className="w-4 h-4 text-[#0F1729]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+              <svg className="w-4 h-4 text-[#111111]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
           </div>
           <div className="flex items-center gap-2 mt-1.5 flex-wrap">
-            <span className="text-[10px] text-[#0F1729]/40 px-2 py-0.5 rounded-full font-medium whitespace-nowrap" style={{ background: `${accent}1A` }}>📷 {t.maxImageSize(MAX_IMAGE_MB)}</span>
-            <span className="text-[10px] text-[#0F1729]/40 px-2 py-0.5 rounded-full font-medium whitespace-nowrap" style={{ background: `${accent}1A` }}>📹 {t.maxVideoSize(MAX_VIDEO_MB)}</span>
+            <span className="text-[10px] text-[#111111]/40 px-2 py-0.5 rounded-full font-medium whitespace-nowrap" style={{ background: `${accent}1A` }}>📷 {t.maxImageSize(MAX_IMAGE_MB)}</span>
+            <span className="text-[10px] text-[#111111]/40 px-2 py-0.5 rounded-full font-medium whitespace-nowrap" style={{ background: `${accent}1A` }}>📹 {t.maxVideoSize(MAX_VIDEO_MB)}</span>
             <span className="text-[10px] text-green-600 font-medium whitespace-nowrap">{t.fullQuality}</span>
           </div>
         </div>
@@ -805,8 +805,8 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
                a service isn't freely given, so it can never gate upload. */
             <div className="space-y-3 min-w-0">
               <div>
-                <p className="font-serif text-lg font-light text-[#0F1729]">{lead.title}</p>
-                <p className="font-sans text-xs text-[#0F1729]/55 mt-0.5">{lead.subtitle}</p>
+                <p className="font-serif text-lg font-light text-[#111111]">{lead.title}</p>
+                <p className="font-sans text-xs text-[#111111]/55 mt-0.5">{lead.subtitle}</p>
               </div>
               <div className="grid grid-cols-2 gap-2">
                 <input
@@ -814,14 +814,14 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
                   onChange={(e) => setLeadFirst(e.target.value)}
                   placeholder={lead.firstName}
                   autoComplete="given-name"
-                  className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm text-[#0F1729] bg-white outline-none focus:border-[#C9820A]"
+                  className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm text-[#111111] bg-white outline-none focus:border-[#946D00]"
                 />
                 <input
                   value={leadLast}
                   onChange={(e) => setLeadLast(e.target.value)}
                   placeholder={lead.lastName}
                   autoComplete="family-name"
-                  className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm text-[#0F1729] bg-white outline-none focus:border-[#C9820A]"
+                  className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm text-[#111111] bg-white outline-none focus:border-[#946D00]"
                 />
               </div>
               <input
@@ -831,21 +831,21 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
                 placeholder={lead.email}
                 autoComplete="email"
                 inputMode="email"
-                className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm text-[#0F1729] bg-white outline-none focus:border-[#C9820A]"
+                className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm text-[#111111] bg-white outline-none focus:border-[#946D00]"
               />
               <label className="flex items-start gap-2 cursor-pointer">
                 <input
                   type="checkbox"
                   checked={leadConsent}
                   onChange={(e) => setLeadConsent(e.target.checked)}
-                  className="mt-0.5 shrink-0 accent-[#C9820A]"
+                  className="mt-0.5 shrink-0 accent-[#946D00]"
                 />
-                <span className="text-[11px] text-[#0F1729]/60 leading-snug">
+                <span className="text-[11px] text-[#111111]/60 leading-snug">
                   {lead.consentLabel(organiserName || "organizator")}
-                  <span className="block text-[#0F1729]/40 mt-0.5">{lead.consentOptional}</span>
+                  <span className="block text-[#111111]/40 mt-0.5">{lead.consentOptional}</span>
                 </span>
               </label>
-              <p className="text-[11px] text-[#0F1729]/40 leading-snug">{lead.privacyNote}</p>
+              <p className="text-[11px] text-[#111111]/40 leading-snug">{lead.privacyNote}</p>
               {leadError && <p className="text-xs text-red-600">{leadError}</p>}
               <button
                 onClick={submitLead}
@@ -863,26 +863,26 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
                   <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                 </svg>
               </div>
-              <p className="font-serif text-xl font-light text-[#0F1729] mb-1 break-words">{t.successTitle(success)}</p>
-              <p className="font-sans text-sm text-[#0F1729]/60 mb-3 break-words">{t.successDesc}</p>
+              <p className="font-serif text-xl font-light text-[#111111] mb-1 break-words">{t.successTitle(success)}</p>
+              <p className="font-sans text-sm text-[#111111]/60 mb-3 break-words">{t.successDesc}</p>
               {/* Approval note — demo albums show a "not public" notice instead */}
-              <p className="font-sans text-xs text-[#0F1729]/45 bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 mb-6 leading-relaxed break-words">
+              <p className="font-sans text-xs text-[#111111]/45 bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 mb-6 leading-relaxed break-words">
                 {isDemo ? t.demoUploadNote : t.approvalNote}
               </p>
               <button
                 onClick={() => onSuccess({ emailCaptured: saveLinkSent })}
                 className="px-6 py-2.5 text-[#F2F4F8] font-sans text-sm rounded-xl transition-colors"
-                style={{ background: "#0F1729" }}
+                style={{ background: "#111111" }}
                 onMouseEnter={e => { e.currentTarget.style.background = accent; }}
-                onMouseLeave={e => { e.currentTarget.style.background = "#0F1729"; }}
+                onMouseLeave={e => { e.currentTarget.style.background = "#111111"; }}
               >
                 {t.closeWindow}
               </button>
 
               {/* Save album link to email — so guest can find it tomorrow without QR */}
               <div className="mt-5 pt-4 border-t border-gray-100 text-left">
-                <p className="text-xs font-semibold text-[#0F1729]/70 mb-1">📧 {t.saveLinkTitle}</p>
-                <p className="text-xs text-[#0F1729]/40 mb-3">{t.saveLinkDesc}</p>
+                <p className="text-xs font-semibold text-[#111111]/70 mb-1">📧 {t.saveLinkTitle}</p>
+                <p className="text-xs text-[#111111]/40 mb-3">{t.saveLinkDesc}</p>
                 {saveLinkSent ? (
                   <p className="text-xs text-green-600 font-medium text-center py-2">{t.saveLinkSent}</p>
                 ) : (
@@ -913,9 +913,9 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
                         type="checkbox"
                         checked={marketingConsent}
                         onChange={(e) => setMarketingConsent(e.target.checked)}
-                        className="mt-0.5 shrink-0 accent-[#C9820A]"
+                        className="mt-0.5 shrink-0 accent-[#946D00]"
                       />
-                      <span className="text-[11px] text-[#0F1729]/60 leading-snug">
+                      <span className="text-[11px] text-[#111111]/60 leading-snug">
                         {t.marketingConsentLabel}
                       </span>
                     </label>
@@ -936,12 +936,12 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
               {/* Moment selector */}
               {moments.length > 0 && (
                 <div>
-                  <label className="block text-xs font-semibold text-[#0F1729]/60 mb-1.5">{t.momentLabel}</label>
+                  <label className="block text-xs font-semibold text-[#111111]/60 mb-1.5">{t.momentLabel}</label>
                   <select
                     value={momentId}
                     onChange={(e) => setMomentId(e.target.value)}
                     disabled={uploading}
-                    className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm text-[#0F1729] bg-white outline-none disabled:opacity-50"
+                    className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm text-[#111111] bg-white outline-none disabled:opacity-50"
                   >
                     <option value="">{t.momentNone}</option>
                     {moments.map(m => (
@@ -971,10 +971,10 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
                       <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
                     </svg>
                   </div>
-                  <p className="font-sans text-sm font-semibold text-[#0F1729]/80 mb-1">
+                  <p className="font-sans text-sm font-semibold text-[#111111]/80 mb-1">
                     {dragOver ? t.dropFiles : t.selectPhotosVideos}
                   </p>
-                  <p className="font-sans text-xs text-[#0F1729]/40">{t.fileTypesHint(remaining)}</p>
+                  <p className="font-sans text-xs text-[#111111]/40">{t.fileTypesHint(remaining)}</p>
                 </div>
               )}
 
@@ -987,9 +987,9 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
                       : f.preview ? <img src={f.preview} alt="" className="w-full h-full object-cover" /> : null}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="font-sans text-sm text-[#0F1729] truncate font-medium">{f.file.name}</p>
+                    <p className="font-sans text-sm text-[#111111] truncate font-medium">{f.file.name}</p>
                     <div className="mt-1 flex items-center gap-2">
-                      {f.status === "idle" && <p className="text-xs text-[#0F1729]/40">{f.isVideo ? "📹" : "📷"} {fmt(f.file.size)}</p>}
+                      {f.status === "idle" && <p className="text-xs text-[#111111]/40">{f.isVideo ? "📹" : "📷"} {fmt(f.file.size)}</p>}
                       {f.status === "compressing" && (
                         <p className="text-xs text-amber-600 flex items-center gap-1.5 font-medium">
                           <svg className="w-3 h-3 animate-spin shrink-0" fill="none" viewBox="0 0 24 24">
@@ -1036,7 +1036,7 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
               return (
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs text-[#0F1729]/50 font-medium">
+                    <span className="text-xs text-[#111111]/50 font-medium">
                       {done < total ? t.uploadingProgress(done + 1, total) : t.saving}
                     </span>
                     <span className="text-xs font-bold" style={{ color: accent }}>{avgPct}%</span>

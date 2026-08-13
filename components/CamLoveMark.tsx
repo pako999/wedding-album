@@ -1,38 +1,34 @@
-import { ImageResponse } from "next/og";
+import React from "react";
 
 /**
- * Apple touch icon for iOS Home Screen + Safari pinned tabs.
+ * The CamLove mark: a camera whose frame holds an embracing couple under a
+ * heart. Traced from the master artwork in
+ * `public/camlove-black-yellow-logo.svg`.
  *
- * 180×180 is Apple's current recommended size. Next.js emits
- * `<link rel="apple-touch-icon" sizes="180x180">` automatically.
+ * Single source of truth. The wordmark logo, the tab favicon and both PWA
+ * icons all render THIS component, so the mark cannot drift between them —
+ * the previous mark was duplicated across four files and had already
+ * diverged (the icon routes drew a different camera to the logo component).
+ *
+ * Deliberately unstyled and background-free: callers place it on whatever
+ * ground they need. On a light ground the yellow body defines the shape; on
+ * a dark ground it reads at 10.2:1. Note the cream interior is opaque, so
+ * the two figures inside never touch the caller's background — which is why
+ * an ink tile does not swallow the black figure.
  */
 
-export const runtime = "edge";
-export const size = { width: 180, height: 180 };
-export const contentType = "image/png";
+/** Frames the artwork's own coordinate space with no surrounding padding. */
+export const MARK_VIEWBOX = "45 38 428 430";
 
-export default function AppleIcon() {
-  return new ImageResponse(
-    (
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          width: "100%",
-          height: "100%",
-        }}
-      >
-        <svg
-          width="180"
-          height="180"
-          viewBox="0 0 512 512"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          {/* Ink tile — see components/CamLoveMark.tsx. iOS does not apply
-              its own background, so the tile must be opaque here. */}
-          <rect width="512" height="512" rx="112" fill="#111111" />
-          <g transform="translate(28 20) scale(1.06)">
+export function CamLoveMark({ size = 32 }: { size?: number }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox={MARK_VIEWBOX}
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+    >
       <path fill="#F4B400" d="M142 91h45l23-30c6-8 15-12 25-12h42c10 0 19 4 25 12l23 30h45c47 0 85 38 85 85v194c0 47-38 85-85 85H142c-47 0-85-38-85-85V176c0-47 38-85 85-85Z" />
       <path fill="#FFF9E8" d="M145 121h57l28-36c2-3 6-5 10-5h32c4 0 8 2 10 5l28 36h57c31 0 57 26 57 57v189c0 31-26 57-57 57H145c-31 0-57-26-57-57V178c0-31 26-57 57-57Z" />
       <path fill="#F4B400" d="M256 132c-7-11-20-16-32-13-16 4-26 19-22 34 5 19 27 30 54 46 27-16 49-27 54-46 4-15-6-30-22-34-12-3-25 2-32 13Z" />
@@ -43,10 +39,6 @@ export default function AppleIcon() {
       <path fill="#F4B400" d="M238 424v-62c3-51 25-82 66-82 50 0 78 43 80 111-2 14-10 25-22 33H238Z" />
       <path fill="#F4B400" d="M334 301c-11-10-28-9-38 3-16 19-36 28-57 26-19-2-35-10-50-25-11-11-28-11-39 0-10 11-10 28 1 39 25 25 53 39 85 41 42 3 77-12 101-45 9-12 8-29-3-39Z" />
       <path fill="#FFF9E8" d="M189 305c15 15 31 23 50 25l-17 48c-27-5-51-17-71-37-11-11-11-28-1-39 11-11 28-10 39 3Z" opacity={0.18} />
-          </g>
-        </svg>
-      </div>
-    ),
-    size,
+    </svg>
   );
 }

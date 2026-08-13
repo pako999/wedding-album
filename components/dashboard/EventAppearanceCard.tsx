@@ -83,13 +83,13 @@ export function EventAppearanceCard({ albumSlug, coupleName }: { albumSlug: stri
         // eslint-disable-next-line @next/next/no-img-element
         ? <img src={current} alt="" className="w-12 h-12 rounded-lg object-cover border border-gray-200" />
         : <span className="w-12 h-12 rounded-lg border border-dashed border-gray-300 flex items-center justify-center text-gray-300 text-xl">+</span>}
-      <span className="text-xs font-semibold text-[#C9820A] underline underline-offset-2">{label}</span>
+      <span className="text-xs font-semibold text-[#946D00] underline underline-offset-2">{label}</span>
       <input type="file" accept="image/jpeg,image/png,image/webp" className="hidden"
         onChange={(e) => { const f = e.target.files?.[0]; if (f) void upload(kind, f); e.target.value = ""; }} />
     </label>
   );
 
-  const accent = a.accentColor ?? "#FFC94D";
+  const accent = a.accentColor ?? "#F4B400";
   const title = a.welcomeTitle || coupleName;
   const text = a.welcomeText || "Delite svoje fotografije z nami!";
   const button = a.welcomeButton || "Naprej";
@@ -140,7 +140,7 @@ export function EventAppearanceCard({ albumSlug, coupleName }: { albumSlug: stri
               </span>
               <button type="button" role="switch" aria-checked={a.welcomeEnabled}
                 onClick={() => update({ welcomeEnabled: !a.welcomeEnabled })}
-                className={`relative w-11 h-6 rounded-full transition-colors shrink-0 ${a.welcomeEnabled ? "bg-[#FFC94D]" : "bg-gray-200"}`}>
+                className={`relative w-11 h-6 rounded-full transition-colors shrink-0 ${a.welcomeEnabled ? "bg-[#F4B400]" : "bg-gray-200"}`}>
                 <span className={`absolute top-0.5 w-5 h-5 rounded-full bg-white shadow transition-all ${a.welcomeEnabled ? "left-[22px]" : "left-0.5"}`} />
               </button>
             </label>
@@ -148,14 +148,14 @@ export function EventAppearanceCard({ albumSlug, coupleName }: { albumSlug: stri
               <div className="space-y-3">
                 <input value={a.welcomeTitle ?? ""} placeholder={coupleName}
                   onChange={(e) => update({ welcomeTitle: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm outline-none focus:border-[#FFC94D]" />
+                  className="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm outline-none focus:border-[#F4B400]" />
                 <textarea value={a.welcomeText ?? ""} placeholder="Delite svoje fotografije z nami!" rows={2}
                   onChange={(e) => update({ welcomeText: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm outline-none focus:border-[#FFC94D]" />
+                  className="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm outline-none focus:border-[#F4B400]" />
                 <div className="flex gap-3">
                   <input value={a.welcomeButton ?? ""} placeholder="Naprej"
                     onChange={(e) => update({ welcomeButton: e.target.value })}
-                    className="flex-1 px-3 py-2 border border-gray-200 rounded-xl text-sm outline-none focus:border-[#FFC94D]" />
+                    className="flex-1 px-3 py-2 border border-gray-200 rounded-xl text-sm outline-none focus:border-[#F4B400]" />
                   <select value={a.welcomeFont}
                     onChange={(e) => update({ welcomeFont: e.target.value as WelcomeFont })}
                     className="px-3 py-2 border border-gray-200 rounded-xl text-sm bg-white outline-none">
@@ -171,7 +171,7 @@ export function EventAppearanceCard({ albumSlug, coupleName }: { albumSlug: stri
         {/* Live phone preview — mirrors WelcomeScreen's real layout. */}
         <div className="hidden lg:block">
           <p className="text-[10px] uppercase tracking-wider font-bold text-gray-400 mb-2 text-center">Predogled</p>
-          <div className="rounded-[2rem] border-[6px] border-[#0F1729] overflow-hidden bg-[#0F1729] shadow-xl">
+          <div className="rounded-[2rem] border-[6px] border-[#111111] overflow-hidden bg-[#111111] shadow-xl">
             <div className="relative aspect-[9/17] bg-gray-800">
               {a.welcomeBgUrl && (
                 // eslint-disable-next-line @next/next/no-img-element
@@ -186,7 +186,7 @@ export function EventAppearanceCard({ albumSlug, coupleName }: { albumSlug: stri
                 <p className="text-white text-lg leading-tight" style={{ fontFamily: WELCOME_FONT_STACKS[a.welcomeFont] }}>{title}</p>
                 <p className="text-gray-200 text-[10px] mt-1">{text}</p>
                 <div className="mt-2 rounded-lg bg-white/15 px-2 py-1.5 text-[9px] text-gray-200">Ime …</div>
-                <div className="mt-1.5 rounded-lg text-center py-1.5 text-[10px] font-bold text-[#0F1729]" style={{ background: accent }}>
+                <div className="mt-1.5 rounded-lg text-center py-1.5 text-[10px] font-bold text-[#111111]" style={{ background: accent }}>
                   {button}
                 </div>
               </div>

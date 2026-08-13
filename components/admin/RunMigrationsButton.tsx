@@ -36,7 +36,7 @@ export function RunMigrationsButton() {
         type="button"
         onClick={run}
         disabled={busy}
-        className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-semibold text-gray-600 bg-white border border-gray-200 rounded-lg hover:bg-[#FFF9EC] hover:border-[#FFC94D] hover:text-[#0F1729] transition-colors disabled:opacity-50"
+        className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-semibold text-gray-600 bg-white border border-gray-200 rounded-lg hover:bg-[#FFF9E8] hover:border-[#F4B400] hover:text-[#111111] transition-colors disabled:opacity-50"
       >
         {busy ? "Zagon…" : "🔧 Popravi bazo"}
       </button>

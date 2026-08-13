@@ -37,10 +37,10 @@ interface Props {
 const DEFAULT_SECONDS = 6;
 
 const BACKGROUNDS = [
-  { id: "photo", label: "Fotografija", swatch: "linear-gradient(135deg,#1f2937,#0F1729)" },
-  { id: "dark",  label: "Temna",       swatch: "#0F1729" },
+  { id: "photo", label: "Fotografija", swatch: "linear-gradient(135deg,#1f2937,#111111)" },
+  { id: "dark",  label: "Temna",       swatch: "#111111" },
   { id: "light", label: "Svetla",      swatch: "#F2F4F8" },
-  { id: "warm",  label: "Kremna",      swatch: "#FFF9EC" },
+  { id: "warm",  label: "Kremna",      swatch: "#FFF9E8" },
 ] as const;
 
 const TRANSITIONS = [
@@ -164,7 +164,7 @@ export function PhotoWallCard({ wallUrl, hasPassword, albumSlug, moderationEnabl
     <div className="rounded-2xl border border-gray-100 overflow-hidden bg-white">
       {/* Product-card header — tinted, with a live mini demo of the wall
           so the owner instantly understands what the link opens. */}
-      <div className="p-5 sm:p-6" style={{ background: "linear-gradient(180deg,#FFF9EC 0%,#FFFDF6 100%)" }}>
+      <div className="p-5 sm:p-6" style={{ background: "linear-gradient(180deg,#FFF9E8 0%,#FFFDF6 100%)" }}>
         <h3 className="font-bold text-gray-900 text-base">📺 Foto stena</h3>
         <p className="text-xs text-gray-500 mt-1 max-w-lg">
           Ločena povezava od vaše galerije — varna za prikaz na skupnem zaslonu. Odprite jo na TV-ju,
@@ -183,21 +183,21 @@ export function PhotoWallCard({ wallUrl, hasPassword, albumSlug, moderationEnabl
       {!isPremium && (
         <div
           className="mb-4 flex items-start gap-3 rounded-xl border p-3.5"
-          style={{ background: "#FFF9EC", borderColor: "#FFC94D" }}
+          style={{ background: "#FFF9E8", borderColor: "#F4B400" }}
         >
           <span className="text-lg shrink-0">★</span>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-semibold" style={{ color: "#92600A" }}>
+            <p className="text-sm font-semibold" style={{ color: "#946D00" }}>
               Foto stena je del paketa Premium
             </p>
-            <p className="text-xs mt-0.5" style={{ color: "#92600A" }}>
+            <p className="text-xs mt-0.5" style={{ color: "#946D00" }}>
               Preizkusite jo brez omejitev — na zaslonu bo vidna opomba, da gre za predogled.
               Z nadgradnjo na Premium opomba izgine.
             </p>
             <a
               href={`/dashboard/${albumSlug}/upgrade?plan=premium`}
               className="inline-block text-xs font-semibold underline mt-2"
-              style={{ color: "#92600A" }}
+              style={{ color: "#946D00" }}
             >
               Nadgradi na Premium →
             </a>
@@ -211,14 +211,14 @@ export function PhotoWallCard({ wallUrl, hasPassword, albumSlug, moderationEnabl
       {moderationEnabled && (
         <div
           className="mb-4 flex items-start gap-3 rounded-xl border p-3.5"
-          style={{ background: "#FFF9EC", borderColor: "#FFC94D" }}
+          style={{ background: "#FFF9E8", borderColor: "#F4B400" }}
         >
           <span className="text-lg shrink-0">⚠️</span>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-semibold" style={{ color: "#92600A" }}>
+            <p className="text-sm font-semibold" style={{ color: "#946D00" }}>
               Moderacija je vklopljena
             </p>
-            <p className="text-xs mt-0.5" style={{ color: "#92600A" }}>
+            <p className="text-xs mt-0.5" style={{ color: "#946D00" }}>
               Fotografije se na steni prikažejo šele, ko jih potrdite — dokler jih ne odobrite, zaslon ostane prazen.
               {pendingCount > 0
                 ? ` Trenutno čaka ${pendingCount} ${pendingCount === 1 ? "fotografija" : "fotografij"}.`
@@ -229,7 +229,7 @@ export function PhotoWallCard({ wallUrl, hasPassword, albumSlug, moderationEnabl
                 <a
                   href={`/dashboard/${albumSlug}?tab=pending`}
                   className="text-xs font-semibold underline"
-                  style={{ color: "#92600A" }}
+                  style={{ color: "#946D00" }}
                 >
                   Poglej čakajoče →
                 </a>
@@ -237,7 +237,7 @@ export function PhotoWallCard({ wallUrl, hasPassword, albumSlug, moderationEnabl
               <a
                 href={`/dashboard/${albumSlug}?tab=settings`}
                 className="text-xs font-semibold underline"
-                style={{ color: "#92600A" }}
+                style={{ color: "#946D00" }}
               >
                 Izklopi moderacijo v nastavitvah →
               </a>
@@ -272,7 +272,7 @@ export function PhotoWallCard({ wallUrl, hasPassword, albumSlug, moderationEnabl
               const n = Number.parseInt(e.target.value, 10);
               setSeconds(Number.isFinite(n) ? Math.min(120, Math.max(2, n)) : DEFAULT_SECONDS);
             }}
-            className="w-20 px-3 py-1.5 border border-gray-200 rounded-lg text-sm text-gray-800 text-center outline-none focus:border-[#FFC94D]"
+            className="w-20 px-3 py-1.5 border border-gray-200 rounded-lg text-sm text-gray-800 text-center outline-none focus:border-[#F4B400]"
           />
           <span className="text-xs text-gray-400">sekund</span>
         </div>
@@ -293,8 +293,8 @@ export function PhotoWallCard({ wallUrl, hasPassword, albumSlug, moderationEnabl
               aria-pressed={background === b.id}
               className="flex items-center gap-2 pl-1.5 pr-3 py-1.5 rounded-lg border text-xs font-medium transition-colors"
               style={{
-                borderColor: background === b.id ? "#FFC94D" : "#e5e7eb",
-                background: background === b.id ? "#FFF9EC" : "white",
+                borderColor: background === b.id ? "#F4B400" : "#e5e7eb",
+                background: background === b.id ? "#FFF9E8" : "white",
                 color: "#374151",
               }}
             >
@@ -321,8 +321,8 @@ export function PhotoWallCard({ wallUrl, hasPassword, albumSlug, moderationEnabl
               aria-pressed={transition === t.id}
               className="px-3 py-1.5 rounded-lg border text-xs font-medium transition-colors"
               style={{
-                borderColor: transition === t.id ? "#FFC94D" : "#e5e7eb",
-                background: transition === t.id ? "#FFF9EC" : "white",
+                borderColor: transition === t.id ? "#F4B400" : "#e5e7eb",
+                background: transition === t.id ? "#FFF9E8" : "white",
                 color: "#374151",
               }}
             >
@@ -347,8 +347,8 @@ export function PhotoWallCard({ wallUrl, hasPassword, albumSlug, moderationEnabl
               aria-pressed={orientation === o.id}
               className="px-3 py-1.5 rounded-lg border text-xs font-medium transition-colors"
               style={{
-                borderColor: orientation === o.id ? "#FFC94D" : "#e5e7eb",
-                background: orientation === o.id ? "#FFF9EC" : "white",
+                borderColor: orientation === o.id ? "#F4B400" : "#e5e7eb",
+                background: orientation === o.id ? "#FFF9E8" : "white",
                 color: "#374151",
               }}
             >
@@ -371,7 +371,7 @@ export function PhotoWallCard({ wallUrl, hasPassword, albumSlug, moderationEnabl
             aria-checked={t.on}
             aria-label={t.label}
             onClick={() => t.set(!t.on)}
-            className={`relative w-10 h-5 rounded-full transition-colors shrink-0 ${t.on ? "bg-[#FFC94D]" : "bg-gray-200"}`}
+            className={`relative w-10 h-5 rounded-full transition-colors shrink-0 ${t.on ? "bg-[#F4B400]" : "bg-gray-200"}`}
           >
             <span
               className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white shadow transition-transform ${t.on ? "translate-x-5" : "translate-x-0"}`}
@@ -392,7 +392,7 @@ export function PhotoWallCard({ wallUrl, hasPassword, albumSlug, moderationEnabl
             value={pw}
             onChange={(e) => setPw(e.target.value)}
             placeholder="Geslo galerije"
-            className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm text-gray-800 outline-none focus:border-[#FFC94D]"
+            className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm text-gray-800 outline-none focus:border-[#F4B400]"
           />
         </div>
       )}
@@ -468,7 +468,7 @@ export function PhotoWallCard({ wallUrl, hasPassword, albumSlug, moderationEnabl
                     const n = Number.parseInt(e.target.value, 10);
                     setAdEveryMin(Number.isFinite(n) ? Math.min(120, Math.max(0, n)) : 0);
                   }}
-                  className="w-20 px-3 py-1.5 border border-gray-200 rounded-lg text-sm text-gray-800 text-center outline-none focus:border-[#FFC94D]"
+                  className="w-20 px-3 py-1.5 border border-gray-200 rounded-lg text-sm text-gray-800 text-center outline-none focus:border-[#F4B400]"
                 />
                 <span className="text-xs text-gray-400">min</span>
               </div>
@@ -488,7 +488,7 @@ export function PhotoWallCard({ wallUrl, hasPassword, albumSlug, moderationEnabl
                     const n = Number.parseInt(e.target.value, 10);
                     setAdDurSec(Number.isFinite(n) ? Math.min(60, Math.max(2, n)) : 8);
                   }}
-                  className="w-20 px-3 py-1.5 border border-gray-200 rounded-lg text-sm text-gray-800 text-center outline-none focus:border-[#FFC94D]"
+                  className="w-20 px-3 py-1.5 border border-gray-200 rounded-lg text-sm text-gray-800 text-center outline-none focus:border-[#F4B400]"
                 />
                 <span className="text-xs text-gray-400">sekund</span>
               </div>
@@ -521,8 +521,8 @@ export function PhotoWallCard({ wallUrl, hasPassword, albumSlug, moderationEnabl
               href={finalUrl}
               target="_blank"
               rel="noreferrer"
-              className="flex items-center gap-1.5 px-4 py-2 text-sm font-semibold rounded-lg text-[#0F1729] transition-all hover:brightness-95"
-              style={{ background: "#FFC94D" }}
+              className="flex items-center gap-1.5 px-4 py-2 text-sm font-semibold rounded-lg text-[#111111] transition-all hover:brightness-95"
+              style={{ background: "#F4B400" }}
             >
               Odpri →
             </a>

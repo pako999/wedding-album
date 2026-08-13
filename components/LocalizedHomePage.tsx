@@ -55,7 +55,7 @@ function QRPattern() {
   return (
     <div className="grid gap-px" style={{ gridTemplateColumns: `repeat(17, 1fr)`, width: 68, height: 68 }}>
       {cells.flat().map((v, i) => (
-        <div key={i} style={{ backgroundColor: v ? '#0F1729' : 'transparent' }} />
+        <div key={i} style={{ backgroundColor: v ? '#111111' : 'transparent' }} />
       ))}
     </div>
   );
@@ -702,7 +702,7 @@ export async function LocalizedHomePage({ lang }: { lang: Lang }) {
   const featuresIcons = [IconPhone, IconGlobe, IconLock, IconCamera, IconBolt, IconQR];
 
   return (
-    <div className="min-h-screen bg-white text-[#0F1729] font-sans">
+    <div className="min-h-screen bg-white text-[#111111] font-sans">
 
       {/* NOTE: the page-level announcement bar was removed — the root
           layout already renders <DiscountBanner>, so localized pages
@@ -713,20 +713,20 @@ export async function LocalizedHomePage({ lang }: { lang: Lang }) {
           are kept in the copy dictionary for reuse. */}
 
       {/* Navbar */}
-      <header className="sticky top-0 z-40 border-b border-[#FFC94D]/30 bg-white/80 backdrop-blur-md">
+      <header className="sticky top-0 z-40 border-b border-[#F4B400]/30 bg-white/80 backdrop-blur-md">
         <nav className="max-w-7xl mx-auto px-6 sm:px-8 h-16 flex items-center justify-between">
           <Link href={`/${lang}`} className="flex items-center transition-transform duration-200 hover:scale-[1.03]">
             <CamLoveLogo size="sm" showMark={true} />
           </Link>
           <div className="flex items-center gap-3 sm:gap-5">
             <LanguageSwitcher current={lang} languages={HOME_HREFLANG} ariaLabel={t.switcherAria} />
-            <Link href={`/${lang}/blog`} className="hidden sm:block text-sm font-medium text-gray-600 hover:text-[#0F1729] transition-colors">
+            <Link href={`/${lang}/blog`} className="hidden sm:block text-sm font-medium text-gray-600 hover:text-[#111111] transition-colors">
               Blog
             </Link>
             <HeaderAuthButtons lang={lang} />
             {!signedIn && (
-              <Link href="/dashboard/new" className="hidden sm:inline-flex items-center gap-1.5 px-4 sm:px-5 py-2 sm:py-2.5 rounded-full text-sm font-bold text-[#0F1729] transition-all duration-200 hover:scale-[1.03]"
-                style={{ background: "linear-gradient(135deg, #FFD966 0%, #FFC94D 55%, #F0B429 100%)", boxShadow: "0 6px 18px rgba(255,201,77,0.45)" }}>
+              <Link href="/dashboard/new" className="hidden sm:inline-flex items-center gap-1.5 px-4 sm:px-5 py-2 sm:py-2.5 rounded-full text-sm font-bold text-[#111111] transition-all duration-200 hover:scale-[1.03]"
+                style={{ background: "linear-gradient(135deg, #FFCC3D 0%, #F4B400 55%, #D69E00 100%)", boxShadow: "0 6px 18px rgba(255,201,77,0.45)" }}>
                 {t.navCta}
                 <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>
               </Link>
@@ -791,21 +791,21 @@ export async function LocalizedHomePage({ lang }: { lang: Lang }) {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 py-6 px-4 text-center">
             <span className="text-[1.4rem]">👫👫👫</span>
             <div>
-              <p className="font-extrabold text-xl text-[#0F1729]">500+</p>
+              <p className="font-extrabold text-xl text-[#111111]">500+</p>
               <p className="text-xs text-gray-400 max-w-[90px] leading-snug">{t.statsCreated}</p>
             </div>
           </div>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 py-6 px-4 text-center">
             <div className="text-amber-400 text-base leading-none shrink-0">★★★★★</div>
             <div>
-              <p className="font-extrabold text-xl" style={{ color: "#C9820A" }}>5.0/5</p>
+              <p className="font-extrabold text-xl" style={{ color: "#946D00" }}>5.0/5</p>
               <p className="text-xs text-gray-400 max-w-[90px] leading-snug">{t.statsRating}</p>
             </div>
           </div>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 py-6 px-4 text-center">
             <span className="text-[1.4rem]">📸</span>
             <div>
-              <p className="font-extrabold text-xl text-[#0F1729]">25.000+</p>
+              <p className="font-extrabold text-xl text-[#111111]">25.000+</p>
               <p className="text-xs text-gray-400 max-w-[90px] leading-snug">{t.statsPhotos}</p>
             </div>
           </div>
@@ -814,7 +814,7 @@ export async function LocalizedHomePage({ lang }: { lang: Lang }) {
 
       {/* Event types */}
       <section className="max-w-5xl mx-auto px-6 pb-20 text-center">
-        <h2 className="text-3xl sm:text-4xl font-extrabold text-[#0F1729] mb-4 leading-tight">{t.eventsTitle}</h2>
+        <h2 className="text-3xl sm:text-4xl font-extrabold text-[#111111] mb-4 leading-tight">{t.eventsTitle}</h2>
         <p className="text-gray-400 max-w-xl mx-auto leading-relaxed mb-10">{t.eventsSubtitle}</p>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
           {t.eventsList.map(({ label }, i) => {
@@ -846,10 +846,10 @@ export async function LocalizedHomePage({ lang }: { lang: Lang }) {
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-14">
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold mb-4 uppercase tracking-widest"
-              style={{ background: "rgba(255,201,77,0.18)", color: "#C9820A" }}>
+              style={{ background: "rgba(255,201,77,0.18)", color: "#946D00" }}>
               {t.printEyebrow}
             </div>
-            <h2 className="text-[2.5rem] font-extrabold text-[#0F1729] mb-4">{t.printTitle}</h2>
+            <h2 className="text-[2.5rem] font-extrabold text-[#111111] mb-4">{t.printTitle}</h2>
             <p className="text-gray-400 max-w-lg mx-auto leading-relaxed">{t.printSubtitle}</p>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
@@ -866,35 +866,35 @@ export async function LocalizedHomePage({ lang }: { lang: Lang }) {
                     <div className="absolute inset-0" style={{ background: "rgba(0,0,0,0.18)" }} />
                     <div className="absolute inset-0 flex items-center justify-center">
                       <div
-                        className={`${v.dark ? "bg-[#0F1729] text-white" : "bg-white/97 text-[#0F1729]"} rounded-xl p-4 shadow-2xl text-center`}
+                        className={`${v.dark ? "bg-[#111111] text-white" : "bg-white/97 text-[#111111]"} rounded-xl p-4 shadow-2xl text-center`}
                         style={{ width: 130, transform: `rotate(${v.rotate}deg)` }}
                       >
-                        <p className={`font-serif text-[11px] font-bold mb-0.5 leading-tight ${v.dark ? "text-white" : "text-[#0F1729]"}`}>
+                        <p className={`font-serif text-[11px] font-bold mb-0.5 leading-tight ${v.dark ? "text-white" : "text-[#111111]"}`}>
                           {v.headline}
                         </p>
                         <p className={`text-[8px] mb-2.5 ${v.dark ? "text-white/60" : "text-gray-400"}`}>{v.sub}</p>
                         <div className="flex justify-center mb-2" style={{ transform: "scale(0.48)", transformOrigin: "center", height: 33, overflow: "hidden" }}>
                           <QRPattern />
                         </div>
-                        <p className={`font-serif text-[8px] italic ${v.dark ? "text-[#f9a8c0]" : "text-[#C9820A]"}`}>Ana &amp; Marko</p>
+                        <p className={`font-serif text-[8px] italic ${v.dark ? "text-[#f9a8c0]" : "text-[#946D00]"}`}>Ana &amp; Marko</p>
                         {v.dark ? null : <div className="w-8 h-px bg-gray-200 mx-auto mt-1.5" />}
                         <p className={`text-[7px] mt-1 ${v.dark ? "text-white/40" : "text-gray-300"}`}>14. 06. 2025</p>
                       </div>
                     </div>
-                    <div className="absolute inset-0 bg-[#FFC94D]/90 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center gap-3">
-                      <p className="text-[#0F1729] font-bold text-sm">{tpl.name}</p>
+                    <div className="absolute inset-0 bg-[#F4B400]/90 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center gap-3">
+                      <p className="text-[#111111] font-bold text-sm">{tpl.name}</p>
                       <Link
                         href="/dashboard/new"
                         className="bg-white font-bold text-xs px-5 py-2.5 rounded-full transition-transform hover:scale-105"
-                        style={{ color: "#0F1729" }}
+                        style={{ color: "#111111" }}
                       >
                         {t.useTemplateCta} →
                       </Link>
                     </div>
                   </div>
                   <div className="px-3 py-2.5 bg-white flex items-center justify-between">
-                    <span className="text-xs font-semibold text-[#0F1729]">{tpl.name}</span>
-                    <span className="text-[10px] text-[#C9820A] font-medium">PDF ↓</span>
+                    <span className="text-xs font-semibold text-[#111111]">{tpl.name}</span>
+                    <span className="text-[10px] text-[#946D00] font-medium">PDF ↓</span>
                   </div>
                 </div>
               );
@@ -903,7 +903,7 @@ export async function LocalizedHomePage({ lang }: { lang: Lang }) {
           <div className="text-center mt-10">
             <p className="text-sm text-gray-400 mb-5">{t.printNote}</p>
             <Link href="/dashboard/new" className="inline-flex items-center gap-2.5 px-8 py-4 rounded-2xl font-bold text-sm transition-all duration-200 border-2"
-              style={{ borderColor: "#C9820A", color: "#C9820A" }}>
+              style={{ borderColor: "#946D00", color: "#946D00" }}>
               {t.printCta}
             </Link>
           </div>
@@ -913,7 +913,7 @@ export async function LocalizedHomePage({ lang }: { lang: Lang }) {
       {/* How it works */}
       <section id="how" style={{ background: "#0B1220" }} className="py-24 relative overflow-hidden">
         <div className="max-w-6xl mx-auto px-6 relative z-10">
-          <p className="text-center text-xs font-bold uppercase tracking-[0.25em] mb-4" style={{ color: "#FFC94D" }}>{t.howEyebrow}</p>
+          <p className="text-center text-xs font-bold uppercase tracking-[0.25em] mb-4" style={{ color: "#F4B400" }}>{t.howEyebrow}</p>
           <h2 className="text-center font-extrabold text-white mb-5 leading-tight" style={{ fontSize: "clamp(2rem, 4vw, 3rem)" }}>
             {t.howTitle.line1}<br />{t.howTitle.line2}
           </h2>
@@ -921,15 +921,15 @@ export async function LocalizedHomePage({ lang }: { lang: Lang }) {
           <div className="grid md:grid-cols-3 gap-6">
             {t.howSteps.map((s) => (
               <div key={s.label} className="rounded-3xl p-7" style={{ background: "#070A12" }}>
-                <p className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: "#FFC94D" }}>{s.label}</p>
+                <p className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: "#F4B400" }}>{s.label}</p>
                 <h3 className="text-white font-extrabold text-2xl mb-3 leading-tight">{s.title}</h3>
                 <p style={{ color: "rgba(255,255,255,0.55)", lineHeight: 1.65 }} className="text-sm">{s.desc}</p>
               </div>
             ))}
           </div>
           <div className="text-center mt-12">
-            <Link href="/dashboard/new" className="inline-flex items-center gap-2.5 px-9 py-4 text-[#0F1729] font-bold rounded-full transition-all duration-200 hover:scale-105"
-              style={{ background: "#FFC94D", boxShadow: "0 6px 24px rgba(255,201,77,0.45)" }}>
+            <Link href="/dashboard/new" className="inline-flex items-center gap-2.5 px-9 py-4 text-[#111111] font-bold rounded-full transition-all duration-200 hover:scale-105"
+              style={{ background: "#F4B400", boxShadow: "0 6px 24px rgba(255,201,77,0.45)" }}>
               {t.howCta}
             </Link>
           </div>
@@ -947,10 +947,10 @@ export async function LocalizedHomePage({ lang }: { lang: Lang }) {
             </div>
             <div className="order-2 text-center lg:text-left">
               <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-widest mb-5"
-                style={{ background: "rgba(255,201,77,0.15)", color: "#C9820A" }}>
+                style={{ background: "rgba(255,201,77,0.15)", color: "#946D00" }}>
                 {t.wall.eyebrow}
               </div>
-              <h2 className="text-[2.2rem] sm:text-[2.6rem] font-extrabold leading-[1.1] text-[#0F1729] mb-5">
+              <h2 className="text-[2.2rem] sm:text-[2.6rem] font-extrabold leading-[1.1] text-[#111111] mb-5">
                 {t.wall.titleLead}{" "}
 <span
                   className="relative z-[1]"
@@ -961,8 +961,8 @@ export async function LocalizedHomePage({ lang }: { lang: Lang }) {
               <ul className="space-y-3.5 w-fit mx-auto lg:mx-0 text-left mb-9">
                 {t.wall.points.map((b) => (
                   <li key={b} className="flex items-start gap-3">
-                    <span className="mt-0.5 w-6 h-6 rounded-full flex items-center justify-center shrink-0" style={{ background: "#FFF3CC" }}>
-                      <svg className="w-3.5 h-3.5 text-[#C9820A]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={3}>
+                    <span className="mt-0.5 w-6 h-6 rounded-full flex items-center justify-center shrink-0" style={{ background: "#FFECB8" }}>
+                      <svg className="w-3.5 h-3.5 text-[#946D00]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={3}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                       </svg>
                     </span>
@@ -972,8 +972,8 @@ export async function LocalizedHomePage({ lang }: { lang: Lang }) {
               </ul>
               <Link
                 href="/dashboard/new"
-                className="inline-flex items-center gap-2.5 px-8 py-4 rounded-xl text-[#0F1729] font-bold text-base transition-all duration-200 hover:scale-[1.02]"
-                style={{ background: "linear-gradient(135deg, #FFD966 0%, #FFC94D 55%, #F0B429 100%)", boxShadow: "0 14px 36px rgba(255,201,77,0.4)" }}
+                className="inline-flex items-center gap-2.5 px-8 py-4 rounded-xl text-[#111111] font-bold text-base transition-all duration-200 hover:scale-[1.02]"
+                style={{ background: "linear-gradient(135deg, #FFCC3D 0%, #F4B400 55%, #D69E00 100%)", boxShadow: "0 14px 36px rgba(255,201,77,0.4)" }}
               >
                 {t.wall.cta}
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
@@ -985,15 +985,15 @@ export async function LocalizedHomePage({ lang }: { lang: Lang }) {
         </div>
       </section>
 
-      <section id="why" className="py-24" style={{ background: "#FFF9EC" }}>
+      <section id="why" className="py-24" style={{ background: "#FFF9E8" }}>
         <div className="max-w-6xl mx-auto px-6">
-          <h2 className="text-4xl sm:text-[3.3rem] leading-[1.08] tracking-tight font-extrabold text-center text-[#0F1729] mb-4">{t.whyTitle}</h2>
+          <h2 className="text-4xl sm:text-[3.3rem] leading-[1.08] tracking-tight font-extrabold text-center text-[#111111] mb-4">{t.whyTitle}</h2>
           <p className="text-center text-gray-400 text-base mb-14 max-w-md mx-auto">{t.whySubtitle}</p>
           <div className="grid md:grid-cols-3 gap-6">
             {t.whyCards.map((c) => (
-              <div key={c.title} className="bg-white border border-gray-100 rounded-2xl p-7 hover:shadow-md hover:border-[#FFC94D]/40 transition-all duration-200">
-                <div className="w-12 h-12 border border-gray-100 rounded-2xl flex items-center justify-center text-2xl mb-5 shadow-sm" style={{ background: "#FFF3CC" }}>{c.icon}</div>
-                <h3 className="font-bold text-[#0F1729] text-lg mb-2">{c.title}</h3>
+              <div key={c.title} className="bg-white border border-gray-100 rounded-2xl p-7 hover:shadow-md hover:border-[#F4B400]/40 transition-all duration-200">
+                <div className="w-12 h-12 border border-gray-100 rounded-2xl flex items-center justify-center text-2xl mb-5 shadow-sm" style={{ background: "#FFECB8" }}>{c.icon}</div>
+                <h3 className="font-bold text-[#111111] text-lg mb-2">{c.title}</h3>
                 <p className="text-gray-400 text-sm leading-relaxed">{c.desc}</p>
               </div>
             ))}
@@ -1004,7 +1004,7 @@ export async function LocalizedHomePage({ lang }: { lang: Lang }) {
       {/* Features */}
       <section id="features" className="py-24 bg-white">
         <div className="max-w-6xl mx-auto px-6">
-          <h2 className="text-4xl sm:text-[3.3rem] leading-[1.08] tracking-tight font-extrabold text-center text-[#0F1729] mb-4">{t.featuresTitle}</h2>
+          <h2 className="text-4xl sm:text-[3.3rem] leading-[1.08] tracking-tight font-extrabold text-center text-[#111111] mb-4">{t.featuresTitle}</h2>
           <p className="text-center text-gray-500 mb-14 max-w-lg mx-auto leading-relaxed">
             {t.featuresLead1}<br /><span className="text-gray-400">{t.featuresLead2}</span>
           </p>
@@ -1012,12 +1012,12 @@ export async function LocalizedHomePage({ lang }: { lang: Lang }) {
             {t.features.map((f, i) => {
               const Icon = featuresIcons[i] ?? IconPhone;
               return (
-                <div key={f.title} className="group rounded-2xl border border-gray-100 bg-white p-7 text-left transition-all duration-200 hover:border-[#FFC94D]/40 hover:shadow-[0_12px_36px_rgba(15,23,41,0.08)]">
+                <div key={f.title} className="group rounded-2xl border border-gray-100 bg-white p-7 text-left transition-all duration-200 hover:border-[#F4B400]/40 hover:shadow-[0_12px_36px_rgba(15,23,41,0.08)]">
                   <div className="w-14 h-14 rounded-2xl flex items-center justify-center mb-5 text-white transition-transform duration-200 group-hover:scale-105"
-                    style={{ background: "linear-gradient(135deg, #FFD966 0%, #F0B429 100%)", boxShadow: "0 10px 22px rgba(255,201,77,0.4)", color: "#0F1729" }}>
+                    style={{ background: "linear-gradient(135deg, #FFCC3D 0%, #D69E00 100%)", boxShadow: "0 10px 22px rgba(255,201,77,0.4)", color: "#111111" }}>
                     <Icon />
                   </div>
-                  <h3 className="font-bold text-[#0F1729] text-lg mb-2">{f.title}</h3>
+                  <h3 className="font-bold text-[#111111] text-lg mb-2">{f.title}</h3>
                   <p className="text-gray-500 text-sm leading-relaxed">{f.desc}</p>
                 </div>
               );
@@ -1027,9 +1027,9 @@ export async function LocalizedHomePage({ lang }: { lang: Lang }) {
       </section>
 
       {/* Testimonials */}
-      <section id="reviews" className="py-24" style={{ background: "#FFF9EC" }}>
+      <section id="reviews" className="py-24" style={{ background: "#FFF9E8" }}>
         <div className="max-w-6xl mx-auto px-6">
-          <h2 className="text-4xl sm:text-[3.3rem] leading-[1.08] tracking-tight font-extrabold text-center text-[#0F1729] mb-14">{t.reviewsTitle}</h2>
+          <h2 className="text-4xl sm:text-[3.3rem] leading-[1.08] tracking-tight font-extrabold text-center text-[#111111] mb-14">{t.reviewsTitle}</h2>
           <div className="grid md:grid-cols-3 gap-5">
             {t.reviews.map((r) => (
               <div key={r.name} className="bg-white border border-gray-100 rounded-2xl p-6 shadow-sm">
@@ -1044,7 +1044,7 @@ export async function LocalizedHomePage({ lang }: { lang: Lang }) {
                 <div className="flex items-center gap-3">
                   <div className="w-9 h-9 rounded-full flex items-center justify-center text-base shrink-0" style={{ background: "rgba(255,201,77,0.25)" }}>💑</div>
                   <div>
-                    <p className="font-semibold text-[#0F1729] text-sm">{r.name}</p>
+                    <p className="font-semibold text-[#111111] text-sm">{r.name}</p>
                     <p className="text-xs text-gray-400">{r.date}</p>
                   </div>
                 </div>
@@ -1059,7 +1059,7 @@ export async function LocalizedHomePage({ lang }: { lang: Lang }) {
         <div className="max-w-5xl mx-auto px-6">
           {/* Meta Pixel funnel: ViewContent when the plans are seen */}
           <TrackViewContent name="Pricing" category="plans" />
-          <h2 className="text-4xl sm:text-[3.3rem] leading-[1.08] tracking-tight font-extrabold text-center text-[#0F1729] mb-4">{t.pricingTitle}</h2>
+          <h2 className="text-4xl sm:text-[3.3rem] leading-[1.08] tracking-tight font-extrabold text-center text-[#111111] mb-4">{t.pricingTitle}</h2>
           <p className="text-center text-gray-400 mb-14">{t.pricingSubtitle}</p>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 items-start">
             {([
@@ -1073,30 +1073,30 @@ export async function LocalizedHomePage({ lang }: { lang: Lang }) {
               return (
               <div key={p.label}
                 className={`${p.dimmed ? "bg-gray-50 border border-gray-200 opacity-80" : p.highlighted ? "relative bg-white" : "bg-white border border-gray-200"} rounded-3xl p-7 flex flex-col`}
-                style={p.highlighted ? { border: "2px solid #FFC94D", boxShadow: "0 8px 40px rgba(255,201,77,0.25)", transform: "translateY(-8px)" } : undefined}
+                style={p.highlighted ? { border: "2px solid #F4B400", boxShadow: "0 8px 40px rgba(255,201,77,0.25)", transform: "translateY(-8px)" } : undefined}
               >
                 {p.ribbon ? (
-                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 text-[#0F1729] text-[10px] font-bold tracking-widest uppercase px-5 py-1.5 rounded-full" style={{ background: "#FFC94D" }}>
+                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 text-[#111111] text-[10px] font-bold tracking-widest uppercase px-5 py-1.5 rounded-full" style={{ background: "#F4B400" }}>
                     {p.ribbon}
                   </div>
                 ) : null}
-                <p className={`font-extrabold text-lg ${p.dimmed ? "text-gray-400" : "text-[#0F1729]"} mb-1`}>{p.label}</p>
+                <p className={`font-extrabold text-lg ${p.dimmed ? "text-gray-400" : "text-[#111111]"} mb-1`}>{p.label}</p>
                 <p className="text-sm text-gray-400 mb-6">{p.tagline}</p>
                 <div className="flex items-end gap-2 mb-7">
-                  <span className={`font-extrabold text-[3rem] leading-none ${p.dimmed ? "text-gray-400" : p.highlighted ? "" : "text-[#0F1729]"}`} style={p.highlighted ? { color: "#C9820A" } : undefined}>{p.price}</span>
+                  <span className={`font-extrabold text-[3rem] leading-none ${p.dimmed ? "text-gray-400" : p.highlighted ? "" : "text-[#111111]"}`} style={p.highlighted ? { color: "#946D00" } : undefined}>{p.price}</span>
                   {p.was ? <span className="text-gray-300 line-through text-lg mb-1.5">{p.was}</span> : null}
                 </div>
                 <ul className="space-y-3 flex-1 mb-8">
                   {p.features.map((f) => (
                     <li key={f} className="flex items-center gap-2.5">
-                      <svg className={`w-4 h-4 shrink-0 ${p.dimmed ? "text-gray-300" : "text-[#C9820A]"}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+                      <svg className={`w-4 h-4 shrink-0 ${p.dimmed ? "text-gray-300" : "text-[#946D00]"}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
                       <span className={`text-sm ${p.dimmed ? "text-gray-400" : "text-gray-600"}`}>{f}</span>
                     </li>
                   ))}
                 </ul>
                 <Link href={href} className={`block text-center py-3.5 rounded-2xl font-bold text-sm transition-colors ${
-                  p.highlighted ? "text-[#0F1729]" : p.dimmed ? "text-gray-400 bg-white hover:bg-gray-100" : "text-[#0F1729] hover:bg-gray-50"
-                }`} style={p.highlighted ? { background: "#FFC94D" } : { border: "1.5px solid #e5e7eb" }}>
+                  p.highlighted ? "text-[#111111]" : p.dimmed ? "text-gray-400 bg-white hover:bg-gray-100" : "text-[#111111] hover:bg-gray-50"
+                }`} style={p.highlighted ? { background: "#F4B400" } : { border: "1.5px solid #e5e7eb" }}>
                   {p.cta}
                 </Link>
               </div>
@@ -1105,17 +1105,17 @@ export async function LocalizedHomePage({ lang }: { lang: Lang }) {
           </div>
           {/* Events teaser — category + contact CTA, not a spec sheet. */}
           <div className="mt-6 rounded-3xl p-7 sm:p-8 flex flex-col sm:flex-row items-start sm:items-center gap-5"
-            style={{ background: "radial-gradient(120% 160% at 50% 0%, #1B2842 0%, #0F1729 70%)" }}>
+            style={{ background: "radial-gradient(120% 160% at 50% 0%, #1B2842 0%, #111111 70%)" }}>
             <div className="flex-1 min-w-0">
-              <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#FFC94D] mb-1.5">{t.eventsTeaser.eyebrow}</p>
+              <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#F4B400] mb-1.5">{t.eventsTeaser.eyebrow}</p>
               <p className="font-extrabold text-xl text-white">{t.eventsTeaser.title}</p>
               <p className="text-sm text-gray-300 mt-1.5 max-w-xl">{t.eventsTeaser.body}</p>
             </div>
             <div className="shrink-0 sm:text-right">
               <p className="text-sm font-semibold text-gray-300 mb-2.5">{t.eventsTeaser.price}</p>
               <Link href={`/${lang}/contact`}
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl font-bold text-sm text-[#0F1729] hover:brightness-95 transition-all"
-                style={{ background: "linear-gradient(135deg,#FFD966,#FFC94D 60%,#F0B429)" }}>
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl font-bold text-sm text-[#111111] hover:brightness-95 transition-all"
+                style={{ background: "linear-gradient(135deg,#FFCC3D,#F4B400 60%,#D69E00)" }}>
                 {t.eventsTeaser.cta}
               </Link>
             </div>
@@ -1143,13 +1143,13 @@ export async function LocalizedHomePage({ lang }: { lang: Lang }) {
       </section>
 
       {/* FAQ */}
-      <section id="faq" className="py-24" style={{ background: "#FFF9EC" }}>
+      <section id="faq" className="py-24" style={{ background: "#FFF9E8" }}>
         <div className="max-w-2xl mx-auto px-6">
-          <h2 className="text-4xl sm:text-[3.3rem] leading-[1.08] tracking-tight font-extrabold text-center text-[#0F1729] mb-12">{t.faqTitle}</h2>
+          <h2 className="text-4xl sm:text-[3.3rem] leading-[1.08] tracking-tight font-extrabold text-center text-[#111111] mb-12">{t.faqTitle}</h2>
           <div className="space-y-3">
             {t.faqs.map((faq) => (
               <details key={faq.q} className="bg-white border border-gray-100 rounded-2xl group">
-                <summary className="flex items-center justify-between px-6 py-4 cursor-pointer font-semibold text-[#0F1729] list-none text-[0.95rem]">
+                <summary className="flex items-center justify-between px-6 py-4 cursor-pointer font-semibold text-[#111111] list-none text-[0.95rem]">
                   {faq.q}
                   <svg className="w-5 h-5 text-gray-400 shrink-0 group-open:rotate-180 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
@@ -1164,12 +1164,12 @@ export async function LocalizedHomePage({ lang }: { lang: Lang }) {
 
       {/* Final CTA */}
       <section className="py-28 bg-white text-center px-6">
-        <h2 className="font-extrabold text-[#0F1729] mb-4" style={{ fontSize: "clamp(2rem, 5vw, 3.2rem)" }}>
-          {t.ctaTitle.line1}{" "}<span style={{ color: "#C9820A" }}>{t.ctaTitle.accent}</span>.
+        <h2 className="font-extrabold text-[#111111] mb-4" style={{ fontSize: "clamp(2rem, 5vw, 3.2rem)" }}>
+          {t.ctaTitle.line1}{" "}<span style={{ color: "#946D00" }}>{t.ctaTitle.accent}</span>.
         </h2>
         <p className="text-gray-500 text-lg mb-10 max-w-lg mx-auto leading-relaxed">{t.ctaSubtitle}</p>
-        <Link href="/dashboard/new" className="inline-flex items-center gap-2.5 px-10 py-5 text-[#0F1729] font-bold text-lg rounded-full transition-all duration-200 shadow-2xl"
-          style={{ background: "linear-gradient(135deg, #FFD966 0%, #FFC94D 55%, #F0B429 100%)", boxShadow: "0 12px 32px rgba(255,201,77,0.45)" }}>
+        <Link href="/dashboard/new" className="inline-flex items-center gap-2.5 px-10 py-5 text-[#111111] font-bold text-lg rounded-full transition-all duration-200 shadow-2xl"
+          style={{ background: "linear-gradient(135deg, #FFCC3D 0%, #F4B400 55%, #D69E00 100%)", boxShadow: "0 12px 32px rgba(255,201,77,0.45)" }}>
           {t.ctaButton}
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>
         </Link>
@@ -1183,8 +1183,8 @@ export async function LocalizedHomePage({ lang }: { lang: Lang }) {
         style={{ paddingBottom: "max(0.75rem, env(safe-area-inset-bottom))" }}>
         <Link
           href="/dashboard/new"
-          className="flex items-center justify-center gap-2 w-full py-3.5 rounded-xl text-[#0F1729] font-bold text-base"
-          style={{ background: "linear-gradient(135deg, #FFD966 0%, #FFC94D 55%, #F0B429 100%)", boxShadow: "0 10px 30px rgba(255,201,77,0.45)" }}
+          className="flex items-center justify-center gap-2 w-full py-3.5 rounded-xl text-[#111111] font-bold text-base"
+          style={{ background: "linear-gradient(135deg, #FFCC3D 0%, #F4B400 55%, #D69E00 100%)", boxShadow: "0 10px 30px rgba(255,201,77,0.45)" }}
         >
           {t.stickyCta}
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>

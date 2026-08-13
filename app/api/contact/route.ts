@@ -103,7 +103,7 @@ export async function POST(req: NextRequest) {
 
   const html = `
     <div style="font-family: -apple-system, sans-serif; max-width: 560px;">
-      <h2 style="font-size: 18px; color: #0F1729;">Novo sporočilo iz kontakt obrazca</h2>
+      <h2 style="font-size: 18px; color: #111111;">Novo sporočilo iz kontakt obrazca</h2>
       <p style="font-size: 14px; color: #6b7280;">
         <strong>Od:</strong> ${safeName} &lt;${safeEmail}&gt;<br />
         <strong>Zadeva:</strong> ${safeSubject}

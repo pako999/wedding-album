@@ -53,10 +53,10 @@ export default async function AdminAffiliateDetailPage({
   return (
     <div className="space-y-6">
       <div>
-        <Link href="/admin/affiliates" className="text-xs text-gray-500 hover:text-[#0F1729]">
+        <Link href="/admin/affiliates" className="text-xs text-gray-500 hover:text-[#111111]">
           ← Vsi partnerji
         </Link>
-        <h1 className="font-serif text-3xl text-[#0F1729] mt-2">{affiliate.name}</h1>
+        <h1 className="font-serif text-3xl text-[#111111] mt-2">{affiliate.name}</h1>
         <p className="text-sm text-gray-500 mt-0.5">{affiliate.email}</p>
       </div>
 
@@ -76,7 +76,7 @@ export default async function AdminAffiliateDetailPage({
 
       {/* Info */}
       <div className="bg-white rounded-2xl border border-gray-200 p-5">
-        <h2 className="font-bold text-[#0F1729] mb-3">Podatki</h2>
+        <h2 className="font-bold text-[#111111] mb-3">Podatki</h2>
         <dl className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
           <Field label="Koda" value={<code className="font-mono text-[#1E3A8A]">{affiliate.referralCode}</code>} />
           <Field label="Status" value={affiliate.status} />
@@ -115,7 +115,7 @@ export default async function AdminAffiliateDetailPage({
       {/* Commissions */}
       <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
         <div className="px-5 py-3 border-b border-gray-100">
-          <h2 className="font-bold text-[#0F1729]">Provizije ({commissions.length})</h2>
+          <h2 className="font-bold text-[#111111]">Provizije ({commissions.length})</h2>
         </div>
         {commissions.length === 0 ? (
           <div className="p-8 text-center text-sm text-gray-500">Ni provizij.</div>
@@ -138,7 +138,7 @@ export default async function AdminAffiliateDetailPage({
                     <td className="px-4 py-3 text-gray-500">{fmtDate(c.createdAt)}</td>
                     <td className="px-4 py-3 font-mono text-xs text-gray-700">{c.albumSlug ?? "—"}</td>
                     <td className="px-4 py-3 text-gray-700">{c.orderDescription ?? "—"}</td>
-                    <td className="px-4 py-3 text-right font-semibold text-[#0F1729]">{fmtEur(c.commissionAmountCents)}</td>
+                    <td className="px-4 py-3 text-right font-semibold text-[#111111]">{fmtEur(c.commissionAmountCents)}</td>
                     <td className="px-4 py-3 text-xs text-gray-500">{fmtDate(c.lockUntil)}</td>
                     <td className="px-4 py-3 text-xs text-gray-700">{STATUS_LABEL[c.status] ?? c.status}</td>
                   </tr>
@@ -156,7 +156,7 @@ function Field({ label, value }: { label: string; value: React.ReactNode }) {
   return (
     <div>
       <dt className="text-xs text-gray-400">{label}</dt>
-      <dd className="text-sm text-[#0F1729]">{value}</dd>
+      <dd className="text-sm text-[#111111]">{value}</dd>
     </div>
   );
 }
@@ -165,7 +165,7 @@ function StatCard({ label, value }: { label: string; value: string }) {
   return (
     <div className="bg-white rounded-2xl border border-gray-200 p-4">
       <p className="text-[10px] uppercase tracking-widest text-gray-400 mb-1">{label}</p>
-      <p className="text-lg font-extrabold text-[#0F1729]">{value}</p>
+      <p className="text-lg font-extrabold text-[#111111]">{value}</p>
     </div>
   );
 }

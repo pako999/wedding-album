@@ -29,7 +29,7 @@ function BlockRenderer({ block }: { block: Block }) {
 
     case "h3":
       return (
-        <h3 className="font-semibold text-[#0F1729] mt-4 mb-2">{block.text}</h3>
+        <h3 className="font-semibold text-[#111111] mt-4 mb-2">{block.text}</h3>
       );
 
     case "ul":
@@ -81,7 +81,7 @@ function BlockRenderer({ block }: { block: Block }) {
               key={i}
               className="bg-[#F2F4F8] rounded-xl p-4 border border-gray-100"
             >
-              <p className="font-semibold text-[#0F1729] mb-1">{item.title}</p>
+              <p className="font-semibold text-[#111111] mb-1">{item.title}</p>
               <p className="text-sm text-gray-600">{item.desc}</p>
             </div>
           ))}
@@ -96,7 +96,7 @@ function BlockRenderer({ block }: { block: Block }) {
               key={i}
               className={
                 i === 0
-                  ? "font-semibold text-[#0F1729]"
+                  ? "font-semibold text-[#111111]"
                   : "text-sm text-gray-600 mt-1"
               }
             >
@@ -107,7 +107,7 @@ function BlockRenderer({ block }: { block: Block }) {
                       <a
                         key={j}
                         href={`mailto:${part}`}
-                        className="text-[#C9820A] hover:underline"
+                        className="text-[#946D00] hover:underline"
                       >
                         {part}
                       </a>
@@ -126,7 +126,7 @@ function BlockRenderer({ block }: { block: Block }) {
 
     case "callout":
       return (
-        <div className="bg-[#FFF9EC] border border-[#FFC94D]/40 rounded-xl p-4 mb-3 text-sm text-gray-700">
+        <div className="bg-[#FFF9E8] border border-[#F4B400]/40 rounded-xl p-4 mb-3 text-sm text-gray-700">
           {block.text}
         </div>
       );
@@ -134,7 +134,7 @@ function BlockRenderer({ block }: { block: Block }) {
     case "link":
       return (
         <p className="mb-3">
-          <Link href={block.href} className="text-[#C9820A] hover:underline">
+          <Link href={block.href} className="text-[#946D00] hover:underline">
             {block.text}
           </Link>
         </p>
@@ -145,7 +145,7 @@ function BlockRenderer({ block }: { block: Block }) {
 function Section({ title, blocks }: { title: string; blocks: Block[] }) {
   return (
     <div className="mb-8">
-      <h2 className="text-xl font-bold text-[#0F1729] mb-3 pb-2 border-b border-gray-100">
+      <h2 className="text-xl font-bold text-[#111111] mb-3 pb-2 border-b border-gray-100">
         {title}
       </h2>
       <div>
@@ -163,23 +163,23 @@ export function LegalPage({ kind, lang }: { kind: LegalKind; lang: LegalLang }) 
   const doc = DOCS[kind][lang];
 
   return (
-    <div className="min-h-screen bg-[#F2F4F8] text-[#0F1729] font-sans">
+    <div className="min-h-screen bg-[#F2F4F8] text-[#111111] font-sans">
       <SiteHeader lang={lang} />
 
       <main className="max-w-3xl mx-auto px-6 py-16">
         <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-8 md:p-12">
           {/* Title */}
           <div className="mb-10">
-            <p className="text-xs font-bold uppercase tracking-widest text-[#C9820A] mb-3">
+            <p className="text-xs font-bold uppercase tracking-widest text-[#946D00] mb-3">
               {doc.eyebrow}
             </p>
-            <h1 className="font-serif text-4xl font-bold text-[#0F1729] mb-3">
+            <h1 className="font-serif text-4xl font-bold text-[#111111] mb-3">
               {doc.heading}
             </h1>
             <p className="text-sm text-gray-400">{doc.lastUpdated}</p>
           </div>
 
-          <div className="prose prose-gray max-w-none text-[#0F1729]">
+          <div className="prose prose-gray max-w-none text-[#111111]">
             {/* Intro */}
             <p className="text-base leading-relaxed text-gray-600 mb-8">
               {doc.intro}

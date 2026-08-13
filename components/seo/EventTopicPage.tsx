@@ -118,7 +118,7 @@ export function EventTopicPage({ locale, topicKey }: Props) {
   };
 
   return (
-    <div className="min-h-screen bg-white text-[#0F1729] font-sans">
+    <div className="min-h-screen bg-white text-[#111111] font-sans">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: safeJsonLd(articleSchema) }}
@@ -132,7 +132,7 @@ export function EventTopicPage({ locale, topicKey }: Props) {
       <main className="max-w-3xl mx-auto px-6 py-16">
         {/* Hero */}
         <div className="mb-10">
-          <h1 className="font-serif text-4xl md:text-5xl font-bold text-[#0F1729] leading-tight mb-5">
+          <h1 className="font-serif text-4xl md:text-5xl font-bold text-[#111111] leading-tight mb-5">
             {entry.h1}
           </h1>
           <p className="text-lg text-gray-600 leading-relaxed mb-6">{entry.intro}</p>
@@ -141,7 +141,7 @@ export function EventTopicPage({ locale, topicKey }: Props) {
         {/* Sections */}
         {entry.sections.map((s, i) => (
           <section key={i} className="mb-10">
-            <h2 className="font-serif text-2xl font-bold text-[#0F1729] mb-4">{s.h2}</h2>
+            <h2 className="font-serif text-2xl font-bold text-[#111111] mb-4">{s.h2}</h2>
             {s.paragraphs.map((p, j) => (
               <p key={j} className="text-gray-600 leading-relaxed mb-4">{p}</p>
             ))}
@@ -149,7 +149,7 @@ export function EventTopicPage({ locale, topicKey }: Props) {
               <ul className="space-y-2 mb-4">
                 {s.bullets.map((b, k) => (
                   <li key={k} className="text-gray-600 leading-relaxed pl-5 relative">
-                    <span className="absolute left-0 top-1.5 w-1.5 h-1.5 rounded-full bg-[#C9820A]" />
+                    <span className="absolute left-0 top-1.5 w-1.5 h-1.5 rounded-full bg-[#946D00]" />
                     {b}
                   </li>
                 ))}
@@ -159,11 +159,11 @@ export function EventTopicPage({ locale, topicKey }: Props) {
         ))}
 
         {/* FAQ */}
-        <section className="mb-10 -mx-6 px-6 py-12 bg-[#FFF9EC] rounded-2xl">
-          <h2 className="font-serif text-2xl font-bold text-[#0F1729] mb-6">FAQ</h2>
+        <section className="mb-10 -mx-6 px-6 py-12 bg-[#FFF9E8] rounded-2xl">
+          <h2 className="font-serif text-2xl font-bold text-[#111111] mb-6">FAQ</h2>
           {entry.faq.map((f, i) => (
             <div key={i} className="mb-5 last:mb-0">
-              <p className="font-semibold text-[#0F1729] mb-1.5">{f.q}</p>
+              <p className="font-semibold text-[#111111] mb-1.5">{f.q}</p>
               <p className="text-gray-600 leading-relaxed">{f.a}</p>
             </div>
           ))}
@@ -173,14 +173,14 @@ export function EventTopicPage({ locale, topicKey }: Props) {
         <section
           className="rounded-3xl p-8 mb-16 text-center"
           style={{
-            background: "linear-gradient(135deg, #FFE9A6 0%, #FFD966 100%)",
+            background: "linear-gradient(135deg, #FFE9A6 0%, #FFCC3D 100%)",
           }}
         >
-          <p className="font-serif text-2xl font-bold text-[#0F1729] mb-3">{entry.ctaHeading}</p>
+          <p className="font-serif text-2xl font-bold text-[#111111] mb-3">{entry.ctaHeading}</p>
           <p className="text-gray-800 mb-6 max-w-md mx-auto">{entry.ctaBody}</p>
           <Link
             href={dashboardHref}
-            className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-[#0F1729] text-white font-bold text-base transition-transform duration-200 hover:scale-[1.02]"
+            className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-[#111111] text-white font-bold text-base transition-transform duration-200 hover:scale-[1.02]"
           >
             {entry.ctaButton} →
           </Link>

@@ -41,7 +41,7 @@ export function DemoButton({ variant = "hero" }: { variant?: "hero" | "nav" | "h
           className="inline-flex items-center gap-2.5 px-8 py-4 sm:py-5 rounded-full font-bold text-base sm:text-lg border-2 transition-all duration-200 hover:scale-[1.02] hover:bg-white/5"
           style={{ borderColor: "rgba(255,201,77,.65)", color: "#ffffff" }}
         >
-          <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor" style={{ color: "#FFC94D" }}>
+          <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor" style={{ color: "#F4B400" }}>
             <path d="M8 5v14l11-7z" />
           </svg>
           Poglej demo zdaj
@@ -51,9 +51,9 @@ export function DemoButton({ variant = "hero" }: { variant?: "hero" | "nav" | "h
           type="button"
           onClick={() => setOpen(true)}
           className="inline-flex items-center gap-2.5 px-8 py-5 rounded-full font-bold text-lg border-2 transition-all duration-200 hover:scale-[1.02]"
-          style={{ borderColor: "#FFC94D", color: "#0F1729" }}
+          style={{ borderColor: "#F4B400", color: "#111111" }}
         >
-          <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor" style={{ color: "#C9820A" }}>
+          <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor" style={{ color: "#946D00" }}>
             <path d="M8 5v14l11-7z" />
           </svg>
           Poglej demo zdaj
@@ -62,7 +62,7 @@ export function DemoButton({ variant = "hero" }: { variant?: "hero" | "nav" | "h
         <button
           type="button"
           onClick={() => setOpen(true)}
-          className="hidden md:inline-flex items-center gap-1.5 text-sm font-medium text-gray-600 hover:text-[#0F1729] transition-colors"
+          className="hidden md:inline-flex items-center gap-1.5 text-sm font-medium text-gray-600 hover:text-[#111111] transition-colors"
         >
           Poglej demo
         </button>
@@ -71,7 +71,7 @@ export function DemoButton({ variant = "hero" }: { variant?: "hero" | "nav" | "h
       {open && (
         <div className="fixed inset-0 z-[60] overflow-y-auto" role="dialog" aria-modal="true">
           <div
-            className="fixed inset-0 bg-[#0F1729]/70 backdrop-blur-sm"
+            className="fixed inset-0 bg-[#111111]/70 backdrop-blur-sm"
             onClick={() => setOpen(false)}
           />
           <div className="flex min-h-full items-center justify-center p-4">
@@ -82,13 +82,13 @@ export function DemoButton({ variant = "hero" }: { variant?: "hero" | "nav" | "h
               aria-label="Zapri"
               className="absolute top-4 right-4 w-9 h-9 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors"
             >
-              <svg className="w-4 h-4 text-[#0F1729]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+              <svg className="w-4 h-4 text-[#111111]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
 
             <p className="text-xs font-bold uppercase tracking-[0.18em] text-gray-400 mb-2">Demo v živo</p>
-            <h2 className="text-2xl font-bold tracking-tight text-[#0F1729] mb-2">
+            <h2 className="text-2xl font-bold tracking-tight text-[#111111] mb-2">
               Razišči demo galerijo
             </h2>
             <p className="text-sm text-gray-500 leading-relaxed mb-6">
@@ -118,15 +118,15 @@ export function DemoButton({ variant = "hero" }: { variant?: "hero" | "nav" | "h
               href={demoUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-6 inline-flex items-center justify-center gap-2 w-full py-3.5 rounded-2xl text-[#0F1729] font-bold transition-all hover:brightness-95"
-              style={{ background: "#FFC94D" }}
+              className="mt-6 inline-flex items-center justify-center gap-2 w-full py-3.5 rounded-2xl text-[#111111] font-bold transition-all hover:brightness-95"
+              style={{ background: "#F4B400" }}
             >
               Odpri demo galerijo
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
               </svg>
             </a>
-            <p className="mt-4 text-sm font-bold uppercase tracking-wide text-[#C9820A]">
+            <p className="mt-4 text-sm font-bold uppercase tracking-wide text-[#946D00]">
               Brez prijave · Brez aplikacije
             </p>
           </div>

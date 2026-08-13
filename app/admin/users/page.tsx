@@ -243,7 +243,7 @@ export default async function AdminUsers() {
   return (
     <div className="space-y-6">
       <header>
-        <h1 className="font-serif text-3xl text-[#0F1729]">Uporabniki</h1>
+        <h1 className="font-serif text-3xl text-[#111111]">Uporabniki</h1>
         <p className="text-sm text-gray-500 mt-1">
           {enriched.length} registriranih · {withGallery} z vsaj eno galerijo
         </p>
@@ -267,7 +267,7 @@ export default async function AdminUsers() {
             {enriched.map((u) => (
               <tr key={u.clerkId} className="border-b border-gray-50 last:border-0">
                 <td className="px-4 py-3">
-                  <p className="font-medium text-[#0F1729]">
+                  <p className="font-medium text-[#111111]">
                     {[u.firstName, u.lastName].filter(Boolean).join(" ") || "—"}
                   </p>
                   <p className="font-mono text-[10px] text-gray-400">{u.clerkId}</p>

@@ -56,9 +56,9 @@ export function AdminShell({ nav, adminEmail, children }: Props & { children: Re
           className="w-10 h-10 flex items-center justify-center rounded-lg border border-gray-200 hover:bg-gray-50"
         >
           <span className="block w-5 space-y-1">
-            <span className="block h-0.5 bg-[#0F1729]" />
-            <span className="block h-0.5 bg-[#0F1729]" />
-            <span className="block h-0.5 bg-[#0F1729]" />
+            <span className="block h-0.5 bg-[#111111]" />
+            <span className="block h-0.5 bg-[#111111]" />
+            <span className="block h-0.5 bg-[#111111]" />
           </span>
         </button>
       </div>
@@ -93,7 +93,7 @@ export function AdminShell({ nav, adminEmail, children }: Props & { children: Re
             ×
           </button>
         </div>
-        <p className="px-5 pt-3 text-[10px] uppercase tracking-widest font-semibold text-[#C9820A]">
+        <p className="px-5 pt-3 text-[10px] uppercase tracking-widest font-semibold text-[#946D00]">
           Platform Admin
         </p>
 
@@ -102,7 +102,7 @@ export function AdminShell({ nav, adminEmail, children }: Props & { children: Re
             <Link
               key={item.href}
               href={item.href}
-              className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium text-gray-700 hover:bg-[#FFF9EC] hover:text-[#0F1729] transition-colors"
+              className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium text-gray-700 hover:bg-[#FFF9E8] hover:text-[#111111] transition-colors"
             >
               <span className="text-base leading-none">{item.icon}</span>
               {item.label}
@@ -114,13 +114,13 @@ export function AdminShell({ nav, adminEmail, children }: Props & { children: Re
           <RunMigrationsButton />
           <Link
             href="/dashboard"
-            className="block text-xs text-gray-400 hover:text-[#0F1729] transition-colors px-3"
+            className="block text-xs text-gray-400 hover:text-[#111111] transition-colors px-3"
           >
             ← Nazaj na nadzorno ploščo
           </Link>
           <p className="text-[10px] text-gray-400 px-3 truncate">{adminEmail}</p>
           <SignOutButton>
-            <button className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-semibold text-[#0F1729] bg-white border border-gray-200 rounded-lg hover:bg-[#FFF9EC] hover:border-[#FFC94D] transition-colors">
+            <button className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-semibold text-[#111111] bg-white border border-gray-200 rounded-lg hover:bg-[#FFF9E8] hover:border-[#F4B400] transition-colors">
               Odjava
             </button>
           </SignOutButton>

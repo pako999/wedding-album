@@ -57,9 +57,9 @@ export function PoweredByBadge({ referralCode, lang }: Props) {
       className="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white/70 backdrop-blur px-3.5 py-1.5 text-[11px] font-medium text-gray-700 hover:border-gray-300 hover:bg-white transition-colors shadow-sm"
       style={{ textDecoration: "none" }}
     >
-      <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#FFC94D]" aria-hidden />
+      <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#F4B400]" aria-hidden />
       <span className="text-gray-500">{POWERED[locale]}</span>
-      <span className="font-bold text-[#0F1729]">CamLove</span>
+      <span className="font-bold text-[#111111]">CamLove</span>
       <span className="text-gray-300">·</span>
       <span className="text-[#1E3A8A] font-semibold whitespace-nowrap">{LABELS[locale]} →</span>
     </a>

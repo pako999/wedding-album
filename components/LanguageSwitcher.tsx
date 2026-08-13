@@ -95,7 +95,7 @@ export function LanguageSwitcher({ current, languages, ariaLabel }: Props) {
                 onClick={() => setOpen(false)}
                 className={`flex items-center gap-3 px-3.5 py-2 text-sm transition-colors ${
                   isCurrent
-                    ? "font-semibold text-[#0F1729] bg-[#FFF9EC]"
+                    ? "font-semibold text-[#111111] bg-[#FFF9E8]"
                     : "text-gray-600 hover:bg-gray-50"
                 }`}
               >
@@ -103,7 +103,7 @@ export function LanguageSwitcher({ current, languages, ariaLabel }: Props) {
                 <span>{LANG_META[lang].label}</span>
                 {isCurrent && (
                   <svg
-                    className="w-3.5 h-3.5 ml-auto text-[#C9820A]"
+                    className="w-3.5 h-3.5 ml-auto text-[#946D00]"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"

@@ -23,7 +23,7 @@ export default async function AdminDiscounts() {
     <div className="space-y-6">
       <header className="flex items-start justify-between gap-4 flex-wrap">
         <div>
-          <h1 className="font-serif text-3xl text-[#0F1729]">Kode za popust</h1>
+          <h1 className="font-serif text-3xl text-[#111111]">Kode za popust</h1>
           <p className="text-sm text-gray-500 mt-1">
             {codes.length} kod · {active} aktivnih
           </p>
@@ -50,7 +50,7 @@ export default async function AdminDiscounts() {
               const expired = c.expiresAt && c.expiresAt < new Date();
               return (
                 <tr key={c.id} className="border-b border-gray-50 last:border-0">
-                  <td className="px-4 py-3 font-mono font-bold text-[#0F1729] tracking-wider">{c.code}</td>
+                  <td className="px-4 py-3 font-mono font-bold text-[#111111] tracking-wider">{c.code}</td>
                   <td className="px-4 py-3">
                     <span className="font-bold text-green-700">{pct}% popust</span>
                   </td>
@@ -86,7 +86,7 @@ export default async function AdminDiscounts() {
         </table>
       </div>
 
-      <div className="bg-[#FFF9EC] rounded-2xl border border-[#FFE08A] p-4 text-sm text-[#0F1729]">
+      <div className="bg-[#FFF9E8] rounded-2xl border border-[#FFE08A] p-4 text-sm text-[#111111]">
         <p className="font-semibold mb-1">Kako deluje?</p>
         <ul className="text-xs text-gray-600 space-y-1 list-disc list-inside">
           <li>Stranke vnesejo kodo na strani za nadgradnjo pred plačilom.</li>

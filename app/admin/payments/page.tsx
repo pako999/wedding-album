@@ -105,7 +105,7 @@ export default async function AdminPayments() {
     <div className="space-y-6">
       <header className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <h1 className="font-serif text-3xl text-[#0F1729]">Plačila</h1>
+          <h1 className="font-serif text-3xl text-[#111111]">Plačila</h1>
           <p className="text-sm text-gray-500 mt-1">
             Zadnjih {enriched.length} transakcij iz Mollie · skupaj plačano {totalEur.toFixed(2)}€
           </p>
@@ -140,7 +140,7 @@ export default async function AdminPayments() {
           <tbody>
             {enriched.map((p) => (
               <tr key={p.id} className="border-b border-gray-50 last:border-0">
-                <td className="px-4 py-3 text-[#0F1729]">
+                <td className="px-4 py-3 text-[#111111]">
                   {[p.ownerFirstName, p.ownerLastName].filter(Boolean).join(" ") || "—"}
                 </td>
                 <td className="px-4 py-3 text-gray-600 text-xs">
@@ -152,7 +152,7 @@ export default async function AdminPayments() {
                 <td className="px-4 py-3 text-xs uppercase font-semibold text-gray-700">
                   {p.metadata?.planId ?? "—"}
                 </td>
-                <td className="px-4 py-3 font-semibold text-[#0F1729]">
+                <td className="px-4 py-3 font-semibold text-[#111111]">
                   {parseFloat(p.amount.value).toFixed(2)}{p.amount.currency === "EUR" ? "€" : ` ${p.amount.currency}`}
                 </td>
                 <td className="px-4 py-3">
@@ -169,7 +169,7 @@ export default async function AdminPayments() {
                 <td className="px-4 py-3 text-xs text-gray-600 min-w-[180px]">
                   {p.billing ? (
                     <div className="leading-relaxed">
-                      <div className="font-semibold text-[#0F1729]">{p.billing.name ?? "—"}</div>
+                      <div className="font-semibold text-[#111111]">{p.billing.name ?? "—"}</div>
                       {p.billing.companyName && <div>{p.billing.companyName}</div>}
                       {p.billing.phone && <div>📞 {p.billing.phone}</div>}
                       {p.billing.email && <div className="text-gray-500">{p.billing.email}</div>}

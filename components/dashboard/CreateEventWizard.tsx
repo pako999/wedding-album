@@ -176,7 +176,7 @@ export function CreateEventWizard({ initialPlan }: { initialPlan?: PaidPlanId } 
               <span className="text-xl">📸</span>
             </div>
             <div>
-              <h1 className="text-2xl font-bold tracking-tight text-[#0F1729]">Nova galerija</h1>
+              <h1 className="text-2xl font-bold tracking-tight text-[#111111]">Nova galerija</h1>
               <p className="text-xs text-gray-400">Korak 1 od 2 · Izberi vrsto dogodka</p>
             </div>
           </div>
@@ -193,7 +193,7 @@ export function CreateEventWizard({ initialPlan }: { initialPlan?: PaidPlanId } 
                 className="group flex flex-col items-center justify-center gap-2.5 p-5 rounded-2xl border-2 transition-all duration-150 hover:shadow-md text-center"
                 style={{ borderColor: "rgba(255,201,77,0.2)", background: "rgba(255,201,77,0.03)" }}
                 onMouseEnter={e => {
-                  (e.currentTarget as HTMLElement).style.borderColor = "#C9820A";
+                  (e.currentTarget as HTMLElement).style.borderColor = "#946D00";
                   (e.currentTarget as HTMLElement).style.background = "rgba(255,201,77,0.07)";
                 }}
                 onMouseLeave={e => {
@@ -201,10 +201,10 @@ export function CreateEventWizard({ initialPlan }: { initialPlan?: PaidPlanId } 
                   (e.currentTarget as HTMLElement).style.background = "rgba(255,201,77,0.03)";
                 }}
               >
-                <span className="group-hover:scale-110 transition-transform" style={{ color: "#C9820A" }}>
+                <span className="group-hover:scale-110 transition-transform" style={{ color: "#946D00" }}>
                   <EventIcon id={et.id} className="w-9 h-9" />
                 </span>
-                <span className="text-sm font-semibold text-[#0F1729]">{et.label}</span>
+                <span className="text-sm font-semibold text-[#111111]">{et.label}</span>
               </button>
             ))}
           </div>
@@ -219,11 +219,11 @@ export function CreateEventWizard({ initialPlan }: { initialPlan?: PaidPlanId } 
       {/* Header */}
       <div className="px-8 py-6 border-b border-gray-100">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-2xl flex items-center justify-center" style={{ background: "rgba(255,201,77,0.10)", color: "#C9820A" }}>
+          <div className="w-10 h-10 rounded-2xl flex items-center justify-center" style={{ background: "rgba(255,201,77,0.10)", color: "#946D00" }}>
             <EventIcon id={eventInfo.id} className="w-6 h-6" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold tracking-tight text-[#0F1729]">{eventInfo.label}</h1>
+            <h1 className="text-2xl font-bold tracking-tight text-[#111111]">{eventInfo.label}</h1>
             <p className="text-xs text-gray-400">Korak 2 od 2 · Podatki o dogodku</p>
           </div>
         </div>
@@ -237,8 +237,8 @@ export function CreateEventWizard({ initialPlan }: { initialPlan?: PaidPlanId } 
 
         {/* Name */}
         <div>
-          <label className="block text-sm font-semibold text-[#0F1729] mb-2">
-            {eventInfo.nameLabel} <span style={{ color: "#C9820A" }}>*</span>
+          <label className="block text-sm font-semibold text-[#111111] mb-2">
+            {eventInfo.nameLabel} <span style={{ color: "#946D00" }}>*</span>
           </label>
           <input
             name="coupleName"
@@ -247,7 +247,7 @@ export function CreateEventWizard({ initialPlan }: { initialPlan?: PaidPlanId } 
             value={nameValue}
             onChange={e => setNameValue(e.target.value.slice(0, NAME_MAX))}
             placeholder={eventInfo.namePlaceholder}
-            className={`w-full px-4 py-3 rounded-xl border text-[#0F1729] text-sm outline-none transition-all ${nameAtLimit ? "border-red-400 focus:border-red-400" : "border-gray-200 focus:border-[#C9820A]"}`}
+            className={`w-full px-4 py-3 rounded-xl border text-[#111111] text-sm outline-none transition-all ${nameAtLimit ? "border-red-400 focus:border-red-400" : "border-gray-200 focus:border-[#946D00]"}`}
             style={{ boxShadow: "0 0 0 0px rgba(255,201,77,0)" }}
             onFocus={e => (e.target.style.boxShadow = "0 0 0 3px rgba(255,201,77,0.15)")}
             onBlur={e => (e.target.style.boxShadow = "0 0 0 0px rgba(255,201,77,0)")}
@@ -268,14 +268,14 @@ export function CreateEventWizard({ initialPlan }: { initialPlan?: PaidPlanId } 
 
         {/* Date */}
         <div>
-          <label className="block text-sm font-semibold text-[#0F1729] mb-2">
-            {eventInfo.dateLabel} <span style={{ color: "#C9820A" }}>*</span>
+          <label className="block text-sm font-semibold text-[#111111] mb-2">
+            {eventInfo.dateLabel} <span style={{ color: "#946D00" }}>*</span>
           </label>
           <input
             type="date"
             name="eventDate"
             required
-            className="w-full px-4 py-3 rounded-xl border border-gray-200 text-[#0F1729] text-sm outline-none transition-all focus:border-[#C9820A]"
+            className="w-full px-4 py-3 rounded-xl border border-gray-200 text-[#111111] text-sm outline-none transition-all focus:border-[#946D00]"
             onFocus={e => (e.target.style.boxShadow = "0 0 0 3px rgba(255,201,77,0.15)")}
             onBlur={e => (e.target.style.boxShadow = "0 0 0 0px rgba(255,201,77,0)")}
           />
@@ -283,13 +283,13 @@ export function CreateEventWizard({ initialPlan }: { initialPlan?: PaidPlanId } 
 
         {/* Location */}
         <div>
-          <label className="block text-sm font-semibold text-[#0F1729] mb-2">
+          <label className="block text-sm font-semibold text-[#111111] mb-2">
             Lokacija <span className="text-gray-400 font-normal">(neobvezno)</span>
           </label>
           <input
             name="location"
             placeholder="npr. Grad Bogenšperk, Ljubljana"
-            className="w-full px-4 py-3 rounded-xl border border-gray-200 text-[#0F1729] text-sm outline-none transition-all focus:border-[#C9820A]"
+            className="w-full px-4 py-3 rounded-xl border border-gray-200 text-[#111111] text-sm outline-none transition-all focus:border-[#946D00]"
             onFocus={e => (e.target.style.boxShadow = "0 0 0 3px rgba(255,201,77,0.15)")}
             onBlur={e => (e.target.style.boxShadow = "0 0 0 0px rgba(255,201,77,0)")}
           />
@@ -297,9 +297,9 @@ export function CreateEventWizard({ initialPlan }: { initialPlan?: PaidPlanId } 
 
         {/* Info strip */}
         <div className="rounded-2xl p-4 flex items-start gap-3 text-sm" style={{ background: "rgba(255,201,77,0.06)", border: "1px solid rgba(255,201,77,0.15)" }}>
-          <span className="shrink-0" style={{ color: "#C9820A" }}>✨</span>
+          <span className="shrink-0" style={{ color: "#946D00" }}>✨</span>
           <p className="text-gray-500 leading-relaxed">
-            Galerija se ustvari z <strong className="text-[#0F1729]">brezplačnim</strong> paketom (do 20 fotografij).
+            Galerija se ustvari z <strong className="text-[#111111]">brezplačnim</strong> paketom (do 20 fotografij).
             Nadgradnjo na Plus ali Premium lahko opravite kadarkoli.
           </p>
         </div>
@@ -310,13 +310,13 @@ export function CreateEventWizard({ initialPlan }: { initialPlan?: PaidPlanId } 
             type="checkbox"
             name="privacyAgreed"
             required
-            className="mt-0.5 shrink-0 w-4 h-4 rounded border-gray-300 accent-[#C9820A]"
+            className="mt-0.5 shrink-0 w-4 h-4 rounded border-gray-300 accent-[#946D00]"
           />
           <span className="text-xs text-gray-500 leading-relaxed group-hover:text-gray-700 transition-colors">
             Potrjujem, da bom goste in udeležence dogodka obvestil/a o uporabi CamLove galerije,
             zagotovil/a ustrezno pravno podlago za obdelavo fotografij in videov ter odgovarjal/a
             na zahteve udeležencev v zvezi z vsebino galerije.{" "}
-            <a href="/gdpr" target="_blank" rel="noopener noreferrer" className="underline text-[#C9820A]">
+            <a href="/gdpr" target="_blank" rel="noopener noreferrer" className="underline text-[#946D00]">
               Politika zasebnosti →
             </a>
           </span>
@@ -334,7 +334,7 @@ export function CreateEventWizard({ initialPlan }: { initialPlan?: PaidPlanId } 
           <button
             type="button"
             onClick={handleBack}
-            className="px-5 py-3.5 rounded-2xl border border-gray-200 text-sm font-semibold text-gray-500 hover:border-gray-300 hover:text-[#0F1729] transition-all"
+            className="px-5 py-3.5 rounded-2xl border border-gray-200 text-sm font-semibold text-gray-500 hover:border-gray-300 hover:text-[#111111] transition-all"
           >
             ← Nazaj
           </button>
@@ -342,7 +342,7 @@ export function CreateEventWizard({ initialPlan }: { initialPlan?: PaidPlanId } 
             type="submit"
             disabled={isPending}
             className="flex-1 py-3.5 rounded-2xl text-white font-bold text-base transition-all duration-200 disabled:opacity-60 hover:brightness-95"
-            style={{ background: "#FFC94D" }}
+            style={{ background: "#F4B400" }}
           >
             {isPending ? (
               <span className="flex items-center justify-center gap-2">

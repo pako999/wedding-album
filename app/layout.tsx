@@ -62,7 +62,7 @@ const cormorant = Cormorant_Garamond({
 export const viewport: Viewport = {
   themeColor: [
     { media: "(prefers-color-scheme: light)", color: "#FFFFFF" },
-    { media: "(prefers-color-scheme: dark)",  color: "#0F1729" },
+    { media: "(prefers-color-scheme: dark)",  color: "#111111" },
   ],
 };
 
@@ -229,7 +229,7 @@ export default async function RootLayout({
   return (
     <ClerkProvider localization={clerkLocalization}>
       <html lang={lang} className={`${dmSans.variable} ${cormorant.variable}`}>
-        <body className="font-sans antialiased bg-[#F2F4F8] text-[#0F1729] min-h-screen">
+        <body className="font-sans antialiased bg-[#F2F4F8] text-[#111111] min-h-screen">
           {/* Preconnect hints — trim ~100-300 ms off TLS handshake for the
               third-party scripts we KNOW will load on every page. Next.js
               hoists these to <head> automatically. */}

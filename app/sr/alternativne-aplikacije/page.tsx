@@ -59,7 +59,7 @@ const articleSchema = {
 
 function SiteFooter() {
   return (
-    <footer className="bg-[#0F1729] text-white py-8 mt-20">
+    <footer className="bg-[#111111] text-white py-8 mt-20">
       <div className="max-w-5xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-gray-400">
         <p>© 2025 Sport group d.o.o. · SI72133449</p>
         <div className="flex items-center gap-5">
@@ -75,7 +75,7 @@ function SiteFooter() {
 
 function Check() {
   return (
-    <svg className="w-5 h-5 mx-auto text-[#C9820A]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+    <svg className="w-5 h-5 mx-auto text-[#946D00]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
       <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
     </svg>
   );
@@ -97,7 +97,7 @@ function Partial({ label }: { label: string }) {
 
 export default function AlternativneAplikacijePage() {
   return (
-    <div className="min-h-screen bg-white text-[#0F1729] font-sans">
+    <div className="min-h-screen bg-white text-[#111111] font-sans">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: safeJsonLd(articleSchema) }}
@@ -107,10 +107,10 @@ export default function AlternativneAplikacijePage() {
       <main className="max-w-4xl mx-auto px-6 py-16">
         {/* Hero */}
         <div className="mb-12">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold mb-5 uppercase tracking-widest bg-[#FFF3CC] text-[#C9820A]">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold mb-5 uppercase tracking-widest bg-[#FFECB8] text-[#946D00]">
             Poređenje · Srbija · 2025
           </div>
-          <h1 className="font-serif text-4xl md:text-5xl font-bold text-[#0F1729] leading-tight mb-5">
+          <h1 className="font-serif text-4xl md:text-5xl font-bold text-[#111111] leading-tight mb-5">
             Najbolje aplikacije za deljenje fotografija sa venčanja
           </h1>
           <p className="text-lg text-gray-600 leading-relaxed mb-6">
@@ -122,13 +122,13 @@ export default function AlternativneAplikacijePage() {
           </p>
           <div className="flex flex-wrap gap-4 text-sm text-gray-500">
             <span className="flex items-center gap-1.5">
-              <svg className="w-4 h-4 text-[#C9820A]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+              <svg className="w-4 h-4 text-[#946D00]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
               Vreme čitanja: ~8 minuta
             </span>
             <span className="flex items-center gap-1.5">
-              <svg className="w-4 h-4 text-[#C9820A]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+              <svg className="w-4 h-4 text-[#946D00]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75M16.5 6.108c1.131.094 1.976 1.057 1.976 2.192V18A2.25 2.25 0 0116.226 20.25H7.5A2.25 2.25 0 015.25 18V8.3c0-1.135.844-2.098 1.976-2.192" />
               </svg>
               Ažurirano: januar 2025
@@ -138,7 +138,7 @@ export default function AlternativneAplikacijePage() {
 
         {/* Criteria */}
         <section className="mb-12">
-          <h2 className="font-serif text-2xl font-bold text-[#0F1729] mb-4">
+          <h2 className="font-serif text-2xl font-bold text-[#111111] mb-4">
             Šta tražiti u aplikaciji za fotografije sa venčanja
           </h2>
           <p className="text-gray-600 leading-relaxed mb-5">
@@ -156,13 +156,13 @@ export default function AlternativneAplikacijePage() {
               { title: "Poštena cena", desc: "Venčanje već košta dosta. Rešenje za fotografije treba da bude pristupačno ili besplatno, bez skrivenih troškova." },
             ].map(({ title, desc }) => (
               <div key={title} className="bg-white border border-gray-100 rounded-2xl p-4 shadow-sm flex gap-3">
-                <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 bg-[#FFF3CC]">
-                  <svg className="w-4 h-4 text-[#C9820A]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 bg-[#FFECB8]">
+                  <svg className="w-4 h-4 text-[#946D00]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                   </svg>
                 </div>
                 <div>
-                  <p className="font-semibold text-[#0F1729] text-sm">{title}</p>
+                  <p className="font-semibold text-[#111111] text-sm">{title}</p>
                   <p className="text-xs text-gray-600 mt-0.5 leading-relaxed">{desc}</p>
                 </div>
               </div>
@@ -171,17 +171,17 @@ export default function AlternativneAplikacijePage() {
         </section>
 
         {/* Comparison table */}
-        <section className="mb-12 -mx-6 px-6 py-12 bg-[#FFF9EC]">
+        <section className="mb-12 -mx-6 px-6 py-12 bg-[#FFF9E8]">
           <div className="max-w-4xl mx-auto">
-            <h2 className="font-serif text-2xl font-bold text-[#0F1729] mb-4">
+            <h2 className="font-serif text-2xl font-bold text-[#111111] mb-4">
               Brzo poređenje
             </h2>
             <div className="overflow-x-auto rounded-2xl border border-gray-200 shadow-sm bg-white">
               <table className="w-full text-sm text-left">
                 <thead>
-                  <tr style={{ background: "#0F1729" }}>
+                  <tr style={{ background: "#111111" }}>
                     <th className="p-4 text-white font-semibold">Funkcija</th>
-                    <th className="p-4 text-center text-[#FFC94D] font-bold">CamLove</th>
+                    <th className="p-4 text-center text-[#F4B400] font-bold">CamLove</th>
                     <th className="p-4 text-center text-gray-300 font-medium">Google Photos</th>
                     <th className="p-4 text-center text-gray-300 font-medium">WhatsApp</th>
                     <th className="p-4 text-center text-gray-300 font-medium">Dropbox</th>
@@ -201,7 +201,7 @@ export default function AlternativneAplikacijePage() {
                     { feature: "Besplatan paket", wa: true, gp: true, wp: true, db: "partial", dbNote: "Samo 2 GB" },
                   ].map(({ feature, wa, gp, wp, db, wpNote, gpNote, dbNote }, i) => (
                     <tr key={feature} className={i % 2 === 0 ? "bg-white" : "bg-gray-50"}>
-                      <td className="p-4 font-medium text-[#0F1729]">{feature}</td>
+                      <td className="p-4 font-medium text-[#111111]">{feature}</td>
                       <td className="p-4 text-center">{wa === true ? <Check /> : wa === false ? <Cross /> : <Partial label={typeof wa === "string" ? wa : ""} />}</td>
                       <td className="p-4 text-center">{gp === true ? <Check /> : gp === false ? <Cross /> : <Partial label={gpNote ?? "Delimično"} />}</td>
                       <td className="p-4 text-center">{wp === true ? <Check /> : wp === false ? <Cross /> : <Partial label={wpNote ?? "Delimično"} />}</td>
@@ -219,22 +219,22 @@ export default function AlternativneAplikacijePage() {
 
         {/* Individual reviews */}
         <section className="mb-12 space-y-8">
-          <h2 className="font-serif text-2xl font-bold text-[#0F1729] mb-2">
+          <h2 className="font-serif text-2xl font-bold text-[#111111] mb-2">
             Detaljan pregled pojedinih opcija
           </h2>
 
           {/* CamLove */}
-          <div className="bg-white rounded-3xl border-2 p-7 shadow-sm border-[#FFC94D]">
+          <div className="bg-white rounded-3xl border-2 p-7 shadow-sm border-[#F4B400]">
             <div className="flex items-start justify-between gap-4 mb-4">
               <div>
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold mb-2 bg-[#FFF3CC] text-[#C9820A]">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold mb-2 bg-[#FFECB8] text-[#946D00]">
                   Naš izbor
                 </div>
-                <h3 className="font-serif text-2xl font-bold text-[#0F1729]">CamLove</h3>
+                <h3 className="font-serif text-2xl font-bold text-[#111111]">CamLove</h3>
                 <p className="text-sm text-gray-500">Namenski alat za fotografije sa venčanja sa QR kodom</p>
               </div>
               <div className="text-right shrink-0">
-                <p className="font-bold text-2xl text-[#0F1729]">Besplatno</p>
+                <p className="font-bold text-2xl text-[#111111]">Besplatno</p>
                 <p className="text-xs text-gray-400">Plaćeni paketi od 39 €</p>
               </div>
             </div>
@@ -258,7 +258,7 @@ export default function AlternativneAplikacijePage() {
                     "Preuzimanje svih fotografija u ZIP jednim klikom",
                   ].map((item) => (
                     <li key={item} className="flex gap-2">
-                      <svg className="w-3.5 h-3.5 mt-0.5 shrink-0 text-[#C9820A]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+                      <svg className="w-3.5 h-3.5 mt-0.5 shrink-0 text-[#946D00]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                       </svg>
                       {item}
@@ -283,7 +283,7 @@ export default function AlternativneAplikacijePage() {
                 </ul>
               </div>
             </div>
-            <p className="text-sm font-semibold text-[#0F1729]">
+            <p className="text-sm font-semibold text-[#111111]">
               Presuda:{" "}
               <span className="font-normal text-gray-600">
                 Najbolji izbor za parove koji žele jednostavno i elegantno
@@ -296,11 +296,11 @@ export default function AlternativneAplikacijePage() {
           <div className="bg-white rounded-3xl border border-gray-200 p-7 shadow-sm">
             <div className="flex items-start justify-between gap-4 mb-4">
               <div>
-                <h3 className="font-serif text-2xl font-bold text-[#0F1729]">Google Photos</h3>
+                <h3 className="font-serif text-2xl font-bold text-[#111111]">Google Photos</h3>
                 <p className="text-sm text-gray-500">Deljeni albumi za sakupljanje fotografija</p>
               </div>
               <div className="text-right shrink-0">
-                <p className="font-bold text-2xl text-[#0F1729]">Besplatno</p>
+                <p className="font-bold text-2xl text-[#111111]">Besplatno</p>
                 <p className="text-xs text-gray-400">Do 15 GB prostora</p>
               </div>
             </div>
@@ -321,7 +321,7 @@ export default function AlternativneAplikacijePage() {
                     "Dovoljno besplatnog prostora",
                   ].map((item) => (
                     <li key={item} className="flex gap-2">
-                      <svg className="w-3.5 h-3.5 mt-0.5 shrink-0 text-[#C9820A]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+                      <svg className="w-3.5 h-3.5 mt-0.5 shrink-0 text-[#946D00]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                       </svg>
                       {item}
@@ -350,7 +350,7 @@ export default function AlternativneAplikacijePage() {
                 </ul>
               </div>
             </div>
-            <p className="text-sm font-semibold text-[#0F1729]">
+            <p className="text-sm font-semibold text-[#111111]">
               Presuda:{" "}
               <span className="font-normal text-gray-600">
                 Radi ako svi vaši gosti imaju Google nalog i tehnički su vešti.
@@ -363,11 +363,11 @@ export default function AlternativneAplikacijePage() {
           <div className="bg-white rounded-3xl border border-gray-200 p-7 shadow-sm">
             <div className="flex items-start justify-between gap-4 mb-4">
               <div>
-                <h3 className="font-serif text-2xl font-bold text-[#0F1729]">WhatsApp grupa</h3>
+                <h3 className="font-serif text-2xl font-bold text-[#111111]">WhatsApp grupa</h3>
                 <p className="text-sm text-gray-500">Deljenje fotografija u grupnom razgovoru</p>
               </div>
               <div className="text-right shrink-0">
-                <p className="font-bold text-2xl text-[#0F1729]">Besplatno</p>
+                <p className="font-bold text-2xl text-[#111111]">Besplatno</p>
                 <p className="text-xs text-gray-400">Sa WhatsApp nalogom</p>
               </div>
             </div>
@@ -387,7 +387,7 @@ export default function AlternativneAplikacijePage() {
                     "Obaveštenja u realnom vremenu",
                   ].map((item) => (
                     <li key={item} className="flex gap-2">
-                      <svg className="w-3.5 h-3.5 mt-0.5 shrink-0 text-[#C9820A]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+                      <svg className="w-3.5 h-3.5 mt-0.5 shrink-0 text-[#946D00]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                       </svg>
                       {item}
@@ -416,7 +416,7 @@ export default function AlternativneAplikacijePage() {
                 </ul>
               </div>
             </div>
-            <p className="text-sm font-semibold text-[#0F1729]">
+            <p className="text-sm font-semibold text-[#111111]">
               Presuda:{" "}
               <span className="font-normal text-gray-600">
                 Već sama kompresija slika čini WhatsApp neprikladnim za trajne
@@ -430,11 +430,11 @@ export default function AlternativneAplikacijePage() {
           <div className="bg-white rounded-3xl border border-gray-200 p-7 shadow-sm">
             <div className="flex items-start justify-between gap-4 mb-4">
               <div>
-                <h3 className="font-serif text-2xl font-bold text-[#0F1729]">Dropbox</h3>
+                <h3 className="font-serif text-2xl font-bold text-[#111111]">Dropbox</h3>
                 <p className="text-sm text-gray-500">Skladište u oblaku sa deljenim folderima</p>
               </div>
               <div className="text-right shrink-0">
-                <p className="font-bold text-2xl text-[#0F1729]">Besplatno</p>
+                <p className="font-bold text-2xl text-[#111111]">Besplatno</p>
                 <p className="text-xs text-gray-400">2 GB besplatno / 9,99 €/mes.+</p>
               </div>
             </div>
@@ -454,7 +454,7 @@ export default function AlternativneAplikacijePage() {
                     "Radi na svim uređajima",
                   ].map((item) => (
                     <li key={item} className="flex gap-2">
-                      <svg className="w-3.5 h-3.5 mt-0.5 shrink-0 text-[#C9820A]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+                      <svg className="w-3.5 h-3.5 mt-0.5 shrink-0 text-[#946D00]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                       </svg>
                       {item}
@@ -483,7 +483,7 @@ export default function AlternativneAplikacijePage() {
                 </ul>
               </div>
             </div>
-            <p className="text-sm font-semibold text-[#0F1729]">
+            <p className="text-sm font-semibold text-[#111111]">
               Presuda:{" "}
               <span className="font-normal text-gray-600">
                 Odlično za čuvanje datoteka, ali mučno za goste. Prikladnije za
@@ -496,7 +496,7 @@ export default function AlternativneAplikacijePage() {
 
         {/* Summary */}
         <section className="mb-12">
-          <h2 className="font-serif text-2xl font-bold text-[#0F1729] mb-4">
+          <h2 className="font-serif text-2xl font-bold text-[#111111] mb-4">
             Zaključak
           </h2>
           <p className="text-gray-600 leading-relaxed mb-5">
@@ -519,7 +519,7 @@ export default function AlternativneAplikacijePage() {
                   </svg>
                 </div>
                 <div>
-                  <p className="font-semibold text-[#0F1729] text-sm">{name}</p>
+                  <p className="font-semibold text-[#111111] text-sm">{name}</p>
                   <p className="text-sm text-gray-500">{problem}</p>
                 </div>
               </div>
@@ -535,7 +535,7 @@ export default function AlternativneAplikacijePage() {
         </section>
 
         {/* Final dark CTA */}
-        <div className="rounded-3xl p-8 text-center bg-[#0F1729]">
+        <div className="rounded-3xl p-8 text-center bg-[#111111]">
           <p className="font-serif text-3xl font-bold text-white mb-3">
             Spremni da sakupite sve fotografije sa venčanja?
           </p>
@@ -544,7 +544,7 @@ export default function AlternativneAplikacijePage() {
           </p>
           <Link
             href="/dashboard/new"
-            className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-[#FFC94D] text-[#0F1729] font-bold text-base transition-all duration-200 hover:scale-[1.02] hover:brightness-95"
+            className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-[#F4B400] text-[#111111] font-bold text-base transition-all duration-200 hover:scale-[1.02] hover:brightness-95"
           >
             Započni besplatno →
           </Link>

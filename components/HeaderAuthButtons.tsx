@@ -47,7 +47,7 @@ interface Props {
 }
 
 const DEFAULT_LINK_CLASS =
-  "hidden sm:inline text-sm font-medium text-gray-600 hover:text-[#0F1729] transition-colors";
+  "hidden sm:inline text-sm font-medium text-gray-600 hover:text-[#111111] transition-colors";
 
 export async function HeaderAuthButtons({
   lang,

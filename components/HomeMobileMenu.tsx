@@ -53,7 +53,7 @@ export function HomeMobileMenu({ signedIn = false, lang, links, labels }: HomeMo
         onClick={() => setOpen((o) => !o)}
         aria-label={open ? labels.close : labels.open}
         aria-expanded={open}
-        className="md:hidden inline-flex items-center justify-center w-10 h-10 -mr-2 rounded-lg hover:bg-gray-100 text-[#0F1729] transition-colors"
+        className="md:hidden inline-flex items-center justify-center w-10 h-10 -mr-2 rounded-lg hover:bg-gray-100 text-[#111111] transition-colors"
       >
         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
           {open ? (
@@ -84,7 +84,7 @@ export function HomeMobileMenu({ signedIn = false, lang, links, labels }: HomeMo
               </div>
               {links.map((l) => {
                 const isAnchor = l.href.startsWith("#");
-                const className = "px-3 py-3 rounded-lg text-base font-semibold text-[#0F1729] hover:bg-[#FFF9EC] transition-colors";
+                const className = "px-3 py-3 rounded-lg text-base font-semibold text-[#111111] hover:bg-[#FFF9E8] transition-colors";
                 return isAnchor ? (
                   <a key={l.href} href={l.href} role="menuitem" onClick={() => setOpen(false)} className={className}>
                     {l.label}
@@ -103,7 +103,7 @@ export function HomeMobileMenu({ signedIn = false, lang, links, labels }: HomeMo
                   <Link
                     href="/dashboard"
                     onClick={() => setOpen(false)}
-                    className="text-base font-medium text-gray-700 hover:text-[#0F1729] transition-colors"
+                    className="text-base font-medium text-gray-700 hover:text-[#111111] transition-colors"
                   >
                     {labels.dashboard}
                   </Link>
@@ -126,9 +126,9 @@ export function HomeMobileMenu({ signedIn = false, lang, links, labels }: HomeMo
                   href="/dashboard/new"
                   onClick={() => setOpen(false)}
                   role="menuitem"
-                  className="mt-1 inline-flex items-center justify-center gap-1.5 px-5 py-3 rounded-full text-sm font-bold text-[#0F1729]"
+                  className="mt-1 inline-flex items-center justify-center gap-1.5 px-5 py-3 rounded-full text-sm font-bold text-[#111111]"
                   style={{
-                    background: "linear-gradient(135deg, #FFD966 0%, #FFC94D 55%, #F0B429 100%)",
+                    background: "linear-gradient(135deg, #FFCC3D 0%, #F4B400 55%, #D69E00 100%)",
                     boxShadow: "0 6px 18px rgba(255,201,77,0.45)",
                   }}
                 >

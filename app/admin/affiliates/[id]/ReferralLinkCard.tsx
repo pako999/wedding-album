@@ -45,11 +45,11 @@ export function ReferralLinkCard({ affiliateId, referralCode, status, approvedAt
   return (
     <div className="bg-white rounded-2xl border border-gray-200 p-5">
       <div className="flex items-start justify-between gap-3 mb-1">
-        <h2 className="font-bold text-[#0F1729]">🔗 Partnerska povezava</h2>
+        <h2 className="font-bold text-[#111111]">🔗 Partnerska povezava</h2>
         <button
           onClick={resendWelcome}
           disabled={resending || status !== "active"}
-          className="text-xs font-semibold px-3 py-1.5 rounded-lg border border-gray-200 bg-white hover:bg-[#FFF9EC] hover:border-[#FFC94D] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+          className="text-xs font-semibold px-3 py-1.5 rounded-lg border border-gray-200 bg-white hover:bg-[#FFF9E8] hover:border-[#F4B400] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
           title={status !== "active" ? "Najprej potrdi partnerja" : "Ponovno pošlji partnerju email z linkom"}
         >
           {resending ? "Pošiljanje…" : "Ponovno pošlji email"}
@@ -63,7 +63,7 @@ export function ReferralLinkCard({ affiliateId, referralCode, status, approvedAt
       </p>
 
       {resendMsg && (
-        <p className="text-xs text-[#C9820A] mb-3">{resendMsg}</p>
+        <p className="text-xs text-[#946D00] mb-3">{resendMsg}</p>
       )}
 
       {/* Clean share link — what partner posts on Instagram bio etc. */}
@@ -75,7 +75,7 @@ export function ReferralLinkCard({ affiliateId, referralCode, status, approvedAt
           <code className="flex-1 font-mono text-xs text-[#1E3A8A] truncate">{cleanShareLink}</code>
           <button
             onClick={() => copy(cleanShareLink, "clean")}
-            className="shrink-0 text-xs font-semibold text-[#C9820A] hover:text-[#0F1729] transition-colors"
+            className="shrink-0 text-xs font-semibold text-[#946D00] hover:text-[#111111] transition-colors"
           >
             {copiedKey === "clean" ? "✓" : "Kopiraj"}
           </button>
@@ -91,7 +91,7 @@ export function ReferralLinkCard({ affiliateId, referralCode, status, approvedAt
           <code className="flex-1 font-mono text-xs text-[#1E3A8A] truncate">{referralLink}</code>
           <button
             onClick={() => copy(referralLink, "full")}
-            className="shrink-0 text-xs font-semibold text-[#C9820A] hover:text-[#0F1729] transition-colors"
+            className="shrink-0 text-xs font-semibold text-[#946D00] hover:text-[#111111] transition-colors"
           >
             {copiedKey === "full" ? "✓" : "Kopiraj"}
           </button>

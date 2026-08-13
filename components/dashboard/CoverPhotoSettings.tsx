@@ -133,8 +133,8 @@ export function CoverPhotoSettings({ album, photos }: Props) {
           />
         ) : (
           <div
-            className="w-full h-full flex items-center justify-center text-xs text-[#0F1729]/60"
-            style={{ background: "linear-gradient(135deg, #FFF9EC 0%, #FFC94D 100%)" }}
+            className="w-full h-full flex items-center justify-center text-xs text-[#111111]/60"
+            style={{ background: "linear-gradient(135deg, #FFF9E8 0%, #F4B400 100%)" }}
           >
             Privzeta naslovnica (gradient)
           </div>
@@ -147,7 +147,7 @@ export function CoverPhotoSettings({ album, photos }: Props) {
           type="button"
           onClick={() => setPickerOpen(true)}
           disabled={busy !== null || eligible.length === 0}
-          className="px-3 py-2 text-sm font-semibold rounded-lg border border-gray-200 bg-white text-[#0F1729] hover:border-[#FFC94D] hover:bg-[#FFF9EC] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="px-3 py-2 text-sm font-semibold rounded-lg border border-gray-200 bg-white text-[#111111] hover:border-[#F4B400] hover:bg-[#FFF9E8] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           title={eligible.length === 0 ? "V galeriji še ni fotografij — naloži kakšno najprej." : ""}
         >
           {busy === "pick" ? "Shranjujem…" : "🖼️ Izberi iz galerije"}
@@ -160,7 +160,7 @@ export function CoverPhotoSettings({ album, photos }: Props) {
           className="px-3 py-2 text-sm font-semibold rounded-lg border transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
           style={
             canUpload
-              ? { borderColor: "#FFC94D", background: "#FFF9EC", color: "#0F1729" }
+              ? { borderColor: "#F4B400", background: "#FFF9E8", color: "#111111" }
               : { borderColor: "#e5e7eb", background: "white", color: "#9ca3af" }
           }
           title={canUpload ? "Naloži lastno naslovno fotografijo z računalnika." : "Na voljo s paketom Plus ali Premium."}
@@ -212,7 +212,7 @@ export function CoverPhotoSettings({ album, photos }: Props) {
           >
             <div className="p-5 border-b border-gray-100 flex items-center justify-between">
               <div>
-                <h3 className="font-semibold text-[#0F1729]">Izberi naslovno fotografijo</h3>
+                <h3 className="font-semibold text-[#111111]">Izberi naslovno fotografijo</h3>
                 <p className="text-xs text-gray-400">Iz {eligible.length} naloženih fotografij.</p>
               </div>
               <button
@@ -242,8 +242,8 @@ export function CoverPhotoSettings({ album, photos }: Props) {
                         disabled={busy !== null}
                         className={`relative aspect-square rounded-lg overflow-hidden border-2 transition-all ${
                           isCurrent
-                            ? "border-[#FFC94D] ring-2 ring-[#FFC94D]/40"
-                            : "border-transparent hover:border-[#FFC94D]"
+                            ? "border-[#F4B400] ring-2 ring-[#F4B400]/40"
+                            : "border-transparent hover:border-[#F4B400]"
                         } disabled:opacity-50`}
                       >
                         {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -254,7 +254,7 @@ export function CoverPhotoSettings({ album, photos }: Props) {
                           loading="lazy"
                         />
                         {isCurrent && (
-                          <span className="absolute top-1.5 right-1.5 bg-[#FFC94D] text-[#0F1729] text-[10px] font-bold uppercase rounded px-1.5 py-0.5">
+                          <span className="absolute top-1.5 right-1.5 bg-[#F4B400] text-[#111111] text-[10px] font-bold uppercase rounded px-1.5 py-0.5">
                             ✓
                           </span>
                         )}

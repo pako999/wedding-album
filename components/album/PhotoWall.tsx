@@ -60,9 +60,9 @@ export interface WallSponsor {
  *  stay readable on light backgrounds. */
 export const WALL_BACKGROUNDS = {
   photo: { css: "#000000", tone: "dark",  blur: true  },
-  dark:  { css: "#0F1729", tone: "dark",  blur: false },
+  dark:  { css: "#111111", tone: "dark",  blur: false },
   light: { css: "#F2F4F8", tone: "light", blur: false },
-  warm:  { css: "#FFF9EC", tone: "light", blur: false },
+  warm:  { css: "#FFF9E8", tone: "light", blur: false },
 } as const;
 export type WallBackground = keyof typeof WALL_BACKGROUNDS;
 
@@ -366,7 +366,7 @@ export function PhotoWall({
   const isLight = bg.tone === "light";
   const pillStyle = {
     background: isLight ? "rgba(255,255,255,.78)" : "rgba(0,0,0,.45)",
-    color: isLight ? "#0F1729" : "#ffffff",
+    color: isLight ? "#111111" : "#ffffff",
   };
   const mutedColor = isLight ? "rgba(15,23,41,.55)" : "rgba(255,255,255,.55)";
 
@@ -487,8 +487,8 @@ export function PhotoWall({
               <>
                 {center.kind === "photo" && center.isNew && (
                   <span
-                    className="px-4 py-2 rounded-full text-sm font-bold uppercase tracking-wider text-[#0F1729]"
-                    style={{ background: "#FFC94D", animation: "wallBadgeIn .5s cubic-bezier(.2,1.2,.3,1) forwards" }}
+                    className="px-4 py-2 rounded-full text-sm font-bold uppercase tracking-wider text-[#111111]"
+                    style={{ background: "#F4B400", animation: "wallBadgeIn .5s cubic-bezier(.2,1.2,.3,1) forwards" }}
                   >
                     {t.justShared}
                   </span>
@@ -507,7 +507,7 @@ export function PhotoWall({
         // job — get the first guest to scan — so the QR goes full size,
         // centred, instead of sitting small in the corner.
         <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-8 z-[2]">
-          <p className="font-serif text-5xl mb-3" style={{ color: isLight ? "#0F1729" : "#ffffff" }}>
+          <p className="font-serif text-5xl mb-3" style={{ color: isLight ? "#111111" : "#ffffff" }}>
             {coupleName}
           </p>
           <p className="text-2xl mb-10" style={{ color: mutedColor }}>
@@ -598,7 +598,7 @@ export function PhotoWall({
           style={{ background: pillStyle.background }}
         >
           <p className="text-xs" style={{ color: mutedColor }}>
-            <span style={{ color: "#FFC94D" }}>★</span> {t.premiumOnly}
+            <span style={{ color: "#F4B400" }}>★</span> {t.premiumOnly}
           </p>
         </div>
       )}

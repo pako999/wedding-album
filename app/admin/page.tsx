@@ -102,7 +102,7 @@ export default async function AdminOverview() {
   return (
     <div className="space-y-8">
       <header>
-        <h1 className="font-serif text-3xl text-[#0F1729]">Pregled</h1>
+        <h1 className="font-serif text-3xl text-[#111111]">Pregled</h1>
         <p className="text-sm text-gray-500 mt-1">Stanje platforme v realnem času.</p>
       </header>
 
@@ -114,7 +114,7 @@ export default async function AdminOverview() {
       </div>
 
       <section className="bg-white rounded-2xl border border-gray-200 p-6">
-        <h2 className="font-semibold text-[#0F1729] mb-4">Paketi</h2>
+        <h2 className="font-semibold text-[#111111] mb-4">Paketi</h2>
         <div className="space-y-2">
           {planBreakdown.map((row) => {
             // For paid plans, show the count of REAL paid albums next to
@@ -129,7 +129,7 @@ export default async function AdminOverview() {
                   {row.plan !== "free" && (
                     <>
                       <span className="text-[10px] text-gray-400 whitespace-nowrap">({real} plačanih)</span>{" "}
-                      <span className="ml-1 text-[#C9820A] font-semibold whitespace-nowrap">
+                      <span className="ml-1 text-[#946D00] font-semibold whitespace-nowrap">
                         {real * (PLAN_PRICES[row.plan] ?? 0)}€
                       </span>
                     </>
@@ -140,16 +140,16 @@ export default async function AdminOverview() {
           })}
           <div className="pt-3 mt-3 border-t border-gray-100 flex justify-between text-sm font-semibold">
             <span>Skupni prihodek (ocena)</span>
-            <span className="text-[#C9820A]">{totalRevenue}€</span>
+            <span className="text-[#946D00]">{totalRevenue}€</span>
           </div>
         </div>
       </section>
 
       {/* ── Referral engine ────────────────────────────────────────────── */}
-      <section className="bg-gradient-to-br from-white to-[#FFF9EC] rounded-2xl border border-[#FFE3A2] p-6">
+      <section className="bg-gradient-to-br from-white to-[#FFF9E8] rounded-2xl border border-[#FFE3A2] p-6">
         <div className="flex items-center gap-2 mb-1">
           <span className="text-lg">🌱</span>
-          <h2 className="font-semibold text-[#0F1729]">Viralna zanka (Referral engine)</h2>
+          <h2 className="font-semibold text-[#111111]">Viralna zanka (Referral engine)</h2>
         </div>
         <p className="text-xs text-gray-500 mb-5">
           Koliko novih plačanih dogodkov ustvari en plačan dogodek prek priporočil.
@@ -163,7 +163,7 @@ export default async function AdminOverview() {
       </section>
 
       <section className="bg-white rounded-2xl border border-gray-200 p-6">
-        <h2 className="font-semibold text-[#0F1729] mb-4">Zadnje galerije</h2>
+        <h2 className="font-semibold text-[#111111] mb-4">Zadnje galerije</h2>
         <table className="w-full text-sm">
           <thead>
             <tr className="text-left text-xs uppercase tracking-wide text-gray-400 border-b border-gray-100">
@@ -176,13 +176,13 @@ export default async function AdminOverview() {
           <tbody>
             {recent.map((a) => (
               <tr key={a.id} className="border-b border-gray-50 last:border-0">
-                <td className="py-2.5 font-medium text-[#0F1729]">{a.coupleName}</td>
+                <td className="py-2.5 font-medium text-[#111111]">{a.coupleName}</td>
                 <td className="py-2.5">
                   <PlanPill plan={a.plan} />
                 </td>
                 <td className="py-2.5 text-gray-500">{new Date(a.createdAt).toLocaleDateString("sl-SI")}</td>
                 <td className="py-2.5 text-right">
-                  <a href={`/admin/albums?q=${a.slug}`} className="text-xs text-[#C9820A] font-semibold hover:underline">
+                  <a href={`/admin/albums?q=${a.slug}`} className="text-xs text-[#946D00] font-semibold hover:underline">
                     Uredi →
                   </a>
                 </td>
@@ -198,8 +198,8 @@ export default async function AdminOverview() {
 function MiniStat({ label, value, hint }: { label: string; value: number | string; hint?: string }) {
   return (
     <div className="bg-white/70 backdrop-blur rounded-xl border border-[#FFE3A2]/60 p-3">
-      <p className="text-[10px] uppercase tracking-wide text-[#C9820A] font-bold mb-1">{label}</p>
-      <p className="font-serif text-2xl text-[#0F1729] leading-none">{value}</p>
+      <p className="text-[10px] uppercase tracking-wide text-[#946D00] font-bold mb-1">{label}</p>
+      <p className="font-serif text-2xl text-[#111111] leading-none">{value}</p>
       {hint && <p className="text-[10px] text-gray-400 mt-1">{hint}</p>}
     </div>
   );
@@ -212,7 +212,7 @@ function Stat({ label, value, icon }: { label: string; value: number | string; i
       <span className="block text-[10px] sm:text-xs uppercase tracking-wide text-gray-400 font-semibold pr-7 break-words leading-tight mb-2">
         {label}
       </span>
-      <p className="font-serif text-2xl sm:text-3xl text-[#0F1729]">{value}</p>
+      <p className="font-serif text-2xl sm:text-3xl text-[#111111]">{value}</p>
     </div>
   );
 }

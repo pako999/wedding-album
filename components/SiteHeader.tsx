@@ -58,7 +58,7 @@ export async function SiteHeader({
   } catch { /* Clerk hiccup — render signed-out */ }
 
   return (
-    <header className="sticky top-0 z-40 border-b border-[#FFC94D]/30 bg-white/85 backdrop-blur-md">
+    <header className="sticky top-0 z-40 border-b border-[#F4B400]/30 bg-white/85 backdrop-blur-md">
       <nav className="max-w-7xl mx-auto px-6 sm:px-8 h-16 flex items-center justify-between">
         <Link
           href={resolvedHome}
@@ -71,13 +71,13 @@ export async function SiteHeader({
           <LanguageSwitcher current={lang} languages={hreflang} ariaLabel={copy.switcherAria} />
           <Link
             href={resolvedHome}
-            className="hidden sm:inline text-sm font-medium text-gray-600 hover:text-[#0F1729] transition-colors"
+            className="hidden sm:inline text-sm font-medium text-gray-600 hover:text-[#111111] transition-colors"
           >
             {copy.home}
           </Link>
           <Link
             href={lang === "sl" ? "/blog" : `/${lang}/blog`}
-            className="hidden sm:inline text-sm font-medium text-gray-600 hover:text-[#0F1729] transition-colors"
+            className="hidden sm:inline text-sm font-medium text-gray-600 hover:text-[#111111] transition-colors"
           >
             {copy.blog}
           </Link>
@@ -87,9 +87,9 @@ export async function SiteHeader({
               href="/dashboard/new"
               className="inline-flex items-center gap-1.5 px-4 sm:px-5 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-bold transition-all duration-200 hover:scale-[1.03]"
               style={{
-                background: "linear-gradient(135deg, #FFD966 0%, #FFC94D 55%, #F0B429 100%)",
+                background: "linear-gradient(135deg, #FFCC3D 0%, #F4B400 55%, #D69E00 100%)",
                 boxShadow: "0 6px 18px rgba(255,201,77,0.45)",
-                color: "#0F1729",
+                color: "#111111",
               }}
             >
               {copy.cta} →

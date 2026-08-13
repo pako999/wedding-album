@@ -59,11 +59,11 @@ export default async function AdminLoginPage({
   return (
     <div className="min-h-screen flex items-center justify-center px-4" style={{ background: "#F4F6FB" }}>
       <div className="w-full max-w-sm bg-white rounded-2xl border border-gray-200 p-7 shadow-sm">
-        <p className="text-[10px] uppercase tracking-widest font-semibold text-[#C9820A] mb-1">Platform Admin</p>
-        <h1 className="font-serif text-2xl text-[#0F1729] mb-2">Geslo skrbnika</h1>
+        <p className="text-[10px] uppercase tracking-widest font-semibold text-[#946D00] mb-1">Platform Admin</p>
+        <h1 className="font-serif text-2xl text-[#111111] mb-2">Geslo skrbnika</h1>
         <p className="text-sm text-gray-500 mb-5">
           Drugi faktor poleg Clerk prijave. Prijavljeni ste kot{" "}
-          <span className="font-semibold text-[#0F1729]">{admin.email}</span>.
+          <span className="font-semibold text-[#111111]">{admin.email}</span>.
         </p>
         <form action={submit} className="space-y-3">
           <input
@@ -73,14 +73,14 @@ export default async function AdminLoginPage({
             autoFocus
             autoComplete="current-password"
             placeholder="Geslo"
-            className="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-[#FFC94D] focus:ring-1 focus:ring-[#FFC94D]"
+            className="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-[#F4B400] focus:ring-1 focus:ring-[#F4B400]"
           />
           {error && (
             <p className="text-xs text-red-600">Napačno geslo.</p>
           )}
           <button
             type="submit"
-            className="w-full px-4 py-2.5 bg-[#FFC94D] text-[#0F1729] font-bold text-sm rounded-lg hover:opacity-90"
+            className="w-full px-4 py-2.5 bg-[#F4B400] text-[#111111] font-bold text-sm rounded-lg hover:opacity-90"
           >
             Vstopi v admin
           </button>

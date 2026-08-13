@@ -34,8 +34,8 @@ export function OrderStatusButton({ id, status }: { id: string; status: Status }
         await updateStandOrderStatus(id, next.status);
         setDone(true);
       })}
-      className="px-3 py-1.5 rounded-lg text-xs font-bold text-[#0F1729] disabled:opacity-50"
-      style={{ background: "linear-gradient(135deg,#FFD966,#FFC94D 60%,#F0B429)" }}
+      className="px-3 py-1.5 rounded-lg text-xs font-bold text-[#111111] disabled:opacity-50"
+      style={{ background: "linear-gradient(135deg,#FFCC3D,#F4B400 60%,#D69E00)" }}
     >
       {pending ? "…" : next.label}
     </button>

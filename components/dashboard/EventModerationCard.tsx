@@ -39,7 +39,7 @@ function Toggle({ on, onChange, disabled }: { on: boolean; onChange: (v: boolean
       aria-checked={on}
       disabled={disabled}
       onClick={() => onChange(!on)}
-      className={`relative w-11 h-6 rounded-full transition-colors disabled:opacity-40 ${on ? "bg-[#FFC94D]" : "bg-gray-200"}`}
+      className={`relative w-11 h-6 rounded-full transition-colors disabled:opacity-40 ${on ? "bg-[#F4B400]" : "bg-gray-200"}`}
     >
       <span className={`absolute top-0.5 w-5 h-5 rounded-full bg-white shadow transition-all ${on ? "left-[22px]" : "left-0.5"}`} />
     </button>
@@ -99,7 +99,7 @@ export function EventModerationCard({ albumSlug, initialFlags, initialModeration
               checked={flags.allowPhotos}
               disabled={flags.allowPhotos && !flags.allowVideos}
               onChange={(e) => setFlag("allowPhotos", e.target.checked)}
-              className="w-4 h-4 accent-[#FFC94D]"
+              className="w-4 h-4 accent-[#F4B400]"
             />
             Fotografije
           </label>
@@ -109,7 +109,7 @@ export function EventModerationCard({ albumSlug, initialFlags, initialModeration
               checked={flags.allowVideos}
               disabled={flags.allowVideos && !flags.allowPhotos}
               onChange={(e) => setFlag("allowVideos", e.target.checked)}
-              className="w-4 h-4 accent-[#FFC94D]"
+              className="w-4 h-4 accent-[#F4B400]"
             />
             Videi
           </label>
@@ -129,7 +129,7 @@ export function EventModerationCard({ albumSlug, initialFlags, initialModeration
                 onClick={() => setFlag("albumPermission", p.id)}
                 aria-pressed={active}
                 className="text-left rounded-xl border-2 p-3 transition-all"
-                style={{ borderColor: active ? "#FFC94D" : "#e5e7eb", background: active ? "#FFF9EC" : "#fff" }}
+                style={{ borderColor: active ? "#F4B400" : "#e5e7eb", background: active ? "#FFF9E8" : "#fff" }}
               >
                 <span className="block text-sm font-semibold text-gray-900">{p.title}</span>
                 <span className="block text-xs text-gray-500 mt-0.5">{p.desc}</span>

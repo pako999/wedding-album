@@ -89,15 +89,15 @@ export function DiscountBanner({ lang }: { lang: LangCode }) {
 
   return (
     <div
-      className="w-full flex items-center justify-center gap-3 px-4 py-2.5 text-sm font-semibold text-[#0F1729] relative"
-      style={{ background: "linear-gradient(90deg, #FFD966 0%, #FFC94D 60%, #F0B429 100%)" }}
+      className="w-full flex items-center justify-center gap-3 px-4 py-2.5 text-sm font-semibold text-[#111111] relative"
+      style={{ background: "linear-gradient(90deg, #FFCC3D 0%, #F4B400 60%, #D69E00 100%)" }}
     >
       {/* Text + code */}
       <span className="flex items-center gap-2 flex-wrap justify-center">
         <span>{t.text}</span>
         <button
           onClick={copyCode}
-          className="inline-flex items-center gap-1.5 bg-[#0F1729] text-[#FFC94D] font-mono font-bold text-xs px-2.5 py-1 rounded-lg hover:bg-[#1a2540] transition-colors"
+          className="inline-flex items-center gap-1.5 bg-[#111111] text-[#F4B400] font-mono font-bold text-xs px-2.5 py-1 rounded-lg hover:bg-[#1a2540] transition-colors"
         >
           {DISCOUNT_CODE}
           <span className="text-[10px] font-sans font-semibold opacity-70">

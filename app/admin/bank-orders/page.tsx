@@ -36,7 +36,7 @@ export default async function AdminBankOrders() {
     <div className="space-y-6">
       <header className="flex items-start justify-between gap-4">
         <div>
-          <h1 className="font-serif text-3xl text-[#0F1729]">Naročila po predračunu</h1>
+          <h1 className="font-serif text-3xl text-[#111111]">Naročila po predračunu</h1>
           <p className="text-sm text-gray-500 mt-1">
             {orders.length} naročil · čaka plačilo: {totalPending}€ · plačano: {totalPaid}€
           </p>
@@ -64,7 +64,7 @@ export default async function AdminBankOrders() {
                 </td>
                 <td className="px-4 py-3 font-mono text-xs text-gray-700">{o.albumSlug}</td>
                 <td className="px-4 py-3">
-                  <span className="font-semibold text-[#0F1729]">{o.planName}</span>
+                  <span className="font-semibold text-[#111111]">{o.planName}</span>
                   <span className="ml-1 text-gray-500">{o.planPrice}€</span>
                 </td>
                 <td className="px-4 py-3 text-xs text-gray-600 break-all">{o.email}</td>

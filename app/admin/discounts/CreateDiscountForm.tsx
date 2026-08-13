@@ -44,7 +44,7 @@ export function CreateDiscountForm() {
     return (
       <button
         onClick={() => setOpen(true)}
-        className="px-4 py-2 rounded-xl bg-[#FFC94D] text-[#0F1729] font-semibold text-sm hover:opacity-90 transition-opacity"
+        className="px-4 py-2 rounded-xl bg-[#F4B400] text-[#111111] font-semibold text-sm hover:opacity-90 transition-opacity"
       >
         + Nova koda
       </button>
@@ -53,7 +53,7 @@ export function CreateDiscountForm() {
 
   return (
     <form onSubmit={submit} className="bg-white rounded-2xl border border-gray-200 p-5 space-y-3 w-80">
-      <p className="font-semibold text-sm text-[#0F1729]">Nova koda za popust</p>
+      <p className="font-semibold text-sm text-[#111111]">Nova koda za popust</p>
       {error && <p className="text-xs text-red-600">{error}</p>}
       <div className="space-y-2">
         <input
@@ -61,7 +61,7 @@ export function CreateDiscountForm() {
           placeholder="Koda (npr. POROKA20)"
           value={form.code}
           onChange={set("code")}
-          className="w-full px-3 py-2 text-sm border rounded-lg focus:outline-none focus:border-[#FFC94D] uppercase tracking-wider"
+          className="w-full px-3 py-2 text-sm border rounded-lg focus:outline-none focus:border-[#F4B400] uppercase tracking-wider"
           style={{ borderColor: "#e5e7eb" }}
         />
         <input
@@ -72,7 +72,7 @@ export function CreateDiscountForm() {
           placeholder="Popust v % (npr. 20)"
           value={form.percentOff}
           onChange={set("percentOff")}
-          className="w-full px-3 py-2 text-sm border rounded-lg focus:outline-none focus:border-[#FFC94D]"
+          className="w-full px-3 py-2 text-sm border rounded-lg focus:outline-none focus:border-[#F4B400]"
           style={{ borderColor: "#e5e7eb" }}
         />
         <input
@@ -81,7 +81,7 @@ export function CreateDiscountForm() {
           placeholder="Maks. uporab (prazno = neomejeno)"
           value={form.maxUses}
           onChange={set("maxUses")}
-          className="w-full px-3 py-2 text-sm border rounded-lg focus:outline-none focus:border-[#FFC94D]"
+          className="w-full px-3 py-2 text-sm border rounded-lg focus:outline-none focus:border-[#F4B400]"
           style={{ borderColor: "#e5e7eb" }}
         />
         <input
@@ -89,7 +89,7 @@ export function CreateDiscountForm() {
           placeholder="Velja do (prazno = brez roka)"
           value={form.expiresAt}
           onChange={set("expiresAt")}
-          className="w-full px-3 py-2 text-sm border rounded-lg focus:outline-none focus:border-[#FFC94D]"
+          className="w-full px-3 py-2 text-sm border rounded-lg focus:outline-none focus:border-[#F4B400]"
           style={{ borderColor: "#e5e7eb" }}
         />
       </div>
@@ -97,7 +97,7 @@ export function CreateDiscountForm() {
         <button
           type="submit"
           disabled={loading}
-          className="flex-1 py-2 rounded-lg bg-[#FFC94D] text-[#0F1729] font-semibold text-sm disabled:opacity-60"
+          className="flex-1 py-2 rounded-lg bg-[#F4B400] text-[#111111] font-semibold text-sm disabled:opacity-60"
         >
           {loading ? "Ustvarjam…" : "Ustvari"}
         </button>

@@ -164,7 +164,7 @@ export function Slideshow({ photos, startIndex = 0, onClose }: Props) {
             key={imgKey}
             className="h-full"
             style={{
-              background: "#FFC94D",
+              background: "#F4B400",
               transformOrigin: "left",
               animation: `ssProg ${SLIDE_MS}ms linear forwards`,
             }}
@@ -178,7 +178,7 @@ export function Slideshow({ photos, startIndex = 0, onClose }: Props) {
         <div className="flex items-center gap-2.5 flex-1 min-w-0">
           {photo.uploaderName && (
             <div className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0"
-              style={{ background: "#FFC94D" }}>
+              style={{ background: "#F4B400" }}>
               {photo.uploaderName.charAt(0).toUpperCase()}
             </div>
           )}

@@ -45,13 +45,13 @@ function RenderBlock({ block }: { block: BlogBlock }) {
   switch (block.type) {
     case "h2":
       return (
-        <h2 id={block.id ?? headingId(block.text)} className="font-serif text-2xl font-bold text-[#0F1729] mt-10 mb-4 scroll-mt-24">
+        <h2 id={block.id ?? headingId(block.text)} className="font-serif text-2xl font-bold text-[#111111] mt-10 mb-4 scroll-mt-24">
           {block.text}
         </h2>
       );
     case "h3":
       return (
-        <h3 id={block.id ?? headingId(block.text)} className="font-semibold text-lg text-[#0F1729] mt-6 mb-2">
+        <h3 id={block.id ?? headingId(block.text)} className="font-semibold text-lg text-[#111111] mt-6 mb-2">
           {block.text}
         </h3>
       );
@@ -71,23 +71,23 @@ function RenderBlock({ block }: { block: BlogBlock }) {
       );
     case "quote":
       return (
-        <blockquote className="border-l-4 border-[#FFC94D] pl-4 my-5 italic text-gray-700">
+        <blockquote className="border-l-4 border-[#F4B400] pl-4 my-5 italic text-gray-700">
           “{block.text}”
           {block.cite && <footer className="text-xs text-gray-500 mt-1 not-italic">— {block.cite}</footer>}
         </blockquote>
       );
     case "callout":
       return (
-        <div className="bg-[#FFF9EC] border border-[#FFC94D]/40 rounded-xl p-4 my-5 text-sm text-gray-700">
+        <div className="bg-[#FFF9E8] border border-[#F4B400]/40 rounded-xl p-4 my-5 text-sm text-gray-700">
           {block.text}
         </div>
       );
     case "stat":
       return (
         <div className="bg-white border border-gray-200 rounded-2xl p-5 my-5 flex items-center gap-4">
-          <p className="font-serif text-3xl font-bold text-[#C9820A]">{block.value}</p>
+          <p className="font-serif text-3xl font-bold text-[#946D00]">{block.value}</p>
           <div>
-            <p className="text-sm font-medium text-[#0F1729]">{block.label}</p>
+            <p className="text-sm font-medium text-[#111111]">{block.label}</p>
             {block.source && <p className="text-[11px] text-gray-400 mt-0.5">{block.source}</p>}
           </div>
         </div>
@@ -117,9 +117,9 @@ function RenderBlock({ block }: { block: BlogBlock }) {
       );
     case "cta":
       return (
-        <div className="my-8 p-6 rounded-2xl text-center" style={{ background: "linear-gradient(135deg, #FFF9EC 0%, #FFC94D 100%)" }}>
-          <p className="font-serif text-xl font-bold text-[#0F1729] mb-4">{block.text}</p>
-          <Link href={block.href} className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[#0F1729] text-white font-bold text-sm hover:opacity-90">
+        <div className="my-8 p-6 rounded-2xl text-center" style={{ background: "linear-gradient(135deg, #FFF9E8 0%, #F4B400 100%)" }}>
+          <p className="font-serif text-xl font-bold text-[#111111] mb-4">{block.text}</p>
+          <Link href={block.href} className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[#111111] text-white font-bold text-sm hover:opacity-90">
             {block.href.includes("dashboard") ? "→" : ""} {block.text}
           </Link>
         </div>
@@ -248,12 +248,12 @@ export async function BlogPostPage({ post }: Props) {
   }
 
   return (
-    <div className="min-h-screen bg-[#F2F4F8] text-[#0F1729]">
+    <div className="min-h-screen bg-[#F2F4F8] text-[#111111]">
       <SiteHeader lang={post.lang} />
 
       <article className="max-w-3xl mx-auto px-6 py-12">
         {/* Back link */}
-        <Link href={blogUrl(post.lang)} className="text-sm text-gray-500 hover:text-[#0F1729]">{t.back}</Link>
+        <Link href={blogUrl(post.lang)} className="text-sm text-gray-500 hover:text-[#111111]">{t.back}</Link>
 
         {/* Header */}
         <header className="mt-6 mb-8">
@@ -266,15 +266,15 @@ export async function BlogPostPage({ post }: Props) {
             <span>·</span>
             <span>{t.readingTime(post.readingTime)}</span>
           </div>
-          <h1 className="font-serif text-4xl sm:text-5xl font-bold text-[#0F1729] leading-tight mb-4">{post.title}</h1>
+          <h1 className="font-serif text-4xl sm:text-5xl font-bold text-[#111111] leading-tight mb-4">{post.title}</h1>
           <p className="text-lg text-gray-600">{post.description}</p>
           <p className="text-xs text-gray-400 mt-3">{t.by} <span className="font-medium text-gray-600">{post.author}</span></p>
         </header>
 
         {/* TLDR box — AI engines love this */}
-        <aside className="bg-[#FFC94D]/20 border border-[#FFC94D]/50 rounded-2xl p-5 mb-10">
-          <p className="text-xs font-bold uppercase tracking-widest text-[#C9820A] mb-2">{t.inShort}</p>
-          <p className="text-base text-[#0F1729] leading-relaxed">{post.tldr}</p>
+        <aside className="bg-[#F4B400]/20 border border-[#F4B400]/50 rounded-2xl p-5 mb-10">
+          <p className="text-xs font-bold uppercase tracking-widest text-[#946D00] mb-2">{t.inShort}</p>
+          <p className="text-base text-[#111111] leading-relaxed">{post.tldr}</p>
         </aside>
 
         {/* Table of contents */}
@@ -284,7 +284,7 @@ export async function BlogPostPage({ post }: Props) {
             <ol className="space-y-1.5 text-sm">
               {tocEntries.map((entry, i) => (
                 <li key={i}>
-                  <a href={`#${entry.id}`} className="text-gray-700 hover:text-[#C9820A]">
+                  <a href={`#${entry.id}`} className="text-gray-700 hover:text-[#946D00]">
                     {i + 1}. {entry.text}
                   </a>
                 </li>
@@ -301,13 +301,13 @@ export async function BlogPostPage({ post }: Props) {
         {/* FAQ */}
         {faqs.length > 0 && (
           <section className="mt-12">
-            <h2 className="font-serif text-2xl font-bold text-[#0F1729] mb-5">{t.faq}</h2>
+            <h2 className="font-serif text-2xl font-bold text-[#111111] mb-5">{t.faq}</h2>
             <div className="space-y-2">
               {faqs.map((f, i) => (
-                <details key={i} className="group rounded-xl bg-white border border-gray-200 p-4 open:border-[#FFC94D]/60 open:bg-[#FFF9EC]/40">
-                  <summary className="font-semibold text-[#0F1729] cursor-pointer list-none flex items-center justify-between gap-3">
+                <details key={i} className="group rounded-xl bg-white border border-gray-200 p-4 open:border-[#F4B400]/60 open:bg-[#FFF9E8]/40">
+                  <summary className="font-semibold text-[#111111] cursor-pointer list-none flex items-center justify-between gap-3">
                     <span>{f.q}</span>
-                    <span className="text-[#C9820A] transition-transform group-open:rotate-45">+</span>
+                    <span className="text-[#946D00] transition-transform group-open:rotate-45">+</span>
                   </summary>
                   <p className="text-sm text-gray-600 mt-2.5 leading-relaxed">{f.a}</p>
                 </details>
@@ -317,10 +317,10 @@ export async function BlogPostPage({ post }: Props) {
         )}
 
         {/* Final CTA */}
-        <section className="mt-12 p-7 rounded-2xl text-center" style={{ background: "linear-gradient(135deg, #FFF9EC 0%, #FFC94D 100%)" }}>
-          <h2 className="font-serif text-2xl font-bold text-[#0F1729] mb-2">{t.ctaTitle}</h2>
-          <p className="text-sm text-[#0F1729]/80 mb-5">{t.ctaBody}</p>
-          <Link href="/dashboard/new" className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[#0F1729] text-white font-bold text-sm hover:opacity-90">
+        <section className="mt-12 p-7 rounded-2xl text-center" style={{ background: "linear-gradient(135deg, #FFF9E8 0%, #F4B400 100%)" }}>
+          <h2 className="font-serif text-2xl font-bold text-[#111111] mb-2">{t.ctaTitle}</h2>
+          <p className="text-sm text-[#111111]/80 mb-5">{t.ctaBody}</p>
+          <Link href="/dashboard/new" className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[#111111] text-white font-bold text-sm hover:opacity-90">
             {t.ctaButton}
           </Link>
         </section>
@@ -328,14 +328,14 @@ export async function BlogPostPage({ post }: Props) {
         {/* Related */}
         {related.length > 0 && (
           <section className="mt-16">
-            <h2 className="font-serif text-2xl font-bold text-[#0F1729] mb-5">{t.related}</h2>
+            <h2 className="font-serif text-2xl font-bold text-[#111111] mb-5">{t.related}</h2>
             <div className="grid sm:grid-cols-3 gap-4">
               {related.map((p) => (
-                <Link key={p.slug} href={blogUrl(p.lang, p.slug)} className="block bg-white border border-gray-200 rounded-2xl p-5 hover:border-[#FFC94D] hover:shadow-md transition-all">
+                <Link key={p.slug} href={blogUrl(p.lang, p.slug)} className="block bg-white border border-gray-200 rounded-2xl p-5 hover:border-[#F4B400] hover:shadow-md transition-all">
                   <span className={`text-[10px] uppercase font-bold tracking-wide px-2 py-0.5 rounded ${CATEGORY_COLOR[p.category] ?? CATEGORY_COLOR.novice}`}>
                     {p.category}
                   </span>
-                  <h3 className="font-serif text-base font-bold text-[#0F1729] mt-3 mb-2 leading-snug">{p.title}</h3>
+                  <h3 className="font-serif text-base font-bold text-[#111111] mt-3 mb-2 leading-snug">{p.title}</h3>
                   <p className="text-xs text-gray-500 line-clamp-2">{p.tldr}</p>
                 </Link>
               ))}
@@ -349,7 +349,7 @@ export async function BlogPostPage({ post }: Props) {
             <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-3">Read in another language</p>
             <div className="flex flex-wrap justify-center gap-3">
               {Object.entries(langMap).map(([lang, url]) => (
-                <a key={lang} href={url} className="px-3 py-1.5 text-xs font-semibold rounded-full bg-white border border-gray-200 hover:border-[#FFC94D] hover:text-[#C9820A]">
+                <a key={lang} href={url} className="px-3 py-1.5 text-xs font-semibold rounded-full bg-white border border-gray-200 hover:border-[#F4B400] hover:text-[#946D00]">
                   {lang.toUpperCase()}
                 </a>
               ))}

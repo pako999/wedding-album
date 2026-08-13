@@ -222,7 +222,7 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
                   type="button"
                   className="w-full text-left rounded-2xl border-2 bg-white transition-all focus:outline-none"
                   style={{
-                    borderColor: isSelected ? "#FFC94D" : "#e5e7eb",
+                    borderColor: isSelected ? "#F4B400" : "#e5e7eb",
                     boxShadow: isSelected ? "0 0 0 3px rgba(255,201,77,0.15)" : "none",
                   }}
                   onClick={() => selectPlan(plan.id)}
@@ -232,8 +232,8 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
                     <div
                       className="mt-0.5 w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0"
                       style={{
-                        borderColor: isSelected ? "#FFC94D" : "#d1d5db",
-                        background: isSelected ? "#FFC94D" : "white",
+                        borderColor: isSelected ? "#F4B400" : "#d1d5db",
+                        background: isSelected ? "#F4B400" : "white",
                       }}
                     >
                       {isSelected && <div className="w-2 h-2 rounded-full bg-white" />}
@@ -244,7 +244,7 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
                       <div className="flex items-center gap-2 flex-wrap">
                         <span className="font-bold text-gray-900">{plan.name}</span>
                         {plan.hasBadge && (
-                          <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full text-white" style={{ background: "#FFC94D", color: "#0F1729" }}>
+                          <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full text-white" style={{ background: "#F4B400", color: "#111111" }}>
                             {u.badgeRecommended}
                           </span>
                         )}
@@ -310,12 +310,12 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
           {/* ── Support card ─────────────────────────────────────────── */}
           <div className="bg-white rounded-2xl border border-gray-100 p-5 mb-4 flex items-center gap-4">
             {/* Person avatar */}
-            <div className="flex-shrink-0 w-14 h-14 rounded-full overflow-hidden" style={{ background: "linear-gradient(135deg,#FFF3CC,#FFC94D)" }}>
+            <div className="flex-shrink-0 w-14 h-14 rounded-full overflow-hidden" style={{ background: "linear-gradient(135deg,#FFECB8,#F4B400)" }}>
               <svg viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
                 {/* Head */}
-                <circle cx="28" cy="20" r="10" fill="#C9820A" opacity="0.85" />
+                <circle cx="28" cy="20" r="10" fill="#946D00" opacity="0.85" />
                 {/* Body */}
-                <ellipse cx="28" cy="44" rx="14" ry="10" fill="#C9820A" opacity="0.85" />
+                <ellipse cx="28" cy="44" rx="14" ry="10" fill="#946D00" opacity="0.85" />
                 {/* Face highlight */}
                 <circle cx="25" cy="18" r="2" fill="white" opacity="0.4" />
               </svg>
@@ -397,7 +397,7 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
                     if (discountStatus === "invalid") setDiscountStatus("idle");
                   }}
                   onKeyDown={(e) => e.key === "Enter" && applyDiscount()}
-                  className="flex-1 px-3 py-2 text-sm border rounded-xl focus:outline-none focus:border-[#FFC94D] font-mono uppercase tracking-wider"
+                  className="flex-1 px-3 py-2 text-sm border rounded-xl focus:outline-none focus:border-[#F4B400] font-mono uppercase tracking-wider"
                   style={{ borderColor: discountStatus === "invalid" ? "#ef4444" : "#e5e7eb" }}
                 />
                 <button
@@ -450,15 +450,15 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
                   onClick={() => setPaymentMethod(m.id)}
                   className="w-full flex items-center gap-3 p-3 rounded-xl border-2 transition-all text-left"
                   style={{
-                    borderColor: paymentMethod === m.id ? "#FFC94D" : "#e5e7eb",
+                    borderColor: paymentMethod === m.id ? "#F4B400" : "#e5e7eb",
                     background: paymentMethod === m.id ? "#FFFBF0" : "white",
                   }}
                 >
                   <div
                     className="w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0"
                     style={{
-                      borderColor: paymentMethod === m.id ? "#FFC94D" : "#d1d5db",
-                      background: paymentMethod === m.id ? "#FFC94D" : "white",
+                      borderColor: paymentMethod === m.id ? "#F4B400" : "#d1d5db",
+                      background: paymentMethod === m.id ? "#F4B400" : "white",
                     }}
                   >
                     {paymentMethod === m.id && <div className="w-2 h-2 rounded-full bg-white" />}
@@ -498,7 +498,7 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
                     placeholder={placeholder}
                     value={billing[key as keyof typeof billing]}
                     onChange={e => setBilling(b => ({ ...b, [key]: e.target.value }))}
-                    className="w-full px-3 py-2.5 text-sm border rounded-xl focus:outline-none focus:border-[#FFC94D] focus:ring-1 focus:ring-[#FFC94D] transition-colors"
+                    className="w-full px-3 py-2.5 text-sm border rounded-xl focus:outline-none focus:border-[#F4B400] focus:ring-1 focus:ring-[#F4B400] transition-colors"
                     style={{ borderColor: "#e5e7eb" }}
                   />
                 ))}
@@ -512,9 +512,9 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
                       setCompanyInvoice(e.target.checked);
                       if (!e.target.checked) setBilling(b => ({ ...b, companyName: "", taxId: "" }));
                     }}
-                    className="w-4 h-4 rounded accent-[#FFC94D] shrink-0 cursor-pointer"
+                    className="w-4 h-4 rounded accent-[#F4B400] shrink-0 cursor-pointer"
                   />
-                  <span className="text-sm font-medium text-[#0F1729]">{u.billingCompanyToggle}</span>
+                  <span className="text-sm font-medium text-[#111111]">{u.billingCompanyToggle}</span>
                 </label>
 
                 {companyInvoice && (
@@ -529,7 +529,7 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
                         placeholder={placeholder}
                         value={billing[key as keyof typeof billing]}
                         onChange={e => setBilling(b => ({ ...b, [key]: e.target.value }))}
-                        className="w-full px-3 py-2.5 text-sm border rounded-xl focus:outline-none focus:border-[#FFC94D] focus:ring-1 focus:ring-[#FFC94D] transition-colors"
+                        className="w-full px-3 py-2.5 text-sm border rounded-xl focus:outline-none focus:border-[#F4B400] focus:ring-1 focus:ring-[#F4B400] transition-colors"
                         style={{ borderColor: "#e5e7eb" }}
                       />
                     ))}
@@ -545,7 +545,7 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
               id="stands"
               className="rounded-2xl border-2 bg-white p-5 mb-4 transition-all scroll-mt-4"
               style={{
-                borderColor: wantStands ? "#FFC94D" : "#e5e7eb",
+                borderColor: wantStands ? "#F4B400" : "#e5e7eb",
                 boxShadow: wantStands ? "0 0 0 3px rgba(255,201,77,0.15)" : "none",
               }}
             >
@@ -554,7 +554,7 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
                   type="checkbox"
                   checked={wantStands}
                   onChange={(e) => setWantStands(e.target.checked)}
-                  className="mt-1 w-5 h-5 shrink-0 accent-[#FFC94D]"
+                  className="mt-1 w-5 h-5 shrink-0 accent-[#F4B400]"
                 />
                 <div className="flex-1 min-w-0">
                   <div className="flex items-start justify-between gap-3">
@@ -587,8 +587,8 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
                           key={v.id}
                           className="rounded-xl border-2 p-2 text-center transition-all"
                           style={{
-                            borderColor: active ? "#FFC94D" : "#e5e7eb",
-                            background: active ? "#FFF9EC" : "#fff",
+                            borderColor: active ? "#F4B400" : "#e5e7eb",
+                            background: active ? "#FFF9E8" : "#fff",
                           }}
                         >
                           {/* Tapping the photo BOTH selects the material and
@@ -661,7 +661,7 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
                     /* Clamp on blur, not on every keystroke: correcting
                        mid-typing makes "25" impossible to reach from "2". */
                     onBlur={() => setQtyInput(String(standsQty))}
-                    className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm text-gray-800 bg-white outline-none focus:border-[#FFC94D] mb-1.5"
+                    className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm text-gray-800 bg-white outline-none focus:border-[#F4B400] mb-1.5"
                   />
                   <p className="text-xs text-gray-500 mb-4 flex items-center justify-between gap-3">
                     <span>
@@ -700,7 +700,7 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
                   <select
                     value={shipCountry}
                     onChange={(e) => setShipCountry(e.target.value)}
-                    className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm text-gray-800 bg-white outline-none focus:border-[#FFC94D]"
+                    className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm text-gray-800 bg-white outline-none focus:border-[#F4B400]"
                   >
                     {SHIPPING_COUNTRIES.map((c) => (
                       <option key={c.code} value={c.code}>{c.name}</option>
@@ -719,9 +719,9 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
                       to read this BEFORE paying, not in the confirmation. */}
                   <div
                     className="flex items-start gap-2.5 rounded-xl border px-3 py-2.5 mt-3"
-                    style={{ background: "#FFF9EC", borderColor: "rgba(255,201,77,0.5)" }}
+                    style={{ background: "#FFF9E8", borderColor: "rgba(255,201,77,0.5)" }}
                   >
-                    <svg className="w-4 h-4 shrink-0 mt-0.5 text-[#C9820A]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                    <svg className="w-4 h-4 shrink-0 mt-0.5 text-[#946D00]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                     <p className="text-xs leading-relaxed text-[#7A5A12]">
@@ -782,7 +782,7 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
                   type="checkbox"
                   checked={termsAccepted}
                   onChange={(e) => setTermsAccepted(e.target.checked)}
-                  className="mt-0.5 w-4 h-4 rounded accent-[#FFC94D] flex-shrink-0 cursor-pointer"
+                  className="mt-0.5 w-4 h-4 rounded accent-[#F4B400] flex-shrink-0 cursor-pointer"
                 />
                 <span className="text-xs text-gray-500 leading-relaxed">
                   {(() => {
@@ -813,7 +813,7 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
             ) : (
               <button
                 className="w-full py-4 rounded-xl font-bold text-base transition-all hover:opacity-90 flex items-center justify-center gap-2 disabled:opacity-60 shadow-sm"
-                style={{ background: "#FFC94D", color: "#0F1729" }}
+                style={{ background: "#F4B400", color: "#111111" }}
                 disabled={isLoading || !termsAccepted}
                 onClick={async () => {
                   setIsLoading(true);
@@ -934,7 +934,7 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
       </main>
 
       {/* ── Footer ─────────────────────────────────────────────────────── */}
-      <footer className="bg-[#0F1729] text-white pt-12 pb-6 mt-auto">
+      <footer className="bg-[#111111] text-white pt-12 pb-6 mt-auto">
         <div className="max-w-2xl mx-auto px-6">
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-8 pb-8 border-b border-white/10 mb-6">
             <div className="col-span-2 sm:col-span-1">

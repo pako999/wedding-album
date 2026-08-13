@@ -70,7 +70,7 @@ export function EventLeadsCard({ albumSlug, initialEnabled }: Props) {
           aria-label="Zbiranje podatkov gostov"
           disabled={saving}
           onClick={() => toggle(!enabled)}
-          className={`relative w-10 h-5 rounded-full transition-colors shrink-0 mt-0.5 ${enabled ? "bg-[#FFC94D]" : "bg-gray-200"}`}
+          className={`relative w-10 h-5 rounded-full transition-colors shrink-0 mt-0.5 ${enabled ? "bg-[#F4B400]" : "bg-gray-200"}`}
         >
           <span
             className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white shadow transition-transform ${enabled ? "translate-x-5" : "translate-x-0"}`}
@@ -81,7 +81,7 @@ export function EventLeadsCard({ albumSlug, initialEnabled }: Props) {
       {enabled && (
         <p
           className="text-[11px] rounded-lg px-3 py-2 mt-3 leading-relaxed"
-          style={{ background: "#FFF9EC", color: "#92600A" }}
+          style={{ background: "#FFF9E8", color: "#946D00" }}
         >
           Podatke zbirate vi kot organizator dogodka — vi ste upravljavec teh osebnih podatkov.
           Poskrbite, da imate ustrezno pravno podlago in politiko zasebnosti. CamLove podatke

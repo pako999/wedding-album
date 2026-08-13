@@ -36,7 +36,7 @@ export default async function AdminAffiliatesPage() {
   return (
     <div className="space-y-6">
       <header>
-        <h1 className="font-serif text-3xl text-[#0F1729]">Partnerji</h1>
+        <h1 className="font-serif text-3xl text-[#111111]">Partnerji</h1>
         <p className="text-sm text-gray-500 mt-1">
           {rows.length} skupaj · {counts.pending} v čakanju · {counts.active} aktivnih · {counts.suspended} ustavljenih
         </p>
@@ -67,13 +67,13 @@ export default async function AdminAffiliatesPage() {
                 const s = STATUS_LABEL[a.status] ?? { label: a.status, cls: "bg-gray-100 text-gray-500 border-gray-200" };
                 return (
                   <tr key={a.id} className="border-b border-gray-50 last:border-0 hover:bg-gray-50/40">
-                    <td className="px-4 py-3 font-medium text-[#0F1729]">{a.name}</td>
+                    <td className="px-4 py-3 font-medium text-[#111111]">{a.name}</td>
                     <td className="px-4 py-3 text-gray-500">{a.email}</td>
                     <td className="px-4 py-3 font-mono text-xs text-[#1E3A8A]">{a.referralCode}</td>
                     <td className="px-4 py-3 text-gray-700">{a.commissionRate}%</td>
                     <td className="px-4 py-3 text-gray-700">{a.totalClicks}</td>
                     <td className="px-4 py-3 text-gray-700">{a.totalConversions}</td>
-                    <td className="px-4 py-3 font-semibold text-[#0F1729]">{fmtEur(a.totalEarningsCents)}</td>
+                    <td className="px-4 py-3 font-semibold text-[#111111]">{fmtEur(a.totalEarningsCents)}</td>
                     <td className="px-4 py-3">
                       <span className={`inline-block text-[11px] font-semibold px-2 py-0.5 rounded-full border ${s.cls}`}>
                         {s.label}

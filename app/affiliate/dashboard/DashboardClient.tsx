@@ -52,10 +52,10 @@ export function DashboardClient({ affiliate, commissions, analytics }: Props) {
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="mb-6">
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#C9820A] mb-1.5">
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#946D00] mb-1.5">
             🤝 Partnerski program
           </p>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-[#0F1729]">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-[#111111]">
             Pozdravljeni, {affiliate.name}!
           </h1>
         </div>
@@ -64,7 +64,7 @@ export function DashboardClient({ affiliate, commissions, analytics }: Props) {
         <div className="bg-white rounded-2xl border border-gray-100 p-6 mb-4">
           <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-3">Vaša partnerska koda</p>
           <div className="flex items-center gap-3 mb-5 flex-wrap">
-            <div className="font-mono text-2xl font-extrabold text-[#0F1729] tracking-[0.2em] bg-[#FFF9EC] border border-[#FFC94D]/30 px-4 py-2 rounded-xl">
+            <div className="font-mono text-2xl font-extrabold text-[#111111] tracking-[0.2em] bg-[#FFF9E8] border border-[#F4B400]/30 px-4 py-2 rounded-xl">
               {affiliate.referralCode}
             </div>
             <button
@@ -99,10 +99,10 @@ export function DashboardClient({ affiliate, commissions, analytics }: Props) {
             <div
               key={s.label}
               className="bg-white rounded-2xl border border-gray-100 p-5"
-              style={s.highlight ? { background: "linear-gradient(135deg,#FFF9EC,#FFFBF0)", borderColor: "#FFC94D" } : {}}
+              style={s.highlight ? { background: "linear-gradient(135deg,#FFF9E8,#FFFBF0)", borderColor: "#F4B400" } : {}}
             >
               <p className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-1.5">{s.label}</p>
-              <p className="text-xl font-extrabold text-[#0F1729]">{s.value}</p>
+              <p className="text-xl font-extrabold text-[#111111]">{s.value}</p>
             </div>
           ))}
         </div>
@@ -112,19 +112,19 @@ export function DashboardClient({ affiliate, commissions, analytics }: Props) {
           <div className="flex flex-wrap gap-x-8 gap-y-3 text-sm mb-3">
             <div>
               <span className="text-gray-400 mr-2">Provizija:</span>
-              <strong className="text-[#0F1729]">{affiliate.commissionRate}%</strong>
+              <strong className="text-[#111111]">{affiliate.commissionRate}%</strong>
             </div>
             <div>
               <span className="text-gray-400 mr-2">Veljavnost piškotka:</span>
-              <strong className="text-[#0F1729]">{affiliate.cookieDays} dni</strong>
+              <strong className="text-[#111111]">{affiliate.cookieDays} dni</strong>
             </div>
             <div>
               <span className="text-gray-400 mr-2">Skupni zaslužek:</span>
-              <strong className="text-[#0F1729]">{fmtEur(affiliate.totalEarningsCents)}</strong>
+              <strong className="text-[#111111]">{fmtEur(affiliate.totalEarningsCents)}</strong>
             </div>
           </div>
           <p className="text-[11px] text-gray-500 leading-relaxed border-t border-gray-100 pt-3">
-            <strong className="text-[#0F1729]">Kako deluje {affiliate.cookieDays}-dnevni piškotek:</strong>{" "}
+            <strong className="text-[#111111]">Kako deluje {affiliate.cookieDays}-dnevni piškotek:</strong>{" "}
             Ko nekdo klikne tvojo povezavo, se v njegovem brskalniku shrani piškotek za{" "}
             <strong>{affiliate.cookieDays} dni</strong>. Če v tem času opravi nakup —
             tudi če klikne danes in plača šele čez {Math.max(1, affiliate.cookieDays - 5)}{" "}
@@ -138,7 +138,7 @@ export function DashboardClient({ affiliate, commissions, analytics }: Props) {
         {/* Commission history */}
         <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden">
           <div className="px-6 py-4 border-b border-gray-100">
-            <h2 className="font-extrabold text-[#0F1729]">Zadnje provizije</h2>
+            <h2 className="font-extrabold text-[#111111]">Zadnje provizije</h2>
           </div>
           {commissions.length === 0 ? (
             <div className="p-10 text-center">
@@ -164,8 +164,8 @@ export function DashboardClient({ affiliate, commissions, analytics }: Props) {
                     return (
                       <tr key={c.id} className="border-b border-gray-50 last:border-0">
                         <td className="px-6 py-3 text-gray-500">{fmtDate(c.createdAt)}</td>
-                        <td className="px-6 py-3 text-[#0F1729]">{c.orderDescription ?? "—"}</td>
-                        <td className="px-6 py-3 text-right font-bold text-[#0F1729]">{fmtEur(c.commissionAmountCents)}</td>
+                        <td className="px-6 py-3 text-[#111111]">{c.orderDescription ?? "—"}</td>
+                        <td className="px-6 py-3 text-right font-bold text-[#111111]">{fmtEur(c.commissionAmountCents)}</td>
                         <td className="px-6 py-3">
                           <span className={`inline-block text-[11px] font-semibold px-2 py-0.5 rounded-full border ${s.cls}`}>
                             {s.label}

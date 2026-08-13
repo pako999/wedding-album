@@ -69,14 +69,14 @@ export function WallCollaboratorsCard({ albumSlug, ownerEmail }: Props) {
           onChange={(e) => setEmail(e.target.value)}
           onKeyDown={(e) => { if (e.key === "Enter") void invite(); }}
           placeholder="ime@email.com"
-          className="flex-1 px-3 py-2.5 border border-gray-200 rounded-xl text-sm outline-none focus:border-[#FFC94D]"
+          className="flex-1 px-3 py-2.5 border border-gray-200 rounded-xl text-sm outline-none focus:border-[#F4B400]"
         />
         <button
           type="button"
           onClick={() => void invite()}
           disabled={busy || !email.trim()}
-          className="px-4 py-2.5 rounded-xl text-sm font-bold text-[#0F1729] disabled:opacity-50"
-          style={{ background: "linear-gradient(135deg,#FFD966,#FFC94D 60%,#F0B429)" }}
+          className="px-4 py-2.5 rounded-xl text-sm font-bold text-[#111111] disabled:opacity-50"
+          style={{ background: "linear-gradient(135deg,#FFCC3D,#F4B400 60%,#D69E00)" }}
         >
           Povabi
         </button>
@@ -95,7 +95,7 @@ export function WallCollaboratorsCard({ albumSlug, ownerEmail }: Props) {
           <div key={r.id} className="flex items-center justify-between px-4 py-2.5 text-sm">
             <span className="text-gray-800 break-all">{r.email}</span>
             <span className="flex items-center gap-3">
-              <span className="text-xs font-semibold text-[#C9820A]">Foto stena</span>
+              <span className="text-xs font-semibold text-[#946D00]">Foto stena</span>
               <button type="button" onClick={() => void remove(r.id)} className="text-xs text-gray-400 hover:text-red-600">
                 Odstrani
               </button>

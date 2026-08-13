@@ -14,7 +14,7 @@ export function StatusButton({ id, status }: { id: string; status: string }) {
   return (
     <button
       onClick={() => updateOrderStatus(id, next.status)}
-      className="mt-1 text-[10px] font-semibold text-[#C9820A] hover:underline"
+      className="mt-1 text-[10px] font-semibold text-[#946D00] hover:underline"
     >
       {next.label}
     </button>
