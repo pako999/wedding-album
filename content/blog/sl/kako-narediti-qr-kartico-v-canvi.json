@@ -6,11 +6,11 @@
   "translationKey": "wedding-qr-card-canva-design",
   "publishedAt": "2026-08-11",
   "updatedAt": "2026-08-11",
-  "author": "Guestcam Team",
+  "author": "CamLove Team",
   "category": "vodnik",
   "readingTime": 6,
-  "tags": ["QR koda", "Canva", "poročne fotografije", "Guestcam"],
-  "tldr": "Odprite brezplačen dizajn v Canvi, dodajte imena in datum, naložite sliko QR kode iz Guestcama in izvozite kartico za tisk — v približno 10 minutah.",
+  "tags": ["QR koda", "Canva", "poročne fotografije", "CamLove"],
+  "tldr": "Odprite brezplačen dizajn v Canvi, dodajte imena in datum, naložite sliko QR kode iz platforme CamLove in izvozite kartico za tisk — v približno 10 minutah.",
   "content": [
     {
       "type": "h2",
@@ -27,17 +27,17 @@
     {
       "type": "ul",
       "items": [
-        "QR kodo vaše Guestcam galerije, preneseno kot PNG (nadzorna plošča → zavihek »QR koda« → »Prenesi samo QR kodo«).",
+        "QR kodo vaše CamLove galerije, preneseno kot PNG (nadzorna plošča → zavihek »QR koda« → »Prenesi samo QR kodo«).",
         "Brezplačen račun na Canvi — plačljiva naročnina za to ni potrebna.",
         "Približno 10 minut časa."
       ]
     },
     {
       "type": "image",
-      "src": "https://www.guestcam.si/blog/canva-qr-card/card-anatomy.svg",
+      "src": "https://www.camlove.me/blog/canva-qr-card/card-anatomy.svg",
       "alt": "Postavitev QR kartice za poroko: imena in datum na vrhu, QR koda na sredini, kratko navodilo spodaj",
       "caption": "Ostanite preprosti: imena, QR koda, ena vrstica navodil — to je vse, kar kartica potrebuje.",
-      "credit": "Guestcam"
+      "credit": "CamLove"
     },
     {
       "type": "h2",
@@ -49,7 +49,7 @@
         "Odprite canva.com in ustvarite nov dizajn — poiščite »razglednica« ali nastavite velikost po meri 10 × 15 cm (primerna velikost za kartice na mizah).",
         "Izberite katerokoli predlogo kot izhodišče ali začnite s praznim platnom.",
         "Dodajte besedilno polje z imeni para, spodaj pa še eno z datumom poroke.",
-        "Kliknite Nalaganja → Naloži datoteke in dodajte PNG datoteko QR kode, ki ste jo prenesli iz nadzorne plošče Guestcam.",
+        "Kliknite Nalaganja → Naloži datoteke in dodajte PNG datoteko QR kode, ki ste jo prenesli iz nadzorne plošče CamLove.",
         "QR kodo postavite na sredino, veliko vsaj 3 × 3 cm, da jo telefon zlahka zazna.",
         "Spodaj dodajte kratko navodilo, npr. »Skenirajte in delite svoje fotografije!«",
         "Pisave in barve uskladite s svojimi vabili za enoten videz, nato kliknite Deli → Prenesi → PDF za tisk."
@@ -75,12 +75,12 @@
     },
     {
       "type": "p",
-      "text": "Če si oblikovanja raje prihranite, Guestcam vključuje 8 pripravljenih predlog QR kartic, ki samodejno izpolnijo imena in datum — prenesete jo kot PDF za tisk kar iz nadzorne plošče."
+      "text": "Če si oblikovanja raje prihranite, CamLove vključuje 8 pripravljenih predlog QR kartic, ki samodejno izpolnijo imena in datum — prenesete jo kot PDF za tisk kar iz nadzorne plošče."
     },
     {
       "type": "cta",
       "text": "Ustvarite brezplačno poročno galerijo",
-      "href": "https://www.guestcam.si/dashboard/new"
+      "href": "https://www.camlove.me/dashboard/new"
     },
     {
       "type": "faq",
@@ -90,7 +90,7 @@
     {
       "type": "faq",
       "q": "Kje dobim sliko QR kode za svojo poroko?",
-      "a": "V nadzorni plošči Guestcam: odprite galerijo, pojdite na zavihek »QR koda« in kliknite »Prenesi samo QR kodo«, da jo prenesete kot PNG."
+      "a": "V nadzorni plošči CamLove: odprite galerijo, pojdite na zavihek »QR koda« in kliknite »Prenesi samo QR kodo«, da jo prenesete kot PNG."
     },
     {
       "type": "faq",

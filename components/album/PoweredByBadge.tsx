@@ -1,6 +1,6 @@
 import { SITE_URL } from "@/lib/urls";
 /**
- * PoweredByBadge — non-removable "Powered by Guestcam" pill shown in the
+ * PoweredByBadge — non-removable "Powered by CamLove" pill shown in the
  * public gallery footer for ALL plans (including Premium). This is the
  * gallery_footer touchpoint in the referral engine — clicks land on the
  * localized home with ?ref=<code>&tp=gallery_footer, so the middleware
@@ -59,7 +59,7 @@ export function PoweredByBadge({ referralCode, lang }: Props) {
     >
       <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#FFC94D]" aria-hidden />
       <span className="text-gray-500">{POWERED[locale]}</span>
-      <span className="font-bold text-[#0F1729]">Guestcam</span>
+      <span className="font-bold text-[#0F1729]">CamLove</span>
       <span className="text-gray-300">·</span>
       <span className="text-[#1E3A8A] font-semibold whitespace-nowrap">{LABELS[locale]} →</span>
     </a>

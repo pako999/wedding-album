@@ -6,16 +6,16 @@
   "translationKey": "private-wedding-gallery",
   "publishedAt": "2026-05-22",
   "updatedAt": "2026-05-25",
-  "author": "Guestcam Team",
+  "author": "CamLove Team",
   "category": "vodnik",
   "readingTime": 5,
   "tags": [
     "privatnost",
     "galerija",
     "DIY",
-    "Guestcam"
+    "CamLove"
   ],
-  "tldr": "Najbolja besplatna opcija je Guestcam: kreirajte galeriju, dobijte QR kod, gosti skeniraju i učitavaju — sve privatno, bez aplikacije.",
+  "tldr": "Najbolja besplatna opcija je CamLove: kreirajte galeriju, dobijte QR kod, gosti skeniraju i učitavaju — sve privatno, bez aplikacije.",
   "content": [
     {
       "type": "h2",
@@ -66,7 +66,7 @@
           "Komprimira na 50%, kaotično."
         ],
         [
-          "Guestcam",
+          "CamLove",
           "QR kod, bez aplikacije, puna kvaliteta",
           "Nakon besplatnog paketa (20 fotki) naplata."
         ]
@@ -81,12 +81,12 @@
     },
     {
       "type": "h2",
-      "text": "Kako postaviti galeriju s Guestcamom korak po korak?"
+      "text": "Kako postaviti galeriju s platformom CamLove korak po korak?"
     },
     {
       "type": "ol",
       "items": [
-        "Idite na guestcam.si i kliknite »Kreiraj galeriju« — bez kreditne kartice.",
+        "Idite na camlove.me i kliknite »Kreiraj galeriju« — bez kreditne kartice.",
         "Ispunite ime para (npr. »Ana & Marko«), datum vjenčanja i lokaciju.",
         "Po želji postavite lozinku za galeriju (preporučeno za maksimalnu privatnost).",
         "Sustav automatski kreira jedinstven URL i QR kod.",

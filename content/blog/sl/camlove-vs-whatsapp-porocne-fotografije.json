@@ -1,21 +1,21 @@
 {
-  "slug": "guestcam-vs-whatsapp-porocne-fotografije",
+  "slug": "camlove-vs-whatsapp-porocne-fotografije",
   "lang": "sl",
-  "title": "Guestcam vs WhatsApp za poročne fotografije: iskrena primerjava",
-  "description": "WhatsApp stisne fotografije na 50% kakovosti in skupina postane kaotična. Guestcam ohrani polno kakovost v eni zasebni galeriji.",
-  "translationKey": "guestcam-vs-whatsapp",
+  "title": "CamLove vs WhatsApp za poročne fotografije: iskrena primerjava",
+  "description": "WhatsApp stisne fotografije na 50% kakovosti in skupina postane kaotična. CamLove ohrani polno kakovost v eni zasebni galeriji.",
+  "translationKey": "camlove-vs-whatsapp",
   "publishedAt": "2026-05-22",
   "updatedAt": "2026-05-25",
-  "author": "Guestcam Team",
+  "author": "CamLove Team",
   "category": "primerjava",
   "readingTime": 5,
   "tags": [
     "primerjava",
     "WhatsApp",
     "QR koda",
-    "Guestcam"
+    "CamLove"
   ],
-  "tldr": "WhatsApp stisne fotografije na 50% kakovosti in skupina postane kaotična. Guestcam ohrani polno kakovost v eni zasebni galeriji.",
+  "tldr": "WhatsApp stisne fotografije na 50% kakovosti in skupina postane kaotična. CamLove ohrani polno kakovost v eni zasebni galeriji.",
   "content": [
     {
       "type": "h2",
@@ -29,19 +29,19 @@
       "type": "image",
       "src": "https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?w=1200&h=720&fit=crop&q=82&auto=format",
       "alt": "Pametni telefon z aplikacijo za sporočila na poročni mizi",
-      "caption": "WhatsApp stisne fotografije do 70 %. Guestcam ohrani polno kakovost.",
+      "caption": "WhatsApp stisne fotografije do 70 %. CamLove ohrani polno kakovost.",
       "credit": "Foto: Unsplash"
     },
     {
       "type": "h2",
-      "text": "Kako se Guestcam in WhatsApp razlikujeta?"
+      "text": "Kako se CamLove in WhatsApp razlikujeta?"
     },
     {
       "type": "table",
       "headers": [
         "",
         "WhatsApp",
-        "Guestcam"
+        "CamLove"
       ],
       "rows": [
         [
@@ -98,7 +98,7 @@
     },
     {
       "type": "h2",
-      "text": "Zakaj pari preklapljajo na Guestcam?"
+      "text": "Zakaj pari preklapljajo na CamLove?"
     },
     {
       "type": "ul",
@@ -112,7 +112,7 @@
     },
     {
       "type": "cta",
-      "text": "Preizkusite Guestcam brezplačno",
+      "text": "Preizkusite CamLove brezplačno",
       "href": "/dashboard/new"
     },
     {
@@ -122,23 +122,23 @@
     },
     {
       "type": "faq",
-      "q": "Lahko združim WhatsApp in Guestcam?",
-      "a": "Seveda. Mnogi pari uporabljajo WhatsApp za komunikacijo z gosti pred poroko in Guestcam za zbiranje fotografij med in po dogodku."
+      "q": "Lahko združim WhatsApp in CamLove?",
+      "a": "Seveda. Mnogi pari uporabljajo WhatsApp za komunikacijo z gosti pred poroko in CamLove za zbiranje fotografij med in po dogodku."
     },
     {
       "type": "faq",
       "q": "Kako preprečim, da gostje vidijo fotografije drugih?",
-      "a": "V Guestcam galeriji lahko nastavite moderacijo — fotografije se prikažejo šele, ko jih potrdite. Ali nastavite geslo, ki ga delite samo z najbližjimi."
+      "a": "V CamLove galeriji lahko nastavite moderacijo — fotografije se prikažejo šele, ko jih potrdite. Ali nastavite geslo, ki ga delite samo z najbližjimi."
     },
     {
       "type": "faq",
-      "q": "Stane Guestcam več kot WhatsApp?",
+      "q": "Stane CamLove več kot WhatsApp?",
       "a": "Brezplačni paket je dovolj za majhne dogodke. Za polno poroko priporočamo Plus (49€) ali Premium (79€) — manj kot povprečen poročni šopek."
     },
     {
       "type": "faq",
       "q": "Kaj se zgodi z WhatsApp skupino po poroki?",
-      "a": "Postane spomenik — sporočila se izgubljajo, fotografije se brišejo, ko nekdo počisti telefon. Guestcam galerija ostane na voljo do 1 leta in jo lahko trajno prenesete."
+      "a": "Postane spomenik — sporočila se izgubljajo, fotografije se brišejo, ko nekdo počisti telefon. CamLove galerija ostane na voljo do 1 leta in jo lahko trajno prenesete."
     }
   ],
   "coverImage": "https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?w=1600&h=900&fit=crop&q=80&auto=format",

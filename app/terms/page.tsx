@@ -4,7 +4,7 @@ import { LegalPage } from "@/components/LegalPage";
 
 export const metadata: Metadata = {
   title: "Pogoji uporabe",
-  description: "Pogoji uporabe storitve Guestcam — paketi, plačila, pravice in obveznosti uporabnikov.",
+  description: "Pogoji uporabe storitve CamLove — paketi, plačila, pravice in obveznosti uporabnikov.",
   alternates: {
     canonical: `${SITE_URL}/terms`,
     languages: {
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   openGraph: {
     url: `${SITE_URL}/terms`,
     title: "Pogoji uporabe",
-    description: "Pogoji uporabe storitve Guestcam — paketi, plačila, pravice in obveznosti uporabnikov.",
+    description: "Pogoji uporabe storitve CamLove — paketi, plačila, pravice in obveznosti uporabnikov.",
     images: ["/og-image.png?v=2"],
   },
   robots: { index: true, follow: true },

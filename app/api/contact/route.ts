@@ -6,7 +6,7 @@ export const dynamic = "force-dynamic";
 
 /**
  * Receives the Contact page form, verifies the Cloudflare Turnstile
- * token (anti-bot), and emails the message to info@guestcam.si via
+ * token (anti-bot), and emails the message to info@camlove.me via
  * Resend. Replies are routed by setting Resend's `reply_to` so the
  * recipient can hit "Reply" directly to the visitor.
  *
@@ -39,7 +39,7 @@ export async function POST(req: NextRequest) {
 
   const name    = String(payload.name ?? "").trim().slice(0, 200);
   const email   = String(payload.email ?? "").trim().slice(0, 200);
-  const subject = String(payload.subject ?? "").trim().slice(0, 200) || "Guestcam — kontakt";
+  const subject = String(payload.subject ?? "").trim().slice(0, 200) || "CamLove — kontakt";
   const message = String(payload.message ?? "").trim().slice(0, 5000);
   const token   = String(payload.turnstileToken ?? "");
 
@@ -93,8 +93,8 @@ export async function POST(req: NextRequest) {
     console.error("[contact] RESEND_API_KEY not set");
     return NextResponse.json({ error: "Email not configured" }, { status: 503 });
   }
-  const from = process.env.RESEND_FROM_EMAIL ?? "noreply@guestcam.si";
-  const to = process.env.CONTACT_RECIPIENT_EMAIL ?? "info@guestcam.si";
+  const from = process.env.RESEND_FROM_EMAIL ?? "noreply@camlove.me";
+  const to = process.env.CONTACT_RECIPIENT_EMAIL ?? "info@camlove.me";
 
   const safeName    = escapeHtml(name);
   const safeEmail   = escapeHtml(email);
@@ -120,7 +120,7 @@ export async function POST(req: NextRequest) {
   try {
     const resend = new Resend(apiKey);
     await resend.emails.send({
-      from: `Guestcam Kontakt <${from}>`,
+      from: `CamLove Kontakt <${from}>`,
       to,
       replyTo: email,
       subject: `[Kontakt] ${subject}`,

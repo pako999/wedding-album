@@ -2,7 +2,7 @@ import { SITE_URL } from "@/lib/urls";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { GUIDE_HREFLANG, LanguageSwitcher } from "@/components/LanguageSwitcher";
-import { GuestcamLogo } from "@/components/GuestcamLogo";
+import { CamLoveLogo } from "@/components/CamLoveLogo";
 import { SeoFooter } from "@/components/SeoFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { OG_IMAGE_URL, ogImage } from "@/lib/og";
@@ -52,7 +52,7 @@ function SiteFooter() {
           <Link href="/terms" className="hover:text-white transition-colors">
             Términos
           </Link>
-          <a href="mailto:hello@guestcam.me" className="hover:text-white transition-colors">
+          <a href="mailto:info@camlove.me" className="hover:text-white transition-colors">
             Contacto
           </a>
         </div>
@@ -167,7 +167,7 @@ export default function FotosBodaQrPage() {
             La solución: fotos de boda con código QR
           </h2>
           <p className="text-gray-600 leading-relaxed mb-6">
-            Guestcam elimina cada punto de fricción. Así lo vive un invitado:
+            CamLove elimina cada punto de fricción. Así lo vive un invitado:
           </p>
           <div className="space-y-4">
             {[
@@ -193,7 +193,7 @@ export default function FotosBodaQrPage() {
         {/* Section 3 */}
         <section className="mb-10">
           <h2 className="font-serif text-2xl font-bold text-[#0F1729] mb-4">
-            Por qué Guestcam es la mejor opción
+            Por qué CamLove es la mejor opción
           </h2>
           <div className="grid sm:grid-cols-2 gap-4">
             {[
@@ -247,7 +247,7 @@ export default function FotosBodaQrPage() {
           </h2>
           <div className="space-y-3">
             {[
-              { q: "¿Es Guestcam realmente gratis?", a: "Sí, el plan básico es gratuito para siempre: obtienes un código QR único y una galería para hasta 50 invitados y 200 fotos. Los planes de pago desbloquean invitados y fotos ilimitados, y más funciones." },
+              { q: "¿Es CamLove realmente gratis?", a: "Sí, el plan básico es gratuito para siempre: obtienes un código QR único y una galería para hasta 50 invitados y 200 fotos. Los planes de pago desbloquean invitados y fotos ilimitados, y más funciones." },
               { q: "¿Tienen que descargar una app los invitados?", a: "No. La galería se abre directamente en el navegador del móvil. Sin instalación, sin cuenta, sin contraseña." },
               { q: "¿Con qué calidad se almacenan las fotos?", a: "En resolución original completa. Nunca comprimimos ni redimensionamos las fotos de los invitados. Cada archivo se almacena exactamente como se subió." },
               { q: "¿Es privada la galería?", a: "Sí. Tu galería solo es accesible mediante tu código QR único o enlace directo. Ningún buscador la indexará jamás." },

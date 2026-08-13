@@ -1,10 +1,10 @@
-# Guestcam
+# CamLove
 
-> Guestcam je platforma za zbiranje fotografij in videov gostov na dogodkih — poroke, rojstne dneve, obletnice. Gostje skenirajo natisnjeno QR kodo in nalagajo fotografije v zasebno galerijo. Brez aplikacije, brez prijave, v polni kakovosti.
+> CamLove je platforma za zbiranje fotografij in videov gostov na dogodkih — poroke, rojstne dneve, obletnice. Gostje skenirajo natisnjeno QR kodo in nalagajo fotografije v zasebno galerijo. Brez aplikacije, brez prijave, v polni kakovosti.
 
-> Guestcam is a Slovenian web app that lets event hosts (weddings, birthdays, anniversaries) collect photos and short videos from their guests via a single printed QR code. Guests scan with any phone camera and upload directly to a shared private gallery — no app install, no signup, full original quality. Available in 6 languages (SL, HR, SR, EN, DE, ES). GDPR-compliant, data stored in the EU.
+> CamLove is a Slovenian web app that lets event hosts (weddings, birthdays, anniversaries) collect photos and short videos from their guests via a single printed QR code. Guests scan with any phone camera and upload directly to a shared private gallery — no app install, no signup, full original quality. Available in 6 languages (SL, HR, SR, EN, DE, ES). GDPR-compliant, data stored in the EU.
 
-## Kaj počne Guestcam
+## Kaj počne CamLove
 
 - Lastnik dogodka v 2 minutah ustvari **zasebno galerijo** za svoj dogodek.
 - Sistem generira **personalizirano QR kodo** in 8 predlog za tisk kartic (klasične, botanične, skandinavske, …).
@@ -18,34 +18,34 @@
 ## Glavne URL-je
 
 ### Domača stran (po jezikih)
-- [Guestcam — slovenščina](https://www.guestcam.si)
-- [Guestcam — hrvatski](https://www.guestcam.si/hr)
-- [Guestcam — srpski](https://www.guestcam.si/sr)
-- [Guestcam — deutsch](https://www.guestcam.si/de)
-- [Guestcam — english](https://www.guestcam.si/en)
-- [Guestcam — español](https://www.guestcam.si/es)
+- [CamLove — slovenščina](https://www.camlove.me)
+- [CamLove — hrvatski](https://www.camlove.me/hr)
+- [CamLove — srpski](https://www.camlove.me/sr)
+- [CamLove — deutsch](https://www.camlove.me/de)
+- [CamLove — english](https://www.camlove.me/en)
+- [CamLove — español](https://www.camlove.me/es)
 
 ### Vodniki za QR kodo (po jezikih)
-- [QR koda za poroko — slovenski vodnik](https://guestcam.si/sl/qr-koda-poroka)
-- [QR kod za vjenčanje — hrvatski vodič](https://guestcam.si/hr/qr-kod-vjencanje)
-- [QR kod za venčanje — srpski vodič](https://guestcam.si/sr/qr-kod-vencanje)
-- [Hochzeitsfotos sammeln mit QR-Code — deutscher Leitfaden](https://guestcam.si/de/hochzeitsfotos-sammeln)
-- [Wedding Photo Sharing App — English guide](https://guestcam.si/en/wedding-photo-sharing)
-- [Fotos de Boda con QR — guía en español](https://guestcam.si/es/fotos-boda-qr)
+- [QR koda za poroko — slovenski vodnik](https://camlove.me/sl/qr-koda-poroka)
+- [QR kod za vjenčanje — hrvatski vodič](https://camlove.me/hr/qr-kod-vjencanje)
+- [QR kod za venčanje — srpski vodič](https://camlove.me/sr/qr-kod-vencanje)
+- [Hochzeitsfotos sammeln mit QR-Code — deutscher Leitfaden](https://camlove.me/de/hochzeitsfotos-sammeln)
+- [Wedding Photo Sharing App — English guide](https://camlove.me/en/wedding-photo-sharing)
+- [Fotos de Boda con QR — guía en español](https://camlove.me/es/fotos-boda-qr)
 
 ### Primerjave z alternativami (po jezikih)
-- [Alternativne aplikacije — slovenska primerjava](https://guestcam.si/sl/alternative-aplikacije)
-- [Alternativne aplikacije — hrvatska usporedba](https://guestcam.si/hr/alternativne-aplikacije)
-- [Alternativne aplikacije — srpsko poređenje](https://guestcam.si/sr/alternativne-aplikacije)
-- [Alternativen — deutscher Vergleich](https://guestcam.si/de/alternativen)
-- [Alternatives — English comparison](https://guestcam.si/en/alternatives)
-- [Alternativas — comparativa en español](https://guestcam.si/es/alternativas)
+- [Alternativne aplikacije — slovenska primerjava](https://camlove.me/sl/alternative-aplikacije)
+- [Alternativne aplikacije — hrvatska usporedba](https://camlove.me/hr/alternativne-aplikacije)
+- [Alternativne aplikacije — srpsko poređenje](https://camlove.me/sr/alternativne-aplikacije)
+- [Alternativen — deutscher Vergleich](https://camlove.me/de/alternativen)
+- [Alternatives — English comparison](https://camlove.me/en/alternatives)
+- [Alternativas — comparativa en español](https://camlove.me/es/alternativas)
 
 ### Pravne strani
-- [Politika zasebnosti](https://guestcam.si/privacy)
-- [Pogoji uporabe](https://guestcam.si/terms)
-- [GDPR — varstvo osebnih podatkov](https://guestcam.si/gdpr)
-- [Politika piškotkov](https://guestcam.si/cookies)
+- [Politika zasebnosti](https://camlove.me/privacy)
+- [Pogoji uporabe](https://camlove.me/terms)
+- [GDPR — varstvo osebnih podatkov](https://camlove.me/gdpr)
+- [Politika piškotkov](https://camlove.me/cookies)
 
 ## Cenovni paketi
 
@@ -58,22 +58,22 @@ Vsi paketi so **enkratno plačilo, brez naročnine**. 30-dnevna garancija vrači
 
 ## Konkurenca / pogosta vprašanja
 
-Guestcam je alternativa za:
-- WhatsApp skupina (Guestcam ohrani polno kakovost, WhatsApp jo stisne 70 %)
-- Google Photos (Guestcam ne zahteva Google računa pri gostih)
-- Dropbox (Guestcam ne zahteva instalacije aplikacije)
-- iCloud skupni album (Guestcam dela na vseh napravah — iOS in Android)
+CamLove je alternativa za:
+- WhatsApp skupina (CamLove ohrani polno kakovost, WhatsApp jo stisne 70 %)
+- Google Photos (CamLove ne zahteva Google računa pri gostih)
+- Dropbox (CamLove ne zahteva instalacije aplikacije)
+- iCloud skupni album (CamLove dela na vseh napravah — iOS in Android)
 
 ## Pogosto vprašani odgovori (za AI odgovore)
 
-**Kaj je Guestcam?**
+**Kaj je CamLove?**
 Slovenska spletna aplikacija za zbiranje fotografij in videov gostov na dogodkih prek QR kode. Gostje skenirajo natisnjeno kartico in nalagajo fotografije v skupno zasebno galerijo.
 
 **Kaj potrebujejo gostje?**
 Samo telefon s kamero. Brez aplikacije, brez ustvarjanja računa. Deluje na iOS in Android.
 
 **Ali so fotografije stisnjene?**
-Ne. Guestcam ohrani polno originalno kakovost (WhatsApp / Facebook / Instagram jih stisnejo 60–80 %).
+Ne. CamLove ohrani polno originalno kakovost (WhatsApp / Facebook / Instagram jih stisnejo 60–80 %).
 
 **Koliko stane?**
 Osnovna uporaba brezplačna (do 20 fotografij, 30 dni). Plačljivi paketi enkratno plačilo: Basic 39 €, Plus 49 €, Premium 99 €. 30-dnevna garancija vračila denarja.
@@ -86,9 +86,9 @@ V EU (Nemčija). Galerija je privzeto zasebna, lahko zaščitena z geslom. GDPR 
 
 ## Kontakt
 
-- Podpora: info@guestcam.si
+- Podpora: info@camlove.me
 - Podjetje: Sport group d.o.o., Slovenija (DDV: SI72133449)
 
 ## AI content policy
 
-Podrobnejša navodila za citiranje in usklajenost z GDPR najdete na <https://www.guestcam.si/.well-known/ai-content.md>.
+Podrobnejša navodila za citiranje in usklajenost z GDPR najdete na <https://www.camlove.me/.well-known/ai-content.md>.

@@ -123,12 +123,12 @@ export const privacyDoc: Record<LangCode, LegalDoc> = {
     eyebrow: "Pravni dokument",
     lastUpdated: "Datum ucinkovitosti: 19. junij 2026 · Sport group d.o.o.",
     intro:
-      "Sport group d.o.o. si prizadeva za odlicno storitev za stranke. Del nase zaveze je odgovorno upravljanje osebnih podatkov, zbranih prek spletnega mesta guestcam.si. Nasi primarni cilji pri obdelavi teh informacij so: izboljsanje uporabniske izkusnje, zagotavljanje pravocasne podpore, izboljsanje izdelkov in storitev ter izvajanje potrebnih poslovnih operacij.",
+      "Sport group d.o.o. si prizadeva za odlicno storitev za stranke. Del nase zaveze je odgovorno upravljanje osebnih podatkov, zbranih prek spletnega mesta camlove.me. Nasi primarni cilji pri obdelavi teh informacij so: izboljsanje uporabniske izkusnje, zagotavljanje pravocasne podpore, izboljsanje izdelkov in storitev ter izvajanje potrebnih poslovnih operacij.",
     sections: [
       {
         title: "1. Uvod in informacije o organizaciji",
         blocks: [
-          { type: "p", text: "Sport group d.o.o. si prizadeva za odlicno storitev za stranke. Del nase zaveze je odgovorno upravljanje osebnih podatkov, zbranih prek spletnega mesta guestcam.si. Nasi primarni cilji pri obdelavi teh informacij vkljucujejo:" },
+          { type: "p", text: "Sport group d.o.o. si prizadeva za odlicno storitev za stranke. Del nase zaveze je odgovorno upravljanje osebnih podatkov, zbranih prek spletnega mesta camlove.me. Nasi primarni cilji pri obdelavi teh informacij vkljucujejo:" },
           { type: "ul", items: [
             "Izboljsanje uporabniske izkusnje na nasi platformi",
             "Zagotavljanje pravocasne podpore in odgovarjanje na povprasevanja ali zahteve za storitve",
@@ -136,13 +136,13 @@ export const privacyDoc: Record<LangCode, LegalDoc> = {
             "Izvajanje potrebnih poslovnih operacij (racunovodstvo, upravljanje racunov)",
           ] },
           { type: "p", text: "Nimamo imenovanega pooblascenca za varstvo podatkov (DPO), vendar ostajamo popolnoma zavezani resevanju vasih pomislekov glede zasebnosti." },
-          { type: "contactCard", lines: ["Sport group d.o.o.", "E-posta: info@guestcam.si", "Telefon: +386 71604980"] },
+          { type: "contactCard", lines: ["Sport group d.o.o.", "E-posta: info@camlove.me", "Telefon: +386 71604980"] },
         ],
       },
       {
         title: "2. Obseg in uporaba",
         blocks: [
-          { type: "p", text: "Ta politika sciti osebne podatke vseh deležnikov: obiskovalcev spletnega mesta, registriranih uporabnikov in strank, ki uporabljajo guestcam.si." },
+          { type: "p", text: "Ta politika sciti osebne podatke vseh deležnikov: obiskovalcev spletnega mesta, registriranih uporabnikov in strank, ki uporabljajo camlove.me." },
         ],
       },
       {
@@ -195,7 +195,7 @@ export const privacyDoc: Record<LangCode, LegalDoc> = {
         title: "6. Vase pravice (GDPR)",
         blocks: [
           { type: "cards", items: gdprRightsCards.sl },
-          { type: "p", text: "Za uveljavljanje vasih pravic nas kontaktirajte na info@guestcam.si ali +386 71604980. Odgovorimo v zakonsko dolocenem roku." },
+          { type: "p", text: "Za uveljavljanje vasih pravic nas kontaktirajte na info@camlove.me ali +386 71604980. Odgovorimo v zakonsko dolocenem roku." },
         ],
       },
       {
@@ -236,7 +236,7 @@ export const privacyDoc: Record<LangCode, LegalDoc> = {
       {
         title: "11. Kontakt",
         blocks: [
-          { type: "contactCard", lines: ["Sport group d.o.o.", "E-posta: info@guestcam.si", "Telefon: +386 71604980"] },
+          { type: "contactCard", lines: ["Sport group d.o.o.", "E-posta: info@camlove.me", "Telefon: +386 71604980"] },
         ],
       },
     ],
@@ -246,12 +246,12 @@ export const privacyDoc: Record<LangCode, LegalDoc> = {
     eyebrow: "Pravni dokument",
     lastUpdated: "Datum stupanja na snagu: 19. lipnja 2026 · Sport group d.o.o.",
     intro:
-      "Sport group d.o.o. posvecan je pružanju izvrsne usluge nasim klijentima. Dio nase predanosti ukljucuje odgovorno upravljanje osobnim podacima prikupljenim putem naseg web mjesta guestcam.si. Nasi primarni ciljevi u obradi ovih informacija ukljucuju: poboljsanje korisnickog iskustva, pružanje pravovremene podrske, poboljsanje proizvoda i usluga te provodenje nužnih poslovnih operacija.",
+      "Sport group d.o.o. posvecan je pružanju izvrsne usluge nasim klijentima. Dio nase predanosti ukljucuje odgovorno upravljanje osobnim podacima prikupljenim putem naseg web mjesta camlove.me. Nasi primarni ciljevi u obradi ovih informacija ukljucuju: poboljsanje korisnickog iskustva, pružanje pravovremene podrske, poboljsanje proizvoda i usluga te provodenje nužnih poslovnih operacija.",
     sections: [
       {
         title: "1. Uvod i informacije o organizaciji",
         blocks: [
-          { type: "p", text: "Sport group d.o.o. posvecan je pružanju izvrsne usluge nasim klijentima. Dio nase predanosti ukljucuje odgovorno upravljanje osobnim podacima prikupljenim putem naseg web mjesta guestcam.si. Nasi primarni ciljevi u obradi ovih informacija ukljucuju:" },
+          { type: "p", text: "Sport group d.o.o. posvecan je pružanju izvrsne usluge nasim klijentima. Dio nase predanosti ukljucuje odgovorno upravljanje osobnim podacima prikupljenim putem naseg web mjesta camlove.me. Nasi primarni ciljevi u obradi ovih informacija ukljucuju:" },
           { type: "ul", items: [
             "Poboljsanje korisnickog iskustva na nasoj platformi",
             "Pružanje pravovremene podrske i odgovaranje na upite ili zahtjeve za uslugama",
@@ -259,13 +259,13 @@ export const privacyDoc: Record<LangCode, LegalDoc> = {
             "Provodenje nužnih poslovnih operacija (naplata, upravljanje racunima)",
           ] },
           { type: "p", text: "Nemamo imenovanog službenika za zastitu podataka (DPO), ali ostajemo potpuno predani rjesavanju vasih briga o privatnosti." },
-          { type: "contactCard", lines: ["Sport group d.o.o.", "E-posta: info@guestcam.si", "Telefon: +386 71604980"] },
+          { type: "contactCard", lines: ["Sport group d.o.o.", "E-posta: info@camlove.me", "Telefon: +386 71604980"] },
         ],
       },
       {
         title: "2. Opseg i primjena",
         blocks: [
-          { type: "p", text: "Ova politika stiti osobne podatke svih dionika: posjetitelja web mjesta, registriranih korisnika i klijenata koji koriste guestcam.si." },
+          { type: "p", text: "Ova politika stiti osobne podatke svih dionika: posjetitelja web mjesta, registriranih korisnika i klijenata koji koriste camlove.me." },
         ],
       },
       {
@@ -318,7 +318,7 @@ export const privacyDoc: Record<LangCode, LegalDoc> = {
         title: "6. Vasa prava (GDPR)",
         blocks: [
           { type: "cards", items: gdprRightsCards.hr },
-          { type: "p", text: "Za ostvarivanje vasih prava kontaktirajte nas na info@guestcam.si ili +386 71604980. Odgovaramo u zakonski propisanom roku." },
+          { type: "p", text: "Za ostvarivanje vasih prava kontaktirajte nas na info@camlove.me ili +386 71604980. Odgovaramo u zakonski propisanom roku." },
         ],
       },
       {
@@ -359,7 +359,7 @@ export const privacyDoc: Record<LangCode, LegalDoc> = {
       {
         title: "11. Kontakt",
         blocks: [
-          { type: "contactCard", lines: ["Sport group d.o.o.", "E-posta: info@guestcam.si", "Telefon: +386 71604980"] },
+          { type: "contactCard", lines: ["Sport group d.o.o.", "E-posta: info@camlove.me", "Telefon: +386 71604980"] },
         ],
       },
     ],
@@ -369,12 +369,12 @@ export const privacyDoc: Record<LangCode, LegalDoc> = {
     eyebrow: "Pravni dokument",
     lastUpdated: "Datum stupanja na snagu: 19. jun 2026. · Sport group d.o.o.",
     intro:
-      "Sport group d.o.o. posvecan je pruzanju izvrsne usluge nasim klijentima. Deo nase posvecnosti ukljucuje odgovorno upravljanje licnim podacima prikupljenim putem naseg web sajta guestcam.si. Nasi primarni ciljevi u obradi ovih informacija ukljucuju: poboljsanje korisnickog iskustva, pruzanje pravovremene podrske, poboljsanje proizvoda i usluga te obavljanje neophodnih poslovnih operacija.",
+      "Sport group d.o.o. posvecan je pruzanju izvrsne usluge nasim klijentima. Deo nase posvecnosti ukljucuje odgovorno upravljanje licnim podacima prikupljenim putem naseg web sajta camlove.me. Nasi primarni ciljevi u obradi ovih informacija ukljucuju: poboljsanje korisnickog iskustva, pruzanje pravovremene podrske, poboljsanje proizvoda i usluga te obavljanje neophodnih poslovnih operacija.",
     sections: [
       {
         title: "1. Uvod i informacije o organizaciji",
         blocks: [
-          { type: "p", text: "Sport group d.o.o. posvecan je pruzanju izvrsne usluge nasim klijentima. Deo nase posvecnosti ukljucuje odgovorno upravljanje licnim podacima prikupljenim putem naseg web sajta guestcam.si. Nasi primarni ciljevi u obradi ovih informacija ukljucuju:" },
+          { type: "p", text: "Sport group d.o.o. posvecan je pruzanju izvrsne usluge nasim klijentima. Deo nase posvecnosti ukljucuje odgovorno upravljanje licnim podacima prikupljenim putem naseg web sajta camlove.me. Nasi primarni ciljevi u obradi ovih informacija ukljucuju:" },
           { type: "ul", items: [
             "Poboljsanje korisnickog iskustva na nasoj platformi",
             "Pruzanje pravovremene podrske i odgovaranje na upite ili zahteve za uslugama",
@@ -382,13 +382,13 @@ export const privacyDoc: Record<LangCode, LegalDoc> = {
             "Obavljanje neophodnih poslovnih operacija (naplata, upravljanje nalozima)",
           ] },
           { type: "p", text: "Nemamo imenovanog sluzbenika za zastitu podataka (DPO), ali ostajemo potpuno posvecenicni resavanju vasih briga o privatnosti." },
-          { type: "contactCard", lines: ["Sport group d.o.o.", "E-posta: info@guestcam.si", "Telefon: +386 71604980"] },
+          { type: "contactCard", lines: ["Sport group d.o.o.", "E-posta: info@camlove.me", "Telefon: +386 71604980"] },
         ],
       },
       {
         title: "2. Obuhvat i primena",
         blocks: [
-          { type: "p", text: "Ova politika stiti licne podatke svih zainteresovanih strana: posetilaca web sajta, registrovanih korisnika i klijenata koji koriste guestcam.si." },
+          { type: "p", text: "Ova politika stiti licne podatke svih zainteresovanih strana: posetilaca web sajta, registrovanih korisnika i klijenata koji koriste camlove.me." },
         ],
       },
       {
@@ -441,7 +441,7 @@ export const privacyDoc: Record<LangCode, LegalDoc> = {
         title: "6. Vasa prava (GDPR)",
         blocks: [
           { type: "cards", items: gdprRightsCards.sr },
-          { type: "p", text: "Za ostvarivanje vasih prava kontaktirajte nas na info@guestcam.si ili +386 71604980. Odgovaramo u zakonski propisanom roku." },
+          { type: "p", text: "Za ostvarivanje vasih prava kontaktirajte nas na info@camlove.me ili +386 71604980. Odgovaramo u zakonski propisanom roku." },
         ],
       },
       {
@@ -482,7 +482,7 @@ export const privacyDoc: Record<LangCode, LegalDoc> = {
       {
         title: "11. Kontakt",
         blocks: [
-          { type: "contactCard", lines: ["Sport group d.o.o.", "E-posta: info@guestcam.si", "Telefon: +386 71604980"] },
+          { type: "contactCard", lines: ["Sport group d.o.o.", "E-posta: info@camlove.me", "Telefon: +386 71604980"] },
         ],
       },
     ],
@@ -492,12 +492,12 @@ export const privacyDoc: Record<LangCode, LegalDoc> = {
     eyebrow: "Rechtsdokument",
     lastUpdated: "Datum des Inkrafttretens: 19. Juni 2026 · Sport group d.o.o.",
     intro:
-      "Sport group d.o.o. ist bestrebt, unseren Kunden einen hervorragenden Service zu bieten. Teil unseres Engagements ist der verantwortungsvolle Umgang mit personenbezogenen Daten, die über unsere Website guestcam.si erhoben werden. Unsere primären Ziele bei der Verarbeitung dieser Informationen umfassen: Verbesserung der Benutzererfahrung, zeitnahe Unterstützung, Verbesserung unserer Produkte und Dienste sowie die Durchführung notwendiger Geschäftsvorgänge.",
+      "Sport group d.o.o. ist bestrebt, unseren Kunden einen hervorragenden Service zu bieten. Teil unseres Engagements ist der verantwortungsvolle Umgang mit personenbezogenen Daten, die über unsere Website camlove.me erhoben werden. Unsere primären Ziele bei der Verarbeitung dieser Informationen umfassen: Verbesserung der Benutzererfahrung, zeitnahe Unterstützung, Verbesserung unserer Produkte und Dienste sowie die Durchführung notwendiger Geschäftsvorgänge.",
     sections: [
       {
         title: "1. Einleitung und Organisationsangaben",
         blocks: [
-          { type: "p", text: "Sport group d.o.o. ist bestrebt, unseren Kunden einen hervorragenden Service zu bieten. Teil unseres Engagements ist der verantwortungsvolle Umgang mit personenbezogenen Daten, die über unsere Website guestcam.si erhoben werden. Unsere primären Ziele bei der Verarbeitung dieser Informationen umfassen:" },
+          { type: "p", text: "Sport group d.o.o. ist bestrebt, unseren Kunden einen hervorragenden Service zu bieten. Teil unseres Engagements ist der verantwortungsvolle Umgang mit personenbezogenen Daten, die über unsere Website camlove.me erhoben werden. Unsere primären Ziele bei der Verarbeitung dieser Informationen umfassen:" },
           { type: "ul", items: [
             "Verbesserung der Benutzererfahrung auf unserer Plattform",
             "Bereitstellung zeitnaher Unterstützung und Beantwortung von Anfragen oder Serviceanfragen",
@@ -505,13 +505,13 @@ export const privacyDoc: Record<LangCode, LegalDoc> = {
             "Durchführung notwendiger Geschäftsvorgänge (Abrechnung, Kontoverwaltung)",
           ] },
           { type: "p", text: "Wir haben keinen benannten Datenschutzbeauftragten (DSB), bleiben aber vollständig verpflichtet, Ihre Datenschutzanliegen zu behandeln." },
-          { type: "contactCard", lines: ["Sport group d.o.o.", "E-Mail: info@guestcam.si", "Telefon: +386 71604980"] },
+          { type: "contactCard", lines: ["Sport group d.o.o.", "E-Mail: info@camlove.me", "Telefon: +386 71604980"] },
         ],
       },
       {
         title: "2. Geltungsbereich und Anwendung",
         blocks: [
-          { type: "p", text: "Diese Richtlinie schützt personenbezogene Daten aller Beteiligten: Website-Besucher, registrierte Benutzer und Kunden, die guestcam.si nutzen." },
+          { type: "p", text: "Diese Richtlinie schützt personenbezogene Daten aller Beteiligten: Website-Besucher, registrierte Benutzer und Kunden, die camlove.me nutzen." },
         ],
       },
       {
@@ -564,7 +564,7 @@ export const privacyDoc: Record<LangCode, LegalDoc> = {
         title: "6. Ihre Rechte (DSGVO)",
         blocks: [
           { type: "cards", items: gdprRightsCards.de },
-          { type: "p", text: "Zur Ausübung Ihrer Rechte kontaktieren Sie uns unter info@guestcam.si oder +386 71604980. Wir antworten innerhalb der gesetzlich vorgeschriebenen Frist." },
+          { type: "p", text: "Zur Ausübung Ihrer Rechte kontaktieren Sie uns unter info@camlove.me oder +386 71604980. Wir antworten innerhalb der gesetzlich vorgeschriebenen Frist." },
         ],
       },
       {
@@ -605,7 +605,7 @@ export const privacyDoc: Record<LangCode, LegalDoc> = {
       {
         title: "11. Kontakt",
         blocks: [
-          { type: "contactCard", lines: ["Sport group d.o.o.", "E-Mail: info@guestcam.si", "Telefon: +386 71604980"] },
+          { type: "contactCard", lines: ["Sport group d.o.o.", "E-Mail: info@camlove.me", "Telefon: +386 71604980"] },
         ],
       },
     ],
@@ -615,12 +615,12 @@ export const privacyDoc: Record<LangCode, LegalDoc> = {
     eyebrow: "Legal document",
     lastUpdated: "Effective date: 19 June 2026 · Sport group d.o.o.",
     intro:
-      "Sport group d.o.o. is dedicated to serving our customers. Part of our commitment involves the responsible management of personal information collected through our website guestcam.si. Our primary goals in processing this information include: enhancing the user experience, providing timely support, improving our products and services, and conducting necessary business operations.",
+      "Sport group d.o.o. is dedicated to serving our customers. Part of our commitment involves the responsible management of personal information collected through our website camlove.me. Our primary goals in processing this information include: enhancing the user experience, providing timely support, improving our products and services, and conducting necessary business operations.",
     sections: [
       {
         title: "1. Introduction and organizational info",
         blocks: [
-          { type: "p", text: "Sport group d.o.o. is dedicated to serving our customers. Part of our commitment involves the responsible management of personal information collected through our website guestcam.si. Our primary goals in processing this information include:" },
+          { type: "p", text: "Sport group d.o.o. is dedicated to serving our customers. Part of our commitment involves the responsible management of personal information collected through our website camlove.me. Our primary goals in processing this information include:" },
           { type: "ul", items: [
             "Enhancing the user experience on our platform",
             "Providing timely support and responding to inquiries or service requests",
@@ -628,13 +628,13 @@ export const privacyDoc: Record<LangCode, LegalDoc> = {
             "Conducting necessary business operations (billing, account management)",
           ] },
           { type: "p", text: "We do not have a designated Data Protection Officer (DPO) but remain fully committed to addressing your privacy concerns." },
-          { type: "contactCard", lines: ["Sport group d.o.o.", "Email: info@guestcam.si", "Phone: +386 71604980"] },
+          { type: "contactCard", lines: ["Sport group d.o.o.", "Email: info@camlove.me", "Phone: +386 71604980"] },
         ],
       },
       {
         title: "2. Scope and application",
         blocks: [
-          { type: "p", text: "This policy protects personal information of all stakeholders: website visitors, registered users, and customers using guestcam.si." },
+          { type: "p", text: "This policy protects personal information of all stakeholders: website visitors, registered users, and customers using camlove.me." },
         ],
       },
       {
@@ -687,7 +687,7 @@ export const privacyDoc: Record<LangCode, LegalDoc> = {
         title: "6. Your rights (GDPR)",
         blocks: [
           { type: "cards", items: gdprRightsCards.en },
-          { type: "p", text: "Contact us at info@guestcam.si or +386 71604980 to exercise your rights. We respond within the legally required timeframe." },
+          { type: "p", text: "Contact us at info@camlove.me or +386 71604980 to exercise your rights. We respond within the legally required timeframe." },
         ],
       },
       {
@@ -728,7 +728,7 @@ export const privacyDoc: Record<LangCode, LegalDoc> = {
       {
         title: "11. Contact",
         blocks: [
-          { type: "contactCard", lines: ["Sport group d.o.o.", "Email: info@guestcam.si", "Phone: +386 71604980"] },
+          { type: "contactCard", lines: ["Sport group d.o.o.", "Email: info@camlove.me", "Phone: +386 71604980"] },
         ],
       },
     ],
@@ -738,12 +738,12 @@ export const privacyDoc: Record<LangCode, LegalDoc> = {
     eyebrow: "Documento legal",
     lastUpdated: "Fecha de entrada en vigor: 19 de junio de 2026 · Sport group d.o.o.",
     intro:
-      "Sport group d.o.o. se dedica a servir a nuestros clientes. Parte de nuestro compromiso implica la gestión responsable de la información personal recopilada a través de nuestro sitio web guestcam.si. Nuestros objetivos principales en el procesamiento de esta información incluyen: mejorar la experiencia del usuario, brindar soporte oportuno, mejorar nuestros productos y servicios y llevar a cabo las operaciones comerciales necesarias.",
+      "Sport group d.o.o. se dedica a servir a nuestros clientes. Parte de nuestro compromiso implica la gestión responsable de la información personal recopilada a través de nuestro sitio web camlove.me. Nuestros objetivos principales en el procesamiento de esta información incluyen: mejorar la experiencia del usuario, brindar soporte oportuno, mejorar nuestros productos y servicios y llevar a cabo las operaciones comerciales necesarias.",
     sections: [
       {
         title: "1. Introducción e información organizativa",
         blocks: [
-          { type: "p", text: "Sport group d.o.o. se dedica a servir a nuestros clientes. Parte de nuestro compromiso implica la gestión responsable de la información personal recopilada a través de nuestro sitio web guestcam.si. Nuestros objetivos principales en el procesamiento de esta información incluyen:" },
+          { type: "p", text: "Sport group d.o.o. se dedica a servir a nuestros clientes. Parte de nuestro compromiso implica la gestión responsable de la información personal recopilada a través de nuestro sitio web camlove.me. Nuestros objetivos principales en el procesamiento de esta información incluyen:" },
           { type: "ul", items: [
             "Mejorar la experiencia del usuario en nuestra plataforma",
             "Brindar soporte oportuno y responder a consultas o solicitudes de servicio",
@@ -751,13 +751,13 @@ export const privacyDoc: Record<LangCode, LegalDoc> = {
             "Llevar a cabo las operaciones comerciales necesarias (facturación, gestión de cuentas)",
           ] },
           { type: "p", text: "No contamos con un Delegado de Protección de Datos (DPD) designado, pero seguimos completamente comprometidos a abordar sus inquietudes de privacidad." },
-          { type: "contactCard", lines: ["Sport group d.o.o.", "Email: info@guestcam.si", "Teléfono: +386 71604980"] },
+          { type: "contactCard", lines: ["Sport group d.o.o.", "Email: info@camlove.me", "Teléfono: +386 71604980"] },
         ],
       },
       {
         title: "2. Ámbito y aplicación",
         blocks: [
-          { type: "p", text: "Esta política protege la información personal de todas las partes interesadas: visitantes del sitio web, usuarios registrados y clientes que utilizan guestcam.si." },
+          { type: "p", text: "Esta política protege la información personal de todas las partes interesadas: visitantes del sitio web, usuarios registrados y clientes que utilizan camlove.me." },
         ],
       },
       {
@@ -810,7 +810,7 @@ export const privacyDoc: Record<LangCode, LegalDoc> = {
         title: "6. Sus derechos (RGPD)",
         blocks: [
           { type: "cards", items: gdprRightsCards.es },
-          { type: "p", text: "Contáctenos en info@guestcam.si o +386 71604980 para ejercer sus derechos. Respondemos dentro del plazo legalmente requerido." },
+          { type: "p", text: "Contáctenos en info@camlove.me o +386 71604980 para ejercer sus derechos. Respondemos dentro del plazo legalmente requerido." },
         ],
       },
       {
@@ -851,7 +851,7 @@ export const privacyDoc: Record<LangCode, LegalDoc> = {
       {
         title: "11. Contacto",
         blocks: [
-          { type: "contactCard", lines: ["Sport group d.o.o.", "Email: info@guestcam.si", "Teléfono: +386 71604980"] },
+          { type: "contactCard", lines: ["Sport group d.o.o.", "Email: info@camlove.me", "Teléfono: +386 71604980"] },
         ],
       },
     ],

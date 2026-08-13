@@ -84,7 +84,7 @@ export function EventLeadsCard({ albumSlug, initialEnabled }: Props) {
           style={{ background: "#FFF9EC", color: "#92600A" }}
         >
           Podatke zbirate vi kot organizator dogodka — vi ste upravljavec teh osebnih podatkov.
-          Poskrbite, da imate ustrezno pravno podlago in politiko zasebnosti. Guestcam podatke
+          Poskrbite, da imate ustrezno pravno podlago in politiko zasebnosti. CamLove podatke
           zgolj hrani in vam jih da na voljo za izvoz.
         </p>
       )}

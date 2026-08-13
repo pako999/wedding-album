@@ -74,7 +74,7 @@ export function affiliateApplyMetadata(lang: AffiliateLang): Metadata {
     // homepage instead of the application form.
     openGraph: {
       type: "website",
-      siteName: "Guestcam",
+      siteName: "CamLove",
       url: pageUrl,
       title: t.pageTitle,
       description: t.metaDescription,

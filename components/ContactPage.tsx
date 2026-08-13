@@ -32,8 +32,8 @@ const COPY: Record<LangCode, ContactCopy> = {
     heading: "Tu smo. Pišite nam.",
     lead: "Vprašanja, želje po posebnih paketih, povratne informacije — zelo radi vas slišimo. Odgovor običajno v 24 urah.",
     cards: [
-      { icon: "✉️", title: "Email podpora", desc: "Najhitrejši način do nas.", value: "info@guestcam.si", href: "mailto:info@guestcam.si" },
-      { icon: "💼", title: "Prodaja & partnerstva", desc: "Velika poroka, agencija ali wedding planner?", value: "sales@guestcam.si", href: "mailto:sales@guestcam.si" },
+      { icon: "✉️", title: "Email podpora", desc: "Najhitrejši način do nas.", value: "info@camlove.me", href: "mailto:info@camlove.me" },
+      { icon: "💼", title: "Prodaja & partnerstva", desc: "Velika poroka, agencija ali wedding planner?", value: "sales@camlove.me", href: "mailto:sales@camlove.me" },
       { icon: "📱", title: "WhatsApp", desc: "Hiter klepet med 9-17h.", value: "+386 41 580 250", href: "https://wa.me/38641580250" },
     ],
     formTitle: "Pošljite sporočilo",
@@ -46,8 +46,8 @@ const COPY: Record<LangCode, ContactCopy> = {
     faqTitle: "Pogosta vprašanja",
     faqs: [
       { q: "Kako hitro odgovorite na sporočilo?", a: "Običajno v nekaj urah med delavniki, najpozneje v 24 urah. Imetniki paketa Premium imajo prednostno podporo z odzivom pod 4 ure ob delavnikih." },
-      { q: "Lahko najprej preizkusim Guestcam?", a: "Da. Brezplačni paket omogoča testno galerijo do 20 fotografij za 30 dni — brez kreditne kartice, brez registracije gostov. Tako vidite, kako deluje, preden plačate." },
-      { q: "Kaj se zgodi, če imamo težave na sam dan poroke?", a: "Pišite nam na info@guestcam.si ali na WhatsApp — odzivamo se tudi ob koncu tedna. Premium paket vključuje 24/7 podporo na dan dogodka, ko šteje vsaka minuta." },
+      { q: "Lahko najprej preizkusim CamLove?", a: "Da. Brezplačni paket omogoča testno galerijo do 20 fotografij za 30 dni — brez kreditne kartice, brez registracije gostov. Tako vidite, kako deluje, preden plačate." },
+      { q: "Kaj se zgodi, če imamo težave na sam dan poroke?", a: "Pišite nam na info@camlove.me ali na WhatsApp — odzivamo se tudi ob koncu tedna. Premium paket vključuje 24/7 podporo na dan dogodka, ko šteje vsaka minuta." },
       { q: "Imam težavo z nalaganjem fotografij — kaj zdaj?", a: "Najpogostejši vzrok je počasna mobilna povezava. Preverite, da ste povezani na WiFi, ali pa nam pišite — fotografije lahko po dogodku ročno dodamo iz vaše naprave." },
     ],
     company: {
@@ -56,7 +56,7 @@ const COPY: Record<LangCode, ContactCopy> = {
         "Sport group d.o.o.",
         "Osojnikova 4a, 2000 Maribor, Slovenija",
         "Davčna številka: SI72133449",
-        "Email: info@guestcam.si",
+        "Email: info@camlove.me",
         "Telefon: +386 71 604 980",
       ],
     },
@@ -66,8 +66,8 @@ const COPY: Record<LangCode, ContactCopy> = {
     heading: "Tu smo. Pišite nam.",
     lead: "Pitanja, želje za prilagođene pakete, povratne informacije — rado vas čujemo. Odgovor obično u 24 sata.",
     cards: [
-      { icon: "✉️", title: "Email podrška",    desc: "Najbrži način do nas.",              value: "info@guestcam.si", href: "mailto:info@guestcam.si" },
-      { icon: "💼", title: "Prodaja & partneri", desc: "Veliko vjenčanje, agencija ili wedding planner?", value: "sales@guestcam.si", href: "mailto:sales@guestcam.si" },
+      { icon: "✉️", title: "Email podrška",    desc: "Najbrži način do nas.",              value: "info@camlove.me", href: "mailto:info@camlove.me" },
+      { icon: "💼", title: "Prodaja & partneri", desc: "Veliko vjenčanje, agencija ili wedding planner?", value: "sales@camlove.me", href: "mailto:sales@camlove.me" },
       { icon: "📱", title: "WhatsApp",          desc: "Brzi razgovor pon-pet 9-17h.",       value: "+386 41 580 250", href: "https://wa.me/38641580250" },
     ],
     formTitle: "Pošaljite poruku",
@@ -80,8 +80,8 @@ const COPY: Record<LangCode, ContactCopy> = {
     faqTitle: "Često postavljana pitanja",
     faqs: [
       { q: "Koliko brzo odgovarate na poruke?", a: "Obično u nekoliko sati radnim danima, najkasnije u 24 sata. Premium paket uključuje prioritetnu podršku s odzivom unutar 4 sata radnim danima." },
-      { q: "Mogu li prvo isprobati Guestcam?", a: "Da. Besplatan paket omogućuje testnu galeriju do 20 fotografija na 30 dana — bez kreditne kartice, bez registracije gostiju. Tako vidite kako radi prije plaćanja." },
-      { q: "Što ako imamo problema na sam dan vjenčanja?", a: "Pišite nam na info@guestcam.si ili WhatsApp — odgovaramo i vikendom. Premium paket uključuje 24/7 podršku na dan događaja, kad svaka minuta broji." },
+      { q: "Mogu li prvo isprobati CamLove?", a: "Da. Besplatan paket omogućuje testnu galeriju do 20 fotografija na 30 dana — bez kreditne kartice, bez registracije gostiju. Tako vidite kako radi prije plaćanja." },
+      { q: "Što ako imamo problema na sam dan vjenčanja?", a: "Pišite nam na info@camlove.me ili WhatsApp — odgovaramo i vikendom. Premium paket uključuje 24/7 podršku na dan događaja, kad svaka minuta broji." },
       { q: "Imam problem s učitavanjem fotografija — što sada?", a: "Najčešći uzrok je spora mobilna veza. Provjerite jeste li spojeni na WiFi, ili nam pišite — fotografije možemo nakon događaja ručno dodati s vašeg uređaja." },
     ],
     company: {
@@ -90,7 +90,7 @@ const COPY: Record<LangCode, ContactCopy> = {
         "Sport group d.o.o.",
         "Osojnikova 4a, 2000 Maribor, Slovenija",
         "OIB / PDV broj: SI72133449",
-        "Email: info@guestcam.si",
+        "Email: info@camlove.me",
         "Telefon: +386 71 604 980",
       ],
     },
@@ -100,8 +100,8 @@ const COPY: Record<LangCode, ContactCopy> = {
     heading: "Tu smo. Pišite nam.",
     lead: "Pitanja, želje za prilagođene pakete, povratne informacije — rado vas čujemo. Odgovor obično u roku od 24 sata.",
     cards: [
-      { icon: "✉️", title: "Email podrška",    desc: "Najbrži način do nas.",              value: "info@guestcam.si", href: "mailto:info@guestcam.si" },
-      { icon: "💼", title: "Prodaja & partneri", desc: "Veliko venčanje, agencija ili wedding planner?", value: "sales@guestcam.si", href: "mailto:sales@guestcam.si" },
+      { icon: "✉️", title: "Email podrška",    desc: "Najbrži način do nas.",              value: "info@camlove.me", href: "mailto:info@camlove.me" },
+      { icon: "💼", title: "Prodaja & partneri", desc: "Veliko venčanje, agencija ili wedding planner?", value: "sales@camlove.me", href: "mailto:sales@camlove.me" },
       { icon: "📱", title: "WhatsApp",          desc: "Brzi razgovor pon-pet 9-17h.",       value: "+386 41 580 250", href: "https://wa.me/38641580250" },
     ],
     formTitle: "Pošaljite poruku",
@@ -114,8 +114,8 @@ const COPY: Record<LangCode, ContactCopy> = {
     faqTitle: "Najčešća pitanja",
     faqs: [
       { q: "Koliko brzo odgovarate na poruke?", a: "Obično za nekoliko sati radnim danom, najkasnije u roku od 24 sata. Premium paket uključuje prioritetnu podršku sa odzivom u roku od 4 sata radnim danom." },
-      { q: "Mogu li prvo da isprobam Guestcam?", a: "Da. Besplatan paket omogućava testnu galeriju do 20 fotografija na 30 dana — bez kreditne kartice, bez registracije gostiju. Tako vidite kako radi pre plaćanja." },
-      { q: "Šta ako imamo problem na sam dan venčanja?", a: "Pišite nam na info@guestcam.si ili WhatsApp — odgovaramo i vikendom. Premium paket uključuje 24/7 podršku na dan događaja, kada svaki minut važi." },
+      { q: "Mogu li prvo da isprobam CamLove?", a: "Da. Besplatan paket omogućava testnu galeriju do 20 fotografija na 30 dana — bez kreditne kartice, bez registracije gostiju. Tako vidite kako radi pre plaćanja." },
+      { q: "Šta ako imamo problem na sam dan venčanja?", a: "Pišite nam na info@camlove.me ili WhatsApp — odgovaramo i vikendom. Premium paket uključuje 24/7 podršku na dan događaja, kada svaki minut važi." },
       { q: "Imam problem sa otpremanjem fotografija — šta sad?", a: "Najčešći uzrok je spora mobilna veza. Proverite da li ste povezani na WiFi, ili nam pišite — fotografije možemo posle događaja ručno dodati sa vašeg uređaja." },
     ],
     company: {
@@ -124,7 +124,7 @@ const COPY: Record<LangCode, ContactCopy> = {
         "Sport group d.o.o.",
         "Osojnikova 4a, 2000 Maribor, Slovenija",
         "PIB / PDV broj: SI72133449",
-        "Email: info@guestcam.si",
+        "Email: info@camlove.me",
         "Telefon: +386 71 604 980",
       ],
     },
@@ -134,8 +134,8 @@ const COPY: Record<LangCode, ContactCopy> = {
     heading: "Wir sind hier. Schreiben Sie uns.",
     lead: "Fragen, individuelle Paketwünsche, Feedback — wir freuen uns über Ihre Nachricht. Antwort meist innerhalb von 24 Stunden.",
     cards: [
-      { icon: "✉️", title: "E-Mail-Support",   desc: "Der schnellste Weg zu uns.",        value: "info@guestcam.si", href: "mailto:info@guestcam.si" },
-      { icon: "💼", title: "Vertrieb & Partner", desc: "Große Hochzeit, Agentur oder Wedding Planner?", value: "sales@guestcam.si", href: "mailto:sales@guestcam.si" },
+      { icon: "✉️", title: "E-Mail-Support",   desc: "Der schnellste Weg zu uns.",        value: "info@camlove.me", href: "mailto:info@camlove.me" },
+      { icon: "💼", title: "Vertrieb & Partner", desc: "Große Hochzeit, Agentur oder Wedding Planner?", value: "sales@camlove.me", href: "mailto:sales@camlove.me" },
       { icon: "📱", title: "WhatsApp",          desc: "Schnellchat Mo-Fr 9-17 Uhr.",        value: "+386 41 580 250", href: "https://wa.me/38641580250" },
     ],
     formTitle: "Nachricht senden",
@@ -148,8 +148,8 @@ const COPY: Record<LangCode, ContactCopy> = {
     faqTitle: "Häufige Fragen",
     faqs: [
       { q: "Wie schnell antworten Sie auf Nachrichten?", a: "Meist innerhalb weniger Stunden an Werktagen, spätestens innerhalb von 24 Stunden. Premium-Kunden erhalten Priority-Support mit Antwort unter 4 Stunden an Werktagen." },
-      { q: "Kann ich Guestcam zuerst testen?", a: "Ja. Das kostenlose Paket bietet eine Testgalerie mit bis zu 20 Fotos für 30 Tage — ohne Kreditkarte, ohne Gäste-Registrierung. So sehen Sie, wie es funktioniert, bevor Sie zahlen." },
-      { q: "Was, wenn am Hochzeitstag Probleme auftreten?", a: "Schreiben Sie an info@guestcam.si oder per WhatsApp — wir antworten auch am Wochenende. Das Premium-Paket beinhaltet 24/7-Support am Veranstaltungstag, wenn jede Minute zählt." },
+      { q: "Kann ich CamLove zuerst testen?", a: "Ja. Das kostenlose Paket bietet eine Testgalerie mit bis zu 20 Fotos für 30 Tage — ohne Kreditkarte, ohne Gäste-Registrierung. So sehen Sie, wie es funktioniert, bevor Sie zahlen." },
+      { q: "Was, wenn am Hochzeitstag Probleme auftreten?", a: "Schreiben Sie an info@camlove.me oder per WhatsApp — wir antworten auch am Wochenende. Das Premium-Paket beinhaltet 24/7-Support am Veranstaltungstag, wenn jede Minute zählt." },
       { q: "Ich habe Probleme beim Hochladen von Fotos — was nun?", a: "Häufigste Ursache ist eine langsame Mobilverbindung. Prüfen Sie, ob Sie mit WLAN verbunden sind, oder schreiben Sie uns — wir können Fotos nach der Veranstaltung manuell von Ihrem Gerät einspielen." },
     ],
     company: {
@@ -158,7 +158,7 @@ const COPY: Record<LangCode, ContactCopy> = {
         "Sport group d.o.o.",
         "Osojnikova 4a, 2000 Maribor, Slowenien",
         "USt-IdNr.: SI72133449",
-        "E-Mail: info@guestcam.si",
+        "E-Mail: info@camlove.me",
         "Telefon: +386 71 604 980",
       ],
     },
@@ -168,8 +168,8 @@ const COPY: Record<LangCode, ContactCopy> = {
     heading: "We're here. Drop us a line.",
     lead: "Questions, custom-package requests, feedback — we'd love to hear from you. We usually reply within 24 hours.",
     cards: [
-      { icon: "✉️", title: "Email support",      desc: "Fastest way to reach us.",            value: "info@guestcam.si", href: "mailto:info@guestcam.si" },
-      { icon: "💼", title: "Sales & partnerships", desc: "Large wedding, agency or wedding planner?", value: "sales@guestcam.si", href: "mailto:sales@guestcam.si" },
+      { icon: "✉️", title: "Email support",      desc: "Fastest way to reach us.",            value: "info@camlove.me", href: "mailto:info@camlove.me" },
+      { icon: "💼", title: "Sales & partnerships", desc: "Large wedding, agency or wedding planner?", value: "sales@camlove.me", href: "mailto:sales@camlove.me" },
       { icon: "📱", title: "WhatsApp",           desc: "Quick chat, Mon-Fri 9-5 CET.",        value: "+386 41 580 250", href: "https://wa.me/38641580250" },
     ],
     formTitle: "Send a message",
@@ -182,8 +182,8 @@ const COPY: Record<LangCode, ContactCopy> = {
     faqTitle: "FAQ",
     faqs: [
       { q: "How fast do you reply to messages?", a: "Usually within a few hours on weekdays, no later than 24 hours. Premium customers get priority support with under-4h response on weekdays." },
-      { q: "Can I try Guestcam first?", a: "Yes. The free plan gives you a test gallery of up to 20 photos for 30 days — no credit card, no guest sign-up. See how it works before you pay." },
-      { q: "What if something goes wrong on the wedding day itself?", a: "Email info@guestcam.si or message us on WhatsApp — we reply on weekends too. The Premium plan includes 24/7 event-day support when every minute counts." },
+      { q: "Can I try CamLove first?", a: "Yes. The free plan gives you a test gallery of up to 20 photos for 30 days — no credit card, no guest sign-up. See how it works before you pay." },
+      { q: "What if something goes wrong on the wedding day itself?", a: "Email info@camlove.me or message us on WhatsApp — we reply on weekends too. The Premium plan includes 24/7 event-day support when every minute counts." },
       { q: "I'm having trouble uploading photos — what now?", a: "The most common cause is slow mobile data. Check you're on WiFi, or message us — we can manually add photos from your device after the event." },
     ],
     company: {
@@ -192,7 +192,7 @@ const COPY: Record<LangCode, ContactCopy> = {
         "Sport group d.o.o.",
         "Osojnikova 4a, 2000 Maribor, Slovenia",
         "VAT ID: SI72133449",
-        "Email: info@guestcam.si",
+        "Email: info@camlove.me",
         "Phone: +386 71 604 980",
       ],
     },
@@ -202,8 +202,8 @@ const COPY: Record<LangCode, ContactCopy> = {
     heading: "Estamos aquí. Escríbenos.",
     lead: "Preguntas, solicitudes de paquetes personalizados, feedback — nos encanta saber de ti. Respondemos normalmente en 24 horas.",
     cards: [
-      { icon: "✉️", title: "Soporte por email",  desc: "La forma más rápida de contactarnos.",         value: "info@guestcam.si", href: "mailto:info@guestcam.si" },
-      { icon: "💼", title: "Ventas y partners",  desc: "¿Boda grande, agencia o wedding planner?",     value: "sales@guestcam.si", href: "mailto:sales@guestcam.si" },
+      { icon: "✉️", title: "Soporte por email",  desc: "La forma más rápida de contactarnos.",         value: "info@camlove.me", href: "mailto:info@camlove.me" },
+      { icon: "💼", title: "Ventas y partners",  desc: "¿Boda grande, agencia o wedding planner?",     value: "sales@camlove.me", href: "mailto:sales@camlove.me" },
       { icon: "📱", title: "WhatsApp",            desc: "Chat rápido, lun-vie 9-17h CET.",              value: "+386 41 580 250", href: "https://wa.me/38641580250" },
     ],
     formTitle: "Envíanos un mensaje",
@@ -216,8 +216,8 @@ const COPY: Record<LangCode, ContactCopy> = {
     faqTitle: "Preguntas frecuentes",
     faqs: [
       { q: "¿Con qué rapidez respondéis a los mensajes?", a: "Normalmente en pocas horas entre semana, como máximo en 24 horas. Los clientes Premium reciben soporte prioritario con respuesta en menos de 4 horas en días laborables." },
-      { q: "¿Puedo probar Guestcam primero?", a: "Sí. El plan gratuito incluye una galería de prueba de hasta 20 fotos durante 30 días — sin tarjeta de crédito, sin registro de invitados. Comprueba cómo funciona antes de pagar." },
-      { q: "¿Y si algo va mal el día de la boda?", a: "Escríbenos a info@guestcam.si o por WhatsApp — respondemos también los fines de semana. El plan Premium incluye soporte 24/7 el día del evento, cuando cada minuto cuenta." },
+      { q: "¿Puedo probar CamLove primero?", a: "Sí. El plan gratuito incluye una galería de prueba de hasta 20 fotos durante 30 días — sin tarjeta de crédito, sin registro de invitados. Comprueba cómo funciona antes de pagar." },
+      { q: "¿Y si algo va mal el día de la boda?", a: "Escríbenos a info@camlove.me o por WhatsApp — respondemos también los fines de semana. El plan Premium incluye soporte 24/7 el día del evento, cuando cada minuto cuenta." },
       { q: "Tengo problemas para subir fotos — ¿qué hago?", a: "La causa más común es una conexión móvil lenta. Comprueba que estés en WiFi, o escríbenos — podemos añadir manualmente las fotos desde tu dispositivo después del evento." },
     ],
     company: {
@@ -226,7 +226,7 @@ const COPY: Record<LangCode, ContactCopy> = {
         "Sport group d.o.o.",
         "Osojnikova 4a, 2000 Maribor, Eslovenia",
         "CIF / NIF: SI72133449",
-        "Email: info@guestcam.si",
+        "Email: info@camlove.me",
         "Teléfono: +386 71 604 980",
       ],
     },
@@ -245,12 +245,12 @@ const SUCCESS_COPY: Record<LangCode, { title: string; body: string }> = {
   es: { title: "Mensaje enviado",    body: "¡Gracias! Te responderemos por email, normalmente en 24 horas." },
 };
 const ERROR_COPY: Record<LangCode, string> = {
-  sl: "Pošiljanje ni uspelo. Poskusite znova ali nam pišite na info@guestcam.si.",
-  hr: "Slanje nije uspjelo. Pokušajte ponovno ili nam pišite na info@guestcam.si.",
-  sr: "Slanje nije uspelo. Pokušajte ponovo ili nam pišite na info@guestcam.si.",
-  de: "Senden fehlgeschlagen. Bitte erneut versuchen oder direkt an info@guestcam.si schreiben.",
-  en: "Sending failed. Please try again or email us at info@guestcam.si.",
-  es: "Error al enviar. Inténtalo de nuevo o escríbenos a info@guestcam.si.",
+  sl: "Pošiljanje ni uspelo. Poskusite znova ali nam pišite na info@camlove.me.",
+  hr: "Slanje nije uspjelo. Pokušajte ponovno ili nam pišite na info@camlove.me.",
+  sr: "Slanje nije uspelo. Pokušajte ponovo ili nam pišite na info@camlove.me.",
+  de: "Senden fehlgeschlagen. Bitte erneut versuchen oder direkt an info@camlove.me schreiben.",
+  en: "Sending failed. Please try again or email us at info@camlove.me.",
+  es: "Error al enviar. Inténtalo de nuevo o escríbenos a info@camlove.me.",
 };
 
 export function ContactPage({ lang }: { lang: LangCode }) {

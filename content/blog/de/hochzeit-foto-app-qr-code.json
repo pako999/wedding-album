@@ -6,14 +6,14 @@
   "translationKey": "wedding-photo-app-qr-code",
   "publishedAt": "2026-05-30",
   "updatedAt": "2026-05-30",
-  "author": "Guestcam Team",
+  "author": "CamLove Team",
   "category": "vodnik",
   "readingTime": 6,
   "tags": [
     "Hochzeitsfotos",
     "QR-Code",
     "Gäste-Foto-App",
-    "Guestcam"
+    "CamLove"
   ],
   "tldr": "Stellt einen QR-Code auf jeden Tisch — Gäste scannen und laden Fotos direkt in eure private Galerie, ohne App und Anmeldung.",
   "coverImage": "https://images.unsplash.com/photo-1519741497674-611481863552?w=1200&h=720&fit=crop&q=82&auto=format",
@@ -41,7 +41,7 @@
     {
       "type": "ol",
       "items": [
-        "Erstellt in wenigen Klicks eine private Galerie bei Guestcam.",
+        "Erstellt in wenigen Klicks eine private Galerie bei CamLove.",
         "Wählt eine QR-Karten-Vorlage, ergänzt Namen und Datum und druckt sie für die Tische.",
         "Gäste scannen den Code, die Galerie öffnet sich im Browser, Fotos und Videos sind in Sekunden hochgeladen.",
         "Ihr sammelt alles live und ladet es danach als ZIP herunter."
@@ -73,7 +73,7 @@
           "Gering"
         ],
         [
-          "QR-Galerie (Guestcam)",
+          "QR-Galerie (CamLove)",
           "Volle Auflösung",
           "Nein",
           "Hoch"
@@ -95,7 +95,7 @@
     {
       "type": "cta",
       "text": "Erstellt eure kostenlose Hochzeitsgalerie",
-      "href": "https://www.guestcam.si/dashboard/new"
+      "href": "https://www.camlove.me/dashboard/new"
     },
     {
       "type": "faq",

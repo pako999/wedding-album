@@ -1,5 +1,5 @@
 import { SignIn } from "@clerk/nextjs";
-import { GuestcamLogo } from "@/components/GuestcamLogo";
+import { CamLoveLogo } from "@/components/CamLoveLogo";
 
 export default function SignInPage() {
   return (
@@ -7,7 +7,7 @@ export default function SignInPage() {
       <div className="w-full max-w-md">
         {/* Brand header */}
         <div className="text-center mb-8 flex flex-col items-center gap-2">
-          <GuestcamLogo size="md" showMark={true} />
+          <CamLoveLogo size="md" showMark={true} />
           <p className="text-sm text-gray-400">Prijavite se za dostop do vaših albumov</p>
         </div>
         <SignIn

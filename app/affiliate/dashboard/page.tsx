@@ -31,7 +31,7 @@ export default async function AffiliateDashboardPage() {
           <div className="text-4xl mb-3">🤝</div>
           <h1 className="text-xl font-extrabold text-[#0F1729] mb-2">Še niste partner</h1>
           <p className="text-sm text-gray-500 mb-5">
-            Pridružite se GuestCam partnerskemu programu in zaslužite 20% provizije.
+            Pridružite se CamLove partnerskemu programu in zaslužite 20% provizije.
           </p>
           <Link
             href="/affiliate/apply"
@@ -68,7 +68,7 @@ export default async function AffiliateDashboardPage() {
             {affiliate.status === "suspended" ? "Partnerski račun ustavljen" : "Prijava zavrnjena"}
           </h1>
           <p className="text-sm text-gray-500">
-            Za več informacij nam pišite na <a href="mailto:partnerji@guestcam.si" className="underline">partnerji@guestcam.si</a>.
+            Za več informacij nam pišite na <a href="mailto:partnerji@camlove.me" className="underline">partnerji@camlove.me</a>.
           </p>
         </div>
       </div>

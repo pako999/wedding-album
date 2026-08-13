@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { SignOutButton } from "@clerk/nextjs";
-import { GuestcamLogo } from "@/components/GuestcamLogo";
+import { CamLoveLogo } from "@/components/CamLoveLogo";
 import { RunMigrationsButton } from "@/components/admin/RunMigrationsButton";
 
 interface NavItem {
@@ -47,7 +47,7 @@ export function AdminShell({ nav, adminEmail, children }: Props & { children: Re
       {/* Mobile top bar */}
       <div className="lg:hidden sticky top-0 z-30 bg-white border-b border-gray-200 flex items-center justify-between px-4 py-3">
         <Link href="/admin" className="flex items-center">
-          <GuestcamLogo variant="onLight" />
+          <CamLoveLogo variant="onLight" />
         </Link>
         <button
           type="button"
@@ -82,7 +82,7 @@ export function AdminShell({ nav, adminEmail, children }: Props & { children: Re
       >
         <div className="p-5 border-b border-gray-100 flex items-center justify-between">
           <Link href="/admin" className="block">
-            <GuestcamLogo variant="onLight" />
+            <CamLoveLogo variant="onLight" />
           </Link>
           <button
             type="button"

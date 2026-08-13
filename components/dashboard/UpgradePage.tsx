@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { GuestcamLogo } from "@/components/GuestcamLogo";
+import { CamLoveLogo } from "@/components/CamLoveLogo";
 import { TrackViewContent } from "@/components/TrackViewContent";
 import { fbEvent } from "@/lib/fbpixel";
 import type { Album } from "@/lib/db/schema";
@@ -192,7 +192,7 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
             </svg>
             {u.back}
           </Link>
-          <GuestcamLogo size="sm" showMark={false} />
+          <CamLoveLogo size="sm" showMark={false} />
           <div className="w-16" />
         </div>
       </header>
@@ -938,7 +938,7 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
         <div className="max-w-2xl mx-auto px-6">
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-8 pb-8 border-b border-white/10 mb-6">
             <div className="col-span-2 sm:col-span-1">
-              <GuestcamLogo size="sm" showMark={true} variant="onDark" />
+              <CamLoveLogo size="sm" showMark={true} variant="onDark" />
               <p className="text-gray-400 text-xs leading-relaxed mt-3">
                 {u.footerTagline}
               </p>

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { GuestcamLogo } from "@/components/GuestcamLogo";
+import { CamLoveLogo } from "@/components/CamLoveLogo";
 
 /**
  * Global 404 page — rendered for any request that doesn't match a
@@ -18,7 +18,7 @@ import { GuestcamLogo } from "@/components/GuestcamLogo";
  */
 
 export const metadata: Metadata = {
-  title: "Stran ni najdena · Guestcam",
+  title: "Stran ni najdena · CamLove",
   description: "Iskane strani ni mogoče najti.",
   robots: { index: false, follow: false },
 };
@@ -31,8 +31,8 @@ export default function NotFound() {
     >
       <div className="text-center max-w-md">
         <div className="flex justify-center mb-8">
-          <Link href="/" aria-label="Guestcam">
-            <GuestcamLogo size="md" showMark={true} />
+          <Link href="/" aria-label="CamLove">
+            <CamLoveLogo size="md" showMark={true} />
           </Link>
         </div>
 

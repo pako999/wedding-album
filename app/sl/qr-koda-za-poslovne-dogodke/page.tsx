@@ -251,7 +251,7 @@ export default function QrKodaPoslovniDogodekPage() {
         {/* Section 4 — Step by step */}
         <section className="mb-10">
           <h2 className="font-serif text-2xl font-bold text-[#0F1729] mb-4">
-            Kako nastavite QR kodo za poslovni dogodek z Guestcam — korak za korakom
+            Kako nastavite QR kodo za poslovni dogodek z CamLove — korak za korakom
           </h2>
           <p className="text-gray-600 leading-relaxed mb-6">
             Postopek je hiter in ne zahteva vključenosti IT oddelka. Sledite tem
@@ -262,7 +262,7 @@ export default function QrKodaPoslovniDogodekPage() {
               {
                 step: "01",
                 title: "Ustvarite brezplačen račun",
-                desc: "Obiščite Guestcam.si in kliknite »Ustvari galerijo brezplačno«. Vnesite e-poštni naslov in geslo — postopek traja manj kot minuto.",
+                desc: "Obiščite camlove.me in kliknite »Ustvari galerijo brezplačno«. Vnesite e-poštni naslov in geslo — postopek traja manj kot minuto.",
               },
               {
                 step: "02",
@@ -277,7 +277,7 @@ export default function QrKodaPoslovniDogodekPage() {
               {
                 step: "04",
                 title: "Izberite predlogo za tisk",
-                desc: "Guestcam ponuja predloge za QR kartice, primerne za priponke, mize ali roll-up panoje. Vsaka se samodejno prilagodi z imenom dogodka.",
+                desc: "CamLove ponuja predloge za QR kartice, primerne za priponke, mize ali roll-up panoje. Vsaka se samodejno prilagodi z imenom dogodka.",
               },
               {
                 step: "05",
@@ -356,7 +356,7 @@ export default function QrKodaPoslovniDogodekPage() {
             {[
               {
                 q: "Ali je QR koda za poslovne dogodke res brezplačna?",
-                a: "Z Guestcam je ustvarjanje galerije in QR kode brezplačno za vedno (do 20 fotografij). Za konference in dogodke z več udeleženci so na voljo plačljivi paketi z neomejenim številom fotografij.",
+                a: "Z CamLove je ustvarjanje galerije in QR kode brezplačno za vedno (do 20 fotografij). Za konference in dogodke z več udeleženci so na voljo plačljivi paketi z neomejenim številom fotografij.",
               },
               {
                 q: "Ali lahko fotografije pregledamo, preden so vidne vsem?",

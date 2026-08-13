@@ -79,10 +79,10 @@ export function buildArticleSchema(opts: ArticleOpts) {
     headline: opts.headline,
     description: opts.description,
     inLanguage: opts.inLanguage,
-    author: { "@type": "Organization", name: "Guestcam", url: SITE },
+    author: { "@type": "Organization", name: "CamLove", url: SITE },
     publisher: {
       "@type": "Organization",
-      name: "Guestcam",
+      name: "CamLove",
       logo: { "@type": "ImageObject", url: `${SITE}/icon-512.png` },
     },
     mainEntityOfPage: opts.url,

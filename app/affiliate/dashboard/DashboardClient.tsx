@@ -181,7 +181,7 @@ export function DashboardClient({ affiliate, commissions, analytics }: Props) {
         </div>
 
         <p className="text-xs text-gray-400 text-center mt-6">
-          Za vprašanja nam pišite na <a href="mailto:partnerji@guestcam.si" className="underline">partnerji@guestcam.si</a>
+          Za vprašanja nam pišite na <a href="mailto:partnerji@camlove.me" className="underline">partnerji@camlove.me</a>
         </p>
       </div>
     </div>

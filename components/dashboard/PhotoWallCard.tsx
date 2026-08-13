@@ -157,7 +157,7 @@ export function PhotoWallCard({ wallUrl, hasPassword, albumSlug, moderationEnabl
     { label: "QR koda",              desc: "Gostje lahko skenirajo in dodajo slike.", on: showQr,    set: setShowQr },
     { label: "Imena gostov",         desc: "Kdo je naložil fotografijo.",             on: showNames, set: setShowNames },
     { label: "Naziv dogodka",        desc: "Ime dogodka v zgornjem kotu.",            on: showTitle, set: setShowTitle },
-    { label: "Guestcam oznaka",      desc: "»Powered by guestcam.si« v kotu.",        on: showBrand, set: setShowBrand },
+    { label: "CamLove oznaka",      desc: "»Powered by camlove.me« v kotu.",        on: showBrand, set: setShowBrand },
   ];
 
   return (

@@ -6,16 +6,16 @@
   "translationKey": "how-to-collect-wedding-photos",
   "publishedAt": "2026-05-22",
   "updatedAt": "2026-05-25",
-  "author": "Guestcam Team",
+  "author": "CamLove Team",
   "category": "vodnik",
   "readingTime": 7,
   "tags": [
     "wedding photos",
     "QR code",
     "guests",
-    "Guestcam"
+    "CamLove"
   ],
-  "tldr": "The easiest way is to create a QR-code album with Guestcam — guests scan and upload directly, no app needed.",
+  "tldr": "The easiest way is to create a QR-code album with CamLove — guests scan and upload directly, no app needed.",
   "content": [
     {
       "type": "h2",
@@ -28,14 +28,14 @@
     {
       "type": "stat",
       "value": "340",
-      "label": "average photos per wedding (Guestcam data 2025)",
-      "source": "Guestcam internal data, 2025"
+      "label": "average photos per wedding (CamLove data 2025)",
+      "source": "CamLove internal data, 2025"
     },
     {
       "type": "image",
       "src": "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=1200&h=720&fit=crop&q=82&auto=format",
       "alt": "Bride and groom embracing on their wedding day",
-      "caption": "The most precious moments happen among the guests — Guestcam captures them all.",
+      "caption": "The most precious moments happen among the guests — CamLove captures them all.",
       "credit": "Foto: Unsplash"
     },
     {
@@ -80,7 +80,7 @@
           "Huge attachments"
         ],
         [
-          "QR code + Guestcam",
+          "QR code + CamLove",
           "100%",
           "1 scan",
           "No risk"
@@ -100,12 +100,12 @@
     },
     {
       "type": "p",
-      "text": "The easiest path is via Guestcam. Steps:"
+      "text": "The easiest path is via CamLove. Steps:"
     },
     {
       "type": "ol",
       "items": [
-        "Go to guestcam.si and click Create gallery (free, no card needed).",
+        "Go to camlove.me and click Create gallery (free, no card needed).",
         "Enter the couple's names and the wedding date.",
         "Download the QR code with a personalised design (PDF).",
         "Print cards for every table or for the entrance.",
@@ -143,7 +143,7 @@
     {
       "type": "faq",
       "q": "Are the photos kept in full quality?",
-      "a": "Yes. Guestcam keeps original resolution and metadata. WhatsApp by comparison compresses to about 50% quality."
+      "a": "Yes. CamLove keeps original resolution and metadata. WhatsApp by comparison compresses to about 50% quality."
     },
     {
       "type": "faq",

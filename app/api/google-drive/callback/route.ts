@@ -53,7 +53,7 @@ export async function GET(req: NextRequest) {
     });
     if (albumPhotos.length === 0) return back("empty");
 
-    const folderName = `Guestcam – ${album.coupleName || slug}`;
+    const folderName = `CamLove – ${album.coupleName || slug}`;
     const folderId = await createFolder(token, folderName);
 
     // Upload in small parallel batches to stay within the function timeout.
@@ -70,7 +70,7 @@ export async function GET(req: NextRequest) {
           const idx = String(i + j + 1).padStart(3, "0");
           const name = p.originalFilename
             ? `${idx}_${p.originalFilename}`
-            : `${idx}_guestcam.${ext}`;
+            : `${idx}_camlove.${ext}`;
           await uploadToDrive(token, folderId, name, bytes, p.mimeType ?? "image/jpeg");
         }),
       );

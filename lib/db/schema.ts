@@ -248,8 +248,8 @@ export type AlbumAppearance = typeof albumAppearance.$inferSelect;
 /**
  * Guest details captured at upload time when `guestDataCapture` is on.
  *
- * Deliberately NOT merged into `guest_emails`. That table is Guestcam's
- * OWN marketing list (the d3/d21 sequence, where Guestcam is the data
+ * Deliberately NOT merged into `guest_emails`. That table is CamLove's
+ * OWN marketing list (the d3/d21 sequence, where CamLove is the data
  * controller). These rows belong to the event organiser — they are the
  * controller, we are the processor, and they export and use the list.
  * Different controller, different purpose, different retention: keeping
@@ -757,7 +757,7 @@ export type StandOrder = typeof standOrders.$inferSelect;
 export type NewStandOrder = typeof standOrders.$inferInsert;
 
 // ─── Affiliates ──────────────────────────────────────────────────────────────
-// Partner program: bloggers, agencies, customers refer GuestCam and earn
+// Partner program: bloggers, agencies, customers refer CamLove and earn
 // a commission (default 20%) on each paid order. All monetary fields use
 // integer cents (€49 = 4900) to match the rest of the codebase and avoid
 // floating-point drift.
@@ -773,7 +773,7 @@ export const affiliates = pgTable(
     website: text("website"),
     paypalEmail: text("paypal_email"),
     bankIban: text("bank_iban"),
-    // Unique code that goes in their link: guestcam.si/?ref=YOURCODE
+    // Unique code that goes in their link: camlove.me/?ref=YOURCODE
     referralCode: varchar("referral_code", { length: 32 }).notNull().unique(),
     // Percent (1–100). 20 = 20% of order value.
     commissionRate: integer("commission_rate").notNull().default(20),

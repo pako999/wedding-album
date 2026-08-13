@@ -16,7 +16,7 @@ export const LANGS: { code: Lang; flag: string; label: string; native: string }[
 export interface Translations {
   // Page meta
   albumTitle: string;           // "Poročni album"
-  by: string;                   // "by Guestcam"
+  by: string;                   // "by CamLove"
 
   // Password gate
   passwordProtected: string;    // "This album is password protected"
@@ -70,7 +70,7 @@ export interface Translations {
   filesDropped: (n: number) => string; // "3 files not added — album limit reached"
 
   // Footer
-  footerCredit: string;         // "Guestcam"
+  footerCredit: string;         // "CamLove"
 
   // Event type labels
   eventLabel: (type: string) => string; // "Wedding" / "Birthday" / …
@@ -223,7 +223,7 @@ export interface Translations {
 
 const sl: Translations = {
   albumTitle: "Poročni album",
-  by: "Guestcam",
+  by: "CamLove",
   passwordProtected: "Ta album je zaščiten z geslom.",
   passwordPlaceholder: "Geslo",
   openAlbum: "Odpri album",
@@ -261,7 +261,7 @@ const sl: Translations = {
   offlineBanner: "Ni interneta — fotografije so v vrsti in se bodo samodejno naložile, ko bo vzpostavljena povezava",
   limitReached: "Omejitev albuma je dosežena.",
   filesDropped: (n) => `${n} ${n === 1 ? "datoteka ni bila dodana" : "datotek ni bilo dodano"} — dosežena je omejitev albuma.`,
-  footerCredit: "Guestcam",
+  footerCredit: "CamLove",
   eventLabel: (type) => ({
     baby_shower: "Baby Shower",
     business: "Poslovni dogodek",
@@ -364,7 +364,7 @@ const sl: Translations = {
   saveLinkDesc: "Vnesite e-naslov in pošljemo vam povezavo do albuma, da ga boste lahko našli kadarkoli.",
   saveLinkSend: "Pošlji",
   saveLinkSent: "Povezava poslana! Preverite e-pošto. ✓",
-  marketingConsentLabel: "Obveščajte me o Guestcam novostih in ponudbah",
+  marketingConsentLabel: "Obveščajte me o CamLove novostih in ponudbah",
   discountCode: "Koda za popust",
   discountPlaceholder: "Vnesite kodo…",
   discountApply: "Uveljavi",
@@ -379,7 +379,7 @@ const sl: Translations = {
 
 const hr: Translations = {
   albumTitle: "Vjenčani album",
-  by: "Guestcam",
+  by: "CamLove",
   passwordProtected: "Ovaj album je zaštićen lozinkom.",
   passwordPlaceholder: "Lozinka",
   openAlbum: "Otvori album",
@@ -417,7 +417,7 @@ const hr: Translations = {
   fileQueued: "U redu — učitat će se kad bude interneta",
   offlineBanner: "Nema interneta — fotografije su u redu i automatski će se učitati kad se veza uspostavi",
   limitReached: "Dostignut limit fotografija.",
-  footerCredit: "Guestcam",
+  footerCredit: "CamLove",
   eventLabel: (type) => ({
     baby_shower: "Baby Shower",
     business: "Poslovni događaj",
@@ -520,7 +520,7 @@ const hr: Translations = {
   saveLinkDesc: "Unesite e-poštu i poslat ćemo vam vezu do albuma da ga možete pronaći kad god zatreba.",
   saveLinkSend: "Pošalji",
   saveLinkSent: "Veza poslana! Provjerite e-poštu. ✓",
-  marketingConsentLabel: "Obavještavajte me o Guestcam novostima i ponudama",
+  marketingConsentLabel: "Obavještavajte me o CamLove novostima i ponudama",
   discountCode: "Kod za popust",
   discountPlaceholder: "Unesite kod…",
   discountApply: "Primijeni",
@@ -535,7 +535,7 @@ const hr: Translations = {
 
 const sr: Translations = {
   albumTitle: "Venčani album",
-  by: "Guestcam",
+  by: "CamLove",
   passwordProtected: "Ovaj album je zaštićen lozinkom.",
   passwordPlaceholder: "Lozinka",
   openAlbum: "Otvori album",
@@ -573,7 +573,7 @@ const sr: Translations = {
   fileQueued: "U redu — otpremiće se kad bude interneta",
   offlineBanner: "Nema interneta — fotografije su u redu i automatski će se otpremiti kad se veza uspostavi",
   limitReached: "Dostignut limit fotografija.",
-  footerCredit: "Guestcam",
+  footerCredit: "CamLove",
   eventLabel: (type) => ({
     baby_shower: "Baby Shower",
     business: "Poslovni događaj",
@@ -676,7 +676,7 @@ const sr: Translations = {
   saveLinkDesc: "Unesite e-poštu i poslaćemo vam vezu do albuma da ga možete pronaći kad god zatreba.",
   saveLinkSend: "Pošalji",
   saveLinkSent: "Veza poslana! Proverite e-poštu. ✓",
-  marketingConsentLabel: "Obaveštavajte me o Guestcam novostima i ponudama",
+  marketingConsentLabel: "Obaveštavajte me o CamLove novostima i ponudama",
   discountCode: "Kod za popust",
   discountPlaceholder: "Unesite kod…",
   discountApply: "Primeni",
@@ -691,7 +691,7 @@ const sr: Translations = {
 
 const en: Translations = {
   albumTitle: "Wedding Album",
-  by: "Guestcam",
+  by: "CamLove",
   passwordProtected: "This album is password protected.",
   passwordPlaceholder: "Password",
   openAlbum: "Open album",
@@ -729,7 +729,7 @@ const en: Translations = {
   offlineBanner: "No internet — photos are queued and will upload automatically when your connection returns",
   limitReached: "Album photo limit reached.",
   filesDropped: (n) => `${n} ${n === 1 ? "file" : "files"} not added — album limit reached.`,
-  footerCredit: "Guestcam",
+  footerCredit: "CamLove",
   eventLabel: (type) => ({
     baby_shower: "Baby Shower",
     business: "Business event",
@@ -832,7 +832,7 @@ const en: Translations = {
   saveLinkDesc: "Enter your email and we'll send you the album link so you can find it anytime — no QR code needed.",
   saveLinkSend: "Send",
   saveLinkSent: "Link sent! Check your inbox. ✓",
-  marketingConsentLabel: "Keep me updated on Guestcam news and offers",
+  marketingConsentLabel: "Keep me updated on CamLove news and offers",
   discountCode: "Discount code",
   discountPlaceholder: "Enter code…",
   discountApply: "Apply",
@@ -847,7 +847,7 @@ const en: Translations = {
 
 const de: Translations = {
   albumTitle: "Hochzeitsalbum",
-  by: "Guestcam",
+  by: "CamLove",
   passwordProtected: "Dieses Album ist passwortgeschützt.",
   passwordPlaceholder: "Passwort",
   openAlbum: "Album öffnen",
@@ -885,7 +885,7 @@ const de: Translations = {
   offlineBanner: "Kein Internet — Fotos sind in der Warteschlange und werden automatisch hochgeladen, sobald die Verbindung wiederhergestellt ist",
   limitReached: "Foto-Limit des Albums erreicht.",
   filesDropped: (n) => `${n} ${n === 1 ? "Datei nicht hinzugefügt" : "Dateien nicht hinzugefügt"} — Album-Limit erreicht.`,
-  footerCredit: "Guestcam",
+  footerCredit: "CamLove",
   eventLabel: (type) => ({
     baby_shower: "Baby Shower",
     business: "Firmenevent",
@@ -988,7 +988,7 @@ const de: Translations = {
   saveLinkDesc: "Geben Sie Ihre E-Mail-Adresse ein und wir senden Ihnen den Link zum Album — auch ohne QR-Code auffindbar.",
   saveLinkSend: "Senden",
   saveLinkSent: "Link gesendet! Bitte prüfen Sie Ihren Posteingang. ✓",
-  marketingConsentLabel: "Informieren Sie mich über Guestcam-Neuigkeiten und Angebote",
+  marketingConsentLabel: "Informieren Sie mich über CamLove-Neuigkeiten und Angebote",
   discountCode: "Rabattcode",
   discountPlaceholder: "Code eingeben…",
   discountApply: "Einlösen",
@@ -1003,7 +1003,7 @@ const de: Translations = {
 
 const es: Translations = {
   albumTitle: "Álbum de boda",
-  by: "Guestcam",
+  by: "CamLove",
   passwordProtected: "Este álbum está protegido con contraseña.",
   passwordPlaceholder: "Contraseña",
   openAlbum: "Abrir álbum",
@@ -1041,7 +1041,7 @@ const es: Translations = {
   offlineBanner: "Sin internet — las fotos están en cola y se subirán automáticamente cuando vuelva la conexión",
   limitReached: "Límite de fotos del álbum alcanzado.",
   filesDropped: (n) => `${n} ${n === 1 ? "archivo no añadido" : "archivos no añadidos"} — límite del álbum alcanzado.`,
-  footerCredit: "Guestcam",
+  footerCredit: "CamLove",
   eventLabel: (type) => ({
     baby_shower: "Baby Shower",
     business: "Evento de empresa",
@@ -1144,7 +1144,7 @@ const es: Translations = {
   saveLinkDesc: "Introduce tu email y te enviamos el enlace al álbum para que puedas encontrarlo cuando quieras, sin necesitar el QR.",
   saveLinkSend: "Enviar",
   saveLinkSent: "¡Enlace enviado! Revisa tu bandeja de entrada. ✓",
-  marketingConsentLabel: "Mantenedme informado sobre novedades y ofertas de Guestcam",
+  marketingConsentLabel: "Mantenedme informado sobre novedades y ofertas de CamLove",
   discountCode: "Código de descuento",
   discountPlaceholder: "Introduce el código…",
   discountApply: "Aplicar",

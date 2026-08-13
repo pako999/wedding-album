@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   // sammeln" — the #1 ranker (mymillionsnaps.com) uses that exact
   // phrase. We match it word-for-word in the title to compete head-on.
   // `absolute` bypasses the root template.
-  title: { absolute: "Hochzeitsfotos per QR-Code sammeln · Kostenlos | Guestcam" },
+  title: { absolute: "Hochzeitsfotos per QR-Code sammeln · Kostenlos | CamLove" },
   description:
     "Alle Fotos und Videos Ihrer Gäste in einer privaten Galerie sammeln — per QR-Code. Keine App, volle Qualität, kostenlos starten. Für Hochzeiten & Events.",
   alternates: {
@@ -25,9 +25,9 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "de_DE",
-    siteName: "Guestcam",
+    siteName: "CamLove",
     url: `${SITE_URL}/de`,
-    title: "Hochzeitsfotos per QR-Code sammeln · Kostenlos | Guestcam",
+    title: "Hochzeitsfotos per QR-Code sammeln · Kostenlos | CamLove",
     description:
       "Alle Fotos und Videos Ihrer Gäste in einer privaten Galerie sammeln — per QR-Code. Keine App, volle Qualität, kostenlos starten. Für Hochzeiten & Events.",
     // See app/sr/page.tsx for the per-locale image rationale.
@@ -36,14 +36,14 @@ export const metadata: Metadata = {
         url: `${SITE_URL}/og-image.png?v=2`,
         width: 910,
         height: 1200,
-        alt: "Hochzeitsfotos per QR-Code sammeln · Kostenlos | Guestcam",
+        alt: "Hochzeitsfotos per QR-Code sammeln · Kostenlos | CamLove",
         type: "image/png",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Hochzeitsfotos per QR-Code sammeln · Kostenlos | Guestcam",
+    title: "Hochzeitsfotos per QR-Code sammeln · Kostenlos | CamLove",
     description: "Alle Fotos und Videos Ihrer Gäste in einer privaten Galerie sammeln — per QR-Code. Keine App, volle Qualität, kostenlos starten.",
     images: [`${SITE_URL}/og-image.png?v=2`],
   },

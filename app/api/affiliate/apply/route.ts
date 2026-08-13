@@ -51,7 +51,7 @@ export async function POST(req: NextRequest) {
   }
   if (promotionPlan.length < 20) {
     return NextResponse.json(
-      { error: "Prosimo opišite, kako boste promovirali GuestCam (vsaj 20 znakov)." },
+      { error: "Prosimo opišite, kako boste promovirali CamLove (vsaj 20 znakov)." },
       { status: 400 },
     );
   }

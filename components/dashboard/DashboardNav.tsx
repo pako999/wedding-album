@@ -11,7 +11,7 @@ export function DashboardNav() {
           <svg className="w-4 h-4" style={{ color: "#C9820A" }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
             <path d="M12 21C12 21 3 13.5 3 8a5 5 0 0 1 9-3 5 5 0 0 1 9 3c0 5.5-9 13-9 13z" />
           </svg>
-          <span className="font-serif italic text-lg font-semibold text-[#0F1729] ml-1">Guestcam</span>
+          <span className="font-serif italic text-lg font-semibold text-[#0F1729] ml-1">CamLove</span>
           <span className="font-black text-xl leading-none" style={{ color: "#C9820A", marginTop: 2 }}>.</span>
         </Link>
 

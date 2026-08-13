@@ -2,7 +2,7 @@ import Link from "next/link";
 import { auth } from "@clerk/nextjs/server";
 import { LanguageSwitcher, HOME_HREFLANG, type LangCode } from "@/components/LanguageSwitcher";
 import { SeoFooter } from "@/components/SeoFooter";
-import { GuestcamLogo } from "@/components/GuestcamLogo";
+import { CamLoveLogo } from "@/components/CamLoveLogo";
 import { EventCard } from "@/components/EventCard";
 import { HeaderAuthButtons } from "@/components/HeaderAuthButtons";
 import { HomeMobileMenu } from "@/components/HomeMobileMenu";
@@ -170,11 +170,11 @@ const COPY: Record<Lang, Copy> = {
     heroLead: "Skupite sve fotografije i videozapise svojih gostiju u jednoj privatnoj galeriji. Gosti samo skeniraju QR kod i u nekoliko sekundi dijele svoje trenutke.",
     heroPrimary: "Započni besplatno", heroDemoBtn: "Pogledaj demo", heroNote: "Bez kreditne kartice • Spremno za manje od 2 minute",
     heroPrintOffer: { title: "Ne želite sami tiskati?", body: (p) => `Tiskamo QR stalke za stolove i šaljemo vam ih — već od ${p} po komadu, dodajte ih uz kupnju paketa.` },
-    trustText: "Povjerenje", trust500: "500+ događaja već prikupilo uspomene s Guestcam 📸",
+    trustText: "Povjerenje", trust500: "500+ događaja već prikupilo uspomene s CamLove 📸",
     threeStep: { takePhoto: "Gosti fotografiraju", scanQr: "Skeniraju QR", upload: "Učitavaju fotografije" },
     statsCreated: "kreiranih galerija", statsRating: "na temelju prvih ocjena", statsPhotos: "prikupljenih fotografija",
     eventsTitle: "Za svaki poseban trenutak",
-    eventsSubtitle: "Guestcam prikuplja fotografije vaših gostiju — za vjenčanja, rođendane, baby showere, godišnjice, poslovne zabave i svaki događaj vrijedan uspomene.",
+    eventsSubtitle: "CamLove prikuplja fotografije vaših gostiju — za vjenčanja, rođendane, baby showere, godišnjice, poslovne zabave i svaki događaj vrijedan uspomene.",
     eventsList: [
       { emoji: "💍", label: "Vjenčanje" }, { emoji: "🎂", label: "Rođendan" },
       { emoji: "👶", label: "Baby shower" }, { emoji: "🎩", label: "Momačka večer" },
@@ -211,7 +211,7 @@ const COPY: Record<Lang, Copy> = {
       { icon: "📱", title: "Fotografije ostaju na telefonima", desc: "Nakon događaja fotografije su razasute po telefonima, WhatsApp grupama i društvenim mrežama. Većinu organizator nikad ne primi." },
       { icon: "👁",  title: "Doživite događaj kroz oči svojih gostiju", desc: "Pogledajte trenutke koje ste možda propustili i složite cijelu priču događaja iz svih kutova." },
     ],
-    featuresTitle: "Zašto izabrati Guestcam?",
+    featuresTitle: "Zašto izabrati CamLove?",
     featuresLead1: "Sve fotografije i videozapisi vaših gostiju. Na jednom mjestu.",
     featuresLead2: "Bez aplikacija, bez slanja WhatsAppom i bez izgubljenih uspomena.",
     features: [
@@ -264,11 +264,11 @@ const COPY: Record<Lang, Copy> = {
     heroLead: "Sakupite sve fotografije i video snimke svojih gostiju u jednoj privatnoj galeriji. Gosti samo skeniraju QR kod i za nekoliko sekundi dele svoje trenutke.",
     heroPrimary: "Započni besplatno", heroDemoBtn: "Pogledaj demo", heroNote: "Bez kreditne kartice • Spremno za manje od 2 minuta",
     heroPrintOffer: { title: "Ne želite sami da štampate?", body: (p) => `Štampamo QR stalke za stolove i šaljemo vam ih — već od ${p} po komadu, dodajte ih uz kupovinu paketa.` },
-    trustText: "Poverenje", trust500: "500+ događaja već prikupilo uspomene s Guestcam 📸",
+    trustText: "Poverenje", trust500: "500+ događaja već prikupilo uspomene s CamLove 📸",
     threeStep: { takePhoto: "Gosti fotografišu", scanQr: "Skeniraju QR", upload: "Otpremaju fotografije" },
     statsCreated: "napravljenih galerija", statsRating: "na osnovu prvih ocena", statsPhotos: "sakupljenih fotografija",
     eventsTitle: "Za svaki poseban trenutak",
-    eventsSubtitle: "Guestcam prikuplja fotografije vaših gostiju — za venčanja, rođendane, baby showere, godišnjice, poslovne zabave i svaki događaj vredan sećanja.",
+    eventsSubtitle: "CamLove prikuplja fotografije vaših gostiju — za venčanja, rođendane, baby showere, godišnjice, poslovne zabave i svaki događaj vredan sećanja.",
     eventsList: [
       { emoji: "💍", label: "Venčanje" }, { emoji: "🎂", label: "Rođendan" },
       { emoji: "👶", label: "Baby shower" }, { emoji: "🎩", label: "Momačka večer" },
@@ -305,7 +305,7 @@ const COPY: Record<Lang, Copy> = {
       { icon: "📱", title: "Fotografije ostaju na telefonima", desc: "Posle događaja fotografije su raspršene po telefonima, WhatsApp grupama i društvenim mrežama. Većinu organizator nikad ne dobije." },
       { icon: "👁",  title: "Doživite događaj kroz oči svojih gostiju", desc: "Pogledajte trenutke koje ste možda propustili i sastavite celu priču događaja iz svih uglova." },
     ],
-    featuresTitle: "Zašto izabrati Guestcam?",
+    featuresTitle: "Zašto izabrati CamLove?",
     featuresLead1: "Sve fotografije i video snimci vaših gostiju. Na jednom mestu.",
     featuresLead2: "Bez aplikacija, bez slanja WhatsAppom i bez izgubljenih uspomena.",
     features: [
@@ -358,11 +358,11 @@ const COPY: Record<Lang, Copy> = {
     heroLead: "Sammeln Sie alle Fotos und Videos Ihrer Gäste in einer privaten Galerie. Gäste scannen einfach den QR-Code und teilen ihre Momente in Sekunden.",
     heroPrimary: "Kostenlos starten", heroDemoBtn: "Demo ansehen", heroNote: "Keine Kreditkarte • Bereit in unter 2 Minuten",
     heroPrintOffer: { title: "Lieber nicht selbst drucken?", body: (p) => `Wir drucken die QR-Aufsteller für Ihre Tische und senden sie Ihnen zu — ab ${p} pro Stück, zum Paket hinzufügbar.` },
-    trustText: "Vertrauen von", trust500: "500+ Events haben bereits Erinnerungen mit Guestcam gesammelt 📸",
+    trustText: "Vertrauen von", trust500: "500+ Events haben bereits Erinnerungen mit CamLove gesammelt 📸",
     threeStep: { takePhoto: "Gäste fotografieren", scanQr: "QR scannen", upload: "Fotos hochladen" },
     statsCreated: "erstellte Galerien", statsRating: "auf Basis erster Bewertungen", statsPhotos: "gesammelte Fotos",
     eventsTitle: "Für jeden besonderen Moment",
-    eventsSubtitle: "Guestcam sammelt Fotos Ihrer Gäste — für Hochzeiten, Geburtstage, Babypartys, Jubiläen, Firmenfeiern und jedes Ereignis, das Erinnerungen verdient.",
+    eventsSubtitle: "CamLove sammelt Fotos Ihrer Gäste — für Hochzeiten, Geburtstage, Babypartys, Jubiläen, Firmenfeiern und jedes Ereignis, das Erinnerungen verdient.",
     eventsList: [
       { emoji: "💍", label: "Hochzeit" }, { emoji: "🎂", label: "Geburtstag" },
       { emoji: "👶", label: "Babyparty" }, { emoji: "🎩", label: "Junggesellenabschied" },
@@ -399,7 +399,7 @@ const COPY: Record<Lang, Copy> = {
       { icon: "📱", title: "Fotos bleiben auf den Handys", desc: "Nach der Veranstaltung sind Fotos auf Telefonen, in WhatsApp-Gruppen und sozialen Medien verstreut. Die meisten erreichen den Veranstalter nie." },
       { icon: "👁",  title: "Erleben Sie den Tag durch die Augen Ihrer Gäste", desc: "Sehen Sie Momente, die Sie vielleicht verpasst haben, und setzen Sie die ganze Geschichte aus allen Blickwinkeln zusammen." },
     ],
-    featuresTitle: "Warum Guestcam wählen?",
+    featuresTitle: "Warum CamLove wählen?",
     featuresLead1: "Alle Fotos und Videos Ihrer Gäste. An einem Ort.",
     featuresLead2: "Ohne Apps, ohne WhatsApp-Versand und ohne verlorene Erinnerungen.",
     features: [
@@ -452,11 +452,11 @@ const COPY: Record<Lang, Copy> = {
     heroLead: "Collect every photo and video your guests take into a single private gallery. Guests scan a QR code and share their moments in seconds.",
     heroPrimary: "Start for free", heroDemoBtn: "See live demo", heroNote: "No credit card • Ready in under 2 minutes",
     heroPrintOffer: { title: "Rather not print it yourself?", body: (p) => `We print the QR stands for your tables and post them to you — from ${p} each, added with your plan.` },
-    trustText: "Trusted by", trust500: "500+ events have already collected memories with Guestcam 📸",
+    trustText: "Trusted by", trust500: "500+ events have already collected memories with CamLove 📸",
     threeStep: { takePhoto: "Guests snap", scanQr: "Scan QR", upload: "Upload photos" },
     statsCreated: "galleries created", statsRating: "based on early reviews", statsPhotos: "photos collected",
     eventsTitle: "For every special moment",
-    eventsSubtitle: "Guestcam collects photos from your guests — for weddings, birthdays, baby showers, anniversaries, corporate events, and every celebration worth remembering.",
+    eventsSubtitle: "CamLove collects photos from your guests — for weddings, birthdays, baby showers, anniversaries, corporate events, and every celebration worth remembering.",
     eventsList: [
       { emoji: "💍", label: "Wedding" }, { emoji: "🎂", label: "Birthday" },
       { emoji: "👶", label: "Baby Shower" }, { emoji: "🎩", label: "Bachelor Party" },
@@ -493,7 +493,7 @@ const COPY: Record<Lang, Copy> = {
       { icon: "📱", title: "Photos stay on phones", desc: "After the event, photos scatter across phones, WhatsApp groups and social media. Most never reach the host." },
       { icon: "👁",  title: "See your event through your guests' eyes", desc: "See moments you might have missed and assemble the full story from every angle." },
     ],
-    featuresTitle: "Why choose Guestcam?",
+    featuresTitle: "Why choose CamLove?",
     featuresLead1: "All your guests' photos and videos. In one place.",
     featuresLead2: "No apps, no WhatsApp forwarding, no lost memories.",
     features: [
@@ -546,11 +546,11 @@ const COPY: Record<Lang, Copy> = {
     heroLead: "Reúne todas las fotos y vídeos de tus invitados en una sola galería privada. Tus invitados escanean un QR y comparten sus momentos en segundos.",
     heroPrimary: "Empezar gratis", heroDemoBtn: "Ver demo", heroNote: "Sin tarjeta • Listo en menos de 2 minutos",
     heroPrintOffer: { title: "¿Prefieres no imprimirlo tú?", body: (p) => `Imprimimos los soportes QR para tus mesas y te los enviamos — desde ${p} por unidad, se añaden con tu plan.` },
-    trustText: "Confianza de", trust500: "500+ eventos ya han coleccionado recuerdos con Guestcam 📸",
+    trustText: "Confianza de", trust500: "500+ eventos ya han coleccionado recuerdos con CamLove 📸",
     threeStep: { takePhoto: "Los invitados fotografían", scanQr: "Escanean QR", upload: "Suben fotos" },
     statsCreated: "galerías creadas", statsRating: "según primeras valoraciones", statsPhotos: "fotos recopiladas",
     eventsTitle: "Para cada momento especial",
-    eventsSubtitle: "Guestcam recopila fotos de tus invitados — para bodas, cumpleaños, baby showers, aniversarios, celebraciones empresariales y cualquier evento que merezca ser recordado.",
+    eventsSubtitle: "CamLove recopila fotos de tus invitados — para bodas, cumpleaños, baby showers, aniversarios, celebraciones empresariales y cualquier evento que merezca ser recordado.",
     eventsList: [
       { emoji: "💍", label: "Boda" }, { emoji: "🎂", label: "Cumpleaños" },
       { emoji: "👶", label: "Baby Shower" }, { emoji: "🎩", label: "Despedida de soltero" },
@@ -587,7 +587,7 @@ const COPY: Record<Lang, Copy> = {
       { icon: "📱", title: "Las fotos se quedan en los móviles", desc: "Después del evento las fotos se dispersan entre móviles, WhatsApp y redes sociales. La mayoría nunca llegan al organizador." },
       { icon: "👁",  title: "Vive el evento a través de los ojos de tus invitados", desc: "Ve momentos que tal vez te perdiste y monta la historia completa desde todos los ángulos." },
     ],
-    featuresTitle: "¿Por qué elegir Guestcam?",
+    featuresTitle: "¿Por qué elegir CamLove?",
     featuresLead1: "Todas las fotos y vídeos de tus invitados. En un solo lugar.",
     featuresLead2: "Sin apps, sin WhatsApp y sin recuerdos perdidos.",
     features: [
@@ -646,44 +646,44 @@ const HERO_IMAGE: Partial<Record<Lang, {
   srOnlyH1: string;
 }>> = {
   en: {
-    desktop: "/hero/guestcam-hero-en.webp",
-    mobile: "/hero/guestcam-hero-en-mobile.webp",
+    desktop: "/hero/camlove-hero-en.webp",
+    mobile: "/hero/camlove-hero-en-mobile.webp",
     width: 1448,
     height: 1086,
     alt: "Your best moments all in one place — guests scan a QR code on the wedding table and share photos to a shared album",
-    srOnlyH1: "Your best moments. All in one place. — Guestcam QR photo album for weddings and events",
+    srOnlyH1: "Your best moments. All in one place. — CamLove QR photo album for weddings and events",
   },
   hr: {
-    desktop: "/hero/guestcam-hero-hr.webp",
-    mobile: "/hero/guestcam-hero-hr-mobile.webp",
+    desktop: "/hero/camlove-hero-hr.webp",
+    mobile: "/hero/camlove-hero-hr-mobile.webp",
     width: 1448,
     height: 1086,
     alt: "Vaši najljepši trenuci na jednom mjestu — gosti skeniraju QR kod na stolu i dijele fotografije u zajednički album",
-    srOnlyH1: "Vaši najljepši trenuci. Na jednom mjestu. — Guestcam QR foto album za vjenčanja i događaje",
+    srOnlyH1: "Vaši najljepši trenuci. Na jednom mjestu. — CamLove QR foto album za vjenčanja i događaje",
   },
   sr: {
-    desktop: "/hero/guestcam-hero-sr.webp",
-    mobile: "/hero/guestcam-hero-sr-mobile.webp",
+    desktop: "/hero/camlove-hero-sr.webp",
+    mobile: "/hero/camlove-hero-sr-mobile.webp",
     width: 1448,
     height: 1086,
     alt: "Vaši najlepši trenuci na jednom mestu — gosti skeniraju QR kod na stolu i dele fotografije u zajednički album",
-    srOnlyH1: "Vaši najlepši trenuci. Na jednom mestu. — Guestcam QR foto album za venčanja i događaje",
+    srOnlyH1: "Vaši najlepši trenuci. Na jednom mestu. — CamLove QR foto album za venčanja i događaje",
   },
   es: {
-    desktop: "/hero/guestcam-hero-es.webp",
-    mobile: "/hero/guestcam-hero-es-mobile.webp",
+    desktop: "/hero/camlove-hero-es.webp",
+    mobile: "/hero/camlove-hero-es-mobile.webp",
     width: 1448,
     height: 1086,
     alt: "Tus mejores momentos en un solo lugar — los invitados escanean un código QR en la mesa y comparten sus fotos en un álbum compartido",
-    srOnlyH1: "Tus mejores momentos. En un solo lugar. — Guestcam álbum QR de fotos para bodas y eventos",
+    srOnlyH1: "Tus mejores momentos. En un solo lugar. — CamLove álbum QR de fotos para bodas y eventos",
   },
   de: {
-    desktop: "/hero/guestcam-hero-de.webp",
-    mobile: "/hero/guestcam-hero-de-mobile.webp",
+    desktop: "/hero/camlove-hero-de.webp",
+    mobile: "/hero/camlove-hero-de-mobile.webp",
     width: 1448,
     height: 1086,
     alt: "Eure schönsten Momente an einem Ort — Gäste scannen den QR-Code auf dem Tisch und teilen ihre Fotos in einem gemeinsamen Album",
-    srOnlyH1: "Eure schönsten Momente. Alle an einem Ort. — Guestcam QR-Fotoalbum für Hochzeiten und Events",
+    srOnlyH1: "Eure schönsten Momente. Alle an einem Ort. — CamLove QR-Fotoalbum für Hochzeiten und Events",
   },
 };
 
@@ -716,7 +716,7 @@ export async function LocalizedHomePage({ lang }: { lang: Lang }) {
       <header className="sticky top-0 z-40 border-b border-[#FFC94D]/30 bg-white/80 backdrop-blur-md">
         <nav className="max-w-7xl mx-auto px-6 sm:px-8 h-16 flex items-center justify-between">
           <Link href={`/${lang}`} className="flex items-center transition-transform duration-200 hover:scale-[1.03]">
-            <GuestcamLogo size="sm" showMark={true} />
+            <CamLoveLogo size="sm" showMark={true} />
           </Link>
           <div className="flex items-center gap-3 sm:gap-5">
             <LanguageSwitcher current={lang} languages={HOME_HREFLANG} ariaLabel={t.switcherAria} />

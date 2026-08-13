@@ -65,7 +65,7 @@ async function paddleFetch<T>(
 // ─── Transactions ─────────────────────────────────────────────────────────────
 
 export interface AdHocLineItem {
-  /** Customer-facing product name, e.g. "Guestcam Basic". */
+  /** Customer-facing product name, e.g. "CamLove Basic". */
   name: string;
   /** Price in the smallest currency unit (cents), e.g. 3900 for €39.00. */
   amountCents: number;

@@ -161,7 +161,7 @@ export function ZipDownloader({ albumSlug, className, children }: Props) {
       }
 
       const zipResponse = downloadZip(fileIterator());
-      const filename = `guestcam-${slug}.zip`;
+      const filename = `camlove-${slug}.zip`;
 
       // 3a. Modern browsers — stream directly to disk (no RAM overhead)
       if ("showSaveFilePicker" in window) {

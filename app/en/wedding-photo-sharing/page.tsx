@@ -2,7 +2,7 @@ import { SITE_URL } from "@/lib/urls";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { GUIDE_HREFLANG, LanguageSwitcher } from "@/components/LanguageSwitcher";
-import { GuestcamLogo } from "@/components/GuestcamLogo";
+import { CamLoveLogo } from "@/components/CamLoveLogo";
 import { SeoFooter } from "@/components/SeoFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { OG_IMAGE_URL, ogImage } from "@/lib/og";
@@ -52,7 +52,7 @@ function SiteFooter() {
           <Link href="/terms" className="hover:text-white transition-colors">
             Terms
           </Link>
-          <a href="mailto:hello@guestcam.me" className="hover:text-white transition-colors">
+          <a href="mailto:info@camlove.me" className="hover:text-white transition-colors">
             Contact
           </a>
         </div>
@@ -194,7 +194,7 @@ export default function WeddingPhotoSharingPage() {
         {/* Section 3 */}
         <section className="mb-10">
           <h2 className="font-serif text-2xl font-bold text-[#0F1729] mb-4">
-            What makes Guestcam different
+            What makes CamLove different
           </h2>
           <div className="grid sm:grid-cols-2 gap-4">
             {[
@@ -248,7 +248,7 @@ export default function WeddingPhotoSharingPage() {
           </h2>
           <div className="space-y-3">
             {[
-              { q: "Is Guestcam really free?", a: "Yes, the basic plan is free forever — you get a unique QR code and gallery for up to 50 guests and 200 photos. Paid plans unlock unlimited guests, unlimited photos, and extra features." },
+              { q: "Is CamLove really free?", a: "Yes, the basic plan is free forever — you get a unique QR code and gallery for up to 50 guests and 200 photos. Paid plans unlock unlimited guests, unlimited photos, and extra features." },
               { q: "Do guests need to download an app?", a: "No. The gallery opens directly in the mobile browser. No installation, no account, no password." },
               { q: "What photo quality is stored?", a: "Full original resolution. We never compress or resize guest photos. Every file is stored exactly as uploaded." },
               { q: "Is the gallery private?", a: "Yes. Your gallery is accessible only via your unique QR code or direct link. It is never indexed by Google or other search engines." },

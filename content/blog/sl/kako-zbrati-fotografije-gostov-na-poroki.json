@@ -6,16 +6,16 @@
   "translationKey": "how-to-collect-wedding-photos",
   "publishedAt": "2026-05-22",
   "updatedAt": "2026-05-25",
-  "author": "Guestcam Team",
+  "author": "CamLove Team",
   "category": "vodnik",
   "readingTime": 7,
   "tags": [
     "poročne fotografije",
     "QR koda",
     "gostje",
-    "Guestcam"
+    "CamLove"
   ],
-  "tldr": "Najlažje je ustvariti QR kodo galerijo z Guestcam — gostje skenirajo in naložijo neposredno, brez aplikacije.",
+  "tldr": "Najlažje je ustvariti QR kodo galerijo z CamLove — gostje skenirajo in naložijo neposredno, brez aplikacije.",
   "content": [
     {
       "type": "h2",
@@ -28,14 +28,14 @@
     {
       "type": "stat",
       "value": "340",
-      "label": "povprečno fotografij na poroko (Guestcam podatki 2025)",
-      "source": "Guestcam interni podatki, 2025"
+      "label": "povprečno fotografij na poroko (CamLove podatki 2025)",
+      "source": "CamLove interni podatki, 2025"
     },
     {
       "type": "image",
       "src": "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=1200&h=720&fit=crop&q=82&auto=format",
       "alt": "Mladoporočenca v objemu na poročnem dnevu",
-      "caption": "Najlepši trenutki se zgodijo med gosti — Guestcam jih ujame vse.",
+      "caption": "Najlepši trenutki se zgodijo med gosti — CamLove jih ujame vse.",
       "credit": "Foto: Unsplash"
     },
     {
@@ -80,7 +80,7 @@
           "Velike priloge"
         ],
         [
-          "QR koda + Guestcam",
+          "QR koda + CamLove",
           "100%",
           "1 sken",
           "Brez tveganja"
@@ -100,12 +100,12 @@
     },
     {
       "type": "p",
-      "text": "Najlažji način je preko Guestcam. Postopek:"
+      "text": "Najlažji način je preko CamLove. Postopek:"
     },
     {
       "type": "ol",
       "items": [
-        "Pojdite na guestcam.si in kliknite Ustvari galerijo (brezplačno, brez kartice).",
+        "Pojdite na camlove.me in kliknite Ustvari galerijo (brezplačno, brez kartice).",
         "Vnesite imena para in datum poroke.",
         "Prenesite QR kodo s personaliziranim dizajnom (PDF).",
         "Natisnite kartice za vse mize ali pred vhod.",
@@ -143,7 +143,7 @@
     {
       "type": "faq",
       "q": "So fotografije v polni kakovosti?",
-      "a": "Da. Guestcam ohrani originalno ločljivost in metapodatke. WhatsApp v primerjavi stisne na ~50 % kakovosti."
+      "a": "Da. CamLove ohrani originalno ločljivost in metapodatke. WhatsApp v primerjavi stisne na ~50 % kakovosti."
     },
     {
       "type": "faq",

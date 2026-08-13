@@ -7,10 +7,10 @@ export const termsDoc: Record<LangCode, LegalDoc> = {
     eyebrow: "Pravni dokument",
     lastUpdated: "Zadnja posodobitev: 1. januar 2026 · Sport group d.o.o.",
     intro:
-      "Z uporabo storitve Guestcam (v nadaljevanju: “storitev”) sprejemate te pogoje uporabe. Storitev nudi Sport group d.o.o. Če se s pogoji ne strinjate, prosimo, da storitve ne uporabljate.",
+      "Z uporabo storitve CamLove (v nadaljevanju: “storitev”) sprejemate te pogoje uporabe. Storitev nudi Sport group d.o.o. Če se s pogoji ne strinjate, prosimo, da storitve ne uporabljate.",
     sections: [
       { title: "1. Opis storitve", blocks: [
-        { type: "p", text: "Guestcam je SaaS storitev za zbiranje fotografij in videov gostov na poročnih in drugih dogodkih prek unikatne QR kode. Storitev obsega:" },
+        { type: "p", text: "CamLove je SaaS storitev za zbiranje fotografij in videov gostov na poročnih in drugih dogodkih prek unikatne QR kode. Storitev obsega:" },
         { type: "ul", items: [
           "Ustvarjanje zasebne galerije z unikatno QR kodo.",
           "Shranjevanje fotografij in videoposnetkov v polni kakovosti.",
@@ -27,7 +27,7 @@ export const termsDoc: Record<LangCode, LegalDoc> = {
         ] },
       ] },
       { title: "3. Lastništvo vsebine", blocks: [
-        { type: "p", text: "Vse fotografije in videoposnetki ostanejo last organizatorja in oseb, ki so jih naložile. Guestcam vsebine ne uporablja za oglaševanje, AI treninge ali javno objavo. Storitev nima pravice do uporabe vaše vsebine v marketinške ali komercialne namene." },
+        { type: "p", text: "Vse fotografije in videoposnetki ostanejo last organizatorja in oseb, ki so jih naložile. CamLove vsebine ne uporablja za oglaševanje, AI treninge ali javno objavo. Storitev nima pravice do uporabe vaše vsebine v marketinške ali komercialne namene." },
       ] },
       { title: "4. Paketi in omejitve", blocks: [
         { type: "p", text: "Storitev je na voljo v štirih paketih (Brezplačni, Basic, Plus, Premium) z različnimi omejitvami glede števila fotografij, časa hrambe in funkcionalnosti. Trenutne omejitve so vedno navedene na strani s ceniki." },
@@ -42,7 +42,7 @@ export const termsDoc: Record<LangCode, LegalDoc> = {
         { type: "ul", items: [
           "Plačila in izdajo računov izvaja naš preprodajalec Paddle (Paddle.com Market Ltd) kot pogodbeni prodajalec (Merchant of Record), ki obračuna tudi DDV. Paddle sprejema kartice, Apple Pay, Google Pay in PayPal.",
           "Cene so navedene v EUR brez DDV (DDV se obračuna v skladu z veljavno zakonodajo).",
-          "Ponujamo 30-dnevno garancijo vračila denarja za prvi nakup paketa. Vračilo lahko zahtevate prek e-pošte info@guestcam.si.",
+          "Ponujamo 30-dnevno garancijo vračila denarja za prvi nakup paketa. Vračilo lahko zahtevate prek e-pošte info@camlove.me.",
         ] },
       ] },
       { title: "6. Dovoljene vsebine (Acceptable Use)", blocks: [
@@ -69,7 +69,7 @@ export const termsDoc: Record<LangCode, LegalDoc> = {
         { type: "p", text: "Za te pogoje velja slovensko pravo. Vsi spori se rešujejo pred pristojnim sodiščem v Ljubljani, Slovenija." },
       ] },
       { title: "11. Kontakt", blocks: [
-        { type: "contactCard", lines: ["Sport group d.o.o.", "E-pošta: info@guestcam.si", "Davčna številka: SI72133449"] },
+        { type: "contactCard", lines: ["Sport group d.o.o.", "E-pošta: info@camlove.me", "Davčna številka: SI72133449"] },
       ] },
     ],
   },
@@ -78,10 +78,10 @@ export const termsDoc: Record<LangCode, LegalDoc> = {
     eyebrow: "Pravni dokument",
     lastUpdated: "Zadnje ažurirano: 1. siječnja 2026 · Sport group d.o.o.",
     intro:
-      "Korištenjem usluge Guestcam (u nastavku: “ausluga”) prihvaćate ove uvjete korištenja. Uslugu pruža Sport group d.o.o. Ako se s uvjetima ne slažete, molimo ne koristite uslugu.",
+      "Korištenjem usluge CamLove (u nastavku: “ausluga”) prihvaćate ove uvjete korištenja. Uslugu pruža Sport group d.o.o. Ako se s uvjetima ne slažete, molimo ne koristite uslugu.",
     sections: [
       { title: "1. Opis usluge", blocks: [
-        { type: "p", text: "Guestcam je SaaS usluga za prikupljanje fotografija i videozapisa gostiju na vjenčanjima i drugim događajima putem jedinstvenog QR koda. Usluga obuhvaća:" },
+        { type: "p", text: "CamLove je SaaS usluga za prikupljanje fotografija i videozapisa gostiju na vjenčanjima i drugim događajima putem jedinstvenog QR koda. Usluga obuhvaća:" },
         { type: "ul", items: [
           "Kreiranje privatne galerije s jedinstvenim QR kodom.",
           "Pohranu fotografija i videozapisa u punoj kvaliteti.",
@@ -98,7 +98,7 @@ export const termsDoc: Record<LangCode, LegalDoc> = {
         ] },
       ] },
       { title: "3. Vlasništvo sadržaja", blocks: [
-        { type: "p", text: "Sve fotografije i videozapisi ostaju vlasništvo organizatora i osoba koje su ih učitale. Guestcam sadržaj ne koristi za oglašavanje, treniranje AI-a ni javnu objavu. Usluga nema pravo koristiti vaš sadržaj u marketinške ili komercijalne svrhe." },
+        { type: "p", text: "Sve fotografije i videozapisi ostaju vlasništvo organizatora i osoba koje su ih učitale. CamLove sadržaj ne koristi za oglašavanje, treniranje AI-a ni javnu objavu. Usluga nema pravo koristiti vaš sadržaj u marketinške ili komercijalne svrhe." },
       ] },
       { title: "4. Paketi i ograničenja", blocks: [
         { type: "p", text: "Usluga je dostupna u četiri paketa (Besplatan, Basic, Plus, Premium) s različitim ograničenjima broja fotografija, vremena pohrane i funkcionalnosti. Aktualna ograničenja uvijek su navedena na stranici s cijenama." },
@@ -113,7 +113,7 @@ export const termsDoc: Record<LangCode, LegalDoc> = {
         { type: "ul", items: [
           "Plaćanja i izdavanje računa obavlja naš preprodavač Paddle (Paddle.com Market Ltd) kao ugovorni prodavatelj (Merchant of Record), koji obračunava i PDV. Paddle prihvaća kartice, Apple Pay, Google Pay i PayPal.",
           "Cijene su navedene u EUR bez PDV-a (PDV se obračunava sukladno važećem zakonodavstvu).",
-          "Nudimo 30-dnevno jamstvo povrata novca za prvu kupnju paketa. Povrat zatražite e-poštom na info@guestcam.si.",
+          "Nudimo 30-dnevno jamstvo povrata novca za prvu kupnju paketa. Povrat zatražite e-poštom na info@camlove.me.",
         ] },
       ] },
       { title: "6. Dopušteni sadržaj", blocks: [
@@ -140,7 +140,7 @@ export const termsDoc: Record<LangCode, LegalDoc> = {
         { type: "p", text: "Na ove uvjete primjenjuje se slovensko pravo. Svi sporovi rješavaju se pred nadležnim sudom u Ljubljani, Slovenija." },
       ] },
       { title: "11. Kontakt", blocks: [
-        { type: "contactCard", lines: ["Sport group d.o.o.", "E-pošta: info@guestcam.si", "OIB: SI72133449"] },
+        { type: "contactCard", lines: ["Sport group d.o.o.", "E-pošta: info@camlove.me", "OIB: SI72133449"] },
       ] },
     ],
   },
@@ -149,10 +149,10 @@ export const termsDoc: Record<LangCode, LegalDoc> = {
     eyebrow: "Pravni dokument",
     lastUpdated: "Poslednje ažurirano: 1. januar 2026 · Sport group d.o.o.",
     intro:
-      "Korišćenjem usluge Guestcam (u daljem tekstu: “ausluga”) prihvatate ove uslove korišćenja. Uslugu pruža Sport group d.o.o. Ako se sa uslovima ne slažete, molimo ne koristite uslugu.",
+      "Korišćenjem usluge CamLove (u daljem tekstu: “ausluga”) prihvatate ove uslove korišćenja. Uslugu pruža Sport group d.o.o. Ako se sa uslovima ne slažete, molimo ne koristite uslugu.",
     sections: [
       { title: "1. Opis usluge", blocks: [
-        { type: "p", text: "Guestcam je SaaS usluga za prikupljanje fotografija i video zapisa gostiju na venčanjima i drugim događajima putem jedinstvenog QR koda. Usluga obuhvata:" },
+        { type: "p", text: "CamLove je SaaS usluga za prikupljanje fotografija i video zapisa gostiju na venčanjima i drugim događajima putem jedinstvenog QR koda. Usluga obuhvata:" },
         { type: "ul", items: [
           "Kreiranje privatne galerije sa jedinstvenim QR kodom.",
           "Čuvanje fotografija i video zapisa u punoj kvaliteti.",
@@ -169,7 +169,7 @@ export const termsDoc: Record<LangCode, LegalDoc> = {
         ] },
       ] },
       { title: "3. Vlasništvo sadržaja", blocks: [
-        { type: "p", text: "Sve fotografije i video zapisi ostaju vlasništvo organizatora i lica koja su ih otpremila. Guestcam sadržaj ne koristi za reklamiranje, treniranje AI-a ili javno objavljivanje. Usluga nema pravo da koristi vaš sadržaj u marketinške ili komercijalne svrhe." },
+        { type: "p", text: "Sve fotografije i video zapisi ostaju vlasništvo organizatora i lica koja su ih otpremila. CamLove sadržaj ne koristi za reklamiranje, treniranje AI-a ili javno objavljivanje. Usluga nema pravo da koristi vaš sadržaj u marketinške ili komercijalne svrhe." },
       ] },
       { title: "4. Paketi i ograničenja", blocks: [
         { type: "p", text: "Usluga je dostupna u četiri paketa (Besplatan, Basic, Plus, Premium) sa različitim ograničenjima broja fotografija, vremena čuvanja i funkcionalnosti. Aktuelna ograničenja uvek su navedena na stranici sa cenama." },
@@ -184,7 +184,7 @@ export const termsDoc: Record<LangCode, LegalDoc> = {
         { type: "ul", items: [
           "Plaćanja i izdavanje računa obavlja naš preprodavač Paddle (Paddle.com Market Ltd) kao ugovorni prodavatelj (Merchant of Record), koji obračunava i PDV. Paddle prihvaća kartice, Apple Pay, Google Pay i PayPal.",
           "Cene su navedene u EUR bez PDV-a (PDV se obračunava u skladu sa važećim zakonodavstvom).",
-          "Nudimo 30-dnevnu garanciju povraćaja novca za prvu kupovinu paketa. Povraćaj zatražite e-poštom na info@guestcam.si.",
+          "Nudimo 30-dnevnu garanciju povraćaja novca za prvu kupovinu paketa. Povraćaj zatražite e-poštom na info@camlove.me.",
         ] },
       ] },
       { title: "6. Dozvoljen sadržaj", blocks: [
@@ -211,7 +211,7 @@ export const termsDoc: Record<LangCode, LegalDoc> = {
         { type: "p", text: "Za ove uslove važi slovenačko pravo. Svi sporovi rešavaju se pred nadležnim sudom u Ljubljani, Slovenija." },
       ] },
       { title: "11. Kontakt", blocks: [
-        { type: "contactCard", lines: ["Sport group d.o.o.", "E-pošta: info@guestcam.si", "PIB: SI72133449"] },
+        { type: "contactCard", lines: ["Sport group d.o.o.", "E-pošta: info@camlove.me", "PIB: SI72133449"] },
       ] },
     ],
   },
@@ -220,10 +220,10 @@ export const termsDoc: Record<LangCode, LegalDoc> = {
     eyebrow: "Rechtsdokument",
     lastUpdated: "Zuletzt aktualisiert: 1. Januar 2026 · Sport group d.o.o.",
     intro:
-      "Mit der Nutzung des Dienstes Guestcam (im Folgenden: “Dienst”) akzeptieren Sie diese Nutzungsbedingungen. Den Dienst stellt Sport group d.o.o. bereit. Wenn Sie diesen Bedingungen nicht zustimmen, nutzen Sie den Dienst bitte nicht.",
+      "Mit der Nutzung des Dienstes CamLove (im Folgenden: “Dienst”) akzeptieren Sie diese Nutzungsbedingungen. Den Dienst stellt Sport group d.o.o. bereit. Wenn Sie diesen Bedingungen nicht zustimmen, nutzen Sie den Dienst bitte nicht.",
     sections: [
       { title: "1. Leistungsbeschreibung", blocks: [
-        { type: "p", text: "Guestcam ist ein SaaS-Dienst zum Sammeln von Fotos und Videos der Gäste bei Hochzeiten und anderen Veranstaltungen über einen eindeutigen QR-Code. Der Dienst umfasst:" },
+        { type: "p", text: "CamLove ist ein SaaS-Dienst zum Sammeln von Fotos und Videos der Gäste bei Hochzeiten und anderen Veranstaltungen über einen eindeutigen QR-Code. Der Dienst umfasst:" },
         { type: "ul", items: [
           "Erstellung einer privaten Galerie mit eindeutigem QR-Code.",
           "Speicherung von Fotos und Videos in voller Qualität.",
@@ -240,7 +240,7 @@ export const termsDoc: Record<LangCode, LegalDoc> = {
         ] },
       ] },
       { title: "3. Eigentum an Inhalten", blocks: [
-        { type: "p", text: "Alle Fotos und Videos bleiben Eigentum des Organisators und der Personen, die sie hochgeladen haben. Guestcam nutzt Inhalte weder für Werbung, KI-Training noch zur öffentlichen Veröffentlichung. Der Dienst hat kein Recht, Ihre Inhalte zu Marketing- oder kommerziellen Zwecken zu verwenden." },
+        { type: "p", text: "Alle Fotos und Videos bleiben Eigentum des Organisators und der Personen, die sie hochgeladen haben. CamLove nutzt Inhalte weder für Werbung, KI-Training noch zur öffentlichen Veröffentlichung. Der Dienst hat kein Recht, Ihre Inhalte zu Marketing- oder kommerziellen Zwecken zu verwenden." },
       ] },
       { title: "4. Pakete und Beschränkungen", blocks: [
         { type: "p", text: "Der Dienst ist in vier Paketen erhältlich (Kostenlos, Basic, Plus, Premium) mit unterschiedlichen Beschränkungen für Fotoanzahl, Aufbewahrungszeit und Funktionen. Aktuelle Beschränkungen sind jederzeit auf der Preisseite angegeben." },
@@ -255,7 +255,7 @@ export const termsDoc: Record<LangCode, LegalDoc> = {
         { type: "ul", items: [
           "Zahlungen und Rechnungsstellung erfolgen über unseren Reseller Paddle (Paddle.com Market Ltd), der als Verkäufer (Merchant of Record) auftritt und auch die USt. abführt. Paddle akzeptiert Karten, Apple Pay, Google Pay und PayPal.",
           "Preise sind in EUR ohne MwSt. angegeben (MwSt. wird gemäß geltendem Recht berechnet).",
-          "Wir gewähren eine 30-tägige Geld-zurück-Garantie für den ersten Paketkauf. Die Rückerstattung können Sie per E-Mail an info@guestcam.si anfordern.",
+          "Wir gewähren eine 30-tägige Geld-zurück-Garantie für den ersten Paketkauf. Die Rückerstattung können Sie per E-Mail an info@camlove.me anfordern.",
         ] },
       ] },
       { title: "6. Zulässige Inhalte (Acceptable Use)", blocks: [
@@ -282,7 +282,7 @@ export const termsDoc: Record<LangCode, LegalDoc> = {
         { type: "p", text: "Für diese Bedingungen gilt slowenisches Recht. Alle Streitigkeiten werden vor dem zuständigen Gericht in Ljubljana, Slowenien beigelegt." },
       ] },
       { title: "11. Kontakt", blocks: [
-        { type: "contactCard", lines: ["Sport group d.o.o.", "E-Mail: info@guestcam.si", "USt-IdNr.: SI72133449"] },
+        { type: "contactCard", lines: ["Sport group d.o.o.", "E-Mail: info@camlove.me", "USt-IdNr.: SI72133449"] },
       ] },
     ],
   },
@@ -291,10 +291,10 @@ export const termsDoc: Record<LangCode, LegalDoc> = {
     eyebrow: "Legal document",
     lastUpdated: "Last updated: January 1, 2026 · Sport group d.o.o.",
     intro:
-      "By using the Guestcam service (“service”) you accept these Terms of Service. The service is provided by Sport group d.o.o. If you do not agree to these terms, please do not use the service.",
+      "By using the CamLove service (“service”) you accept these Terms of Service. The service is provided by Sport group d.o.o. If you do not agree to these terms, please do not use the service.",
     sections: [
       { title: "1. Service description", blocks: [
-        { type: "p", text: "Guestcam is a SaaS service for collecting guests' photos and videos at weddings and other events via a unique QR code. The service includes:" },
+        { type: "p", text: "CamLove is a SaaS service for collecting guests' photos and videos at weddings and other events via a unique QR code. The service includes:" },
         { type: "ul", items: [
           "Creating a private gallery with a unique QR code.",
           "Storing photos and videos in full quality.",
@@ -311,7 +311,7 @@ export const termsDoc: Record<LangCode, LegalDoc> = {
         ] },
       ] },
       { title: "3. Content ownership", blocks: [
-        { type: "p", text: "All photos and videos remain the property of the organiser and the persons who uploaded them. Guestcam does not use content for advertising, AI training or public posting. The service has no right to use your content for marketing or commercial purposes." },
+        { type: "p", text: "All photos and videos remain the property of the organiser and the persons who uploaded them. CamLove does not use content for advertising, AI training or public posting. The service has no right to use your content for marketing or commercial purposes." },
       ] },
       { title: "4. Plans and limits", blocks: [
         { type: "p", text: "The service is available in four plans (Free, Basic, Plus, Premium) with different limits on photo count, retention period and features. Current limits are always shown on the pricing page." },
@@ -326,7 +326,7 @@ export const termsDoc: Record<LangCode, LegalDoc> = {
         { type: "ul", items: [
           "Payments and invoicing are handled by our reseller Paddle (Paddle.com Market Ltd), which acts as the Merchant of Record and is responsible for charging VAT. Paddle accepts cards, Apple Pay, Google Pay and PayPal.",
           "Prices are stated in EUR excluding VAT (VAT is charged according to applicable law).",
-          "We offer a 30-day money-back guarantee for the first plan purchase. Request a refund by emailing info@guestcam.si.",
+          "We offer a 30-day money-back guarantee for the first plan purchase. Request a refund by emailing info@camlove.me.",
         ] },
       ] },
       { title: "6. Acceptable use", blocks: [
@@ -353,7 +353,7 @@ export const termsDoc: Record<LangCode, LegalDoc> = {
         { type: "p", text: "These terms are governed by Slovenian law. All disputes are subject to the exclusive jurisdiction of the courts of Ljubljana, Slovenia." },
       ] },
       { title: "11. Contact", blocks: [
-        { type: "contactCard", lines: ["Sport group d.o.o.", "Email: info@guestcam.si", "VAT ID: SI72133449"] },
+        { type: "contactCard", lines: ["Sport group d.o.o.", "Email: info@camlove.me", "VAT ID: SI72133449"] },
       ] },
     ],
   },
@@ -362,10 +362,10 @@ export const termsDoc: Record<LangCode, LegalDoc> = {
     eyebrow: "Documento legal",
     lastUpdated: "Última actualización: 1 de enero de 2026 · Sport group d.o.o.",
     intro:
-      "Al utilizar el servicio Guestcam (en adelante, “servicio”) aceptas estos Términos de uso. El servicio lo proporciona Sport group d.o.o. Si no estás de acuerdo con estos términos, por favor no utilices el servicio.",
+      "Al utilizar el servicio CamLove (en adelante, “servicio”) aceptas estos Términos de uso. El servicio lo proporciona Sport group d.o.o. Si no estás de acuerdo con estos términos, por favor no utilices el servicio.",
     sections: [
       { title: "1. Descripción del servicio", blocks: [
-        { type: "p", text: "Guestcam es un servicio SaaS para recopilar fotos y vídeos de los invitados en bodas y otros eventos mediante un código QR único. El servicio incluye:" },
+        { type: "p", text: "CamLove es un servicio SaaS para recopilar fotos y vídeos de los invitados en bodas y otros eventos mediante un código QR único. El servicio incluye:" },
         { type: "ul", items: [
           "Creación de una galería privada con código QR único.",
           "Almacenamiento de fotos y vídeos en calidad completa.",
@@ -382,7 +382,7 @@ export const termsDoc: Record<LangCode, LegalDoc> = {
         ] },
       ] },
       { title: "3. Propiedad del contenido", blocks: [
-        { type: "p", text: "Todas las fotos y vídeos siguen siendo propiedad del organizador y de las personas que los subieron. Guestcam no utiliza el contenido para publicidad, entrenamiento de IA ni publicación pública. El servicio no tiene derecho a utilizar tu contenido con fines de marketing o comerciales." },
+        { type: "p", text: "Todas las fotos y vídeos siguen siendo propiedad del organizador y de las personas que los subieron. CamLove no utiliza el contenido para publicidad, entrenamiento de IA ni publicación pública. El servicio no tiene derecho a utilizar tu contenido con fines de marketing o comerciales." },
       ] },
       { title: "4. Planes y límites", blocks: [
         { type: "p", text: "El servicio está disponible en cuatro planes (Gratuito, Basic, Plus, Premium) con distintos límites de número de fotos, tiempo de almacenamiento y funcionalidades. Los límites actuales se muestran siempre en la página de precios." },
@@ -397,7 +397,7 @@ export const termsDoc: Record<LangCode, LegalDoc> = {
         { type: "ul", items: [
           "Los pagos y la facturación los gestiona nuestro revendedor Paddle (Paddle.com Market Ltd), que actúa como vendedor oficial (Merchant of Record) y se encarga de aplicar el IVA. Paddle acepta tarjetas, Apple Pay, Google Pay y PayPal.",
           "Los precios se indican en EUR sin IVA (el IVA se aplica según la legislación vigente).",
-          "Ofrecemos garantía de devolución de 30 días en la primera compra de un plan. Solicita el reembolso por email a info@guestcam.si.",
+          "Ofrecemos garantía de devolución de 30 días en la primera compra de un plan. Solicita el reembolso por email a info@camlove.me.",
         ] },
       ] },
       { title: "6. Uso aceptable", blocks: [
@@ -424,7 +424,7 @@ export const termsDoc: Record<LangCode, LegalDoc> = {
         { type: "p", text: "Estos términos se rigen por la legislación eslovena. Todas las disputas se someten a la jurisdicción exclusiva de los tribunales de Liubliana, Eslovenia." },
       ] },
       { title: "11. Contacto", blocks: [
-        { type: "contactCard", lines: ["Sport group d.o.o.", "Email: info@guestcam.si", "CIF: SI72133449"] },
+        { type: "contactCard", lines: ["Sport group d.o.o.", "Email: info@camlove.me", "CIF: SI72133449"] },
       ] },
     ],
   },

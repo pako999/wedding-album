@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   // "Wedding Photo Sharing App With QR Code | Easy & Free". We mirror
   // the same intent phrase and add "Free" as the differentiator that
   // every top ranker emphasises. `absolute` bypasses the root template.
-  title: { absolute: "Wedding Photo Sharing App with QR Code · Free | Guestcam" },
+  title: { absolute: "Wedding Photo Sharing App with QR Code · Free | CamLove" },
   description:
     "Collect every wedding guest's photos and videos via QR code into one private gallery. No app, full quality, free to start. Built for weddings & events.",
   alternates: {
@@ -26,9 +26,9 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_GB",
-    siteName: "Guestcam",
+    siteName: "CamLove",
     url: `${SITE_URL}/en`,
-    title: "Wedding Photo Sharing App with QR Code · Free | Guestcam",
+    title: "Wedding Photo Sharing App with QR Code · Free | CamLove",
     description:
       "Collect every wedding guest's photos and videos via QR code into one private gallery. No app, full quality, free to start. Built for weddings & events.",
     // See app/sr/page.tsx for the per-locale image rationale.
@@ -37,14 +37,14 @@ export const metadata: Metadata = {
         url: `${SITE_URL}/og-image.png?v=2`,
         width: 910,
         height: 1200,
-        alt: "Wedding Photo Sharing App with QR Code · Free | Guestcam",
+        alt: "Wedding Photo Sharing App with QR Code · Free | CamLove",
         type: "image/png",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Wedding Photo Sharing App with QR Code · Free | Guestcam",
+    title: "Wedding Photo Sharing App with QR Code · Free | CamLove",
     description: "Collect every wedding guest's photos and videos via QR code into one private gallery. No app, full quality, free to start.",
     images: [`${SITE_URL}/og-image.png?v=2`],
   },

@@ -1,21 +1,21 @@
 {
-  "slug": "guestcam-vs-whatsapp-vjencanje-fotografije",
+  "slug": "camlove-vs-whatsapp-vjencanje-fotografije",
   "lang": "hr",
-  "title": "Guestcam vs WhatsApp za fotografije s vjenčanja: poštena usporedba",
-  "description": "WhatsApp komprimira fotografije na 50% kvalitete i grupa postaje kaotična. Guestcam zadržava punu kvalitetu u jednoj privatnoj galeriji.",
-  "translationKey": "guestcam-vs-whatsapp",
+  "title": "CamLove vs WhatsApp za fotografije s vjenčanja: poštena usporedba",
+  "description": "WhatsApp komprimira fotografije na 50% kvalitete i grupa postaje kaotična. CamLove zadržava punu kvalitetu u jednoj privatnoj galeriji.",
+  "translationKey": "camlove-vs-whatsapp",
   "publishedAt": "2026-05-22",
   "updatedAt": "2026-05-25",
-  "author": "Guestcam Team",
+  "author": "CamLove Team",
   "category": "primerjava",
   "readingTime": 5,
   "tags": [
     "usporedba",
     "WhatsApp",
     "QR kod",
-    "Guestcam"
+    "CamLove"
   ],
-  "tldr": "WhatsApp komprimira fotografije na 50% kvalitete i grupa postaje kaotična. Guestcam zadržava punu kvalitetu u jednoj privatnoj galeriji.",
+  "tldr": "WhatsApp komprimira fotografije na 50% kvalitete i grupa postaje kaotična. CamLove zadržava punu kvalitetu u jednoj privatnoj galeriji.",
   "content": [
     {
       "type": "h2",
@@ -29,19 +29,19 @@
       "type": "image",
       "src": "https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?w=1200&h=720&fit=crop&q=82&auto=format",
       "alt": "Pametni telefon s aplikacijom za poruke na svadbenom stolu",
-      "caption": "WhatsApp komprimira fotografije i do 70 %. Guestcam čuva punu kvalitetu.",
+      "caption": "WhatsApp komprimira fotografije i do 70 %. CamLove čuva punu kvalitetu.",
       "credit": "Foto: Unsplash"
     },
     {
       "type": "h2",
-      "text": "U čemu se Guestcam i WhatsApp razlikuju?"
+      "text": "U čemu se CamLove i WhatsApp razlikuju?"
     },
     {
       "type": "table",
       "headers": [
         "",
         "WhatsApp",
-        "Guestcam"
+        "CamLove"
       ],
       "rows": [
         [
@@ -98,7 +98,7 @@
     },
     {
       "type": "h2",
-      "text": "Zašto parovi prelaze na Guestcam?"
+      "text": "Zašto parovi prelaze na CamLove?"
     },
     {
       "type": "ul",
@@ -112,7 +112,7 @@
     },
     {
       "type": "cta",
-      "text": "Isprobajte Guestcam besplatno",
+      "text": "Isprobajte CamLove besplatno",
       "href": "/dashboard/new"
     },
     {
@@ -122,23 +122,23 @@
     },
     {
       "type": "faq",
-      "q": "Mogu li kombinirati WhatsApp i Guestcam?",
-      "a": "Naravno. Mnogi parovi koriste WhatsApp za komunikaciju s gostima prije vjenčanja i Guestcam za prikupljanje fotografija tijekom i nakon događaja."
+      "q": "Mogu li kombinirati WhatsApp i CamLove?",
+      "a": "Naravno. Mnogi parovi koriste WhatsApp za komunikaciju s gostima prije vjenčanja i CamLove za prikupljanje fotografija tijekom i nakon događaja."
     },
     {
       "type": "faq",
       "q": "Kako spriječiti da gosti vide fotografije drugih?",
-      "a": "U Guestcam galeriji možete uključiti moderaciju — fotografije se prikazuju tek kada ih odobrite. Ili postavite lozinku koju dijelite samo s najbližima."
+      "a": "U CamLove galeriji možete uključiti moderaciju — fotografije se prikazuju tek kada ih odobrite. Ili postavite lozinku koju dijelite samo s najbližima."
     },
     {
       "type": "faq",
-      "q": "Košta li Guestcam više od WhatsAppa?",
+      "q": "Košta li CamLove više od WhatsAppa?",
       "a": "Besplatan paket je dovoljan za male događaje. Za cijelo vjenčanje preporučujemo Plus (49€) ili Premium (79€) — manje od prosječnog vjenčanog buketa."
     },
     {
       "type": "faq",
       "q": "Što se događa s WhatsApp grupom nakon vjenčanja?",
-      "a": "Postaje spomenik — poruke se gube, fotografije se brišu kada netko očisti mobitel. Guestcam galerija ostaje dostupna do 1 godine i možete je trajno preuzeti."
+      "a": "Postaje spomenik — poruke se gube, fotografije se brišu kada netko očisti mobitel. CamLove galerija ostaje dostupna do 1 godine i možete je trajno preuzeti."
     }
   ],
   "coverImage": "https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?w=1600&h=900&fit=crop&q=80&auto=format",

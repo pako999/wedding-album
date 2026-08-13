@@ -75,7 +75,7 @@ export async function uploadToDrive(
   bytes: ArrayBuffer,
   mimeType: string,
 ): Promise<void> {
-  const boundary = `guestcam${Math.random().toString(36).slice(2)}`;
+  const boundary = `camlove${Math.random().toString(36).slice(2)}`;
   const enc = new TextEncoder();
   const head = enc.encode(
     `--${boundary}\r\n` +

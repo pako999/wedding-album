@@ -4,7 +4,7 @@ import type { Lang } from "./translations";
  * Guest data-capture form (events / business package).
  *
  * Shown before uploading when the album has `guestDataCapture` on. The
- * organiser — not Guestcam — is the data controller for what's collected
+ * organiser — not CamLove — is the data controller for what's collected
  * here, which is why the consent line names the event rather than us.
  */
 export interface LeadCopy {

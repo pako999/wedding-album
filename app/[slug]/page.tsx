@@ -58,7 +58,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const description = `${eventLabel} ${album.coupleName}, ${album.weddingDate}`;
 
   return {
-    title: `${album.coupleName} — Guestcam`,
+    title: `${album.coupleName} — CamLove`,
     description,
     // Every album guest page is private (link-only). Maximum-strength
     // robots directives so search engines, image search, AI scrapers,
@@ -87,13 +87,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         "noindex, nofollow, noarchive, nosnippet, noimageindex, notranslate, noai, noimageai",
     },
     openGraph: {
-      title: `${album.coupleName} — Guestcam`,
+      title: `${album.coupleName} — CamLove`,
       description,
       images: album.coverImageUrl ? [album.coverImageUrl] : [],
     },
     twitter: {
       card: album.coverImageUrl ? "summary_large_image" : "summary",
-      title: `${album.coupleName} — Guestcam`,
+      title: `${album.coupleName} — CamLove`,
       description,
     },
   };

@@ -6,14 +6,14 @@
   "translationKey": "wedding-photo-app-qr-code",
   "publishedAt": "2026-05-30",
   "updatedAt": "2026-05-30",
-  "author": "Guestcam Team",
+  "author": "CamLove Team",
   "category": "vodnik",
   "readingTime": 6,
   "tags": [
     "fotografije svadbe",
     "QR kod",
     "aplikacija za goste",
-    "Guestcam"
+    "CamLove"
   ],
   "tldr": "Stavite QR kod na svaki sto — gosti skeniraju i otpremaju fotografije u vašu privatnu galeriju, bez aplikacije i prijave.",
   "coverImage": "https://images.unsplash.com/photo-1519741497674-611481863552?w=1200&h=720&fit=crop&q=82&auto=format",
@@ -41,7 +41,7 @@
     {
       "type": "ol",
       "items": [
-        "U Guestcamu u nekoliko klikova napravite privatnu galeriju.",
+        "U platformi CamLove u nekoliko klikova napravite privatnu galeriju.",
         "Izaberite šablon QR kartice, dodajte imena i datum i odštampajte ga za stolove.",
         "Gosti skeniraju kod, galerija se otvori u pregledaču, fotografije i snimke otpreme za nekoliko sekundi.",
         "Sve prikupljate uživo i posle događaja preuzmete kao ZIP."
@@ -73,7 +73,7 @@
           "Nisko"
         ],
         [
-          "QR galerija (Guestcam)",
+          "QR galerija (CamLove)",
           "Pun originalni",
           "Ne",
           "Visoko"
@@ -95,7 +95,7 @@
     {
       "type": "cta",
       "text": "Napravite besplatnu galeriju za svadbu",
-      "href": "https://www.guestcam.si/dashboard/new"
+      "href": "https://www.camlove.me/dashboard/new"
     },
     {
       "type": "faq",

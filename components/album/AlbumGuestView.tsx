@@ -1516,7 +1516,7 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
       <footer className="border-t mt-8 py-6 text-center flex flex-col items-center gap-3" style={{ borderColor: BRAND.border }}>
         <PoweredByBadge referralCode={album.referralCode ?? null} lang={lang} />
         <p className="text-[10px]" style={{ color: BRAND.muted }}>
-          © {new Date().getFullYear()} Guestcam
+          © {new Date().getFullYear()} CamLove
         </p>
       </footer>
 
@@ -1873,10 +1873,10 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
             }}
             styles={{ container: { backgroundColor: "rgba(0,0,0,0.97)" } }}
             /* When the desktop panel is OPEN the container also carries
-               `guestcam-lightbox--panel`; globals.css scopes the right-padding
+               `camlove-lightbox--panel`; globals.css scopes the right-padding
                + toolbar/arrow shift to that class, so a hidden panel ⇒ no
                padding ⇒ the photo uses the full lightbox width. */
-            className={`guestcam-lightbox${lightboxDesktopPanelOpen ? " guestcam-lightbox--panel" : ""}`}
+            className={`camlove-lightbox${lightboxDesktopPanelOpen ? " camlove-lightbox--panel" : ""}`}
             render={{
               /* Custom Download button — prefers navigator.share on mobile
                  so iOS shows "Save Image" (→ Photos) alongside Files/Drive.

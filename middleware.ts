@@ -46,12 +46,12 @@ const isInternalApi = createRouteMatcher([
 ]);
 
 function parseHostname(url: string | undefined): string {
-  if (!url) return "guestcam.si";
+  if (!url) return "camlove.me";
   try {
     const raw = url.startsWith("http") ? url : `https://${url}`;
     return new URL(raw).hostname;
   } catch {
-    return "guestcam.si";
+    return "camlove.me";
   }
 }
 

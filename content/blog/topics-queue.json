@@ -1,5 +1,5 @@
 {
-  "_comment": "Auto-blog generation queue. Each Monday + Thursday the GitHub Action consumes one topic from the head, generates a 6-language post, and removes it. Front-loaded (May 2026) with high commercial-intent, keyword-researched topics from the Guestcam competitor/keyword study; original content-marketing topics follow. Add new topics to the end at any time.",
+  "_comment": "Auto-blog generation queue. Each Monday + Thursday the GitHub Action consumes one topic from the head, generates a 6-language post, and removes it. Front-loaded (May 2026) with high commercial-intent, keyword-researched topics from the CamLove competitor/keyword study; original content-marketing topics follow. Add new topics to the end at any time.",
   "topics": [
     "digital disposable camera for weddings vs real disposable cameras",
     "best wedding photo sharing apps compared 2026",

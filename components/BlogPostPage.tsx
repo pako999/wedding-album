@@ -35,8 +35,8 @@ const T: Record<LangCode, {
   hr: { inShort: "Ukratko:",     toc: "Sadržaj",         faq: "Često postavljana pitanja", related: "Povezani članci", back: "← Sve objave",     by: "Autor:",       readingTime: (m) => `${m} min čitanja`, ctaTitle: "Kreirajte svoju galeriju besplatno",  ctaBody: "Bez aplikacije, bez registracije gostiju — samo QR kod.", ctaButton: "Započnite sada →" },
   sr: { inShort: "Ukratko:",     toc: "Sadržaj",         faq: "Najčešća pitanja",          related: "Povezani članci", back: "← Sve objave",     by: "Autor:",       readingTime: (m) => `${m} min čitanja`, ctaTitle: "Napravite svoju galeriju besplatno",  ctaBody: "Bez aplikacije, bez registracije gostiju — samo QR kod.", ctaButton: "Počnite sada →" },
   de: { inShort: "Kurz gesagt:", toc: "Inhalt",          faq: "Häufige Fragen",            related: "Verwandte Artikel", back: "← Alle Beiträge", by: "Autor:",       readingTime: (m) => `${m} Min. Lesezeit`, ctaTitle: "Erstellen Sie Ihre Galerie kostenlos", ctaBody: "Keine App, keine Gäste-Registrierung — nur ein QR-Code.", ctaButton: "Jetzt starten →" },
-  en: { inShort: "In short:",    toc: "Contents",        faq: "FAQ",                       related: "Related posts",   back: "← All posts",       by: "By",           readingTime: (m) => `${m} min read`, ctaTitle: "Create your free Guestcam gallery",    ctaBody: "No app, no guest sign-up — just a QR code.",            ctaButton: "Start free →" },
-  es: { inShort: "En resumen:",  toc: "Contenido",       faq: "Preguntas frecuentes",      related: "Artículos relacionados", back: "← Todas las entradas", by: "Por", readingTime: (m) => `${m} min de lectura`, ctaTitle: "Crea tu galería Guestcam gratis",     ctaBody: "Sin app, sin registro de invitados — solo un código QR.", ctaButton: "Empieza gratis →" },
+  en: { inShort: "In short:",    toc: "Contents",        faq: "FAQ",                       related: "Related posts",   back: "← All posts",       by: "By",           readingTime: (m) => `${m} min read`, ctaTitle: "Create your free CamLove gallery",    ctaBody: "No app, no guest sign-up — just a QR code.",            ctaButton: "Start free →" },
+  es: { inShort: "En resumen:",  toc: "Contenido",       faq: "Preguntas frecuentes",      related: "Artículos relacionados", back: "← Todas las entradas", by: "Por", readingTime: (m) => `${m} min de lectura`, ctaTitle: "Crea tu galería CamLove gratis",     ctaBody: "Sin app, sin registro de invitados — solo un código QR.", ctaButton: "Empieza gratis →" },
 };
 
 // ─── Block renderers ────────────────────────────────────────────────────────
@@ -188,8 +188,8 @@ export async function BlogPostPage({ post }: Props) {
       author: { "@type": "Organization", name: post.author },
       publisher: {
         "@type": "Organization",
-        name: "Guestcam",
-        logo: { "@type": "ImageObject", url: `${SITE_URL}/guestcam-logo.svg` },
+        name: "CamLove",
+        logo: { "@type": "ImageObject", url: `${SITE_URL}/camlove-logo.svg` },
       },
       inLanguage: post.lang,
       mainEntityOfPage: canonical,
@@ -198,7 +198,7 @@ export async function BlogPostPage({ post }: Props) {
       "@context": "https://schema.org",
       "@type": "BreadcrumbList",
       itemListElement: [
-        { "@type": "ListItem", position: 1, name: "Guestcam", item: SITE_URL },
+        { "@type": "ListItem", position: 1, name: "CamLove", item: SITE_URL },
         { "@type": "ListItem", position: 2, name: "Blog",      item: `${SITE_URL}${blogUrl(post.lang)}` },
         { "@type": "ListItem", position: 3, name: post.title,  item: canonical },
       ],
@@ -231,8 +231,8 @@ export async function BlogPostPage({ post }: Props) {
   if (stepsBlock && stepsBlock.items.length >= 3) {
     // The step `name` is the short title for that step. Split on em-dash
     // or colon to grab the leading clause. We deliberately do NOT split
-    // on `.` because URLs like guestcam.si inside a step would truncate
-    // the name mid-domain ("Go to guestcam").
+    // on `.` because URLs like camlove.me inside a step would truncate
+    // the name mid-domain ("Go to camlove").
     jsonLd.push({
       "@context": "https://schema.org",
       "@type": "HowTo",

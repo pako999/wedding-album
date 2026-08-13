@@ -4,7 +4,7 @@ import { LegalPage } from "@/components/LegalPage";
 
 export const metadata: Metadata = {
   title: "Pravice po GDPR",
-  description: "Vaše pravice po GDPR pri uporabi storitve Guestcam: dostop, popravek, izbris, prenosljivost, pritožba.",
+  description: "Vaše pravice po GDPR pri uporabi storitve CamLove: dostop, popravek, izbris, prenosljivost, pritožba.",
   alternates: {
     canonical: `${SITE_URL}/gdpr`,
     languages: {
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   openGraph: {
     url: `${SITE_URL}/gdpr`,
     title: "Pravice po GDPR",
-    description: "Vaše pravice po GDPR pri uporabi storitve Guestcam: dostop, popravek, izbris, prenosljivost, pritožba.",
+    description: "Vaše pravice po GDPR pri uporabi storitve CamLove: dostop, popravek, izbris, prenosljivost, pritožba.",
     images: ["/og-image.png?v=2"],
   },
   robots: { index: true, follow: true },

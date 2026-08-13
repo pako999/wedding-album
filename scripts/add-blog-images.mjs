@@ -85,7 +85,7 @@ const IMAGES_BY_KEY = {
       captionKey: "captionForget2",
     },
   ],
-  "guestcam-vs-whatsapp": [
+  "camlove-vs-whatsapp": [
     {
       id: "photo-1611162616305-c69b3fa7fbe0",   // phone with messaging app
       altKey: "altVs1",
@@ -116,12 +116,12 @@ const COPY = {
     es: "Pareja de novios abrazándose el día de su boda",
   },
   captionCollect1: {
-    sl: "Najlepši trenutki se zgodijo med gosti — Guestcam jih ujame vse.",
-    hr: "Najljepši trenuci događaju se među gostima — Guestcam ih hvata sve.",
-    sr: "Najlepši trenuci događaju se među gostima — Guestcam ih hvata sve.",
-    de: "Die schönsten Momente passieren unter den Gästen — Guestcam fängt sie alle ein.",
-    en: "The most precious moments happen among the guests — Guestcam captures them all.",
-    es: "Los momentos más preciados ocurren entre los invitados — Guestcam los captura todos.",
+    sl: "Najlepši trenutki se zgodijo med gosti — CamLove jih ujame vse.",
+    hr: "Najljepši trenuci događaju se među gostima — CamLove ih hvata sve.",
+    sr: "Najlepši trenuci događaju se među gostima — CamLove ih hvata sve.",
+    de: "Die schönsten Momente passieren unter den Gästen — CamLove fängt sie alle ein.",
+    en: "The most precious moments happen among the guests — CamLove captures them all.",
+    es: "Los momentos más preciados ocurren entre los invitados — CamLove los captura todos.",
   },
   altCollect2: {
     sl: "Gostja fotografira mladoporočenca s telefonom",
@@ -252,12 +252,12 @@ const COPY = {
     es: "Smartphone con app de mensajería sobre una mesa de boda",
   },
   captionVs1: {
-    sl: "WhatsApp stisne fotografije do 70 %. Guestcam ohrani polno kakovost.",
-    hr: "WhatsApp komprimira fotografije i do 70 %. Guestcam čuva punu kvalitetu.",
-    sr: "WhatsApp komprimuje fotografije i do 70 %. Guestcam čuva pun kvalitet.",
-    de: "WhatsApp komprimiert Fotos um bis zu 70 %. Guestcam bewahrt die volle Qualität.",
-    en: "WhatsApp compresses photos by up to 70%. Guestcam preserves full quality.",
-    es: "WhatsApp comprime las fotos hasta un 70 %. Guestcam preserva la calidad completa.",
+    sl: "WhatsApp stisne fotografije do 70 %. CamLove ohrani polno kakovost.",
+    hr: "WhatsApp komprimira fotografije i do 70 %. CamLove čuva punu kvalitetu.",
+    sr: "WhatsApp komprimuje fotografije i do 70 %. CamLove čuva pun kvalitet.",
+    de: "WhatsApp komprimiert Fotos um bis zu 70 %. CamLove bewahrt die volle Qualität.",
+    en: "WhatsApp compresses photos by up to 70%. CamLove preserves full quality.",
+    es: "WhatsApp comprime las fotos hasta un 70 %. CamLove preserva la calidad completa.",
   },
   altVs2: {
     sl: "Skupinska fotografija svatov med poročno slovesnostjo",

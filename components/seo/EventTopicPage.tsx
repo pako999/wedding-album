@@ -97,10 +97,10 @@ export function EventTopicPage({ locale, topicKey }: Props) {
     // Bare BCP-47 language code — schema.org accepts it, and deriving a
     // region by doubling the code produced invalid tags (en-EN, sl-SL).
     inLanguage: locale,
-    author: { "@type": "Organization", name: "Guestcam" },
+    author: { "@type": "Organization", name: "CamLove" },
     publisher: {
       "@type": "Organization",
-      name: "Guestcam",
+      name: "CamLove",
       logo: `${SITE_URL}/icon-512.png`,
     },
     // Must match the canonical (every locale lives under its prefix,

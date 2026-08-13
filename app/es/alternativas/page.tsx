@@ -2,7 +2,7 @@ import { SITE_URL } from "@/lib/urls";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { ALTERNATIVES_HREFLANG, LanguageSwitcher } from "@/components/LanguageSwitcher";
-import { GuestcamLogo } from "@/components/GuestcamLogo";
+import { CamLoveLogo } from "@/components/CamLoveLogo";
 import { SeoFooter } from "@/components/SeoFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { OG_IMAGE_URL, ogImage } from "@/lib/og";
@@ -11,7 +11,7 @@ import { safeJsonLd } from "@/lib/seo/jsonld-safe";
 export const metadata: Metadata = {
   title: "Mejores Apps para Compartir Fotos de Boda 2025",
   description:
-    "Comparativa: Guestcam vs Google Photos vs WhatsApp vs Dropbox. ¿Cuál es la mejor app para recopilar fotos de boda? Análisis honesto de pros y contras.",
+    "Comparativa: CamLove vs Google Photos vs WhatsApp vs Dropbox. ¿Cuál es la mejor app para recopilar fotos de boda? Análisis honesto de pros y contras.",
   openGraph: {
     url: `${SITE_URL}/es/alternativas`,
     title: "Mejores Apps para Compartir Fotos de Boda 2025",
@@ -45,12 +45,12 @@ const articleSchema = {
   "@type": "Article",
   headline: "Mejores Apps para Compartir Fotos de Boda 2025",
   description:
-    "Comparativa: Guestcam vs Google Photos vs WhatsApp vs Dropbox. ¿Cuál es la mejor app para recopilar fotos de boda?",
+    "Comparativa: CamLove vs Google Photos vs WhatsApp vs Dropbox. ¿Cuál es la mejor app para recopilar fotos de boda?",
   inLanguage: "es-ES",
-  author: { "@type": "Organization", name: "Guestcam" },
+  author: { "@type": "Organization", name: "CamLove" },
   publisher: {
     "@type": "Organization",
-    name: "Guestcam",
+    name: "CamLove",
     logo: `${SITE_URL}/icon-512.png`,
   },
   mainEntityOfPage: `${SITE_URL}/es/alternativas`,
@@ -66,7 +66,7 @@ function SiteFooter() {
           <Link href="/privacy" className="hover:text-white transition-colors">Privacidad</Link>
           <Link href="/terms" className="hover:text-white transition-colors">Términos</Link>
           <Link href="/cookies" className="hover:text-white transition-colors">Cookies</Link>
-          <a href="mailto:info@guestcam.si" className="hover:text-white transition-colors">Contacto</a>
+          <a href="mailto:info@camlove.me" className="hover:text-white transition-colors">Contacto</a>
         </div>
       </div>
     </footer>
@@ -182,7 +182,7 @@ export default function AlternativasPage() {
                 <thead>
                   <tr style={{ background: "#0F1729" }}>
                     <th className="p-4 text-white font-semibold">Característica</th>
-                    <th className="p-4 text-center text-[#FFC94D] font-bold">Guestcam</th>
+                    <th className="p-4 text-center text-[#FFC94D] font-bold">CamLove</th>
                     <th className="p-4 text-center text-gray-300 font-medium">Google Photos</th>
                     <th className="p-4 text-center text-gray-300 font-medium">WhatsApp</th>
                     <th className="p-4 text-center text-gray-300 font-medium">Dropbox</th>
@@ -224,14 +224,14 @@ export default function AlternativasPage() {
             Análisis detallado de cada opción
           </h2>
 
-          {/* Guestcam */}
+          {/* CamLove */}
           <div className="bg-white rounded-3xl border-2 p-7 shadow-sm border-[#FFC94D]">
             <div className="flex items-start justify-between gap-4 mb-4">
               <div>
                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold mb-2 bg-[#FFF3CC] text-[#C9820A]">
                   Nuestra recomendación
                 </div>
-                <h3 className="font-serif text-2xl font-bold text-[#0F1729]">Guestcam</h3>
+                <h3 className="font-serif text-2xl font-bold text-[#0F1729]">CamLove</h3>
                 <p className="text-sm text-gray-500">Herramienta específica para fotos de boda con código QR</p>
               </div>
               <div className="text-right shrink-0">
@@ -240,7 +240,7 @@ export default function AlternativasPage() {
               </div>
             </div>
             <p className="text-gray-600 leading-relaxed mb-5">
-              Guestcam es la única solución de esta lista diseñada
+              CamLove es la única solución de esta lista diseñada
               específicamente para bodas y eventos similares. Todo el flujo —
               desde crear la galería hasta descargar todas las fotos — está
               pensado para escenarios reales de boda.
@@ -530,12 +530,12 @@ export default function AlternativasPage() {
             ))}
           </div>
           <p className="text-gray-600 leading-relaxed">
-            Guestcam fue construido desde el primer día para resolver
+            CamLove fue construido desde el primer día para resolver
             exactamente estos problemas. Sin instalar nada. Sin login para los
             invitados. Calidad completa. Código QR en la mesa. Descarga de
             todo en ZIP con un clic tras la boda. Si quieres que todos los
             invitados puedan participar — desde el sobrino tecnológico hasta
-            la abuela con un móvil antiguo — Guestcam es la herramienta
+            la abuela con un móvil antiguo — CamLove es la herramienta
             adecuada.
           </p>
         </section>

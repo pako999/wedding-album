@@ -1,6 +1,6 @@
 import React from "react";
 
-interface GuestcamLogoProps {
+interface CamLoveLogoProps {
   /** Size variant */
   size?: "sm" | "md" | "lg";
   /** Whether to show the camera icon mark */
@@ -8,9 +8,9 @@ interface GuestcamLogoProps {
   /** Extra className on the wrapper */
   className?: string;
   /**
-   * Color variant. Default `onLight` renders dark "Guest" + amber "cam"
-   * for use on white/cream backgrounds. `onDark` renders white "Guest" +
-   * yellow "cam" so the wordmark stays readable on dark footers.
+   * Color variant. Default `onLight` renders dark "Cam" + amber "Love"
+   * for use on white/cream backgrounds. `onDark` renders white "Cam" +
+   * yellow "Love" so the wordmark stays readable on dark footers.
    */
   variant?: "onLight" | "onDark";
 }
@@ -48,15 +48,15 @@ function CamMark({ size }: { size: number }) {
 }
 
 /**
- * Guestcam brand logo.
+ * CamLove brand logo.
  * Use `showMark={false}` for text-only (sidebar / header).
  */
-export function GuestcamLogo({
+export function CamLoveLogo({
   size = "md",
   showMark = true,
   className = "",
   variant = "onLight",
-}: GuestcamLogoProps) {
+}: CamLoveLogoProps) {
   const { text, markSize } = SIZE_MAP[size];
   const colors =
     variant === "onDark"
@@ -66,8 +66,8 @@ export function GuestcamLogo({
     <span className={`inline-flex items-center gap-2 select-none ${className}`}>
       {showMark && <CamMark size={markSize} />}
       <span className={`font-bold leading-none tracking-tight ${text}`} style={{ fontFamily: "var(--font-dm-sans), DM Sans, sans-serif" }}>
-        <span style={{ color: colors.primary }}>Guest</span>
-        <span style={{ color: colors.accent }}>cam</span>
+        <span style={{ color: colors.primary }}>Cam</span>
+        <span style={{ color: colors.accent }}>Love</span>
       </span>
     </span>
   );

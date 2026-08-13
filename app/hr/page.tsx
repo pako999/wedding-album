@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   // Optimized against the HR SERP for "QR kod za vjenčanje" — top
   // competitors (weddingcamera.app, qrfoto.net, qrmemories.photo) all
   // use this exact phrase. `absolute` bypasses the root template.
-  title: { absolute: "QR kod za vjenčanje · Fotografije gostiju uživo | Guestcam" },
+  title: { absolute: "QR kod za vjenčanje · Fotografije gostiju uživo | CamLove" },
   description:
     "Skupite sve fotografije i videozapise gostiju s vjenčanja preko QR koda u privatnoj galeriji. Bez aplikacije, puna kvaliteta, besplatno za isprobati.",
   alternates: {
@@ -24,9 +24,9 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "hr_HR",
-    siteName: "Guestcam",
+    siteName: "CamLove",
     url: `${SITE_URL}/hr`,
-    title: "QR kod za vjenčanje · Fotografije gostiju uživo | Guestcam",
+    title: "QR kod za vjenčanje · Fotografije gostiju uživo | CamLove",
     description:
       "Skupite sve fotografije i videozapise gostiju s vjenčanja preko QR koda u privatnoj galeriji. Bez aplikacije, puna kvaliteta, besplatno za isprobati.",
     // See app/sr/page.tsx for the per-locale image rationale.
@@ -35,14 +35,14 @@ export const metadata: Metadata = {
         url: `${SITE_URL}/og-image.png?v=2`,
         width: 910,
         height: 1200,
-        alt: "QR kod za vjenčanje · Fotografije gostiju uživo | Guestcam",
+        alt: "QR kod za vjenčanje · Fotografije gostiju uživo | CamLove",
         type: "image/png",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "QR kod za vjenčanje · Fotografije gostiju uživo | Guestcam",
+    title: "QR kod za vjenčanje · Fotografije gostiju uživo | CamLove",
     description: "Skupite sve fotografije i videozapise gostiju s vjenčanja preko QR koda u privatnoj galeriji. Bez aplikacije, puna kvaliteta, besplatno za isprobati.",
     images: [`${SITE_URL}/og-image.png?v=2`],
   },

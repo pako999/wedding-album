@@ -68,7 +68,7 @@ export async function POST(req: NextRequest) {
 
   if (!email) {
     return NextResponse.json(
-      { error: "Ni e-poštnega naslova za ta album. Pišite nam na info@guestcam.si" },
+      { error: "Ni e-poštnega naslova za ta album. Pišite nam na info@camlove.me" },
       { status: 400 },
     );
   }

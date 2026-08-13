@@ -8,7 +8,7 @@ import { checkAlbumOwnership } from "@/lib/album-ownership";
 import { isWallCollaborator } from "@/lib/wall-collaborators";
 import { getOrCreateWallToken } from "@/lib/wall-token";
 import { PhotoWallCard } from "@/components/dashboard/PhotoWallCard";
-import { GuestcamLogo } from "@/components/GuestcamLogo";
+import { CamLoveLogo } from "@/components/CamLoveLogo";
 import { SITE_URL } from "@/lib/urls";
 
 export const dynamic = "force-dynamic";
@@ -42,7 +42,7 @@ export default async function WallAdminPage({ params }: { params: Promise<{ slug
     <div className="min-h-screen" style={{ background: "#F5F5F7" }}>
       <header className="bg-white border-b border-gray-100">
         <div className="max-w-3xl mx-auto px-4 h-14 flex items-center justify-between gap-4">
-          <GuestcamLogo size="sm" showMark={false} />
+          <CamLoveLogo size="sm" showMark={false} />
           <span className="text-xs text-gray-400">
             {collaborator ? "Sodelavec · samo foto stena" : (
               <Link href={`/dashboard/${album.slug}?tab=events`} className="text-[#C9820A] hover:underline">

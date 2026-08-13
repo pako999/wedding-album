@@ -15,7 +15,7 @@ export const dynamic = "force-dynamic";
  *
  * Public click-tracking endpoint. Sets the affiliate cookie and redirects
  * to the requested page. Affiliates share links like:
- *   https://guestcam.si/api/affiliate/track?ref=ABCD1234&to=/
+ *   https://camlove.me/api/affiliate/track?ref=ABCD1234&to=/
  *
  * Or they can just append ?ref=CODE to any page URL — the middleware
  * captures the param and sets the cookie on the spot. This endpoint is

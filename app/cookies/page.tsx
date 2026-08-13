@@ -4,7 +4,7 @@ import { LegalPage } from "@/components/LegalPage";
 
 export const metadata: Metadata = {
   title: "Politika piškotkov",
-  description: "Politika piškotkov Guestcam — uporabljamo le tehnično nujne piškotke, brez oglaševalskih ali sledilnih.",
+  description: "Politika piškotkov CamLove — uporabljamo le tehnično nujne piškotke, brez oglaševalskih ali sledilnih.",
   alternates: {
     canonical: `${SITE_URL}/cookies`,
     languages: {
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   openGraph: {
     url: `${SITE_URL}/cookies`,
     title: "Politika piškotkov",
-    description: "Politika piškotkov Guestcam — uporabljamo le tehnično nujne piškotke, brez oglaševalskih ali sledilnih.",
+    description: "Politika piškotkov CamLove — uporabljamo le tehnično nujne piškotke, brez oglaševalskih ali sledilnih.",
     images: ["/og-image.png?v=2"],
   },
   robots: { index: true, follow: true },

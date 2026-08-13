@@ -53,7 +53,7 @@ async function callClaude(topic: string): Promise<unknown> {
   if (!apiKey) throw new Error("ANTHROPIC_API_KEY not set");
   const model = process.env.ANTHROPIC_MODEL ?? "claude-sonnet-4-6";
 
-  const prompt = `You are a wedding-tech content writer for Guestcam (guestcam.si), a QR-code wedding photo gallery SaaS targeting Slovenia + EU markets.
+  const prompt = `You are a wedding-tech content writer for CamLove (camlove.me), a QR-code wedding photo gallery SaaS targeting Slovenia + EU markets.
 
 Generate ONE blog post for the topic: "${topic}".
 
@@ -78,7 +78,7 @@ Each single-language post must look like:
   "description": "150-character meta description, native phrasing",
   "publishedAt": "${new Date().toISOString().slice(0, 10)}",
   "updatedAt":   "${new Date().toISOString().slice(0, 10)}",
-  "author": "Guestcam Team",
+  "author": "CamLove Team",
   "category": "vodnik" | "primerjava" | "nasvet" | "kontrolni-seznam" | "novice",
   "readingTime": 5,
   "tags": ["…", "…"],
@@ -89,7 +89,7 @@ Each single-language post must look like:
     { "type": "ul", "items": ["…"] },
     { "type": "stat", "value": "87%", "label": "of guests take photos at weddings", "source": "The Knot 2025" },
     { "type": "faq", "q": "…", "a": "…" },
-    { "type": "cta", "text": "Create your free Guestcam gallery", "href": "/dashboard/new" }
+    { "type": "cta", "text": "Create your free CamLove gallery", "href": "/dashboard/new" }
   ]
 }
 

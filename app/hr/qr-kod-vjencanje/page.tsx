@@ -2,7 +2,7 @@ import { SITE_URL } from "@/lib/urls";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { GUIDE_HREFLANG, LanguageSwitcher } from "@/components/LanguageSwitcher";
-import { GuestcamLogo } from "@/components/GuestcamLogo";
+import { CamLoveLogo } from "@/components/CamLoveLogo";
 import { SeoFooter } from "@/components/SeoFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { OG_IMAGE_URL, ogImage } from "@/lib/og";
@@ -53,7 +53,7 @@ function SiteFooter() {
             Uvjeti
           </Link>
           <a
-            href="mailto:info@guestcam.si"
+            href="mailto:info@camlove.me"
             className="hover:text-white transition-colors"
           >
             Kontakt
@@ -237,13 +237,13 @@ export default function QrKodVjencanjePage() {
         {/* Section 4 */}
         <section className="mb-10">
           <h2 className="font-serif text-2xl font-bold text-[#0F1729] mb-4">
-            Kako postaviti QR kod za vjenčanje s Guestcam — korak po korak
+            Kako postaviti QR kod za vjenčanje s CamLove — korak po korak
           </h2>
           <div className="space-y-4">
             {[
-              { step: "01", title: "Kreirajte besplatni račun", desc: "Posjetite Guestcam.si i kliknite »Kreiraj galeriju besplatno«. Unesite e-mail adresu i lozinku — postupak traje manje od minute." },
+              { step: "01", title: "Kreirajte besplatni račun", desc: "Posjetite camlove.me i kliknite »Kreiraj galeriju besplatno«. Unesite e-mail adresu i lozinku — postupak traje manje od minute." },
               { step: "02", title: "Postavite galeriju", desc: "Unesite ime para (npr. »Ana i Marko«), datum vjenčanja i lokaciju. Odaberete pozadinsku fotografiju, boju teme i jezik galerije." },
-              { step: "03", title: "Odaberite predložak za tisak", desc: "Guestcam nudi 8 elegantnih predložaka za QR kartice — od klasičnih do botaničkih i skandinavskih. Svaki predložak se automatski prilagođava s vašim imenom i datumom." },
+              { step: "03", title: "Odaberite predložak za tisak", desc: "CamLove nudi 8 elegantnih predložaka za QR kartice — od klasičnih do botaničkih i skandinavskih. Svaki predložak se automatski prilagođava s vašim imenom i datumom." },
               { step: "04", title: "Preuzmite i isprintajte", desc: "Predložak preuzimate kao PDF visoke rezolucije. Pošaljite ga u lokalnu tiskaru ili isprintajte sami. Preporučujemo karton 300 g/m² za najbolji izgled." },
               { step: "05", title: "Postavite kartice na vjenčanje", desc: "Kartice rasporedite po stolovima, postavite na stalke kraj bara, priložite pozivnicama ili okačite na plakate. Preporučujemo najmanje jednu karticu po stolu." },
               { step: "06", title: "Gosti skeniraju i uploadaju", desc: "Gosti telefonom skeniraju QR kod i odmah vide obrazac za upload fotografija. Nema aplikacije, nema prijave — samo skeniranje i upload." },
@@ -295,9 +295,9 @@ export default function QrKodVjencanjePage() {
           </h2>
           <div className="space-y-3">
             {[
-              { q: "Je li QR kod za vjenčanje stvarno besplatan?", a: "S Guestcamom je kreiranje galerije i QR koda besplatno zauvijek (do određenih ograničenja). Za veća vjenčanja dostupni su plaćeni paketi s neograničenim fotografijama." },
+              { q: "Je li QR kod za vjenčanje stvarno besplatan?", a: "S platformom CamLove je kreiranje galerije i QR koda besplatno zauvijek (do određenih ograničenja). Za veća vjenčanja dostupni su plaćeni paketi s neograničenim fotografijama." },
               { q: "Moraju li gosti preuzeti aplikaciju?", a: "Apsolutno ne. Gosti otvaraju galeriju izravno u pregledniku telefona — nije potrebna nikakva aplikacija ni registracija." },
-              { q: "U kojoj kvaliteti se pohranjuju fotografije?", a: "U punoj originalnoj rezoluciji. Guestcam fotografije ne komprimira ni smanjuje. Dobit ćete točno ono što je gost snimio." },
+              { q: "U kojoj kvaliteti se pohranjuju fotografije?", a: "U punoj originalnoj rezoluciji. CamLove fotografije ne komprimira ni smanjuje. Dobit ćete točno ono što je gost snimio." },
               { q: "Što se događa s fotografijama nakon vjenčanja?", a: "Galerija ostaje aktivna koliko traje vaš paket. Bilo kada preuzimate sve fotografije kao ZIP arhiv." },
               { q: "Je li album privatan?", a: "Da. Album je dostupan samo s vašim QR kodom ili direktnim linkom. Nikakva tražilica neće ga indeksirati." },
             ].map(({ q, a }) => (

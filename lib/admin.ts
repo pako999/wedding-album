@@ -23,14 +23,14 @@ export function adminEmails(): string[] {
 
 // ─── Second factor: an HMAC-signed cookie set after entering ADMIN_PASSWORD ─
 
-const COOKIE_NAME  = "guestcam_admin_pw";
+const COOKIE_NAME  = "camlove_admin_pw";
 const COOKIE_TTL_S = 60 * 60 * 12;     // 12 hours
 
 function secret(): string {
   // We reuse CLERK_SECRET_KEY as the HMAC secret so we don't need a
   // separate ADMIN_COOKIE_SECRET env var. The Clerk secret already
   // exists everywhere /admin runs and rotates with the rest of auth.
-  return process.env.CLERK_SECRET_KEY ?? "guestcam_admin_dev_secret";
+  return process.env.CLERK_SECRET_KEY ?? "camlove_admin_dev_secret";
 }
 
 function sign(payload: string): string {

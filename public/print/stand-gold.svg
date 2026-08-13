@@ -46,7 +46,7 @@
   <!-- logo lockup -->
   <rect x="124.0" y="222.55" width="7" height="7" rx="1.8" fill="none" stroke="#8C8375" stroke-width="1"/>
   <circle cx="127.5" cy="226.05" r="1.7" fill="#8C8375"/>
-  <text x="135.0" y="228.55" font-family="Georgia,serif" font-size="7.6000000000000005" fill="#8C8375">Guestcam</text>
+  <text x="135.0" y="228.55" font-family="Georgia,serif" font-size="7.6000000000000005" fill="#8C8375">CamLove</text>
 
   <!-- clear acrylic panel + angled brass foot -->
   <path d="M66 252h168v26H66z" fill="#DCE6EA" opacity=".42"/>

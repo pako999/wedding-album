@@ -110,6 +110,6 @@ const MAP: Record<LangCode, LocalizationResource> = {
 
 /** Pick the Clerk localization pack for the given UI language. */
 export function clerkLocaleFor(lang: LangCode | undefined | null): LocalizationResource {
-  if (!lang) return slSI; // Default to Slovenian since guestcam.si is SL-first
+  if (!lang) return slSI; // Default to Slovenian since camlove.me is SL-first
   return MAP[lang] ?? slSI;
 }

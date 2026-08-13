@@ -122,7 +122,7 @@ function hostOf(url: string | undefined): string {
  * two existing referral cookies. Order matters: an explicit ad click id or
  * paid-medium utm wins over a generic referrer.
  *
- * `appHost` is the app's own bare host (e.g. "guestcam.si") so an internal
+ * `appHost` is the app's own bare host (e.g. "camlove.me") so an internal
  * referrer collapses to "direct" instead of masquerading as an external
  * link.
  */

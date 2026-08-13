@@ -47,8 +47,8 @@ jobs:
 
       - name: Commit and push
         run: |
-          git config user.name  "guestcam-blog-bot"
-          git config user.email "bot@guestcam.si"
+          git config user.name  "camlove-blog-bot"
+          git config user.email "bot@camlove.me"
           git add content/blog
           if git diff --cached --quiet; then
             echo "No changes to commit."

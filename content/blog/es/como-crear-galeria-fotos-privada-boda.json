@@ -6,16 +6,16 @@
   "translationKey": "private-wedding-gallery",
   "publishedAt": "2026-05-22",
   "updatedAt": "2026-05-25",
-  "author": "Guestcam Team",
+  "author": "CamLove Team",
   "category": "vodnik",
   "readingTime": 5,
   "tags": [
     "privacidad",
     "galería",
     "DIY",
-    "Guestcam"
+    "CamLove"
   ],
-  "tldr": "La mejor opción gratuita es Guestcam: crea la galería, obtén el código QR, los invitados escanean y suben — todo privado, sin app.",
+  "tldr": "La mejor opción gratuita es CamLove: crea la galería, obtén el código QR, los invitados escanean y suben — todo privado, sin app.",
   "content": [
     {
       "type": "h2",
@@ -66,7 +66,7 @@
           "Comprime al 50%, caótico."
         ],
         [
-          "Guestcam",
+          "CamLove",
           "QR, sin app, calidad completa",
           "De pago tras el plan gratuito (20 fotos)."
         ]
@@ -81,12 +81,12 @@
     },
     {
       "type": "h2",
-      "text": "¿Cómo configuro la galería con Guestcam paso a paso?"
+      "text": "¿Cómo configuro la galería con CamLove paso a paso?"
     },
     {
       "type": "ol",
       "items": [
-        "Entra en guestcam.si y haz clic en «Crear galería» — sin tarjeta de crédito.",
+        "Entra en camlove.me y haz clic en «Crear galería» — sin tarjeta de crédito.",
         "Rellena los nombres de la pareja (p. ej. «Ana y Marko»), fecha de la boda y lugar.",
         "Opcional: pon una contraseña a la galería (recomendado para máxima privacidad).",
         "El sistema genera una URL única y un código QR automáticamente.",

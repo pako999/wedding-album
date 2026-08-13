@@ -313,7 +313,7 @@ export function CreateEventWizard({ initialPlan }: { initialPlan?: PaidPlanId } 
             className="mt-0.5 shrink-0 w-4 h-4 rounded border-gray-300 accent-[#C9820A]"
           />
           <span className="text-xs text-gray-500 leading-relaxed group-hover:text-gray-700 transition-colors">
-            Potrjujem, da bom goste in udeležence dogodka obvestil/a o uporabi Guestcam galerije,
+            Potrjujem, da bom goste in udeležence dogodka obvestil/a o uporabi CamLove galerije,
             zagotovil/a ustrezno pravno podlago za obdelavo fotografij in videov ter odgovarjal/a
             na zahteve udeležencev v zvezi z vsebino galerije.{" "}
             <a href="/gdpr" target="_blank" rel="noopener noreferrer" className="underline text-[#C9820A]">

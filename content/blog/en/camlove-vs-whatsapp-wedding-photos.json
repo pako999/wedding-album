@@ -1,21 +1,21 @@
 {
-  "slug": "guestcam-vs-whatsapp-wedding-photos",
+  "slug": "camlove-vs-whatsapp-wedding-photos",
   "lang": "en",
-  "title": "Guestcam vs WhatsApp for Wedding Photos: Honest Comparison",
-  "description": "WhatsApp compresses photos to 50% quality and the group turns chaotic. Guestcam keeps full quality in one private gallery.",
-  "translationKey": "guestcam-vs-whatsapp",
+  "title": "CamLove vs WhatsApp for Wedding Photos: Honest Comparison",
+  "description": "WhatsApp compresses photos to 50% quality and the group turns chaotic. CamLove keeps full quality in one private gallery.",
+  "translationKey": "camlove-vs-whatsapp",
   "publishedAt": "2026-05-22",
   "updatedAt": "2026-05-25",
-  "author": "Guestcam Team",
+  "author": "CamLove Team",
   "category": "primerjava",
   "readingTime": 5,
   "tags": [
     "comparison",
     "WhatsApp",
     "QR code",
-    "Guestcam"
+    "CamLove"
   ],
-  "tldr": "WhatsApp compresses photos to 50% quality and the group turns chaotic. Guestcam keeps full quality in one private gallery.",
+  "tldr": "WhatsApp compresses photos to 50% quality and the group turns chaotic. CamLove keeps full quality in one private gallery.",
   "content": [
     {
       "type": "h2",
@@ -29,19 +29,19 @@
       "type": "image",
       "src": "https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?w=1200&h=720&fit=crop&q=82&auto=format",
       "alt": "Smartphone with a messaging app on a wedding table",
-      "caption": "WhatsApp compresses photos by up to 70%. Guestcam preserves full quality.",
+      "caption": "WhatsApp compresses photos by up to 70%. CamLove preserves full quality.",
       "credit": "Foto: Unsplash"
     },
     {
       "type": "h2",
-      "text": "How do Guestcam and WhatsApp differ?"
+      "text": "How do CamLove and WhatsApp differ?"
     },
     {
       "type": "table",
       "headers": [
         "",
         "WhatsApp",
-        "Guestcam"
+        "CamLove"
       ],
       "rows": [
         [
@@ -98,7 +98,7 @@
     },
     {
       "type": "h2",
-      "text": "Why do couples switch to Guestcam?"
+      "text": "Why do couples switch to CamLove?"
     },
     {
       "type": "ul",
@@ -112,7 +112,7 @@
     },
     {
       "type": "cta",
-      "text": "Try Guestcam free",
+      "text": "Try CamLove free",
       "href": "/dashboard/new"
     },
     {
@@ -122,23 +122,23 @@
     },
     {
       "type": "faq",
-      "q": "Can I combine WhatsApp and Guestcam?",
-      "a": "Of course. Many couples use WhatsApp for pre-wedding chat with guests and Guestcam to collect photos during and after the day."
+      "q": "Can I combine WhatsApp and CamLove?",
+      "a": "Of course. Many couples use WhatsApp for pre-wedding chat with guests and CamLove to collect photos during and after the day."
     },
     {
       "type": "faq",
       "q": "How do I stop guests from seeing other people's photos?",
-      "a": "In a Guestcam gallery you can turn on moderation — photos appear only after you approve them. Or set a password and share it only with close friends."
+      "a": "In a CamLove gallery you can turn on moderation — photos appear only after you approve them. Or set a password and share it only with close friends."
     },
     {
       "type": "faq",
-      "q": "Does Guestcam cost more than WhatsApp?",
+      "q": "Does CamLove cost more than WhatsApp?",
       "a": "The free plan covers small events. For a full wedding we recommend Plus (€49) or Premium (€79) — less than the average wedding bouquet."
     },
     {
       "type": "faq",
       "q": "What happens to the WhatsApp group after the wedding?",
-      "a": "It becomes a graveyard — messages get lost, photos disappear when someone clears their phone. A Guestcam gallery stays available for up to a year and can be downloaded permanently."
+      "a": "It becomes a graveyard — messages get lost, photos disappear when someone clears their phone. A CamLove gallery stays available for up to a year and can be downloaded permanently."
     }
   ],
   "coverImage": "https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?w=1600&h=900&fit=crop&q=80&auto=format",

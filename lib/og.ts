@@ -1,6 +1,6 @@
 import { SITE_URL } from "@/lib/urls";
 /**
- * Single source of truth for the Guestcam social-share card image.
+ * Single source of truth for the CamLove social-share card image.
  *
  * Every page that declares its own `openGraph` (or `twitter`) metadata
  * REPLACES the parent layout's openGraph block (Next.js does not

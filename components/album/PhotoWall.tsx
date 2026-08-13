@@ -21,7 +21,7 @@
 import { SITE_URL } from "@/lib/urls";
 import { useState, useEffect, useRef, useCallback, useSyncExternalStore } from "react";
 import { bunnyDisplayUrl } from "@/lib/storage/bunny";
-import { GuestcamLogo } from "@/components/GuestcamLogo";
+import { CamLoveLogo } from "@/components/CamLoveLogo";
 import type { WallCopy } from "@/lib/i18n/wall-translations";
 
 /**
@@ -384,7 +384,7 @@ export function PhotoWall({
   return (
     <div className="fixed inset-0 overflow-hidden select-none" style={{ background: bg.css }}>
       {logoUrl && (
-        /* Event logo — directly UNDER the Guestcam brand pill (top-6
+        /* Event logo — directly UNDER the CamLove brand pill (top-6
            left-6, ~40px tall), never bottom-left where it covered the
            QR chip that lives in that corner. */
         // eslint-disable-next-line @next/next/no-img-element
@@ -581,9 +581,9 @@ export function PhotoWall({
           className="absolute top-6 left-6 flex items-center gap-2.5 backdrop-blur-sm pl-3 pr-4 py-2 rounded-full no-underline z-[3]"
           style={{ background: pillStyle.background }}
         >
-          <GuestcamLogo size="sm" variant={isLight ? "onLight" : "onDark"} />
+          <CamLoveLogo size="sm" variant={isLight ? "onLight" : "onDark"} />
           <span className="text-xs whitespace-nowrap" style={{ color: mutedColor }}>
-            Powered by guestcam.si
+            Powered by camlove.me
           </span>
         </a>
       )}

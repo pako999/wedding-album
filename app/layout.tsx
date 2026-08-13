@@ -75,21 +75,21 @@ export const metadata: Metadata = {
     // Template applies to child routes that set their own string title
     // (blog posts, legal pages); the homepage uses `default` directly,
     // which is NOT wrapped by the template.
-    default: "QR koda za dogodke • Fotografije gostov v živo | Guestcam",
-    template: "%s | Guestcam",
+    default: "QR koda za dogodke • Fotografije gostov v živo | CamLove",
+    template: "%s | CamLove",
   },
   description:
     "Z eno QR kodo zberite vse fotografije in videe gostov v zasebni galeriji. Brez aplikacije, polna kakovost, brezplačen začetek. Za poroke in dogodke.",
-  applicationName: "Guestcam",
+  applicationName: "CamLove",
   keywords: [
     "QR koda za poroko",
     "poročni album",
     "zbiranje fotografij gostov",
     "deljenje fotografij",
     "galerija dogodka",
-    "Guestcam",
+    "CamLove",
   ],
-  authors: [{ name: "Guestcam" }],
+  authors: [{ name: "CamLove" }],
   manifest: "/manifest.json",
   // Explicit SVG icon — Google accepts SVG with no size restriction.
   // The 48×48 PNG is auto-added by Next.js from app/icon.tsx.
@@ -101,10 +101,10 @@ export const metadata: Metadata = {
   robots: { index: true, follow: true },
   openGraph: {
     type: "website",
-    siteName: "Guestcam",
+    siteName: "CamLove",
     locale: "sl_SI",
     url: SITE_URL,
-    title: "QR koda za dogodke • Fotografije gostov v živo | Guestcam",
+    title: "QR koda za dogodke • Fotografije gostov v živo | CamLove",
     description:
       "Z eno QR kodo zberite vse fotografije in videe gostov v zasebni galeriji. Brez aplikacije, polna kakovost, brezplačen začetek. Za poroke in dogodke.",
     // Social link-preview image. iMessage, WhatsApp, Slack, Facebook,
@@ -119,14 +119,14 @@ export const metadata: Metadata = {
         url: "/og-image.png?v=2",
         width: 910,
         height: 1200,
-        alt: "QR koda za dogodke • Fotografije gostov v živo | Guestcam",
+        alt: "QR koda za dogodke • Fotografije gostov v živo | CamLove",
         type: "image/png",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "QR koda za dogodke • Fotografije gostov v živo | Guestcam",
+    title: "QR koda za dogodke • Fotografije gostov v živo | CamLove",
     description:
       "Z eno QR kodo zberite vse fotografije in videe gostov v zasebni galeriji. Brez aplikacije, polna kakovost, brezplačen začetek.",
     images: ["/og-image.png?v=2"],

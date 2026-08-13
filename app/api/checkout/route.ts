@@ -16,9 +16,9 @@ import { recordStandOrder } from "@/lib/stand-orders";
 export const runtime = "nodejs";
 
 const PLAN_CONFIG: Record<string, { name: string; amount: number }> = {
-  basic:        { name: "Guestcam Basic",                   amount: 3900 },
-  plus:         { name: "Guestcam Plus",                    amount: 4900 },
-  premium:      { name: "Guestcam Premium",                 amount: 9900 },
+  basic:        { name: "CamLove Basic",                   amount: 3900 },
+  plus:         { name: "CamLove Plus",                    amount: 4900 },
+  premium:      { name: "CamLove Premium",                 amount: 9900 },
   film_pro:     { name: "Film Studio Pro (100 foto)",        amount: 1000 },
   film_premium: { name: "Film Studio Premium (300 foto)",    amount: 2000 },
 };

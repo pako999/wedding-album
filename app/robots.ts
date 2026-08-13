@@ -49,7 +49,7 @@ export default function robots(): MetadataRoute.Robots {
       // link-preview scrapers (FacebookBot / facebookexternalhit,
       // Twitterbot, LinkedInBot, Slackbot, TelegramBot, WhatsApp,
       // Discordbot, Applebot). Blocking those breaks OG link previews
-      // when someone shares guestcam.si on social — exactly the bug
+      // when someone shares camlove.me on social — exactly the bug
       // the user just reported.
       ...["GPTBot", "ChatGPT-User", "OAI-SearchBot", "ClaudeBot", "Claude-Web",
           "PerplexityBot", "Perplexity-User", "Google-Extended", "CCBot",

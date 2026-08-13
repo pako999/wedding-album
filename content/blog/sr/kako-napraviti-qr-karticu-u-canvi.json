@@ -6,11 +6,11 @@
   "translationKey": "wedding-qr-card-canva-design",
   "publishedAt": "2026-08-11",
   "updatedAt": "2026-08-11",
-  "author": "Guestcam Team",
+  "author": "CamLove Team",
   "category": "vodnik",
   "readingTime": 6,
-  "tags": ["QR kod", "Canva", "fotografije sa venčanja", "Guestcam"],
-  "tldr": "Otvorite besplatan dizajn u Canvi, dodajte imena i datum, dodajte sliku QR koda iz Guestcama i preuzmite karticu spremnu za štampu — za otprilike 10 minuta.",
+  "tags": ["QR kod", "Canva", "fotografije sa venčanja", "CamLove"],
+  "tldr": "Otvorite besplatan dizajn u Canvi, dodajte imena i datum, dodajte sliku QR koda iz platforme CamLove i preuzmite karticu spremnu za štampu — za otprilike 10 minuta.",
   "content": [
     {
       "type": "h2",
@@ -27,17 +27,17 @@
     {
       "type": "ul",
       "items": [
-        "QR kod vaše Guestcam galerije, preuzet kao PNG (kontrolna tabla → kartica »QR koda« → »Prenesi samo QR kodo« — interfejs Guestcam kontrolne table trenutno je na slovenačkom, pa su to tačni nazivi koje ćete videti).",
+        "QR kod vaše CamLove galerije, preuzet kao PNG (kontrolna tabla → kartica »QR koda« → »Prenesi samo QR kodo« — interfejs CamLove kontrolne table trenutno je na slovenačkom, pa su to tačni nazivi koje ćete videti).",
         "Besplatan Canva nalog — plaćena pretplata za ovo nije potrebna.",
         "Otprilike 10 minuta vremena."
       ]
     },
     {
       "type": "image",
-      "src": "https://www.guestcam.si/blog/canva-qr-card/card-anatomy.svg",
+      "src": "https://www.camlove.me/blog/canva-qr-card/card-anatomy.svg",
       "alt": "Raspored QR kartice za venčanje: imena i datum na vrhu, QR kod u sredini, kratko uputstvo ispod",
       "caption": "Neka bude jednostavno: imena, QR kod, jedna linija uputstva — to je sve što kartici treba.",
-      "credit": "Guestcam"
+      "credit": "CamLove"
     },
     {
       "type": "h2",
@@ -49,7 +49,7 @@
         "Otvorite canva.com i pokrenite novi dizajn — potražite »razglednica« ili podesite prilagođenu veličinu 10 × 15 cm (dobra veličina za kartice na stolovima).",
         "Izaberite bilo koji šablon kao polaznu tačku ili počnite od praznog platna.",
         "Dodajte tekstualni okvir sa imenima para, a ispod njega drugi sa datumom venčanja.",
-        "Kliknite Otpremanja → Otpremi fajlove i dodajte PNG fajl QR koda koji ste preuzeli sa Guestcam kontrolne table.",
+        "Kliknite Otpremanja → Otpremi fajlove i dodajte PNG fajl QR koda koji ste preuzeli sa CamLove kontrolne table.",
         "Postavite QR kod na sredinu, veličine bar 3 × 3 cm kako bi ga telefon lako prepoznao.",
         "Ispod dodajte kratko uputstvo, npr. »Skenirajte i podelite svoje fotografije!«",
         "Uskladite fontove i boje sa pozivnicama radi jedinstvenog izgleda, zatim kliknite Podeli → Preuzmi → PDF za štampu."
@@ -75,12 +75,12 @@
     },
     {
       "type": "p",
-      "text": "Ako radije preskočite dizajniranje, Guestcam uključuje 8 gotovih šablona QR kartica koji automatski popune imena i datum — preuzmite ga kao PDF spreman za štampu direktno sa kontrolne table."
+      "text": "Ako radije preskočite dizajniranje, CamLove uključuje 8 gotovih šablona QR kartica koji automatski popune imena i datum — preuzmite ga kao PDF spreman za štampu direktno sa kontrolne table."
     },
     {
       "type": "cta",
       "text": "Napravite besplatnu galeriju za venčanje",
-      "href": "https://www.guestcam.si/dashboard/new"
+      "href": "https://www.camlove.me/dashboard/new"
     },
     {
       "type": "faq",
@@ -90,7 +90,7 @@
     {
       "type": "faq",
       "q": "Gde dobijam sliku QR koda za svoje venčanje?",
-      "a": "Na Guestcam kontrolnoj tabli: otvorite galeriju, idite na karticu »QR koda« i kliknite »Prenesi samo QR kodo« da ga preuzmete kao PNG."
+      "a": "Na CamLove kontrolnoj tabli: otvorite galeriju, idite na karticu »QR koda« i kliknite »Prenesi samo QR kodo« da ga preuzmete kao PNG."
     },
     {
       "type": "faq",

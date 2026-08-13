@@ -6,7 +6,7 @@
   "translationKey": "wedding-photo-checklist-2026",
   "publishedAt": "2026-05-22",
   "updatedAt": "2026-05-25",
-  "author": "Guestcam Team",
+  "author": "CamLove Team",
   "category": "kontrolni-seznam",
   "readingTime": 6,
   "tags": [
@@ -26,7 +26,7 @@
       "items": [
         "Book the wedding photographer at least 8-12 months in advance.",
         "Prepare a 'must-have' shot list (ceremony, rings, first dance).",
-        "Create your Guestcam gallery 1-2 weeks before the wedding.",
+        "Create your CamLove gallery 1-2 weeks before the wedding.",
         "Print QR cards for every table — test that the code works.",
         "Tell guests about the gallery in the wedding invitation."
       ]
@@ -85,10 +85,10 @@
       "type": "ol",
       "items": [
         "In the week after the event, send guests a reminder about the gallery.",
-        "Download all photos from the Guestcam gallery (ZIP).",
+        "Download all photos from the CamLove gallery (ZIP).",
         "Merge with the photographer's deliverables (Premium supports direct photographer uploads too).",
         "Back up on an external drive or cloud.",
-        "Order the wedding album — Guestcam exports a print-ready ZIP."
+        "Order the wedding album — CamLove exports a print-ready ZIP."
       ]
     },
     {
@@ -112,11 +112,11 @@
     {
       "type": "faq",
       "q": "How many photos should I expect from the photographer?",
-      "a": "On average 300-600 edited photos for an 8-hour wedding. Add Guestcam and you get another 200-400 from guests."
+      "a": "On average 300-600 edited photos for an 8-hour wedding. Add CamLove and you get another 200-400 from guests."
     },
     {
       "type": "faq",
-      "q": "Do the photographer and Guestcam work together?",
+      "q": "Do the photographer and CamLove work together?",
       "a": "Yes. The Premium plan lets the photographer upload their raw set to the same gallery (with the couple's agreement). All memories in one place."
     },
     {
@@ -127,7 +127,7 @@
     {
       "type": "faq",
       "q": "What if a guest doesn't want to be in photos?",
-      "a": "Enable moderation in the Guestcam gallery — delete or hide unwanted shots. Let everyone know the gallery is private and guests can opt out at any time."
+      "a": "Enable moderation in the CamLove gallery — delete or hide unwanted shots. Let everyone know the gallery is private and guests can opt out at any time."
     }
   ],
   "coverImage": "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=1600&h=900&fit=crop&q=80&auto=format",

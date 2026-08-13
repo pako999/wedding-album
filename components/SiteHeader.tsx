@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { auth } from "@clerk/nextjs/server";
-import { GuestcamLogo } from "@/components/GuestcamLogo";
+import { CamLoveLogo } from "@/components/CamLoveLogo";
 import {
   LanguageSwitcher,
   HOME_HREFLANG,
@@ -64,7 +64,7 @@ export async function SiteHeader({
           href={resolvedHome}
           className="flex items-center transition-transform duration-200 hover:scale-[1.03]"
         >
-          <GuestcamLogo size="sm" showMark={true} />
+          <CamLoveLogo size="sm" showMark={true} />
         </Link>
 
         <div className="flex items-center gap-3 sm:gap-5">

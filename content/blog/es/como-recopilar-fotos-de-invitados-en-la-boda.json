@@ -6,16 +6,16 @@
   "translationKey": "how-to-collect-wedding-photos",
   "publishedAt": "2026-05-22",
   "updatedAt": "2026-05-25",
-  "author": "Guestcam Team",
+  "author": "CamLove Team",
   "category": "vodnik",
   "readingTime": 7,
   "tags": [
     "fotos de boda",
     "código QR",
     "invitados",
-    "Guestcam"
+    "CamLove"
   ],
-  "tldr": "Lo más fácil es crear una galería con código QR usando Guestcam — los invitados escanean y suben directamente, sin app.",
+  "tldr": "Lo más fácil es crear una galería con código QR usando CamLove — los invitados escanean y suben directamente, sin app.",
   "content": [
     {
       "type": "h2",
@@ -28,14 +28,14 @@
     {
       "type": "stat",
       "value": "340",
-      "label": "fotos por boda en promedio (datos de Guestcam 2025)",
-      "source": "Datos internos de Guestcam, 2025"
+      "label": "fotos por boda en promedio (datos de CamLove 2025)",
+      "source": "Datos internos de CamLove, 2025"
     },
     {
       "type": "image",
       "src": "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=1200&h=720&fit=crop&q=82&auto=format",
       "alt": "Pareja de novios abrazándose el día de su boda",
-      "caption": "Los momentos más preciados ocurren entre los invitados — Guestcam los captura todos.",
+      "caption": "Los momentos más preciados ocurren entre los invitados — CamLove los captura todos.",
       "credit": "Foto: Unsplash"
     },
     {
@@ -80,7 +80,7 @@
           "Adjuntos enormes"
         ],
         [
-          "Código QR + Guestcam",
+          "Código QR + CamLove",
           "100%",
           "1 escaneo",
           "Sin riesgo"
@@ -100,12 +100,12 @@
     },
     {
       "type": "p",
-      "text": "La forma más fácil es a través de Guestcam. Pasos:"
+      "text": "La forma más fácil es a través de CamLove. Pasos:"
     },
     {
       "type": "ol",
       "items": [
-        "Entra en guestcam.si y haz clic en Crear galería (gratis, sin tarjeta).",
+        "Entra en camlove.me y haz clic en Crear galería (gratis, sin tarjeta).",
         "Introduce los nombres de la pareja y la fecha de la boda.",
         "Descarga el código QR con un diseño personalizado (PDF).",
         "Imprime tarjetas para todas las mesas o para la entrada.",
@@ -143,7 +143,7 @@
     {
       "type": "faq",
       "q": "¿Se conservan las fotos en calidad completa?",
-      "a": "Sí. Guestcam mantiene la resolución original y los metadatos. WhatsApp, en cambio, comprime a un ~50 % de calidad."
+      "a": "Sí. CamLove mantiene la resolución original y los metadatos. WhatsApp, en cambio, comprime a un ~50 % de calidad."
     },
     {
       "type": "faq",

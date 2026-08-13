@@ -1,21 +1,21 @@
 {
-  "slug": "guestcam-vs-whatsapp-fotos-boda",
+  "slug": "camlove-vs-whatsapp-fotos-boda",
   "lang": "es",
-  "title": "Guestcam vs WhatsApp para fotos de boda: comparativa honesta",
-  "description": "WhatsApp comprime las fotos al 50% de calidad y el grupo se vuelve caótico. Guestcam mantiene calidad completa en una galería privada.",
-  "translationKey": "guestcam-vs-whatsapp",
+  "title": "CamLove vs WhatsApp para fotos de boda: comparativa honesta",
+  "description": "WhatsApp comprime las fotos al 50% de calidad y el grupo se vuelve caótico. CamLove mantiene calidad completa en una galería privada.",
+  "translationKey": "camlove-vs-whatsapp",
   "publishedAt": "2026-05-22",
   "updatedAt": "2026-05-25",
-  "author": "Guestcam Team",
+  "author": "CamLove Team",
   "category": "primerjava",
   "readingTime": 5,
   "tags": [
     "comparativa",
     "WhatsApp",
     "código QR",
-    "Guestcam"
+    "CamLove"
   ],
-  "tldr": "WhatsApp comprime las fotos al 50% de calidad y el grupo se vuelve caótico. Guestcam mantiene calidad completa en una galería privada.",
+  "tldr": "WhatsApp comprime las fotos al 50% de calidad y el grupo se vuelve caótico. CamLove mantiene calidad completa en una galería privada.",
   "content": [
     {
       "type": "h2",
@@ -29,19 +29,19 @@
       "type": "image",
       "src": "https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?w=1200&h=720&fit=crop&q=82&auto=format",
       "alt": "Smartphone con app de mensajería sobre una mesa de boda",
-      "caption": "WhatsApp comprime las fotos hasta un 70 %. Guestcam preserva la calidad completa.",
+      "caption": "WhatsApp comprime las fotos hasta un 70 %. CamLove preserva la calidad completa.",
       "credit": "Foto: Unsplash"
     },
     {
       "type": "h2",
-      "text": "¿En qué se diferencian Guestcam y WhatsApp?"
+      "text": "¿En qué se diferencian CamLove y WhatsApp?"
     },
     {
       "type": "table",
       "headers": [
         "",
         "WhatsApp",
-        "Guestcam"
+        "CamLove"
       ],
       "rows": [
         [
@@ -98,7 +98,7 @@
     },
     {
       "type": "h2",
-      "text": "¿Por qué las parejas se pasan a Guestcam?"
+      "text": "¿Por qué las parejas se pasan a CamLove?"
     },
     {
       "type": "ul",
@@ -112,7 +112,7 @@
     },
     {
       "type": "cta",
-      "text": "Prueba Guestcam gratis",
+      "text": "Prueba CamLove gratis",
       "href": "/dashboard/new"
     },
     {
@@ -122,23 +122,23 @@
     },
     {
       "type": "faq",
-      "q": "¿Puedo combinar WhatsApp y Guestcam?",
-      "a": "Por supuesto. Muchas parejas usan WhatsApp para hablar con los invitados antes de la boda y Guestcam para recopilar fotos durante y después del evento."
+      "q": "¿Puedo combinar WhatsApp y CamLove?",
+      "a": "Por supuesto. Muchas parejas usan WhatsApp para hablar con los invitados antes de la boda y CamLove para recopilar fotos durante y después del evento."
     },
     {
       "type": "faq",
       "q": "¿Cómo evito que los invitados vean las fotos de otros?",
-      "a": "En la galería Guestcam puedes activar la moderación — las fotos aparecen solo después de tu aprobación. O pon contraseña y compártela solo con los más cercanos."
+      "a": "En la galería CamLove puedes activar la moderación — las fotos aparecen solo después de tu aprobación. O pon contraseña y compártela solo con los más cercanos."
     },
     {
       "type": "faq",
-      "q": "¿Es Guestcam más caro que WhatsApp?",
+      "q": "¿Es CamLove más caro que WhatsApp?",
       "a": "El plan gratuito vale para eventos pequeños. Para toda una boda recomendamos Plus (49 €) o Premium (79 €) — menos que el ramo de novia promedio."
     },
     {
       "type": "faq",
       "q": "¿Qué pasa con el grupo de WhatsApp después de la boda?",
-      "a": "Se convierte en un cementerio — los mensajes se pierden, las fotos desaparecen cuando alguien limpia el móvil. La galería Guestcam sigue disponible hasta 1 año y puedes descargarla permanentemente."
+      "a": "Se convierte en un cementerio — los mensajes se pierden, las fotos desaparecen cuando alguien limpia el móvil. La galería CamLove sigue disponible hasta 1 año y puedes descargarla permanentemente."
     }
   ],
   "coverImage": "https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?w=1600&h=900&fit=crop&q=80&auto=format",

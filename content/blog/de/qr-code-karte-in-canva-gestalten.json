@@ -6,11 +6,11 @@
   "translationKey": "wedding-qr-card-canva-design",
   "publishedAt": "2026-08-11",
   "updatedAt": "2026-08-11",
-  "author": "Guestcam Team",
+  "author": "CamLove Team",
   "category": "vodnik",
   "readingTime": 6,
-  "tags": ["QR-Code", "Canva", "Hochzeitsfotos", "Guestcam"],
-  "tldr": "Öffnen Sie ein kostenloses Canva-Design, fügen Sie Namen und Datum hinzu, laden Sie Ihr Guestcam-QR-Code-Bild hoch und exportieren Sie eine druckfertige PDF-Datei — in etwa 10 Minuten.",
+  "tags": ["QR-Code", "Canva", "Hochzeitsfotos", "CamLove"],
+  "tldr": "Öffnen Sie ein kostenloses Canva-Design, fügen Sie Namen und Datum hinzu, laden Sie Ihr CamLove-QR-Code-Bild hoch und exportieren Sie eine druckfertige PDF-Datei — in etwa 10 Minuten.",
   "content": [
     {
       "type": "h2",
@@ -27,17 +27,17 @@
     {
       "type": "ul",
       "items": [
-        "Den QR-Code Ihrer Guestcam-Galerie, heruntergeladen als PNG (Dashboard → Tab „QR koda“ → „Prenesi samo QR kodo“ — die Guestcam-Dashboard-Oberfläche ist derzeit auf Slowenisch, das sind also genau die Bezeichnungen, die Sie sehen werden).",
+        "Den QR-Code Ihrer CamLove-Galerie, heruntergeladen als PNG (Dashboard → Tab „QR koda“ → „Prenesi samo QR kodo“ — die CamLove-Dashboard-Oberfläche ist derzeit auf Slowenisch, das sind also genau die Bezeichnungen, die Sie sehen werden).",
         "Ein kostenloses Canva-Konto — ein bezahltes Abo ist dafür nicht nötig.",
         "Etwa 10 Minuten Zeit."
       ]
     },
     {
       "type": "image",
-      "src": "https://www.guestcam.si/blog/canva-qr-card/card-anatomy.svg",
+      "src": "https://www.camlove.me/blog/canva-qr-card/card-anatomy.svg",
       "alt": "Aufbau einer Hochzeits-QR-Code-Karte: Namen und Datum oben, QR-Code in der Mitte, kurzer Hinweis darunter",
       "caption": "Halten Sie es einfach: Namen, QR-Code, eine Anweisungszeile — mehr braucht eine Karte nicht.",
-      "credit": "Guestcam"
+      "credit": "CamLove"
     },
     {
       "type": "h2",
@@ -49,7 +49,7 @@
         "Öffnen Sie canva.com und starten Sie ein neues Design — suchen Sie nach „Postkarte“ oder legen Sie eine eigene Größe von 10 × 15 cm fest (eine gute Größe für Tischkarten).",
         "Wählen Sie eine beliebige Vorlage als Ausgangspunkt oder beginnen Sie mit einer leeren Fläche.",
         "Fügen Sie ein Textfeld mit den Namen des Brautpaars hinzu, darunter ein zweites mit dem Hochzeitsdatum.",
-        "Klicken Sie auf Uploads → Dateien hochladen und fügen Sie die PNG-Datei des QR-Codes hinzu, die Sie aus Ihrem Guestcam-Dashboard heruntergeladen haben.",
+        "Klicken Sie auf Uploads → Dateien hochladen und fügen Sie die PNG-Datei des QR-Codes hinzu, die Sie aus Ihrem CamLove-Dashboard heruntergeladen haben.",
         "Platzieren Sie den QR-Code mittig, mindestens 3 × 3 cm groß, damit das Smartphone ihn leicht erfassen kann.",
         "Fügen Sie darunter eine kurze Anweisung hinzu, z. B. „Scannen und Fotos teilen!“",
         "Passen Sie Schriften und Farben an Ihre Einladungskarten an und klicken Sie dann auf Teilen → Herunterladen → PDF Druck."
@@ -75,12 +75,12 @@
     },
     {
       "type": "p",
-      "text": "Wenn Sie sich die Gestaltung lieber sparen möchten: Guestcam enthält 8 fertige QR-Kartenvorlagen, die Namen und Datum automatisch einfügen — laden Sie sie direkt aus Ihrem Dashboard als druckfertige PDF-Datei herunter."
+      "text": "Wenn Sie sich die Gestaltung lieber sparen möchten: CamLove enthält 8 fertige QR-Kartenvorlagen, die Namen und Datum automatisch einfügen — laden Sie sie direkt aus Ihrem Dashboard als druckfertige PDF-Datei herunter."
     },
     {
       "type": "cta",
       "text": "Kostenlose Hochzeitsgalerie erstellen",
-      "href": "https://www.guestcam.si/dashboard/new"
+      "href": "https://www.camlove.me/dashboard/new"
     },
     {
       "type": "faq",
@@ -90,7 +90,7 @@
     {
       "type": "faq",
       "q": "Wo finde ich das QR-Code-Bild meiner Hochzeit?",
-      "a": "In Ihrem Guestcam-Dashboard: öffnen Sie Ihre Galerie, gehen Sie zum Tab „QR koda“ und klicken Sie auf „Prenesi samo QR kodo“, um es als PNG herunterzuladen."
+      "a": "In Ihrem CamLove-Dashboard: öffnen Sie Ihre Galerie, gehen Sie zum Tab „QR koda“ und klicken Sie auf „Prenesi samo QR kodo“, um es als PNG herunterzuladen."
     },
     {
       "type": "faq",

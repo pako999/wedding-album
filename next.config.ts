@@ -11,6 +11,23 @@ const nextConfig: NextConfig = {
       { source: "/zasebnost",  destination: "/privacy", permanent: false },
       { source: "/piskotki",   destination: "/cookies", permanent: false },
       { source: "/vracilo",    destination: "/refund",  permanent: false },
+
+      // ── Rebrand: the comparison post carried the old brand in its slug ──
+      // 301 (not 302) so the accumulated link equity transfers to the new
+      // URL instead of being held at the old one. Delete these only once
+      // Search Console shows no impressions left on the old paths.
+      { source: "/blog/guestcam-vs-whatsapp-porocne-fotografije",
+        destination: "/blog/camlove-vs-whatsapp-porocne-fotografije",       permanent: true },
+      { source: "/hr/blog/guestcam-vs-whatsapp-vjencanje-fotografije",
+        destination: "/hr/blog/camlove-vs-whatsapp-vjencanje-fotografije",  permanent: true },
+      { source: "/sr/blog/guestcam-vs-whatsapp-vencanje-fotografije",
+        destination: "/sr/blog/camlove-vs-whatsapp-vencanje-fotografije",   permanent: true },
+      { source: "/de/blog/guestcam-vs-whatsapp-hochzeitsfotos",
+        destination: "/de/blog/camlove-vs-whatsapp-hochzeitsfotos",         permanent: true },
+      { source: "/en/blog/guestcam-vs-whatsapp-wedding-photos",
+        destination: "/en/blog/camlove-vs-whatsapp-wedding-photos",         permanent: true },
+      { source: "/es/blog/guestcam-vs-whatsapp-fotos-boda",
+        destination: "/es/blog/camlove-vs-whatsapp-fotos-boda",             permanent: true },
     ];
   },
   images: {
@@ -26,8 +43,15 @@ const nextConfig: NextConfig = {
   experimental: {
     serverActions: {
       allowedOrigins: [
+        "camlove.me",
+        "www.camlove.me",
+        "camlove-*.vercel.app",
+        // Kept through the cutover: if the old domain is served directly for
+        // a while (rather than 301-ing straight to camlove.me), server
+        // actions posted from it would otherwise fail the origin check.
+        // Safe to drop once guestcam.si only ever redirects.
         "guestcam.si",
-        "guestcam.me",
+        "www.guestcam.si",
         "guestcam-*.vercel.app",
         "localhost:3000",
         "localhost:3001",

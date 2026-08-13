@@ -14,12 +14,12 @@ const CATEGORY_COLOR: Record<string, string> = {
 };
 
 const COPY: Record<LangCode, { h1: string; lead: string; empty: string; readMore: string; featured: string }> = {
-  sl: { h1: "Guestcam Blog — Nasveti za poročne fotografije", lead: "Vodniki, primerjave in nasveti za zbiranje fotografij gostov.", empty: "Še nimamo objav v tem jeziku. Poglejte angleško verzijo.", readMore: "Preberi →", featured: "Najnovejše" },
-  hr: { h1: "Guestcam Blog — Savjeti za fotografije s vjenčanja", lead: "Vodiči, usporedbe i savjeti za prikupljanje fotografija gostiju.", empty: "Još nemamo objava na ovom jeziku. Pogledajte englesku verziju.", readMore: "Pročitaj →", featured: "Najnovije" },
-  sr: { h1: "Guestcam Blog — Saveti za fotografije sa venčanja", lead: "Vodiči, poređenja i saveti za prikupljanje fotografija gostiju.", empty: "Još nemamo objava na ovom jeziku. Pogledajte englesku verziju.", readMore: "Pročitaj →", featured: "Najnovije" },
-  de: { h1: "Guestcam Blog — Tipps für Hochzeitsfotos",          lead: "Anleitungen, Vergleiche und Tipps zum Sammeln von Gästefotos.", empty: "Noch keine Beiträge in dieser Sprache. Schauen Sie sich die englische Version an.", readMore: "Lesen →", featured: "Neuester Beitrag" },
-  en: { h1: "Guestcam Blog — Wedding Photo Tips & Guides",       lead: "Guides, comparisons and tips for collecting guest photos.",       empty: "No posts in this language yet. Check the English version.", readMore: "Read more →", featured: "Latest" },
-  es: { h1: "Guestcam Blog — Consejos sobre fotos de boda",     lead: "Guías, comparativas y consejos para recopilar fotos de los invitados.", empty: "Aún no hay entradas en este idioma. Consulta la versión en inglés.", readMore: "Leer más →", featured: "Lo más reciente" },
+  sl: { h1: "CamLove Blog — Nasveti za poročne fotografije", lead: "Vodniki, primerjave in nasveti za zbiranje fotografij gostov.", empty: "Še nimamo objav v tem jeziku. Poglejte angleško verzijo.", readMore: "Preberi →", featured: "Najnovejše" },
+  hr: { h1: "CamLove Blog — Savjeti za fotografije s vjenčanja", lead: "Vodiči, usporedbe i savjeti za prikupljanje fotografija gostiju.", empty: "Još nemamo objava na ovom jeziku. Pogledajte englesku verziju.", readMore: "Pročitaj →", featured: "Najnovije" },
+  sr: { h1: "CamLove Blog — Saveti za fotografije sa venčanja", lead: "Vodiči, poređenja i saveti za prikupljanje fotografija gostiju.", empty: "Još nemamo objava na ovom jeziku. Pogledajte englesku verziju.", readMore: "Pročitaj →", featured: "Najnovije" },
+  de: { h1: "CamLove Blog — Tipps für Hochzeitsfotos",          lead: "Anleitungen, Vergleiche und Tipps zum Sammeln von Gästefotos.", empty: "Noch keine Beiträge in dieser Sprache. Schauen Sie sich die englische Version an.", readMore: "Lesen →", featured: "Neuester Beitrag" },
+  en: { h1: "CamLove Blog — Wedding Photo Tips & Guides",       lead: "Guides, comparisons and tips for collecting guest photos.",       empty: "No posts in this language yet. Check the English version.", readMore: "Read more →", featured: "Latest" },
+  es: { h1: "CamLove Blog — Consejos sobre fotos de boda",     lead: "Guías, comparativas y consejos para recopilar fotos de los invitados.", empty: "Aún no hay entradas en este idioma. Consulta la versión en inglés.", readMore: "Leer más →", featured: "Lo más reciente" },
 };
 
 interface Props {

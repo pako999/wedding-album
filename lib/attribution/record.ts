@@ -16,7 +16,7 @@ const APP_HOST = (() => {
     return new URL(process.env.NEXT_PUBLIC_APP_URL ?? SITE_URL)
       .hostname.replace(/^www\./, "");
   } catch {
-    return "guestcam.si";
+    return "camlove.me";
   }
 })();
 

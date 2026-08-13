@@ -6,9 +6,9 @@ export const metadata: Metadata = {
   // Optimized against the SR SERP for "QR kod za venčanje" — top
   // competitor (capturethemoment.rs) uses "QR Kod za Deljenje
   // Fotografija". We lead with the same intent phrase to match.
-  // `absolute` bypasses the root layout's "%s | Guestcam" template
+  // `absolute` bypasses the root layout's "%s | CamLove" template
   // so our title isn't double-branded.
-  title: { absolute: "QR kod za venčanje · Fotografije gostiju uživo | Guestcam" },
+  title: { absolute: "QR kod za venčanje · Fotografije gostiju uživo | CamLove" },
   description:
     "Sakupite sve fotografije i video snimke gostiju sa venčanja preko QR koda u privatnoj galeriji. Bez aplikacije, pun kvalitet, besplatno za probu.",
   alternates: {
@@ -26,9 +26,9 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "sr_RS",
-    siteName: "Guestcam",
+    siteName: "CamLove",
     url: `${SITE_URL}/sr`,
-    title: "QR kod za venčanje · Fotografije gostiju uživo | Guestcam",
+    title: "QR kod za venčanje · Fotografije gostiju uživo | CamLove",
     description:
       "Sakupite sve fotografije i video snimke gostiju sa venčanja preko QR koda u privatnoj galeriji. Bez aplikacije, pun kvalitet, besplatno za probu.",
     // Page-level openGraph REPLACES the root's, so the image has to
@@ -40,14 +40,14 @@ export const metadata: Metadata = {
         url: `${SITE_URL}/og-image.png?v=2`,
         width: 910,
         height: 1200,
-        alt: "QR kod za venčanje · Fotografije gostiju uživo | Guestcam",
+        alt: "QR kod za venčanje · Fotografije gostiju uživo | CamLove",
         type: "image/png",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "QR kod za venčanje · Fotografije gostiju uživo | Guestcam",
+    title: "QR kod za venčanje · Fotografije gostiju uživo | CamLove",
     description: "Sakupite sve fotografije i video snimke gostiju sa venčanja preko QR koda u privatnoj galeriji. Bez aplikacije, pun kvalitet, besplatno za probu.",
     images: [`${SITE_URL}/og-image.png?v=2`],
   },

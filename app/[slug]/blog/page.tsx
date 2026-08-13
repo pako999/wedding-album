@@ -29,8 +29,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const langCode = lang as LangCode;
 
   const titles: Record<LangCode, string> = {
-    sl: "Blog — Guestcam", hr: "Blog — Guestcam", sr: "Blog — Guestcam",
-    de: "Blog — Guestcam", en: "Blog — Guestcam", es: "Blog — Guestcam",
+    sl: "Blog — CamLove", hr: "Blog — CamLove", sr: "Blog — CamLove",
+    de: "Blog — CamLove", en: "Blog — CamLove", es: "Blog — CamLove",
   };
   const descriptions: Record<LangCode, string> = {
     sl: "Nasveti in vodniki za zbiranje fotografij gostov.",

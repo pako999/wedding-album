@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   // "Código QR" + "fotos de boda" as the lead phrase. We do the same
   // and add "Sin app · Gratis" as the differentiators every top page
   // emphasises. `absolute` bypasses the root template.
-  title: { absolute: "Código QR para fotos de boda · Sin app · Gratis | Guestcam" },
+  title: { absolute: "Código QR para fotos de boda · Sin app · Gratis | CamLove" },
   description:
     "Reúne todas las fotos y vídeos de tus invitados con un código QR en una galería privada. Sin app, calidad completa, gratis para empezar. Para bodas.",
   alternates: {
@@ -26,9 +26,9 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "es_ES",
-    siteName: "Guestcam",
+    siteName: "CamLove",
     url: `${SITE_URL}/es`,
-    title: "Código QR para fotos de boda · Sin app · Gratis | Guestcam",
+    title: "Código QR para fotos de boda · Sin app · Gratis | CamLove",
     description:
       "Reúne todas las fotos y vídeos de tus invitados con un código QR en una galería privada. Sin app, calidad completa, gratis para empezar. Para bodas.",
     // See app/sr/page.tsx for the per-locale image rationale.
@@ -37,14 +37,14 @@ export const metadata: Metadata = {
         url: `${SITE_URL}/og-image.png?v=2`,
         width: 910,
         height: 1200,
-        alt: "Código QR para fotos de boda · Sin app · Gratis | Guestcam",
+        alt: "Código QR para fotos de boda · Sin app · Gratis | CamLove",
         type: "image/png",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Código QR para fotos de boda · Sin app · Gratis | Guestcam",
+    title: "Código QR para fotos de boda · Sin app · Gratis | CamLove",
     description: "Reúne todas las fotos y vídeos de tus invitados con un código QR en una galería privada. Sin app, calidad completa, gratis para empezar.",
     images: [`${SITE_URL}/og-image.png?v=2`],
   },

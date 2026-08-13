@@ -7,16 +7,16 @@ export const cookiesDoc: Record<LangCode, LegalDoc> = {
     eyebrow: "Pravni dokument",
     lastUpdated: "Zadnja posodobitev: 1. januar 2026 · Sport group d.o.o.",
     intro:
-      "Piškotek je majhna besedilna datoteka, ki jo brskalnik shrani na vašo napravo. Pri Guestcam uporabljamo le tehnično nujne piškotke. Brez vašega soglasja ne nameščamo oglaševalskih ali sledilnih piškotkov.",
+      "Piškotek je majhna besedilna datoteka, ki jo brskalnik shrani na vašo napravo. Pri CamLove uporabljamo le tehnično nujne piškotke. Brez vašega soglasja ne nameščamo oglaševalskih ali sledilnih piškotkov.",
     sections: [
       { title: "1. Katere piškotke uporabljamo", blocks: [
         { type: "h3", text: "1.1 Nujno potrebni piškotki" },
         { type: "ul", items: [
           "__session, __client_uat — Clerk.com, vzdrževanje seje prijavljenega organizatorja. Obvezni.",
-          "guestcam_consent — vaš izbor o piškotkih, da vas ne sprašujemo vedno znova. Neobvezen.",
+          "camlove_consent — vaš izbor o piškotkih, da vas ne sprašujemo vedno znova. Neobvezen.",
         ] },
         { type: "h3", text: "1.2 Piškotki tretjih oseb" },
-        { type: "p", text: "Paddle (naš preprodajalec za plačila) lahko ob plačilu nastavi lastne piškotke za preprečevanje zlorab. Ti piškotki niso nameščeni na guestcam.si samem — pojavijo se le v Paddlovem postopku plačila med dejansko transakcijo." },
+        { type: "p", text: "Paddle (naš preprodajalec za plačila) lahko ob plačilu nastavi lastne piškotke za preprečevanje zlorab. Ti piškotki niso nameščeni na camlove.me samem — pojavijo se le v Paddlovem postopku plačila med dejansko transakcijo." },
       ] },
       { title: "2. Kaj NE uporabljamo", blocks: [
         { type: "ul", items: [
@@ -34,7 +34,7 @@ export const cookiesDoc: Record<LangCode, LegalDoc> = {
         { type: "p", text: "O bistvenih spremembah te politike vas obvestimo z obvestilom v storitvi. Datum zadnje posodobitve je vedno naveden na vrhu tega dokumenta." },
       ] },
       { title: "5. Kontakt", blocks: [
-        { type: "contactCard", lines: ["Sport group d.o.o.", "E-pošta: info@guestcam.si", "Davčna številka: SI72133449"] },
+        { type: "contactCard", lines: ["Sport group d.o.o.", "E-pošta: info@camlove.me", "Davčna številka: SI72133449"] },
       ] },
     ],
   },
@@ -43,16 +43,16 @@ export const cookiesDoc: Record<LangCode, LegalDoc> = {
     eyebrow: "Pravni dokument",
     lastUpdated: "Zadnje ažurirano: 1. siječnja 2026 · Sport group d.o.o.",
     intro:
-      "Kolačić je mala tekstualna datoteka koju preglednik sprema na vaš uređaj. U Guestcam-u koristimo isključivo tehnički nužne kolačiće. Bez vaše suglasnosti ne postavljamo oglašivačke ni tragalačke kolačiće.",
+      "Kolačić je mala tekstualna datoteka koju preglednik sprema na vaš uređaj. U platformi CamLove koristimo isključivo tehnički nužne kolačiće. Bez vaše suglasnosti ne postavljamo oglašivačke ni tragalačke kolačiće.",
     sections: [
       { title: "1. Koje kolačiće koristimo", blocks: [
         { type: "h3", text: "1.1 Nužno potrebni kolačići" },
         { type: "ul", items: [
           "__session, __client_uat — Clerk.com, održavanje sesije prijavljenog organizatora. Obvezni.",
-          "guestcam_consent — vaš odabir o kolačićima, da vas ne pitamo svaki put. Neobvezni.",
+          "camlove_consent — vaš odabir o kolačićima, da vas ne pitamo svaki put. Neobvezni.",
         ] },
         { type: "h3", text: "1.2 Kolačići trećih strana" },
-        { type: "p", text: "Paddle (naš preprodavač za plaćanja) može tijekom plaćanja postaviti vlastite kolačiće radi sprječavanja zlouporabe. Ti se kolačići ne postavljaju na guestcam.si — pojavljuju se isključivo u Paddleovom postupku plaćanja tijekom stvarne transakcije." },
+        { type: "p", text: "Paddle (naš preprodavač za plaćanja) može tijekom plaćanja postaviti vlastite kolačiće radi sprječavanja zlouporabe. Ti se kolačići ne postavljaju na camlove.me — pojavljuju se isključivo u Paddleovom postupku plaćanja tijekom stvarne transakcije." },
       ] },
       { title: "2. Što NE koristimo", blocks: [
         { type: "ul", items: [
@@ -70,7 +70,7 @@ export const cookiesDoc: Record<LangCode, LegalDoc> = {
         { type: "p", text: "O bitnim izmjenama ove politike obavještavamo vas obavijesti u usluzi. Datum zadnjeg ažuriranja uvijek je naveden na vrhu ovog dokumenta." },
       ] },
       { title: "5. Kontakt", blocks: [
-        { type: "contactCard", lines: ["Sport group d.o.o.", "E-pošta: info@guestcam.si", "OIB: SI72133449"] },
+        { type: "contactCard", lines: ["Sport group d.o.o.", "E-pošta: info@camlove.me", "OIB: SI72133449"] },
       ] },
     ],
   },
@@ -79,16 +79,16 @@ export const cookiesDoc: Record<LangCode, LegalDoc> = {
     eyebrow: "Pravni dokument",
     lastUpdated: "Poslednje ažurirano: 1. januar 2026 · Sport group d.o.o.",
     intro:
-      "Kolačić je mala tekstualna datoteka koju pretraživač čuva na vašem uređaju. U Guestcam-u koristimo isključivo tehnički neophodne kolačiće. Bez vaše saglasnosti ne postavljamo reklamne ni prateće kolačiće.",
+      "Kolačić je mala tekstualna datoteka koju pretraživač čuva na vašem uređaju. U platformi CamLove koristimo isključivo tehnički neophodne kolačiće. Bez vaše saglasnosti ne postavljamo reklamne ni prateće kolačiće.",
     sections: [
       { title: "1. Koje kolačiće koristimo", blocks: [
         { type: "h3", text: "1.1 Neophodno potrebni kolačići" },
         { type: "ul", items: [
           "__session, __client_uat — Clerk.com, održavanje sesije prijavljenog organizatora. Obavezni.",
-          "guestcam_consent — vaš izbor o kolačićima, da vas ne pitamo svaki put. Neobavezni.",
+          "camlove_consent — vaš izbor o kolačićima, da vas ne pitamo svaki put. Neobavezni.",
         ] },
         { type: "h3", text: "1.2 Kolačići trećih strana" },
-        { type: "p", text: "Paddle (naš preprodavac za plaćanja) može tokom plaćanja postaviti sopstvene kolačiće radi sprečavanja zloupotreba. Ti kolačići se ne postavljaju na guestcam.si — pojavljuju se isključivo u Paddleovom postupku plaćanja tokom stvarne transakcije." },
+        { type: "p", text: "Paddle (naš preprodavac za plaćanja) može tokom plaćanja postaviti sopstvene kolačiće radi sprečavanja zloupotreba. Ti kolačići se ne postavljaju na camlove.me — pojavljuju se isključivo u Paddleovom postupku plaćanja tokom stvarne transakcije." },
       ] },
       { title: "2. Šta NE koristimo", blocks: [
         { type: "ul", items: [
@@ -106,7 +106,7 @@ export const cookiesDoc: Record<LangCode, LegalDoc> = {
         { type: "p", text: "O bitnim izmenama ove politike obaveštavamo vas obaveštenjem u usluzi. Datum poslednjeg ažuriranja uvek je naveden na vrhu ovog dokumenta." },
       ] },
       { title: "5. Kontakt", blocks: [
-        { type: "contactCard", lines: ["Sport group d.o.o.", "E-pošta: info@guestcam.si", "PIB: SI72133449"] },
+        { type: "contactCard", lines: ["Sport group d.o.o.", "E-pošta: info@camlove.me", "PIB: SI72133449"] },
       ] },
     ],
   },
@@ -115,16 +115,16 @@ export const cookiesDoc: Record<LangCode, LegalDoc> = {
     eyebrow: "Rechtsdokument",
     lastUpdated: "Zuletzt aktualisiert: 1. Januar 2026 · Sport group d.o.o.",
     intro:
-      "Ein Cookie ist eine kleine Textdatei, die der Browser auf Ihrem Gerät speichert. Bei Guestcam verwenden wir ausschließlich technisch notwendige Cookies. Ohne Ihre Einwilligung setzen wir keine Werbe- oder Tracking-Cookies.",
+      "Ein Cookie ist eine kleine Textdatei, die der Browser auf Ihrem Gerät speichert. Bei CamLove verwenden wir ausschließlich technisch notwendige Cookies. Ohne Ihre Einwilligung setzen wir keine Werbe- oder Tracking-Cookies.",
     sections: [
       { title: "1. Welche Cookies wir verwenden", blocks: [
         { type: "h3", text: "1.1 Notwendige Cookies" },
         { type: "ul", items: [
           "__session, __client_uat — Clerk.com, Aufrechterhaltung der Sitzung des angemeldeten Organisators. Erforderlich.",
-          "guestcam_consent — Ihre Cookie-Auswahl, damit wir nicht jedes Mal nachfragen. Optional.",
+          "camlove_consent — Ihre Cookie-Auswahl, damit wir nicht jedes Mal nachfragen. Optional.",
         ] },
         { type: "h3", text: "1.2 Cookies von Drittanbietern" },
-        { type: "p", text: "Paddle (unser Zahlungs-Reseller) kann während des Zahlungsvorgangs eigene Cookies zur Betrugsprävention setzen. Diese Cookies werden nicht auf guestcam.si selbst gesetzt — sie erscheinen ausschließlich im Paddle-Checkout während der eigentlichen Transaktion." },
+        { type: "p", text: "Paddle (unser Zahlungs-Reseller) kann während des Zahlungsvorgangs eigene Cookies zur Betrugsprävention setzen. Diese Cookies werden nicht auf camlove.me selbst gesetzt — sie erscheinen ausschließlich im Paddle-Checkout während der eigentlichen Transaktion." },
       ] },
       { title: "2. Was wir NICHT verwenden", blocks: [
         { type: "ul", items: [
@@ -142,7 +142,7 @@ export const cookiesDoc: Record<LangCode, LegalDoc> = {
         { type: "p", text: "Über wesentliche Änderungen dieser Richtlinie informieren wir Sie mit einem Hinweis im Dienst. Das Datum der letzten Aktualisierung ist stets am Anfang dieses Dokuments angegeben." },
       ] },
       { title: "5. Kontakt", blocks: [
-        { type: "contactCard", lines: ["Sport group d.o.o.", "E-Mail: info@guestcam.si", "USt-IdNr.: SI72133449"] },
+        { type: "contactCard", lines: ["Sport group d.o.o.", "E-Mail: info@camlove.me", "USt-IdNr.: SI72133449"] },
       ] },
     ],
   },
@@ -151,16 +151,16 @@ export const cookiesDoc: Record<LangCode, LegalDoc> = {
     eyebrow: "Legal document",
     lastUpdated: "Last updated: January 1, 2026 · Sport group d.o.o.",
     intro:
-      "A cookie is a small text file the browser stores on your device. At Guestcam we use only strictly-necessary cookies. We do not set advertising or tracking cookies without your consent.",
+      "A cookie is a small text file the browser stores on your device. At CamLove we use only strictly-necessary cookies. We do not set advertising or tracking cookies without your consent.",
     sections: [
       { title: "1. Which cookies we use", blocks: [
         { type: "h3", text: "1.1 Strictly necessary cookies" },
         { type: "ul", items: [
           "__session, __client_uat — Clerk.com, maintaining the organiser's sign-in session. Required.",
-          "guestcam_consent — your cookie choice, so we don't ask again. Optional.",
+          "camlove_consent — your cookie choice, so we don't ask again. Optional.",
         ] },
         { type: "h3", text: "1.2 Third-party cookies" },
-        { type: "p", text: "Paddle (our payments reseller) may set its own cookies during payment for fraud prevention. These cookies are not set on guestcam.si itself — they only appear in the Paddle checkout during the actual transaction." },
+        { type: "p", text: "Paddle (our payments reseller) may set its own cookies during payment for fraud prevention. These cookies are not set on camlove.me itself — they only appear in the Paddle checkout during the actual transaction." },
       ] },
       { title: "2. What we do NOT use", blocks: [
         { type: "ul", items: [
@@ -178,7 +178,7 @@ export const cookiesDoc: Record<LangCode, LegalDoc> = {
         { type: "p", text: "We will notify you of material changes to this policy with a notice inside the service. The last-updated date is always shown at the top of this document." },
       ] },
       { title: "5. Contact", blocks: [
-        { type: "contactCard", lines: ["Sport group d.o.o.", "Email: info@guestcam.si", "VAT ID: SI72133449"] },
+        { type: "contactCard", lines: ["Sport group d.o.o.", "Email: info@camlove.me", "VAT ID: SI72133449"] },
       ] },
     ],
   },
@@ -187,16 +187,16 @@ export const cookiesDoc: Record<LangCode, LegalDoc> = {
     eyebrow: "Documento legal",
     lastUpdated: "Última actualización: 1 de enero de 2026 · Sport group d.o.o.",
     intro:
-      "Una cookie es un pequeño archivo de texto que el navegador almacena en tu dispositivo. En Guestcam utilizamos únicamente cookies estrictamente necesarias. No instalamos cookies publicitarias ni de seguimiento sin tu consentimiento.",
+      "Una cookie es un pequeño archivo de texto que el navegador almacena en tu dispositivo. En CamLove utilizamos únicamente cookies estrictamente necesarias. No instalamos cookies publicitarias ni de seguimiento sin tu consentimiento.",
     sections: [
       { title: "1. Qué cookies utilizamos", blocks: [
         { type: "h3", text: "1.1 Cookies estrictamente necesarias" },
         { type: "ul", items: [
           "__session, __client_uat — Clerk.com, mantenimiento de la sesión del organizador conectado. Obligatorias.",
-          "guestcam_consent — tu elección sobre cookies, para no volver a preguntarte. Opcional.",
+          "camlove_consent — tu elección sobre cookies, para no volver a preguntarte. Opcional.",
         ] },
         { type: "h3", text: "1.2 Cookies de terceros" },
-        { type: "p", text: "Paddle (nuestro revendedor de pagos) puede establecer sus propias cookies durante el pago para prevenir fraudes. Estas cookies no se instalan en guestcam.si — solo aparecen en el proceso de pago de Paddle durante la transacción real." },
+        { type: "p", text: "Paddle (nuestro revendedor de pagos) puede establecer sus propias cookies durante el pago para prevenir fraudes. Estas cookies no se instalan en camlove.me — solo aparecen en el proceso de pago de Paddle durante la transacción real." },
       ] },
       { title: "2. Lo que NO utilizamos", blocks: [
         { type: "ul", items: [
@@ -214,7 +214,7 @@ export const cookiesDoc: Record<LangCode, LegalDoc> = {
         { type: "p", text: "Te notificaremos los cambios importantes de esta política mediante un aviso dentro del servicio. La fecha de la última actualización aparece siempre en la parte superior de este documento." },
       ] },
       { title: "5. Contacto", blocks: [
-        { type: "contactCard", lines: ["Sport group d.o.o.", "Email: info@guestcam.si", "CIF: SI72133449"] },
+        { type: "contactCard", lines: ["Sport group d.o.o.", "Email: info@camlove.me", "CIF: SI72133449"] },
       ] },
     ],
   },

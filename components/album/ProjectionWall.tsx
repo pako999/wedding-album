@@ -438,7 +438,7 @@ export function ProjectionWall({ album, photos, onClose }: Props) {
       </div>
 
       {/* ── Footer ──────────────────────────────────────────────────────────── */}
-      {/* Non-removable Guestcam attribution on the live wall. Deep-linked
+      {/* Non-removable CamLove attribution on the live wall. Deep-linked
           with the album's referral code + tp=live_display so any guest
           taking a photo of the projected screen and typing the URL later
           still lands in the referral engine (P2 touchpoint). */}
@@ -456,8 +456,8 @@ export function ProjectionWall({ album, photos, onClose }: Props) {
           style={{ color: "rgba(255,255,255,0.5)", textDecoration: "none" }}
         >
           <span className="inline-block w-1.5 h-1.5 rounded-full" style={{ background: "#FFC94D" }} aria-hidden />
-          <span style={{ fontWeight: 700, color: "rgba(255,255,255,0.75)" }}>Guestcam</span>
-          <span style={{ opacity: 0.55 }}>· guestcam.si</span>
+          <span style={{ fontWeight: 700, color: "rgba(255,255,255,0.75)" }}>CamLove</span>
+          <span style={{ opacity: 0.55 }}>· camlove.me</span>
         </a>
         <span className="capitalize">{dateStr}</span>
       </footer>

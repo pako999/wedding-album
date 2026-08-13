@@ -43,7 +43,7 @@
   <!-- logo lockup -->
   <rect x="124.0" y="219.0" width="7" height="7" rx="1.8" fill="none" stroke="#8C8375" stroke-width="1"/>
   <circle cx="127.5" cy="222.5" r="1.7" fill="#8C8375"/>
-  <text x="135.0" y="225.0" font-family="Georgia,serif" font-size="7.2" fill="#8C8375">Guestcam</text>
+  <text x="135.0" y="225.0" font-family="Georgia,serif" font-size="7.2" fill="#8C8375">CamLove</text>
 
   <!-- beech block base with the card slot -->
   <rect x="66" y="240" width="168" height="38" rx="4" fill="url(#wood)"/>

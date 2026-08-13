@@ -1,21 +1,21 @@
 {
-  "slug": "guestcam-vs-whatsapp-vencanje-fotografije",
+  "slug": "camlove-vs-whatsapp-vencanje-fotografije",
   "lang": "sr",
-  "title": "Guestcam vs WhatsApp za fotografije sa venčanja: poštena uporedba",
-  "description": "WhatsApp kompresuje fotografije na 50% kvaliteta i grupa postaje haotična. Guestcam zadržava pun kvalitet u jednoj privatnoj galeriji.",
-  "translationKey": "guestcam-vs-whatsapp",
+  "title": "CamLove vs WhatsApp za fotografije sa venčanja: poštena uporedba",
+  "description": "WhatsApp kompresuje fotografije na 50% kvaliteta i grupa postaje haotična. CamLove zadržava pun kvalitet u jednoj privatnoj galeriji.",
+  "translationKey": "camlove-vs-whatsapp",
   "publishedAt": "2026-05-22",
   "updatedAt": "2026-05-25",
-  "author": "Guestcam Team",
+  "author": "CamLove Team",
   "category": "primerjava",
   "readingTime": 5,
   "tags": [
     "poređenje",
     "WhatsApp",
     "QR kod",
-    "Guestcam"
+    "CamLove"
   ],
-  "tldr": "WhatsApp kompresuje fotografije na 50% kvaliteta i grupa postaje haotična. Guestcam zadržava pun kvalitet u jednoj privatnoj galeriji.",
+  "tldr": "WhatsApp kompresuje fotografije na 50% kvaliteta i grupa postaje haotična. CamLove zadržava pun kvalitet u jednoj privatnoj galeriji.",
   "content": [
     {
       "type": "h2",
@@ -29,19 +29,19 @@
       "type": "image",
       "src": "https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?w=1200&h=720&fit=crop&q=82&auto=format",
       "alt": "Pametni telefon sa aplikacijom za poruke na svadbenom stolu",
-      "caption": "WhatsApp komprimuje fotografije i do 70 %. Guestcam čuva pun kvalitet.",
+      "caption": "WhatsApp komprimuje fotografije i do 70 %. CamLove čuva pun kvalitet.",
       "credit": "Foto: Unsplash"
     },
     {
       "type": "h2",
-      "text": "U čemu se Guestcam i WhatsApp razlikuju?"
+      "text": "U čemu se CamLove i WhatsApp razlikuju?"
     },
     {
       "type": "table",
       "headers": [
         "",
         "WhatsApp",
-        "Guestcam"
+        "CamLove"
       ],
       "rows": [
         [
@@ -98,7 +98,7 @@
     },
     {
       "type": "h2",
-      "text": "Zašto parovi prelaze na Guestcam?"
+      "text": "Zašto parovi prelaze na CamLove?"
     },
     {
       "type": "ul",
@@ -112,7 +112,7 @@
     },
     {
       "type": "cta",
-      "text": "Probajte Guestcam besplatno",
+      "text": "Probajte CamLove besplatno",
       "href": "/dashboard/new"
     },
     {
@@ -122,23 +122,23 @@
     },
     {
       "type": "faq",
-      "q": "Mogu li kombinovati WhatsApp i Guestcam?",
-      "a": "Naravno. Mnogi parovi koriste WhatsApp za komunikaciju sa gostima pre venčanja i Guestcam za prikupljanje fotografija tokom i posle događaja."
+      "q": "Mogu li kombinovati WhatsApp i CamLove?",
+      "a": "Naravno. Mnogi parovi koriste WhatsApp za komunikaciju sa gostima pre venčanja i CamLove za prikupljanje fotografija tokom i posle događaja."
     },
     {
       "type": "faq",
       "q": "Kako sprečiti da gosti vide fotografije drugih?",
-      "a": "U Guestcam galeriji možete da uključite moderaciju — fotografije se prikazuju tek kada ih odobrite. Ili postavite lozinku koju delite samo sa najbližima."
+      "a": "U CamLove galeriji možete da uključite moderaciju — fotografije se prikazuju tek kada ih odobrite. Ili postavite lozinku koju delite samo sa najbližima."
     },
     {
       "type": "faq",
-      "q": "Da li Guestcam košta više od WhatsAppa?",
+      "q": "Da li CamLove košta više od WhatsAppa?",
       "a": "Besplatan paket je dovoljan za male događaje. Za celo venčanje preporučujemo Plus (49€) ili Premium (79€) — manje od prosečnog venčanog buketa."
     },
     {
       "type": "faq",
       "q": "Šta se dešava sa WhatsApp grupom posle venčanja?",
-      "a": "Postaje spomenik — poruke se gube, fotografije se brišu kada neko očisti telefon. Guestcam galerija ostaje dostupna do 1 godine i možete je trajno preuzeti."
+      "a": "Postaje spomenik — poruke se gube, fotografije se brišu kada neko očisti telefon. CamLove galerija ostaje dostupna do 1 godine i možete je trajno preuzeti."
     }
   ],
   "coverImage": "https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?w=1600&h=900&fit=crop&q=80&auto=format",

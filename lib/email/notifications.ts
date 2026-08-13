@@ -1,7 +1,7 @@
 import { SITE_URL } from "@/lib/urls";
 import { Resend } from "resend";
 
-const FROM = process.env.RESEND_FROM ?? "noreply@guestcam.si";
+const FROM = process.env.RESEND_FROM ?? "noreply@camlove.me";
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? SITE_URL;
 
 /** Escape user-supplied values before interpolating them into email HTML. */
@@ -32,7 +32,7 @@ export function welcomeEmailHtml({ ownerName, coupleName, weddingDate, albumSlug
 
   return `<!DOCTYPE html>
 <html lang="sl">
-<head><meta charset="utf-8" /><title>Dobrodošli v Guestcam</title></head>
+<head><meta charset="utf-8" /><title>Dobrodošli v CamLove</title></head>
 <body style="margin:0;padding:0;background:#F2F4F8;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;color:#0F1729;">
   <table width="100%" cellpadding="0" cellspacing="0" style="background:#F2F4F8;padding:32px 16px;">
     <tr><td align="center">
@@ -40,7 +40,7 @@ export function welcomeEmailHtml({ ownerName, coupleName, weddingDate, albumSlug
 
         <!-- Header -->
         <tr><td style="background:linear-gradient(135deg,#FFC94D 0%,#FFD966 100%);padding:36px 36px 28px;">
-          <p style="margin:0 0 8px;font-size:12px;letter-spacing:3px;font-weight:700;color:#0F1729;">GUESTCAM</p>
+          <p style="margin:0 0 8px;font-size:12px;letter-spacing:3px;font-weight:700;color:#0F1729;">CAMLOVE</p>
           <h1 style="margin:0;font-size:24px;line-height:1.25;color:#0F1729;font-weight:800;">🎉 Dobrodošli! Vaša galerija je pripravljena</h1>
         </td></tr>
 
@@ -48,7 +48,7 @@ export function welcomeEmailHtml({ ownerName, coupleName, weddingDate, albumSlug
         <tr><td style="padding:32px 36px 8px;">
           <p style="margin:0 0 16px;font-size:16px;line-height:1.55;color:#0F1729;">Pozdravljeni${greeting},</p>
           <p style="margin:0;font-size:15px;line-height:1.65;color:#475569;">
-            Hvala, ker ste izbrali Guestcam. Vaša prva galerija je ustvarjena
+            Hvala, ker ste izbrali CamLove. Vaša prva galerija je ustvarjena
             in pripravljena, da skupaj zberete vse fotografije in videe vašega dogodka.
           </p>
         </td></tr>
@@ -110,13 +110,13 @@ export function welcomeEmailHtml({ ownerName, coupleName, weddingDate, albumSlug
 
         <!-- Help -->
         <tr><td style="padding:28px 36px 32px;">
-          <p style="margin:0;font-size:13px;line-height:1.6;color:#64748B;"><strong>Vprašanje?</strong> Odgovorite na to e-pošto ali pišite na <a href="mailto:info@guestcam.si" style="color:#1E3A8A;text-decoration:none;font-weight:600;">info@guestcam.si</a>. Veselimo se vaših spominov!</p>
-          <p style="margin:14px 0 0;font-size:13px;color:#0F1729;font-weight:700;">— Ekipa Guestcam</p>
+          <p style="margin:0;font-size:13px;line-height:1.6;color:#64748B;"><strong>Vprašanje?</strong> Odgovorite na to e-pošto ali pišite na <a href="mailto:info@camlove.me" style="color:#1E3A8A;text-decoration:none;font-weight:600;">info@camlove.me</a>. Veselimo se vaših spominov!</p>
+          <p style="margin:14px 0 0;font-size:13px;color:#0F1729;font-weight:700;">— Ekipa CamLove</p>
         </td></tr>
 
         <!-- Footer -->
         <tr><td style="background:#F8FAFC;padding:18px 36px;text-align:center;border-top:1px solid #E2E8F0;">
-          <p style="margin:0;font-size:11px;color:#94A3B8;">Guestcam · <a href="${APP_URL}" style="color:#1E3A8A;text-decoration:none;">guestcam.si</a></p>
+          <p style="margin:0;font-size:11px;color:#94A3B8;">CamLove · <a href="${APP_URL}" style="color:#1E3A8A;text-decoration:none;">camlove.me</a></p>
         </td></tr>
 
       </table>
@@ -138,9 +138,9 @@ export async function sendWelcomeEmail(params: WelcomeEmailParams) {
   }
   const resend = new Resend(apiKey);
   await resend.emails.send({
-    from: `Guestcam <${FROM}>`,
+    from: `CamLove <${FROM}>`,
     to: params.to,
-    subject: `🎉 Dobrodošli v Guestcam — vaša galerija ${params.coupleName} je pripravljena!`,
+    subject: `🎉 Dobrodošli v CamLove — vaša galerija ${params.coupleName} je pripravljena!`,
     html: welcomeEmailHtml(params),
   });
 }
@@ -172,7 +172,7 @@ export async function sendNewPhotoNotification({
   const dashboardUrl = `${APP_URL}/dashboard/${albumSlug}`;
 
   await resend.emails.send({
-    from: `Guestcam <${FROM}>`,
+    from: `CamLove <${FROM}>`,
     to,
     subject: `Nova fotografija v vašem albumu — ${coupleName}`,
     html: `
@@ -213,7 +213,7 @@ export async function sendNewPhotoNotification({
         <tr>
           <td style="padding:20px 32px;border-top:1px solid rgba(201,169,110,0.2);text-align:center;">
             <p style="margin:0;font-size:11px;color:#0F1729;opacity:0.4;">
-              Guestcam · <a href="${APP_URL}" style="color:#3551A8;text-decoration:none;">guestcam.si</a>
+              CamLove · <a href="${APP_URL}" style="color:#3551A8;text-decoration:none;">camlove.me</a>
             </p>
           </td>
         </tr>
@@ -247,7 +247,7 @@ export async function sendUploadReminder({
   const albumUrl = `${APP_URL}/${albumSlug}`;
 
   await resend.emails.send({
-    from: `Guestcam <${FROM}>`,
+    from: `CamLove <${FROM}>`,
     to,
     subject: `Opomnik: naložite fotografije v album — ${coupleName}`,
     html: `
@@ -285,7 +285,7 @@ export async function sendUploadReminder({
         <tr>
           <td style="padding:20px 32px;border-top:1px solid rgba(201,169,110,0.2);text-align:center;">
             <p style="margin:0;font-size:11px;color:#0F1729;opacity:0.4;">
-              Guestcam · <a href="${APP_URL}" style="color:#C9820A;text-decoration:none;">guestcam.si</a>
+              CamLove · <a href="${APP_URL}" style="color:#C9820A;text-decoration:none;">camlove.me</a>
             </p>
           </td>
         </tr>
@@ -343,7 +343,7 @@ export async function sendBankOrderConfirmation({
           </table>` : "";
 
   await resend.emails.send({
-    from: `Guestcam <${FROM}>`,
+    from: `CamLove <${FROM}>`,
     to,
     subject: `✅ Naročilo prejeto — ${safe.coupleName} (${safe.planName})`,
     html: `<!DOCTYPE html>
@@ -354,7 +354,7 @@ export async function sendBankOrderConfirmation({
     <tr><td align="center">
       <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;background:#ffffff;border-radius:18px;overflow:hidden;box-shadow:0 4px 24px rgba(15,23,41,0.06);">
         <tr><td style="background:linear-gradient(135deg,#FFC94D 0%,#FFD966 100%);padding:36px 36px 28px;">
-          <p style="margin:0 0 8px;font-size:12px;letter-spacing:3px;font-weight:700;color:#0F1729;">GUESTCAM</p>
+          <p style="margin:0 0 8px;font-size:12px;letter-spacing:3px;font-weight:700;color:#0F1729;">CAMLOVE</p>
           <h1 style="margin:0;font-size:24px;line-height:1.25;color:#0F1729;font-weight:800;">Vase narocilo je prejeto!</h1>
         </td></tr>
         <tr><td style="padding:32px 36px;">
@@ -371,7 +371,7 @@ export async function sendBankOrderConfirmation({
               <table width="100%" cellpadding="0" cellspacing="0" style="margin-top:12px;">
                 <tr>
                   <td style="font-size:14px;color:#475569;padding:4px 0;">Paket</td>
-                  <td align="right" style="font-size:14px;font-weight:700;color:#0F1729;padding:4px 0;">Guestcam ${safe.planName}</td>
+                  <td align="right" style="font-size:14px;font-weight:700;color:#0F1729;padding:4px 0;">CamLove ${safe.planName}</td>
                 </tr>
                 <tr><td colspan="2" style="padding:6px 0;"><hr style="border:none;border-top:1px solid rgba(255,201,77,0.3);margin:0;" /></td></tr>
                 <tr>
@@ -394,12 +394,12 @@ export async function sendBankOrderConfirmation({
         <tr><td style="padding:0 36px 28px;">
           <p style="margin:0;font-size:13px;color:#94a3b8;line-height:1.6;">
             Vprasanja? Pisite nam na
-            <a href="mailto:info@guestcam.si" style="color:#C9820A;text-decoration:none;">info@guestcam.si</a> - odgovorimo v 24 urah.
+            <a href="mailto:info@camlove.me" style="color:#C9820A;text-decoration:none;">info@camlove.me</a> - odgovorimo v 24 urah.
           </p>
         </td></tr>
         <tr><td style="padding:20px 36px;border-top:1px solid #f1f5f9;text-align:center;">
           <p style="margin:0;font-size:11px;color:#0F1729;opacity:0.4;">
-            Guestcam &middot; <a href="${APP_URL}" style="color:#C9820A;text-decoration:none;">guestcam.si</a>
+            CamLove &middot; <a href="${APP_URL}" style="color:#C9820A;text-decoration:none;">camlove.me</a>
           </p>
         </td></tr>
       </table>
@@ -412,7 +412,7 @@ export async function sendBankOrderConfirmation({
 
 // ─── Admin internal notifications ─────────────────────────────────────────────
 
-const ADMIN_EMAIL = "info@guestcam.si";
+const ADMIN_EMAIL = "info@camlove.me";
 
 function adminEmailShell(subject: string, bodyRows: string): string {
   return `<!DOCTYPE html>
@@ -423,13 +423,13 @@ function adminEmailShell(subject: string, bodyRows: string): string {
     <tr><td align="center">
       <table width="560" cellpadding="0" cellspacing="0" style="max-width:560px;background:#ffffff;border-radius:14px;overflow:hidden;border:1px solid #E2E8F0;">
         <tr><td style="background:#0F1729;padding:18px 24px;">
-          <p style="margin:0;font-size:11px;letter-spacing:3px;color:#FFC94D;font-weight:700;">GUESTCAM · ADMIN</p>
+          <p style="margin:0;font-size:11px;letter-spacing:3px;color:#FFC94D;font-weight:700;">CAMLOVE · ADMIN</p>
         </td></tr>
         <tr><td style="padding:24px;">
           ${bodyRows}
         </td></tr>
         <tr><td style="padding:14px 24px;border-top:1px solid #F1F5F9;text-align:center;">
-          <p style="margin:0;font-size:11px;color:#94A3B8;">Guestcam · <a href="${APP_URL}" style="color:#C9820A;text-decoration:none;">guestcam.si</a></p>
+          <p style="margin:0;font-size:11px;color:#94A3B8;">CamLove · <a href="${APP_URL}" style="color:#C9820A;text-decoration:none;">camlove.me</a></p>
         </td></tr>
       </table>
     </td></tr>
@@ -443,7 +443,7 @@ async function sendAdminEmail(subject: string, html: string) {
   if (!apiKey) return;
   try {
     const resend = new Resend(apiKey);
-    await resend.emails.send({ from: `Guestcam <${FROM}>`, to: ADMIN_EMAIL, subject, html });
+    await resend.emails.send({ from: `CamLove <${FROM}>`, to: ADMIN_EMAIL, subject, html });
   } catch (err) {
     console.error("[admin email] failed to send:", err);
   }
@@ -616,20 +616,20 @@ const AFF_STRINGS: Record<AffiliateLocale, AffiliateStrings> = {
     promoDiscountLabel: "Popust za kupca",
     promoDiscountValue: (pct) => `${pct}% popusta na celotno naročilo`,
     promoPlansLabel: "Velja za pakete",
-    promoPlansValue: "Basic, Plus, Premium (vse plačljive pakete GuestCam)",
+    promoPlansValue: "Basic, Plus, Premium (vse plačljive pakete CamLove)",
     promoExampleHeading: "Primer popusta",
     promoExample: (code, pct) => `Kupec izbere paket Plus (49 €) in v polje »koda za popust« vnese <strong>${code}</strong>. S ${pct}% popustom plača samo ${(49 * (100 - pct) / 100).toFixed(2)} €. Vi prejmete vašo redno provizijo od te transakcije.`,
     promoShareHeading: "Predlog besedila za objavo",
-    promoShareTemplate: (code, pct) => `Z mojo kodo <strong>${code}</strong> prihranite ${pct}% pri ustvarjanju vaše svadbene/dogodkovne foto galerije GuestCam. 🎉<br>👉 guestcam.si`,
+    promoShareTemplate: (code, pct) => `Z mojo kodo <strong>${code}</strong> prihranite ${pct}% pri ustvarjanju vaše svadbene/dogodkovne foto galerije CamLove. 🎉<br>👉 camlove.me`,
     promoNote: "Koda se aktivira takoj. Lahko jo delite kadarkoli.",
     promoCta: "Odpri nadzorno ploščo →",
-    appReceivedSubject: "Prijava prejeta — GuestCam partnerski program",
+    appReceivedSubject: "Prijava prejeta — CamLove partnerski program",
     appReceivedHeading: "🎉 Prijava prejeta",
-    appReceivedBody: (name) => `Pozdravljeni, <strong>${escapeHtml(name)}</strong>!<br><br>Hvala za vašo prijavo v GuestCam partnerski program. Pregledali jo bomo in vam odgovorili v 2 delovnih dneh.`,
-    appReceivedFooter: "Za vprašanja nam pišite na <a href=\"mailto:partnerji@guestcam.si\" style=\"color:#1E3A8A;\">partnerji@guestcam.si</a>",
-    welcomeSubject: "🎉 Dobrodošli v GuestCam partnerskem programu",
+    appReceivedBody: (name) => `Pozdravljeni, <strong>${escapeHtml(name)}</strong>!<br><br>Hvala za vašo prijavo v CamLove partnerski program. Pregledali jo bomo in vam odgovorili v 2 delovnih dneh.`,
+    appReceivedFooter: "Za vprašanja nam pišite na <a href=\"mailto:partnerji@camlove.me\" style=\"color:#1E3A8A;\">partnerji@camlove.me</a>",
+    welcomeSubject: "🎉 Dobrodošli v CamLove partnerskem programu",
     welcomeHeading: "🎉 Vaša prijava je odobrena!",
-    welcomeBody: (name) => `Pozdravljeni, <strong>${escapeHtml(name)}</strong>!<br><br>Veseli nas, da ste del GuestCam partnerske skupnosti. Spodaj so vse informacije, ki jih potrebujete za začetek.`,
+    welcomeBody: (name) => `Pozdravljeni, <strong>${escapeHtml(name)}</strong>!<br><br>Veseli nas, da ste del CamLove partnerske skupnosti. Spodaj so vse informacije, ki jih potrebujete za začetek.`,
     welcomeCodeLabel: "Vaša partnerska koda",
     welcomeLinkLabel: "Vaša partnerska povezava",
     welcomeRateLabel: "Provizija",
@@ -639,10 +639,10 @@ const AFF_STRINGS: Record<AffiliateLocale, AffiliateStrings> = {
     welcomeMinPayoutLabel: "Minimalni znesek za izplačilo",
     welcomeMinPayoutValue: (eur) => `${eur} EUR`,
     welcomeCta: "Odpri nadzorno ploščo →",
-    commissionSubject: (amount) => `💰 Zaslužili ste ${amount} EUR — GuestCam partnerski program`,
+    commissionSubject: (amount) => `💰 Zaslužili ste ${amount} EUR — CamLove partnerski program`,
     commissionHeading: "💰 Nova provizija",
     commissionGreeting: (name) => `Pozdravljeni, <strong>${escapeHtml(name)}</strong>!`,
-    commissionIntro: "Nekdo je kupil GuestCam prek vaše partnerske povezave. Zaslužili ste:",
+    commissionIntro: "Nekdo je kupil CamLove prek vaše partnerske povezave. Zaslužili ste:",
     commissionAmountLabel: (pct) => `provizija (${pct}% od naročila)`,
     commissionOrderLabel: "Naročilo",
     commissionOrderValueLabel: "Vrednost naročila",
@@ -652,7 +652,7 @@ const AFF_STRINGS: Record<AffiliateLocale, AffiliateStrings> = {
     approvedSubject: (amount) => `✅ Vaša provizija ${amount} EUR je potrjena`,
     approvedBody: (name, amount) => `Pozdravljeni, <strong>${escapeHtml(name)}</strong>!<br><br>Vaša provizija v višini <strong>${amount} EUR</strong> je zdaj potrjena in na voljo za izplačilo.`,
     approvedCta: "Zahtevaj izplačilo →",
-    contactFooter: "GuestCam partnerski program · <a href=\"mailto:partnerji@guestcam.si\" style=\"color:#1E3A8A;\">partnerji@guestcam.si</a>",
+    contactFooter: "CamLove partnerski program · <a href=\"mailto:partnerji@camlove.me\" style=\"color:#1E3A8A;\">partnerji@camlove.me</a>",
   },
   en: {
     promoSubject: (code) => `🎁 Your promo code ${code} is ready`,
@@ -662,20 +662,20 @@ const AFF_STRINGS: Record<AffiliateLocale, AffiliateStrings> = {
     promoDiscountLabel: "Customer discount",
     promoDiscountValue: (pct) => `${pct}% off the entire order`,
     promoPlansLabel: "Works on plans",
-    promoPlansValue: "Basic, Plus, Premium (all paid GuestCam plans)",
+    promoPlansValue: "Basic, Plus, Premium (all paid CamLove plans)",
     promoExampleHeading: "Example",
     promoExample: (code, pct) => `Customer picks the Plus plan (€49) and enters <strong>${code}</strong> in the discount field. With ${pct}% off they pay only €${(49 * (100 - pct) / 100).toFixed(2)}. You still earn your regular commission on this transaction.`,
     promoShareHeading: "Suggested share text",
-    promoShareTemplate: (code, pct) => `Use my code <strong>${code}</strong> to save ${pct}% on your wedding / event photo gallery with GuestCam. 🎉<br>👉 guestcam.si`,
+    promoShareTemplate: (code, pct) => `Use my code <strong>${code}</strong> to save ${pct}% on your wedding / event photo gallery with CamLove. 🎉<br>👉 camlove.me`,
     promoNote: "The code is active immediately. Share it whenever you want.",
     promoCta: "Open dashboard →",
-    appReceivedSubject: "Application received — GuestCam Partner Program",
+    appReceivedSubject: "Application received — CamLove Partner Program",
     appReceivedHeading: "🎉 Application received",
-    appReceivedBody: (name) => `Hi <strong>${escapeHtml(name)}</strong>,<br><br>Thanks for applying to the GuestCam Partner Program. We'll review your application and get back to you within 2 business days.`,
-    appReceivedFooter: "Questions? Email us at <a href=\"mailto:partnerji@guestcam.si\" style=\"color:#1E3A8A;\">partnerji@guestcam.si</a>",
-    welcomeSubject: "🎉 Welcome to the GuestCam Partner Program",
+    appReceivedBody: (name) => `Hi <strong>${escapeHtml(name)}</strong>,<br><br>Thanks for applying to the CamLove Partner Program. We'll review your application and get back to you within 2 business days.`,
+    appReceivedFooter: "Questions? Email us at <a href=\"mailto:partnerji@camlove.me\" style=\"color:#1E3A8A;\">partnerji@camlove.me</a>",
+    welcomeSubject: "🎉 Welcome to the CamLove Partner Program",
     welcomeHeading: "🎉 Your application is approved!",
-    welcomeBody: (name) => `Hi <strong>${escapeHtml(name)}</strong>,<br><br>We're glad to have you in the GuestCam partner community. Here's everything you need to get started.`,
+    welcomeBody: (name) => `Hi <strong>${escapeHtml(name)}</strong>,<br><br>We're glad to have you in the CamLove partner community. Here's everything you need to get started.`,
     welcomeCodeLabel: "Your referral code",
     welcomeLinkLabel: "Your referral link",
     welcomeRateLabel: "Commission",
@@ -685,10 +685,10 @@ const AFF_STRINGS: Record<AffiliateLocale, AffiliateStrings> = {
     welcomeMinPayoutLabel: "Minimum payout",
     welcomeMinPayoutValue: (eur) => `${eur} EUR`,
     welcomeCta: "Open dashboard →",
-    commissionSubject: (amount) => `💰 You earned ${amount} EUR — GuestCam Partner Program`,
+    commissionSubject: (amount) => `💰 You earned ${amount} EUR — CamLove Partner Program`,
     commissionHeading: "💰 New commission",
     commissionGreeting: (name) => `Hi <strong>${escapeHtml(name)}</strong>,`,
-    commissionIntro: "Someone bought GuestCam through your partner link. You earned:",
+    commissionIntro: "Someone bought CamLove through your partner link. You earned:",
     commissionAmountLabel: (pct) => `commission (${pct}% of order)`,
     commissionOrderLabel: "Order",
     commissionOrderValueLabel: "Order value",
@@ -698,7 +698,7 @@ const AFF_STRINGS: Record<AffiliateLocale, AffiliateStrings> = {
     approvedSubject: (amount) => `✅ Your ${amount} EUR commission is approved`,
     approvedBody: (name, amount) => `Hi <strong>${escapeHtml(name)}</strong>,<br><br>Your commission of <strong>${amount} EUR</strong> is now approved and ready for payout.`,
     approvedCta: "Request payout →",
-    contactFooter: "GuestCam Partner Program · <a href=\"mailto:partnerji@guestcam.si\" style=\"color:#1E3A8A;\">partnerji@guestcam.si</a>",
+    contactFooter: "CamLove Partner Program · <a href=\"mailto:partnerji@camlove.me\" style=\"color:#1E3A8A;\">partnerji@camlove.me</a>",
   },
   de: {
     promoSubject: (code) => `🎁 Ihr Promo-Code ${code} ist bereit`,
@@ -708,20 +708,20 @@ const AFF_STRINGS: Record<AffiliateLocale, AffiliateStrings> = {
     promoDiscountLabel: "Kundenrabatt",
     promoDiscountValue: (pct) => `${pct}% auf die gesamte Bestellung`,
     promoPlansLabel: "Gültig für Pakete",
-    promoPlansValue: "Basic, Plus, Premium (alle bezahlten GuestCam-Pakete)",
+    promoPlansValue: "Basic, Plus, Premium (alle bezahlten CamLove-Pakete)",
     promoExampleHeading: "Beispiel",
     promoExample: (code, pct) => `Der Kunde wählt das Plus-Paket (49 €) und gibt <strong>${code}</strong> im Rabattfeld ein. Mit ${pct}% Rabatt bezahlt er nur ${(49 * (100 - pct) / 100).toFixed(2)} €. Sie verdienen weiterhin Ihre reguläre Provision für diese Transaktion.`,
     promoShareHeading: "Vorgeschlagener Werbetext",
-    promoShareTemplate: (code, pct) => `Mit meinem Code <strong>${code}</strong> sparen Sie ${pct}% bei der Erstellung Ihrer Hochzeits- / Event-Fotogalerie mit GuestCam. 🎉<br>👉 guestcam.si`,
+    promoShareTemplate: (code, pct) => `Mit meinem Code <strong>${code}</strong> sparen Sie ${pct}% bei der Erstellung Ihrer Hochzeits- / Event-Fotogalerie mit CamLove. 🎉<br>👉 camlove.me`,
     promoNote: "Der Code ist sofort aktiv. Teilen Sie ihn jederzeit.",
     promoCta: "Dashboard öffnen →",
-    appReceivedSubject: "Bewerbung erhalten — GuestCam Partnerprogramm",
+    appReceivedSubject: "Bewerbung erhalten — CamLove Partnerprogramm",
     appReceivedHeading: "🎉 Bewerbung erhalten",
-    appReceivedBody: (name) => `Hallo <strong>${escapeHtml(name)}</strong>,<br><br>vielen Dank für Ihre Bewerbung beim GuestCam Partnerprogramm. Wir prüfen Ihre Bewerbung und melden uns innerhalb von 2 Werktagen.`,
-    appReceivedFooter: "Fragen? Schreiben Sie uns an <a href=\"mailto:partnerji@guestcam.si\" style=\"color:#1E3A8A;\">partnerji@guestcam.si</a>",
-    welcomeSubject: "🎉 Willkommen im GuestCam Partnerprogramm",
+    appReceivedBody: (name) => `Hallo <strong>${escapeHtml(name)}</strong>,<br><br>vielen Dank für Ihre Bewerbung beim CamLove Partnerprogramm. Wir prüfen Ihre Bewerbung und melden uns innerhalb von 2 Werktagen.`,
+    appReceivedFooter: "Fragen? Schreiben Sie uns an <a href=\"mailto:partnerji@camlove.me\" style=\"color:#1E3A8A;\">partnerji@camlove.me</a>",
+    welcomeSubject: "🎉 Willkommen im CamLove Partnerprogramm",
     welcomeHeading: "🎉 Ihre Bewerbung wurde genehmigt!",
-    welcomeBody: (name) => `Hallo <strong>${escapeHtml(name)}</strong>,<br><br>wir freuen uns, Sie in der GuestCam Partner-Community begrüßen zu dürfen. Hier finden Sie alles, was Sie für den Start brauchen.`,
+    welcomeBody: (name) => `Hallo <strong>${escapeHtml(name)}</strong>,<br><br>wir freuen uns, Sie in der CamLove Partner-Community begrüßen zu dürfen. Hier finden Sie alles, was Sie für den Start brauchen.`,
     welcomeCodeLabel: "Ihr Partner-Code",
     welcomeLinkLabel: "Ihr Partner-Link",
     welcomeRateLabel: "Provision",
@@ -731,10 +731,10 @@ const AFF_STRINGS: Record<AffiliateLocale, AffiliateStrings> = {
     welcomeMinPayoutLabel: "Mindestbetrag für Auszahlung",
     welcomeMinPayoutValue: (eur) => `${eur} EUR`,
     welcomeCta: "Dashboard öffnen →",
-    commissionSubject: (amount) => `💰 Sie haben ${amount} EUR verdient — GuestCam Partnerprogramm`,
+    commissionSubject: (amount) => `💰 Sie haben ${amount} EUR verdient — CamLove Partnerprogramm`,
     commissionHeading: "💰 Neue Provision",
     commissionGreeting: (name) => `Hallo <strong>${escapeHtml(name)}</strong>,`,
-    commissionIntro: "Jemand hat GuestCam über Ihren Partner-Link gekauft. Sie haben verdient:",
+    commissionIntro: "Jemand hat CamLove über Ihren Partner-Link gekauft. Sie haben verdient:",
     commissionAmountLabel: (pct) => `Provision (${pct}% der Bestellung)`,
     commissionOrderLabel: "Bestellung",
     commissionOrderValueLabel: "Bestellwert",
@@ -744,7 +744,7 @@ const AFF_STRINGS: Record<AffiliateLocale, AffiliateStrings> = {
     approvedSubject: (amount) => `✅ Ihre Provision von ${amount} EUR wurde freigegeben`,
     approvedBody: (name, amount) => `Hallo <strong>${escapeHtml(name)}</strong>,<br><br>Ihre Provision in Höhe von <strong>${amount} EUR</strong> ist jetzt freigegeben und auszahlungsbereit.`,
     approvedCta: "Auszahlung anfordern →",
-    contactFooter: "GuestCam Partnerprogramm · <a href=\"mailto:partnerji@guestcam.si\" style=\"color:#1E3A8A;\">partnerji@guestcam.si</a>",
+    contactFooter: "CamLove Partnerprogramm · <a href=\"mailto:partnerji@camlove.me\" style=\"color:#1E3A8A;\">partnerji@camlove.me</a>",
   },
   hr: {
     promoSubject: (code) => `🎁 Vaš promo kod ${code} je spreman`,
@@ -754,20 +754,20 @@ const AFF_STRINGS: Record<AffiliateLocale, AffiliateStrings> = {
     promoDiscountLabel: "Popust za kupca",
     promoDiscountValue: (pct) => `${pct}% popusta na cijelu narudžbu`,
     promoPlansLabel: "Vrijedi za pakete",
-    promoPlansValue: "Basic, Plus, Premium (svi plaćeni GuestCam paketi)",
+    promoPlansValue: "Basic, Plus, Premium (svi plaćeni CamLove paketi)",
     promoExampleHeading: "Primjer",
     promoExample: (code, pct) => `Kupac odabere paket Plus (49 €) i u polje za popust unese <strong>${code}</strong>. S ${pct}% popusta plaća samo ${(49 * (100 - pct) / 100).toFixed(2)} €. Vi i dalje dobivate svoju redovnu proviziju za tu transakciju.`,
     promoShareHeading: "Prijedlog teksta za dijeljenje",
-    promoShareTemplate: (code, pct) => `S mojim kodom <strong>${code}</strong> uštedite ${pct}% pri izradi vaše vjenčane / event foto galerije s GuestCam. 🎉<br>👉 guestcam.si`,
+    promoShareTemplate: (code, pct) => `S mojim kodom <strong>${code}</strong> uštedite ${pct}% pri izradi vaše vjenčane / event foto galerije s CamLove. 🎉<br>👉 camlove.me`,
     promoNote: "Kod je odmah aktivan. Možete ga dijeliti bilo kada.",
     promoCta: "Otvori nadzornu ploču →",
-    appReceivedSubject: "Prijava primljena — GuestCam partnerski program",
+    appReceivedSubject: "Prijava primljena — CamLove partnerski program",
     appReceivedHeading: "🎉 Prijava primljena",
-    appReceivedBody: (name) => `Pozdrav, <strong>${escapeHtml(name)}</strong>!<br><br>Hvala na prijavi u GuestCam partnerski program. Pregledat ćemo vašu prijavu i javiti vam se u roku od 2 radna dana.`,
-    appReceivedFooter: "Pitanja? Pišite nam na <a href=\"mailto:partnerji@guestcam.si\" style=\"color:#1E3A8A;\">partnerji@guestcam.si</a>",
-    welcomeSubject: "🎉 Dobrodošli u GuestCam partnerski program",
+    appReceivedBody: (name) => `Pozdrav, <strong>${escapeHtml(name)}</strong>!<br><br>Hvala na prijavi u CamLove partnerski program. Pregledat ćemo vašu prijavu i javiti vam se u roku od 2 radna dana.`,
+    appReceivedFooter: "Pitanja? Pišite nam na <a href=\"mailto:partnerji@camlove.me\" style=\"color:#1E3A8A;\">partnerji@camlove.me</a>",
+    welcomeSubject: "🎉 Dobrodošli u CamLove partnerski program",
     welcomeHeading: "🎉 Vaša prijava je odobrena!",
-    welcomeBody: (name) => `Pozdrav, <strong>${escapeHtml(name)}</strong>!<br><br>Drago nam je što ste dio GuestCam partnerske zajednice. U nastavku su sve informacije za početak.`,
+    welcomeBody: (name) => `Pozdrav, <strong>${escapeHtml(name)}</strong>!<br><br>Drago nam je što ste dio CamLove partnerske zajednice. U nastavku su sve informacije za početak.`,
     welcomeCodeLabel: "Vaš partnerski kod",
     welcomeLinkLabel: "Vaša partnerska poveznica",
     welcomeRateLabel: "Provizija",
@@ -777,10 +777,10 @@ const AFF_STRINGS: Record<AffiliateLocale, AffiliateStrings> = {
     welcomeMinPayoutLabel: "Minimalni iznos za isplatu",
     welcomeMinPayoutValue: (eur) => `${eur} EUR`,
     welcomeCta: "Otvori nadzornu ploču →",
-    commissionSubject: (amount) => `💰 Zaradili ste ${amount} EUR — GuestCam partnerski program`,
+    commissionSubject: (amount) => `💰 Zaradili ste ${amount} EUR — CamLove partnerski program`,
     commissionHeading: "💰 Nova provizija",
     commissionGreeting: (name) => `Pozdrav, <strong>${escapeHtml(name)}</strong>!`,
-    commissionIntro: "Netko je kupio GuestCam preko vaše partnerske poveznice. Zaradili ste:",
+    commissionIntro: "Netko je kupio CamLove preko vaše partnerske poveznice. Zaradili ste:",
     commissionAmountLabel: (pct) => `provizija (${pct}% od narudžbe)`,
     commissionOrderLabel: "Narudžba",
     commissionOrderValueLabel: "Vrijednost narudžbe",
@@ -790,7 +790,7 @@ const AFF_STRINGS: Record<AffiliateLocale, AffiliateStrings> = {
     approvedSubject: (amount) => `✅ Vaša provizija od ${amount} EUR je odobrena`,
     approvedBody: (name, amount) => `Pozdrav, <strong>${escapeHtml(name)}</strong>!<br><br>Vaša provizija u iznosu od <strong>${amount} EUR</strong> sada je odobrena i spremna za isplatu.`,
     approvedCta: "Zatraži isplatu →",
-    contactFooter: "GuestCam partnerski program · <a href=\"mailto:partnerji@guestcam.si\" style=\"color:#1E3A8A;\">partnerji@guestcam.si</a>",
+    contactFooter: "CamLove partnerski program · <a href=\"mailto:partnerji@camlove.me\" style=\"color:#1E3A8A;\">partnerji@camlove.me</a>",
   },
   sr: {
     promoSubject: (code) => `🎁 Vaš promo kod ${code} je spreman`,
@@ -800,20 +800,20 @@ const AFF_STRINGS: Record<AffiliateLocale, AffiliateStrings> = {
     promoDiscountLabel: "Popust za kupca",
     promoDiscountValue: (pct) => `${pct}% popusta na celu porudžbinu`,
     promoPlansLabel: "Važi za pakete",
-    promoPlansValue: "Basic, Plus, Premium (svi plaćeni GuestCam paketi)",
+    promoPlansValue: "Basic, Plus, Premium (svi plaćeni CamLove paketi)",
     promoExampleHeading: "Primer",
     promoExample: (code, pct) => `Kupac odabere paket Plus (49 €) i u polje za popust unese <strong>${code}</strong>. Sa ${pct}% popusta plaća samo ${(49 * (100 - pct) / 100).toFixed(2)} €. Vi i dalje dobijate svoju redovnu proviziju za tu transakciju.`,
     promoShareHeading: "Predlog teksta za deljenje",
-    promoShareTemplate: (code, pct) => `Sa mojim kodom <strong>${code}</strong> uštedite ${pct}% pri kreiranju vaše svadbene / event foto galerije sa GuestCam. 🎉<br>👉 guestcam.si`,
+    promoShareTemplate: (code, pct) => `Sa mojim kodom <strong>${code}</strong> uštedite ${pct}% pri kreiranju vaše svadbene / event foto galerije sa CamLove. 🎉<br>👉 camlove.me`,
     promoNote: "Kod je odmah aktivan. Možete ga deliti bilo kada.",
     promoCta: "Otvori kontrolnu tablu →",
-    appReceivedSubject: "Prijava primljena — GuestCam partnerski program",
+    appReceivedSubject: "Prijava primljena — CamLove partnerski program",
     appReceivedHeading: "🎉 Prijava primljena",
-    appReceivedBody: (name) => `Pozdrav, <strong>${escapeHtml(name)}</strong>!<br><br>Hvala na prijavi za GuestCam partnerski program. Pregledaćemo vašu prijavu i javićemo vam se u roku od 2 radna dana.`,
-    appReceivedFooter: "Pitanja? Pišite nam na <a href=\"mailto:partnerji@guestcam.si\" style=\"color:#1E3A8A;\">partnerji@guestcam.si</a>",
-    welcomeSubject: "🎉 Dobrodošli u GuestCam partnerski program",
+    appReceivedBody: (name) => `Pozdrav, <strong>${escapeHtml(name)}</strong>!<br><br>Hvala na prijavi za CamLove partnerski program. Pregledaćemo vašu prijavu i javićemo vam se u roku od 2 radna dana.`,
+    appReceivedFooter: "Pitanja? Pišite nam na <a href=\"mailto:partnerji@camlove.me\" style=\"color:#1E3A8A;\">partnerji@camlove.me</a>",
+    welcomeSubject: "🎉 Dobrodošli u CamLove partnerski program",
     welcomeHeading: "🎉 Vaša prijava je odobrena!",
-    welcomeBody: (name) => `Pozdrav, <strong>${escapeHtml(name)}</strong>!<br><br>Drago nam je što ste deo GuestCam partnerske zajednice. U nastavku su sve informacije za početak.`,
+    welcomeBody: (name) => `Pozdrav, <strong>${escapeHtml(name)}</strong>!<br><br>Drago nam je što ste deo CamLove partnerske zajednice. U nastavku su sve informacije za početak.`,
     welcomeCodeLabel: "Vaš partnerski kod",
     welcomeLinkLabel: "Vaš partnerski link",
     welcomeRateLabel: "Provizija",
@@ -823,10 +823,10 @@ const AFF_STRINGS: Record<AffiliateLocale, AffiliateStrings> = {
     welcomeMinPayoutLabel: "Minimalni iznos za isplatu",
     welcomeMinPayoutValue: (eur) => `${eur} EUR`,
     welcomeCta: "Otvori kontrolnu tablu →",
-    commissionSubject: (amount) => `💰 Zaradili ste ${amount} EUR — GuestCam partnerski program`,
+    commissionSubject: (amount) => `💰 Zaradili ste ${amount} EUR — CamLove partnerski program`,
     commissionHeading: "💰 Nova provizija",
     commissionGreeting: (name) => `Pozdrav, <strong>${escapeHtml(name)}</strong>!`,
-    commissionIntro: "Neko je kupio GuestCam preko vašeg partnerskog linka. Zaradili ste:",
+    commissionIntro: "Neko je kupio CamLove preko vašeg partnerskog linka. Zaradili ste:",
     commissionAmountLabel: (pct) => `provizija (${pct}% od porudžbine)`,
     commissionOrderLabel: "Porudžbina",
     commissionOrderValueLabel: "Vrednost porudžbine",
@@ -836,7 +836,7 @@ const AFF_STRINGS: Record<AffiliateLocale, AffiliateStrings> = {
     approvedSubject: (amount) => `✅ Vaša provizija od ${amount} EUR je odobrena`,
     approvedBody: (name, amount) => `Pozdrav, <strong>${escapeHtml(name)}</strong>!<br><br>Vaša provizija u iznosu od <strong>${amount} EUR</strong> sada je odobrena i dostupna za isplatu.`,
     approvedCta: "Zatraži isplatu →",
-    contactFooter: "GuestCam partnerski program · <a href=\"mailto:partnerji@guestcam.si\" style=\"color:#1E3A8A;\">partnerji@guestcam.si</a>",
+    contactFooter: "CamLove partnerski program · <a href=\"mailto:partnerji@camlove.me\" style=\"color:#1E3A8A;\">partnerji@camlove.me</a>",
   },
   es: {
     promoSubject: (code) => `🎁 Tu código promocional ${code} está listo`,
@@ -846,20 +846,20 @@ const AFF_STRINGS: Record<AffiliateLocale, AffiliateStrings> = {
     promoDiscountLabel: "Descuento para el cliente",
     promoDiscountValue: (pct) => `${pct}% de descuento en todo el pedido`,
     promoPlansLabel: "Válido para los planes",
-    promoPlansValue: "Basic, Plus, Premium (todos los planes pagos de GuestCam)",
+    promoPlansValue: "Basic, Plus, Premium (todos los planes pagos de CamLove)",
     promoExampleHeading: "Ejemplo",
     promoExample: (code, pct) => `El cliente elige el plan Plus (49 €) e introduce <strong>${code}</strong> en el campo de descuento. Con ${pct}% de descuento paga solo ${(49 * (100 - pct) / 100).toFixed(2)} €. Tú sigues ganando tu comisión habitual en esa transacción.`,
     promoShareHeading: "Texto sugerido para compartir",
-    promoShareTemplate: (code, pct) => `Con mi código <strong>${code}</strong> ahorras ${pct}% al crear tu galería de fotos de boda / evento con GuestCam. 🎉<br>👉 guestcam.si`,
+    promoShareTemplate: (code, pct) => `Con mi código <strong>${code}</strong> ahorras ${pct}% al crear tu galería de fotos de boda / evento con CamLove. 🎉<br>👉 camlove.me`,
     promoNote: "El código está activo de inmediato. Compártelo cuando quieras.",
     promoCta: "Abrir panel →",
-    appReceivedSubject: "Solicitud recibida — Programa de afiliados GuestCam",
+    appReceivedSubject: "Solicitud recibida — Programa de afiliados CamLove",
     appReceivedHeading: "🎉 Solicitud recibida",
-    appReceivedBody: (name) => `Hola <strong>${escapeHtml(name)}</strong>,<br><br>Gracias por solicitar entrar al programa de afiliados de GuestCam. Revisaremos tu solicitud y te responderemos en un plazo de 2 días hábiles.`,
-    appReceivedFooter: "¿Preguntas? Escríbenos a <a href=\"mailto:partnerji@guestcam.si\" style=\"color:#1E3A8A;\">partnerji@guestcam.si</a>",
-    welcomeSubject: "🎉 Bienvenido al programa de afiliados de GuestCam",
+    appReceivedBody: (name) => `Hola <strong>${escapeHtml(name)}</strong>,<br><br>Gracias por solicitar entrar al programa de afiliados de CamLove. Revisaremos tu solicitud y te responderemos en un plazo de 2 días hábiles.`,
+    appReceivedFooter: "¿Preguntas? Escríbenos a <a href=\"mailto:partnerji@camlove.me\" style=\"color:#1E3A8A;\">partnerji@camlove.me</a>",
+    welcomeSubject: "🎉 Bienvenido al programa de afiliados de CamLove",
     welcomeHeading: "🎉 ¡Tu solicitud ha sido aprobada!",
-    welcomeBody: (name) => `Hola <strong>${escapeHtml(name)}</strong>,<br><br>Nos alegra que formes parte de la comunidad de afiliados de GuestCam. Aquí tienes todo lo que necesitas para empezar.`,
+    welcomeBody: (name) => `Hola <strong>${escapeHtml(name)}</strong>,<br><br>Nos alegra que formes parte de la comunidad de afiliados de CamLove. Aquí tienes todo lo que necesitas para empezar.`,
     welcomeCodeLabel: "Tu código de afiliado",
     welcomeLinkLabel: "Tu enlace de afiliado",
     welcomeRateLabel: "Comisión",
@@ -869,10 +869,10 @@ const AFF_STRINGS: Record<AffiliateLocale, AffiliateStrings> = {
     welcomeMinPayoutLabel: "Importe mínimo para pago",
     welcomeMinPayoutValue: (eur) => `${eur} EUR`,
     welcomeCta: "Abrir panel →",
-    commissionSubject: (amount) => `💰 Has ganado ${amount} EUR — Programa de afiliados GuestCam`,
+    commissionSubject: (amount) => `💰 Has ganado ${amount} EUR — Programa de afiliados CamLove`,
     commissionHeading: "💰 Nueva comisión",
     commissionGreeting: (name) => `Hola <strong>${escapeHtml(name)}</strong>,`,
-    commissionIntro: "Alguien ha comprado GuestCam a través de tu enlace de afiliado. Has ganado:",
+    commissionIntro: "Alguien ha comprado CamLove a través de tu enlace de afiliado. Has ganado:",
     commissionAmountLabel: (pct) => `comisión (${pct}% del pedido)`,
     commissionOrderLabel: "Pedido",
     commissionOrderValueLabel: "Valor del pedido",
@@ -882,7 +882,7 @@ const AFF_STRINGS: Record<AffiliateLocale, AffiliateStrings> = {
     approvedSubject: (amount) => `✅ Tu comisión de ${amount} EUR ha sido aprobada`,
     approvedBody: (name, amount) => `Hola <strong>${escapeHtml(name)}</strong>,<br><br>Tu comisión de <strong>${amount} EUR</strong> ya está aprobada y disponible para pago.`,
     approvedCta: "Solicitar pago →",
-    contactFooter: "Programa de afiliados GuestCam · <a href=\"mailto:partnerji@guestcam.si\" style=\"color:#1E3A8A;\">partnerji@guestcam.si</a>",
+    contactFooter: "Programa de afiliados CamLove · <a href=\"mailto:partnerji@camlove.me\" style=\"color:#1E3A8A;\">partnerji@camlove.me</a>",
   },
 };
 
@@ -894,7 +894,7 @@ function affiliateShell(heading: string, body: string, footer: string): string {
     <tr><td align="center">
       <table width="560" cellpadding="0" cellspacing="0" style="max-width:560px;background:#ffffff;border-radius:14px;overflow:hidden;box-shadow:0 4px 20px rgba(15,23,41,0.06);">
         <tr><td style="background:#0F1729;padding:28px 32px;">
-          <p style="margin:0 0 6px;font-size:11px;letter-spacing:3px;font-weight:700;color:#FFC94D;">GUESTCAM · PARTNERJI</p>
+          <p style="margin:0 0 6px;font-size:11px;letter-spacing:3px;font-weight:700;color:#FFC94D;">CAMLOVE · PARTNERJI</p>
           <h1 style="margin:0;font-size:20px;color:#ffffff;font-weight:800;">${heading}</h1>
         </td></tr>
         <tr><td style="padding:28px 32px;font-size:14.5px;line-height:1.65;color:#475569;">
@@ -934,7 +934,7 @@ export async function sendAffiliateApplicationReceivedEmail({
   );
   try {
     await new Resend(apiKey).emails.send({
-      from: `GuestCam Partnerji <${FROM}>`,
+      from: `CamLove Partnerji <${FROM}>`,
       to,
       subject: t.appReceivedSubject,
       html,
@@ -1005,7 +1005,7 @@ export async function sendAffiliateWelcomeEmail({
   `;
   try {
     await new Resend(apiKey).emails.send({
-      from: `GuestCam Partnerji <${FROM}>`,
+      from: `CamLove Partnerji <${FROM}>`,
       to,
       subject: t.welcomeSubject,
       html: affiliateShell(t.welcomeHeading, body, t.contactFooter),
@@ -1056,7 +1056,7 @@ export async function sendAffiliateCommissionEmail({
   `;
   try {
     await new Resend(apiKey).emails.send({
-      from: `GuestCam Partnerji <${FROM}>`,
+      from: `CamLove Partnerji <${FROM}>`,
       to,
       subject: t.commissionSubject(commissionStr),
       html: affiliateShell(t.commissionHeading, body, t.contactFooter),
@@ -1110,7 +1110,7 @@ export async function sendAffiliatePromoCodeEmail({
   `;
   try {
     await new Resend(apiKey).emails.send({
-      from: `GuestCam Partnerji <${FROM}>`,
+      from: `CamLove Partnerji <${FROM}>`,
       to,
       subject: t.promoSubject(code),
       html: affiliateShell(t.promoHeading, body, t.contactFooter),
@@ -1180,7 +1180,7 @@ export async function sendAffiliateCommissionApprovedEmail({
   `;
   try {
     await new Resend(apiKey).emails.send({
-      from: `GuestCam Partnerji <${FROM}>`,
+      from: `CamLove Partnerji <${FROM}>`,
       to,
       subject: t.approvedSubject(amountStr),
       html: affiliateShell("✅", body, t.contactFooter),
@@ -1216,13 +1216,13 @@ export async function sendOrganizerAgreementEmail({
 
   const html = `<!DOCTYPE html>
 <html lang="sl">
-<head><meta charset="utf-8" /><title>Potrditev zasebnosti – Guestcam</title></head>
+<head><meta charset="utf-8" /><title>Potrditev zasebnosti – CamLove</title></head>
 <body style="margin:0;padding:0;background:#F2F4F8;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;color:#0F1729;">
   <table width="100%" cellpadding="0" cellspacing="0" style="background:#F2F4F8;padding:32px 16px;">
     <tr><td align="center">
       <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;background:#ffffff;border-radius:18px;overflow:hidden;box-shadow:0 4px 24px rgba(15,23,41,0.06);">
         <tr><td style="background:#0F1729;padding:28px 32px;">
-          <p style="margin:0 0 6px;font-size:11px;letter-spacing:3px;font-weight:700;color:#FFC94D;">GUESTCAM</p>
+          <p style="margin:0 0 6px;font-size:11px;letter-spacing:3px;font-weight:700;color:#FFC94D;">CAMLOVE</p>
           <h1 style="margin:0;font-size:20px;color:#ffffff;font-weight:800;">✅ Galerija ustvarjena – potrditev obveznosti</h1>
         </td></tr>
         <tr><td style="padding:32px;">
@@ -1235,15 +1235,15 @@ export async function sendOrganizerAgreementEmail({
             <tr><td style="padding:20px 22px;">
               <p style="margin:0 0 10px;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:#94A3B8;font-weight:700;">Vaše obveznosti</p>
               <ul style="margin:0;padding:0 0 0 18px;font-size:14px;line-height:1.8;color:#475569;">
-                <li>Goste in udeležence boste obvestili o uporabi Guestcam galerije.</li>
+                <li>Goste in udeležence boste obvestili o uporabi CamLove galerije.</li>
                 <li>Zagotovili boste ustrezno pravno podlago za obdelavo fotografij in videov.</li>
                 <li>Odgovarjali boste na zahteve udeležencev v zvezi z vsebino galerije.</li>
               </ul>
             </td></tr>
           </table>
           <p style="margin:0 0 24px;font-size:14px;line-height:1.7;color:#475569;">
-            Celotna politika zasebnosti, ki opisuje vloge organizatorja in Guestcam, je dostopna na
-            <a href="${privacyUrl}" style="color:#C9820A;text-decoration:none;font-weight:600;">guestcam.si/gdpr</a>.
+            Celotna politika zasebnosti, ki opisuje vloge organizatorja in CamLove, je dostopna na
+            <a href="${privacyUrl}" style="color:#C9820A;text-decoration:none;font-weight:600;">camlove.me/gdpr</a>.
           </p>
           <p style="text-align:center;margin:0 0 8px;">
             <a href="${albumUrl}" style="display:inline-block;padding:14px 28px;background:#FFC94D;color:#0F1729;text-decoration:none;border-radius:10px;font-weight:800;font-size:14px;">Odpri galerijo →</a>
@@ -1251,7 +1251,7 @@ export async function sendOrganizerAgreementEmail({
         </td></tr>
         <tr><td style="padding:16px 32px 24px;border-top:1px solid #F2F4F8;">
           <p style="margin:0;font-size:11px;color:#94A3B8;text-align:center;">
-            Guestcam · <a href="mailto:info@guestcam.si" style="color:#94A3B8;">info@guestcam.si</a> ·
+            CamLove · <a href="mailto:info@camlove.me" style="color:#94A3B8;">info@camlove.me</a> ·
             Sport Group d.o.o., Osojnikova 4a, 2000 Maribor, Slovenija
           </p>
         </td></tr>
@@ -1263,7 +1263,7 @@ export async function sendOrganizerAgreementEmail({
 
   try {
     await new Resend(apiKey).emails.send({
-      from: `Guestcam <${FROM}>`,
+      from: `CamLove <${FROM}>`,
       to,
       subject: `✅ Galerija "${escapeHtml(coupleName)}" ustvarjena – potrditev zasebnosti`,
       html,
@@ -1297,13 +1297,13 @@ export function contactFooterHtml(lang: EmailLang = "sl"): string {
     <tr><td style="padding:8px 36px 24px;">
       <p style="margin:0 0 10px;font-size:13px;line-height:1.6;color:#475569;">
         <strong style="color:#0F1729;">${t.questions}</strong> ${t.reply}
-        <a href="mailto:info@guestcam.si" style="color:#1E3A8A;text-decoration:none;font-weight:600;">info@guestcam.si</a>
+        <a href="mailto:info@camlove.me" style="color:#1E3A8A;text-decoration:none;font-weight:600;">info@camlove.me</a>
         · <a href="tel:+38671604980" style="color:#1E3A8A;text-decoration:none;font-weight:600;">+386 71 604 980</a>
       </p>
       <p style="margin:0;font-size:11px;line-height:1.6;color:#94A3B8;">
         <strong style="color:#64748B;">Sport group d.o.o.</strong> · Osojnikova 4a, 2000 Maribor, Slovenija ·
         ${t.vatLabel}: SI72133449 ·
-        <a href="${APP_URL}" style="color:#94A3B8;text-decoration:underline;">guestcam.si</a>
+        <a href="${APP_URL}" style="color:#94A3B8;text-decoration:underline;">camlove.me</a>
       </p>
     </td></tr>`;
 }
@@ -1336,7 +1336,7 @@ const NUDGE_COPY: Record<EmailLang, NudgeCopy> = {
     subject: "Vam pomagamo ustvariti prvo galerijo? 🎉",
     heading: "Pripravljeni na vašo prvo galerijo?",
     greeting: (n) => `Pozdravljeni${n ? ` ${escapeHtml(n)}` : ""},`,
-    intro: "Pred tednom dni ste se registrirali v Guestcam — odlično! Še niste ustvarili prve galerije, zato vas vabimo, da to storite v naslednjih nekaj minutah.",
+    intro: "Pred tednom dni ste se registrirali v CamLove — odlično! Še niste ustvarili prve galerije, zato vas vabimo, da to storite v naslednjih nekaj minutah.",
     bullet1: "Vnesite ime para in datum dogodka (30 sekund)",
     bullet2: "Prenesite QR kodo in jo natisnite za vsak stol",
     bullet3: "Gostje skenirajo in nalagajo fotografije — brez aplikacije",
@@ -1344,13 +1344,13 @@ const NUDGE_COPY: Record<EmailLang, NudgeCopy> = {
     ctaSecondary: "Kako deluje QR koda?",
     helpHeading: "Potrebujete pomoč?",
     helpBody: "Z veseljem vam pomagamo z nastavitvijo. Pokličite ali pišite — odgovorimo isti dan.",
-    signoff: "— Ekipa Guestcam",
+    signoff: "— Ekipa CamLove",
   },
   hr: {
     subject: "Trebate pomoć s prvom galerijom? 🎉",
     heading: "Spremni za vašu prvu galeriju?",
     greeting: (n) => `Pozdrav${n ? ` ${escapeHtml(n)}` : ""},`,
-    intro: "Prije tjedan dana registrirali ste se na Guestcam — odlično! Još niste izradili prvu galeriju, pa vas pozivamo da to napravite u sljedećih nekoliko minuta.",
+    intro: "Prije tjedan dana registrirali ste se na CamLove — odlično! Još niste izradili prvu galeriju, pa vas pozivamo da to napravite u sljedećih nekoliko minuta.",
     bullet1: "Unesite ime para i datum događaja (30 sekundi)",
     bullet2: "Preuzmite QR kod i natisnite ga za svaki stol",
     bullet3: "Gosti skeniraju i učitavaju fotografije — bez aplikacije",
@@ -1358,13 +1358,13 @@ const NUDGE_COPY: Record<EmailLang, NudgeCopy> = {
     ctaSecondary: "Kako QR kod funkcionira?",
     helpHeading: "Treba vam pomoć?",
     helpBody: "Rado ćemo vam pomoći s postavljanjem. Nazovite ili pišite — odgovaramo isti dan.",
-    signoff: "— Tim Guestcam",
+    signoff: "— Tim CamLove",
   },
   sr: {
     subject: "Treba vam pomoć sa prvom galerijom? 🎉",
     heading: "Spremni za vašu prvu galeriju?",
     greeting: (n) => `Pozdrav${n ? ` ${escapeHtml(n)}` : ""},`,
-    intro: "Pre nedelju dana ste se registrovali na Guestcam — odlično! Još niste napravili prvu galeriju, pa vas pozivamo da to uradite u narednih nekoliko minuta.",
+    intro: "Pre nedelju dana ste se registrovali na CamLove — odlično! Još niste napravili prvu galeriju, pa vas pozivamo da to uradite u narednih nekoliko minuta.",
     bullet1: "Unesite ime para i datum događaja (30 sekundi)",
     bullet2: "Preuzmite QR kod i odštampajte ga za svaki sto",
     bullet3: "Gosti skeniraju i otpremaju fotografije — bez aplikacije",
@@ -1372,13 +1372,13 @@ const NUDGE_COPY: Record<EmailLang, NudgeCopy> = {
     ctaSecondary: "Kako QR kod funkcioniše?",
     helpHeading: "Treba vam pomoć?",
     helpBody: "Rado ćemo vam pomoći sa podešavanjem. Pozovite ili pišite — odgovaramo istog dana.",
-    signoff: "— Tim Guestcam",
+    signoff: "— Tim CamLove",
   },
   de: {
     subject: "Brauchen Sie Hilfe mit Ihrer ersten Galerie? 🎉",
     heading: "Bereit für Ihre erste Galerie?",
     greeting: (n) => `Hallo${n ? ` ${escapeHtml(n)}` : ""},`,
-    intro: "Vor einer Woche haben Sie sich bei Guestcam registriert — wunderbar! Sie haben Ihre erste Galerie noch nicht erstellt, deshalb laden wir Sie ein, das in den nächsten Minuten zu tun.",
+    intro: "Vor einer Woche haben Sie sich bei CamLove registriert — wunderbar! Sie haben Ihre erste Galerie noch nicht erstellt, deshalb laden wir Sie ein, das in den nächsten Minuten zu tun.",
     bullet1: "Geben Sie den Namen des Paares und das Datum ein (30 Sekunden)",
     bullet2: "Laden Sie den QR-Code herunter und drucken Sie ihn für jeden Tisch",
     bullet3: "Gäste scannen und laden Fotos hoch — ohne App",
@@ -1386,13 +1386,13 @@ const NUDGE_COPY: Record<EmailLang, NudgeCopy> = {
     ctaSecondary: "So funktioniert der QR-Code",
     helpHeading: "Brauchen Sie Hilfe?",
     helpBody: "Wir helfen Ihnen gerne bei der Einrichtung. Rufen Sie an oder schreiben Sie — wir antworten am selben Tag.",
-    signoff: "— Das Guestcam-Team",
+    signoff: "— Das CamLove-Team",
   },
   en: {
     subject: "Need a hand creating your first gallery? 🎉",
     heading: "Ready to create your first gallery?",
     greeting: (n) => `Hi${n ? ` ${escapeHtml(n)}` : ""},`,
-    intro: "You signed up to Guestcam a week ago — welcome! You haven't created your first gallery yet, so we'd love to help you get it set up in the next few minutes.",
+    intro: "You signed up to CamLove a week ago — welcome! You haven't created your first gallery yet, so we'd love to help you get it set up in the next few minutes.",
     bullet1: "Enter the couple's name and the event date (30 seconds)",
     bullet2: "Download the QR code and print one for each table",
     bullet3: "Guests scan and upload photos — no app required",
@@ -1400,13 +1400,13 @@ const NUDGE_COPY: Record<EmailLang, NudgeCopy> = {
     ctaSecondary: "How the QR code works",
     helpHeading: "Need help?",
     helpBody: "We're happy to walk you through the setup. Call or email — we reply the same day.",
-    signoff: "— The Guestcam team",
+    signoff: "— The CamLove team",
   },
   es: {
     subject: "¿Te ayudamos con tu primera galería? 🎉",
     heading: "¿Listo para tu primera galería?",
     greeting: (n) => `Hola${n ? ` ${escapeHtml(n)}` : ""},`,
-    intro: "Hace una semana te registraste en Guestcam — ¡bienvenido! Aún no has creado tu primera galería, así que nos encantaría ayudarte a configurarla en los próximos minutos.",
+    intro: "Hace una semana te registraste en CamLove — ¡bienvenido! Aún no has creado tu primera galería, así que nos encantaría ayudarte a configurarla en los próximos minutos.",
     bullet1: "Introduce el nombre de la pareja y la fecha (30 segundos)",
     bullet2: "Descarga el código QR e imprime uno para cada mesa",
     bullet3: "Los invitados escanean y suben fotos — sin app",
@@ -1414,7 +1414,7 @@ const NUDGE_COPY: Record<EmailLang, NudgeCopy> = {
     ctaSecondary: "Cómo funciona el código QR",
     helpHeading: "¿Necesitas ayuda?",
     helpBody: "Te ayudamos con la configuración encantados. Llama o escríbenos — respondemos el mismo día.",
-    signoff: "— El equipo de Guestcam",
+    signoff: "— El equipo de CamLove",
   },
 };
 
@@ -1431,7 +1431,7 @@ export function onboardingNudgeHtml(lang: EmailLang, firstName?: string | null):
       <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;background:#ffffff;border-radius:18px;overflow:hidden;box-shadow:0 4px 24px rgba(15,23,41,0.06);">
 
         <tr><td style="background:linear-gradient(135deg,#FFC94D 0%,#FFD966 100%);padding:36px 36px 28px;">
-          <p style="margin:0 0 8px;font-size:12px;letter-spacing:3px;font-weight:700;color:#0F1729;">GUESTCAM</p>
+          <p style="margin:0 0 8px;font-size:12px;letter-spacing:3px;font-weight:700;color:#0F1729;">CAMLOVE</p>
           <h1 style="margin:0;font-size:24px;line-height:1.25;color:#0F1729;font-weight:800;">${t.heading}</h1>
         </td></tr>
 
@@ -1485,7 +1485,7 @@ export async function sendOnboardingNudgeEmail({ to, firstName, lang = "sl" }: O
   const t = NUDGE_COPY[lang] ?? NUDGE_COPY.en;
   try {
     await resend.emails.send({
-      from: `Guestcam <${FROM}>`,
+      from: `CamLove <${FROM}>`,
       to,
       subject: t.subject,
       html: onboardingNudgeHtml(lang, firstName),
@@ -1521,10 +1521,10 @@ interface UpgradeCopy {
 
 const UPGRADE_COPY: Record<EmailLang, UpgradeCopy> = {
   sl: {
-    subject: (p) => `🎉 Vaš Guestcam račun je nadgrajen na ${p}`,
+    subject: (p) => `🎉 Vaš CamLove račun je nadgrajen na ${p}`,
     heading: "Vaš račun je nadgrajen!",
     greeting: (n) => `Pozdravljeni${n ? ` ${escapeHtml(n)}` : ""},`,
-    intro: (p) => `Z veseljem vam sporočamo, da je naša ekipa vaš Guestcam račun nadgradila na paket <strong>${p}</strong>. Vse ugodnosti so na voljo takoj.`,
+    intro: (p) => `Z veseljem vam sporočamo, da je naša ekipa vaš CamLove račun nadgradila na paket <strong>${p}</strong>. Vse ugodnosti so na voljo takoj.`,
     placeholder: "Za vas smo že pripravili galerijo. V nadzorni plošči jo lahko preimenujete (npr. \"Ana & Marko\"), dodate datum dogodka in delite QR kodo z gosti.",
     bullets: {
       basic:   ["1000 fotografij", "90-dnevni dostop", "Personalizirane QR kartice"],
@@ -1533,13 +1533,13 @@ const UPGRADE_COPY: Record<EmailLang, UpgradeCopy> = {
     },
     cta: "Odprite nadzorno ploščo →",
     ctaRename: "Uredite svojo galerijo →",
-    signoff: "— Ekipa Guestcam",
+    signoff: "— Ekipa CamLove",
   },
   hr: {
-    subject: (p) => `🎉 Vaš Guestcam račun je nadograđen na ${p}`,
+    subject: (p) => `🎉 Vaš CamLove račun je nadograđen na ${p}`,
     heading: "Vaš račun je nadograđen!",
     greeting: (n) => `Pozdrav${n ? ` ${escapeHtml(n)}` : ""},`,
-    intro: (p) => `S veseljem vam javljamo da je naš tim vaš Guestcam račun nadogradio na paket <strong>${p}</strong>. Sve pogodnosti dostupne su odmah.`,
+    intro: (p) => `S veseljem vam javljamo da je naš tim vaš CamLove račun nadogradio na paket <strong>${p}</strong>. Sve pogodnosti dostupne su odmah.`,
     placeholder: "Već smo vam pripremili galeriju. U nadzornoj ploči je možete preimenovati (npr. \"Ana & Marko\"), dodati datum događaja i podijeliti QR kod s gostima.",
     bullets: {
       basic:   ["1000 fotografija", "90 dana pristupa", "Personalizirane QR kartice"],
@@ -1548,13 +1548,13 @@ const UPGRADE_COPY: Record<EmailLang, UpgradeCopy> = {
     },
     cta: "Otvori nadzornu ploču →",
     ctaRename: "Uredi svoju galeriju →",
-    signoff: "— Tim Guestcam",
+    signoff: "— Tim CamLove",
   },
   sr: {
-    subject: (p) => `🎉 Vaš Guestcam nalog je unapređen na ${p}`,
+    subject: (p) => `🎉 Vaš CamLove nalog je unapređen na ${p}`,
     heading: "Vaš nalog je unapređen!",
     greeting: (n) => `Pozdrav${n ? ` ${escapeHtml(n)}` : ""},`,
-    intro: (p) => `Sa zadovoljstvom vas obaveštavamo da je naš tim vaš Guestcam nalog unapredio na paket <strong>${p}</strong>. Sve pogodnosti su dostupne odmah.`,
+    intro: (p) => `Sa zadovoljstvom vas obaveštavamo da je naš tim vaš CamLove nalog unapredio na paket <strong>${p}</strong>. Sve pogodnosti su dostupne odmah.`,
     placeholder: "Već smo vam pripremili galeriju. U kontrolnoj tabli je možete preimenovati (npr. \"Ana & Marko\"), dodati datum događaja i podeliti QR kod sa gostima.",
     bullets: {
       basic:   ["1000 fotografija", "90 dana pristupa", "Personalizovane QR kartice"],
@@ -1563,13 +1563,13 @@ const UPGRADE_COPY: Record<EmailLang, UpgradeCopy> = {
     },
     cta: "Otvori kontrolnu tablu →",
     ctaRename: "Uredi svoju galeriju →",
-    signoff: "— Tim Guestcam",
+    signoff: "— Tim CamLove",
   },
   de: {
-    subject: (p) => `🎉 Ihr Guestcam-Konto wurde auf ${p} hochgestuft`,
+    subject: (p) => `🎉 Ihr CamLove-Konto wurde auf ${p} hochgestuft`,
     heading: "Ihr Konto wurde hochgestuft!",
     greeting: (n) => `Hallo${n ? ` ${escapeHtml(n)}` : ""},`,
-    intro: (p) => `Wir freuen uns, Ihnen mitzuteilen, dass unser Team Ihr Guestcam-Konto auf das Paket <strong>${p}</strong> hochgestuft hat. Alle Vorteile sind sofort verfügbar.`,
+    intro: (p) => `Wir freuen uns, Ihnen mitzuteilen, dass unser Team Ihr CamLove-Konto auf das Paket <strong>${p}</strong> hochgestuft hat. Alle Vorteile sind sofort verfügbar.`,
     placeholder: "Wir haben bereits eine Galerie für Sie vorbereitet. Im Dashboard können Sie sie umbenennen (z. B. \"Ana & Marko\"), das Veranstaltungsdatum hinzufügen und den QR-Code mit den Gästen teilen.",
     bullets: {
       basic:   ["1000 Fotos", "90 Tage Zugriff", "Personalisierte QR-Karten"],
@@ -1578,13 +1578,13 @@ const UPGRADE_COPY: Record<EmailLang, UpgradeCopy> = {
     },
     cta: "Dashboard öffnen →",
     ctaRename: "Galerie bearbeiten →",
-    signoff: "— Das Guestcam-Team",
+    signoff: "— Das CamLove-Team",
   },
   en: {
-    subject: (p) => `🎉 Your Guestcam account has been upgraded to ${p}`,
+    subject: (p) => `🎉 Your CamLove account has been upgraded to ${p}`,
     heading: "Your account has been upgraded!",
     greeting: (n) => `Hi${n ? ` ${escapeHtml(n)}` : ""},`,
-    intro: (p) => `We're delighted to let you know our team has upgraded your Guestcam account to the <strong>${p}</strong> plan. All benefits are available immediately.`,
+    intro: (p) => `We're delighted to let you know our team has upgraded your CamLove account to the <strong>${p}</strong> plan. All benefits are available immediately.`,
     placeholder: "We've already prepared a gallery for you. From your dashboard you can rename it (e.g. \"Ana & Marko\"), add the event date, and share the QR code with guests.",
     bullets: {
       basic:   ["1,000 photos", "90 days of access", "Personalised QR cards"],
@@ -1593,13 +1593,13 @@ const UPGRADE_COPY: Record<EmailLang, UpgradeCopy> = {
     },
     cta: "Open the dashboard →",
     ctaRename: "Edit your gallery →",
-    signoff: "— The Guestcam team",
+    signoff: "— The CamLove team",
   },
   es: {
-    subject: (p) => `🎉 Tu cuenta de Guestcam ha sido actualizada a ${p}`,
+    subject: (p) => `🎉 Tu cuenta de CamLove ha sido actualizada a ${p}`,
     heading: "¡Tu cuenta ha sido actualizada!",
     greeting: (n) => `Hola${n ? ` ${escapeHtml(n)}` : ""},`,
-    intro: (p) => `Nos alegra informarte que nuestro equipo ha actualizado tu cuenta de Guestcam al plan <strong>${p}</strong>. Todos los beneficios están disponibles de inmediato.`,
+    intro: (p) => `Nos alegra informarte que nuestro equipo ha actualizado tu cuenta de CamLove al plan <strong>${p}</strong>. Todos los beneficios están disponibles de inmediato.`,
     placeholder: "Ya te hemos preparado una galería. Desde tu panel puedes renombrarla (p. ej. \"Ana y Marko\"), añadir la fecha del evento y compartir el código QR con tus invitados.",
     bullets: {
       basic:   ["1.000 fotos", "90 días de acceso", "Tarjetas QR personalizadas"],
@@ -1608,7 +1608,7 @@ const UPGRADE_COPY: Record<EmailLang, UpgradeCopy> = {
     },
     cta: "Abrir el panel →",
     ctaRename: "Editar mi galería →",
-    signoff: "— El equipo de Guestcam",
+    signoff: "— El equipo de CamLove",
   },
 };
 
@@ -1633,7 +1633,7 @@ export function accountUpgradedHtml(
       <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;background:#ffffff;border-radius:18px;overflow:hidden;box-shadow:0 4px 24px rgba(15,23,41,0.06);">
 
         <tr><td style="background:linear-gradient(135deg,#FFC94D 0%,#FFD966 100%);padding:36px 36px 28px;">
-          <p style="margin:0 0 8px;font-size:12px;letter-spacing:3px;font-weight:700;color:#0F1729;">GUESTCAM · ${planLabel.toUpperCase()}</p>
+          <p style="margin:0 0 8px;font-size:12px;letter-spacing:3px;font-weight:700;color:#0F1729;">CAMLOVE · ${planLabel.toUpperCase()}</p>
           <h1 style="margin:0;font-size:24px;line-height:1.25;color:#0F1729;font-weight:800;">${t.heading}</h1>
         </td></tr>
 
@@ -1685,7 +1685,7 @@ export async function sendAccountUpgradedEmail({ to, firstName, plan, placeholde
   const planLabel = plan.charAt(0).toUpperCase() + plan.slice(1);
   try {
     await resend.emails.send({
-      from: `Guestcam <${FROM}>`,
+      from: `CamLove <${FROM}>`,
       to,
       subject: t.subject(planLabel),
       html: accountUpgradedHtml(lang, plan, firstName, placeholderSlug),
@@ -1727,7 +1727,7 @@ const D3_COPY: Record<GuestLang, D3Copy> = {
     cta: "Odpri galerijo →",
     outro: "Se še niste? Delite svoje fotografije z drugimi — vsak nov posnetek naredi spomin popolnejši.",
     unsubscribe: "Odjava",
-    signoff: "— Ekipa Guestcam",
+    signoff: "— Ekipa CamLove",
   },
   hr: {
     subject: (c, n) => `📸 ${n} novih fotografija u galeriji ${c}`,
@@ -1737,7 +1737,7 @@ const D3_COPY: Record<GuestLang, D3Copy> = {
     cta: "Otvori galeriju →",
     outro: "Još niste? Podijelite svoje fotografije s drugima — svaka nova snimka čini uspomenu potpunijom.",
     unsubscribe: "Odjava",
-    signoff: "— Ekipa Guestcam",
+    signoff: "— Ekipa CamLove",
   },
   sr: {
     subject: (c, n) => `📸 ${n} novih fotografija u galeriji ${c}`,
@@ -1747,7 +1747,7 @@ const D3_COPY: Record<GuestLang, D3Copy> = {
     cta: "Otvori galeriju →",
     outro: "Još niste? Podelite svoje fotografije sa drugima — svaka nova fotografija čini uspomenu potpunijom.",
     unsubscribe: "Odjava",
-    signoff: "— Ekipa Guestcam",
+    signoff: "— Ekipa CamLove",
   },
   de: {
     subject: (c, n) => `📸 ${n} neue Fotos in der Galerie ${c}`,
@@ -1757,7 +1757,7 @@ const D3_COPY: Record<GuestLang, D3Copy> = {
     cta: "Galerie öffnen →",
     outro: "Noch nicht? Teilen Sie Ihre Fotos mit den anderen — jedes neue Foto macht die Erinnerung vollständiger.",
     unsubscribe: "Abmelden",
-    signoff: "— Das Guestcam-Team",
+    signoff: "— Das CamLove-Team",
   },
   en: {
     subject: (c, n) => `📸 ${n} new photos in the ${c} gallery`,
@@ -1767,7 +1767,7 @@ const D3_COPY: Record<GuestLang, D3Copy> = {
     cta: "Open the gallery →",
     outro: "Haven't uploaded yet? Share yours too — every new photo makes the memory more complete.",
     unsubscribe: "Unsubscribe",
-    signoff: "— The Guestcam team",
+    signoff: "— The CamLove team",
   },
   es: {
     subject: (c, n) => `📸 ${n} fotos nuevas en la galería ${c}`,
@@ -1777,7 +1777,7 @@ const D3_COPY: Record<GuestLang, D3Copy> = {
     cta: "Abrir la galería →",
     outro: "¿Aún no has subido? Comparte las tuyas también — cada foto nueva hace el recuerdo más completo.",
     unsubscribe: "Cancelar suscripción",
-    signoff: "— El equipo de Guestcam",
+    signoff: "— El equipo de CamLove",
   },
 };
 
@@ -1802,7 +1802,7 @@ export function guestEmailD3Html(p: D3Params & { locale: GuestLang }): string {
     <tr><td align="center">
       <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;background:#ffffff;border-radius:18px;overflow:hidden;box-shadow:0 4px 24px rgba(15,23,41,0.06);">
         <tr><td style="background:linear-gradient(135deg,#FFC94D 0%,#FFD966 100%);padding:32px 36px 26px;">
-          <p style="margin:0 0 8px;font-size:11px;letter-spacing:3px;font-weight:700;color:#0F1729;">GUESTCAM</p>
+          <p style="margin:0 0 8px;font-size:11px;letter-spacing:3px;font-weight:700;color:#0F1729;">CAMLOVE</p>
           <h1 style="margin:0;font-size:22px;line-height:1.3;color:#0F1729;font-weight:800;">${t.heading}</h1>
         </td></tr>
         <tr><td style="padding:28px 36px 8px;">
@@ -1836,7 +1836,7 @@ export async function sendGuestEmailD3(p: D3Params) {
   const t = D3_COPY[locale];
   const resend = new Resend(apiKey);
   await resend.emails.send({
-    from: `Guestcam <${FROM}>`,
+    from: `CamLove <${FROM}>`,
     to: p.to,
     subject: t.subject(p.coupleName, p.photoCount),
     html: guestEmailD3Html({ ...p, locale }),
@@ -1875,7 +1875,7 @@ const D21_COPY: Record<GuestLang, D21Copy> = {
     cta: "Ustvari galerijo →",
     disclaimer: "Koda velja 30 dni na vseh plačljivih paketih.",
     unsubscribe: "Ne želim več teh sporočil",
-    signoff: "— Ekipa Guestcam",
+    signoff: "— Ekipa CamLove",
   },
   hr: {
     subject: (code) => `🎉 15% popusta s kodom ${code} — vaša vlastita galerija`,
@@ -1889,7 +1889,7 @@ const D21_COPY: Record<GuestLang, D21Copy> = {
     cta: "Napravi galeriju →",
     disclaimer: "Kod vrijedi 30 dana na svim plaćenim paketima.",
     unsubscribe: "Ne želim više ovih poruka",
-    signoff: "— Ekipa Guestcam",
+    signoff: "— Ekipa CamLove",
   },
   sr: {
     subject: (code) => `🎉 15% popusta sa kodom ${code} — vaša sopstvena galerija`,
@@ -1903,7 +1903,7 @@ const D21_COPY: Record<GuestLang, D21Copy> = {
     cta: "Napravi galeriju →",
     disclaimer: "Kod važi 30 dana na svim plaćenim paketima.",
     unsubscribe: "Ne želim više ovih poruka",
-    signoff: "— Ekipa Guestcam",
+    signoff: "— Ekipa CamLove",
   },
   de: {
     subject: (code) => `🎉 15% Rabatt mit Code ${code} — Ihre eigene Galerie`,
@@ -1917,7 +1917,7 @@ const D21_COPY: Record<GuestLang, D21Copy> = {
     cta: "Galerie erstellen →",
     disclaimer: "Code gilt 30 Tage auf allen kostenpflichtigen Paketen.",
     unsubscribe: "Diese E-Mails abbestellen",
-    signoff: "— Das Guestcam-Team",
+    signoff: "— Das CamLove-Team",
   },
   en: {
     subject: (code) => `🎉 15% off with code ${code} — your own gallery`,
@@ -1931,7 +1931,7 @@ const D21_COPY: Record<GuestLang, D21Copy> = {
     cta: "Create a gallery →",
     disclaimer: "Code is valid for 30 days on all paid plans.",
     unsubscribe: "Unsubscribe from these emails",
-    signoff: "— The Guestcam team",
+    signoff: "— The CamLove team",
   },
   es: {
     subject: (code) => `🎉 15% de descuento con el código ${code} — tu propia galería`,
@@ -1945,7 +1945,7 @@ const D21_COPY: Record<GuestLang, D21Copy> = {
     cta: "Crear galería →",
     disclaimer: "El código es válido 30 días en todos los planes de pago.",
     unsubscribe: "Cancelar suscripción",
-    signoff: "— El equipo de Guestcam",
+    signoff: "— El equipo de CamLove",
   },
 };
 
@@ -1973,7 +1973,7 @@ export function guestEmailD21Html(p: D21Params & { locale: GuestLang }): string 
     <tr><td align="center">
       <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;background:#ffffff;border-radius:18px;overflow:hidden;box-shadow:0 4px 24px rgba(15,23,41,0.06);">
         <tr><td style="background:linear-gradient(135deg,#FFC94D 0%,#FFD966 100%);padding:32px 36px 26px;">
-          <p style="margin:0 0 8px;font-size:11px;letter-spacing:3px;font-weight:700;color:#0F1729;">GUESTCAM</p>
+          <p style="margin:0 0 8px;font-size:11px;letter-spacing:3px;font-weight:700;color:#0F1729;">CAMLOVE</p>
           <h1 style="margin:0;font-size:22px;line-height:1.3;color:#0F1729;font-weight:800;">${t.heading}</h1>
         </td></tr>
         <tr><td style="padding:28px 36px 8px;">
@@ -2024,7 +2024,7 @@ export async function sendGuestEmailD21(p: D21Params) {
   const t = D21_COPY[locale];
   const resend = new Resend(apiKey);
   await resend.emails.send({
-    from: `Guestcam <${FROM}>`,
+    from: `CamLove <${FROM}>`,
     to: p.to,
     subject: t.subject(p.discountCode),
     html: guestEmailD21Html({ ...p, locale }),

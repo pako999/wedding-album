@@ -6,7 +6,7 @@
   "translationKey": "wedding-photo-sharing-no-app",
   "publishedAt": "2026-06-21",
   "updatedAt": "2026-06-21",
-  "author": "Guestcam Team",
+  "author": "CamLove Team",
   "category": "vodnik",
   "readingTime": 7,
   "tags": [
@@ -14,7 +14,7 @@
     "bez aplikacije",
     "QR kod",
     "vjenčanje fotografije",
-    "Guestcam"
+    "CamLove"
   ],
   "tldr": "Gosti skeniraju QR kod kamerom mobitela i direktno učitavaju fotografije u pregledniku — bez preuzimanja aplikacije, bez registracije.",
   "coverImage": "https://images.unsplash.com/photo-1606216794074-735e91aa2c92?w=1600&h=900&fit=crop&q=80&auto=format",
@@ -28,7 +28,7 @@
       "type": "stat",
       "value": "67 %",
       "label": "gostiju koji odustaju od dijeljenja fotografija ako je potrebno preuzeti aplikaciju",
-      "source": "Guestcam interni podaci, 2025"
+      "source": "CamLove interni podaci, 2025"
     },
     {
       "type": "h2",
@@ -91,7 +91,7 @@
       "headers": [
         "Kriterij",
         "Aplikacija potrebna",
-        "Bez aplikacije (Guestcam)"
+        "Bez aplikacije (CamLove)"
       ],
       "rows": [
         ["Prosječan udio sudionika", "30–50 %", "75–90 %"],
@@ -127,12 +127,12 @@
     },
     {
       "type": "p",
-      "text": "Guestcam je besplatna platforma koja radi točno na ovom principu — bez aplikacije za goste, bez registracije, bez tehničkih komplikacija. Evo kako se postavlja u manje od 5 minuta:"
+      "text": "CamLove je besplatna platforma koja radi točno na ovom principu — bez aplikacije za goste, bez registracije, bez tehničkih komplikacija. Evo kako se postavlja u manje od 5 minuta:"
     },
     {
       "type": "ol",
       "items": [
-        "Idite na guestcam.si/hr i kliknite 'Kreiraj galeriju'.",
+        "Idite na camlove.me/hr i kliknite 'Kreiraj galeriju'.",
         "Unesite ime para i datum vjenčanja.",
         "Preuzmite QR kod (PDF, spreman za tisak).",
         "Otisnite kartice za stolove ili veliki plakat za ulaz.",
@@ -172,7 +172,7 @@
     },
     {
       "type": "p",
-      "text": "Galerija ostaje privatna i dostupna samo vama i gostima koji imaju QR kod. Sve fotografije možete preuzeti u originalnoj rezoluciji — Guestcam ne komprimira niti mijenja slike. Premium paket uključuje:"
+      "text": "Galerija ostaje privatna i dostupna samo vama i gostima koji imaju QR kod. Sve fotografije možete preuzeti u originalnoj rezoluciji — CamLove ne komprimira niti mijenja slike. Premium paket uključuje:"
     },
     {
       "type": "ul",
@@ -211,7 +211,7 @@
     {
       "type": "faq",
       "q": "Je li galerija privatna?",
-      "a": "Da. Galerija je dostupna samo osobama koje imaju vaš QR kod ili direktan link. Guestcam ne dijeli fotografije javno niti ih koristi za marketing."
+      "a": "Da. Galerija je dostupna samo osobama koje imaju vaš QR kod ili direktan link. CamLove ne dijeli fotografije javno niti ih koristi za marketing."
     },
     {
       "type": "faq",

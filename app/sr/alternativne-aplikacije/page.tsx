@@ -2,7 +2,7 @@ import { SITE_URL } from "@/lib/urls";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { ALTERNATIVES_HREFLANG, LanguageSwitcher } from "@/components/LanguageSwitcher";
-import { GuestcamLogo } from "@/components/GuestcamLogo";
+import { CamLoveLogo } from "@/components/CamLoveLogo";
 import { SeoFooter } from "@/components/SeoFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { OG_IMAGE_URL, ogImage } from "@/lib/og";
@@ -11,7 +11,7 @@ import { safeJsonLd } from "@/lib/seo/jsonld-safe";
 export const metadata: Metadata = {
   title: "Najbolje aplikacije za venčane fotografije 2026",
   description:
-    "Guestcam vs Google Photos vs WhatsApp vs Dropbox. Koja aplikacija najbolje sakuplja fotografije sa venčanja? Iskreno poređenje prednosti i mana.",
+    "CamLove vs Google Photos vs WhatsApp vs Dropbox. Koja aplikacija najbolje sakuplja fotografije sa venčanja? Iskreno poređenje prednosti i mana.",
   openGraph: {
     url: `${SITE_URL}/sr/alternativne-aplikacije`,
     title: "Najbolje aplikacije za venčane fotografije 2026",
@@ -45,12 +45,12 @@ const articleSchema = {
   "@type": "Article",
   headline: "Najbolje aplikacije za venčane fotografije 2026",
   description:
-    "Poređenje: Guestcam vs Google Photos vs WhatsApp vs Dropbox. Koja aplikacija je najbolja za sakupljanje fotografija sa venčanja?",
+    "Poređenje: CamLove vs Google Photos vs WhatsApp vs Dropbox. Koja aplikacija je najbolja za sakupljanje fotografija sa venčanja?",
   inLanguage: "sr-RS",
-  author: { "@type": "Organization", name: "Guestcam" },
+  author: { "@type": "Organization", name: "CamLove" },
   publisher: {
     "@type": "Organization",
-    name: "Guestcam",
+    name: "CamLove",
     logo: `${SITE_URL}/icon-512.png`,
   },
   mainEntityOfPage: `${SITE_URL}/sr/alternativne-aplikacije`,
@@ -66,7 +66,7 @@ function SiteFooter() {
           <Link href="/privacy" className="hover:text-white transition-colors">Privatnost</Link>
           <Link href="/terms" className="hover:text-white transition-colors">Uslovi</Link>
           <Link href="/cookies" className="hover:text-white transition-colors">Kolačići</Link>
-          <a href="mailto:info@guestcam.si" className="hover:text-white transition-colors">Kontakt</a>
+          <a href="mailto:info@camlove.me" className="hover:text-white transition-colors">Kontakt</a>
         </div>
       </div>
     </footer>
@@ -181,7 +181,7 @@ export default function AlternativneAplikacijePage() {
                 <thead>
                   <tr style={{ background: "#0F1729" }}>
                     <th className="p-4 text-white font-semibold">Funkcija</th>
-                    <th className="p-4 text-center text-[#FFC94D] font-bold">Guestcam</th>
+                    <th className="p-4 text-center text-[#FFC94D] font-bold">CamLove</th>
                     <th className="p-4 text-center text-gray-300 font-medium">Google Photos</th>
                     <th className="p-4 text-center text-gray-300 font-medium">WhatsApp</th>
                     <th className="p-4 text-center text-gray-300 font-medium">Dropbox</th>
@@ -223,14 +223,14 @@ export default function AlternativneAplikacijePage() {
             Detaljan pregled pojedinih opcija
           </h2>
 
-          {/* Guestcam */}
+          {/* CamLove */}
           <div className="bg-white rounded-3xl border-2 p-7 shadow-sm border-[#FFC94D]">
             <div className="flex items-start justify-between gap-4 mb-4">
               <div>
                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold mb-2 bg-[#FFF3CC] text-[#C9820A]">
                   Naš izbor
                 </div>
-                <h3 className="font-serif text-2xl font-bold text-[#0F1729]">Guestcam</h3>
+                <h3 className="font-serif text-2xl font-bold text-[#0F1729]">CamLove</h3>
                 <p className="text-sm text-gray-500">Namenski alat za fotografije sa venčanja sa QR kodom</p>
               </div>
               <div className="text-right shrink-0">
@@ -239,7 +239,7 @@ export default function AlternativneAplikacijePage() {
               </div>
             </div>
             <p className="text-gray-600 leading-relaxed mb-5">
-              Guestcam je jedino rešenje na ovoj listi koje je osmišljeno
+              CamLove je jedino rešenje na ovoj listi koje je osmišljeno
               isključivo za venčanja i slične događaje. Ceo tok — od pravljenja
               galerije do preuzimanja svih fotografija — izgrađen je oko
               stvarnih scenarija sa venčanja.
@@ -526,11 +526,11 @@ export default function AlternativneAplikacijePage() {
             ))}
           </div>
           <p className="text-gray-600 leading-relaxed">
-            Guestcam je od prvog dana izgrađen da reši baš ove probleme. Bez
+            CamLove je od prvog dana izgrađen da reši baš ove probleme. Bez
             instaliranja aplikacije. Bez prijave gostiju. Pun kvalitet. QR kod
             na stolu. Preuzimanje svega u ZIP jednim klikom. Ako želite da
             svaki gost može da učestvuje — od tehnički veštog sestrića do bake
-            sa starijim telefonom — Guestcam je pravi alat.
+            sa starijim telefonom — CamLove je pravi alat.
           </p>
         </section>
 

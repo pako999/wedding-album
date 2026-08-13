@@ -2,7 +2,7 @@ import { SITE_URL } from "@/lib/urls";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { GUIDE_HREFLANG, LanguageSwitcher } from "@/components/LanguageSwitcher";
-import { GuestcamLogo } from "@/components/GuestcamLogo";
+import { CamLoveLogo } from "@/components/CamLoveLogo";
 import { SeoFooter } from "@/components/SeoFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { OG_IMAGE_URL, ogImage } from "@/lib/og";
@@ -56,7 +56,7 @@ function SiteFooter() {
             Piškotki
           </Link>
           <a
-            href="mailto:info@guestcam.si"
+            href="mailto:info@camlove.me"
             className="hover:text-white transition-colors"
           >
             Kontakt
@@ -271,17 +271,17 @@ export default function QrKodaPorokaPage() {
         {/* Section 4 — Step by step */}
         <section className="mb-10">
           <h2 className="font-serif text-2xl font-bold text-[#0F1729] mb-4">
-            Kako nastavite QR kodo za poroko z Guestcam — korak za korakom
+            Kako nastavite QR kodo za poroko z CamLove — korak za korakom
           </h2>
           <p className="text-gray-600 leading-relaxed mb-6">
-            Z Guestcam je postopek hiter in intuitiven. Sledite tem korakom:
+            Z CamLove je postopek hiter in intuitiven. Sledite tem korakom:
           </p>
           <div className="space-y-4">
             {[
               {
                 step: "01",
                 title: "Ustvarite brezplačen račun",
-                desc: "Obiščite Guestcam.si in kliknite »Ustvari galerijo brezplačno«. Vnesite e-poštni naslov in geslo — postopek traja manj kot minuto.",
+                desc: "Obiščite camlove.me in kliknite »Ustvari galerijo brezplačno«. Vnesite e-poštni naslov in geslo — postopek traja manj kot minuto.",
               },
               {
                 step: "02",
@@ -291,7 +291,7 @@ export default function QrKodaPorokaPage() {
               {
                 step: "03",
                 title: "Izberite predlogo za tisk",
-                desc: "Guestcam ponuja 8 elegantnih predlog za QR kartice — od klasičnih do botaničnih in skandinavskih. Vsaka predloga se samodejno prilagodi z vašim imenom in datumom.",
+                desc: "CamLove ponuja 8 elegantnih predlog za QR kartice — od klasičnih do botaničnih in skandinavskih. Vsaka predloga se samodejno prilagodi z vašim imenom in datumom.",
               },
               {
                 step: "04",
@@ -375,7 +375,7 @@ export default function QrKodaPorokaPage() {
             {[
               {
                 q: "Ali je QR koda za poroko res brezplačna?",
-                a: "Z Guestcam je ustvarjanje galerije in QR kode brezplačno za vedno (do določenih omejitev). Za večje poroke so na voljo plačljivi paketi z neomejenimi fotografijami.",
+                a: "Z CamLove je ustvarjanje galerije in QR kode brezplačno za vedno (do določenih omejitev). Za večje poroke so na voljo plačljivi paketi z neomejenimi fotografijami.",
               },
               {
                 q: "Ali morajo gostje prenesti aplikacijo?",
@@ -383,7 +383,7 @@ export default function QrKodaPorokaPage() {
               },
               {
                 q: "V kakšni kakovosti se shranjujejo fotografije?",
-                a: "V polni originalni ločljivosti. Guestcam fotografij ne stisne ali zmanjša. Prejeli boste natanko tisto, kar je gost posnel.",
+                a: "V polni originalni ločljivosti. CamLove fotografij ne stisne ali zmanjša. Prejeli boste natanko tisto, kar je gost posnel.",
               },
               {
                 q: "Kaj se zgodi s fotografijami po poroki?",

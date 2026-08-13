@@ -6,11 +6,11 @@
   "translationKey": "wedding-qr-card-canva-design",
   "publishedAt": "2026-08-11",
   "updatedAt": "2026-08-11",
-  "author": "Guestcam Team",
+  "author": "CamLove Team",
   "category": "vodnik",
   "readingTime": 6,
-  "tags": ["código QR", "Canva", "fotos de boda", "Guestcam"],
-  "tldr": "Abre un diseño gratuito en Canva, añade los nombres y la fecha, sube la imagen del código QR de Guestcam y exporta un PDF listo para imprimir — en unos 10 minutos.",
+  "tags": ["código QR", "Canva", "fotos de boda", "CamLove"],
+  "tldr": "Abre un diseño gratuito en Canva, añade los nombres y la fecha, sube la imagen del código QR de CamLove y exporta un PDF listo para imprimir — en unos 10 minutos.",
   "content": [
     {
       "type": "h2",
@@ -27,17 +27,17 @@
     {
       "type": "ul",
       "items": [
-        "El código QR de tu galería de Guestcam, descargado como PNG (panel de control → pestaña «QR koda» → «Prenesi samo QR kodo» — la interfaz del panel de Guestcam está actualmente en esloveno, así que esos son exactamente los nombres que verás).",
+        "El código QR de tu galería de CamLove, descargado como PNG (panel de control → pestaña «QR koda» → «Prenesi samo QR kodo» — la interfaz del panel de CamLove está actualmente en esloveno, así que esos son exactamente los nombres que verás).",
         "Una cuenta gratuita de Canva — no hace falta suscripción de pago para esto.",
         "Unos 10 minutos."
       ]
     },
     {
       "type": "image",
-      "src": "https://www.guestcam.si/blog/canva-qr-card/card-anatomy.svg",
+      "src": "https://www.camlove.me/blog/canva-qr-card/card-anatomy.svg",
       "alt": "Diseño de una tarjeta QR de boda: nombres y fecha arriba, código QR en el centro, una breve instrucción debajo",
       "caption": "Que sea simple: nombres, código QR, una línea de instrucción — eso es todo lo que necesita una tarjeta.",
-      "credit": "Guestcam"
+      "credit": "CamLove"
     },
     {
       "type": "h2",
@@ -49,7 +49,7 @@
         "Entra en canva.com y crea un diseño nuevo — busca «postal» o define un tamaño personalizado de 10 × 15 cm (un buen tamaño para tarjetas de mesa).",
         "Elige cualquier plantilla como punto de partida, o empieza con un lienzo en blanco.",
         "Añade un cuadro de texto con los nombres de la pareja y otro debajo con la fecha de la boda.",
-        "Haz clic en Subidas → Subir archivos y añade el PNG del código QR que descargaste desde tu panel de Guestcam.",
+        "Haz clic en Subidas → Subir archivos y añade el PNG del código QR que descargaste desde tu panel de CamLove.",
         "Coloca el código QR en el centro, con un tamaño mínimo de 3 × 3 cm para que el móvil lo enfoque con facilidad.",
         "Añade debajo una instrucción breve, por ejemplo «¡Escanea y comparte tus fotos!».",
         "Ajusta tipografías y colores a tus invitaciones para un look coherente y luego haz clic en Compartir → Descargar → PDF para imprimir."
@@ -75,12 +75,12 @@
     },
     {
       "type": "p",
-      "text": "Si prefieres ahorrarte el trabajo de diseño, Guestcam incluye 8 plantillas de tarjetas QR ya hechas que rellenan automáticamente los nombres y la fecha — descárgala como PDF lista para imprimir directamente desde tu panel."
+      "text": "Si prefieres ahorrarte el trabajo de diseño, CamLove incluye 8 plantillas de tarjetas QR ya hechas que rellenan automáticamente los nombres y la fecha — descárgala como PDF lista para imprimir directamente desde tu panel."
     },
     {
       "type": "cta",
       "text": "Crea tu galería de boda gratis",
-      "href": "https://www.guestcam.si/dashboard/new"
+      "href": "https://www.camlove.me/dashboard/new"
     },
     {
       "type": "faq",
@@ -90,7 +90,7 @@
     {
       "type": "faq",
       "q": "¿Dónde consigo la imagen del código QR de mi boda?",
-      "a": "En tu panel de Guestcam: abre tu galería, ve a la pestaña «QR koda» y haz clic en «Prenesi samo QR kodo» para descargarla como PNG."
+      "a": "En tu panel de CamLove: abre tu galería, ve a la pestaña «QR koda» y haz clic en «Prenesi samo QR kodo» para descargarla como PNG."
     },
     {
       "type": "faq",

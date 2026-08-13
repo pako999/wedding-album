@@ -4,10 +4,10 @@
 This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` before writing any code. Heed deprecation notices.
 <!-- END:nextjs-agent-rules -->
 
-# Canonical URLs — always www.guestcam.si
+# Canonical URLs — always www.camlove.me
 
-`guestcam.si` (bare host) 307-redirects to `www.guestcam.si` on Vercel. Any hardcoded
-`"https://guestcam.si..."` in canonical tags, sitemap entries, hreflang alternates,
+`camlove.me` (bare host) 307-redirects to `www.camlove.me` on Vercel. Any hardcoded
+`"https://camlove.me..."` in canonical tags, sitemap entries, hreflang alternates,
 OG images, JSON-LD schemas or email deep links creates a redirect chain and gets
 flagged by Semrush/Ahrefs audits.
 

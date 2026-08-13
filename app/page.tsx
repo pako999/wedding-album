@@ -2,7 +2,7 @@ import { SITE_URL } from "@/lib/urls";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { auth } from "@clerk/nextjs/server";
-import { GuestcamLogo } from "@/components/GuestcamLogo";
+import { CamLoveLogo } from "@/components/CamLoveLogo";
 import { DemoButton } from "@/components/DemoButton";
 import { HomeMobileMenu } from "@/components/HomeMobileMenu";
 import { LanguageSwitcher, HOME_HREFLANG } from "@/components/LanguageSwitcher";
@@ -39,18 +39,22 @@ const jsonLd = {
     {
       "@type": "Organization",
       "@id": `${SITE_URL}/#organization`,
-      name: "Guestcam",
+      name: "CamLove",
       url: SITE_URL,
       logo: `${SITE_URL}/icon-512.png`,
-      sameAs: [
-        "https://www.instagram.com/guestcam.si",
-        "https://www.facebook.com/guestcam.si",
-      ],
+      // REBRAND TODO — social handles are not domain names, so the rebrand
+      // sweep could not derive them. The old profiles (guestcam.si /
+      // guest.cam) are being retired and the new handles are not yet known.
+      // Omitted rather than guessed: `sameAs` is how Google reconciles this
+      // site with the brand's other profiles, and pointing it at accounts
+      // that may not exist is a worse signal than sending none at all.
+      // Restore this array once the real CamLove profiles are registered.
+      sameAs: [],
     },
     {
       "@type": "WebSite",
       "@id": `${SITE_URL}/#website`,
-      name: "Guestcam",
+      name: "CamLove",
       url: SITE_URL,
       inLanguage: "sl-SI",
       publisher: { "@id": `${SITE_URL}/#organization` },
@@ -58,7 +62,7 @@ const jsonLd = {
     {
       "@type": "SoftwareApplication",
       "@id": `${SITE_URL}/#app`,
-      name: "Guestcam",
+      name: "CamLove",
       applicationCategory: "PhotographyApplication",
       operatingSystem: "Web, iOS, Android (browser)",
       url: SITE_URL,
@@ -81,10 +85,10 @@ const jsonLd = {
       mainEntity: [
         {
           "@type": "Question",
-          name: "Kaj je Guestcam?",
+          name: "Kaj je CamLove?",
           acceptedAnswer: {
             "@type": "Answer",
-            text: "Guestcam je slovenska platforma za zbiranje fotografij in videov gostov na dogodkih (poroke, rojstni dnevi, obletnice, praznovanja). Gostje skenirajo natisnjeno QR kodo in nalagajo fotografije v skupno zasebno galerijo — brez aplikacije, brez registracije, v polni originalni kakovosti.",
+            text: "CamLove je slovenska platforma za zbiranje fotografij in videov gostov na dogodkih (poroke, rojstni dnevi, obletnice, praznovanja). Gostje skenirajo natisnjeno QR kodo in nalagajo fotografije v skupno zasebno galerijo — brez aplikacije, brez registracije, v polni originalni kakovosti.",
           },
         },
         {
@@ -97,7 +101,7 @@ const jsonLd = {
         },
         {
           "@type": "Question",
-          name: "Koliko stane Guestcam?",
+          name: "Koliko stane CamLove?",
           acceptedAnswer: {
             "@type": "Answer",
             text: "Osnovna uporaba je brezplačna (do 20 fotografij, 30 dni). Plačljivi paketi so enkratno plačilo brez naročnine: Basic 39 €, Plus 49 € (najbolj priljubljen), Premium 99 €. Vsi paketi vključujejo 30-dnevno garancijo vračila denarja.",
@@ -108,12 +112,12 @@ const jsonLd = {
           name: "Ali so fotografije stisnjene?",
           acceptedAnswer: {
             "@type": "Answer",
-            text: "Ne. Guestcam ohrani polno originalno kakovost fotografij — brez kompresije, ki jo uporabljajo WhatsApp, Facebook ali Instagram. Vse fotografije lahko po dogodku prenesete kot ZIP arhiv ali shranite v Google Drive.",
+            text: "Ne. CamLove ohrani polno originalno kakovost fotografij — brez kompresije, ki jo uporabljajo WhatsApp, Facebook ali Instagram. Vse fotografije lahko po dogodku prenesete kot ZIP arhiv ali shranite v Google Drive.",
           },
         },
         {
           "@type": "Question",
-          name: "Ali je Guestcam GDPR skladen?",
+          name: "Ali je CamLove GDPR skladen?",
           acceptedAnswer: {
             "@type": "Answer",
             text: "Da. Podatki so shranjeni v EU (Nemčija). Galerija je privzeto zasebna in dostopna samo tistim, ki imajo povezavo ali skeniran QR. Lastnik lahko galerijo dodatno zaščiti z geslom in kadarkoli izbriše vse fotografije.",
@@ -121,7 +125,7 @@ const jsonLd = {
         },
         {
           "@type": "Question",
-          name: "V katerih jezikih deluje Guestcam?",
+          name: "V katerih jezikih deluje CamLove?",
           acceptedAnswer: {
             "@type": "Answer",
             text: "Vmesnik je na voljo v 6 jezikih: slovenščini, hrvaščini, srbščini, angleščini, nemščini in španščini. Sistem samodejno prepozna jezik gosta glede na njihov telefon.",
@@ -243,7 +247,7 @@ export default async function HomePage() {
       <header className="sticky top-0 z-40 border-b border-[#FFC94D]/30 bg-white/80 backdrop-blur-md">
         <nav className="max-w-7xl mx-auto px-8 h-16 flex items-center justify-between">
           <Link href="/" className="flex items-center transition-transform duration-200 hover:scale-[1.03]">
-            <GuestcamLogo size="sm" showMark={true} />
+            <CamLoveLogo size="sm" showMark={true} />
           </Link>
           <div className="hidden md:flex items-center gap-9 text-sm font-medium text-gray-600">
             {[
@@ -451,7 +455,7 @@ export default async function HomePage() {
       <section className="max-w-5xl mx-auto px-6 pb-20 text-center">
         <h2 className="text-3xl sm:text-4xl font-extrabold text-[#0F1729] mb-4 leading-tight">Za vsak poseben trenutek</h2>
         <p className="text-gray-400 max-w-xl mx-auto leading-relaxed mb-10">
-          Guestcam zbira fotografije vaših gostov — za poroke, rojstne dneve, baby shower, obletnice, poslovne zabave in vsak dogodek, ki si zasluži spomin.
+          CamLove zbira fotografije vaših gostov — za poroke, rojstne dneve, baby shower, obletnice, poslovne zabave in vsak dogodek, ki si zasluži spomin.
         </p>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
           {([
@@ -777,7 +781,7 @@ export default async function HomePage() {
       {/* ── Features ────────────────────────────────────────────────────────── */}
       <section id="features" className="py-24 bg-white">
         <div className="max-w-6xl mx-auto px-6">
-          <h2 className="text-4xl sm:text-[3.3rem] leading-[1.08] tracking-tight font-extrabold text-center text-[#0F1729] mb-4">Zakaj izbrati Guestcam?</h2>
+          <h2 className="text-4xl sm:text-[3.3rem] leading-[1.08] tracking-tight font-extrabold text-center text-[#0F1729] mb-4">Zakaj izbrati CamLove?</h2>
           <p className="text-center text-gray-500 mb-14 max-w-lg mx-auto leading-relaxed">
             Vse fotografije in videi vaših gostov. Na enem mestu.<br />
             <span className="text-gray-400">Brez aplikacij, brez pošiljanja po WhatsAppu in brez izgubljenih spominov.</span>
@@ -1095,7 +1099,7 @@ export default async function HomePage() {
             {/* Brand */}
             <div className="col-span-2 md:col-span-3 lg:col-span-1">
               <div className="mb-3">
-                <GuestcamLogo size="sm" showMark={true} variant="onDark" />
+                <CamLoveLogo size="sm" showMark={true} variant="onDark" />
               </div>
               <p className="text-gray-400 text-xs leading-relaxed mb-5">
                 Poročna galerija s QR kodo — brez aplikacije. Gostje fotografirajo, vi zbirate spomine.
@@ -1159,7 +1163,7 @@ export default async function HomePage() {
           {/* Bottom bar */}
           <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
             <p className="text-xs text-gray-500">
-              © {new Date().getFullYear()} Guestcam · Sport group d.o.o. · Narejeno v Sloveniji by{" "}
+              © {new Date().getFullYear()} CamLove · Sport group d.o.o. · Narejeno v Sloveniji by{" "}
               <a
                 href="https://www.futurecode.si"
                 target="_blank"

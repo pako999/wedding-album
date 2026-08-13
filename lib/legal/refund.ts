@@ -7,7 +7,7 @@ export const refundDoc: Record<LangCode, LegalDoc> = {
     eyebrow: "Pravni dokument",
     lastUpdated: "Zadnja posodobitev: 29. maj 2026 · Sport group d.o.o.",
     intro:
-      "Želimo, da ste s storitvijo Guestcam popolnoma zadovoljni. Zato za prvi nakup paketa ponujamo 30-dnevno garancijo vračila denarja — brez zapletenih vprašanj. Ta politika pojasnjuje, kdaj in kako lahko zahtevate vračilo ter kako poteka postopek.",
+      "Želimo, da ste s storitvijo CamLove popolnoma zadovoljni. Zato za prvi nakup paketa ponujamo 30-dnevno garancijo vračila denarja — brez zapletenih vprašanj. Ta politika pojasnjuje, kdaj in kako lahko zahtevate vračilo ter kako poteka postopek.",
     sections: [
       { title: "1. 30-dnevna garancija vračila denarja", blocks: [
         { type: "p", text: "Za prvi nakup plačljivega paketa (Basic, Plus ali Premium) velja 30-dnevna garancija vračila denarja. Če v 30 dneh od nakupa niste zadovoljni, vam vrnemo celoten znesek." },
@@ -30,13 +30,13 @@ export const refundDoc: Record<LangCode, LegalDoc> = {
         ] },
       ] },
       { title: "4. Zakonska pravica do odstopa (14 dni)", blocks: [
-        { type: "p", text: "Kot potrošnik v EU imate praviloma 14-dnevno pravico do odstopa od pogodbe, sklenjene na daljavo. Ker je Guestcam digitalna storitev, ki se začne izvajati takoj po nakupu, se s potrditvijo nakupa strinjate, da storitev začnemo opravljati nemudoma, in priznavate, da pravica do odstopa preneha, ko je storitev v celoti opravljena." },
+        { type: "p", text: "Kot potrošnik v EU imate praviloma 14-dnevno pravico do odstopa od pogodbe, sklenjene na daljavo. Ker je CamLove digitalna storitev, ki se začne izvajati takoj po nakupu, se s potrditvijo nakupa strinjate, da storitev začnemo opravljati nemudoma, in priznavate, da pravica do odstopa preneha, ko je storitev v celoti opravljena." },
         { type: "p", text: "Naša 30-dnevna garancija vračila denarja je velikodušnejša od zakonsko predpisanega minimuma in vaših zakonskih pravic ne omejuje." },
       ] },
       { title: "5. Kako zahtevate vračilo", blocks: [
-        { type: "p", text: "Pišite nam na info@guestcam.si in navedite:" },
+        { type: "p", text: "Pišite nam na info@camlove.me in navedite:" },
         { type: "ul", items: [
-          "e-poštni naslov, povezan z vašim računom Guestcam,",
+          "e-poštni naslov, povezan z vašim računom CamLove,",
           "datum nakupa in paket, ki ste ga kupili,",
           "po želji razlog za vračilo (pomaga nam izboljšati storitev).",
         ] },
@@ -56,7 +56,7 @@ export const refundDoc: Record<LangCode, LegalDoc> = {
         { type: "p", text: "To politiko lahko občasno posodobimo. O bistvenih spremembah vas obvestimo po e-pošti ali z obvestilom v storitvi. Datum zadnje posodobitve je vedno naveden na vrhu tega dokumenta." },
       ] },
       { title: "10. Kontakt", blocks: [
-        { type: "contactCard", lines: ["Sport group d.o.o.", "E-pošta: info@guestcam.si", "Davčna številka: SI72133449"] },
+        { type: "contactCard", lines: ["Sport group d.o.o.", "E-pošta: info@camlove.me", "Davčna številka: SI72133449"] },
       ] },
     ],
   },
@@ -66,7 +66,7 @@ export const refundDoc: Record<LangCode, LegalDoc> = {
     eyebrow: "Pravni dokument",
     lastUpdated: "Zadnje ažurirano: 29. svibnja 2026. · Sport group d.o.o.",
     intro:
-      "Želimo da budete potpuno zadovoljni uslugom Guestcam. Zato za prvu kupnju paketa nudimo 30-dnevnu garanciju povrata novca — bez kompliciranih pitanja. Ova politika objašnjava kada i kako možete zatražiti povrat te kako teče postupak.",
+      "Želimo da budete potpuno zadovoljni uslugom CamLove. Zato za prvu kupnju paketa nudimo 30-dnevnu garanciju povrata novca — bez kompliciranih pitanja. Ova politika objašnjava kada i kako možete zatražiti povrat te kako teče postupak.",
     sections: [
       { title: "1. 30-dnevna garancija povrata novca", blocks: [
         { type: "p", text: "Za prvu kupnju plaćenog paketa (Basic, Plus ili Premium) vrijedi 30-dnevna garancija povrata novca. Ako u roku od 30 dana od kupnje niste zadovoljni, vraćamo vam cijeli iznos." },
@@ -89,13 +89,13 @@ export const refundDoc: Record<LangCode, LegalDoc> = {
         ] },
       ] },
       { title: "4. Zakonsko pravo na odustanak (14 dana)", blocks: [
-        { type: "p", text: "Kao potrošač u EU u pravilu imate 14-dnevno pravo na odustanak od ugovora sklopljenog na daljinu. Budući da je Guestcam digitalna usluga koja započinje odmah nakon kupnje, potvrdom kupnje pristajete da uslugu počnemo pružati odmah i priznajete da pravo na odustanak prestaje kada je usluga u potpunosti izvršena." },
+        { type: "p", text: "Kao potrošač u EU u pravilu imate 14-dnevno pravo na odustanak od ugovora sklopljenog na daljinu. Budući da je CamLove digitalna usluga koja započinje odmah nakon kupnje, potvrdom kupnje pristajete da uslugu počnemo pružati odmah i priznajete da pravo na odustanak prestaje kada je usluga u potpunosti izvršena." },
         { type: "p", text: "Naša 30-dnevna garancija povrata novca velikodušnija je od zakonskog minimuma i ne ograničava vaša zakonska prava." },
       ] },
       { title: "5. Kako zatražiti povrat", blocks: [
-        { type: "p", text: "Pišite nam na info@guestcam.si i navedite:" },
+        { type: "p", text: "Pišite nam na info@camlove.me i navedite:" },
         { type: "ul", items: [
-          "e-mail adresu povezanu s vašim Guestcam računom,",
+          "e-mail adresu povezanu s vašim CamLove računom,",
           "datum kupnje i paket koji ste kupili,",
           "po želji razlog povrata (pomaže nam poboljšati uslugu).",
         ] },
@@ -115,7 +115,7 @@ export const refundDoc: Record<LangCode, LegalDoc> = {
         { type: "p", text: "Ovu politiku možemo povremeno ažurirati. O bitnim izmjenama obavještavamo vas e-poštom ili obaviješću u usluzi. Datum zadnjeg ažuriranja uvijek je naveden na vrhu ovog dokumenta." },
       ] },
       { title: "10. Kontakt", blocks: [
-        { type: "contactCard", lines: ["Sport group d.o.o.", "E-pošta: info@guestcam.si", "OIB / PDV: SI72133449"] },
+        { type: "contactCard", lines: ["Sport group d.o.o.", "E-pošta: info@camlove.me", "OIB / PDV: SI72133449"] },
       ] },
     ],
   },
@@ -125,7 +125,7 @@ export const refundDoc: Record<LangCode, LegalDoc> = {
     eyebrow: "Pravni dokument",
     lastUpdated: "Poslednje ažuriranje: 29. maja 2026. · Sport group d.o.o.",
     intro:
-      "Želimo da budete potpuno zadovoljni uslugom Guestcam. Zato za prvu kupovinu paketa nudimo 30-dnevnu garanciju povraćaja novca — bez komplikovanih pitanja. Ova politika objašnjava kada i kako možete zatražiti povraćaj i kako teče postupak.",
+      "Želimo da budete potpuno zadovoljni uslugom CamLove. Zato za prvu kupovinu paketa nudimo 30-dnevnu garanciju povraćaja novca — bez komplikovanih pitanja. Ova politika objašnjava kada i kako možete zatražiti povraćaj i kako teče postupak.",
     sections: [
       { title: "1. 30-dnevna garancija povraćaja novca", blocks: [
         { type: "p", text: "Za prvu kupovinu plaćenog paketa (Basic, Plus ili Premium) važi 30-dnevna garancija povraćaja novca. Ako u roku od 30 dana od kupovine niste zadovoljni, vraćamo vam ceo iznos." },
@@ -148,13 +148,13 @@ export const refundDoc: Record<LangCode, LegalDoc> = {
         ] },
       ] },
       { title: "4. Zakonsko pravo na odustanak (14 dana)", blocks: [
-        { type: "p", text: "Kao potrošač u EU po pravilu imate 14-dnevno pravo na odustanak od ugovora zaključenog na daljinu. Budući da je Guestcam digitalna usluga koja počinje odmah nakon kupovine, potvrdom kupovine pristajete da uslugu počnemo da pružamo odmah i priznajete da pravo na odustanak prestaje kada je usluga u potpunosti izvršena." },
+        { type: "p", text: "Kao potrošač u EU po pravilu imate 14-dnevno pravo na odustanak od ugovora zaključenog na daljinu. Budući da je CamLove digitalna usluga koja počinje odmah nakon kupovine, potvrdom kupovine pristajete da uslugu počnemo da pružamo odmah i priznajete da pravo na odustanak prestaje kada je usluga u potpunosti izvršena." },
         { type: "p", text: "Naša 30-dnevna garancija povraćaja novca velikodušnija je od zakonskog minimuma i ne ograničava vaša zakonska prava." },
       ] },
       { title: "5. Kako zatražiti povraćaj", blocks: [
-        { type: "p", text: "Pišite nam na info@guestcam.si i navedite:" },
+        { type: "p", text: "Pišite nam na info@camlove.me i navedite:" },
         { type: "ul", items: [
-          "e-mail adresu povezanu sa vašim Guestcam nalogom,",
+          "e-mail adresu povezanu sa vašim CamLove nalogom,",
           "datum kupovine i paket koji ste kupili,",
           "po želji razlog povraćaja (pomaže nam da poboljšamo uslugu).",
         ] },
@@ -174,7 +174,7 @@ export const refundDoc: Record<LangCode, LegalDoc> = {
         { type: "p", text: "Ovu politiku možemo povremeno ažurirati. O bitnim izmenama obaveštavamo vas e-poštom ili obaveštenjem u usluzi. Datum poslednjeg ažuriranja uvek je naveden na vrhu ovog dokumenta." },
       ] },
       { title: "10. Kontakt", blocks: [
-        { type: "contactCard", lines: ["Sport group d.o.o.", "E-pošta: info@guestcam.si", "PIB / PDV: SI72133449"] },
+        { type: "contactCard", lines: ["Sport group d.o.o.", "E-pošta: info@camlove.me", "PIB / PDV: SI72133449"] },
       ] },
     ],
   },
@@ -184,7 +184,7 @@ export const refundDoc: Record<LangCode, LegalDoc> = {
     eyebrow: "Rechtliches Dokument",
     lastUpdated: "Zuletzt aktualisiert: 29. Mai 2026 · Sport group d.o.o.",
     intro:
-      "Wir möchten, dass Sie mit Guestcam rundum zufrieden sind. Deshalb bieten wir für den ersten Paketkauf eine 30-tägige Geld-zurück-Garantie — ohne komplizierte Rückfragen. Diese Richtlinie erklärt, wann und wie Sie eine Rückerstattung beantragen können und wie der Ablauf ist.",
+      "Wir möchten, dass Sie mit CamLove rundum zufrieden sind. Deshalb bieten wir für den ersten Paketkauf eine 30-tägige Geld-zurück-Garantie — ohne komplizierte Rückfragen. Diese Richtlinie erklärt, wann und wie Sie eine Rückerstattung beantragen können und wie der Ablauf ist.",
     sections: [
       { title: "1. 30-tägige Geld-zurück-Garantie", blocks: [
         { type: "p", text: "Für den ersten Kauf eines kostenpflichtigen Pakets (Basic, Plus oder Premium) gilt eine 30-tägige Geld-zurück-Garantie. Wenn Sie innerhalb von 30 Tagen nach dem Kauf nicht zufrieden sind, erstatten wir Ihnen den vollen Betrag." },
@@ -207,13 +207,13 @@ export const refundDoc: Record<LangCode, LegalDoc> = {
         ] },
       ] },
       { title: "4. Gesetzliches Widerrufsrecht (14 Tage)", blocks: [
-        { type: "p", text: "Als Verbraucher in der EU haben Sie grundsätzlich ein 14-tägiges Widerrufsrecht für Fernabsatzverträge. Da Guestcam ein digitaler Dienst ist, der unmittelbar nach dem Kauf beginnt, stimmen Sie mit der Bestätigung des Kaufs zu, dass wir mit der Leistung sofort beginnen, und erkennen an, dass das Widerrufsrecht erlischt, sobald der Dienst vollständig erbracht ist." },
+        { type: "p", text: "Als Verbraucher in der EU haben Sie grundsätzlich ein 14-tägiges Widerrufsrecht für Fernabsatzverträge. Da CamLove ein digitaler Dienst ist, der unmittelbar nach dem Kauf beginnt, stimmen Sie mit der Bestätigung des Kaufs zu, dass wir mit der Leistung sofort beginnen, und erkennen an, dass das Widerrufsrecht erlischt, sobald der Dienst vollständig erbracht ist." },
         { type: "p", text: "Unsere 30-tägige Geld-zurück-Garantie ist großzügiger als das gesetzliche Minimum und schränkt Ihre gesetzlichen Rechte nicht ein." },
       ] },
       { title: "5. So beantragen Sie eine Rückerstattung", blocks: [
-        { type: "p", text: "Schreiben Sie uns an info@guestcam.si und geben Sie an:" },
+        { type: "p", text: "Schreiben Sie uns an info@camlove.me und geben Sie an:" },
         { type: "ul", items: [
-          "die mit Ihrem Guestcam-Konto verknüpfte E-Mail-Adresse,",
+          "die mit Ihrem CamLove-Konto verknüpfte E-Mail-Adresse,",
           "das Kaufdatum und das gekaufte Paket,",
           "optional den Grund für die Rückerstattung (hilft uns, den Dienst zu verbessern).",
         ] },
@@ -233,7 +233,7 @@ export const refundDoc: Record<LangCode, LegalDoc> = {
         { type: "p", text: "Wir können diese Richtlinie gelegentlich aktualisieren. Über wesentliche Änderungen informieren wir Sie per E-Mail oder durch einen Hinweis im Dienst. Das Datum der letzten Aktualisierung steht stets oben in diesem Dokument." },
       ] },
       { title: "10. Kontakt", blocks: [
-        { type: "contactCard", lines: ["Sport group d.o.o.", "E-Mail: info@guestcam.si", "USt-IdNr.: SI72133449"] },
+        { type: "contactCard", lines: ["Sport group d.o.o.", "E-Mail: info@camlove.me", "USt-IdNr.: SI72133449"] },
       ] },
     ],
   },
@@ -243,7 +243,7 @@ export const refundDoc: Record<LangCode, LegalDoc> = {
     eyebrow: "Legal document",
     lastUpdated: "Last updated: May 29, 2026 · Sport group d.o.o.",
     intro:
-      "We want you to be completely happy with Guestcam. That's why we offer a 30-day money-back guarantee on your first plan purchase — no complicated questions. This policy explains when and how you can request a refund and how the process works.",
+      "We want you to be completely happy with CamLove. That's why we offer a 30-day money-back guarantee on your first plan purchase — no complicated questions. This policy explains when and how you can request a refund and how the process works.",
     sections: [
       { title: "1. 30-day money-back guarantee", blocks: [
         { type: "p", text: "Your first purchase of a paid plan (Basic, Plus or Premium) is covered by a 30-day money-back guarantee. If you're not satisfied within 30 days of purchase, we'll refund the full amount." },
@@ -266,13 +266,13 @@ export const refundDoc: Record<LangCode, LegalDoc> = {
         ] },
       ] },
       { title: "4. Statutory right of withdrawal (14 days)", blocks: [
-        { type: "p", text: "As an EU consumer, you generally have a 14-day right to withdraw from a distance contract. Because Guestcam is a digital service that begins immediately after purchase, by confirming your purchase you agree that we may start performing the service right away and acknowledge that the right of withdrawal lapses once the service has been fully performed." },
+        { type: "p", text: "As an EU consumer, you generally have a 14-day right to withdraw from a distance contract. Because CamLove is a digital service that begins immediately after purchase, by confirming your purchase you agree that we may start performing the service right away and acknowledge that the right of withdrawal lapses once the service has been fully performed." },
         { type: "p", text: "Our 30-day money-back guarantee is more generous than the statutory minimum and does not limit your statutory rights." },
       ] },
       { title: "5. How to request a refund", blocks: [
-        { type: "p", text: "Email us at info@guestcam.si and include:" },
+        { type: "p", text: "Email us at info@camlove.me and include:" },
         { type: "ul", items: [
-          "the email address linked to your Guestcam account,",
+          "the email address linked to your CamLove account,",
           "the date of purchase and the plan you bought,",
           "optionally, the reason for the refund (it helps us improve the service).",
         ] },
@@ -292,7 +292,7 @@ export const refundDoc: Record<LangCode, LegalDoc> = {
         { type: "p", text: "We may update this policy from time to time. We'll notify you of material changes by email or with a notice in the service. The last-updated date is always shown at the top of this document." },
       ] },
       { title: "10. Contact", blocks: [
-        { type: "contactCard", lines: ["Sport group d.o.o.", "Email: info@guestcam.si", "VAT ID: SI72133449"] },
+        { type: "contactCard", lines: ["Sport group d.o.o.", "Email: info@camlove.me", "VAT ID: SI72133449"] },
       ] },
     ],
   },
@@ -302,7 +302,7 @@ export const refundDoc: Record<LangCode, LegalDoc> = {
     eyebrow: "Documento legal",
     lastUpdated: "Última actualización: 29 de mayo de 2026 · Sport group d.o.o.",
     intro:
-      "Queremos que estés completamente satisfecho con Guestcam. Por eso ofrecemos una garantía de devolución de 30 días en tu primera compra de un plan, sin preguntas complicadas. Esta política explica cuándo y cómo puedes solicitar un reembolso y cómo funciona el proceso.",
+      "Queremos que estés completamente satisfecho con CamLove. Por eso ofrecemos una garantía de devolución de 30 días en tu primera compra de un plan, sin preguntas complicadas. Esta política explica cuándo y cómo puedes solicitar un reembolso y cómo funciona el proceso.",
     sections: [
       { title: "1. Garantía de devolución de 30 días", blocks: [
         { type: "p", text: "Tu primera compra de un plan de pago (Basic, Plus o Premium) está cubierta por una garantía de devolución de 30 días. Si no quedas satisfecho dentro de los 30 días posteriores a la compra, te devolvemos el importe íntegro." },
@@ -325,13 +325,13 @@ export const refundDoc: Record<LangCode, LegalDoc> = {
         ] },
       ] },
       { title: "4. Derecho legal de desistimiento (14 días)", blocks: [
-        { type: "p", text: "Como consumidor en la UE, por lo general dispones de un derecho de desistimiento de 14 días en los contratos a distancia. Dado que Guestcam es un servicio digital que comienza de inmediato tras la compra, al confirmar tu compra aceptas que empecemos a prestar el servicio enseguida y reconoces que el derecho de desistimiento se extingue una vez que el servicio se ha prestado por completo." },
+        { type: "p", text: "Como consumidor en la UE, por lo general dispones de un derecho de desistimiento de 14 días en los contratos a distancia. Dado que CamLove es un servicio digital que comienza de inmediato tras la compra, al confirmar tu compra aceptas que empecemos a prestar el servicio enseguida y reconoces que el derecho de desistimiento se extingue una vez que el servicio se ha prestado por completo." },
         { type: "p", text: "Nuestra garantía de devolución de 30 días es más generosa que el mínimo legal y no limita tus derechos legales." },
       ] },
       { title: "5. Cómo solicitar un reembolso", blocks: [
-        { type: "p", text: "Escríbenos a info@guestcam.si e indica:" },
+        { type: "p", text: "Escríbenos a info@camlove.me e indica:" },
         { type: "ul", items: [
-          "el correo electrónico vinculado a tu cuenta de Guestcam,",
+          "el correo electrónico vinculado a tu cuenta de CamLove,",
           "la fecha de compra y el plan que compraste,",
           "opcionalmente, el motivo del reembolso (nos ayuda a mejorar el servicio).",
         ] },
@@ -351,7 +351,7 @@ export const refundDoc: Record<LangCode, LegalDoc> = {
         { type: "p", text: "Podemos actualizar esta política de vez en cuando. Te notificaremos los cambios importantes por correo electrónico o mediante un aviso en el servicio. La fecha de la última actualización siempre aparece en la parte superior de este documento." },
       ] },
       { title: "10. Contacto", blocks: [
-        { type: "contactCard", lines: ["Sport group d.o.o.", "Email: info@guestcam.si", "NIF / IVA: SI72133449"] },
+        { type: "contactCard", lines: ["Sport group d.o.o.", "Email: info@camlove.me", "NIF / IVA: SI72133449"] },
       ] },
     ],
   },

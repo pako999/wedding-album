@@ -4,7 +4,7 @@ import { LegalPage } from "@/components/LegalPage";
 
 export const metadata: Metadata = {
   title: "Politika vračila denarja",
-  description: "Politika vračila denarja Guestcam — 30-dnevna garancija vračila, pogoji, postopek in roki.",
+  description: "Politika vračila denarja CamLove — 30-dnevna garancija vračila, pogoji, postopek in roki.",
   alternates: {
     canonical: `${SITE_URL}/refund`,
     languages: {
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   openGraph: {
     url: `${SITE_URL}/refund`,
     title: "Politika vračila denarja",
-    description: "Politika vračila denarja Guestcam — 30-dnevna garancija vračila, pogoji, postopek in roki.",
+    description: "Politika vračila denarja CamLove — 30-dnevna garancija vračila, pogoji, postopek in roki.",
     images: ["/og-image.png?v=2"],
   },
   robots: { index: true, follow: true },

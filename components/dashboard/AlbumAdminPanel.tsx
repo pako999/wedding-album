@@ -7,7 +7,7 @@ import Link from "next/link";
 import { SignOutButton } from "@clerk/nextjs";
 import type { Album, Photo, Moment } from "@/lib/db/schema";
 import { translations } from "@/lib/i18n/translations";
-import { GuestcamLogo } from "@/components/GuestcamLogo";
+import { CamLoveLogo } from "@/components/CamLoveLogo";
 import { bunnyDisplayUrl } from "@/lib/storage/bunny";
 import { ZipDownloader } from "@/components/dashboard/ZipDownloader";
 import { CoverPhotoSettings } from "@/components/dashboard/CoverPhotoSettings";
@@ -95,9 +95,9 @@ function driveBannerCopy(result: string, count?: string): { tone: "success" | "w
     case "empty":
       return { tone: "neutral", text: "Galerija še nima objavljenih fotografij za shranjevanje v Google Drive." };
     case "notconfigured":
-      return { tone: "error", text: "Shranjevanje v Google Drive trenutno ni na voljo. Kontaktirajte nas na info@guestcam.si." };
+      return { tone: "error", text: "Shranjevanje v Google Drive trenutno ni na voljo. Kontaktirajte nas na info@camlove.me." };
     default:
-      return { tone: "error", text: "Prišlo je do napake pri shranjevanju v Google Drive. Poskusite znova ali nas kontaktirajte na info@guestcam.si." };
+      return { tone: "error", text: "Prišlo je do napake pri shranjevanju v Google Drive. Poskusite znova ali nas kontaktirajte na info@camlove.me." };
   }
 }
 
@@ -491,7 +491,7 @@ export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activ
         {/* Logo — links back to the gallery list */}
         <div className="px-5 py-5">
           <Link href="/dashboard">
-            <GuestcamLogo size="sm" showMark={true} />
+            <CamLoveLogo size="sm" showMark={true} />
           </Link>
         </div>
 

@@ -6,7 +6,7 @@
   "translationKey": "wedding-photo-sharing-no-app",
   "publishedAt": "2026-06-21",
   "updatedAt": "2026-06-21",
-  "author": "Guestcam Team",
+  "author": "CamLove Team",
   "category": "vodnik",
   "readingTime": 7,
   "tags": [
@@ -14,7 +14,7 @@
     "no app",
     "QR code",
     "wedding photos",
-    "Guestcam"
+    "CamLove"
   ],
   "tldr": "Guests scan a QR code with their phone camera and upload photos straight from the browser — no app download, no sign-up.",
   "coverImage": "https://images.unsplash.com/photo-1606216794074-735e91aa2c92?w=1600&h=900&fit=crop&q=80&auto=format",
@@ -28,7 +28,7 @@
       "type": "stat",
       "value": "67 %",
       "label": "of guests abandon sharing their photos if an app has to be downloaded first",
-      "source": "Guestcam internal data, 2025"
+      "source": "CamLove internal data, 2025"
     },
     {
       "type": "h2",
@@ -91,7 +91,7 @@
       "headers": [
         "Criterion",
         "App required",
-        "No app (Guestcam)"
+        "No app (CamLove)"
       ],
       "rows": [
         [
@@ -149,12 +149,12 @@
     },
     {
       "type": "p",
-      "text": "Guestcam is a free platform built on exactly this principle — no app for guests, no sign-up, no technical fuss. Here is the setup, in under five minutes:"
+      "text": "CamLove is a free platform built on exactly this principle — no app for guests, no sign-up, no technical fuss. Here is the setup, in under five minutes:"
     },
     {
       "type": "ol",
       "items": [
-        "Go to guestcam.si/en and click “Create gallery”.",
+        "Go to camlove.me/en and click “Create gallery”.",
         "Enter the couple's names and the wedding date.",
         "Download the QR code (a print-ready PDF).",
         "Print table cards, or one large poster for the entrance.",
@@ -194,7 +194,7 @@
     },
     {
       "type": "p",
-      "text": "The gallery stays private, reachable only by you and the guests holding the QR code. You can download every photo at original resolution — Guestcam never compresses or alters the images. The Premium plan includes:"
+      "text": "The gallery stays private, reachable only by you and the guests holding the QR code. You can download every photo at original resolution — CamLove never compresses or alters the images. The Premium plan includes:"
     },
     {
       "type": "ul",
@@ -233,7 +233,7 @@
     {
       "type": "faq",
       "q": "Is the gallery private?",
-      "a": "Yes. Only people with your QR code or the direct link can reach it. Guestcam never publishes the photos or uses them for marketing."
+      "a": "Yes. Only people with your QR code or the direct link can reach it. CamLove never publishes the photos or uses them for marketing."
     },
     {
       "type": "faq",

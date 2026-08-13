@@ -6,7 +6,7 @@
   "translationKey": "guests-forget-to-share",
   "publishedAt": "2026-05-22",
   "updatedAt": "2026-07-07",
-  "author": "Guestcam Team",
+  "author": "CamLove Team",
   "category": "nasvet",
   "readingTime": 8,
   "tags": [
@@ -32,7 +32,7 @@
       "type": "stat",
       "value": "95 %",
       "label": "fotografija koje gosti snime na venčanju nikada ne stigne do mladenaca",
-      "source": "interna Guestcam analiza, 2025"
+      "source": "interna CamLove analiza, 2025"
     },
     {
       "type": "image",
@@ -122,7 +122,7 @@
         "Zamolite voditelja ili DJ-a da galeriju pomene dva puta: posle večere i pre prvog plesa.",
         "Testirajte kod pre venčanja — sami skenirajte i otpremite probnu fotografiju.",
         "Uključite live prikaz (foto zid) — kada gosti vide da se fotografije pojavljuju na platnu, i ostali požele da učestvuju.",
-        "Dan posle venčanja pošaljite gostima link — Guestcam to uradi automatski."
+        "Dan posle venčanja pošaljite gostima link — CamLove to uradi automatski."
       ]
     },
     {
@@ -171,7 +171,7 @@
     {
       "type": "faq",
       "q": "Da li fotografije gube na kvalitetu?",
-      "a": "Ne. Za razliku od WhatsAppa, koji fotografije kompresuje i do 70 %, Guestcam čuva pun original — i fotografije i video zapise. Posle venčanja sve preuzmete u ZIP arhivi jednim klikom."
+      "a": "Ne. Za razliku od WhatsAppa, koji fotografije kompresuje i do 70 %, CamLove čuva pun original — i fotografije i video zapise. Posle venčanja sve preuzmete u ZIP arhivi jednim klikom."
     }
   ],
   "coverImage": "https://images.unsplash.com/photo-1519741497674-611481863552?w=1600&h=900&fit=crop&q=80&auto=format",

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { GuestcamLogo } from "@/components/GuestcamLogo";
+import { CamLoveLogo } from "@/components/CamLoveLogo";
 
 type Lang = "sl" | "hr" | "sr" | "de" | "en" | "es";
 
@@ -154,7 +154,7 @@ export function SeoFooter({ lang }: { lang: Lang }) {
           {/* Brand */}
           <div className="col-span-2 md:col-span-4 lg:col-span-1">
             <div className="mb-3">
-              <GuestcamLogo size="sm" showMark={true} variant="onDark" />
+              <CamLoveLogo size="sm" showMark={true} variant="onDark" />
             </div>
             <p className="text-gray-400 text-xs leading-relaxed mb-5">{t.brandDesc}</p>
             <div className="flex items-center gap-3">

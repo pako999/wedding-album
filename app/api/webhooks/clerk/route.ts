@@ -12,7 +12,7 @@ export const dynamic = "force-dynamic";
  * the team gets a Telegram ping when someone signs up.
  *
  * Configure in Clerk dashboard → Webhooks → "Add Endpoint":
- *   URL:       https://www.guestcam.si/api/webhooks/clerk
+ *   URL:       https://www.camlove.me/api/webhooks/clerk
  *              ^^^ MUST be the www host. The bare domain 307-redirects
  *              to www on Vercel, and Svix (Clerk's deliverer) treats
  *              3xx as a FAILED delivery — it does not follow redirects.

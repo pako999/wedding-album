@@ -2,7 +2,7 @@ import { SITE_URL } from "@/lib/urls";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { ALTERNATIVES_HREFLANG, LanguageSwitcher } from "@/components/LanguageSwitcher";
-import { GuestcamLogo } from "@/components/GuestcamLogo";
+import { CamLoveLogo } from "@/components/CamLoveLogo";
 import { SeoFooter } from "@/components/SeoFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { OG_IMAGE_URL, ogImage } from "@/lib/og";
@@ -10,7 +10,7 @@ import { OG_IMAGE_URL, ogImage } from "@/lib/og";
 export const metadata: Metadata = {
   title: "Best Wedding Photo Sharing App Alternatives 2025",
   description:
-    "Guestcam vs Google Photos vs WhatsApp vs Dropbox vs HoneyCam. Find the right wedding photo sharing app for your day — honest side-by-side.",
+    "CamLove vs Google Photos vs WhatsApp vs Dropbox vs HoneyCam. Find the right wedding photo sharing app for your day — honest side-by-side.",
   openGraph: {
     url: `${SITE_URL}/en/alternatives`,
     title: "Best Wedding Photo Sharing App Alternatives 2025",
@@ -52,7 +52,7 @@ function SiteFooter() {
           <Link href="/terms" className="hover:text-white transition-colors">
             Terms
           </Link>
-          <a href="mailto:hello@guestcam.me" className="hover:text-white transition-colors">
+          <a href="mailto:info@camlove.me" className="hover:text-white transition-colors">
             Contact
           </a>
         </div>
@@ -169,7 +169,7 @@ export default function AlternativesPage() {
               <thead>
                 <tr style={{ background: "#0F1729" }}>
                   <th className="p-4 text-white font-semibold">Feature</th>
-                  <th className="p-4 text-center" style={{ color: "#C9820A", fontWeight: 700 }}>Guestcam</th>
+                  <th className="p-4 text-center" style={{ color: "#C9820A", fontWeight: 700 }}>CamLove</th>
                   <th className="p-4 text-center text-gray-300 font-medium">Google Photos</th>
                   <th className="p-4 text-center text-gray-300 font-medium">WhatsApp</th>
                   <th className="p-4 text-center text-gray-300 font-medium">Dropbox</th>
@@ -257,14 +257,14 @@ export default function AlternativesPage() {
             Detailed breakdown of each option
           </h2>
 
-          {/* Guestcam */}
+          {/* CamLove */}
           <div className="bg-white rounded-3xl border-2 p-7 shadow-sm" style={{ borderColor: "#C9820A" }}>
             <div className="flex items-start justify-between gap-4 mb-4">
               <div>
                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold mb-2" style={{ background: "rgba(255,201,77,0.1)", color: "#C9820A" }}>
                   Our pick
                 </div>
-                <h3 className="font-serif text-2xl font-bold text-[#0F1729]">Guestcam</h3>
+                <h3 className="font-serif text-2xl font-bold text-[#0F1729]">CamLove</h3>
                 <p className="text-sm text-gray-500">Purpose-built wedding photo sharing with QR code</p>
               </div>
               <div className="text-right shrink-0">
@@ -273,7 +273,7 @@ export default function AlternativesPage() {
               </div>
             </div>
             <p className="text-gray-600 leading-relaxed mb-5">
-              Guestcam is the only solution on this list that was designed
+              CamLove is the only solution on this list that was designed
               specifically for weddings and similar events. The entire flow —
               from creating the gallery to downloading all photos — is built
               around real wedding scenarios.
@@ -558,11 +558,11 @@ export default function AlternativesPage() {
             ))}
           </div>
           <p className="text-gray-600 leading-relaxed">
-            Guestcam was built from day one to solve these exact problems. No
+            CamLove was built from day one to solve these exact problems. No
             app download. No login for guests. Full quality. QR code on the table.
             One-click ZIP download after. If you want every guest to be able to
             contribute — from the tech-savvy nephew to grandma with her old
-            Android — Guestcam is the right tool for the job.
+            Android — CamLove is the right tool for the job.
           </p>
         </section>
 

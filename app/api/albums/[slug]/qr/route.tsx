@@ -77,7 +77,7 @@ async function renderDesignedCard(opts: {
           }}
         >
           <div style={{ display: "flex", fontSize: 30, fontWeight: 700, letterSpacing: 6, color: "#C9820A" }}>
-            GUESTCAM
+            CAMLOVE
           </div>
           <div style={{ display: "flex", marginTop: 46, fontSize: 58, fontWeight: 700, color: "#0F1729", textAlign: "center" }}>
             {opts.coupleName}

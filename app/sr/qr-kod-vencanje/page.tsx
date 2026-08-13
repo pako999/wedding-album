@@ -2,7 +2,7 @@ import { SITE_URL } from "@/lib/urls";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { GUIDE_HREFLANG, LanguageSwitcher } from "@/components/LanguageSwitcher";
-import { GuestcamLogo } from "@/components/GuestcamLogo";
+import { CamLoveLogo } from "@/components/CamLoveLogo";
 import { SeoFooter } from "@/components/SeoFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { OG_IMAGE_URL, ogImage } from "@/lib/og";
@@ -45,12 +45,12 @@ const articleSchema = {
   "@type": "Article",
   headline: "QR kod za venčanje — Potpuni vodič 2025",
   description:
-    "Sve što treba da znate o QR kodu za venčanje: kako funkcioniše, zašto vam treba i kako ga za 2 minuta postavite sa Guestcam.",
+    "Sve što treba da znate o QR kodu za venčanje: kako funkcioniše, zašto vam treba i kako ga za 2 minuta postavite sa CamLove.",
   inLanguage: "sr-RS",
-  author: { "@type": "Organization", name: "Guestcam" },
+  author: { "@type": "Organization", name: "CamLove" },
   publisher: {
     "@type": "Organization",
-    name: "Guestcam",
+    name: "CamLove",
     logo: `${SITE_URL}/icon-512.png`,
   },
   mainEntityOfPage: `${SITE_URL}/sr/qr-kod-vencanje`,
@@ -66,7 +66,7 @@ function SiteFooter() {
           <Link href="/privacy" className="hover:text-white transition-colors">Privatnost</Link>
           <Link href="/terms" className="hover:text-white transition-colors">Uslovi</Link>
           <Link href="/cookies" className="hover:text-white transition-colors">Kolačići</Link>
-          <a href="mailto:info@guestcam.si" className="hover:text-white transition-colors">Kontakt</a>
+          <a href="mailto:info@camlove.me" className="hover:text-white transition-colors">Kontakt</a>
         </div>
       </div>
     </footer>
@@ -234,16 +234,16 @@ export default function QrKodVencanjePage() {
         <section className="mb-10 -mx-6 px-6 py-12 bg-[#FFF9EC]">
           <div className="max-w-3xl mx-auto">
             <h2 className="font-serif text-2xl font-bold text-[#0F1729] mb-4">
-              Kako podesiti QR kod za venčanje sa Guestcam — korak po korak
+              Kako podesiti QR kod za venčanje sa CamLove — korak po korak
             </h2>
             <p className="text-gray-600 leading-relaxed mb-6">
-              Sa Guestcam-om je proces brz i intuitivan. Pratite ove korake:
+              Sa platformom CamLove je proces brz i intuitivan. Pratite ove korake:
             </p>
             <div className="space-y-4">
               {[
-                { step: "01", title: "Napravite besplatan nalog", desc: "Posetite Guestcam i kliknite na »Napravi galeriju besplatno«. Unesite imejl i lozinku — postupak traje manje od minuta." },
+                { step: "01", title: "Napravite besplatan nalog", desc: "Posetite CamLove i kliknite na »Napravi galeriju besplatno«. Unesite imejl i lozinku — postupak traje manje od minuta." },
                 { step: "02", title: "Podesite galeriju", desc: "Unesite ime para (npr. »Ana i Marko«), datum venčanja i mesto. Možete da izaberete pozadinsku fotografiju, boju teme i jezik galerije." },
-                { step: "03", title: "Izaberite šablon za štampu", desc: "Guestcam nudi 8 elegantnih šablona za QR kartice — od klasičnih do botaničkih i skandinavskih. Svaki šablon se automatski popunjava vašim imenom i datumom." },
+                { step: "03", title: "Izaberite šablon za štampu", desc: "CamLove nudi 8 elegantnih šablona za QR kartice — od klasičnih do botaničkih i skandinavskih. Svaki šablon se automatski popunjava vašim imenom i datumom." },
                 { step: "04", title: "Preuzmite i odštampajte", desc: "Šablon preuzimate kao PDF visoke rezolucije. Pošaljite ga lokalnoj štampariji ili odštampajte sami. Preporučujemo karton 300 g/m² za najbolji izgled." },
                 { step: "05", title: "Postavite kartice na venčanju", desc: "Kartice rasporedite po stolovima, postavite na stalke pored šanka, dodajte ih uz pozivnice ili okačite na panoe. Preporučujemo bar jednu karticu po stolu." },
                 { step: "06", title: "Gosti skeniraju i otpremaju", desc: "Gosti telefonom skeniraju QR kod i odmah vide obrazac za otpremanje fotografija. Nema aplikacije, nema registracije — samo skeniranje i otpremanje." },
@@ -298,7 +298,7 @@ export default function QrKodVencanjePage() {
             {[
               {
                 q: "Da li je QR kod za venčanje zaista besplatan?",
-                a: "Sa Guestcam-om je pravljenje galerije i QR koda besplatno zauvek (do određenih ograničenja). Za veća venčanja postoje plaćeni paketi sa više fotografija i naprednim funkcijama.",
+                a: "Sa platformom CamLove je pravljenje galerije i QR koda besplatno zauvek (do određenih ograničenja). Za veća venčanja postoje plaćeni paketi sa više fotografija i naprednim funkcijama.",
               },
               {
                 q: "Da li gosti moraju da preuzmu aplikaciju?",
@@ -306,7 +306,7 @@ export default function QrKodVencanjePage() {
               },
               {
                 q: "U kom kvalitetu se čuvaju fotografije?",
-                a: "U punoj originalnoj rezoluciji. Guestcam ne kompresuje i ne smanjuje fotografije. Dobićete tačno ono što je gost snimio — spremno za štampu.",
+                a: "U punoj originalnoj rezoluciji. CamLove ne kompresuje i ne smanjuje fotografije. Dobićete tačno ono što je gost snimio — spremno za štampu.",
               },
               {
                 q: "Šta se dešava sa fotografijama posle venčanja?",

@@ -88,7 +88,7 @@ export function SaveToPhotosButton({ albumSlug, className }: Props) {
     try {
       await navigator.share({
         files,
-        title: `Guestcam — ${files.length === 1 ? "1 datoteka" : `${files.length} datotek`}`,
+        title: `CamLove — ${files.length === 1 ? "1 datoteka" : `${files.length} datotek`}`,
       });
     } catch (err) {
       // User cancelled the share-sheet — that's not an error per se,

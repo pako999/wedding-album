@@ -10,7 +10,7 @@ import { OG_IMAGE_URL, ogImage } from "@/lib/og";
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
-  title: "Blog — Guestcam",
+  title: "Blog — CamLove",
   description: "Nasveti, vodniki in primerjave za zbiranje fotografij gostov na porokah, rojstnih dneh in dogodkih.",
   alternates: {
     canonical: `${SITE_URL}/blog`,
@@ -27,13 +27,13 @@ export const metadata: Metadata = {
   openGraph: {
     url: `${SITE_URL}/blog`,
     type: "website",
-    title: "Blog — Guestcam",
+    title: "Blog — CamLove",
     description: "Nasveti, vodniki in primerjave za zbiranje fotografij gostov.",
-    images: [ogImage("Guestcam Blog")],
+    images: [ogImage("CamLove Blog")],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Blog — Guestcam",
+    title: "Blog — CamLove",
     description: "Nasveti, vodniki in primerjave za zbiranje fotografij gostov.",
     images: [OG_IMAGE_URL],
   },

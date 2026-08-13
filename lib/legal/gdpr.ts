@@ -7,17 +7,17 @@ export const gdprDoc: Record<LangCode, LegalDoc> = {
     eyebrow: "Pravni dokument",
     lastUpdated: "Zadnja posodobitev: 1. maj 2026 · Sport Group d.o.o.",
     intro:
-      "Ta politika zasebnosti pojasnjuje, kako Guestcam obdeluje osebne podatke pri uporabi spletne platforme Guestcam, ki organizatorjem dogodkov omogoča ustvarjanje zasebnih galerij za nalaganje, ogled in prenos fotografij ter videov z dogodkov.",
+      "Ta politika zasebnosti pojasnjuje, kako CamLove obdeluje osebne podatke pri uporabi spletne platforme CamLove, ki organizatorjem dogodkov omogoča ustvarjanje zasebnih galerij za nalaganje, ogled in prenos fotografij ter videov z dogodkov.",
     sections: [
       { title: "1. Kdo smo", blocks: [
-        { type: "p", text: "Guestcam je spletna storitev za zasebno zbiranje fotografij in videov z dogodkov prek QR kode ali zasebne povezave." },
-        { type: "contactCard", lines: ["Upravljavec platforme:", "Sport Group d.o.o.", "Osojnikova 4a", "2000 Maribor", "Slovenija", "E-pošta: info@guestcam.si"] },
-        { type: "p", text: "Za vprašanja glede zasebnosti nas lahko kontaktirate na: info@guestcam.si" },
+        { type: "p", text: "CamLove je spletna storitev za zasebno zbiranje fotografij in videov z dogodkov prek QR kode ali zasebne povezave." },
+        { type: "contactCard", lines: ["Upravljavec platforme:", "Sport Group d.o.o.", "Osojnikova 4a", "2000 Maribor", "Slovenija", "E-pošta: info@camlove.me"] },
+        { type: "p", text: "Za vprašanja glede zasebnosti nas lahko kontaktirate na: info@camlove.me" },
       ] },
-      { title: "2. Vloga Guestcam in organizatorja dogodka", blocks: [
-        { type: "p", text: "Pri uporabi Guestcam obstajata dve različni vlogi." },
-        { type: "p", text: "Za podatke, ki jih obdelujemo za upravljanje platforme, naročila, plačila, uporabniške račune, podporo in komunikacijo, je Guestcam praviloma upravljavec osebnih podatkov." },
-        { type: "p", text: "Za fotografije, videe in drugo vsebino, ki jo gostje naložijo v galerijo določenega dogodka, je praviloma upravljavec organizator dogodka. Organizator odloča, zakaj se galerija uporablja, kdo ima dostop, koliko časa bo galerija aktivna in kako bo goste obvestil o obdelavi. Guestcam v tem primeru deluje kot obdelovalec, ki zagotavlja tehnično platformo za nalaganje, shranjevanje, prikaz in prenos vsebin po navodilih organizatorja." },
+      { title: "2. Vloga CamLove in organizatorja dogodka", blocks: [
+        { type: "p", text: "Pri uporabi CamLove obstajata dve različni vlogi." },
+        { type: "p", text: "Za podatke, ki jih obdelujemo za upravljanje platforme, naročila, plačila, uporabniške račune, podporo in komunikacijo, je CamLove praviloma upravljavec osebnih podatkov." },
+        { type: "p", text: "Za fotografije, videe in drugo vsebino, ki jo gostje naložijo v galerijo določenega dogodka, je praviloma upravljavec organizator dogodka. Organizator odloča, zakaj se galerija uporablja, kdo ima dostop, koliko časa bo galerija aktivna in kako bo goste obvestil o obdelavi. CamLove v tem primeru deluje kot obdelovalec, ki zagotavlja tehnično platformo za nalaganje, shranjevanje, prikaz in prenos vsebin po navodilih organizatorja." },
       ] },
       { title: "3. Katere osebne podatke obdelujemo", blocks: [
         { type: "p", text: "Obdelujemo lahko naslednje vrste podatkov:" },
@@ -52,17 +52,17 @@ export const gdprDoc: Record<LangCode, LegalDoc> = {
           "privolitev posameznika;",
           "zakoniti interes, na primer zagotavljanje varnosti, preprečevanje zlorab in izboljšanje storitve;",
           "izpolnjevanje zakonskih obveznosti, na primer računovodske in davčne obveznosti;",
-          "navodila organizatorja dogodka, kadar Guestcam deluje kot obdelovalec.",
+          "navodila organizatorja dogodka, kadar CamLove deluje kot obdelovalec.",
         ] },
-        { type: "p", text: "Organizator dogodka je odgovoren, da za uporabo fotografij in videov v galeriji zagotovi ustrezno pravno podlago in da goste jasno obvesti o uporabi Guestcam galerije." },
+        { type: "p", text: "Organizator dogodka je odgovoren, da za uporabo fotografij in videov v galeriji zagotovi ustrezno pravno podlago in da goste jasno obvesti o uporabi CamLove galerije." },
       ] },
       { title: "6. Fotografije in videi dogodkov", blocks: [
-        { type: "p", text: "Guestcam omogoča organizatorjem dogodkov, da ustvarijo zasebno spletno galerijo, v katero lahko gostje prostovoljno nalagajo fotografije in videe z dogodka." },
-        { type: "p", text: "Guestcam ni organizator dogodka in ne odloča, katere fotografije ali videi bodo naloženi. Organizator dogodka je odgovoren za obveščanje gostov in drugih udeležencev o uporabi galerije, namenu obdelave, obdobju hrambe in njihovih pravicah." },
+        { type: "p", text: "CamLove omogoča organizatorjem dogodkov, da ustvarijo zasebno spletno galerijo, v katero lahko gostje prostovoljno nalagajo fotografije in videe z dogodka." },
+        { type: "p", text: "CamLove ni organizator dogodka in ne odloča, katere fotografije ali videi bodo naloženi. Organizator dogodka je odgovoren za obveščanje gostov in drugih udeležencev o uporabi galerije, namenu obdelave, obdobju hrambe in njihovih pravicah." },
         { type: "p", text: "Gostje naj ne nalagajo fotografij ali videov oseb, ki očitno ne želijo biti fotografirane ali prikazane v galeriji. Posebna previdnost je potrebna pri fotografijah otrok, zaposlenih, občutljivih situacijah ali vsebinah, ki bi lahko razkrivale zdravstvene podatke, verska prepričanja ali druge občutljive informacije." },
       ] },
       { title: "7. Otroci", blocks: [
-        { type: "p", text: "Guestcam ni namenjen neposredni uporabi otrok brez nadzora odrasle osebe. Če dogodek vključuje otroke, mora organizator zagotoviti ustrezno pravno podlago in, kadar je potrebno, soglasje staršev ali zakonitih zastopnikov." },
+        { type: "p", text: "CamLove ni namenjen neposredni uporabi otrok brez nadzora odrasle osebe. Če dogodek vključuje otroke, mora organizator zagotoviti ustrezno pravno podlago in, kadar je potrebno, soglasje staršev ali zakonitih zastopnikov." },
         { type: "p", text: "Če prejmete zahtevo za izbris fotografije otroka, jo bomo obravnavali prednostno v sodelovanju z organizatorjem dogodka." },
       ] },
       { title: "8. Dostop do galerije", blocks: [
@@ -107,19 +107,19 @@ export const gdprDoc: Record<LangCode, LegalDoc> = {
           "pravica do pritožbe pri nadzornem organu.",
         ] },
         { type: "p", text: "V Sloveniji je nadzorni organ Informacijski pooblaščenec Republike Slovenije." },
-        { type: "p", text: "Če želite odstranitev fotografije ali videa iz galerije, se najprej obrnite na organizatorja dogodka. Lahko se obrnete tudi na Guestcam podporo na info@guestcam.si, mi pa bomo zahtevo obravnavali v razumnem roku in po potrebi v sodelovanju z organizatorjem." },
+        { type: "p", text: "Če želite odstranitev fotografije ali videa iz galerije, se najprej obrnite na organizatorja dogodka. Lahko se obrnete tudi na CamLove podporo na info@camlove.me, mi pa bomo zahtevo obravnavali v razumnem roku in po potrebi v sodelovanju z organizatorjem." },
       ] },
       { title: "14. Piškotki", blocks: [
-        { type: "p", text: "Guestcam lahko uporablja nujne piškotke za delovanje spletne strani, varnost, prijavo in osnovne funkcije platforme." },
+        { type: "p", text: "CamLove lahko uporablja nujne piškotke za delovanje spletne strani, varnost, prijavo in osnovne funkcije platforme." },
         { type: "p", text: "Če uporabljamo analitične ali marketinške piškotke, jih uporabimo samo v skladu z veljavno zakonodajo in, kadar je potrebno, po pridobitvi privolitve." },
       ] },
       { title: "15. Odgovornost organizatorja", blocks: [
-        { type: "p", text: "Organizator dogodka potrjuje, da bo goste in udeležence dogodka obvestil o uporabi Guestcam galerije, zagotovil ustrezno pravno podlago za obdelavo fotografij in videov ter odgovarjal na zahteve udeležencev v zvezi z vsebino galerije." },
-        { type: "p", text: "Organizator je odgovoren za vsebino, ki jo deli, prenaša, objavlja ali uporablja izven platforme Guestcam." },
+        { type: "p", text: "Organizator dogodka potrjuje, da bo goste in udeležence dogodka obvestil o uporabi CamLove galerije, zagotovil ustrezno pravno podlago za obdelavo fotografij in videov ter odgovarjal na zahteve udeležencev v zvezi z vsebino galerije." },
+        { type: "p", text: "Organizator je odgovoren za vsebino, ki jo deli, prenaša, objavlja ali uporablja izven platforme CamLove." },
       ] },
       { title: "16. Kontakt", blocks: [
         { type: "p", text: "Za vprašanja glede zasebnosti, varstva osebnih podatkov ali zahteve za izbris nas kontaktirajte:" },
-        { type: "contactCard", lines: ["Guestcam", "E-pošta: info@guestcam.si", "Upravljavec platforme: Sport Group d.o.o., Osojnikova 4a, 2000 Maribor, Slovenija"] },
+        { type: "contactCard", lines: ["CamLove", "E-pošta: info@camlove.me", "Upravljavec platforme: Sport Group d.o.o., Osojnikova 4a, 2000 Maribor, Slovenija"] },
       ] },
     ],
   },
@@ -128,17 +128,17 @@ export const gdprDoc: Record<LangCode, LegalDoc> = {
     eyebrow: "Pravni dokument",
     lastUpdated: "Zadnje ažuriranje: 1. svibnja 2026 · Sport Group d.o.o.",
     intro:
-      "Ova Politika privatnosti objašnjava kako Guestcam obrađuje osobne podatke pri korištenju online platforme Guestcam, koja organizatorima događaja omogućuje stvaranje privatnih galerija za prijenos, pregled i preuzimanje fotografija i videozapisa s događaja.",
+      "Ova Politika privatnosti objašnjava kako CamLove obrađuje osobne podatke pri korištenju online platforme CamLove, koja organizatorima događaja omogućuje stvaranje privatnih galerija za prijenos, pregled i preuzimanje fotografija i videozapisa s događaja.",
     sections: [
       { title: "1. Tko smo", blocks: [
-        { type: "p", text: "Guestcam je online usluga za privatno prikupljanje fotografija i videozapisa s događaja putem QR koda ili privatne poveznice." },
-        { type: "contactCard", lines: ["Operator platforme:", "Sport Group d.o.o.", "Osojnikova 4a", "2000 Maribor", "Slovenija", "E-mail: info@guestcam.si"] },
-        { type: "p", text: "Za pitanja vezana uz privatnost kontaktirajte nas na: info@guestcam.si" },
+        { type: "p", text: "CamLove je online usluga za privatno prikupljanje fotografija i videozapisa s događaja putem QR koda ili privatne poveznice." },
+        { type: "contactCard", lines: ["Operator platforme:", "Sport Group d.o.o.", "Osojnikova 4a", "2000 Maribor", "Slovenija", "E-mail: info@camlove.me"] },
+        { type: "p", text: "Za pitanja vezana uz privatnost kontaktirajte nas na: info@camlove.me" },
       ] },
-      { title: "2. Uloga Guestcama i organizatora događaja", blocks: [
-        { type: "p", text: "Pri korištenju Guestcama postoje dvije različite uloge." },
-        { type: "p", text: "Za podatke koji se obrađuju za upravljanje platformom, narudžbe, plaćanja, korisničke račune, podršku i komunikaciju, Guestcam u pravilu djeluje kao voditelj obrade." },
-        { type: "p", text: "Za fotografije, videozapise i drugi sadržaj koji gosti prenesu u galeriju određenog događaja, organizator događaja u pravilu je voditelj obrade. Organizator odlučuje zašto se galerija koristi, tko ima pristup, koliko dugo galerija ostaje aktivna i kako će gosti biti informirani. Guestcam u tom slučaju djeluje kao izvršitelj obrade, pružajući tehničku platformu za prijenos, pohranu, prikaz i preuzimanje sadržaja prema uputama organizatora." },
+      { title: "2. Uloga platforme CamLove i organizatora događaja", blocks: [
+        { type: "p", text: "Pri korištenju platforme CamLove postoje dvije različite uloge." },
+        { type: "p", text: "Za podatke koji se obrađuju za upravljanje platformom, narudžbe, plaćanja, korisničke račune, podršku i komunikaciju, CamLove u pravilu djeluje kao voditelj obrade." },
+        { type: "p", text: "Za fotografije, videozapise i drugi sadržaj koji gosti prenesu u galeriju određenog događaja, organizator događaja u pravilu je voditelj obrade. Organizator odlučuje zašto se galerija koristi, tko ima pristup, koliko dugo galerija ostaje aktivna i kako će gosti biti informirani. CamLove u tom slučaju djeluje kao izvršitelj obrade, pružajući tehničku platformu za prijenos, pohranu, prikaz i preuzimanje sadržaja prema uputama organizatora." },
       ] },
       { title: "3. Koje osobne podatke obrađujemo", blocks: [
         { type: "p", text: "Možemo obrađivati sljedeće vrste podataka:" },
@@ -173,17 +173,17 @@ export const gdprDoc: Record<LangCode, LegalDoc> = {
           "privola;",
           "legitimni interes, primjerice sigurnost, sprječavanje zloupotrebe i poboljšanje usluge;",
           "ispunjavanje zakonskih obveza, primjerice porezne i računovodstvene obveze;",
-          "upute organizatora događaja, kada Guestcam djeluje kao izvršitelj obrade.",
+          "upute organizatora događaja, kada CamLove djeluje kao izvršitelj obrade.",
         ] },
-        { type: "p", text: "Organizator događaja odgovoran je osigurati odgovarajuću pravnu osnovu za korištenje fotografija i videozapisa u galeriji te jasno informirati goste o korištenju Guestcam galerije." },
+        { type: "p", text: "Organizator događaja odgovoran je osigurati odgovarajuću pravnu osnovu za korištenje fotografija i videozapisa u galeriji te jasno informirati goste o korištenju CamLove galerije." },
       ] },
       { title: "6. Fotografije i videozapisi događaja", blocks: [
-        { type: "p", text: "Guestcam omogućuje organizatorima događaja stvaranje privatnih online galerija u koje gosti mogu dobrovoljno prenositi fotografije i videozapise s događaja." },
-        { type: "p", text: "Guestcam nije organizator događaja i ne odlučuje koje će fotografije ili videozapisi biti preneseni. Organizator je odgovoran za informiranje gostiju i sudionika o galeriji, svrhama obrade, razdoblju pohrane i njihovim pravima." },
+        { type: "p", text: "CamLove omogućuje organizatorima događaja stvaranje privatnih online galerija u koje gosti mogu dobrovoljno prenositi fotografije i videozapise s događaja." },
+        { type: "p", text: "CamLove nije organizator događaja i ne odlučuje koje će fotografije ili videozapisi biti preneseni. Organizator je odgovoran za informiranje gostiju i sudionika o galeriji, svrhama obrade, razdoblju pohrane i njihovim pravima." },
         { type: "p", text: "Gosti ne bi trebali prenositi fotografije ili videozapise osoba koje očito ne žele biti fotografirane ili prikazane u galeriji. Poseban oprez potreban je kod fotografija djece, zaposlenika, osjetljivih situacija ili sadržaja koji može otkrivati zdravstvene podatke, vjerska uvjerenja ili druge osjetljive informacije." },
       ] },
       { title: "7. Djeca", blocks: [
-        { type: "p", text: "Guestcam nije namijenjen izravnoj uporabi djece bez nadzora odrasle osobe. Ako događaj uključuje djecu, organizator mora osigurati odgovarajuću pravnu osnovu i, gdje je potrebno, privolu roditelja ili skrbnika." },
+        { type: "p", text: "CamLove nije namijenjen izravnoj uporabi djece bez nadzora odrasle osobe. Ako događaj uključuje djecu, organizator mora osigurati odgovarajuću pravnu osnovu i, gdje je potrebno, privolu roditelja ili skrbnika." },
         { type: "p", text: "Zahtjevi za uklanjanje fotografija djece obrađivat će se prioritetno u suradnji s organizatorom događaja." },
       ] },
       { title: "8. Pristup galeriji", blocks: [
@@ -227,19 +227,19 @@ export const gdprDoc: Record<LangCode, LegalDoc> = {
           "pravo na povlačenje privole kada se obrada temelji na privoli;",
           "pravo na pritužbu nadzornom tijelu.",
         ] },
-        { type: "p", text: "Ako želite ukloniti fotografiju ili videozapis iz galerije, najprije kontaktirajte organizatora događaja. Možete kontaktirati i Guestcam podršku na info@guestcam.si, a zahtjev ćemo obraditi u razumnom roku, po potrebi u suradnji s organizatorom." },
+        { type: "p", text: "Ako želite ukloniti fotografiju ili videozapis iz galerije, najprije kontaktirajte organizatora događaja. Možete kontaktirati i CamLove podršku na info@camlove.me, a zahtjev ćemo obraditi u razumnom roku, po potrebi u suradnji s organizatorom." },
       ] },
       { title: "14. Kolačići", blocks: [
-        { type: "p", text: "Guestcam može koristiti nužne kolačiće za rad web stranice, sigurnost, prijavu i osnovne funkcije platforme." },
+        { type: "p", text: "CamLove može koristiti nužne kolačiće za rad web stranice, sigurnost, prijavu i osnovne funkcije platforme." },
         { type: "p", text: "Ako koristimo analitičke ili marketinške kolačiće, činimo to u skladu s važećim zakonima i, gdje je potrebno, nakon dobivanja privole." },
       ] },
       { title: "15. Odgovornost organizatora", blocks: [
-        { type: "p", text: "Organizator događaja potvrđuje da će informirati goste i sudionike o korištenju Guestcam galerije, osigurati odgovarajuću pravnu osnovu za obradu fotografija i videozapisa te odgovoriti na zahtjeve sudionika vezane uz sadržaj galerije." },
-        { type: "p", text: "Organizator je odgovoran za sav sadržaj koji dijeli, preuzima, objavljuje ili koristi izvan platforme Guestcam." },
+        { type: "p", text: "Organizator događaja potvrđuje da će informirati goste i sudionike o korištenju CamLove galerije, osigurati odgovarajuću pravnu osnovu za obradu fotografija i videozapisa te odgovoriti na zahtjeve sudionika vezane uz sadržaj galerije." },
+        { type: "p", text: "Organizator je odgovoran za sav sadržaj koji dijeli, preuzima, objavljuje ili koristi izvan platforme CamLove." },
       ] },
       { title: "16. Kontakt", blocks: [
         { type: "p", text: "Za pitanja o privatnosti, zahtjeve vezane uz zaštitu podataka ili zahtjeve za uklanjanje kontaktirajte nas:" },
-        { type: "contactCard", lines: ["Guestcam", "E-mail: info@guestcam.si", "Operator platforme: Sport Group d.o.o., Osojnikova 4a, 2000 Maribor, Slovenija"] },
+        { type: "contactCard", lines: ["CamLove", "E-mail: info@camlove.me", "Operator platforme: Sport Group d.o.o., Osojnikova 4a, 2000 Maribor, Slovenija"] },
       ] },
     ],
   },
@@ -248,17 +248,17 @@ export const gdprDoc: Record<LangCode, LegalDoc> = {
     eyebrow: "Pravni dokument",
     lastUpdated: "Poslednje ažuriranje: 1. maj 2026 · Sport Group d.o.o.",
     intro:
-      "Ova Politika privatnosti objašnjava kako Guestcam obrađuje lične podatke prilikom korišćenja online platforme Guestcam, koja organizatorima događaja omogućava kreiranje privatnih galerija za otpremanje, pregled i preuzimanje fotografija i video snimaka sa događaja.",
+      "Ova Politika privatnosti objašnjava kako CamLove obrađuje lične podatke prilikom korišćenja online platforme CamLove, koja organizatorima događaja omogućava kreiranje privatnih galerija za otpremanje, pregled i preuzimanje fotografija i video snimaka sa događaja.",
     sections: [
       { title: "1. Ko smo", blocks: [
-        { type: "p", text: "Guestcam je online usluga za privatno prikupljanje fotografija i video snimaka sa događaja putem QR koda ili privatnog linka." },
-        { type: "contactCard", lines: ["Operator platforme:", "Sport Group d.o.o.", "Osojnikova 4a", "2000 Maribor", "Slovenija", "E-mail: info@guestcam.si"] },
-        { type: "p", text: "Za pitanja u vezi sa privatnošću kontaktirajte nas na: info@guestcam.si" },
+        { type: "p", text: "CamLove je online usluga za privatno prikupljanje fotografija i video snimaka sa događaja putem QR koda ili privatnog linka." },
+        { type: "contactCard", lines: ["Operator platforme:", "Sport Group d.o.o.", "Osojnikova 4a", "2000 Maribor", "Slovenija", "E-mail: info@camlove.me"] },
+        { type: "p", text: "Za pitanja u vezi sa privatnošću kontaktirajte nas na: info@camlove.me" },
       ] },
-      { title: "2. Uloga Guestcama i organizatora događaja", blocks: [
-        { type: "p", text: "Pri korišćenju Guestcama postoje dve različite uloge." },
-        { type: "p", text: "Za podatke koji se obrađuju radi upravljanja platformom, narudžbi, plaćanja, korisničkih naloga, podrške i komunikacije, Guestcam po pravilu deluje kao rukovalac podacima." },
-        { type: "p", text: "Za fotografije, video snimke i drugi sadržaj koji gosti otpreme u galeriju određenog događaja, organizator događaja je po pravilu rukovalac podacima. Organizator odlučuje zašto se galerija koristi, ko ima pristup, koliko dugo ostaje aktivna i kako će gosti biti obavešteni. Guestcam u tom slučaju deluje kao obrađivač podataka, pružajući tehničku platformu za otpremanje, čuvanje, prikaz i preuzimanje sadržaja prema uputstvima organizatora." },
+      { title: "2. Uloga platforme CamLove i organizatora događaja", blocks: [
+        { type: "p", text: "Pri korišćenju platforme CamLove postoje dve različite uloge." },
+        { type: "p", text: "Za podatke koji se obrađuju radi upravljanja platformom, narudžbi, plaćanja, korisničkih naloga, podrške i komunikacije, CamLove po pravilu deluje kao rukovalac podacima." },
+        { type: "p", text: "Za fotografije, video snimke i drugi sadržaj koji gosti otpreme u galeriju određenog događaja, organizator događaja je po pravilu rukovalac podacima. Organizator odlučuje zašto se galerija koristi, ko ima pristup, koliko dugo ostaje aktivna i kako će gosti biti obavešteni. CamLove u tom slučaju deluje kao obrađivač podataka, pružajući tehničku platformu za otpremanje, čuvanje, prikaz i preuzimanje sadržaja prema uputstvima organizatora." },
       ] },
       { title: "3. Koje lične podatke obrađujemo", blocks: [
         { type: "p", text: "Možemo obrađivati sledeće vrste podataka:" },
@@ -293,17 +293,17 @@ export const gdprDoc: Record<LangCode, LegalDoc> = {
           "pristanak;",
           "legitimni interes, na primer bezbednost, sprečavanje zloupotrebe i poboljšanje usluge;",
           "ispunjavanje zakonskih obaveza, na primer poreskih i računovodstvenih obaveza;",
-          "uputstva organizatora događaja, kada Guestcam deluje kao obrađivač podataka.",
+          "uputstva organizatora događaja, kada CamLove deluje kao obrađivač podataka.",
         ] },
-        { type: "p", text: "Organizator događaja odgovoran je da obezbedi odgovarajući pravni osnov za korišćenje fotografija i video snimaka u galeriji i da jasno obavesti goste o korišćenju Guestcam galerije." },
+        { type: "p", text: "Organizator događaja odgovoran je da obezbedi odgovarajući pravni osnov za korišćenje fotografija i video snimaka u galeriji i da jasno obavesti goste o korišćenju CamLove galerije." },
       ] },
       { title: "6. Fotografije i video snimci događaja", blocks: [
-        { type: "p", text: "Guestcam omogućava organizatorima događaja da kreiraju privatne online galerije u koje gosti mogu dobrovoljno otpremati fotografije i video snimke sa događaja." },
-        { type: "p", text: "Guestcam nije organizator događaja i ne odlučuje koje će fotografije ili video snimci biti otpremljeni. Organizator je odgovoran za informisanje gostiju i učesnika o galeriji, svrhama obrade, periodu čuvanja i njihovim pravima." },
+        { type: "p", text: "CamLove omogućava organizatorima događaja da kreiraju privatne online galerije u koje gosti mogu dobrovoljno otpremati fotografije i video snimke sa događaja." },
+        { type: "p", text: "CamLove nije organizator događaja i ne odlučuje koje će fotografije ili video snimci biti otpremljeni. Organizator je odgovoran za informisanje gostiju i učesnika o galeriji, svrhama obrade, periodu čuvanja i njihovim pravima." },
         { type: "p", text: "Gosti ne bi trebalo da otpremaju fotografije ili video snimke osoba koje očigledno ne žele da budu fotografisane ili prikazane u galeriji. Poseban oprez potreban je kod fotografija dece, zaposlenih, osetljivih situacija ili sadržaja koji može otkriti zdravstvene podatke, verska uverenja ili druge osetljive informacije." },
       ] },
       { title: "7. Deca", blocks: [
-        { type: "p", text: "Guestcam nije namenjen direktnoj upotrebi od strane dece bez nadzora odrasle osobe. Ako događaj uključuje decu, organizator mora obezbediti odgovarajući pravni osnov i, gde je potrebno, pristanak roditelja ili staratelja." },
+        { type: "p", text: "CamLove nije namenjen direktnoj upotrebi od strane dece bez nadzora odrasle osobe. Ako događaj uključuje decu, organizator mora obezbediti odgovarajući pravni osnov i, gde je potrebno, pristanak roditelja ili staratelja." },
         { type: "p", text: "Zahtevi za uklanjanje fotografija dece biće obrađeni prioritetno u saradnji sa organizatorom događaja." },
       ] },
       { title: "8. Pristup galeriji", blocks: [
@@ -347,19 +347,19 @@ export const gdprDoc: Record<LangCode, LegalDoc> = {
           "pravo na povlačenje pristanka kada se obrada zasniva na pristanku;",
           "pravo na žalbu nadzornom organu.",
         ] },
-        { type: "p", text: "Ako želite uklanjanje fotografije ili video snimka iz galerije, najpre kontaktirajte organizatora događaja. Možete kontaktirati i Guestcam podršku na info@guestcam.si, a zahtev ćemo obraditi u razumnom roku, po potrebi u saradnji sa organizatorom." },
+        { type: "p", text: "Ako želite uklanjanje fotografije ili video snimka iz galerije, najpre kontaktirajte organizatora događaja. Možete kontaktirati i CamLove podršku na info@camlove.me, a zahtev ćemo obraditi u razumnom roku, po potrebi u saradnji sa organizatorom." },
       ] },
       { title: "14. Kolačići", blocks: [
-        { type: "p", text: "Guestcam može koristiti neophodne kolačiće za rad web stranice, bezbednost, prijavu i osnovne funkcije platforme." },
+        { type: "p", text: "CamLove može koristiti neophodne kolačiće za rad web stranice, bezbednost, prijavu i osnovne funkcije platforme." },
         { type: "p", text: "Ako koristimo analitičke ili marketinške kolačiće, to činimo u skladu sa važećim zakonima i, gde je potrebno, nakon dobijanja pristanka." },
       ] },
       { title: "15. Odgovornost organizatora", blocks: [
-        { type: "p", text: "Organizator događaja potvrđuje da će informisati goste i učesnike o korišćenju Guestcam galerije, obezbediti odgovarajući pravni osnov za obradu fotografija i video snimaka i odgovoriti na zahteve učesnika u vezi sa sadržajem galerije." },
-        { type: "p", text: "Organizator je odgovoran za sav sadržaj koji deli, preuzima, objavljuje ili koristi izvan Guestcam platforme." },
+        { type: "p", text: "Organizator događaja potvrđuje da će informisati goste i učesnike o korišćenju CamLove galerije, obezbediti odgovarajući pravni osnov za obradu fotografija i video snimaka i odgovoriti na zahteve učesnika u vezi sa sadržajem galerije." },
+        { type: "p", text: "Organizator je odgovoran za sav sadržaj koji deli, preuzima, objavljuje ili koristi izvan CamLove platforme." },
       ] },
       { title: "16. Kontakt", blocks: [
         { type: "p", text: "Za pitanja o privatnosti, zahteve u vezi sa zaštitom podataka ili zahteve za uklanjanje kontaktirajte nas:" },
-        { type: "contactCard", lines: ["Guestcam", "E-mail: info@guestcam.si", "Operator platforme: Sport Group d.o.o., Osojnikova 4a, 2000 Maribor, Slovenija"] },
+        { type: "contactCard", lines: ["CamLove", "E-mail: info@camlove.me", "Operator platforme: Sport Group d.o.o., Osojnikova 4a, 2000 Maribor, Slovenija"] },
       ] },
     ],
   },
@@ -368,17 +368,17 @@ export const gdprDoc: Record<LangCode, LegalDoc> = {
     eyebrow: "Rechtsdokument",
     lastUpdated: "Zuletzt aktualisiert: 1. Mai 2026 · Sport Group d.o.o.",
     intro:
-      "Diese Datenschutzerklärung erläutert, wie Guestcam personenbezogene Daten bei der Nutzung der Online-Plattform Guestcam verarbeitet. Guestcam ermöglicht Veranstaltern, private Galerien zum Hochladen, Anzeigen und Herunterladen von Fotos und Videos von Veranstaltungen zu erstellen.",
+      "Diese Datenschutzerklärung erläutert, wie CamLove personenbezogene Daten bei der Nutzung der Online-Plattform CamLove verarbeitet. CamLove ermöglicht Veranstaltern, private Galerien zum Hochladen, Anzeigen und Herunterladen von Fotos und Videos von Veranstaltungen zu erstellen.",
     sections: [
       { title: "1. Wer wir sind", blocks: [
-        { type: "p", text: "Guestcam ist ein Online-Dienst zur privaten Sammlung von Fotos und Videos von Veranstaltungen über einen QR-Code oder einen privaten Link." },
-        { type: "contactCard", lines: ["Plattformbetreiber:", "Sport Group d.o.o.", "Osojnikova 4a", "2000 Maribor", "Slowenien", "E-Mail: info@guestcam.si"] },
-        { type: "p", text: "Für Datenschutzfragen kontaktieren Sie uns bitte unter: info@guestcam.si" },
+        { type: "p", text: "CamLove ist ein Online-Dienst zur privaten Sammlung von Fotos und Videos von Veranstaltungen über einen QR-Code oder einen privaten Link." },
+        { type: "contactCard", lines: ["Plattformbetreiber:", "Sport Group d.o.o.", "Osojnikova 4a", "2000 Maribor", "Slowenien", "E-Mail: info@camlove.me"] },
+        { type: "p", text: "Für Datenschutzfragen kontaktieren Sie uns bitte unter: info@camlove.me" },
       ] },
-      { title: "2. Rolle von Guestcam und des Veranstalters", blocks: [
-        { type: "p", text: "Bei der Nutzung von Guestcam bestehen zwei unterschiedliche Rollen." },
-        { type: "p", text: "Für Daten, die zur Verwaltung der Plattform, Bestellungen, Zahlungen, Benutzerkonten, Support und Kommunikation verarbeitet werden, handelt Guestcam in der Regel als Verantwortlicher." },
-        { type: "p", text: "Für Fotos, Videos und andere Inhalte, die Gäste in eine bestimmte Veranstaltungsgalerie hochladen, ist in der Regel der Veranstalter der Verantwortliche. Der Veranstalter entscheidet, warum die Galerie genutzt wird, wer Zugriff erhält, wie lange sie aktiv bleibt und wie die Gäste informiert werden. Guestcam handelt in diesem Fall als Auftragsverarbeiter und stellt die technische Plattform für Upload, Speicherung, Anzeige und Download der Inhalte nach Weisung des Veranstalters bereit." },
+      { title: "2. Rolle von CamLove und des Veranstalters", blocks: [
+        { type: "p", text: "Bei der Nutzung von CamLove bestehen zwei unterschiedliche Rollen." },
+        { type: "p", text: "Für Daten, die zur Verwaltung der Plattform, Bestellungen, Zahlungen, Benutzerkonten, Support und Kommunikation verarbeitet werden, handelt CamLove in der Regel als Verantwortlicher." },
+        { type: "p", text: "Für Fotos, Videos und andere Inhalte, die Gäste in eine bestimmte Veranstaltungsgalerie hochladen, ist in der Regel der Veranstalter der Verantwortliche. Der Veranstalter entscheidet, warum die Galerie genutzt wird, wer Zugriff erhält, wie lange sie aktiv bleibt und wie die Gäste informiert werden. CamLove handelt in diesem Fall als Auftragsverarbeiter und stellt die technische Plattform für Upload, Speicherung, Anzeige und Download der Inhalte nach Weisung des Veranstalters bereit." },
       ] },
       { title: "3. Welche personenbezogenen Daten wir verarbeiten", blocks: [
         { type: "p", text: "Wir können folgende Datenarten verarbeiten:" },
@@ -413,17 +413,17 @@ export const gdprDoc: Record<LangCode, LegalDoc> = {
           "Einwilligung;",
           "berechtigtes Interesse, z. B. Sicherheit, Missbrauchsvermeidung und Verbesserung der Dienstleistung;",
           "Erfüllung gesetzlicher Pflichten, z. B. steuerliche und buchhalterische Pflichten;",
-          "Weisungen des Veranstalters, wenn Guestcam als Auftragsverarbeiter handelt.",
+          "Weisungen des Veranstalters, wenn CamLove als Auftragsverarbeiter handelt.",
         ] },
-        { type: "p", text: "Der Veranstalter ist dafür verantwortlich, eine geeignete Rechtsgrundlage für die Nutzung von Fotos und Videos in der Galerie sicherzustellen und Gäste klar über die Nutzung der Guestcam-Galerie zu informieren." },
+        { type: "p", text: "Der Veranstalter ist dafür verantwortlich, eine geeignete Rechtsgrundlage für die Nutzung von Fotos und Videos in der Galerie sicherzustellen und Gäste klar über die Nutzung der CamLove-Galerie zu informieren." },
       ] },
       { title: "6. Veranstaltungsfotos und Videos", blocks: [
-        { type: "p", text: "Guestcam ermöglicht Veranstaltern, private Online-Galerien zu erstellen, in die Gäste freiwillig Fotos und Videos der Veranstaltung hochladen können." },
-        { type: "p", text: "Guestcam ist nicht der Veranstalter und entscheidet nicht, welche Fotos oder Videos hochgeladen werden. Der Veranstalter ist dafür verantwortlich, Gäste und Teilnehmer über die Galerie, die Zwecke der Verarbeitung, die Speicherdauer und ihre Rechte zu informieren." },
+        { type: "p", text: "CamLove ermöglicht Veranstaltern, private Online-Galerien zu erstellen, in die Gäste freiwillig Fotos und Videos der Veranstaltung hochladen können." },
+        { type: "p", text: "CamLove ist nicht der Veranstalter und entscheidet nicht, welche Fotos oder Videos hochgeladen werden. Der Veranstalter ist dafür verantwortlich, Gäste und Teilnehmer über die Galerie, die Zwecke der Verarbeitung, die Speicherdauer und ihre Rechte zu informieren." },
         { type: "p", text: "Gäste sollten keine Fotos oder Videos von Personen hochladen, die offensichtlich nicht fotografiert oder in der Galerie gezeigt werden möchten. Besondere Vorsicht ist bei Fotos von Kindern, Mitarbeitern, sensiblen Situationen oder Inhalten geboten, die Gesundheitsdaten, religiöse Überzeugungen oder andere sensible Informationen offenlegen könnten." },
       ] },
       { title: "7. Kinder", blocks: [
-        { type: "p", text: "Guestcam ist nicht für die direkte Nutzung durch Kinder ohne Aufsicht eines Erwachsenen bestimmt. Wenn eine Veranstaltung Kinder umfasst, muss der Veranstalter eine geeignete Rechtsgrundlage und, soweit erforderlich, die Einwilligung der Eltern oder Erziehungsberechtigten sicherstellen." },
+        { type: "p", text: "CamLove ist nicht für die direkte Nutzung durch Kinder ohne Aufsicht eines Erwachsenen bestimmt. Wenn eine Veranstaltung Kinder umfasst, muss der Veranstalter eine geeignete Rechtsgrundlage und, soweit erforderlich, die Einwilligung der Eltern oder Erziehungsberechtigten sicherstellen." },
         { type: "p", text: "Anfragen zur Entfernung von Fotos von Kindern werden vorrangig in Zusammenarbeit mit dem Veranstalter bearbeitet." },
       ] },
       { title: "8. Zugriff auf die Galerie", blocks: [
@@ -467,19 +467,19 @@ export const gdprDoc: Record<LangCode, LegalDoc> = {
           "Recht auf Widerruf der Einwilligung, wenn die Verarbeitung auf Einwilligung beruht;",
           "Recht auf Beschwerde bei einer Aufsichtsbehörde.",
         ] },
-        { type: "p", text: "Wenn Sie ein Foto oder Video aus einer Galerie entfernen lassen möchten, wenden Sie sich bitte zunächst an den Veranstalter. Sie können auch den Guestcam-Support unter info@guestcam.si kontaktieren. Wir bearbeiten die Anfrage innerhalb angemessener Frist und, falls erforderlich, in Zusammenarbeit mit dem Veranstalter." },
+        { type: "p", text: "Wenn Sie ein Foto oder Video aus einer Galerie entfernen lassen möchten, wenden Sie sich bitte zunächst an den Veranstalter. Sie können auch den CamLove-Support unter info@camlove.me kontaktieren. Wir bearbeiten die Anfrage innerhalb angemessener Frist und, falls erforderlich, in Zusammenarbeit mit dem Veranstalter." },
       ] },
       { title: "14. Cookies", blocks: [
-        { type: "p", text: "Guestcam kann notwendige Cookies für den Betrieb der Website, Sicherheit, Anmeldung und grundlegende Plattformfunktionen verwenden." },
+        { type: "p", text: "CamLove kann notwendige Cookies für den Betrieb der Website, Sicherheit, Anmeldung und grundlegende Plattformfunktionen verwenden." },
         { type: "p", text: "Wenn wir Analyse- oder Marketing-Cookies verwenden, erfolgt dies gemäß geltendem Recht und, soweit erforderlich, nach Einholung einer Einwilligung." },
       ] },
       { title: "15. Verantwortung des Veranstalters", blocks: [
-        { type: "p", text: "Der Veranstalter bestätigt, dass er Gäste und Teilnehmer über die Nutzung der Guestcam-Galerie informiert, eine geeignete Rechtsgrundlage für die Verarbeitung von Fotos und Videos sicherstellt und auf Anfragen von Teilnehmern bezüglich der Galerieinhalte reagiert." },
-        { type: "p", text: "Der Veranstalter ist verantwortlich für alle Inhalte, die er außerhalb der Guestcam-Plattform teilt, herunterlädt, veröffentlicht oder verwendet." },
+        { type: "p", text: "Der Veranstalter bestätigt, dass er Gäste und Teilnehmer über die Nutzung der CamLove-Galerie informiert, eine geeignete Rechtsgrundlage für die Verarbeitung von Fotos und Videos sicherstellt und auf Anfragen von Teilnehmern bezüglich der Galerieinhalte reagiert." },
+        { type: "p", text: "Der Veranstalter ist verantwortlich für alle Inhalte, die er außerhalb der CamLove-Plattform teilt, herunterlädt, veröffentlicht oder verwendet." },
       ] },
       { title: "16. Kontakt", blocks: [
         { type: "p", text: "Für Datenschutzfragen, Datenschutzanfragen oder Löschanfragen kontaktieren Sie uns:" },
-        { type: "contactCard", lines: ["Guestcam", "E-Mail: info@guestcam.si", "Plattformbetreiber: Sport Group d.o.o., Osojnikova 4a, 2000 Maribor, Slowenien"] },
+        { type: "contactCard", lines: ["CamLove", "E-Mail: info@camlove.me", "Plattformbetreiber: Sport Group d.o.o., Osojnikova 4a, 2000 Maribor, Slowenien"] },
       ] },
     ],
   },
@@ -488,17 +488,17 @@ export const gdprDoc: Record<LangCode, LegalDoc> = {
     eyebrow: "Legal document",
     lastUpdated: "Last updated: May 1, 2026 · Sport Group d.o.o.",
     intro:
-      "This Privacy Policy explains how Guestcam processes personal data when using the Guestcam online platform, which allows event organisers to create private galleries for uploading, viewing and downloading photos and videos from events.",
+      "This Privacy Policy explains how CamLove processes personal data when using the CamLove online platform, which allows event organisers to create private galleries for uploading, viewing and downloading photos and videos from events.",
     sections: [
       { title: "1. Who we are", blocks: [
-        { type: "p", text: "Guestcam is an online service for private collection of event photos and videos through a QR code or private link." },
-        { type: "contactCard", lines: ["Platform operator:", "Sport Group d.o.o.", "Osojnikova 4a", "2000 Maribor", "Slovenia", "Email: info@guestcam.si"] },
-        { type: "p", text: "For privacy-related questions, contact us at: info@guestcam.si" },
+        { type: "p", text: "CamLove is an online service for private collection of event photos and videos through a QR code or private link." },
+        { type: "contactCard", lines: ["Platform operator:", "Sport Group d.o.o.", "Osojnikova 4a", "2000 Maribor", "Slovenia", "Email: info@camlove.me"] },
+        { type: "p", text: "For privacy-related questions, contact us at: info@camlove.me" },
       ] },
-      { title: "2. Role of Guestcam and the event organiser", blocks: [
-        { type: "p", text: "There are two different roles when using Guestcam." },
-        { type: "p", text: "For data processed for platform management, orders, payments, user accounts, support and communication, Guestcam generally acts as the data controller." },
-        { type: "p", text: "For photos, videos and other content uploaded by guests into a specific event gallery, the event organiser is generally the data controller. The organiser decides why the gallery is used, who may access it, how long it remains active and how guests are informed. Guestcam acts as a data processor, providing the technical platform for uploading, storing, displaying and downloading content on behalf of the organiser." },
+      { title: "2. Role of CamLove and the event organiser", blocks: [
+        { type: "p", text: "There are two different roles when using CamLove." },
+        { type: "p", text: "For data processed for platform management, orders, payments, user accounts, support and communication, CamLove generally acts as the data controller." },
+        { type: "p", text: "For photos, videos and other content uploaded by guests into a specific event gallery, the event organiser is generally the data controller. The organiser decides why the gallery is used, who may access it, how long it remains active and how guests are informed. CamLove acts as a data processor, providing the technical platform for uploading, storing, displaying and downloading content on behalf of the organiser." },
       ] },
       { title: "3. Personal data we process", blocks: [
         { type: "p", text: "We may process the following types of data:" },
@@ -533,17 +533,17 @@ export const gdprDoc: Record<LangCode, LegalDoc> = {
           "consent;",
           "legitimate interest, such as security, abuse prevention and service improvement;",
           "compliance with legal obligations, such as tax and accounting duties;",
-          "instructions of the event organiser, where Guestcam acts as a processor.",
+          "instructions of the event organiser, where CamLove acts as a processor.",
         ] },
-        { type: "p", text: "The event organiser is responsible for ensuring an appropriate legal basis for the use of photos and videos in the gallery and for informing guests clearly about the use of the Guestcam gallery." },
+        { type: "p", text: "The event organiser is responsible for ensuring an appropriate legal basis for the use of photos and videos in the gallery and for informing guests clearly about the use of the CamLove gallery." },
       ] },
       { title: "6. Event photos and videos", blocks: [
-        { type: "p", text: "Guestcam allows event organisers to create private online galleries where guests may voluntarily upload photos and videos from the event." },
-        { type: "p", text: "Guestcam is not the event organiser and does not decide which photos or videos are uploaded. The organiser is responsible for informing guests and participants about the gallery, the purposes of processing, the storage period and their rights." },
+        { type: "p", text: "CamLove allows event organisers to create private online galleries where guests may voluntarily upload photos and videos from the event." },
+        { type: "p", text: "CamLove is not the event organiser and does not decide which photos or videos are uploaded. The organiser is responsible for informing guests and participants about the gallery, the purposes of processing, the storage period and their rights." },
         { type: "p", text: "Guests should not upload photos or videos of people who clearly do not wish to be photographed or displayed in the gallery. Extra care should be taken with photos of children, employees, sensitive situations or content that may reveal health data, religious beliefs or other sensitive information." },
       ] },
       { title: "7. Children", blocks: [
-        { type: "p", text: "Guestcam is not intended for direct use by children without adult supervision. If an event includes children, the organiser must ensure an appropriate legal basis and, where required, parental or guardian consent." },
+        { type: "p", text: "CamLove is not intended for direct use by children without adult supervision. If an event includes children, the organiser must ensure an appropriate legal basis and, where required, parental or guardian consent." },
         { type: "p", text: "Requests to remove photos of children will be treated with priority in cooperation with the event organiser." },
       ] },
       { title: "8. Gallery access", blocks: [
@@ -588,19 +588,19 @@ export const gdprDoc: Record<LangCode, LegalDoc> = {
           "right to lodge a complaint with a supervisory authority.",
         ] },
         { type: "p", text: "In Slovenia, the supervisory authority is the Information Commissioner of the Republic of Slovenia." },
-        { type: "p", text: "If you want a photo or video removed from a gallery, please contact the event organiser first. You may also contact Guestcam support at info@guestcam.si and we will handle the request within a reasonable time, where necessary in cooperation with the organiser." },
+        { type: "p", text: "If you want a photo or video removed from a gallery, please contact the event organiser first. You may also contact CamLove support at info@camlove.me and we will handle the request within a reasonable time, where necessary in cooperation with the organiser." },
       ] },
       { title: "14. Cookies", blocks: [
-        { type: "p", text: "Guestcam may use necessary cookies for website operation, security, login and basic platform functions." },
+        { type: "p", text: "CamLove may use necessary cookies for website operation, security, login and basic platform functions." },
         { type: "p", text: "If we use analytics or marketing cookies, we do so in accordance with applicable law and, where required, after obtaining consent." },
       ] },
       { title: "15. Organiser responsibility", blocks: [
-        { type: "p", text: "The event organiser confirms that they will inform guests and participants about the use of the Guestcam gallery, ensure an appropriate legal basis for processing photos and videos and respond to participant requests relating to gallery content." },
-        { type: "p", text: "The organiser is responsible for any content they share, download, publish or use outside the Guestcam platform." },
+        { type: "p", text: "The event organiser confirms that they will inform guests and participants about the use of the CamLove gallery, ensure an appropriate legal basis for processing photos and videos and respond to participant requests relating to gallery content." },
+        { type: "p", text: "The organiser is responsible for any content they share, download, publish or use outside the CamLove platform." },
       ] },
       { title: "16. Contact", blocks: [
         { type: "p", text: "For privacy questions, data protection requests or removal requests, contact us:" },
-        { type: "contactCard", lines: ["Guestcam", "Email: info@guestcam.si", "Platform operator: Sport Group d.o.o., Osojnikova 4a, 2000 Maribor, Slovenia"] },
+        { type: "contactCard", lines: ["CamLove", "Email: info@camlove.me", "Platform operator: Sport Group d.o.o., Osojnikova 4a, 2000 Maribor, Slovenia"] },
       ] },
     ],
   },
@@ -609,17 +609,17 @@ export const gdprDoc: Record<LangCode, LegalDoc> = {
     eyebrow: "Documento legal",
     lastUpdated: "Última actualización: 1 de mayo de 2026 · Sport Group d.o.o.",
     intro:
-      "Esta Política de Privacidad explica cómo Guestcam trata los datos personales al utilizar la plataforma online Guestcam, que permite a los organizadores de eventos crear galerías privadas para subir, ver y descargar fotos y vídeos de eventos.",
+      "Esta Política de Privacidad explica cómo CamLove trata los datos personales al utilizar la plataforma online CamLove, que permite a los organizadores de eventos crear galerías privadas para subir, ver y descargar fotos y vídeos de eventos.",
     sections: [
       { title: "1. Quiénes somos", blocks: [
-        { type: "p", text: "Guestcam es un servicio online para la recopilación privada de fotos y vídeos de eventos mediante un código QR o un enlace privado." },
-        { type: "contactCard", lines: ["Operador de la plataforma:", "Sport Group d.o.o.", "Osojnikova 4a", "2000 Maribor", "Eslovenia", "Correo electrónico: info@guestcam.si"] },
-        { type: "p", text: "Para consultas relacionadas con la privacidad, puede contactarnos en: info@guestcam.si" },
+        { type: "p", text: "CamLove es un servicio online para la recopilación privada de fotos y vídeos de eventos mediante un código QR o un enlace privado." },
+        { type: "contactCard", lines: ["Operador de la plataforma:", "Sport Group d.o.o.", "Osojnikova 4a", "2000 Maribor", "Eslovenia", "Correo electrónico: info@camlove.me"] },
+        { type: "p", text: "Para consultas relacionadas con la privacidad, puede contactarnos en: info@camlove.me" },
       ] },
-      { title: "2. Papel de Guestcam y del organizador del evento", blocks: [
-        { type: "p", text: "Al utilizar Guestcam existen dos funciones diferentes." },
-        { type: "p", text: "Para los datos tratados para la gestión de la plataforma, pedidos, pagos, cuentas de usuario, soporte y comunicación, Guestcam actúa generalmente como responsable del tratamiento." },
-        { type: "p", text: "Para las fotos, vídeos y otros contenidos subidos por los invitados a una galería concreta de un evento, el organizador del evento es generalmente el responsable del tratamiento. El organizador decide por qué se utiliza la galería, quién puede acceder, cuánto tiempo permanece activa y cómo se informa a los invitados. Guestcam actúa en este caso como encargado del tratamiento, proporcionando la plataforma técnica para subir, almacenar, mostrar y descargar contenidos siguiendo las instrucciones del organizador." },
+      { title: "2. Papel de CamLove y del organizador del evento", blocks: [
+        { type: "p", text: "Al utilizar CamLove existen dos funciones diferentes." },
+        { type: "p", text: "Para los datos tratados para la gestión de la plataforma, pedidos, pagos, cuentas de usuario, soporte y comunicación, CamLove actúa generalmente como responsable del tratamiento." },
+        { type: "p", text: "Para las fotos, vídeos y otros contenidos subidos por los invitados a una galería concreta de un evento, el organizador del evento es generalmente el responsable del tratamiento. El organizador decide por qué se utiliza la galería, quién puede acceder, cuánto tiempo permanece activa y cómo se informa a los invitados. CamLove actúa en este caso como encargado del tratamiento, proporcionando la plataforma técnica para subir, almacenar, mostrar y descargar contenidos siguiendo las instrucciones del organizador." },
       ] },
       { title: "3. Datos personales que tratamos", blocks: [
         { type: "p", text: "Podemos tratar los siguientes tipos de datos:" },
@@ -654,17 +654,17 @@ export const gdprDoc: Record<LangCode, LegalDoc> = {
           "consentimiento;",
           "interés legítimo, como seguridad, prevención de abusos y mejora del servicio;",
           "cumplimiento de obligaciones legales, como obligaciones fiscales y contables;",
-          "instrucciones del organizador del evento, cuando Guestcam actúa como encargado del tratamiento.",
+          "instrucciones del organizador del evento, cuando CamLove actúa como encargado del tratamiento.",
         ] },
-        { type: "p", text: "El organizador del evento es responsable de garantizar una base jurídica adecuada para el uso de fotos y vídeos en la galería y de informar claramente a los invitados sobre el uso de la galería Guestcam." },
+        { type: "p", text: "El organizador del evento es responsable de garantizar una base jurídica adecuada para el uso de fotos y vídeos en la galería y de informar claramente a los invitados sobre el uso de la galería CamLove." },
       ] },
       { title: "6. Fotos y vídeos de eventos", blocks: [
-        { type: "p", text: "Guestcam permite a los organizadores crear galerías online privadas donde los invitados pueden subir voluntariamente fotos y vídeos del evento." },
-        { type: "p", text: "Guestcam no es el organizador del evento y no decide qué fotos o vídeos se suben. El organizador es responsable de informar a los invitados y participantes sobre la galería, las finalidades del tratamiento, el periodo de conservación y sus derechos." },
+        { type: "p", text: "CamLove permite a los organizadores crear galerías online privadas donde los invitados pueden subir voluntariamente fotos y vídeos del evento." },
+        { type: "p", text: "CamLove no es el organizador del evento y no decide qué fotos o vídeos se suben. El organizador es responsable de informar a los invitados y participantes sobre la galería, las finalidades del tratamiento, el periodo de conservación y sus derechos." },
         { type: "p", text: "Los invitados no deben subir fotos o vídeos de personas que claramente no desean ser fotografiadas o mostradas en la galería. Debe prestarse especial atención a fotos de niños, empleados, situaciones sensibles o contenidos que puedan revelar datos de salud, creencias religiosas u otra información sensible." },
       ] },
       { title: "7. Menores", blocks: [
-        { type: "p", text: "Guestcam no está destinado al uso directo por parte de menores sin supervisión de un adulto. Si el evento incluye menores, el organizador debe garantizar una base jurídica adecuada y, cuando sea necesario, el consentimiento de los padres o tutores." },
+        { type: "p", text: "CamLove no está destinado al uso directo por parte de menores sin supervisión de un adulto. Si el evento incluye menores, el organizador debe garantizar una base jurídica adecuada y, cuando sea necesario, el consentimiento de los padres o tutores." },
         { type: "p", text: "Las solicitudes para eliminar fotos de menores se tratarán con prioridad en cooperación con el organizador del evento." },
       ] },
       { title: "8. Acceso a la galería", blocks: [
@@ -708,19 +708,19 @@ export const gdprDoc: Record<LangCode, LegalDoc> = {
           "derecho a retirar el consentimiento cuando el tratamiento se base en el consentimiento;",
           "derecho a presentar una reclamación ante una autoridad de control.",
         ] },
-        { type: "p", text: "Si desea eliminar una foto o vídeo de una galería, contacte primero con el organizador del evento. También puede contactar con el soporte de Guestcam en info@guestcam.si y tramitaremos la solicitud en un plazo razonable, cuando sea necesario en cooperación con el organizador." },
+        { type: "p", text: "Si desea eliminar una foto o vídeo de una galería, contacte primero con el organizador del evento. También puede contactar con el soporte de CamLove en info@camlove.me y tramitaremos la solicitud en un plazo razonable, cuando sea necesario en cooperación con el organizador." },
       ] },
       { title: "14. Cookies", blocks: [
-        { type: "p", text: "Guestcam puede utilizar cookies necesarias para el funcionamiento del sitio web, seguridad, inicio de sesión y funciones básicas de la plataforma." },
+        { type: "p", text: "CamLove puede utilizar cookies necesarias para el funcionamiento del sitio web, seguridad, inicio de sesión y funciones básicas de la plataforma." },
         { type: "p", text: "Si utilizamos cookies analíticas o de marketing, lo hacemos conforme a la legislación aplicable y, cuando sea necesario, tras obtener el consentimiento." },
       ] },
       { title: "15. Responsabilidad del organizador", blocks: [
-        { type: "p", text: "El organizador del evento confirma que informará a los invitados y participantes sobre el uso de la galería Guestcam, garantizará una base jurídica adecuada para el tratamiento de fotos y vídeos y responderá a las solicitudes de los participantes relacionadas con el contenido de la galería." },
-        { type: "p", text: "El organizador es responsable de cualquier contenido que comparta, descargue, publique o utilice fuera de la plataforma Guestcam." },
+        { type: "p", text: "El organizador del evento confirma que informará a los invitados y participantes sobre el uso de la galería CamLove, garantizará una base jurídica adecuada para el tratamiento de fotos y vídeos y responderá a las solicitudes de los participantes relacionadas con el contenido de la galería." },
+        { type: "p", text: "El organizador es responsable de cualquier contenido que comparta, descargue, publique o utilice fuera de la plataforma CamLove." },
       ] },
       { title: "16. Contacto", blocks: [
         { type: "p", text: "Para consultas sobre privacidad, solicitudes de protección de datos o solicitudes de eliminación, contáctenos:" },
-        { type: "contactCard", lines: ["Guestcam", "Correo electrónico: info@guestcam.si", "Operador de la plataforma: Sport Group d.o.o., Osojnikova 4a, 2000 Maribor, Eslovenia"] },
+        { type: "contactCard", lines: ["CamLove", "Correo electrónico: info@camlove.me", "Operador de la plataforma: Sport Group d.o.o., Osojnikova 4a, 2000 Maribor, Eslovenia"] },
       ] },
     ],
   },
