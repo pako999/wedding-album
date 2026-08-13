@@ -1,3 +1,3 @@
-import CamLoveRealPage from "./camlove-real/page";
+import CamLoveFinalPage from "./camlove-final/page";
 
-export default CamLoveRealPage;
+export default CamLoveFinalPage;
