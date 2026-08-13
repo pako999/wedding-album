@@ -39,7 +39,9 @@ interface Props {
     brand?: string;
     /** Background preset: photo | dark | light | warm. */
     bg?: string;
-    /** Centre transition: fade | slide | kenburns. */
+    /** Centre transition: fade | slide. ("kenburns" was removed — old
+     *  URLs carrying fx=kenburns fall back to fade via the
+     *  `in WALL_TRANSITIONS` guard below.) */
     fx?: string;
     /** Layout: auto | landscape | portrait. */
     orient?: string;

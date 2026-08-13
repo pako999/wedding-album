@@ -44,9 +44,8 @@ const BACKGROUNDS = [
 ] as const;
 
 const TRANSITIONS = [
-  { id: "fade",     label: "Zatemnitev" },
-  { id: "slide",    label: "Podrsaj" },
-  { id: "kenburns", label: "Počasen zoom" },
+  { id: "fade",  label: "Zatemnitev" },
+  { id: "slide", label: "Podrsaj" },
 ] as const;
 
 const ORIENTATIONS = [
