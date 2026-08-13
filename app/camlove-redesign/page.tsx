@@ -161,7 +161,7 @@ export default function CamLoveRedesignPage() {
 
       <section id="business" className="bg-[#171717] py-20 text-white sm:py-28">
         <div className="mx-auto grid max-w-[1320px] gap-10 px-5 sm:px-8 lg:grid-cols-2 lg:items-center">
-          <div className="relative min-h-[480px] overflow-hidden rounded-[28px] sm:min-h-[600px]"><Image src="/events/business.webp" alt="CamLove za podjetja in poslovne dogodke" fill className="object-cover" sizes="50vw" /><div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" /></div>
+          <div className="relative min-h-[480px] overflow-hidden rounded-[28px] sm:min-h-[600px]"><img src="https://drive.google.com/thumbnail?id=1VaWETXXdDAAdnWQZN1K3xmwta8qx3BXw&sz=w1600" alt="CamLove za podjetja in poslovne dogodke" className="absolute inset-0 h-full w-full object-cover" /><div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" /></div>
           <div className="lg:pl-10">
             <span className="inline-flex rounded-full bg-[#F4B400] px-4 py-2 text-xs font-black uppercase tracking-[.16em] text-black">CamLove za podjetja</span>
             <h2 className="mt-6 text-4xl font-black leading-[.98] tracking-[-.05em] sm:text-6xl">Naj gostje ustvarijo vsebino za vaš dogodek.</h2>
