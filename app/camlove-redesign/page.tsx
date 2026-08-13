@@ -59,15 +59,14 @@ export default function CamLoveRedesignPage() {
       </header>
 
       <section className="overflow-hidden">
-        <div className="mx-auto grid max-w-[1320px] gap-10 px-5 pb-14 pt-12 sm:px-8 sm:pt-20 lg:grid-cols-[.9fr_1.1fr] lg:items-center lg:gap-16">
-          <div>
-            <span className="inline-flex rounded-full border border-black/10 bg-white px-4 py-2 text-xs font-extrabold uppercase tracking-[0.15em] text-black/55">QR album za vsak dogodek</span>
-            <h1 className="mt-6 max-w-[650px] text-[clamp(3rem,6.5vw,6.4rem)] font-black leading-[.92] tracking-[-0.06em]">
-              Vse fotografije gostov.
-              <span className="block text-[#F4B400]">En sam album.</span>
+        <div className="mx-auto grid max-w-[1320px] gap-10 px-6 pb-16 pt-14 sm:px-10 sm:pt-20 lg:grid-cols-[1fr_1fr] lg:items-center lg:gap-14 lg:px-12">
+          <div className="min-w-0 lg:pr-2">
+            <span className="inline-flex rounded-full border border-black/10 bg-white px-4 py-2 text-xs font-extrabold uppercase tracking-[0.15em] text-black/55">QR foto album za poroke in dogodke</span>
+            <h1 className="mt-6 max-w-[610px] text-[clamp(2.9rem,5.8vw,5.6rem)] font-black leading-[.94] tracking-[-0.055em]">
+              Ne izgubi slik svojega dogodka.
             </h1>
-            <p className="mt-7 max-w-[600px] text-lg leading-8 text-black/60 sm:text-xl">
-              Ustvari dogodek, deli QR kodo in gostje sami naložijo fotografije ter videe v tvojo zasebno galerijo — brez aplikacije in brez registracije.
+            <p className="mt-7 max-w-[590px] text-lg leading-8 text-black/60 sm:text-xl">
+              Vse fotografije in videji tvojih gostov se samodejno zberejo v en zaseben album, v polni kakovosti.
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Link href="/dashboard/new" className="inline-flex min-h-14 items-center justify-center gap-2 rounded-full bg-[#F4B400] px-8 font-extrabold text-black hover:-translate-y-0.5 transition-transform">Začni brezplačno <Arrow /></Link>
@@ -84,8 +83,8 @@ export default function CamLoveRedesignPage() {
               <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-transparent" />
               <div className="absolute bottom-5 left-5 rounded-full bg-white/95 px-4 py-2 text-sm font-bold">Resnični trenutki. Vsi na enem mestu.</div>
             </div>
-            <div className="relative col-span-4 min-h-[250px] overflow-hidden rounded-[22px] sm:min-h-[320px]"><Image src="/events/babyshower.webp" alt="Baby shower" fill className="object-cover" sizes="25vw" /></div>
-            <div className="relative col-span-4 min-h-[250px] overflow-hidden rounded-[22px] sm:min-h-[320px]"><Image src="/events/birthday.webp" alt="Rojstni dan" fill className="object-cover" sizes="25vw" /></div>
+            <div className="relative col-span-4 min-h-[250px] overflow-hidden rounded-[22px] sm:min-h-[320px]"><Image src="/events/party.webp" alt="Zabava" fill className="object-cover" sizes="25vw" /></div>
+            <div className="relative col-span-4 min-h-[250px] overflow-hidden rounded-[22px] sm:min-h-[320px]"><Image src="/events/gromparty.webp" alt="Praznovanje" fill className="object-cover" sizes="25vw" /></div>
           </div>
         </div>
       </section>
