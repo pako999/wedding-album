@@ -1,1 +1,3 @@
-export { default, metadata } from "./design-preview/page";
+import DesignPreviewPage from "./design-preview/page";
+
+export default DesignPreviewPage;
