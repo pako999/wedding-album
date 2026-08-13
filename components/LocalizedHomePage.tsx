@@ -785,7 +785,7 @@ export async function LocalizedHomePage({ lang }: { lang: Lang }) {
       {/* Event types */}
       <section className="max-w-5xl mx-auto px-6 pb-20 text-center">
         <h2 className="text-3xl sm:text-4xl font-extrabold text-[color:var(--ink)] mb-4 leading-tight">{t.eventsTitle}</h2>
-        <p className="text-gray-400 max-w-xl mx-auto leading-relaxed mb-10">{t.eventsSubtitle}</p>
+        <p className="text-gray-500 max-w-xl mx-auto leading-relaxed mb-10">{t.eventsSubtitle}</p>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
           {t.eventsList.map(({ label }, i) => {
             const imgKeys = ["wedding","birthday","babyshower","gromparty","party","business","krst","matura"];
@@ -820,7 +820,7 @@ export async function LocalizedHomePage({ lang }: { lang: Lang }) {
               {t.printEyebrow}
             </div>
             <h2 className="text-[2.5rem] font-extrabold text-[color:var(--ink)] mb-4">{t.printTitle}</h2>
-            <p className="text-gray-400 max-w-lg mx-auto leading-relaxed">{t.printSubtitle}</p>
+            <p className="text-gray-500 max-w-lg mx-auto leading-relaxed">{t.printSubtitle}</p>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
             {t.printTemplates.map((tpl, idx) => {
@@ -842,13 +842,13 @@ export async function LocalizedHomePage({ lang }: { lang: Lang }) {
                         <p className={`font-serif text-[11px] font-bold mb-0.5 leading-tight ${v.dark ? "text-white" : "text-[color:var(--ink)]"}`}>
                           {v.headline}
                         </p>
-                        <p className={`text-[8px] mb-2.5 ${v.dark ? "text-white/60" : "text-gray-400"}`}>{v.sub}</p>
+                        <p className={`text-[8px] mb-2.5 ${v.dark ? "text-white/60" : "text-gray-500"}`}>{v.sub}</p>
                         <div className="flex justify-center mb-2" style={{ transform: "scale(0.48)", transformOrigin: "center", height: 33, overflow: "hidden" }}>
                           <QRPattern />
                         </div>
-                        <p className={`font-serif text-[8px] italic ${v.dark ? "text-[#f9a8c0]" : "text-[#C9820A]"}`}>Ana &amp; Marko</p>
+                        <p className={`font-serif text-[8px] italic ${v.dark ? "text-[#f9a8c0]" : "text-[#8C6218]"}`}>Ana &amp; Marko</p>
                         {v.dark ? null : <div className="w-8 h-px bg-gray-200 mx-auto mt-1.5" />}
-                        <p className={`text-[7px] mt-1 ${v.dark ? "text-white/40" : "text-gray-300"}`}>14. 06. 2025</p>
+                        <p className={`text-[7px] mt-1 ${v.dark ? "text-white/40" : "text-gray-500"}`}>14. 06. 2025</p>
                       </div>
                     </div>
                     <div className="absolute inset-0 bg-[color:var(--ink)]/85 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center gap-3">
@@ -864,16 +864,16 @@ export async function LocalizedHomePage({ lang }: { lang: Lang }) {
                   </div>
                   <div className="px-3 py-2.5 bg-white flex items-center justify-between">
                     <span className="text-xs font-semibold text-[color:var(--ink)]">{tpl.name}</span>
-                    <span className="text-[10px] text-[#C9820A] font-medium">PDF ↓</span>
+                    <span className="text-[10px] text-[#8C6218] font-medium">PDF ↓</span>
                   </div>
                 </div>
               );
             })}
           </div>
           <div className="text-center mt-10">
-            <p className="text-sm text-gray-400 mb-5">{t.printNote}</p>
+            <p className="text-sm text-gray-500 mb-5">{t.printNote}</p>
             <Link href="/dashboard/new" className="inline-flex items-center gap-2.5 px-8 py-4 rounded-2xl font-bold text-sm transition-all duration-200 border-2"
-              style={{ borderColor: "#C9820A", color: "#C9820A" }}>
+              style={{ borderColor: "#8C6218", color: "#8C6218" }}>
               {t.printCta}
             </Link>
           </div>
@@ -933,7 +933,7 @@ export async function LocalizedHomePage({ lang }: { lang: Lang }) {
                 {t.wall.points.map((b) => (
                   <li key={b} className="flex items-start gap-3">
                     <span className="mt-0.5 w-6 h-6 rounded-full flex items-center justify-center shrink-0" style={{ background: "#FFF3CC" }}>
-                      <svg className="w-3.5 h-3.5 text-[#C9820A]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={3}>
+                      <svg className="w-3.5 h-3.5 text-[#8C6218]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={3}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                       </svg>
                     </span>
@@ -959,13 +959,13 @@ export async function LocalizedHomePage({ lang }: { lang: Lang }) {
       <section id="why" className="py-24" style={{ background: "var(--paper)" }}>
         <div className="max-w-6xl mx-auto px-6">
           <h2 className="text-4xl sm:text-[3.3rem] leading-[1.08] tracking-tight font-extrabold text-center text-[color:var(--ink)] mb-4">{t.whyTitle}</h2>
-          <p className="text-center text-gray-400 text-base mb-14 max-w-md mx-auto">{t.whySubtitle}</p>
+          <p className="text-center text-gray-600 text-base mb-14 max-w-md mx-auto">{t.whySubtitle}</p>
           <div className="grid md:grid-cols-3 gap-6">
             {t.whyCards.map((c) => (
               <div key={c.title} className="bg-white border border-gray-100 rounded-2xl p-7 hover:shadow-md hover:border-[color:var(--honey)] transition-all duration-200">
                 <div className="w-12 h-12 border border-gray-100 rounded-2xl flex items-center justify-center text-2xl mb-5 shadow-sm" style={{ background: "#FFF3CC" }}>{c.icon}</div>
                 <h3 className="font-bold text-[color:var(--ink)] text-lg mb-2">{c.title}</h3>
-                <p className="text-gray-400 text-sm leading-relaxed">{c.desc}</p>
+                <p className="text-gray-500 text-sm leading-relaxed">{c.desc}</p>
               </div>
             ))}
           </div>
@@ -977,7 +977,7 @@ export async function LocalizedHomePage({ lang }: { lang: Lang }) {
         <div className="max-w-6xl mx-auto px-6">
           <h2 className="text-4xl sm:text-[3.3rem] leading-[1.08] tracking-tight font-extrabold text-center text-[color:var(--ink)] mb-4">{t.featuresTitle}</h2>
           <p className="text-center text-gray-500 mb-14 max-w-lg mx-auto leading-relaxed">
-            {t.featuresLead1}<br /><span className="text-gray-400">{t.featuresLead2}</span>
+            {t.featuresLead1}<br /><span className="text-gray-500">{t.featuresLead2}</span>
           </p>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {t.features.map((f, i) => {
@@ -1006,7 +1006,7 @@ export async function LocalizedHomePage({ lang }: { lang: Lang }) {
           {/* Meta Pixel funnel: ViewContent when the plans are seen */}
           <TrackViewContent name="Pricing" category="plans" />
           <h2 className="text-4xl sm:text-[3.3rem] leading-[1.08] tracking-tight font-extrabold text-center text-[color:var(--ink)] mb-4">{t.pricingTitle}</h2>
-          <p className="text-center text-gray-400 mb-14">{t.pricingSubtitle}</p>
+          <p className="text-center text-gray-500 mb-14">{t.pricingSubtitle}</p>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 items-start">
             {([
               { label: t.free.label,    tagline: t.free.tagline,    price: t.free.price,    was: undefined as string | undefined, features: t.free.features,    cta: t.free.cta,    ribbon: undefined as string | undefined, highlighted: false, dimmed: false },
@@ -1026,22 +1026,22 @@ export async function LocalizedHomePage({ lang }: { lang: Lang }) {
                     {p.ribbon}
                   </div>
                 ) : null}
-                <p className={`font-extrabold text-lg ${p.dimmed ? "text-gray-400" : "text-[color:var(--ink)]"} mb-1`}>{p.label}</p>
-                <p className="text-sm text-gray-400 mb-6">{p.tagline}</p>
+                <p className={`font-extrabold text-lg ${p.dimmed ? "text-gray-500" : "text-[color:var(--ink)]"} mb-1`}>{p.label}</p>
+                <p className="text-sm text-gray-500 mb-6">{p.tagline}</p>
                 <div className="flex items-end gap-2 mb-7">
-                  <span className={`font-extrabold text-[3rem] leading-none ${p.dimmed ? "text-gray-400" : p.highlighted ? "" : "text-[color:var(--ink)]"}`} style={p.highlighted ? { color: "#C9820A" } : undefined}>{p.price}</span>
-                  {p.was ? <span className="text-gray-300 line-through text-lg mb-1.5">{p.was}</span> : null}
+                  <span className={`font-extrabold text-[3rem] leading-none ${p.dimmed ? "text-gray-500" : p.highlighted ? "" : "text-[color:var(--ink)]"}`} style={p.highlighted ? { color: "#C9820A" } : undefined}>{p.price}</span>
+                  {p.was ? <span className="text-gray-500 line-through text-lg mb-1.5">{p.was}</span> : null}
                 </div>
                 <ul className="space-y-3 flex-1 mb-8">
                   {p.features.map((f) => (
                     <li key={f} className="flex items-center gap-2.5">
-                      <svg className={`w-4 h-4 shrink-0 ${p.dimmed ? "text-gray-300" : "text-[#C9820A]"}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
-                      <span className={`text-sm ${p.dimmed ? "text-gray-400" : "text-gray-600"}`}>{f}</span>
+                      <svg className={`w-4 h-4 shrink-0 ${p.dimmed ? "text-gray-500" : "text-[#8C6218]"}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+                      <span className={`text-sm ${p.dimmed ? "text-gray-500" : "text-gray-600"}`}>{f}</span>
                     </li>
                   ))}
                 </ul>
                 <Link href={href} className={`block text-center py-3.5 rounded-2xl font-bold text-sm transition-colors ${
-                  p.highlighted ? "text-[color:var(--ink)]" : p.dimmed ? "text-gray-400 bg-white hover:bg-gray-100" : "text-[color:var(--ink)] hover:bg-gray-50"
+                  p.highlighted ? "text-[color:var(--ink)]" : p.dimmed ? "text-gray-500 bg-white hover:bg-gray-100" : "text-[color:var(--ink)] hover:bg-gray-50"
                 }`} style={p.highlighted ? { background: "var(--ink)", color: "var(--paper)" } : { border: "1.5px solid var(--hairline)" }}>
                   {p.cta}
                 </Link>
@@ -1055,10 +1055,10 @@ export async function LocalizedHomePage({ lang }: { lang: Lang }) {
             <div className="flex-1 min-w-0">
               <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#FFC94D] mb-1.5">{t.eventsTeaser.eyebrow}</p>
               <p className="font-extrabold text-xl text-white">{t.eventsTeaser.title}</p>
-              <p className="text-sm text-gray-300 mt-1.5 max-w-xl">{t.eventsTeaser.body}</p>
+              <p className="text-sm text-gray-500 mt-1.5 max-w-xl">{t.eventsTeaser.body}</p>
             </div>
             <div className="shrink-0 sm:text-right">
-              <p className="text-sm font-semibold text-gray-300 mb-2.5">{t.eventsTeaser.price}</p>
+              <p className="text-sm font-semibold text-gray-500 mb-2.5">{t.eventsTeaser.price}</p>
               <Link href={`/${lang}/contact`}
                 className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl font-bold text-sm text-[color:var(--ink)] hover:brightness-95 transition-all"
                 style={{ background: "linear-gradient(135deg,#FFD966,#FFC94D 60%,#F0B429)" }}>
@@ -1067,7 +1067,7 @@ export async function LocalizedHomePage({ lang }: { lang: Lang }) {
             </div>
           </div>
 
-          <div className="flex items-center justify-center gap-2 mt-10 text-sm text-gray-400">
+          <div className="flex items-center justify-center gap-2 mt-10 text-sm text-gray-500">
             <svg className="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.8}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
             </svg>
@@ -1075,7 +1075,7 @@ export async function LocalizedHomePage({ lang }: { lang: Lang }) {
           </div>
 
           {/* Trust badges — data protection */}
-          <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3 mt-6 text-sm text-gray-400">
+          <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3 mt-6 text-sm text-gray-500">
             {[t.trustGdpr, t.trustEuServers, t.trustEncryption].map((label) => (
               <span key={label} className="flex items-center gap-1.5">
                 <svg className="w-4 h-4 shrink-0" style={{ color: "#16A34A" }} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
@@ -1097,7 +1097,7 @@ export async function LocalizedHomePage({ lang }: { lang: Lang }) {
               <details key={faq.q} className="bg-white rounded-2xl group" style={{ border: "1px solid var(--hairline)" }}>
                 <summary className="flex items-center justify-between px-6 py-4 cursor-pointer font-semibold text-[color:var(--ink)] list-none text-[0.95rem]">
                   {faq.q}
-                  <svg className="w-5 h-5 text-gray-400 shrink-0 group-open:rotate-180 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                  <svg className="w-5 h-5 text-gray-500 shrink-0 group-open:rotate-180 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
                   </svg>
                 </summary>
@@ -1119,7 +1119,7 @@ export async function LocalizedHomePage({ lang }: { lang: Lang }) {
           {t.ctaButton}
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>
         </Link>
-        <p className="mt-5 text-sm text-gray-400">{t.ctaTrust}</p>
+        <p className="mt-5 text-sm text-gray-500">{t.ctaTrust}</p>
       </section>
 
       <SeoFooter lang={lang} />

@@ -45,7 +45,7 @@ export default async function WallAdminPage({ params }: { params: Promise<{ slug
           <GuestcamLogo size="sm" showMark={false} />
           <span className="text-xs text-gray-400">
             {collaborator ? "Sodelavec · samo foto stena" : (
-              <Link href={`/dashboard/${album.slug}?tab=events`} className="text-[#C9820A] hover:underline">
+              <Link href={`/dashboard/${album.slug}?tab=events`} className="text-[#8C6218] hover:underline">
                 ← Nazaj na nadzorno ploščo
               </Link>
             )}

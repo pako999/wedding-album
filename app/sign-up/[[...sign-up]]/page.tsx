@@ -8,7 +8,7 @@ export default function SignUpPage() {
         {/* Brand header */}
         <div className="text-center mb-8 flex flex-col items-center gap-2">
           <GuestcamLogo size="md" showMark={true} />
-          <p className="text-sm text-gray-400">Ustvarite račun in začnite zbirati spomine</p>
+          <p className="text-sm text-gray-600">Ustvarite račun in začnite zbirati spomine</p>
         </div>
         <SignUp
           fallbackRedirectUrl="/dashboard"

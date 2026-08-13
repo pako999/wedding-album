@@ -284,7 +284,7 @@ export default async function HomePage() {
               style={{
                 background: "var(--ink)",
                 boxShadow: "0 6px 18px rgba(255,201,77,0.45)",
-                color: "#0F1729",
+                color: "var(--paper)",
               }}
             >
               Začni brezplačno
@@ -425,7 +425,7 @@ export default async function HomePage() {
       {/* ── Event types ─────────────────────────────────────────────────────── */}
       <section className="max-w-5xl mx-auto px-6 pb-20 text-center">
         <h2 className="text-3xl sm:text-4xl font-extrabold text-[color:var(--ink)] mb-4 leading-tight">Za vsak poseben trenutek</h2>
-        <p className="text-gray-400 max-w-xl mx-auto leading-relaxed mb-10">
+        <p className="text-gray-500 max-w-xl mx-auto leading-relaxed mb-10">
           Guestcam zbira fotografije vaših gostov — za poroke, rojstne dneve, baby shower, obletnice, poslovne zabave in vsak dogodek, ki si zasluži spomin.
         </p>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
@@ -452,7 +452,7 @@ export default async function HomePage() {
               Predloge za tisk
             </div>
             <h2 className="text-[2.5rem] font-extrabold text-[color:var(--ink)] mb-4">Kartice, ki goste spodbudijo k deljenju fotografij</h2>
-            <p className="text-gray-400 max-w-lg mx-auto leading-relaxed">
+            <p className="text-gray-500 max-w-lg mx-auto leading-relaxed">
               Izberite predlogo, dodajte svojo QR kodo in jo natisnite. Več gostov sodeluje, več nepozabnih trenutkov se zbere v vaši galeriji.
             </p>
           </div>
@@ -491,14 +491,14 @@ export default async function HomePage() {
                       <p className={`font-serif text-[11px] font-bold mb-0.5 leading-tight ${t.dark ? 'text-white' : 'text-[color:var(--ink)]'}`}>
                         {t.headline}
                       </p>
-                      <p className={`text-[8px] mb-2.5 ${t.dark ? 'text-white/60' : 'text-gray-400'}`}>{t.sub}</p>
+                      <p className={`text-[8px] mb-2.5 ${t.dark ? 'text-white/60' : 'text-gray-500'}`}>{t.sub}</p>
                       {/* Tiny QR pattern */}
                       <div className="flex justify-center mb-2" style={{ transform: 'scale(0.48)', transformOrigin: 'center', height: 33, overflow: 'hidden' }}>
                         <QRPattern />
                       </div>
                       <p className={`font-serif text-[8px] italic ${t.dark ? 'text-[#f9a8c0]' : 'text-[color:var(--honey)]'}`}>Ana & Marko</p>
                       {t.dark ? null : <div className="w-8 h-px bg-gray-200 mx-auto mt-1.5" />}
-                      <p className={`text-[7px] mt-1 ${t.dark ? 'text-white/40' : 'text-gray-300'}`}>14. 06. 2025</p>
+                      <p className={`text-[7px] mt-1 ${t.dark ? 'text-white/40' : 'text-gray-500'}`}>14. 06. 2025</p>
                     </div>
                   </div>
 
@@ -525,7 +525,7 @@ export default async function HomePage() {
           </div>
 
           <div className="text-center mt-10">
-            <p className="text-sm text-gray-400 mb-5">Vsaka predloga vključuje vaše ime, datum in personalizirano QR kodo</p>
+            <p className="text-sm text-gray-500 mb-5">Vsaka predloga vključuje vaše ime, datum in personalizirano QR kodo</p>
             <Link
               href="/dashboard/new"
               className="inline-flex items-center gap-2.5 px-8 py-4 rounded-2xl font-bold text-sm transition-all duration-200 border-2"
@@ -648,7 +648,7 @@ export default async function HomePage() {
             <Link
               href="/dashboard/new"
               className="inline-flex items-center gap-2.5 px-9 py-4 text-[color:var(--ink)] font-bold rounded-full transition-all duration-200 hover:scale-105"
-              style={{ background: "var(--ink)", boxShadow: '0 6px 24px rgba(255,201,77,0.45)' }}
+              style={{ background: "var(--ink)", color: "var(--paper)", boxShadow: "0 6px 24px rgba(20,24,31,.20)" }}
             >
               Ustvari svojo galerijo zdaj →
             </Link>
@@ -706,7 +706,7 @@ export default async function HomePage() {
               <Link
                 href="/dashboard/new"
                 className="inline-flex items-center gap-2.5 px-8 py-4 rounded-xl text-[color:var(--ink)] font-bold text-base transition-all duration-200 hover:scale-[1.02]"
-                style={{ background: "var(--ink)", boxShadow: '0 14px 36px rgba(255,201,77,0.4)' }}
+                style={{ background: "var(--ink)", color: "var(--paper)", boxShadow: "0 14px 36px rgba(20,24,31,.22)" }}
               >
                 Preizkusi Foto steno
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
@@ -722,7 +722,7 @@ export default async function HomePage() {
       <section id="why" className="py-24" style={{ background: "var(--paper)" }}>
         <div className="max-w-6xl mx-auto px-6">
           <h2 className="text-4xl sm:text-[3.3rem] leading-[1.08] tracking-tight font-extrabold text-center text-[color:var(--ink)] mb-4">Vsak gost fotografira. Vi pa teh slik nikoli ne vidite.</h2>
-          <p className="text-center text-gray-400 text-base mb-14 max-w-md mx-auto">
+          <p className="text-center text-gray-600 text-base mb-14 max-w-md mx-auto">
             Vsak gost ujame drugačne trenutke. Večina teh fotografij pa ostane na njihovih telefonih.
           </p>
           <div className="grid md:grid-cols-3 gap-6">
@@ -736,7 +736,7 @@ export default async function HomePage() {
                   {f.icon}
                 </div>
                 <h3 className="font-bold text-[color:var(--ink)] text-lg mb-2">{f.title}</h3>
-                <p className="text-gray-400 text-sm leading-relaxed">{f.desc}</p>
+                <p className="text-gray-500 text-sm leading-relaxed">{f.desc}</p>
               </div>
             ))}
           </div>
@@ -749,7 +749,7 @@ export default async function HomePage() {
           <h2 className="text-4xl sm:text-[3.3rem] leading-[1.08] tracking-tight font-extrabold text-center text-[color:var(--ink)] mb-4">Zakaj izbrati Guestcam?</h2>
           <p className="text-center text-gray-500 mb-14 max-w-lg mx-auto leading-relaxed">
             Vse fotografije in videi vaših gostov. Na enem mestu.<br />
-            <span className="text-gray-400">Brez aplikacij, brez pošiljanja po WhatsAppu in brez izgubljenih spominov.</span>
+            <span className="text-gray-500">Brez aplikacij, brez pošiljanja po WhatsAppu in brez izgubljenih spominov.</span>
           </p>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {[
@@ -794,14 +794,14 @@ export default async function HomePage() {
           {/* Meta Pixel funnel: ViewContent when the plans are seen */}
           <TrackViewContent name="Pricing" category="plans" />
           <h2 className="text-4xl sm:text-[3.3rem] leading-[1.08] tracking-tight font-extrabold text-center text-[color:var(--ink)] mb-4">Preprosti paketi</h2>
-          <p className="text-center text-gray-400 mb-14">Izberite paket, ki ustreza vašemu dogodku.</p>
+          <p className="text-center text-gray-500 mb-14">Izberite paket, ki ustreza vašemu dogodku.</p>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 items-start">
 
             {/* FREE */}
             <div className="bg-white border border-gray-200 rounded-3xl p-7 flex flex-col">
               <p className="font-extrabold text-lg text-[color:var(--ink)] mb-1">Brezplačno</p>
-              <p className="text-sm text-gray-400 mb-6">Preizkusite brez tveganja</p>
+              <p className="text-sm text-gray-500 mb-6">Preizkusite brez tveganja</p>
               <div className="flex items-end gap-2 mb-7">
                 <span className="font-extrabold text-[3rem] leading-none text-[color:var(--ink)]">0€</span>
               </div>
@@ -828,10 +828,10 @@ export default async function HomePage() {
             {/* BASIC */}
             <div className="bg-white border border-gray-200 rounded-3xl p-7 flex flex-col">
               <p className="font-extrabold text-lg text-[color:var(--ink)] mb-1">Basic</p>
-              <p className="text-sm text-gray-400 mb-6">Za manjše dogodke</p>
+              <p className="text-sm text-gray-500 mb-6">Za manjše dogodke</p>
               <div className="flex items-end gap-2 mb-7">
                 <span className="font-extrabold text-[3rem] leading-none text-[color:var(--ink)]">39€</span>
-                <span className="text-gray-300 line-through text-lg mb-1.5">55€</span>
+                <span className="text-gray-500 line-through text-lg mb-1.5">55€</span>
               </div>
               <ul className="space-y-3 flex-1 mb-8">
                 {[
@@ -855,14 +855,14 @@ export default async function HomePage() {
 
             {/* PLUS — highlighted */}
             <div className="relative bg-white rounded-3xl p-7 flex flex-col" style={{ border: "2px solid var(--ink)", boxShadow: "0 10px 40px rgba(20,24,31,0.12)", transform: "translateY(-8px)" }}>
-              <div className="absolute -top-4 left-1/2 -translate-x-1/2 text-[color:var(--ink)] text-[10px] font-bold tracking-widest uppercase px-5 py-1.5 rounded-full" style={{ background: "var(--ink)" }}>
+              <div className="absolute -top-4 left-1/2 -translate-x-1/2 text-[color:var(--ink)] text-[10px] font-bold tracking-widest uppercase px-5 py-1.5 rounded-full" style={{ background: "var(--ink)", color: "var(--paper)" }}>
                 NAJBOLJ PRILJUBLJENO
               </div>
               <p className="font-extrabold text-lg text-[color:var(--ink)] mb-1">Plus</p>
-              <p className="text-sm text-gray-400 mb-6">Za večje dogodke in poroke</p>
+              <p className="text-sm text-gray-500 mb-6">Za večje dogodke in poroke</p>
               <div className="flex items-end gap-2 mb-7">
                 <span className="font-extrabold text-[3rem] leading-none" style={{ color: "var(--honey)" }}>49€</span>
-                <span className="text-gray-300 line-through text-lg mb-1.5">69€</span>
+                <span className="text-gray-500 line-through text-lg mb-1.5">69€</span>
               </div>
               <ul className="space-y-3 flex-1 mb-8">
                 {[
@@ -883,7 +883,7 @@ export default async function HomePage() {
                   </li>
                 ))}
               </ul>
-              <Link href="/dashboard/new?plan=plus" className="block text-center py-3.5 rounded-2xl font-bold text-sm text-[color:var(--ink)] transition-colors" style={{ background: "var(--ink)" }}>
+              <Link href="/dashboard/new?plan=plus" className="block text-center py-3.5 rounded-2xl font-bold text-sm text-[color:var(--ink)] transition-colors" style={{ background: "var(--ink)", color: "var(--paper)" }}>
                 Izberi Plus
               </Link>
             </div>
@@ -891,10 +891,10 @@ export default async function HomePage() {
             {/* PREMIUM */}
             <div className="bg-white border border-gray-200 rounded-3xl p-7 flex flex-col">
               <p className="font-extrabold text-lg text-[color:var(--ink)] mb-1">Premium</p>
-              <p className="text-sm text-gray-400 mb-6">Za tiste, ki želite vse</p>
+              <p className="text-sm text-gray-500 mb-6">Za tiste, ki želite vse</p>
               <div className="flex items-end gap-2 mb-7">
                 <span className="font-extrabold text-[3rem] leading-none text-[color:var(--ink)]">99€</span>
-                <span className="text-gray-300 line-through text-lg mb-1.5">149€</span>
+                <span className="text-gray-500 line-through text-lg mb-1.5">149€</span>
               </div>
               <ul className="space-y-3 flex-1 mb-8">
                 {[
@@ -936,18 +936,18 @@ export default async function HomePage() {
             <div className="flex-1 min-w-0">
               <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#FFC94D] mb-1.5">Za organizatorje</p>
               <p className="font-extrabold text-xl text-white">Eventi &amp; Business</p>
-              <p className="text-sm text-gray-300 mt-1.5 max-w-xl">
+              <p className="text-sm text-gray-500 mt-1.5 max-w-xl">
                 Živa foto stena na velikem zaslonu, sponzorske vsebine, zajem kontaktov
                 gostov, sodelavci in nadzor po meri. Paket sestavimo za vaš dogodek,
                 od poslovne konference do festivala.
               </p>
             </div>
             <div className="shrink-0 sm:text-right">
-              <p className="text-sm font-semibold text-gray-300 mb-2.5">Cena po dogovoru</p>
+              <p className="text-sm font-semibold text-gray-500 mb-2.5">Cena po dogovoru</p>
               <Link
                 href="/contact"
                 className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl font-bold text-sm text-[color:var(--ink)] hover:brightness-95 transition-all"
-                style={{ background: "var(--ink)" }}
+                style={{ background: "var(--ink)", color: "var(--paper)" }}
               >
                 Kontaktirajte nas
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
@@ -958,7 +958,7 @@ export default async function HomePage() {
           </div>
 
           {/* Guarantee badge */}
-          <div className="flex items-center justify-center gap-2 mt-10 text-sm text-gray-400">
+          <div className="flex items-center justify-center gap-2 mt-10 text-sm text-gray-500">
             <svg className="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.8}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
             </svg>
@@ -966,7 +966,7 @@ export default async function HomePage() {
           </div>
 
           {/* Trust badges — data protection */}
-          <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3 mt-6 text-sm text-gray-400">
+          <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3 mt-6 text-sm text-gray-500">
             {["GDPR skladno", "Strežniki v EU", "SSL šifriranje"].map((label) => (
               <span key={label} className="flex items-center gap-1.5">
                 <svg className="w-4 h-4 shrink-0" style={{ color: "#16A34A" }} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
@@ -996,7 +996,7 @@ export default async function HomePage() {
               <details key={faq.q} className="bg-white rounded-2xl group" style={{ border: "1px solid var(--hairline)" }}>
                 <summary className="flex items-center justify-between px-6 py-4 cursor-pointer font-semibold text-[color:var(--ink)] list-none text-[0.95rem]">
                   {faq.q}
-                  <svg className="w-5 h-5 text-gray-400 shrink-0 group-open:rotate-180 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                  <svg className="w-5 h-5 text-gray-500 shrink-0 group-open:rotate-180 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
                   </svg>
                 </summary>
@@ -1017,14 +1017,14 @@ export default async function HomePage() {
         <Link
           href="/dashboard/new"
           className="inline-flex items-center gap-2.5 px-10 py-5 text-[color:var(--ink)] font-bold text-lg rounded-full transition-all duration-200 shadow-2xl"
-          style={{ background: "var(--ink)", boxShadow: '0 12px 32px rgba(255,201,77,0.45)' }}
+          style={{ background: "var(--ink)", color: "var(--paper)", boxShadow: "0 12px 32px rgba(20,24,31,.22)" }}
         >
           Ustvari galerijo zdaj
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
           </svg>
         </Link>
-        <p className="mt-5 text-sm text-gray-400">Brez kreditne kartice • Pripravljeno v manj kot 2 minutah</p>
+        <p className="mt-5 text-sm text-gray-500">Brez kreditne kartice • Pripravljeno v manj kot 2 minutah</p>
       </section>
 
       {/* ── Footer ──────────────────────────────────────────────────────────── */}
@@ -1145,7 +1145,7 @@ export default async function HomePage() {
         <Link
           href="/dashboard/new"
           className="flex items-center justify-center gap-2 w-full py-3.5 rounded-xl text-[color:var(--ink)] font-bold text-base"
-          style={{ background: "var(--ink)", boxShadow: '0 10px 30px rgba(255,201,77,0.45)' }}
+          style={{ background: "var(--ink)", color: "var(--paper)", boxShadow: "0 10px 30px rgba(20,24,31,.20)" }}
         >
           Ustvari galerijo — brezplačno
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>

@@ -161,7 +161,7 @@ export function ExitIntentPopup({ lang }: { lang: LangCode }) {
 
         <div className="px-8 pt-6 pb-8">
           {/* Eyebrow */}
-          <span className="inline-block text-xs font-bold uppercase tracking-widest text-[#C9820A] mb-3">
+          <span className="inline-block text-xs font-bold uppercase tracking-widest text-[#8C6218] mb-3">
             {t.eyebrow}
           </span>
 

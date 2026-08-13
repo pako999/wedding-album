@@ -61,7 +61,7 @@ export function GuestcamLogo({
   const colors =
     variant === "onDark"
       ? { primary: "#FFFFFF", accent: "#FFC94D" }
-      : { primary: "#0F1729", accent: "#C9820A" };
+      : { primary: "#0F1729", accent: "#8C6218" };
   return (
     <span className={`inline-flex items-center gap-2 select-none ${className}`}>
       {showMark && <CamMark size={markSize} />}

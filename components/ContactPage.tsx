@@ -287,7 +287,7 @@ export function ContactPage({ lang }: { lang: LangCode }) {
                 <div className="text-3xl mb-3">{c.icon}</div>
                 <h3 className="font-bold text-[#0F1729] text-base mb-1">{c.title}</h3>
                 <p className="text-xs text-gray-500 mb-4">{c.desc}</p>
-                <p className="text-sm font-semibold text-[#C9820A] group-hover:underline break-all">{c.value}</p>
+                <p className="text-sm font-semibold text-[#8C6218] group-hover:underline break-all">{c.value}</p>
               </a>
             ))}
           </div>

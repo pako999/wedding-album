@@ -1098,7 +1098,7 @@ function OverviewTab({
         <div className="bg-white rounded-2xl border border-gray-100 p-5 flex flex-col gap-3">
           <div className="flex items-center justify-between">
             <h3 className="font-semibold text-gray-900 text-sm">Zadnje naloženo</h3>
-            <Link href={`/dashboard/${album.slug}?tab=gallery`} className="text-xs text-[#C9820A] hover:underline">
+            <Link href={`/dashboard/${album.slug}?tab=gallery`} className="text-xs text-[#8C6218] hover:underline">
               Poglej vse
             </Link>
           </div>
