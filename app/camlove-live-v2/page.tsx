@@ -49,12 +49,12 @@ export default function CamLoveLiveV2Page() {
 
       <section id="business" className="bg-[#171717] py-24 text-white">
         <div className="mx-auto grid max-w-[1320px] gap-12 px-5 sm:px-8 lg:grid-cols-2 lg:items-center">
-          <div className="relative min-h-[560px] overflow-hidden rounded-[30px] bg-black">
-            <Image src={businessImage} alt="Poslovni dogodek" fill unoptimized sizes="50vw" className="object-cover" />
+          <div className="min-h-[560px] overflow-hidden rounded-[30px] bg-black">
+            <img src={businessImage} alt="Poslovni dogodek" loading="lazy" decoding="async" className="h-[560px] w-full object-cover" />
           </div>
           <div>
             <span className="rounded-full bg-[#F4B400] px-4 py-2 text-xs font-black uppercase tracking-[.15em] text-black">CamLove za podjetja</span>
-            <h2 className="mt-6 text-4xl font-black leading-[.98] sm:text-6xl">Naj udeleženci ustvarijo vsebino za vaš dogodek.</h2>
+            <h2 className="mt-6 text-4xl font-black leading-[1.02] sm:text-6xl">Naj udeleženci ustvarijo vsebino za vaš dogodek.</h2>
             <p className="mt-6 text-lg leading-8 text-white/60">Za konference, promocije, sejme, športne dogodke, poslovna praznovanja in agencije. Udeleženci nalagajo prek QR kode, vsebine pa lahko prikažete v živo.</p>
             <div className="mt-8 grid gap-3 text-sm font-semibold text-white/70 sm:grid-cols-2">
               <span>✓ lastna grafična podoba</span><span>✓ Live Photo Wall</span><span>✓ zbiranje kontaktov ob soglasju</span><span>✓ sponzorski oglasi</span><span>✓ QR upload brez aplikacije</span><span>✓ prenos vseh vsebin</span>
