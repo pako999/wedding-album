@@ -1103,9 +1103,13 @@ function OverviewTab({
             </Link>
           </div>
           {last4.length > 0 ? (
-            <div className="grid grid-cols-2 gap-2 flex-1">
+            /* This card spans the full content width, so fixed h-28 tiles in
+               two columns became ~7:1 letterbox strips. Aspect-ratio tiles,
+               four across (2x2 on phones), keep the photos photo-shaped at
+               any card width. */
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 flex-1">
               {last4.map((photo) => (
-                <MediaThumb key={photo.id} photo={photo} heightClass="h-28" />
+                <MediaThumb key={photo.id} photo={photo} heightClass="aspect-[4/3]" />
               ))}
             </div>
           ) : (
