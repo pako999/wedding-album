@@ -56,7 +56,7 @@ export default async function AdminAffiliateDetailPage({
         <Link href="/admin/affiliates" className="text-xs text-gray-500 hover:text-[#0F1729]">
           ← Vsi partnerji
         </Link>
-        <h1 className="font-serif text-3xl text-[#0F1729] mt-2">{affiliate.name}</h1>
+        <h1 className="text-3xl font-extrabold tracking-tight text-[#0F1729] mt-2">{affiliate.name}</h1>
         <p className="text-sm text-gray-500 mt-0.5">{affiliate.email}</p>
       </div>
 

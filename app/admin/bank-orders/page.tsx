@@ -36,7 +36,7 @@ export default async function AdminBankOrders() {
     <div className="space-y-6">
       <header className="flex items-start justify-between gap-4">
         <div>
-          <h1 className="font-serif text-3xl text-[#0F1729]">Naročila po predračunu</h1>
+          <h1 className="text-3xl font-extrabold tracking-tight text-[#0F1729]">Naročila po predračunu</h1>
           <p className="text-sm text-gray-500 mt-1">
             {orders.length} naročil · čaka plačilo: {totalPending}€ · plačano: {totalPaid}€
           </p>

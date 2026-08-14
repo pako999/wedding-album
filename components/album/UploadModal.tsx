@@ -764,7 +764,7 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
             edges on narrow phones). */}
         <div className="px-4 sm:px-6 py-4 border-b border-gray-100 shrink-0 overflow-hidden">
           <div className="flex items-center justify-between gap-2 min-w-0">
-            <h2 className="min-w-0 flex-1 font-serif text-xl font-light text-[#0F1729] truncate">{t.uploadModalTitle}</h2>
+            <h2 className="min-w-0 flex-1 text-xl font-extrabold tracking-tight text-[#0F1729] truncate">{t.uploadModalTitle}</h2>
             <button onClick={onClose} disabled={uploading} className="shrink-0 w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 disabled:opacity-40">
               <svg className="w-4 h-4 text-[#0F1729]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -805,7 +805,7 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
                a service isn't freely given, so it can never gate upload. */
             <div className="space-y-3 min-w-0">
               <div>
-                <p className="font-serif text-lg font-light text-[#0F1729]">{lead.title}</p>
+                <p className="text-lg font-extrabold tracking-tight text-[#0F1729]">{lead.title}</p>
                 <p className="font-sans text-xs text-[#0F1729]/55 mt-0.5">{lead.subtitle}</p>
               </div>
               <div className="grid grid-cols-2 gap-2">
@@ -863,7 +863,7 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
                   <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                 </svg>
               </div>
-              <p className="font-serif text-xl font-light text-[#0F1729] mb-1 break-words">{t.successTitle(success)}</p>
+              <p className="text-xl font-extrabold tracking-tight text-[#0F1729] mb-1 break-words">{t.successTitle(success)}</p>
               <p className="font-sans text-sm text-[#0F1729]/60 mb-3 break-words">{t.successDesc}</p>
               {/* Approval note — demo albums show a "not public" notice instead */}
               <p className="font-sans text-xs text-[#0F1729]/45 bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 mb-6 leading-relaxed break-words">

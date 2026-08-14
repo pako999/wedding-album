@@ -105,7 +105,7 @@ export default async function AdminPayments() {
     <div className="space-y-6">
       <header className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <h1 className="font-serif text-3xl text-[#0F1729]">Plačila</h1>
+          <h1 className="text-3xl font-extrabold tracking-tight text-[#0F1729]">Plačila</h1>
           <p className="text-sm text-gray-500 mt-1">
             Zadnjih {enriched.length} transakcij iz Mollie · skupaj plačano {totalEur.toFixed(2)}€
           </p>

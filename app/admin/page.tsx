@@ -102,7 +102,7 @@ export default async function AdminOverview() {
   return (
     <div className="space-y-8">
       <header>
-        <h1 className="font-serif text-3xl text-[#0F1729]">Pregled</h1>
+        <h1 className="text-3xl font-extrabold tracking-tight text-[#0F1729]">Pregled</h1>
         <p className="text-sm text-gray-500 mt-1">Stanje platforme v realnem času.</p>
       </header>
 
@@ -199,7 +199,7 @@ function MiniStat({ label, value, hint }: { label: string; value: number | strin
   return (
     <div className="bg-white/70 backdrop-blur rounded-xl border border-[#FFE3A2]/60 p-3">
       <p className="text-[10px] uppercase tracking-wide text-[#C9820A] font-bold mb-1">{label}</p>
-      <p className="font-serif text-2xl text-[#0F1729] leading-none">{value}</p>
+      <p className="text-2xl font-extrabold tracking-tight text-[#0F1729] leading-none">{value}</p>
       {hint && <p className="text-[10px] text-gray-400 mt-1">{hint}</p>}
     </div>
   );
@@ -212,7 +212,7 @@ function Stat({ label, value, icon }: { label: string; value: number | string; i
       <span className="block text-[10px] sm:text-xs uppercase tracking-wide text-gray-400 font-semibold pr-7 break-words leading-tight mb-2">
         {label}
       </span>
-      <p className="font-serif text-2xl sm:text-3xl text-[#0F1729]">{value}</p>
+      <p className="text-2xl font-extrabold tracking-tight sm:text-3xl text-[#0F1729]">{value}</p>
     </div>
   );
 }
