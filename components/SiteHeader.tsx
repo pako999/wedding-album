@@ -141,24 +141,23 @@ export async function SiteHeader({
         </div>
 
         <details className="group ml-auto lg:hidden">
-          <summary className="relative z-[70] flex cursor-pointer list-none items-center gap-2 rounded-full border border-black/10 bg-white px-4 py-2.5 text-sm font-black shadow-sm [&::-webkit-details-marker]:hidden">
+          <summary className="relative z-[70] flex cursor-pointer list-none items-center gap-2 rounded-full border border-black/10 bg-white px-4 py-2.5 text-sm font-black shadow-sm transition-all group-open:fixed group-open:right-5 group-open:top-5 group-open:z-[80] group-open:h-12 group-open:w-12 group-open:justify-center group-open:rounded-full group-open:border-black group-open:bg-black group-open:p-0 group-open:text-white [&::-webkit-details-marker]:hidden sm:group-open:right-8">
             <span className="group-open:hidden">{copy.menu}</span>
             <span className="text-lg leading-none group-open:hidden">☰</span>
+            <span className="hidden text-2xl font-light leading-none group-open:block" aria-hidden="true">×</span>
+            <span className="sr-only group-open:not-sr-only group-open:absolute group-open:h-px group-open:w-px group-open:overflow-hidden">Zapri meni</span>
           </summary>
 
           <div className="fixed inset-0 z-[60] flex min-h-[100dvh] w-screen flex-col overflow-y-auto bg-[#FFFDF8] px-5 pb-8 pt-5 text-black sm:px-8">
-            <div className="flex items-center justify-between border-b border-black/10 pb-5">
+            <div className="flex min-h-12 items-center justify-between border-b border-black/10 pb-5 pr-16">
               <Link href={resolvedHome} aria-label="CamLove" className="shrink-0">
                 <CamLoveLogo size="sm" showMark />
               </Link>
-              <summary className="flex h-12 w-12 cursor-pointer list-none items-center justify-center rounded-full bg-black text-2xl font-light text-white [&::-webkit-details-marker]:hidden" aria-label="Zapri meni">
-                ×
-              </summary>
             </div>
 
-            <div className="flex flex-1 flex-col justify-center py-8">
+            <div className="flex flex-1 flex-col justify-center py-7 sm:py-10">
               <nav className="flex flex-col">
-                {mobileLinks.map(([href, label], index) => (
+                {mobileLinks.map(([href, label]) => (
                   <Link
                     key={href}
                     href={href}
