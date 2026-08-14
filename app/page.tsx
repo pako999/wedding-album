@@ -248,8 +248,7 @@ export default async function HomePage() {
           <div className="hidden md:flex items-center gap-9 text-sm font-medium text-gray-600">
             {[
               { href: "#how", label: "Kako deluje" },
-              { href: "#templates", label: "Predloge" },
-              { href: "#pricing", label: "Cenik" },
+                            { href: "#pricing", label: "Cenik" },
               { href: "/blog", label: "Blog" },
               { href: "#faq", label: "FAQ" },
             ].map((item) => {
@@ -304,8 +303,7 @@ export default async function HomePage() {
               lang="sl"
               links={[
                 { href: "#how", label: "Kako deluje" },
-                { href: "#templates", label: "Predloge" },
-                { href: "#pricing", label: "Cenik" },
+                                { href: "#pricing", label: "Cenik" },
                 { href: "#faq", label: "FAQ" },
                 { href: "/contact", label: "Kontakt" },
               ]}
@@ -445,97 +443,6 @@ export default async function HomePage() {
       </section>
 
       {/* ── Print Templates ─────────────────────────────────────────────────── */}
-      <section id="templates" className="py-24 bg-white">
-        <div className="max-w-6xl mx-auto px-6">
-          <div className="text-center mb-14">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold mb-4 uppercase tracking-widest" style={{ background: 'rgba(140,98,24,0.10)', color: "var(--honey)" }}>
-              Predloge za tisk
-            </div>
-            <h2 className="text-[2.5rem] font-extrabold text-[color:var(--ink)] mb-4">Kartice, ki goste spodbudijo k deljenju fotografij</h2>
-            <p className="text-gray-500 max-w-lg mx-auto leading-relaxed">
-              Izberite predlogo, dodajte svojo QR kodo in jo natisnite. Več gostov sodeluje, več nepozabnih trenutkov se zbere v vaši galeriji.
-            </p>
-          </div>
-
-          {/* 4-column template grid */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
-            {[
-              { name: 'Klasična',        bg: 'photo-1537633552985-df8429e8048b', headline: 'Capture the Love ♥',   sub: 'Skeniraj in deli',    rotate: -3, dark: false },
-              { name: 'Botanična',       bg: 'photo-1523438885200-e635ba2c371e', headline: 'Deli naše spomine',    sub: 'Share the memories',  rotate:  2, dark: false },
-              { name: 'Elegantna',       bg: 'photo-1606800052052-a08af7148866', headline: 'Thank You',            sub: 'Za skupne spomine',   rotate: -1, dark: false },
-              { name: 'Cvetlična',       bg: 'photo-1515934751635-c81c6bc9a2d8', headline: 'Scan & Share',         sub: 'Brez aplikacije',     rotate:  2, dark: false },
-              { name: 'Rustikalna',      bg: 'photo-1501286353178-1ec881214838', headline: 'Zberi spomine',        sub: 'Skeniraj QR kodo',    rotate: -2, dark: false },
-              { name: 'Moderna',         bg: 'photo-1520854221256-17451cc331bf', headline: 'Our Memories',         sub: 'Scan to share',       rotate:  1, dark: true  },
-              { name: 'Minimalistična',  bg: 'photo-1465495976277-4387d4b0b4c6', headline: 'Vaš dan',              sub: 'Dodaj fotografijo',   rotate: -2, dark: false },
-              { name: 'Skandinavska',    bg: 'photo-1529634806980-85c3dd6d34ac', headline: 'Share the Love',       sub: 'Scan the QR code',    rotate:  2, dark: true  },
-            ].map((t) => (
-              <div key={t.name} className="group relative rounded-2xl overflow-hidden cursor-pointer" style={{ boxShadow: '0 4px 20px rgba(0,0,0,0.12)' }}>
-                {/* Background photo */}
-                <div className="relative" style={{ height: 300 }}>
-                  <img
-                    src={`https://images.unsplash.com/${t.bg}?w=400&h=500&fit=crop&q=80`}
-                    alt={t.name}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
-                  {/* Slight overlay */}
-                  <div className="absolute inset-0" style={{ background: 'rgba(0,0,0,0.18)' }} />
-
-                  {/* Card overlay — the template preview */}
-                  <div
-                    className="absolute inset-0 flex items-center justify-center"
-                  >
-                    <div
-                      className={`${t.dark ? 'bg-[#0F1729] text-white' : 'bg-white/97 text-[color:var(--ink)]'} rounded-xl p-4 shadow-2xl text-center`}
-                      style={{ width: 130, transform: `rotate(${t.rotate}deg)` }}
-                    >
-                      <p className={`font-serif text-[11px] font-bold mb-0.5 leading-tight ${t.dark ? 'text-white' : 'text-[color:var(--ink)]'}`}>
-                        {t.headline}
-                      </p>
-                      <p className={`text-[8px] mb-2.5 ${t.dark ? 'text-white/60' : 'text-gray-500'}`}>{t.sub}</p>
-                      {/* Tiny QR pattern */}
-                      <div className="flex justify-center mb-2" style={{ transform: 'scale(0.48)', transformOrigin: 'center', height: 33, overflow: 'hidden' }}>
-                        <QRPattern />
-                      </div>
-                      <p className={`font-serif text-[8px] italic ${t.dark ? 'text-[#f9a8c0]' : 'text-[color:var(--honey)]'}`}>Ana & Marko</p>
-                      {t.dark ? null : <div className="w-8 h-px bg-gray-200 mx-auto mt-1.5" />}
-                      <p className={`text-[7px] mt-1 ${t.dark ? 'text-white/40' : 'text-gray-500'}`}>14. 06. 2025</p>
-                    </div>
-                  </div>
-
-                  {/* Hover: CTA overlay */}
-                  <div className="absolute inset-0 bg-[color:var(--ink)]/85 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center gap-3">
-                    <p className="text-[color:var(--ink)] font-bold text-sm">{t.name}</p>
-                    <Link
-                      href="/dashboard/new"
-                      className="bg-white font-bold text-xs px-5 py-2.5 rounded-full transition-transform hover:scale-105"
-                      style={{ color: '#0F1729' }}
-                    >
-                      Uporabi predlogo →
-                    </Link>
-                  </div>
-                </div>
-
-                {/* Name label */}
-                <div className="px-3 py-2.5 bg-white flex items-center justify-between">
-                  <span className="text-xs font-semibold text-[color:var(--ink)]">{t.name}</span>
-                  <span className="text-[10px] text-[color:var(--honey)] font-medium">PDF ↓</span>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div className="text-center mt-10">
-            <p className="text-sm text-gray-500 mb-5">Vsaka predloga vključuje vaše ime, datum in personalizirano QR kodo</p>
-            <Link
-              href="/dashboard/new"
-              className="inline-flex items-center gap-2.5 px-8 py-4 rounded-2xl font-bold text-sm transition-all duration-200 border-2"
-              style={{ borderColor: "var(--honey)", color: "var(--honey)" }}
-            >
-              Ustvari galerijo in prenesi predloge →
-            </Link>
-          </div>
-        </div>
-      </section>
 
       {/* ── How it works ────────────────────────────────────────────────────── */}
       <section id="how" style={{ background: "var(--paper)" }} className="py-24 relative overflow-hidden">

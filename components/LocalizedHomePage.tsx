@@ -61,24 +61,6 @@ function QRPattern() {
   );
 }
 
-/**
- * Visual data for the 8 template preview cards in the "Print templates"
- * section. Shared across all languages so each one renders identically
- * to the SL homepage — the localised `printTemplates[i].name` (and the
- * localised `useTemplateCta` hover label) layer on top.
- *
- * Order MUST match `printTemplates` in every Lang's COPY entry.
- */
-const TEMPLATE_VISUALS: Array<{ bg: string; headline: string; sub: string; rotate: number; dark: boolean }> = [
-  { bg: "photo-1537633552985-df8429e8048b", headline: "Capture the Love ♥", sub: "Scan & share",       rotate: -3, dark: false },
-  { bg: "photo-1523438885200-e635ba2c371e", headline: "Share Our Memories", sub: "Share the memories", rotate:  2, dark: false },
-  { bg: "photo-1606800052052-a08af7148866", headline: "Thank You",          sub: "For shared memories", rotate: -1, dark: false },
-  { bg: "photo-1515934751635-c81c6bc9a2d8", headline: "Scan & Share",       sub: "No app required",     rotate:  2, dark: false },
-  { bg: "photo-1501286353178-1ec881214838", headline: "Collect Memories",   sub: "Scan the QR code",    rotate: -2, dark: false },
-  { bg: "photo-1520854221256-17451cc331bf", headline: "Our Memories",       sub: "Scan to share",       rotate:  1, dark: true  },
-  { bg: "photo-1465495976277-4387d4b0b4c6", headline: "Your Day",           sub: "Add a photo",         rotate: -2, dark: false },
-  { bg: "photo-1529634806980-85c3dd6d34ac", headline: "Share the Love",     sub: "Scan the QR code",    rotate:  2, dark: true  },
-];
 
 // ─── Translation copy ────────────────────────────────────────────────────────
 interface Copy {
@@ -811,74 +793,6 @@ export async function LocalizedHomePage({ lang }: { lang: Lang }) {
         </div>
       </section>
 
-      {/* Print templates */}
-      <section id="templates" className="py-24 bg-white">
-        <div className="max-w-6xl mx-auto px-6">
-          <div className="text-center mb-14">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold mb-4 uppercase tracking-widest"
-              style={{ background: "rgba(255,201,77,0.18)", color: "#C9820A" }}>
-              {t.printEyebrow}
-            </div>
-            <h2 className="text-[2.5rem] font-extrabold text-[color:var(--ink)] mb-4">{t.printTitle}</h2>
-            <p className="text-gray-500 max-w-lg mx-auto leading-relaxed">{t.printSubtitle}</p>
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
-            {t.printTemplates.map((tpl, idx) => {
-              const v = TEMPLATE_VISUALS[idx] ?? TEMPLATE_VISUALS[0];
-              return (
-                <div key={tpl.name} className="group relative rounded-2xl overflow-hidden cursor-pointer" style={{ boxShadow: "0 4px 20px rgba(0,0,0,0.12)" }}>
-                  <div className="relative" style={{ height: 300 }}>
-                    <img
-                      src={`https://images.unsplash.com/${v.bg}?w=400&h=500&fit=crop&q=80`}
-                      alt={tpl.name}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    />
-                    <div className="absolute inset-0" style={{ background: "rgba(0,0,0,0.18)" }} />
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <div
-                        className={`${v.dark ? "bg-[#0F1729] text-white" : "bg-white/97 text-[color:var(--ink)]"} rounded-xl p-4 shadow-2xl text-center`}
-                        style={{ width: 130, transform: `rotate(${v.rotate}deg)` }}
-                      >
-                        <p className={`font-serif text-[11px] font-bold mb-0.5 leading-tight ${v.dark ? "text-white" : "text-[color:var(--ink)]"}`}>
-                          {v.headline}
-                        </p>
-                        <p className={`text-[8px] mb-2.5 ${v.dark ? "text-white/60" : "text-gray-500"}`}>{v.sub}</p>
-                        <div className="flex justify-center mb-2" style={{ transform: "scale(0.48)", transformOrigin: "center", height: 33, overflow: "hidden" }}>
-                          <QRPattern />
-                        </div>
-                        <p className={`font-serif text-[8px] italic ${v.dark ? "text-[#f9a8c0]" : "text-[#8C6218]"}`}>Ana &amp; Marko</p>
-                        {v.dark ? null : <div className="w-8 h-px bg-gray-200 mx-auto mt-1.5" />}
-                        <p className={`text-[7px] mt-1 ${v.dark ? "text-white/40" : "text-gray-500"}`}>14. 06. 2025</p>
-                      </div>
-                    </div>
-                    <div className="absolute inset-0 bg-[color:var(--ink)]/85 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center gap-3">
-                      <p className="text-[color:var(--ink)] font-bold text-sm">{tpl.name}</p>
-                      <Link
-                        href="/dashboard/new"
-                        className="bg-white font-bold text-xs px-5 py-2.5 rounded-full transition-transform hover:scale-105"
-                        style={{ color: "#0F1729" }}
-                      >
-                        {t.useTemplateCta} →
-                      </Link>
-                    </div>
-                  </div>
-                  <div className="px-3 py-2.5 bg-white flex items-center justify-between">
-                    <span className="text-xs font-semibold text-[color:var(--ink)]">{tpl.name}</span>
-                    <span className="text-[10px] text-[#8C6218] font-medium">PDF ↓</span>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-          <div className="text-center mt-10">
-            <p className="text-sm text-gray-500 mb-5">{t.printNote}</p>
-            <Link href="/dashboard/new" className="inline-flex items-center gap-2.5 px-8 py-4 rounded-2xl font-bold text-sm transition-all duration-200 border-2"
-              style={{ borderColor: "#8C6218", color: "#8C6218" }}>
-              {t.printCta}
-            </Link>
-          </div>
-        </div>
-      </section>
 
       {/* How it works */}
       <section id="how" style={{ background: "var(--paper)" }} className="py-24 relative overflow-hidden">
