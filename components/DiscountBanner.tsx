@@ -10,32 +10,32 @@ const STORAGE_KEY = "gc_banner_closed";
 
 const COPY: Record<LangCode, { text: string; cta: string; copied: string }> = {
   sl: {
-    text: "🎉 Samo zdaj: 15 % popust na prvi paket — koda",
+    text: "🎉 Samo zdaj: 15 % popust na prvi paket, koda",
     cta: "Vzamem popust →",
     copied: "Kopirano ✓",
   },
   hr: {
-    text: "🎉 Samo sada: 15 % popusta na prvi paket — kod",
+    text: "🎉 Samo sada: 15 % popusta na prvi paket, kod",
     cta: "Uzimam popust →",
     copied: "Kopirano ✓",
   },
   sr: {
-    text: "🎉 Samo sada: 15 % popusta na prvi paket — kod",
+    text: "🎉 Samo sada: 15 % popusta na prvi paket, kod",
     cta: "Uzimam popust →",
     copied: "Kopirano ✓",
   },
   de: {
-    text: "🎉 Nur jetzt: 15 % Rabatt auf das erste Paket — Code",
+    text: "🎉 Nur jetzt: 15 % Rabatt auf das erste Paket, Code",
     cta: "Rabatt sichern →",
     copied: "Kopiert ✓",
   },
   en: {
-    text: "🎉 Only now: 15% off your first plan — code",
+    text: "🎉 Only now: 15% off your first plan, code",
     cta: "Get discount →",
     copied: "Copied ✓",
   },
   es: {
-    text: "🎉 Solo ahora: 15 % en tu primer plan — código",
+    text: "🎉 Solo ahora: 15 % en tu primer plan, código",
     cta: "Quiero el descuento →",
     copied: "¡Copiado ✓",
   },
@@ -47,7 +47,7 @@ export function DiscountBanner({ lang }: { lang: LangCode }) {
   // Language comes from the PATH, not the `lang` prop.
   //
   // The root layout derives that prop from request headers, which don't
-  // exist while a route is statically prerendered — so every localized
+  // exist while a route is statically prerendered, so every localized
   // static page (/es, /en, /de/blog …) fell back to "sl" and rendered
   // this banner in Slovenian regardless of the page around it. The
   // pathname is correct under both static and dynamic rendering.
@@ -63,7 +63,7 @@ export function DiscountBanner({ lang }: { lang: LangCode }) {
   });
   const [copied, setCopied] = useState(false);
 
-  // Live path check — the root layout doesn't re-render on client-side
+  // Live path check, the root layout doesn't re-render on client-side
   // navigation, so this banner can persist onto the checkout/dashboard.
   // Hide it there: a customer on the upgrade page is already buying.
   if (

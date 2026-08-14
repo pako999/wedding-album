@@ -171,3 +171,20 @@ html, body {
     visibility: hidden !important;
   }
 }
+
+/* ── Full-screen mobile menu (components/MobileMenu.tsx) ─────────────────
+   Overlay fades, links rise in a 45ms stagger driven by inline
+   animation-delay. Under reduced motion both collapse to instant. */
+@keyframes mm-overlay-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes mm-link-in {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: none; }
+}
+.mm-overlay { animation: mm-overlay-in .2s ease-out both; }
+.mm-link    { animation: mm-link-in .45s cubic-bezier(.16,1,.3,1) both; }
+@media (prefers-reduced-motion: reduce) {
+  .mm-overlay, .mm-link { animation: none; }
+}

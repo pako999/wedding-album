@@ -8,7 +8,7 @@ import { STAND_VARIANTS, eur } from "@/lib/print-service";
 export const HOME_FAQS = [
   {
     q: "Ali morajo gostje prenesti aplikacijo?",
-    a: "Ne. Gostje odprejo album neposredno v brskalniku telefona. Skenirajo QR kodo in takoj naložijo fotografije ali videe — brez namestitve aplikacije in brez registracije.",
+    a: "Ne. Gostje odprejo album neposredno v brskalniku telefona. Skenirajo QR kodo in takoj naložijo fotografije ali videe, brez namestitve aplikacije in brez registracije.",
   },
   {
     q: "Ali so fotografije zasebne?",
@@ -37,7 +37,7 @@ export const HOME_FAQS = [
 ] as const;
 
 const EVENT_CARDS = [
-  { title: "Poroke", image: "/events/wedding-couple.webp", desc: "Vsi spontani trenutki gostov v enem poročnem albumu." },
+  { title: "Poroke", image: "/hero/wedding-avenue.webp", desc: "Vsi spontani trenutki gostov v enem poročnem albumu." },
   { title: "Rojstni dnevi", image: "/events/birthday-party.webp", desc: "Fotografije družine in prijateljev brez WhatsApp kaosa." },
   { title: "Baby shower", image: "/events/babyshower.webp", desc: "Nežni trenutki, dekoracija in fotografije vseh povabljenih." },
   { title: "Dekliščine in fantovščine", image: "/events/gromparty.webp", desc: "Ena QR koda za celotno zabavo in vse telefone." },
@@ -49,7 +49,7 @@ const EVENT_CARDS = [
 
 const FEATURES = [
   ["Brez aplikacije", "Gost samo skenira QR kodo in naloži vsebino neposredno iz brskalnika."],
-  ["Polna kakovost", "Fotografije ostanejo v originalni ločljivosti — brez WhatsApp stiskanja."],
+  ["Polna kakovost", "Fotografije ostanejo v originalni ločljivosti, brez WhatsApp stiskanja."],
   ["Popolna zasebnost", "Galerijo delite samo z gosti, po želji pa jo zaščitite tudi z geslom."],
   ["Fotografije + videi", "Na enem mestu zberete fotografije in videe iz vseh telefonov na dogodku."],
   ["Live Photo Wall", "Nove fotografije lahko v nekaj sekundah prikažete na TV-ju ali projektorju."],
@@ -146,7 +146,7 @@ export async function CamLoveHomePage() {
               <span className="mt-3 block text-[#B88700] sm:mt-2">En sam album.</span>
             </h1>
             <p className="mt-5 max-w-2xl text-[17px] leading-7 text-black/60 sm:mt-7 sm:text-xl sm:leading-8">
-              Gostje skenirajo QR kodo in dodajo fotografije ter videe neposredno v vašo zasebno galerijo — brez aplikacije in brez registracije.
+              Gostje skenirajo QR kodo in dodajo fotografije ter videe neposredno v vašo zasebno galerijo, brez aplikacije in brez registracije.
             </p>
             <div className="mt-7 flex flex-col gap-3 sm:mt-9 sm:flex-row">
               <Link href="/dashboard/new" className="rounded-full bg-[#F4B400] px-8 py-4 text-center text-base font-black text-black shadow-[0_12px_30px_rgba(244,180,0,.25)] transition-transform hover:scale-[1.02]">
@@ -162,7 +162,7 @@ export async function CamLoveHomePage() {
               <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#F4B400] text-lg">▣</span>
               <span>
                 <strong className="block text-sm font-black sm:text-base">Ne želite sami tiskati?</strong>
-                <span className="mt-1 block text-sm leading-6 text-black/58">QR kartice in namizne podstavke natisnemo mi ter jih pošljemo pripravljene za dogodek — že od {printedStandFrom}/kos.</span>
+                <span className="mt-1 block text-sm leading-6 text-black/58">QR kartice in namizne podstavke natisnemo mi ter jih pošljemo pripravljene za dogodek, že od {printedStandFrom}/kos.</span>
                 <span className="mt-2 block text-xs font-black text-[#8C6800]">Poglej tiskane QR podstavke →</span>
               </span>
             </a>
@@ -180,16 +180,21 @@ export async function CamLoveHomePage() {
           <div className="relative">
             <div className="absolute -left-6 top-20 h-52 w-52 rounded-full bg-[#F4B400]/20 blur-3xl" />
             <div className="absolute -right-10 bottom-10 h-64 w-64 rounded-full bg-[#F4B400]/15 blur-3xl" />
-            <div className="relative grid grid-cols-12 gap-2 sm:gap-3">
-              <div className="relative col-span-8 min-h-[390px] overflow-hidden rounded-[24px] bg-black/5 shadow-2xl sm:min-h-[520px] sm:rounded-[34px] lg:min-h-[620px]">
-                <Image src="/events/wedding-couple.webp" alt="Gostje na poroki ustvarjajo fotografije za CamLove album" fill priority sizes="(max-width:1024px) 66vw, 38vw" className="object-cover" />
+            {/* Collage: one tall wedding lead + two stacked tiles. 7+5 with
+                the lead spanning both rows, so every grid cell is filled;
+                the previous 8/4/4 split left an empty cell beside the
+                second tile. Both tiles show guests actually photographing
+                with phones, which is the product story, not decoration. */}
+            <div className="relative grid grid-cols-12 grid-rows-2 gap-2 sm:gap-3">
+              <div className="relative col-span-7 row-span-2 min-h-[420px] overflow-hidden rounded-[24px] bg-black/5 shadow-2xl sm:min-h-[540px] sm:rounded-[34px] lg:min-h-[620px]">
+                <Image src="/hero/wedding-kiss.webp" alt="Mladoporočenca med poljubom v drevoredu, fotografija s poroke" fill priority sizes="(max-width:1024px) 58vw, 33vw" className="object-cover" />
                 <div className="absolute bottom-5 left-5 hidden rounded-full bg-black/75 px-4 py-2 text-xs font-bold text-white backdrop-blur sm:block">Poroka · pravi trenutki gostov</div>
               </div>
-              <div className="relative col-span-4 min-h-[190px] overflow-hidden rounded-[20px] bg-black/5 shadow-xl sm:min-h-[254px] sm:rounded-[26px] lg:min-h-[300px]">
-                <Image src="/events/birthday-party.webp" alt="Rojstnodnevni dogodek" fill sizes="(max-width:1024px) 33vw, 20vw" className="object-cover" />
+              <div className="relative col-span-5 overflow-hidden rounded-[20px] bg-black/5 shadow-xl sm:rounded-[26px]">
+                <Image src="/events/party.webp" alt="Gost s telefonom fotografira par med zdravico na zabavi" fill sizes="(max-width:1024px) 42vw, 24vw" className="object-cover" />
               </div>
-              <div className="relative col-span-4 min-h-[190px] overflow-hidden rounded-[20px] bg-black/5 shadow-xl sm:min-h-[254px] sm:rounded-[26px] lg:min-h-[300px]">
-                <Image src="/events/babyshower.webp" alt="Baby shower dogodek" fill sizes="(max-width:1024px) 33vw, 20vw" className="object-cover" />
+              <div className="relative col-span-5 overflow-hidden rounded-[20px] bg-black/5 shadow-xl sm:rounded-[26px]">
+                <Image src="/events/babyshower.webp" alt="Gostje fotografirajo bodočo mamico na baby showerju" fill sizes="(max-width:1024px) 42vw, 24vw" className="object-cover" />
               </div>
             </div>
           </div>
@@ -287,7 +292,7 @@ export async function CamLoveHomePage() {
           </div>
           <div className="mt-14 grid gap-5 md:grid-cols-2 lg:grid-cols-4">
             {[
-              ["Klasična", "/events/wedding-couple.webp", "Capture the Love"],
+              ["Klasična", "/hero/wedding-walk-lg.webp", "Capture the Love"],
               ["Elegantna", "/events/template-elegant.webp", "Deli naše spomine"],
               ["Moderna", "/events/template-modern.webp", "Scan & Share"],
               ["Minimalistična", "/events/template-minimal.webp", "Naš dan"],

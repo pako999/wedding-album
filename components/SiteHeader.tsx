@@ -7,6 +7,7 @@ import {
   type LangCode,
 } from "@/components/LanguageSwitcher";
 import { HeaderAuthButtons } from "@/components/HeaderAuthButtons";
+import { MobileMenu } from "@/components/MobileMenu";
 
 interface NavLinkSet {
   how: string;
@@ -104,23 +105,30 @@ export async function SiteHeader({
 
   return (
     <header className="sticky top-0 z-50 border-b border-black/10 bg-[#FFFDF8]/95 backdrop-blur-xl">
-      <nav className="mx-auto flex h-[76px] max-w-[1500px] items-center gap-3 px-5 sm:px-7 lg:px-8">
+      <nav className="mx-auto flex h-[72px] max-w-[1500px] items-center gap-3 px-5 sm:px-7 lg:h-[80px] lg:px-8">
         <Link
           href={resolvedHome}
           className="shrink-0 transition-transform duration-200 hover:scale-[1.02]"
           aria-label="CamLove"
         >
-          <CamLoveLogo size="sm" showMark />
+          {/* sm on phones so the bar stays compact; md from lg up. */}
+          <span className="lg:hidden"><CamLoveLogo size="sm" showMark /></span>
+          <span className="hidden lg:block"><CamLoveLogo size="md" showMark /></span>
         </Link>
 
-        <div className="mx-auto hidden min-w-0 items-center gap-3 lg:flex xl:gap-5 2xl:gap-7">
+        <div className="mx-auto hidden min-w-0 items-center gap-4 lg:flex xl:gap-6 2xl:gap-8">
           {desktopLinks.map(([href, label]) => (
             <Link
               key={href}
               href={href}
-              className="whitespace-nowrap text-[13px] font-semibold text-black/58 transition-colors hover:text-black xl:text-sm"
+              className="group relative whitespace-nowrap py-2 text-[14px] font-bold text-black/65 transition-colors hover:text-black xl:text-[15px]"
             >
               {label}
+              {/* underline grows from the left on hover — transform-only */}
+              <span
+                aria-hidden
+                className="absolute inset-x-0 -bottom-0.5 h-[2.5px] origin-left scale-x-0 rounded-full bg-[#F4B400] transition-transform duration-200 ease-out group-hover:scale-x-100"
+              />
             </Link>
           ))}
         </div>
@@ -133,58 +141,25 @@ export async function SiteHeader({
           {!signedIn && (
             <Link
               href="/dashboard/new"
-              className="rounded-full bg-black px-4 py-3 text-[13px] font-black text-white transition-transform hover:scale-[1.02] xl:px-5 xl:text-sm"
+              className="rounded-full bg-black px-5 py-3 text-sm font-black text-white shadow-[0_8px_20px_rgba(0,0,0,.18)] transition-transform hover:scale-[1.03] active:scale-[0.98] xl:px-6 xl:text-[15px]"
             >
               {copy.cta}
             </Link>
           )}
         </div>
 
-        <details className="group ml-auto lg:hidden">
-          <summary className="relative z-[70] flex cursor-pointer list-none items-center gap-2 rounded-full border border-black/10 bg-white px-4 py-2.5 text-sm font-black shadow-sm transition-all group-open:fixed group-open:right-5 group-open:top-5 group-open:z-[80] group-open:h-12 group-open:w-12 group-open:justify-center group-open:rounded-full group-open:border-black group-open:bg-black group-open:p-0 group-open:text-white [&::-webkit-details-marker]:hidden sm:group-open:right-8">
-            <span className="group-open:hidden">{copy.menu}</span>
-            <span className="text-lg leading-none group-open:hidden">☰</span>
-            <span className="hidden text-2xl font-light leading-none group-open:block" aria-hidden="true">×</span>
-            <span className="sr-only group-open:not-sr-only group-open:absolute group-open:h-px group-open:w-px group-open:overflow-hidden">Zapri meni</span>
-          </summary>
-
-          <div className="fixed inset-0 z-[60] flex min-h-[100dvh] w-screen flex-col overflow-y-auto bg-[#FFFDF8] px-5 pb-8 pt-5 text-black sm:px-8">
-            <div className="flex min-h-12 items-center justify-between border-b border-black/10 pb-5 pr-16">
-              <Link href={resolvedHome} aria-label="CamLove" className="shrink-0">
-                <CamLoveLogo size="sm" showMark />
-              </Link>
-            </div>
-
-            <div className="flex flex-1 flex-col justify-center py-7 sm:py-10">
-              <nav className="flex flex-col">
-                {mobileLinks.map(([href, label]) => (
-                  <Link
-                    key={href}
-                    href={href}
-                    className="group/link flex items-center justify-between border-b border-black/10 py-4 text-[clamp(1.65rem,7vw,2.8rem)] font-black leading-none tracking-[-.045em]"
-                  >
-                    <span>{label}</span>
-                    <span className="text-xl font-medium text-[#F4B400] transition-transform group-hover/link:translate-x-1">↗</span>
-                  </Link>
-                ))}
-              </nav>
-            </div>
-
-            <div className="mt-auto border-t border-black/10 pt-5">
-              <div className="flex items-center justify-between gap-4">
-                <span className="text-xs font-black uppercase tracking-[.15em] text-black/40">{copy.switcherAria}</span>
-                <LanguageSwitcher current={lang} languages={hreflang} ariaLabel={copy.switcherAria} />
-              </div>
-              <Link
-                href="/dashboard/new"
-                className="mt-5 block rounded-full bg-[#F4B400] px-6 py-4 text-center text-base font-black text-black shadow-[0_12px_30px_rgba(244,180,0,.24)]"
-              >
-                {copy.cta} →
-              </Link>
-              <p className="mt-4 text-center text-xs font-semibold text-black/40">camlove.me · Every camera. One story.</p>
-            </div>
-          </div>
-        </details>
+        <div className="ml-auto lg:hidden">
+          <MobileMenu
+            links={mobileLinks}
+            ctaHref="/dashboard/new"
+            ctaLabel={copy.cta}
+            homeHref={resolvedHome}
+            menuLabel={copy.menu}
+            langSlot={<LanguageSwitcher current={lang} languages={hreflang} ariaLabel={copy.switcherAria} />}
+            langLabel={copy.switcherAria}
+            tagline="camlove.me · Every camera. One story."
+          />
+        </div>
       </nav>
     </header>
   );
