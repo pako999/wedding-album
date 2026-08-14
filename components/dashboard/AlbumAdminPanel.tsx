@@ -1,5 +1,6 @@
 "use client";
 
+import { SITE_URL } from "@/lib/urls";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -11,6 +12,13 @@ import { bunnyDisplayUrl } from "@/lib/storage/bunny";
 import { ZipDownloader } from "@/components/dashboard/ZipDownloader";
 import { CoverPhotoSettings } from "@/components/dashboard/CoverPhotoSettings";
 import { FilmStudio } from "@/components/dashboard/FilmStudio";
+import { PhotoWallCard } from "@/components/dashboard/PhotoWallCard";
+import { STAND_VARIANTS, eur } from "@/lib/print-service";
+import type { AlbumFlags } from "@/lib/album-flags";
+import { EventModerationCard } from "@/components/dashboard/EventModerationCard";
+import { WallCollaboratorsCard } from "@/components/dashboard/WallCollaboratorsCard";
+import { EventAppearanceCard } from "@/components/dashboard/EventAppearanceCard";
+import { EventLeadsCard } from "@/components/dashboard/EventLeadsCard";
 import { ALBUM_THEMES, themesForEvent } from "@/lib/album-themes";
 import { fbEvent } from "@/lib/fbpixel";
 
@@ -27,7 +35,7 @@ const PLAN_PRICES_EUR: Record<"basic" | "plus" | "premium", number> = {
   premium: 99,
 };
 
-type Tab = "overview" | "gallery" | "qr" | "settings" | "pending" | "film";
+type Tab = "overview" | "gallery" | "qr" | "events" | "settings" | "pending" | "film";
 
 interface Props {
   album: Album;
@@ -54,12 +62,56 @@ interface Props {
    *  forget they're viewing a customer's gallery and any destructive
    *  action they take applies to that customer's data. */
   viewingAsAdmin?: boolean;
+  /** Result of a just-completed Google Drive export, forwarded by
+   *  /api/google-drive/callback's redirect (?drive=ok|partial|denied|
+   *  empty|notconfigured|error). Undefined outside that redirect. */
+  driveResult?: string;
+  /** Number of files uploaded, forwarded alongside driveResult="ok"|"partial". */
+  driveCount?: string;
+  /** Whether the album currently has a password set. Computed server-side
+   *  from the raw (unstripped) row — `album.password` itself never reaches
+   *  this client component (see lib/album-view.ts → toOwnerAlbum), so this
+   *  boolean is the only password-related signal the dashboard gets. */
+  hasPassword?: boolean;
+  /** Photo Wall access token (see lib/wall-token.ts) — a secret separate
+   *  from `album.slug`, guaranteed non-null by getOrCreateWallToken() on
+   *  the server before this prop is ever passed down. */
+  wallToken: string;
+  /** Events/business package: guests must leave name/surname/email. */
+  guestDataCapture?: boolean;
+  /** Event flags (moderation & permissions), read once server-side. */
+  flags?: AlbumFlags;
 }
+
+/** Copy + tone for the one-time Google Drive result banner. */
+function driveBannerCopy(result: string, count?: string): { tone: "success" | "warning" | "neutral" | "error"; text: string } {
+  switch (result) {
+    case "ok":
+      return { tone: "success", text: `Galerija je shranjena v Google Drive${count ? ` (${count} datotek)` : ""}.` };
+    case "partial":
+      return { tone: "warning", text: `Del galerije je shranjen v Google Drive${count ? ` (${count} datotek)` : ""} — nekaj datotek ni bilo mogoče prenesti. Poskusite znova.` };
+    case "denied":
+      return { tone: "neutral", text: "Shranjevanje v Google Drive je bilo preklicano." };
+    case "empty":
+      return { tone: "neutral", text: "Galerija še nima objavljenih fotografij za shranjevanje v Google Drive." };
+    case "notconfigured":
+      return { tone: "error", text: "Shranjevanje v Google Drive trenutno ni na voljo. Kontaktirajte nas na info@guestcam.si." };
+    default:
+      return { tone: "error", text: "Prišlo je do napake pri shranjevanju v Google Drive. Poskusite znova ali nas kontaktirajte na info@guestcam.si." };
+  }
+}
+
+const DRIVE_BANNER_STYLES: Record<"success" | "warning" | "neutral" | "error", { bg: string; border: string; text: string; icon: string }> = {
+  success: { bg: "#f0fdf4", border: "#86efac", text: "#15803d", icon: "✅" },
+  warning: { bg: "#FFF9EC", border: "#FFC94D", text: "#92600A", icon: "⚠️" },
+  neutral: { bg: "#F9FAFB", border: "#E5E7EB", text: "#4B5563", icon: "ℹ️" },
+  error:   { bg: "#FEF2F2", border: "#FCA5A5", text: "#B91C1C", icon: "⚠️" },
+};
 
 // ─── Success Screen ───────────────────────────────────────────────────────────
 
 function NewAlbumSuccess({ album, paidPlan }: { album: Album; paidPlan?: "basic" | "plus" | "premium" }) {
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://www.guestcam.si";
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? SITE_URL;
   const albumUrl = `${appUrl}/${album.slug}`;
   // Always route to the dashboard — the upgrade page is a separate flow.
   const dashboardUrl = `/dashboard/${album.slug}`;
@@ -247,13 +299,24 @@ function NewAlbumSuccess({ album, paidPlan }: { album: Album; paidPlan?: "basic"
 
 // ─── Main Panel ───────────────────────────────────────────────────────────────
 
-export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activeTab, isNew, isUpgraded, paidAmount, paidPlan, ownerEmail, viewingAsAdmin }: Props) {
+export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activeTab, isNew, isUpgraded, paidAmount, paidPlan, ownerEmail, viewingAsAdmin, driveResult, driveCount, hasPassword, wallToken, guestDataCapture = false, flags }: Props) {
   const router = useRouter();
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://www.guestcam.si";
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? SITE_URL;
   const albumUrl = `${appUrl}/${album.slug}`;
   // Mobile sidebar drawer — hidden by default on small screens.
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [linkCopied, setLinkCopied] = useState(false);
+
+  // ── Google Drive export result banner ───────────────────────────────
+  // driveResult arrives once, via the redirect from /api/google-drive/
+  // callback. Show it, then strip ?drive=&n= from the URL so a page
+  // refresh doesn't keep re-showing it.
+  const [driveBanner, setDriveBanner] = useState(driveResult);
+  useEffect(() => {
+    if (!driveResult) return;
+    router.replace(`/dashboard/${album.slug}?tab=${activeTab}`, { scroll: false });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(albumUrl).then(() => {
@@ -376,6 +439,7 @@ export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activ
     { id: "gallery",   label: "Fotografije",   icon: "🖼" },
     { id: "film",      label: "Film Studio", icon: "🎬" },
     { id: "qr",        label: "QR koda",    icon: "📱" },
+    { id: "events",    label: "Eventi",     icon: "🎪" },
     { id: "settings",  label: "Nastavitve", icon: "⚙️" },
   ];
 
@@ -589,6 +653,7 @@ export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activ
                 {activeTab === "gallery"   && "Fotografije"}
                 {activeTab === "film"      && "🎬 Film Studio"}
                 {activeTab === "qr"        && "QR koda"}
+                {activeTab === "events"    && "🎪 Eventi"}
                 {activeTab === "settings"  && "Nastavitve"}
                 {activeTab === "pending"   && "Čakajoče fotografije"}
               </h1>
@@ -642,8 +707,42 @@ export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activ
               </svg>
               Prenesi ZIP
             </ZipDownloader>
+            <a
+              href={`/api/google-drive/auth?slug=${album.slug}`}
+              className="flex items-center gap-1.5 px-3 py-2 text-sm text-gray-600 border border-gray-200 rounded-lg hover:border-gray-300 transition-colors bg-white"
+              title="Shrani vse fotografije v svoj Google Drive"
+            >
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3 15a4 4 0 001 7.874M3 15a4 4 0 011-7.874M3 15h13.5M17 22a4 4 0 002-7.472M17 22a4 4 0 01-2-7.472m2 7.472H8m9-14.945A5.5 5.5 0 008.5 7.528M17 7.055A5.5 5.5 0 0110.5 12" />
+              </svg>
+              Shrani v Google Drive
+            </a>
           </div>
         </div>
+
+        {driveBanner && (() => {
+          const copy = driveBannerCopy(driveBanner, driveCount);
+          const style = DRIVE_BANNER_STYLES[copy.tone];
+          return (
+            <div
+              className="mx-4 sm:mx-8 mb-4 flex items-start gap-3 rounded-2xl border px-5 py-4"
+              style={{ background: style.bg, borderColor: style.border }}
+            >
+              <span className="text-lg shrink-0">{style.icon}</span>
+              <p className="text-sm flex-1" style={{ color: style.text }}>{copy.text}</p>
+              <button
+                onClick={() => setDriveBanner(undefined)}
+                className="shrink-0 p-1 rounded-lg hover:bg-black/5"
+                style={{ color: style.text }}
+                aria-label="Zapri"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+          );
+        })()}
 
 
         {/* ── TAB CONTENT ── */}
@@ -657,6 +756,9 @@ export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activ
               albumUrl={albumUrl}
               lastUploadDate={lastUploadDate}
               guestCount={guestCount}
+              hasPassword={!!hasPassword}
+              wallToken={wallToken}
+              guestDataCapture={guestDataCapture}
             />
           )}
 
@@ -683,11 +785,25 @@ export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activ
             <QrTab album={album} albumUrl={albumUrl} copyToClipboard={copyToClipboard} />
           )}
 
+          {/* EVENTS — all "running an event" controls in one place, in
+              sub-tabs: wall, moderation & permissions, lead capture,
+              collaborators. */}
+          {activeTab === "events" && (
+            <EventsTab
+              album={album}
+              wallToken={wallToken}
+              hasPassword={!!hasPassword}
+              guestDataCapture={guestDataCapture}
+              flags={flags}
+              ownerEmail={ownerEmail ?? null}
+            />
+          )}
+
           {/* SETTINGS */}
           {activeTab === "settings" && (
             <div className="max-w-lg space-y-6">
               <AccountInfoCard ownerEmail={ownerEmail ?? null} />
-              <AlbumSettingsForm album={album}>
+              <AlbumSettingsForm album={album} wallToken={wallToken} hasPassword={!!hasPassword}>
                 {/* Cover-photo picker injected into the settings form so it
                     sits inside the same card chrome, between the password
                     field and the theme picker. */}
@@ -777,16 +893,26 @@ function OverviewTab({
   albumUrl,
   lastUploadDate,
   guestCount,
+  hasPassword,
+  wallToken,
+  guestDataCapture,
 }: {
   album: Album;
   photos: Photo[];
   albumUrl: string;
   lastUploadDate: string;
   guestCount: number;
+  hasPassword: boolean;
+  wallToken: string;
+  guestDataCapture: boolean;
 }) {
   const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(albumUrl)}&bgcolor=ffffff&color=1a1a2e&qzone=2&format=png`;
   const last4 = photos.slice(0, 4);
   const usedPct = album.plan === "free" ? Math.min(100, Math.round(((album.photoCount ?? 0) / (album.maxPhotos ?? 20)) * 100)) : 0;
+  // A dedicated token-based link, deliberately separate from the main
+  // gallery's slug-based albumUrl — see lib/wall-token.ts.
+  const wallAppUrl = process.env.NEXT_PUBLIC_APP_URL ?? SITE_URL;
+  const wallUrl = `${wallAppUrl}/wall/${wallToken}`;
 
   return (
     <div className="space-y-6">
@@ -875,11 +1001,11 @@ function OverviewTab({
       {/* QR code + recent uploads — stacked on phones (each full width so
           the QR and the download buttons aren't squeezed), side by side
           from lg up. */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6 items-start">
         {/* QR Card */}
-        <div className="bg-white rounded-2xl border border-gray-100 p-5 flex flex-col gap-4">
+        <div className="rounded-2xl border border-gray-100 p-5 flex flex-col gap-4" style={{ background: "linear-gradient(180deg,#FFF9EC 0%,#FFFFFF 45%)" }}>
           <div>
-            <h3 className="font-semibold text-gray-900 text-sm">Tvoja QR koda</h3>
+            <h3 className="font-bold text-gray-900 text-base">📱 Tvoja galerija</h3>
             <p className="text-xs text-gray-400 mt-0.5">Natisni to kodo in jo postavi na mize.</p>
           </div>
           <a
@@ -914,13 +1040,65 @@ function OverviewTab({
               ⬇ Prenesi samo QR kodo
             </a>
           </div>
+
+          {/* Sits directly under the two "download it yourself" buttons —
+              the alternative to doing it by hand belongs next to the
+              by-hand option, not on a page they may never open. */}
+          <Link
+            href={`/dashboard/${album.slug}/upgrade#stands`}
+            className="flex items-center gap-3 rounded-xl border p-3 hover:brightness-[0.98] transition-all"
+            style={{ background: "#FFF9EC", borderColor: "rgba(255,201,77,0.5)" }}
+          >
+            <img
+              src="/print/stand-wood.webp"
+              alt=""
+              width={44}
+              height={62}
+              loading="lazy"
+              className="w-11 h-14 object-contain rounded-md shrink-0"
+            />
+            <span className="flex-1 min-w-0">
+              <span className="block text-sm font-bold text-gray-900">🖨 Ne želite tiskati sami?</span>
+              <span className="block text-xs text-gray-500 mt-0.5">
+                Natisnemo in dostavimo QR podstavke za mize (tisk na 200 g papir) — že od {eur(Math.min(...STAND_VARIANTS.map((v) => v.unitCents)))} na kos, samo ob nakupu paketa.
+              </span>
+            </span>
+            <svg className="w-4 h-4 text-[#C9820A] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+            </svg>
+          </Link>
         </div>
 
+        {/* Events pointer — the wall, moderation, leads and collaborators
+            now live under the Eventi tab; the overview keeps a compact
+            door to them instead of the full settings cards. */}
+        <Link
+          href={`/dashboard/${album.slug}?tab=events`}
+          className="rounded-2xl border border-gray-100 p-5 flex flex-col justify-between gap-3 hover:border-[#FFC94D] transition-colors"
+          style={{ background: "linear-gradient(180deg,#0F1729 0%,#1B2842 100%)" }}
+        >
+          <div>
+            <h3 className="font-bold text-white text-base">🎪 Eventi &amp; Foto stena</h3>
+            <p className="text-xs text-gray-300 mt-1">
+              Živa foto stena za TV, sponzorji, moderacija in dovoljenja, zajem
+              kontaktov gostov ter sodelavci — vse na enem mestu.
+            </p>
+          </div>
+          <span className="inline-flex items-center gap-1.5 text-sm font-bold text-[#FFC94D]">
+            Odpri nastavitve eventov
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+            </svg>
+          </span>
+        </Link>
+      </div>
+
+      <div className="grid grid-cols-1">
         {/* Recent photos card */}
         <div className="bg-white rounded-2xl border border-gray-100 p-5 flex flex-col gap-3">
           <div className="flex items-center justify-between">
             <h3 className="font-semibold text-gray-900 text-sm">Zadnje naloženo</h3>
-            <Link href={`/dashboard/${album.slug}?tab=gallery`} className="text-xs text-[#C9820A] hover:underline">
+            <Link href={`/dashboard/${album.slug}?tab=gallery`} className="text-xs text-[#8C6218] hover:underline">
               Poglej vse
             </Link>
           </div>
@@ -937,6 +1115,92 @@ function OverviewTab({
           )}
         </div>
       </div>
+
+    </div>
+  );
+}
+
+// ─── Events Tab ──────────────────────────────────────────────────────────────
+// One home for every "running an event" control, in sub-tabs — the wall
+// itself, moderation & permissions, guest lead capture, and wall-scoped
+// collaborators.
+
+function EventsTab({
+  album,
+  wallToken,
+  hasPassword,
+  guestDataCapture,
+  flags,
+  ownerEmail,
+}: {
+  album: Album & { pendingCount?: number };
+  wallToken: string;
+  hasPassword: boolean;
+  guestDataCapture: boolean;
+  flags?: AlbumFlags;
+  ownerEmail: string | null;
+}) {
+  const [sub, setSub] = useState<"wall" | "appearance" | "moderation" | "leads" | "collab">("wall");
+  const wallAppUrl = process.env.NEXT_PUBLIC_APP_URL ?? SITE_URL;
+  const wallUrl = `${wallAppUrl}/wall/${wallToken}`;
+  const SUBTABS = [
+    { id: "wall" as const,       label: "🖼 Foto stena" },
+    { id: "appearance" as const, label: "🎨 Videz" },
+    { id: "moderation" as const, label: "🛡 Moderacija" },
+    { id: "leads" as const,      label: "📇 Zajem podatkov" },
+    { id: "collab" as const,     label: "👥 Sodelavci" },
+  ];
+  return (
+    <div className="max-w-3xl">
+      <div className="flex gap-1 mb-5 border-b border-gray-200 overflow-x-auto">
+        {SUBTABS.map((t) => (
+          <button
+            key={t.id}
+            onClick={() => setSub(t.id)}
+            className={`px-4 py-2.5 text-sm font-semibold whitespace-nowrap border-b-2 -mb-px transition-colors ${
+              sub === t.id
+                ? "border-[#FFC94D] text-[#C9820A]"
+                : "border-transparent text-gray-500 hover:text-gray-800"
+            }`}
+          >
+            {t.label}
+          </button>
+        ))}
+      </div>
+
+      {sub === "wall" && (
+        <PhotoWallCard
+          wallUrl={wallUrl}
+          hasPassword={hasPassword}
+          albumSlug={album.slug}
+          moderationEnabled={album.moderationEnabled}
+          pendingCount={album.pendingCount ?? 0}
+          plan={album.plan}
+        />
+      )}
+      {sub === "appearance" && (
+        <EventAppearanceCard albumSlug={album.slug} coupleName={album.coupleName} />
+      )}
+      {sub === "moderation" && (
+        <EventModerationCard
+          albumSlug={album.slug}
+          initialFlags={flags ?? {
+            guestDataCapture,
+            allowPhotos: true,
+            allowVideos: true,
+            albumPermission: "view_upload",
+            disableDownload: false,
+            disableLikes: false,
+          }}
+          initialModeration={album.moderationEnabled}
+        />
+      )}
+      {sub === "leads" && (
+        <EventLeadsCard albumSlug={album.slug} initialEnabled={guestDataCapture} />
+      )}
+      {sub === "collab" && (
+        <WallCollaboratorsCard albumSlug={album.slug} ownerEmail={ownerEmail} />
+      )}
     </div>
   );
 }
@@ -1312,7 +1576,9 @@ function AccountInfoCard({ ownerEmail }: { ownerEmail: string | null }) {
   );
 }
 
-function AlbumSettingsForm({ album, children }: { album: Album; children?: React.ReactNode }) {
+function AlbumSettingsForm({ album, children, wallToken, hasPassword }: { album: Album; children?: React.ReactNode; wallToken: string; hasPassword: boolean }) {
+  const wallAppUrl = process.env.NEXT_PUBLIC_APP_URL ?? SITE_URL;
+  const wallUrl = `${wallAppUrl}/wall/${wallToken}`;
   const router = useRouter();
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -1321,32 +1587,58 @@ function AlbumSettingsForm({ album, children }: { album: Album; children?: React
   const [weddingDate, setWeddingDate]         = useState(album.weddingDate);
   const [location, setLocation]               = useState(album.location ?? "");
   const [notifyEmail, setNotifyEmail]         = useState(album.notifyEmail ?? "");
-  // NOTE: the password hash is deliberately NOT sent to this client
-  // component (see lib/album-view.ts → toOwnerAlbum) and is NOT part of
-  // the settings save body. The settings PATCH route treats an absent
-  // `password` as "leave unchanged", so existing galleries keep theirs.
-  // Owners who need to set/clear a password do so via the API.
   const [moderationEnabled, setModerationEnabled] = useState(album.moderationEnabled);
   const [isPublished, setIsPublished]         = useState(album.isPublished);
   const [eventType, setEventType]             = useState(album.eventType ?? "wedding");
   const [theme, setTheme]                     = useState(album.theme ?? "navy");
 
+  // NOTE: the password hash itself is deliberately NOT sent to this client
+  // component (see lib/album-view.ts → toOwnerAlbum) — only the boolean
+  // `hasPassword` prop, computed server-side. This form is write-only for
+  // the password: `passwordDraft` holds a NEW plaintext value the owner is
+  // typing (never the current one, which can't be recovered from its hash),
+  // and `hasPasswordNow` tracks local state so the UI updates immediately
+  // after a save without waiting on the router.refresh() round-trip.
+  const [passwordDraft, setPasswordDraft]     = useState("");
+  const [removePassword, setRemovePassword]   = useState(false);
+  const [hasPasswordNow, setHasPasswordNow]   = useState(hasPassword);
+  // Kept in memory only, just long enough to show a copyable Photo Wall
+  // link with ?pw= filled in — the one moment the plaintext actually
+  // exists anywhere, since the owner just typed it themselves.
+  const [justSetPassword, setJustSetPassword] = useState<string | null>(null);
+
   const save = async () => {
     setSaving(true);
+    const body: Record<string, unknown> = {
+      coupleName,
+      weddingDate,
+      location,
+      notifyEmail,
+      moderationEnabled,
+      isPublished,
+      eventType,
+      theme,
+    };
+    const newPassword = passwordDraft.trim();
+    if (removePassword) {
+      body.password = ""; // PATCH route treats empty string as "clear"
+    } else if (newPassword) {
+      body.password = newPassword;
+    } // else: omit `password` entirely → PATCH route leaves it unchanged
     await fetch(`/api/albums/${album.slug}/settings`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        coupleName,
-        weddingDate,
-        location,
-        notifyEmail,
-        moderationEnabled,
-        isPublished,
-        eventType,
-        theme,
-      }),
+      body: JSON.stringify(body),
     });
+    if (removePassword) {
+      setHasPasswordNow(false);
+      setRemovePassword(false);
+      setJustSetPassword(null);
+    } else if (newPassword) {
+      setHasPasswordNow(true);
+      setJustSetPassword(newPassword);
+      setPasswordDraft("");
+    }
     setSaving(false);
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
@@ -1413,6 +1705,58 @@ function AlbumSettingsForm({ album, children }: { album: Album; children?: React
           placeholder="Dobrodošli! Naložite svoje fotografije in delite spomine."
           className={`${inputClass} resize-none`}
         />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Geslo galerije</label>
+        <p className="text-xs text-gray-400 mb-2.5">
+          {hasPasswordNow
+            ? "Galerija je trenutno zaščitena z geslom — brez njega je nihče ne more odpreti."
+            : "Privzeto brez gesla — galerija je dostopna vsakomur s povezavo ali QR kodo."}
+        </p>
+        {!removePassword && (
+          <input
+            type="password"
+            value={passwordDraft}
+            onChange={(e) => setPasswordDraft(e.target.value)}
+            placeholder={hasPasswordNow ? "Novo geslo (pustite prazno, če ne spreminjate)" : "Nastavite geslo (neobvezno)"}
+            className={inputClass}
+            autoComplete="new-password"
+          />
+        )}
+        {hasPasswordNow && (
+          <label className="flex items-center gap-2 mt-2 text-xs text-gray-500">
+            <input
+              type="checkbox"
+              checked={removePassword}
+              onChange={(e) => {
+                setRemovePassword(e.target.checked);
+                if (e.target.checked) setPasswordDraft("");
+              }}
+            />
+            Odstrani geslo — galerija bo dostopna vsakomur s povezavo
+          </label>
+        )}
+        {justSetPassword && (
+          <div className="mt-3 rounded-xl border p-3" style={{ background: "#f0fdf4", borderColor: "#86efac" }}>
+            <p className="text-xs font-medium mb-1.5" style={{ color: "#15803d" }}>
+              Geslo shranjeno. Pripravljena povezava za Foto steno (z vključenim geslom, brez ponovnega vnosa na TV-ju):
+            </p>
+            <div className="flex items-center gap-2">
+              <code className="flex-1 min-w-0 truncate bg-white/70 px-2 py-1 rounded text-[11px]" style={{ color: "#15803d" }}>
+                {`${wallUrl}?pw=${justSetPassword}`}
+              </code>
+              <button
+                type="button"
+                onClick={() => navigator.clipboard.writeText(`${wallUrl}?pw=${encodeURIComponent(justSetPassword)}`)}
+                className="shrink-0 px-2 py-1 text-[11px] rounded bg-white border hover:bg-green-50"
+                style={{ borderColor: "#86efac", color: "#15803d" }}
+              >
+                Kopiraj
+              </button>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Slot for the cover-photo picker — passed in from AlbumAdminPanel.

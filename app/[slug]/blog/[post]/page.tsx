@@ -4,6 +4,7 @@ import { BlogPostPage } from "@/components/BlogPostPage";
 import { getAllSlugs, getPost, getTranslationMap, blogUrl } from "@/lib/blog";
 import type { LangCode } from "@/components/LanguageSwitcher";
 import { OG_IMAGE_URL, ogImage } from "@/lib/og";
+import { absoluteUrl } from "@/lib/urls";
 
 // Per-request dynamic — see app/[slug]/blog/page.tsx for the rationale.
 export const revalidate = 3600;
@@ -29,13 +30,25 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const post = await getPost(langCode, postSlug);
   if (!post) return {};
   const languages = await getTranslationMap(post.translationKey);
-  const canonical = `https://www.guestcam.si${blogUrl(langCode, post.slug)}`;
+  const canonical = absoluteUrl(blogUrl(langCode, post.slug));
   return {
     title: post.title,
     description: post.description,
     alternates: {
       canonical,
-      languages: { ...languages, "x-default": languages.en ?? canonical },
+      // x-default points at Slovenian, matching every other page on the
+      // site (homepages, guides, contact, blog index) and the helper in
+      // components/seo/EventTopicPage. These two blog routes were the
+      // only ones naming English as the site default, which both
+      // contradicted the rest of the hreflang graph and left `en` and
+      // `x-default` pointing at the same URL — the "more than one page
+      // for the same language" finding in the audit.
+      // A post that exists in only one language needs no x-default: it
+      // would just point at the page's own URL, re-creating the same
+      // "one URL, two hreflang codes" pattern this block exists to avoid.
+      languages: Object.keys(languages).length > 1
+        ? { ...languages, "x-default": languages.sl ?? languages.en ?? canonical }
+        : languages,
     },
     openGraph: {
       url: canonical,

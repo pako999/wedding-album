@@ -1,3 +1,4 @@
+import { SITE_URL } from "@/lib/urls";
 /**
  * Single source of truth for the Guestcam social-share card image.
  *
@@ -15,7 +16,7 @@
 export const OG_IMAGE_VERSION = 2;
 
 export const OG_IMAGE_URL =
-  `https://www.guestcam.si/og-image.png?v=${OG_IMAGE_VERSION}`;
+  `${SITE_URL}/og-image.png?v=${OG_IMAGE_VERSION}`;
 
 export const OG_IMAGE_WIDTH = 910;
 export const OG_IMAGE_HEIGHT = 1200;

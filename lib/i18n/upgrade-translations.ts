@@ -22,6 +22,11 @@ export interface UpgradeCopy {
   trustSecure: string;    // "Secure payment"
   trustInstant: string;   // "Instant activation"
 
+  // Data-protection trust strip (second row)
+  trustGdpr: string;       // "GDPR Compliant"
+  trustEuServers: string;  // "EU Data Centers"
+  trustEncryption: string; // "SSL Encryption"
+
   // Testimonial
   testimonialQuote: string;
   testimonialAuthor: string;
@@ -100,6 +105,7 @@ export interface UpgradeCopy {
   featureVideos10:         string; // "Up to 10 videos"
   featureVideos100:        string; // "Up to 100 videos"
   featureQrCode:           string; // "QR code for tables"
+  featureFullQuality:      string; // "Full-quality photo download"
   featureZipDownload:      string; // "Download all photos (ZIP)"
   featureAccess3mo:        string; // "3-month access"
   featureAccess1yr:        string; // "1-year access"
@@ -108,7 +114,33 @@ export interface UpgradeCopy {
   featureCustomPage:       string; // "Personalized page"
   featurePremiumTemplates: string; // "Premium templates"
   featureCustomQrText:     string; // "Custom text on QR card"
+  featurePhotoWall:        string; // "Photo Wall for TV / projector"
   featurePrioritySupport:  string; // "Priority support"
+
+  // Printed QR table stands (physical add-on)
+  standsTitle:    string; // "Printed QR table stands"
+  standsDesc:     string; // what we print and post
+  standsCountry:  string; // "Delivery country"
+  standsShipping: string; // "Shipping"
+  standsTotal:    string; // "Total"
+  standsQty:      string; // "Number of stands"
+  standsMaterial: string; // "Material"
+  standsWood:     string; // "Wooden"
+  standsGold:     string; // "Gold"
+  standsVat:      string; // "Prices include VAT"
+  /** Lead time. Stated at the point of purchase, not in a confirmation
+   *  email — a wedding date can't move, so someone ordering four days
+   *  out has to know before they pay. */
+  standsLeadTime: (days: number) => string;
+  standsZoom:     string; // accessible label for the enlarge control
+  standsClose:    string; // accessible label for the preview close button
+  /** "100+ pcs −15%, 200+ pcs −20%" — shown only until they qualify. */
+  standsVolumeHint: (q1: number, p1: number, q2: number, p2: number) => string;
+  /** "Order 100 and pay 21,00 € less" — thresholds mean a smaller order
+   *  can cost more, so offer the better deal rather than charge it. */
+  standsBetterOffer: (qty: number, save: string) => string;
+  standsPiece:    string; // unit in the per-stand hint, e.g. "ea" in "1,80 €/ea"
+  standsFrom:     string; // "from", prefixing the cheapest bundle price
 }
 
 export const UPGRADE_COPY: Record<Lang, UpgradeCopy> = {
@@ -120,6 +152,7 @@ export const UPGRADE_COPY: Record<Lang, UpgradeCopy> = {
     trustRefund: "30-dnevna garancija",
     trustSecure: "Varno plačilo",
     trustInstant: "Takojšnja aktivacija",
+    trustGdpr: "GDPR skladno", trustEuServers: "Strežniki v EU", trustEncryption: "SSL šifriranje",
     testimonialQuote: "Guestcam je bila najboljša odločitev za naš dan. Gostje so naložili čez 300 fotografij — brez aplikacij, brez zapletov. Vse fotografije so bile na enem mestu!",
     testimonialAuthor: "Ana & Marko",
     testimonialMeta: "500+ fotografij · 2026",
@@ -176,6 +209,7 @@ export const UPGRADE_COPY: Record<Lang, UpgradeCopy> = {
     featureVideos10:         "Do 10 videoposnetkov",
     featureVideos100:        "Do 100 videoposnetkov",
     featureQrCode:           "QR koda za mizo",
+    featureFullQuality:      "Prenos slik v polni kakovosti",
     featureZipDownload:      "Prenos vseh slik (ZIP)",
     featureAccess3mo:        "Dostop 3 mesece",
     featureAccess1yr:        "Dostop 1 leto",
@@ -184,7 +218,25 @@ export const UPGRADE_COPY: Record<Lang, UpgradeCopy> = {
     featureCustomPage:       "Personalizirana stran",
     featurePremiumTemplates: "Premium predloge",
     featureCustomQrText:     "Lasten napis na QR kartici",
+    featurePhotoWall:        "Foto stena za TV / projektor",
     featurePrioritySupport:  "Prioritetna podpora",
+    standsTitle:    "Natisnjeni QR podstavki za mize",
+    standsDesc:     "Natisnemo kartice z vašo QR kodo na 200 g papir, jih vstavimo v podstavke in pošljemo domov — pripravljeni za mize.",
+    standsCountry:  "Država dostave",
+    standsShipping: "Poštnina",
+    standsTotal:    "Skupaj",
+    standsQty:      "Število podstavkov",
+    standsMaterial: "Material",
+    standsWood:     "Leseni",
+    standsGold:     "Zlati",
+    standsVat:      "Cene vključujejo tisk in DDV.",
+    standsLeadTime: (d) => `Podstavke in tisk naročite vsaj ${d} dni pred dogodkom, da prispejo pravočasno. Za krajše roke nas takoj kontaktirajte — preverimo hitrejši tisk in dostavo.`,
+    standsZoom:     "Poglej v polni velikosti",
+    standsClose:    "Zapri",
+    standsVolumeHint: (q1, p1, q2, p2) => `${q1}+ kosov −${p1}%, ${q2}+ kosov −${p2}%`,
+    standsBetterOffer: (qty, save) => `Naročite ${qty} kosov in plačajte ${save} manj — kliknite za popravek.`,
+    standsPiece:    "kos",
+    standsFrom:     "od",
   },
   hr: {
     back: "Natrag",
@@ -194,6 +246,7 @@ export const UPGRADE_COPY: Record<Lang, UpgradeCopy> = {
     trustRefund: "30-dnevno jamstvo",
     trustSecure: "Sigurno plaćanje",
     trustInstant: "Trenutna aktivacija",
+    trustGdpr: "GDPR sukladno", trustEuServers: "Poslužitelji u EU", trustEncryption: "SSL enkripcija",
     testimonialQuote: "Guestcam je bio najbolja odluka za naš dan. Gosti su uploadali preko 300 fotografija — bez aplikacija, bez komplikacija. Sve fotografije na jednom mjestu!",
     testimonialAuthor: "Ana & Marko",
     testimonialMeta: "500+ fotografija · 2026",
@@ -250,6 +303,7 @@ export const UPGRADE_COPY: Record<Lang, UpgradeCopy> = {
     featureVideos10:         "Do 10 videa",
     featureVideos100:        "Do 100 videa",
     featureQrCode:           "QR kod za stol",
+    featureFullQuality:      "Preuzimanje slika u punoj kvaliteti",
     featureZipDownload:      "Preuzmi sve fotografije (ZIP)",
     featureAccess3mo:        "Pristup 3 mjeseca",
     featureAccess1yr:        "Pristup 1 godinu",
@@ -258,7 +312,25 @@ export const UPGRADE_COPY: Record<Lang, UpgradeCopy> = {
     featureCustomPage:       "Personalizirana stranica",
     featurePremiumTemplates: "Premium predlošci",
     featureCustomQrText:     "Vlastiti tekst na QR kartici",
+    featurePhotoWall:        "Foto zid za TV / projektor",
     featurePrioritySupport:  "Prioritetna podrška",
+    standsTitle:    "Tiskani QR stalci za stolove",
+    standsDesc:     "Tiskamo kartice s vašim QR kodom na 200 g papir, stavljamo ih u stalke i šaljemo vam — spremni za stolove.",
+    standsCountry:  "Država dostave",
+    standsShipping: "Poštarina",
+    standsTotal:    "Ukupno",
+    standsQty:      "Broj stalaka",
+    standsMaterial: "Materijal",
+    standsWood:     "Drveni",
+    standsGold:     "Zlatni",
+    standsVat:      "Cijene uključuju tisak i PDV.",
+    standsLeadTime: (d) => `Stalke i tisak naručite najmanje ${d} dana prije događaja kako bi stigli na vrijeme. Za kraće rokove kontaktirajte nas odmah — provjerit ćemo brži tisak i dostavu.`,
+    standsZoom:     "Pogledaj u punoj veličini",
+    standsClose:    "Zatvori",
+    standsVolumeHint: (q1, p1, q2, p2) => `${q1}+ komada −${p1}%, ${q2}+ komada −${p2}%`,
+    standsBetterOffer: (qty, save) => `Naručite ${qty} komada i platite ${save} manje — kliknite za ispravak.`,
+    standsPiece:    "kom",
+    standsFrom:     "od",
   },
   sr: {
     back: "Nazad",
@@ -268,6 +340,7 @@ export const UPGRADE_COPY: Record<Lang, UpgradeCopy> = {
     trustRefund: "30-dnevna garancija",
     trustSecure: "Sigurno plaćanje",
     trustInstant: "Trenutna aktivacija",
+    trustGdpr: "GDPR usklađeno", trustEuServers: "Serveri u EU", trustEncryption: "SSL enkripcija",
     testimonialQuote: "Guestcam je bio najbolja odluka za naš dan. Gosti su uploadovali preko 300 fotografija — bez aplikacija, bez komplikacija. Sve fotografije na jednom mestu!",
     testimonialAuthor: "Ana & Marko",
     testimonialMeta: "500+ fotografija · 2026",
@@ -324,6 +397,7 @@ export const UPGRADE_COPY: Record<Lang, UpgradeCopy> = {
     featureVideos10:         "Do 10 video zapisa",
     featureVideos100:        "Do 100 video zapisa",
     featureQrCode:           "QR kod za sto",
+    featureFullQuality:      "Preuzimanje slika u punom kvalitetu",
     featureZipDownload:      "Preuzmi sve fotografije (ZIP)",
     featureAccess3mo:        "Pristup 3 meseca",
     featureAccess1yr:        "Pristup 1 godinu",
@@ -332,7 +406,25 @@ export const UPGRADE_COPY: Record<Lang, UpgradeCopy> = {
     featureCustomPage:       "Personalizovana stranica",
     featurePremiumTemplates: "Premium šabloni",
     featureCustomQrText:     "Sopstveni tekst na QR kartici",
+    featurePhotoWall:        "Foto zid za TV / projektor",
     featurePrioritySupport:  "Prioritetna podrška",
+    standsTitle:    "Štampani QR stalci za stolove",
+    standsDesc:     "Štampamo kartice sa vašim QR kodom na 200 g papir, stavljamo ih u stalke i šaljemo vam — spremni za stolove.",
+    standsCountry:  "Država dostave",
+    standsShipping: "Poštarina",
+    standsTotal:    "Ukupno",
+    standsQty:      "Broj stalaka",
+    standsMaterial: "Materijal",
+    standsWood:     "Drveni",
+    standsGold:     "Zlatni",
+    standsVat:      "Cene uključuju štampu i PDV.",
+    standsLeadTime: (d) => `Stalke i štampu naručite najmanje ${d} dana pre događaja kako bi stigli na vreme. Za kraće rokove kontaktirajte nas odmah — proverićemo bržu štampu i dostavu.`,
+    standsZoom:     "Pogledaj u punoj veličini",
+    standsClose:    "Zatvori",
+    standsVolumeHint: (q1, p1, q2, p2) => `${q1}+ komada −${p1}%, ${q2}+ komada −${p2}%`,
+    standsBetterOffer: (qty, save) => `Naručite ${qty} komada i platite ${save} manje — kliknite za ispravku.`,
+    standsPiece:    "kom",
+    standsFrom:     "od",
   },
   en: {
     back: "Back",
@@ -342,6 +434,7 @@ export const UPGRADE_COPY: Record<Lang, UpgradeCopy> = {
     trustRefund: "30-day guarantee",
     trustSecure: "Secure payment",
     trustInstant: "Instant activation",
+    trustGdpr: "GDPR Compliant", trustEuServers: "EU Data Centers", trustEncryption: "SSL Encryption",
     testimonialQuote: "Guestcam was the best decision for our day. Guests uploaded over 300 photos — no apps, no hassle. All the memories in one place!",
     testimonialAuthor: "Ana & Marko",
     testimonialMeta: "500+ photos · 2026",
@@ -398,6 +491,7 @@ export const UPGRADE_COPY: Record<Lang, UpgradeCopy> = {
     featureVideos10:         "Up to 10 videos",
     featureVideos100:        "Up to 100 videos",
     featureQrCode:           "QR code for tables",
+    featureFullQuality:      "Full-quality photo download",
     featureZipDownload:      "Download all photos (ZIP)",
     featureAccess3mo:        "3-month access",
     featureAccess1yr:        "1-year access",
@@ -406,7 +500,25 @@ export const UPGRADE_COPY: Record<Lang, UpgradeCopy> = {
     featureCustomPage:       "Personalized page",
     featurePremiumTemplates: "Premium templates",
     featureCustomQrText:     "Custom text on the QR card",
+    featurePhotoWall:        "Photo Wall for TV / projector",
     featurePrioritySupport:  "Priority support",
+    standsTitle:    "Printed QR table stands",
+    standsDesc:     "We print your QR card on 200 gsm paper, fit it into the stand and post it to you — ready for the tables.",
+    standsCountry:  "Delivery country",
+    standsShipping: "Shipping",
+    standsTotal:    "Total",
+    standsQty:      "Number of stands",
+    standsMaterial: "Material",
+    standsWood:     "Wooden",
+    standsGold:     "Gold",
+    standsVat:      "Prices include printing and VAT.",
+    standsLeadTime: (d) => `Order stands and printing at least ${d} days before your event so they arrive in time. For anything shorter, contact us straight away — we\u2019ll check express printing and delivery.`,
+    standsZoom:     "View full size",
+    standsClose:    "Close",
+    standsVolumeHint: (q1, p1, q2, p2) => `${q1}+ pcs −${p1}%, ${q2}+ pcs −${p2}%`,
+    standsBetterOffer: (qty, save) => `Order ${qty} and pay ${save} less — tap to change.`,
+    standsPiece:    "ea",
+    standsFrom:     "from",
   },
   de: {
     back: "Zurück",
@@ -416,6 +528,7 @@ export const UPGRADE_COPY: Record<Lang, UpgradeCopy> = {
     trustRefund: "30-Tage-Garantie",
     trustSecure: "Sichere Zahlung",
     trustInstant: "Sofortige Aktivierung",
+    trustGdpr: "DSGVO-konform", trustEuServers: "EU-Server", trustEncryption: "SSL-Verschlüsselung",
     testimonialQuote: "Guestcam war die beste Entscheidung für unseren Tag. Die Gäste haben über 300 Fotos hochgeladen — ohne App, ohne Umstände. Alle Erinnerungen an einem Ort!",
     testimonialAuthor: "Ana & Marko",
     testimonialMeta: "500+ Fotos · 2026",
@@ -472,6 +585,7 @@ export const UPGRADE_COPY: Record<Lang, UpgradeCopy> = {
     featureVideos10:         "Bis zu 10 Videos",
     featureVideos100:        "Bis zu 100 Videos",
     featureQrCode:           "QR-Code für den Tisch",
+    featureFullQuality:      "Fotodownload in voller Qualität",
     featureZipDownload:      "Alle Fotos herunterladen (ZIP)",
     featureAccess3mo:        "3 Monate Zugang",
     featureAccess1yr:        "1 Jahr Zugang",
@@ -480,7 +594,25 @@ export const UPGRADE_COPY: Record<Lang, UpgradeCopy> = {
     featureCustomPage:       "Personalisierte Seite",
     featurePremiumTemplates: "Premium-Vorlagen",
     featureCustomQrText:     "Eigener Text auf der QR-Karte",
+    featurePhotoWall:        "Foto-Wall für TV / Beamer",
     featurePrioritySupport:  "Prioritäts-Support",
+    standsTitle:    "Gedruckte QR-Tischaufsteller",
+    standsDesc:     "Wir drucken Ihre QR-Karte auf 200-g-Papier, setzen sie in den Aufsteller ein und senden sie Ihnen zu — fertig für die Tische.",
+    standsCountry:  "Lieferland",
+    standsShipping: "Versand",
+    standsTotal:    "Gesamt",
+    standsQty:      "Anzahl der Aufsteller",
+    standsMaterial: "Material",
+    standsWood:     "Holz",
+    standsGold:     "Gold",
+    standsVat:      "Preise inkl. Druck und MwSt.",
+    standsLeadTime: (d) => `Bestellen Sie Aufsteller und Druck mindestens ${d} Tage vor Ihrer Veranstaltung, damit sie rechtzeitig ankommen. Bei kürzeren Fristen kontaktieren Sie uns sofort — wir prüfen Express-Druck und -Versand.`,
+    standsZoom:     "In voller Größe ansehen",
+    standsClose:    "Schließen",
+    standsVolumeHint: (q1, p1, q2, p2) => `ab ${q1} Stk. −${p1}%, ab ${q2} Stk. −${p2}%`,
+    standsBetterOffer: (qty, save) => `Bestellen Sie ${qty} Stück und zahlen Sie ${save} weniger — zum Ändern klicken.`,
+    standsPiece:    "St.",
+    standsFrom:     "ab",
   },
   es: {
     back: "Atrás",
@@ -490,6 +622,7 @@ export const UPGRADE_COPY: Record<Lang, UpgradeCopy> = {
     trustRefund: "Garantía de 30 días",
     trustSecure: "Pago seguro",
     trustInstant: "Activación inmediata",
+    trustGdpr: "Cumple GDPR", trustEuServers: "Servidores en la UE", trustEncryption: "Cifrado SSL",
     testimonialQuote: "Guestcam fue la mejor decisión para nuestro día. Los invitados subieron más de 300 fotos — sin apps, sin líos. ¡Todos los recuerdos en un solo lugar!",
     testimonialAuthor: "Ana & Marko",
     testimonialMeta: "500+ fotos · 2026",
@@ -546,6 +679,7 @@ export const UPGRADE_COPY: Record<Lang, UpgradeCopy> = {
     featureVideos10:         "Hasta 10 vídeos",
     featureVideos100:        "Hasta 100 vídeos",
     featureQrCode:           "Código QR para las mesas",
+    featureFullQuality:      "Descarga de fotos en calidad completa",
     featureZipDownload:      "Descarga todas las fotos (ZIP)",
     featureAccess3mo:        "Acceso 3 meses",
     featureAccess1yr:        "Acceso 1 año",
@@ -554,13 +688,32 @@ export const UPGRADE_COPY: Record<Lang, UpgradeCopy> = {
     featureCustomPage:       "Página personalizada",
     featurePremiumTemplates: "Plantillas premium",
     featureCustomQrText:     "Texto propio en la tarjeta QR",
+    featurePhotoWall:        "Muro de fotos para TV / proyector",
     featurePrioritySupport:  "Soporte prioritario",
+    standsTitle:    "Soportes de mesa QR impresos",
+    standsDesc:     "Imprimimos tu tarjeta QR en papel de 200 g, la montamos en el soporte y te lo enviamos — listo para las mesas.",
+    standsCountry:  "País de entrega",
+    standsShipping: "Envío",
+    standsTotal:    "Total",
+    standsQty:      "Número de soportes",
+    standsMaterial: "Material",
+    standsWood:     "Madera",
+    standsGold:     "Dorado",
+    standsVat:      "Precios con impresión e IVA incluidos.",
+    standsLeadTime: (d) => `Pide los soportes y la impresión al menos ${d} días antes de tu evento para que lleguen a tiempo. Si tienes menos margen, contáctanos de inmediato — comprobaremos impresión y envío urgentes.`,
+    standsZoom:     "Ver a tamaño completo",
+    standsClose:    "Cerrar",
+    standsVolumeHint: (q1, p1, q2, p2) => `${q1}+ uds −${p1}%, ${q2}+ uds −${p2}%`,
+    standsBetterOffer: (qty, save) => `Pide ${qty} unidades y paga ${save} menos — toca para cambiar.`,
+    standsPiece:    "ud",
+    standsFrom:     "desde",
   },
 };
 
 /** Feature keys used by each plan — keyed the same way in every locale. */
 export const PLAN_FEATURE_KEYS: Record<"basic" | "plus" | "premium", (keyof UpgradeCopy)[]> = {
   basic: [
+    "featureFullQuality",
     "featurePhotos1000",
     "featureVideos10",
     "featureQrCode",
@@ -568,6 +721,7 @@ export const PLAN_FEATURE_KEYS: Record<"basic" | "plus" | "premium", (keyof Upgr
     "featureAccess3mo",
   ],
   plus: [
+    "featureFullQuality",
     "featurePhotos5000",
     "featureVideos100",
     "featureQrCode",
@@ -578,6 +732,7 @@ export const PLAN_FEATURE_KEYS: Record<"basic" | "plus" | "premium", (keyof Upgr
     "featurePremiumTemplates",
   ],
   premium: [
+    "featureFullQuality",
     "featurePhotosUnlimited",
     "featureVideos100",
     "featureQrCode",
@@ -587,6 +742,7 @@ export const PLAN_FEATURE_KEYS: Record<"basic" | "plus" | "premium", (keyof Upgr
     "featureCustomPage",
     "featurePremiumTemplates",
     "featureCustomQrText",
+    "featurePhotoWall",
     "featurePrioritySupport",
   ],
 };

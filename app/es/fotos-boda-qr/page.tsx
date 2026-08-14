@@ -1,3 +1,4 @@
+import { SITE_URL } from "@/lib/urls";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { GUIDE_HREFLANG, LanguageSwitcher } from "@/components/LanguageSwitcher";
@@ -11,7 +12,7 @@ export const metadata: Metadata = {
   description:
     "App para fotos de boda con código QR: los invitados escanean, tú recibes todas las fotos en calidad original. Sin instalar nada. Configura en 2 minutos.",
   openGraph: {
-    url: "https://www.guestcam.si/es/fotos-boda-qr",
+    url: `${SITE_URL}/es/fotos-boda-qr`,
     title: "Código QR para boda: fotos de tus invitados 2026",
     description:
       "Recopila todas las fotos de tus invitados con un código QR. Sin app, resolución completa, privado y seguro.",
@@ -25,15 +26,15 @@ export const metadata: Metadata = {
     images: [OG_IMAGE_URL],
   },
   alternates: {
-    canonical: "https://www.guestcam.si/es/fotos-boda-qr",
+    canonical: `${SITE_URL}/es/fotos-boda-qr`,
     languages: {
-      "sl": "https://www.guestcam.si/sl/qr-koda-poroka",
-      "hr": "https://www.guestcam.si/hr/qr-kod-vjencanje",
-      "sr": "https://www.guestcam.si/sr/qr-kod-vencanje",
-      "de": "https://www.guestcam.si/de/hochzeitsfotos-sammeln",
-      "en": "https://www.guestcam.si/en/wedding-photo-sharing",
-      "es": "https://www.guestcam.si/es/fotos-boda-qr",
-      "x-default": "https://www.guestcam.si/sl/qr-koda-poroka",
+      "sl": `${SITE_URL}/sl/qr-koda-poroka`,
+      "hr": `${SITE_URL}/hr/qr-kod-vjencanje`,
+      "sr": `${SITE_URL}/sr/qr-kod-vencanje`,
+      "de": `${SITE_URL}/de/hochzeitsfotos-sammeln`,
+      "en": `${SITE_URL}/en/wedding-photo-sharing`,
+      "es": `${SITE_URL}/es/fotos-boda-qr`,
+      "x-default": `${SITE_URL}/sl/qr-koda-poroka`,
     },
   },
 };

@@ -1,0 +1,254 @@
+{
+  "slug": "share-wedding-photos-without-an-app",
+  "lang": "en",
+  "title": "Sharing wedding photos without an app – how it works in 2026",
+  "description": "How can guests share photos from your wedding without downloading an app? A QR code plus a browser — simple enough for every generation.",
+  "translationKey": "wedding-photo-sharing-no-app",
+  "publishedAt": "2026-06-21",
+  "updatedAt": "2026-06-21",
+  "author": "Guestcam Team",
+  "category": "vodnik",
+  "readingTime": 7,
+  "tags": [
+    "share wedding photos",
+    "no app",
+    "QR code",
+    "wedding photos",
+    "Guestcam"
+  ],
+  "tldr": "Guests scan a QR code with their phone camera and upload photos straight from the browser — no app download, no sign-up.",
+  "coverImage": "https://images.unsplash.com/photo-1606216794074-735e91aa2c92?w=1600&h=900&fit=crop&q=80&auto=format",
+  "coverAlt": "Wedding guests taking photos on their phones and sharing memories",
+  "content": [
+    {
+      "type": "p",
+      "text": "Picture this: you've captured 200 moments at a friend's wedding. The couple asks everyone to share their pictures. You follow a link to some app, realise you have to install it, create an account, grant camera access... and you give up. That is exactly what happens at every wedding where collecting the photos depends on a download."
+    },
+    {
+      "type": "stat",
+      "value": "67 %",
+      "label": "of guests abandon sharing their photos if an app has to be downloaded first",
+      "source": "Guestcam internal data, 2025"
+    },
+    {
+      "type": "h2",
+      "text": "Why an app kills guest participation"
+    },
+    {
+      "type": "p",
+      "text": "Installing an app sounds trivial — in practice it is the single biggest obstacle. On the wedding day your guests are in formal clothes, holding a drink, in the middle of a conversation. None of those moments is a good time to:\n\n– hunt for the app in the store\n– type a password or sign up\n– approve permissions (camera, storage, location...)\n– wait for a download"
+    },
+    {
+      "type": "callout",
+      "text": "Every extra step cuts the share of guests who finish the process. An app that has to be installed typically loses 50–70% of potential participants before they ever see the gallery."
+    },
+    {
+      "type": "p",
+      "text": "The mix of generations at a wedding matters more than anything here. Older relatives, children and guests with no technical habit — they are the ones with the loveliest candid shots, and the least appetite for installing something new."
+    },
+    {
+      "type": "image",
+      "src": "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=1200&h=720&fit=crop&q=82&auto=format",
+      "alt": "A grandmother photographing the newlyweds on her phone",
+      "caption": "The guests who won't install an app are precisely the ones holding photos you have never seen.",
+      "credit": "Foto: Unsplash"
+    },
+    {
+      "type": "h2",
+      "text": "So how does app-free sharing actually work?"
+    },
+    {
+      "type": "p",
+      "text": "The answer is a QR code plus a web browser — technology already built into every modern phone, requiring nothing extra. The flow looks like this:"
+    },
+    {
+      "type": "ol",
+      "items": [
+        "A guest spots the QR code on the table (a card, a poster or a screen).",
+        "They open the phone camera and point it at the code — the same thing they do for a restaurant menu.",
+        "The browser opens the wedding gallery automatically.",
+        "The guest taps “Add photo”, picks images from the camera roll and hits upload.",
+        "The photos appear in the shared gallery immediately — no sign-up, no password."
+      ]
+    },
+    {
+      "type": "p",
+      "text": "All of it happens inside the mobile browser (Chrome, Safari, Firefox — it makes no difference). There is nothing to install. The guest closes the browser and gets back to the party."
+    },
+    {
+      "type": "image",
+      "src": "https://images.unsplash.com/photo-1531058020387-3be344556be6?w=1200&h=720&fit=crop&q=82&auto=format",
+      "alt": "A QR code on a wedding table being scanned by guests",
+      "caption": "One QR code on the table — one scan, and every guest lands in the same gallery.",
+      "credit": "Foto: Unsplash"
+    },
+    {
+      "type": "h2",
+      "text": "Side by side: with an app vs. without"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Criterion",
+        "App required",
+        "No app (Guestcam)"
+      ],
+      "rows": [
+        [
+          "Average guest participation",
+          "30–50%",
+          "75–90%"
+        ],
+        [
+          "Steps to an uploaded photo",
+          "5–8",
+          "2–3"
+        ],
+        [
+          "Compatibility (older phones)",
+          "Limited",
+          "Any phone with a browser"
+        ],
+        [
+          "Storage",
+          "Capped by plan",
+          "Original resolution"
+        ],
+        [
+          "Gallery privacy",
+          "Depends on the app",
+          "Private, QR code only"
+        ],
+        [
+          "Internet needed to view",
+          "Yes",
+          "Yes"
+        ],
+        [
+          "Works on iPhone and Android",
+          "Usually",
+          "Always"
+        ]
+      ]
+    },
+    {
+      "type": "h2",
+      "text": "Why this matters so much at a wedding"
+    },
+    {
+      "type": "p",
+      "text": "An average wedding puts 80–120 guests from three or four generations in one room. The young couple at the table photographs everything; grandma and grandad are sitting two tables away. Every one of them has a phone in a pocket — what differs is the willingness to install something new on it."
+    },
+    {
+      "type": "p",
+      "text": "A QR code on the table doesn't know the difference: it works the same for both. Grandma doesn't need to know what an “app store” is — she can scan a code, because she already does it for the menu at a restaurant."
+    },
+    {
+      "type": "h2",
+      "text": "How to set up app-free photo sharing for your wedding"
+    },
+    {
+      "type": "p",
+      "text": "Guestcam is a free platform built on exactly this principle — no app for guests, no sign-up, no technical fuss. Here is the setup, in under five minutes:"
+    },
+    {
+      "type": "ol",
+      "items": [
+        "Go to guestcam.si/en and click “Create gallery”.",
+        "Enter the couple's names and the wedding date.",
+        "Download the QR code (a print-ready PDF).",
+        "Print table cards, or one large poster for the entrance.",
+        "On the day, guests scan and upload — and you watch the gallery fill up live."
+      ]
+    },
+    {
+      "type": "quote",
+      "text": "I didn't believe it would work. My 74-year-old mother-in-law scanned the QR code and uploaded her pictures without any help at all. We ended up with 340 photos.",
+      "cite": "Ana P., bride, June 2025"
+    },
+    {
+      "type": "h2",
+      "text": "Practical tips for the highest turnout"
+    },
+    {
+      "type": "p",
+      "text": "Even with a QR code, some things lift participation and some things sink it. Here is what genuinely works:"
+    },
+    {
+      "type": "ul",
+      "items": [
+        "Put a QR code on every table — not just at the entrance. A guest who misses it on the way in will see it while sitting down.",
+        "Have the DJ or host mention the gallery 2–3 times during the evening: “Scan the QR code on your table and share your photos with the couple.”",
+        "Put a personal line under the code: “Ana & Marko – your memories”.",
+        "The day after, send the QR code to every guest on WhatsApp with “Any photos you haven't shared yet?”.",
+        "Tuck a card with the QR code into the favour guests take home."
+      ]
+    },
+    {
+      "type": "callout",
+      "text": "In our own data, weddings with a QR code on every table AND a DJ or host announcing it collect roughly 3× more photos than those with a single code at the door."
+    },
+    {
+      "type": "h2",
+      "text": "What happens to the photos after the wedding?"
+    },
+    {
+      "type": "p",
+      "text": "The gallery stays private, reachable only by you and the guests holding the QR code. You can download every photo at original resolution — Guestcam never compresses or alters the images. The Premium plan includes:"
+    },
+    {
+      "type": "ul",
+      "items": [
+        "Unlimited photos and videos",
+        "A live gallery to project on a screen during the evening",
+        "One-click ZIP download of everything",
+        "Storage for up to 1 year",
+        "Moderation — you approve which photos everyone can see"
+      ]
+    },
+    {
+      "type": "cta",
+      "text": "Create your free app-free gallery",
+      "href": "/dashboard/new"
+    },
+    {
+      "type": "h2",
+      "text": "Frequently asked questions"
+    },
+    {
+      "type": "faq",
+      "q": "Do guests have to install anything?",
+      "a": "No. Guests scan the QR code with the phone camera and the gallery opens in the browser. No installation, no sign-up."
+    },
+    {
+      "type": "faq",
+      "q": "Does it work on older phones?",
+      "a": "Yes, as long as the phone has a reasonably current browser (Chrome, Safari, Firefox). QR scanning is built into the camera on every recent device — iPhone (iOS 11+) and Android (8.0+)."
+    },
+    {
+      "type": "faq",
+      "q": "How many photos can I collect?",
+      "a": "The free plan supports up to 20 photos. Premium has no limit — which is what you want for a wedding with 100+ guests."
+    },
+    {
+      "type": "faq",
+      "q": "Is the gallery private?",
+      "a": "Yes. Only people with your QR code or the direct link can reach it. Guestcam never publishes the photos or uses them for marketing."
+    },
+    {
+      "type": "faq",
+      "q": "Can I see who uploads photos?",
+      "a": "You see every photo the moment it lands. Premium adds moderation — you can approve or hide any photo before the other guests see it."
+    },
+    {
+      "type": "faq",
+      "q": "What if a guest has no QR reader?",
+      "a": "Every modern phone camera recognises QR codes on its own; no separate reader app is needed. Failing that, you can share the gallery link directly over WhatsApp or SMS."
+    },
+    {
+      "type": "faq",
+      "q": "How do I download all the guests' photos?",
+      "a": "On Premium, one click gives you a ZIP archive of every photo at original resolution, with the original metadata intact (date, time, device)."
+    }
+  ]
+}

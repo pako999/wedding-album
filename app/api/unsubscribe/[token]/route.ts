@@ -14,6 +14,7 @@
  * leaking "no such token" would allow token probing.
  */
 
+import { SITE_URL } from "@/lib/urls";
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { guestEmails } from "@/lib/db/schema";
@@ -21,7 +22,7 @@ import { eq } from "drizzle-orm";
 
 export const runtime = "nodejs";
 
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://www.guestcam.si";
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? SITE_URL;
 
 type Lang = "sl" | "hr" | "sr" | "de" | "en" | "es";
 const LANGS: readonly Lang[] = ["sl", "hr", "sr", "de", "en", "es"];

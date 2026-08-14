@@ -3,6 +3,7 @@ import { db } from "@/lib/db";
 import { albums, photos, photoLikes } from "@/lib/db/schema";
 import { eq, and, count } from "drizzle-orm";
 import { checkRateLimit } from "@/lib/rate-limit";
+import { getAlbumFlags } from "@/lib/album-flags";
 
 export const runtime = "nodejs";
 
@@ -35,6 +36,13 @@ export async function POST(
     .findFirst({ where: eq(albums.slug, slug) })
     .catch(() => null);
   if (!album) return NextResponse.json({ error: "Not found" }, { status: 404 });
+
+  // Likes can be switched off per album (events option). Server-side so
+  // a cached client can't keep inflating counts after the host turns it off.
+  const flags = await getAlbumFlags(album.id);
+  if (flags.disableLikes) {
+    return NextResponse.json({ error: "likes_disabled" }, { status: 403 });
+  }
 
   const photo = await db.query.photos
     .findFirst({ where: and(eq(photos.id, photoId), eq(photos.albumId, album.id)) })

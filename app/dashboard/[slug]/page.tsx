@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { notFound, redirect } from "next/navigation";
 import { db } from "@/lib/db";
@@ -7,12 +8,14 @@ import { AlbumAdminPanel } from "@/components/dashboard/AlbumAdminPanel";
 import { requireAdmin } from "@/lib/admin";
 import { verifiedEmails } from "@/lib/album-ownership";
 import { toOwnerAlbum } from "@/lib/album-view";
+import { getOrCreateWallToken } from "@/lib/wall-token";
+import { getAlbumFlags } from "@/lib/album-flags";
 
 export const dynamic = "force-dynamic";
 
 interface Props {
   params: Promise<{ slug: string }>;
-  searchParams: Promise<{ tab?: string; new?: string; upgraded?: string; plan?: string; amount?: string }>;
+  searchParams: Promise<{ tab?: string; new?: string; upgraded?: string; plan?: string; amount?: string; drive?: string; n?: string }>;
 }
 
 export default async function AlbumAdminPage({ params, searchParams }: Props) {
@@ -33,6 +36,8 @@ export default async function AlbumAdminPage({ params, searchParams }: Props) {
     upgraded: isUpgradedParam,
     plan: planParam,
     amount: amountParam,
+    drive: driveResult,
+    n: driveCount,
   } = await searchParams;
   const isNew = isNewParam === "1";
   const isUpgraded = isUpgradedParam === "1";
@@ -133,6 +138,7 @@ export default async function AlbumAdminPage({ params, searchParams }: Props) {
     }
   } catch (err) {
     console.error("[album page] DB error:", err);
+
     return (
       <div className="min-h-screen flex items-center justify-center" style={{ background: "#F4F6FB" }}>
         <div className="bg-white rounded-2xl border border-amber-200 p-8 max-w-md text-center shadow">
@@ -141,9 +147,9 @@ export default async function AlbumAdminPage({ params, searchParams }: Props) {
           <p className="text-sm text-gray-500 mb-4">
             Prišlo je do napake z bazo podatkov. Poskusite znova čez trenutek.
           </p>
-          <a href="/dashboard" className="inline-block px-6 py-3 rounded-xl text-white text-sm font-semibold" style={{ background: "#FFC94D" }}>
+          <Link href="/dashboard" className="inline-block px-6 py-3 rounded-xl text-white text-sm font-semibold" style={{ background: "#FFC94D" }}>
             Nazaj na galerije
-          </a>
+          </Link>
         </div>
       </div>
     );
@@ -152,6 +158,9 @@ export default async function AlbumAdminPage({ params, searchParams }: Props) {
   if (!album || (!isOwnerOfAlbum(album) && !isPlatformAdmin)) {
     notFound();
   }
+
+  const albumFlags = await getAlbumFlags(album.id);
+
 
   // Settings tab shows "you're signed in as …". When admin-impersonating
   // we want it to show the ALBUM'S owner email (so the admin knows
@@ -169,13 +178,19 @@ export default async function AlbumAdminPage({ params, searchParams }: Props) {
       photos={albumPhotos}
       pendingCount={pendingCount}
       guestCount={guestCount}
-      activeTab={tab as "overview" | "gallery" | "qr" | "settings" | "pending" | "film"}
+      activeTab={tab as "overview" | "gallery" | "qr" | "events" | "settings" | "pending" | "film"}
       isNew={isNew}
       isUpgraded={isUpgraded && album?.plan !== "free"}
       paidAmount={paidAmount}
       paidPlan={paidPlan}
       ownerEmail={ownerEmail}
       viewingAsAdmin={viewingAsAdmin}
+      driveResult={driveResult}
+      driveCount={driveCount}
+      hasPassword={!!album.password}
+      wallToken={await getOrCreateWallToken(album.id, album.wallToken)}
+      guestDataCapture={albumFlags.guestDataCapture}
+      flags={albumFlags}
     />
   );
 }

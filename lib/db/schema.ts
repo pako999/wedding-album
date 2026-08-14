@@ -83,6 +83,13 @@ export const albums = pgTable(
     // the owner can share the album's referral link.
     referralCode: varchar("referral_code", { length: 20 }).unique(),
 
+    // Photo Wall access token — a separate secret from `slug`. The wall
+    // (meant to run all night on a shared venue TV) gets its own link at
+    // /wall/<wallToken> so it's never derivable from the main gallery
+    // link or vice versa. Lazily backfilled for pre-existing albums by
+    // getOrCreateWallToken() in lib/wall-token.ts.
+    wallToken: text("wall_token").unique(),
+
     // Attribution — when THIS album's owner signed up because a guest at
     // some OTHER album clicked the referral link.
     referralSourceAlbumId: text("referral_source_album_id"),
@@ -95,6 +102,7 @@ export const albums = pgTable(
     index("albums_owner_idx").on(t.ownerClerkId),
     index("albums_slug_idx").on(t.slug),
     index("albums_referral_code_idx").on(t.referralCode),
+    index("albums_wall_token_idx").on(t.wallToken),
   ]
 );
 
@@ -112,6 +120,169 @@ export const moments = pgTable(
     createdAt: timestamp("created_at").notNull().defaultNow(),
   },
   (t) => [index("moments_album_idx").on(t.albumId)]
+);
+
+// ─── Wall sponsors ───────────────────────────────────────────────────────────
+
+/**
+ * Sponsor / partner slides shown on the Photo Wall in between guest
+ * photos. Deliberately its own table rather than columns on `albums`:
+ * Drizzle selects every column of `albums` on every album query, so a
+ * column that exists in code but not yet in the database takes the whole
+ * app down (as the wall_token deploy did). A missing TABLE can only
+ * break queries that touch it — and every read here is wrapped in a
+ * try/catch that degrades to "no sponsors".
+ */
+export const wallSponsors = pgTable(
+  "wall_sponsors",
+  {
+    id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+    albumId: text("album_id")
+      .notNull()
+      .references(() => albums.id, { onDelete: "cascade" }),
+    /** Public CDN URL of the uploaded sponsor image. */
+    imageUrl: text("image_url").notNull(),
+    /** Optional label shown under the slide (e.g. the sponsor's name). */
+    caption: text("caption"),
+    sortOrder: integer("sort_order").notNull().default(0),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+  },
+  (t) => [index("wall_sponsors_album_idx").on(t.albumId)]
+);
+
+// ─── Per-album feature flags ─────────────────────────────────────────────────
+
+/**
+ * Opt-in feature switches, in their own table rather than as columns on
+ * `albums`.
+ *
+ * Drizzle selects every column of `albums` on every album query, so a
+ * column that exists in code but not yet in the database takes the whole
+ * app down. Keeping flags here means the worst case for a deploy that
+ * lands ahead of its migration is "the flag reads as off" — every read
+ * goes through lib/album-flags.ts, which swallows the error and returns
+ * defaults. Future flags should be added here, not to `albums`.
+ */
+export const albumFeatureFlags = pgTable("album_feature_flags", {
+  albumId: text("album_id")
+    .primaryKey()
+    .references(() => albums.id, { onDelete: "cascade" }),
+  /** Require name + surname + email from guests before they can upload.
+   *  Sold as the events/business package — off for ordinary galleries. */
+  guestDataCapture: boolean("guest_data_capture").notNull().default(false),
+  // ── Event moderation & permissions ─────────────────────────────────
+  // Columns on THIS table (not on albums) so a deploy landing before the
+  // migration degrades to defaults via lib/album-flags' guarded reads —
+  // every read of this table goes through getAlbumFlags, which never
+  // throws and falls back to DEFAULTS.
+  /** Which media guests may upload. Both on by default. */
+  allowPhotos: boolean("allow_photos").notNull().default(true),
+  allowVideos: boolean("allow_videos").notNull().default(true),
+  /** What guests can do in the digital album:
+   *  view_upload (default) | view_only | upload_only. */
+  albumPermission: text("album_permission").notNull().default("view_upload"),
+  /** Hide the download control from guests. */
+  disableDownload: boolean("disable_download").notNull().default(false),
+  /** Turn off likes across the album. */
+  disableLikes: boolean("disable_likes").notNull().default(false),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+// ─── Wall collaborators ──────────────────────────────────────────────────────
+// People the owner invites to manage ONLY the Photo Wall (settings +
+// sponsors) — a DJ or venue tech, matched by their signed-in e-mail.
+// Deliberately wall-scoped: no access to photos, settings or billing.
+
+export const wallCollaborators = pgTable(
+  "wall_collaborators",
+  {
+    id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+    albumId: text("album_id")
+      .notNull()
+      .references(() => albums.id, { onDelete: "cascade" }),
+    /** Lowercased at write time; matched against Clerk VERIFIED e-mails
+     *  only, so typing someone else's address grants nothing. */
+    email: text("email").notNull(),
+    invitedBy: text("invited_by"),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+  },
+  (t) => [
+    index("wall_collaborators_album_idx").on(t.albumId),
+    unique("wall_collaborators_album_email").on(t.albumId, t.email),
+  ]
+);
+
+export type WallCollaborator = typeof wallCollaborators.$inferSelect;
+
+// ─── Album appearance & welcome screen ───────────────────────────────────────
+// Branding an event host controls: logo, accent colour, backgrounds and
+// the first-visit welcome screen. NEW table, guarded reads via
+// lib/album-appearance.ts — a lagging migration means "default look",
+// never a broken gallery.
+
+export const albumAppearance = pgTable("album_appearance", {
+  albumId: text("album_id")
+    .primaryKey()
+    .references(() => albums.id, { onDelete: "cascade" }),
+  /** Square event logo, shown on the guest album header and the wall. */
+  logoUrl: text("logo_url"),
+  /** Brand accent (hex) overriding the theme preset's accent on public pages. */
+  accentColor: varchar("accent_color", { length: 9 }),
+  /** Custom page background image for the guest album. */
+  backgroundUrl: text("background_url"),
+  // Welcome screen — shown once per guest on first visit.
+  welcomeEnabled: boolean("welcome_enabled").notNull().default(false),
+  welcomeTitle: text("welcome_title"),
+  welcomeText: text("welcome_text"),
+  welcomeButton: text("welcome_button"),
+  welcomeBgUrl: text("welcome_bg_url"),
+  /** One of the curated font pairings: elegant | modern | script | classic. */
+  welcomeFont: varchar("welcome_font", { length: 16 }).notNull().default("elegant"),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+export type AlbumAppearance = typeof albumAppearance.$inferSelect;
+
+// ─── Event leads ─────────────────────────────────────────────────────────────
+
+/**
+ * Guest details captured at upload time when `guestDataCapture` is on.
+ *
+ * Deliberately NOT merged into `guest_emails`. That table is Guestcam's
+ * OWN marketing list (the d3/d21 sequence, where Guestcam is the data
+ * controller). These rows belong to the event organiser — they are the
+ * controller, we are the processor, and they export and use the list.
+ * Different controller, different purpose, different retention: keeping
+ * them apart is what makes each one's GDPR story coherent.
+ *
+ * `marketingConsent` is the organiser's marketing opt-in and is always
+ * optional — GDPR Art. 7(4) requires consent to be freely given, so it
+ * can never be a condition of uploading a photo.
+ */
+export const eventLeads = pgTable(
+  "event_leads",
+  {
+    id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+    albumId: text("album_id")
+      .notNull()
+      .references(() => albums.id, { onDelete: "cascade" }),
+    firstName: text("first_name").notNull(),
+    lastName: text("last_name").notNull(),
+    email: text("email").notNull(),
+    /** Opt-in for the ORGANISER's marketing. Optional by design. */
+    marketingConsent: boolean("marketing_consent").notNull().default(false),
+    /** When consent was given — GDPR requires proof of when/what. */
+    consentTimestamp: timestamp("consent_timestamp"),
+    /** Exact wording the guest agreed to, stored so the organiser can
+     *  evidence what was consented to even after the copy changes. */
+    consentText: text("consent_text"),
+    locale: varchar("locale", { length: 5 }),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+  },
+  (t) => [
+    index("event_leads_album_idx").on(t.albumId),
+    unique("event_leads_album_email_unique").on(t.albumId, t.email),
+  ],
 );
 
 // ─── Photos ──────────────────────────────────────────────────────────────────
@@ -517,6 +688,73 @@ export const cardBilling = pgTable(
 
 export type BankOrder = typeof bankOrders.$inferSelect;
 export type NewBankOrder = typeof bankOrders.$inferInsert;
+
+// ─── Printed-stand orders (the physical fulfilment record) ───────────────────
+// Until now the only complete record of a stands order was the Mollie
+// payment metadata (card) or a Telegram message (invoice) — neither of
+// which is queryable, and neither of which holds a full delivery address.
+// Nobody could answer "what do I need to print and post this week?".
+//
+// A NEW TABLE on purpose, not columns on bank_orders / card_billing.
+// Drizzle SELECTs every column it knows about, so adding a column to a
+// table that existing queries already read means a deploy landing before
+// its migration breaks those queries outright — exactly what took the
+// dashboard down when albums.wall_token was added. A brand-new table can
+// only break reads of itself, and those are guarded (see lib/stand-orders).
+
+export const standOrders = pgTable(
+  "stand_orders",
+  {
+    id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+    albumSlug: varchar("album_slug", { length: 80 }).notNull(),
+    /** "card" = Mollie, "invoice" = bank transfer. */
+    source: text("source", { enum: ["card", "invoice"] }).notNull(),
+    /** Mollie payment id, or the bank_orders row id. Ties this parcel back
+     *  to the money so fulfilment can confirm payment before printing. */
+    orderRef: text("order_ref"),
+
+    planId: text("plan_id"),
+    planName: text("plan_name"),
+    planCents: integer("plan_cents"),
+
+    /** "wood" | "gold" — what to pull off the shelf. */
+    variant: text("variant").notNull(),
+    qty: integer("qty").notNull(),
+    /** Goods and postage kept apart: an invoice has to show them separately,
+     *  and the volume discount applies to the goods only. */
+    standsCents: integer("stands_cents").notNull(),
+    shipCents: integer("ship_cents").notNull(),
+    shipCarrier: text("ship_carrier"),
+    shipCountry: varchar("ship_country", { length: 2 }),
+    /** Outside the EU customs union — needs a commercial invoice. */
+    shipCustoms: boolean("ship_customs").notNull().default(false),
+    totalCents: integer("total_cents").notNull(),
+
+    // Delivery details. Held here rather than looked up through billing
+    // because a parcel needs a name, a phone (couriers demand one) and a
+    // postcode, and the invoice path never collected the last two.
+    recipientName: text("recipient_name"),
+    recipientPhone: text("recipient_phone"),
+    recipientEmail: text("recipient_email"),
+    address: text("address"),
+    postalCode: text("postal_code"),
+    city: text("city"),
+    companyName: text("company_name"),
+    taxId: text("tax_id"),
+
+    status: text("status", {
+      enum: ["pending", "paid", "printing", "shipped", "cancelled"],
+    }).notNull().default("pending"),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+  },
+  (t) => [
+    index("stand_orders_slug_idx").on(t.albumSlug),
+    index("stand_orders_status_idx").on(t.status),
+  ]
+);
+
+export type StandOrder = typeof standOrders.$inferSelect;
+export type NewStandOrder = typeof standOrders.$inferInsert;
 
 // ─── Affiliates ──────────────────────────────────────────────────────────────
 // Partner program: bloggers, agencies, customers refer GuestCam and earn

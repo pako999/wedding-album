@@ -8,7 +8,7 @@ export default function SignInPage() {
         {/* Brand header */}
         <div className="text-center mb-8 flex flex-col items-center gap-2">
           <GuestcamLogo size="md" showMark={true} />
-          <p className="text-sm text-gray-400">Prijavite se za dostop do vaših albumov</p>
+          <p className="text-sm text-gray-600">Prijavite se za dostop do vaših albumov</p>
         </div>
         <SignIn
           fallbackRedirectUrl="/dashboard"

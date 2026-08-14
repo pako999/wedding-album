@@ -1,4 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
+import {
+  addOnTotalCents, quoteShipping, standsPriceCents,
+  DEFAULT_STAND_QTY, DEFAULT_STAND_VARIANT, type StandVariant,
+} from "@/lib/print-service";
 import { auth } from "@clerk/nextjs/server";
 import { db } from "@/lib/db";
 import { albums, cardBilling } from "@/lib/db/schema";
@@ -7,6 +11,7 @@ import { createPayment, mollieConfigured, MollieError } from "@/lib/mollie";
 import { validateDiscount } from "@/lib/discount";
 import { getAffiliateRefFromCookie } from "@/lib/affiliate/attribution";
 import { getGuestRefFromCookie } from "@/lib/referral/attribution";
+import { recordStandOrder } from "@/lib/stand-orders";
 
 export const runtime = "nodejs";
 
@@ -40,6 +45,13 @@ export async function POST(req: NextRequest) {
     planId: PlanId;
     albumSlug: string;
     tableStands?: boolean;
+    /** Number of stands. Validated server-side against the allowed range — an
+     *  unknown quantity is rejected, never repriced to a nearest match. */
+    standsQty?: number;
+    /** Material. Unknown values are rejected by standsPriceCents,
+     *  not defaulted — otherwise a bad value silently bills the
+     *  cheaper material for the dearer product. */
+    standsVariant?: StandVariant;
     discountCode?: string;
     billing?: {
       name?: string;
@@ -50,9 +62,12 @@ export async function POST(req: NextRequest) {
       city?: string;
       companyName?: string;
       taxId?: string;
+      /** ISO-3166 alpha-2. Required when tableStands is true — it is what
+       *  the shipping rate is computed from. */
+      country?: string;
     };
   };
-  const { planId, albumSlug, tableStands, discountCode, billing } = body;
+  const { planId, albumSlug, tableStands, standsQty, standsVariant, discountCode, billing } = body;
 
   if (!planId || !albumSlug || !(planId in PLAN_CONFIG)) {
     return NextResponse.json({ error: "Invalid request" }, { status: 400 });
@@ -115,8 +130,21 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  const totalCents = baseCents + (tableStands ? 900 : 0);
-  const description = plan.name + (tableStands ? " + Podstavki za mizo" : "");
+  // Physical add-on. Priced SERVER-SIDE from the destination country —
+  // the browser only says whether it wants stands and where to ship, the
+  // same trust model the plan price already uses. A country we don't
+  // ship to is rejected outright rather than silently charged a default
+  // rate, which would lose money on every such parcel.
+  const addOnCents = addOnTotalCents(!!tableStands, billing?.country, standsQty, standsVariant);
+  if (addOnCents === null) {
+    return NextResponse.json({ error: "shipping_unavailable" }, { status: 400 });
+  }
+  const ship = tableStands ? quoteShipping(billing?.country) : null;
+
+  const totalCents = baseCents + addOnCents;
+  const standsQ = standsQty ?? DEFAULT_STAND_QTY;
+  const standsV = standsVariant ?? DEFAULT_STAND_VARIANT;
+  const description = plan.name + (tableStands ? ` + ${standsQ}× QR podstavki za mize (${standsV === "gold" ? "zlati" : "leseni"}, s poštnino)` : "");
 
   const baseUrl = req.nextUrl.origin;
   // Mollie redirects back to /api/mollie-return which does reconcile then bounces to dashboard.
@@ -136,6 +164,23 @@ export async function POST(req: NextRequest) {
         ...(affiliateRef ? { affiliateRef } : {}),
         ...(guestRefCode ? { guestRefCode } : {}),
         ...(guestRefTouchpoint ? { guestRefTouchpoint } : {}),
+        // Fulfilment needs to know a parcel is owed and where it goes —
+        // the payment record is the only thing guaranteed to survive.
+        ...(tableStands
+          ? {
+              tableStands: "1",
+              standsQty: String(standsQ),
+              standsVariant: standsV,
+              standsCents: String(standsPriceCents(standsQ, standsV) ?? 0),
+              shipCountry: (billing?.country ?? "").toUpperCase(),
+              shipCents: String(ship?.cents ?? 0),
+              shipCarrier: ship?.carrier ?? "",
+              // Outside the EU customs union the parcel needs a
+              // commercial invoice — flag it here so whoever packs it
+              // doesn't have to re-derive it from the country code.
+              ...(ship?.customs ? { shipCustoms: "1" } : {}),
+            }
+          : {}),
       },
     });
 
@@ -161,6 +206,39 @@ export async function POST(req: NextRequest) {
         companyName: clean(billing.companyName),
         taxId:       clean(billing.taxId),
       }).onConflictDoNothing().catch((err) => console.error("[checkout] billing insert failed:", err));
+    }
+
+    // Physical fulfilment record. Written here rather than on the paid
+    // webhook so the parcel is on the books the moment it's ordered — a
+    // webhook that never fires would otherwise leave no queryable trace
+    // that stands are owed. Status starts "pending" and the webhook flips
+    // it to "paid"; admin filters on that so nothing ships unpaid.
+    if (tableStands) {
+      const clean = (v?: string) => (v?.trim() ? v.trim() : null);
+      await recordStandOrder({
+        albumSlug,
+        source: "card",
+        orderRef: id,
+        planId,
+        planName: plan.name,
+        planCents: baseCents,
+        variant: standsV,
+        qty: standsQ,
+        standsCents: standsPriceCents(standsQ, standsV) ?? 0,
+        shipCents: ship?.cents ?? 0,
+        shipCarrier: ship?.carrier ?? null,
+        shipCountry: (billing?.country ?? "").toUpperCase() || null,
+        shipCustoms: !!ship?.customs,
+        totalCents,
+        recipientName:  clean(billing?.name),
+        recipientPhone: clean(billing?.phone),
+        recipientEmail: clean(billing?.email),
+        address:        clean(billing?.address),
+        postalCode:     clean(billing?.postalCode),
+        city:           clean(billing?.city),
+        companyName:    clean(billing?.companyName),
+        taxId:          clean(billing?.taxId),
+      });
     }
 
     return NextResponse.json({ paymentUrl: checkoutUrl });

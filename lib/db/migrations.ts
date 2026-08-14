@@ -289,6 +289,78 @@ export async function runMigrations() {
   await run("bank_orders.company_name", (q) => q`ALTER TABLE bank_orders ADD COLUMN IF NOT EXISTS billing_company_name TEXT`);
   await run("bank_orders.email",        (q) => q`ALTER TABLE bank_orders ADD COLUMN IF NOT EXISTS billing_email TEXT`);
 
+  // ── Printed-stand orders (physical fulfilment) ────────────────────────────
+  // New table rather than columns on bank_orders / card_billing — see the
+  // note on standOrders in schema.ts for why that distinction matters here.
+  await run("create stand_orders", (q) => q`
+    CREATE TABLE IF NOT EXISTS stand_orders (
+      id               TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
+      album_slug       VARCHAR(80) NOT NULL,
+      source           TEXT NOT NULL,
+      order_ref        TEXT,
+      plan_id          TEXT,
+      plan_name        TEXT,
+      plan_cents       INTEGER,
+      variant          TEXT NOT NULL,
+      qty              INTEGER NOT NULL,
+      stands_cents     INTEGER NOT NULL,
+      ship_cents       INTEGER NOT NULL,
+      ship_carrier     TEXT,
+      ship_country     VARCHAR(2),
+      ship_customs     BOOLEAN NOT NULL DEFAULT FALSE,
+      total_cents      INTEGER NOT NULL,
+      recipient_name   TEXT,
+      recipient_phone  TEXT,
+      recipient_email  TEXT,
+      address          TEXT,
+      postal_code      TEXT,
+      city             TEXT,
+      company_name     TEXT,
+      tax_id           TEXT,
+      status           TEXT NOT NULL DEFAULT 'pending',
+      created_at       TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )
+  `);
+  await run("stand_orders slug idx",   (q) => q`CREATE INDEX IF NOT EXISTS stand_orders_slug_idx ON stand_orders (album_slug)`);
+  await run("stand_orders status idx", (q) => q`CREATE INDEX IF NOT EXISTS stand_orders_status_idx ON stand_orders (status)`);
+
+  // ── Event moderation & permission flags (see lib/album-flags.ts) ──────────
+  await run("flags.allow_photos",     (q) => q`ALTER TABLE album_feature_flags ADD COLUMN IF NOT EXISTS allow_photos BOOLEAN NOT NULL DEFAULT TRUE`);
+  await run("flags.allow_videos",     (q) => q`ALTER TABLE album_feature_flags ADD COLUMN IF NOT EXISTS allow_videos BOOLEAN NOT NULL DEFAULT TRUE`);
+  await run("flags.album_permission", (q) => q`ALTER TABLE album_feature_flags ADD COLUMN IF NOT EXISTS album_permission TEXT NOT NULL DEFAULT 'view_upload'`);
+  await run("flags.disable_download", (q) => q`ALTER TABLE album_feature_flags ADD COLUMN IF NOT EXISTS disable_download BOOLEAN NOT NULL DEFAULT FALSE`);
+  await run("flags.disable_likes",    (q) => q`ALTER TABLE album_feature_flags ADD COLUMN IF NOT EXISTS disable_likes BOOLEAN NOT NULL DEFAULT FALSE`);
+
+  // ── Wall collaborators (wall-scoped co-managers) ──────────────────────────
+  await run("create wall_collaborators", (q) => q`
+    CREATE TABLE IF NOT EXISTS wall_collaborators (
+      id          TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
+      album_id    TEXT NOT NULL,
+      email       TEXT NOT NULL,
+      invited_by  TEXT,
+      created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )
+  `);
+  await run("wall_collaborators idx",    (q) => q`CREATE INDEX IF NOT EXISTS wall_collaborators_album_idx ON wall_collaborators (album_id)`);
+  await run("wall_collaborators unique", (q) => q`CREATE UNIQUE INDEX IF NOT EXISTS wall_collaborators_album_email ON wall_collaborators (album_id, email)`);
+
+  // ── Album appearance & welcome screen ─────────────────────────────────────
+  await run("create album_appearance", (q) => q`
+    CREATE TABLE IF NOT EXISTS album_appearance (
+      album_id        TEXT PRIMARY KEY,
+      logo_url        TEXT,
+      accent_color    VARCHAR(9),
+      background_url  TEXT,
+      welcome_enabled BOOLEAN NOT NULL DEFAULT FALSE,
+      welcome_title   TEXT,
+      welcome_text    TEXT,
+      welcome_button  TEXT,
+      welcome_bg_url  TEXT,
+      welcome_font    VARCHAR(16) NOT NULL DEFAULT 'elegant',
+      updated_at      TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )
+  `);
+
   // ── Discount codes ────────────────────────────────────────────────────────
   await run("create discount_codes", (q) => q`
     CREATE TABLE IF NOT EXISTS discount_codes (
@@ -576,6 +648,68 @@ export async function runMigrations() {
   `);
   await run("guest_emails d3 due idx",  (q) => q`CREATE INDEX IF NOT EXISTS guest_emails_d3_due_idx  ON guest_emails (d3_sent_at)`);
   await run("guest_emails d21 due idx", (q) => q`CREATE INDEX IF NOT EXISTS guest_emails_d21_due_idx ON guest_emails (d21_sent_at)`);
+
+  // ── Photo Wall access token ───────────────────────────────────────────────
+  // A secret separate from `slug` so the wall link (displayed all night on
+  // a shared venue TV) can never be derived from the main gallery link, or
+  // vice versa. Backfilled for every pre-existing album so the dashboard
+  // always has a token to show immediately, no lazy on-demand generation.
+  await run("albums.wall_token", (q) => q`ALTER TABLE albums ADD COLUMN IF NOT EXISTS wall_token TEXT`);
+  await run("backfill albums.wall_token", (q) => q`
+    UPDATE albums
+       SET wall_token = REPLACE(gen_random_uuid()::text, '-', '')
+     WHERE wall_token IS NULL
+  `);
+  await run("albums.wall_token unique", (q) => q`
+    CREATE UNIQUE INDEX IF NOT EXISTS albums_wall_token_unique ON albums (wall_token)
+  `);
+
+  // ── Photo Wall sponsor slides ─────────────────────────────────────────────
+  await run("create wall_sponsors", (q) => q`
+    CREATE TABLE IF NOT EXISTS wall_sponsors (
+      id          TEXT PRIMARY KEY,
+      album_id    TEXT NOT NULL REFERENCES albums(id) ON DELETE CASCADE,
+      image_url   TEXT NOT NULL,
+      caption     TEXT,
+      sort_order  INTEGER NOT NULL DEFAULT 0,
+      created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )
+  `);
+  await run("wall_sponsors idx", (q) => q`
+    CREATE INDEX IF NOT EXISTS wall_sponsors_album_idx ON wall_sponsors (album_id)
+  `);
+
+  // ── Per-album feature flags ───────────────────────────────────────────────
+  // Own table, never columns on `albums` — see the note in schema.ts.
+  await run("create album_feature_flags", (q) => q`
+    CREATE TABLE IF NOT EXISTS album_feature_flags (
+      album_id            TEXT PRIMARY KEY REFERENCES albums(id) ON DELETE CASCADE,
+      guest_data_capture  BOOLEAN NOT NULL DEFAULT FALSE,
+      updated_at          TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )
+  `);
+
+  // ── Event lead capture ────────────────────────────────────────────────────
+  await run("create event_leads", (q) => q`
+    CREATE TABLE IF NOT EXISTS event_leads (
+      id                 TEXT PRIMARY KEY,
+      album_id           TEXT NOT NULL REFERENCES albums(id) ON DELETE CASCADE,
+      first_name         TEXT NOT NULL,
+      last_name          TEXT NOT NULL,
+      email              TEXT NOT NULL,
+      marketing_consent  BOOLEAN NOT NULL DEFAULT FALSE,
+      consent_timestamp  TIMESTAMPTZ,
+      consent_text       TEXT,
+      locale             VARCHAR(5),
+      created_at         TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )
+  `);
+  await run("event_leads idx", (q) => q`
+    CREATE INDEX IF NOT EXISTS event_leads_album_idx ON event_leads (album_id)
+  `);
+  await run("event_leads unique", (q) => q`
+    CREATE UNIQUE INDEX IF NOT EXISTS event_leads_album_email_unique ON event_leads (album_id, email)
+  `);
 
   // Backfill: give every existing album a referral code. Done in the DB
   // (not app-side) so we don't need N round-trips. Uses UPPER + regex

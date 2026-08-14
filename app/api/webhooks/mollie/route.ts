@@ -1,5 +1,7 @@
+import { SITE_URL } from "@/lib/urls";
 import { NextRequest, NextResponse } from "next/server";
 import { getPayment, isPaidStatus, isRefundedStatus, mollieConfigured } from "@/lib/mollie";
+import { markStandOrderPaid } from "@/lib/stand-orders";
 import { applyPlanToAlbum } from "@/lib/paddle-reconcile";
 import { markConversionPaid } from "@/lib/referral/attribution";
 import { sendPurchaseEvent } from "@/lib/meta-capi";
@@ -116,7 +118,7 @@ export async function POST(req: NextRequest) {
       value:          Number(payment.amount.value),
       currency:       payment.amount.currency,
       contentName:    planLabel(planId).text,
-      eventSourceUrl: "https://www.guestcam.si",
+      eventSourceUrl: SITE_URL,
       clientIp:       req.headers.get("x-vercel-forwarded-for")
                         ?? req.headers.get("x-forwarded-for")
                         ?? null,
@@ -129,6 +131,13 @@ export async function POST(req: NextRequest) {
   }
 
   // Increment discount usage counter if a code was used
+  // Flip the parcel to "paid" so the admin Orders tab can safely filter
+  // out anything unpaid — nothing should be printed and posted on the
+  // strength of an abandoned checkout.
+  if (payment.metadata?.tableStands === "1") {
+    await markStandOrderPaid(payment.id);
+  }
+
   if (payment.metadata?.discountCodeId) {
     await incrementDiscountUsage(payment.metadata.discountCodeId).catch(() => {});
   }

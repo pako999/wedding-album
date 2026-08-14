@@ -78,7 +78,7 @@ export function AdminAlbumRow({ slug, coupleName, ownerEmail, plan, filmTier, ma
         {ownerEmail ? (
           <a
             href={`mailto:${ownerEmail}`}
-            className="text-xs text-gray-600 hover:text-[#C9820A] hover:underline break-all"
+            className="text-xs text-gray-600 hover:text-[#8C6218] hover:underline break-all"
           >
             {ownerEmail}
           </a>

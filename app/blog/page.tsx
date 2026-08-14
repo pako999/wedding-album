@@ -1,3 +1,4 @@
+import { SITE_URL } from "@/lib/urls";
 import type { Metadata } from "next";
 import { BlogIndexPage } from "@/components/BlogIndexPage";
 import { getAllPosts } from "@/lib/blog";
@@ -12,19 +13,19 @@ export const metadata: Metadata = {
   title: "Blog — Guestcam",
   description: "Nasveti, vodniki in primerjave za zbiranje fotografij gostov na porokah, rojstnih dneh in dogodkih.",
   alternates: {
-    canonical: "https://www.guestcam.si/blog",
+    canonical: `${SITE_URL}/blog`,
     languages: {
-      sl: "https://www.guestcam.si/blog",
-      hr: "https://www.guestcam.si/hr/blog",
-      sr: "https://www.guestcam.si/sr/blog",
-      de: "https://www.guestcam.si/de/blog",
-      en: "https://www.guestcam.si/en/blog",
-      es: "https://www.guestcam.si/es/blog",
-      "x-default": "https://www.guestcam.si/blog",
+      sl: `${SITE_URL}/blog`,
+      hr: `${SITE_URL}/hr/blog`,
+      sr: `${SITE_URL}/sr/blog`,
+      de: `${SITE_URL}/de/blog`,
+      en: `${SITE_URL}/en/blog`,
+      es: `${SITE_URL}/es/blog`,
+      "x-default": `${SITE_URL}/blog`,
     },
   },
   openGraph: {
-    url: "https://www.guestcam.si/blog",
+    url: `${SITE_URL}/blog`,
     type: "website",
     title: "Blog — Guestcam",
     description: "Nasveti, vodniki in primerjave za zbiranje fotografij gostov.",

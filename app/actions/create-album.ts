@@ -10,6 +10,8 @@ import { generateUniqueReferralCode } from "@/lib/referral/codes";
 import { attributeNewAlbumFromCookie } from "@/lib/referral/attribution";
 import { inferLangFromLocation } from "@/lib/i18n/infer-lang";
 import { recordUserCountry } from "@/lib/user-country";
+import { getAlbumCreationGate } from "@/lib/album-limits";
+import { generateWallToken } from "@/lib/wall-token";
 
 function slugify(text: string): string {
   return text
@@ -30,6 +32,14 @@ export async function createAlbum(formData: FormData) {
     redirect("/sign-in");
   }
   if (!userId) redirect("/sign-in");
+
+  // Server-side backstop for the one-gallery cap on Free/Basic accounts.
+  // The /dashboard/new page already hides the wizard in this case; this
+  // guard just stops a direct form POST from bypassing it.
+  const gate = await getAlbumCreationGate(userId);
+  if (!gate.allowed) {
+    redirect(`/dashboard/${gate.mostRecentSlug}/upgrade`);
+  }
 
   const eventType  = (formData.get("eventType")   as string ?? "wedding").trim();
   const coupleName = (formData.get("coupleName")   as string ?? "").trim();
@@ -145,6 +155,7 @@ export async function createAlbum(formData: FormData) {
     expiresAt:         inheritedExpiry,
     stripeSessionId:   inheritedSessionId,
     referralCode,
+    wallToken:         generateWallToken(),
   }).returning({ id: albums.id });
 
   // If this user showed up via a ?ref= link from another album's guest,

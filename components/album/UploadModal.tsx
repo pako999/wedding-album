@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useRef, useEffect } from "react";
 import { translations, type Lang } from "@/lib/i18n/translations";
+import { LEAD_COPY } from "@/lib/i18n/lead-translations";
 import { GuestReferralCta } from "@/components/album/GuestReferralCta";
 
 interface Props {
@@ -28,6 +29,12 @@ interface Props {
   moments?: { id: string; name: string }[];
   /** Pre-selected moment id for the Moment selector. */
   defaultMomentId?: string | null;
+  /** Events/business package: collect name, surname and email from the
+   *  guest before they can upload. Off for ordinary galleries. */
+  requireGuestData?: boolean;
+  /** Event/organiser name, used in the marketing-consent wording so the
+   *  guest can see who they'd be consenting to hear from. */
+  organiserName?: string;
   /** Album's own referral code — shown to the guest after upload as an
    *  invite to create their own gallery with 15% off. Optional; if
    *  null (e.g. legacy album pre-backfill) the CTA hides itself. */
@@ -150,6 +157,30 @@ async function maybeCompress(file: File): Promise<File> {
 
 function fmt(bytes: number) { return (bytes / 1024 / 1024).toFixed(1) + " MB"; }
 
+/** Pixel dimensions of an image file, or null when they can't be read
+ *  (HEIC on some browsers, corrupt file …). Measured on the file we
+ *  actually upload — i.e. AFTER maybeCompress, which can resize — so the
+ *  stored numbers match the stored bytes. The lightbox uses these to
+ *  fit portrait photos correctly; without them it used to assume
+ *  landscape for everything. */
+async function readImageDims(file: File): Promise<{ width: number; height: number } | null> {
+  if (!file.type.startsWith("image/")) return null;
+  try {
+    const bmp = await createImageBitmap(file);
+    const dims = { width: bmp.width, height: bmp.height };
+    bmp.close();
+    return dims;
+  } catch {
+    return new Promise((resolve) => {
+      const url = URL.createObjectURL(file);
+      const img = new Image();
+      img.onload = () => { URL.revokeObjectURL(url); resolve({ width: img.naturalWidth, height: img.naturalHeight }); };
+      img.onerror = () => { URL.revokeObjectURL(url); resolve(null); };
+      img.src = url;
+    });
+  }
+}
+
 /** Upload a single file using the best available backend. */
 async function uploadFile(
   rawFile: File,
@@ -162,6 +193,7 @@ async function uploadFile(
 ): Promise<"uploaded" | "duplicate"> {
   // 0. Compress if the image is too large for Vercel's 4.5 MB proxy limit
   const file = await maybeCompress(rawFile);
+  const dims = await readImageDims(file);
 
   // 1. Ask server which upload path to use
   const urlRes = await fetch(`/api/albums/${albumSlug}/upload-url`, {
@@ -216,6 +248,7 @@ async function uploadFile(
     onProgress(92);
     await saveUpload(albumSlug, {
       blobUrl: publicUrl,
+      ...(dims ?? {}),
       mimeType: file.type,
       originalFilename: file.name,
       sizeBytes: file.size,
@@ -238,6 +271,7 @@ async function uploadFile(
     onProgress(80);
     await saveUpload(albumSlug, {
       blobUrl: urlData.publicUrl,
+      ...(dims ?? {}),
       mimeType: file.type,
       originalFilename: file.name,
       sizeBytes: file.size,
@@ -280,6 +314,7 @@ async function uploadFile(
   onProgress(88);
   await saveUpload(albumSlug, {
     blobUrl: blob.url,
+    ...(dims ?? {}),
     mimeType: file.type,
     originalFilename: file.name,
     sizeBytes: file.size,
@@ -429,8 +464,68 @@ async function saveUpload(slug: string, body: object, albumPassword = "") {
 
 // ── Component ─────────────────────────────────────────────────────────────────
 
-export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, currentCount, lang, onClose, onSuccess, onNameChange: _onNameChange, initialFiles, accent = "#C9820A", albumPassword = "", moments = [], defaultMomentId = null, referralCode = null }: Props) {
+export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, currentCount, lang, onClose, onSuccess, onNameChange: _onNameChange, initialFiles, accent = "#C9820A", albumPassword = "", moments = [], defaultMomentId = null, referralCode = null, requireGuestData = false, organiserName = "" }: Props) {
   const t = translations[lang];
+  const lead = LEAD_COPY[lang];
+
+  // ── Guest data capture (events package) ─────────────────────────────
+  // Remembered per album so a guest who uploads again later in the night
+  // isn't asked for their details a second time.
+  const leadStorageKey = `gc_lead_${albumSlug}`;
+  // Lazy initializer, not an effect: the modal only ever mounts in the
+  // browser (behind `uploadOpen &&` in AlbumGuestView), so localStorage
+  // is safe to read here and there is no SSR pass to mismatch against.
+  const [leadDone, setLeadDone] = useState(() => {
+    if (!requireGuestData) return true;
+    try {
+      return localStorage.getItem(leadStorageKey) === "1";
+    } catch {
+      // Private mode / storage blocked — ask once this session rather
+      // than locking the guest out of uploading entirely.
+      return false;
+    }
+  });
+
+  const [leadFirst, setLeadFirst] = useState("");
+  const [leadLast, setLeadLast] = useState("");
+  const [leadEmail, setLeadEmail] = useState("");
+  const [leadConsent, setLeadConsent] = useState(false);
+  const [leadSaving, setLeadSaving] = useState(false);
+  const [leadError, setLeadError] = useState("");
+
+  const submitLead = async () => {
+    setLeadError("");
+    if (!leadFirst.trim() || !leadLast.trim() || !leadEmail.trim()) {
+      setLeadError(lead.errRequired); return;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(leadEmail.trim())) {
+      setLeadError(lead.errEmail); return;
+    }
+    setLeadSaving(true);
+    try {
+      const res = await fetch(`/api/albums/${albumSlug}/leads`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          firstName: leadFirst.trim(),
+          lastName: leadLast.trim(),
+          email: leadEmail.trim(),
+          marketingConsent: leadConsent,
+          // Store the exact wording agreed to, so the organiser can
+          // evidence the consent later even if this copy changes.
+          consentText: leadConsent ? lead.consentLabel(organiserName || "organizator") : undefined,
+          locale: lang,
+        }),
+      });
+      if (!res.ok) { setLeadError(lead.errGeneric); return; }
+      try { localStorage.setItem(leadStorageKey, "1"); } catch {/* ignore */}
+      setLeadDone(true);
+    } catch {
+      setLeadError(lead.errGeneric);
+    } finally {
+      setLeadSaving(false);
+    }
+  };
   const [files, setFiles] = useState<UploadFile[]>([]);
   const [uploading, setUploading] = useState(false);
   const [allDone, setAllDone] = useState(false);
@@ -470,8 +565,12 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
     setFiles(p => [...p, ...toAdd]);
   }, [files.length, remaining]);
 
-  // Pre-load files captured before the modal opened (camera snap / pre-selected files)
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+  // Pre-load files captured before the modal opened (camera snap / pre-
+  // selected files). This must be an effect, not state initialisation:
+  // addFiles allocates object URLs, which is a side effect that needs
+  // the effect lifecycle. The synchronous setState inside is one
+  // intentional mount-time pass.
+  // eslint-disable-next-line react-hooks/exhaustive-deps, react-hooks/set-state-in-effect -- mount-once ingest; see comment
   useEffect(() => { if (initialFiles?.length) addFiles(initialFiles); }, []);
 
   // Block accidental tab/window close while uploading
@@ -699,7 +798,65 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
         )}
 
         <div className="flex-1 overflow-y-auto overflow-x-hidden p-4 sm:p-6 space-y-4">
-          {allDone ? (
+          {!leadDone ? (
+            /* Events package: collect the guest's details before they can
+               upload. The marketing tickbox below is deliberately NOT
+               required — GDPR Art. 7(4): consent conditioned on receiving
+               a service isn't freely given, so it can never gate upload. */
+            <div className="space-y-3 min-w-0">
+              <div>
+                <p className="font-serif text-lg font-light text-[#0F1729]">{lead.title}</p>
+                <p className="font-sans text-xs text-[#0F1729]/55 mt-0.5">{lead.subtitle}</p>
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                <input
+                  value={leadFirst}
+                  onChange={(e) => setLeadFirst(e.target.value)}
+                  placeholder={lead.firstName}
+                  autoComplete="given-name"
+                  className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm text-[#0F1729] bg-white outline-none focus:border-[#C9820A]"
+                />
+                <input
+                  value={leadLast}
+                  onChange={(e) => setLeadLast(e.target.value)}
+                  placeholder={lead.lastName}
+                  autoComplete="family-name"
+                  className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm text-[#0F1729] bg-white outline-none focus:border-[#C9820A]"
+                />
+              </div>
+              <input
+                type="email"
+                value={leadEmail}
+                onChange={(e) => setLeadEmail(e.target.value)}
+                placeholder={lead.email}
+                autoComplete="email"
+                inputMode="email"
+                className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm text-[#0F1729] bg-white outline-none focus:border-[#C9820A]"
+              />
+              <label className="flex items-start gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={leadConsent}
+                  onChange={(e) => setLeadConsent(e.target.checked)}
+                  className="mt-0.5 shrink-0 accent-[#C9820A]"
+                />
+                <span className="text-[11px] text-[#0F1729]/60 leading-snug">
+                  {lead.consentLabel(organiserName || "organizator")}
+                  <span className="block text-[#0F1729]/40 mt-0.5">{lead.consentOptional}</span>
+                </span>
+              </label>
+              <p className="text-[11px] text-[#0F1729]/40 leading-snug">{lead.privacyNote}</p>
+              {leadError && <p className="text-xs text-red-600">{leadError}</p>}
+              <button
+                onClick={submitLead}
+                disabled={leadSaving}
+                className="w-full py-3 rounded-xl text-white text-sm font-semibold disabled:opacity-60"
+                style={{ background: accent }}
+              >
+                {leadSaving ? "…" : lead.submit}
+              </button>
+            </div>
+          ) : allDone ? (
             <div className="text-center py-8 min-w-0">
               <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-4">
                 <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>

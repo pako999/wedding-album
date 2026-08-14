@@ -23,7 +23,7 @@ interface ContactCopy {
   formCta: string;
   faqTitle: string;
   faqs: { q: string; a: string }[];
-  responseNote: string;
+  company: { title: string; lines: string[] };
 }
 
 const COPY: Record<LangCode, ContactCopy> = {
@@ -48,11 +48,18 @@ const COPY: Record<LangCode, ContactCopy> = {
       { q: "Kako hitro odgovorite na sporočilo?", a: "Običajno v nekaj urah med delavniki, najpozneje v 24 urah. Imetniki paketa Premium imajo prednostno podporo z odzivom pod 4 ure ob delavnikih." },
       { q: "Lahko najprej preizkusim Guestcam?", a: "Da. Brezplačni paket omogoča testno galerijo do 20 fotografij za 30 dni — brez kreditne kartice, brez registracije gostov. Tako vidite, kako deluje, preden plačate." },
       { q: "Kaj se zgodi, če imamo težave na sam dan poroke?", a: "Pišite nam na info@guestcam.si ali na WhatsApp — odzivamo se tudi ob koncu tedna. Premium paket vključuje 24/7 podporo na dan dogodka, ko šteje vsaka minuta." },
-      { q: "Ali izdate račun na podjetje (s.p., d.o.o.)?", a: "Da. V email napišite ime podjetja, davčno številko in naslov — v 24 urah prejmete pravilen e-račun v PDF obliki, primeren za knjiženje." },
       { q: "Imam težavo z nalaganjem fotografij — kaj zdaj?", a: "Najpogostejši vzrok je počasna mobilna povezava. Preverite, da ste povezani na WiFi, ali pa nam pišite — fotografije lahko po dogodku ročno dodamo iz vaše naprave." },
-      { q: "Lahko se srečamo v živo?", a: "Poslujemo online, po predhodnem dogovoru pa se rade volje srečamo na video klicu ali v Ljubljani — še posebej za velike dogodke, agencije in wedding planerje." },
     ],
-    responseNote: "Sport group d.o.o. · DDV ID: SI12345678 · Sedež: Ljubljana, Slovenija",
+    company: {
+      title: "Podatki o podjetju",
+      lines: [
+        "Sport group d.o.o.",
+        "Osojnikova 4a, 2000 Maribor, Slovenija",
+        "Davčna številka: SI72133449",
+        "Email: info@guestcam.si",
+        "Telefon: +386 71 604 980",
+      ],
+    },
   },
   hr: {
     eyebrow: "Kontakt",
@@ -75,11 +82,18 @@ const COPY: Record<LangCode, ContactCopy> = {
       { q: "Koliko brzo odgovarate na poruke?", a: "Obično u nekoliko sati radnim danima, najkasnije u 24 sata. Premium paket uključuje prioritetnu podršku s odzivom unutar 4 sata radnim danima." },
       { q: "Mogu li prvo isprobati Guestcam?", a: "Da. Besplatan paket omogućuje testnu galeriju do 20 fotografija na 30 dana — bez kreditne kartice, bez registracije gostiju. Tako vidite kako radi prije plaćanja." },
       { q: "Što ako imamo problema na sam dan vjenčanja?", a: "Pišite nam na info@guestcam.si ili WhatsApp — odgovaramo i vikendom. Premium paket uključuje 24/7 podršku na dan događaja, kad svaka minuta broji." },
-      { q: "Izdajete li račune za tvrtke (obrt, d.o.o.)?", a: "Da. U e-mail napišite naziv tvrtke, OIB i adresu — u 24 sata primite ispravan PDF e-račun, prikladan za knjiženje." },
       { q: "Imam problem s učitavanjem fotografija — što sada?", a: "Najčešći uzrok je spora mobilna veza. Provjerite jeste li spojeni na WiFi, ili nam pišite — fotografije možemo nakon događaja ručno dodati s vašeg uređaja." },
-      { q: "Možemo li se sastati uživo?", a: "Poslujemo online, uz prethodni dogovor rado se sastajemo na video pozivu ili u Ljubljani — posebno za velike događaje, agencije i wedding planere." },
     ],
-    responseNote: "Sport group d.o.o. · PDV ID: SI12345678 · Sjedište: Ljubljana, Slovenija",
+    company: {
+      title: "Podaci o tvrtki",
+      lines: [
+        "Sport group d.o.o.",
+        "Osojnikova 4a, 2000 Maribor, Slovenija",
+        "OIB / PDV broj: SI72133449",
+        "Email: info@guestcam.si",
+        "Telefon: +386 71 604 980",
+      ],
+    },
   },
   sr: {
     eyebrow: "Kontakt",
@@ -102,11 +116,18 @@ const COPY: Record<LangCode, ContactCopy> = {
       { q: "Koliko brzo odgovarate na poruke?", a: "Obično za nekoliko sati radnim danom, najkasnije u roku od 24 sata. Premium paket uključuje prioritetnu podršku sa odzivom u roku od 4 sata radnim danom." },
       { q: "Mogu li prvo da isprobam Guestcam?", a: "Da. Besplatan paket omogućava testnu galeriju do 20 fotografija na 30 dana — bez kreditne kartice, bez registracije gostiju. Tako vidite kako radi pre plaćanja." },
       { q: "Šta ako imamo problem na sam dan venčanja?", a: "Pišite nam na info@guestcam.si ili WhatsApp — odgovaramo i vikendom. Premium paket uključuje 24/7 podršku na dan događaja, kada svaki minut važi." },
-      { q: "Izdajete li račune za firme (preduzetnik, d.o.o.)?", a: "Da. U e-mail napišite naziv firme, PIB i adresu — u roku od 24 sata dobijate ispravan PDF e-račun, pogodan za knjiženje." },
       { q: "Imam problem sa otpremanjem fotografija — šta sad?", a: "Najčešći uzrok je spora mobilna veza. Proverite da li ste povezani na WiFi, ili nam pišite — fotografije možemo posle događaja ručno dodati sa vašeg uređaja." },
-      { q: "Možemo li se sastati uživo?", a: "Poslujemo online, uz prethodni dogovor rado se sastajemo na video pozivu ili u Ljubljani — posebno za velike događaje, agencije i wedding planere." },
     ],
-    responseNote: "Sport group d.o.o. · PDV ID: SI12345678 · Sedište: Ljubljana, Slovenija",
+    company: {
+      title: "Podaci o firmi",
+      lines: [
+        "Sport group d.o.o.",
+        "Osojnikova 4a, 2000 Maribor, Slovenija",
+        "PIB / PDV broj: SI72133449",
+        "Email: info@guestcam.si",
+        "Telefon: +386 71 604 980",
+      ],
+    },
   },
   de: {
     eyebrow: "Kontakt",
@@ -129,11 +150,18 @@ const COPY: Record<LangCode, ContactCopy> = {
       { q: "Wie schnell antworten Sie auf Nachrichten?", a: "Meist innerhalb weniger Stunden an Werktagen, spätestens innerhalb von 24 Stunden. Premium-Kunden erhalten Priority-Support mit Antwort unter 4 Stunden an Werktagen." },
       { q: "Kann ich Guestcam zuerst testen?", a: "Ja. Das kostenlose Paket bietet eine Testgalerie mit bis zu 20 Fotos für 30 Tage — ohne Kreditkarte, ohne Gäste-Registrierung. So sehen Sie, wie es funktioniert, bevor Sie zahlen." },
       { q: "Was, wenn am Hochzeitstag Probleme auftreten?", a: "Schreiben Sie an info@guestcam.si oder per WhatsApp — wir antworten auch am Wochenende. Das Premium-Paket beinhaltet 24/7-Support am Veranstaltungstag, wenn jede Minute zählt." },
-      { q: "Stellen Sie Rechnungen für Firmen aus (Einzelunternehmen, GmbH)?", a: "Ja. Senden Sie uns Firmenname, USt-IdNr. und Adresse per E-Mail — Sie erhalten innerhalb von 24 Stunden eine ordnungsgemäße PDF-Rechnung, buchungstauglich." },
       { q: "Ich habe Probleme beim Hochladen von Fotos — was nun?", a: "Häufigste Ursache ist eine langsame Mobilverbindung. Prüfen Sie, ob Sie mit WLAN verbunden sind, oder schreiben Sie uns — wir können Fotos nach der Veranstaltung manuell von Ihrem Gerät einspielen." },
-      { q: "Können wir uns persönlich treffen?", a: "Wir arbeiten online; nach Absprache treffen wir uns gerne per Videoanruf oder in Ljubljana — insbesondere für große Veranstaltungen, Agenturen und Wedding Planner." },
     ],
-    responseNote: "Sport group d.o.o. · USt-IdNr.: SI12345678 · Sitz: Ljubljana, Slowenien",
+    company: {
+      title: "Firmenangaben",
+      lines: [
+        "Sport group d.o.o.",
+        "Osojnikova 4a, 2000 Maribor, Slowenien",
+        "USt-IdNr.: SI72133449",
+        "E-Mail: info@guestcam.si",
+        "Telefon: +386 71 604 980",
+      ],
+    },
   },
   en: {
     eyebrow: "Contact",
@@ -156,11 +184,18 @@ const COPY: Record<LangCode, ContactCopy> = {
       { q: "How fast do you reply to messages?", a: "Usually within a few hours on weekdays, no later than 24 hours. Premium customers get priority support with under-4h response on weekdays." },
       { q: "Can I try Guestcam first?", a: "Yes. The free plan gives you a test gallery of up to 20 photos for 30 days — no credit card, no guest sign-up. See how it works before you pay." },
       { q: "What if something goes wrong on the wedding day itself?", a: "Email info@guestcam.si or message us on WhatsApp — we reply on weekends too. The Premium plan includes 24/7 event-day support when every minute counts." },
-      { q: "Do you issue invoices for companies (sole trader, LLC)?", a: "Yes. Email us the company name, VAT ID and address — within 24 hours you'll receive a properly-formatted PDF invoice, accounting-ready." },
       { q: "I'm having trouble uploading photos — what now?", a: "The most common cause is slow mobile data. Check you're on WiFi, or message us — we can manually add photos from your device after the event." },
-      { q: "Can we meet in person?", a: "We operate online; with prior arrangement we're happy to meet by video call or in Ljubljana — especially for large events, agencies and wedding planners." },
     ],
-    responseNote: "Sport group d.o.o. · VAT ID: SI12345678 · Registered office: Ljubljana, Slovenia",
+    company: {
+      title: "Company information",
+      lines: [
+        "Sport group d.o.o.",
+        "Osojnikova 4a, 2000 Maribor, Slovenia",
+        "VAT ID: SI72133449",
+        "Email: info@guestcam.si",
+        "Phone: +386 71 604 980",
+      ],
+    },
   },
   es: {
     eyebrow: "Contacto",
@@ -183,11 +218,18 @@ const COPY: Record<LangCode, ContactCopy> = {
       { q: "¿Con qué rapidez respondéis a los mensajes?", a: "Normalmente en pocas horas entre semana, como máximo en 24 horas. Los clientes Premium reciben soporte prioritario con respuesta en menos de 4 horas en días laborables." },
       { q: "¿Puedo probar Guestcam primero?", a: "Sí. El plan gratuito incluye una galería de prueba de hasta 20 fotos durante 30 días — sin tarjeta de crédito, sin registro de invitados. Comprueba cómo funciona antes de pagar." },
       { q: "¿Y si algo va mal el día de la boda?", a: "Escríbenos a info@guestcam.si o por WhatsApp — respondemos también los fines de semana. El plan Premium incluye soporte 24/7 el día del evento, cuando cada minuto cuenta." },
-      { q: "¿Emitís facturas para empresas (autónomo, S.L.)?", a: "Sí. Envíanos por email el nombre de la empresa, CIF y dirección — en 24 horas recibirás una factura PDF correcta, lista para contabilidad." },
       { q: "Tengo problemas para subir fotos — ¿qué hago?", a: "La causa más común es una conexión móvil lenta. Comprueba que estés en WiFi, o escríbenos — podemos añadir manualmente las fotos desde tu dispositivo después del evento." },
-      { q: "¿Podemos vernos en persona?", a: "Trabajamos online; con cita previa nos encanta vernos por videollamada o en Liubliana — especialmente para grandes eventos, agencias y wedding planners." },
     ],
-    responseNote: "Sport group d.o.o. · CIF: SI12345678 · Domicilio social: Liubliana, Eslovenia",
+    company: {
+      title: "Datos de la empresa",
+      lines: [
+        "Sport group d.o.o.",
+        "Osojnikova 4a, 2000 Maribor, Eslovenia",
+        "CIF / NIF: SI72133449",
+        "Email: info@guestcam.si",
+        "Teléfono: +386 71 604 980",
+      ],
+    },
   },
 };
 
@@ -245,7 +287,7 @@ export function ContactPage({ lang }: { lang: LangCode }) {
                 <div className="text-3xl mb-3">{c.icon}</div>
                 <h3 className="font-bold text-[#0F1729] text-base mb-1">{c.title}</h3>
                 <p className="text-xs text-gray-500 mb-4">{c.desc}</p>
-                <p className="text-sm font-semibold text-[#C9820A] group-hover:underline break-all">{c.value}</p>
+                <p className="text-sm font-semibold text-[#8C6218] group-hover:underline break-all">{c.value}</p>
               </a>
             ))}
           </div>
@@ -289,7 +331,23 @@ export function ContactPage({ lang }: { lang: LangCode }) {
                 </details>
               ))}
             </div>
-            <p className="text-[11px] text-gray-400 mt-8 text-center">{t.responseNote}</p>
+          </div>
+        </section>
+
+        {/* Company info */}
+        <section className="pb-16 bg-white">
+          <div className="max-w-2xl mx-auto px-6">
+            <div className="rounded-2xl border border-gray-200 bg-[#FFF9EC]/40 p-6 sm:p-7 text-center">
+              <h2 className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-3">{t.company.title}</h2>
+              <p className="text-sm text-gray-600 leading-relaxed">
+                {t.company.lines.map((line, i) => (
+                  <span key={line}>
+                    {line}
+                    {i < t.company.lines.length - 1 && <span className="mx-2 text-gray-300">·</span>}
+                  </span>
+                ))}
+              </p>
+            </div>
           </div>
         </section>
       </main>

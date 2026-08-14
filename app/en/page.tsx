@@ -1,3 +1,4 @@
+import { SITE_URL } from "@/lib/urls";
 import type { Metadata } from "next";
 import { LocalizedHomePage } from "@/components/LocalizedHomePage";
 
@@ -11,29 +12,29 @@ export const metadata: Metadata = {
   description:
     "Collect every wedding guest's photos and videos via QR code into one private gallery. No app, full quality, free to start. Built for weddings & events.",
   alternates: {
-    canonical: "https://www.guestcam.si/en",
+    canonical: `${SITE_URL}/en`,
     languages: {
-      sl: "https://www.guestcam.si/",
-      hr: "https://www.guestcam.si/hr",
-      sr: "https://www.guestcam.si/sr",
-      de: "https://www.guestcam.si/de",
-      en: "https://www.guestcam.si/en",
-      es: "https://www.guestcam.si/es",
-      "x-default": "https://www.guestcam.si/",
+      sl: `${SITE_URL}/`,
+      hr: `${SITE_URL}/hr`,
+      sr: `${SITE_URL}/sr`,
+      de: `${SITE_URL}/de`,
+      en: `${SITE_URL}/en`,
+      es: `${SITE_URL}/es`,
+      "x-default": `${SITE_URL}/`,
     },
   },
   openGraph: {
     type: "website",
     locale: "en_GB",
     siteName: "Guestcam",
-    url: "https://www.guestcam.si/en",
+    url: `${SITE_URL}/en`,
     title: "Wedding Photo Sharing App with QR Code · Free | Guestcam",
     description:
       "Collect every wedding guest's photos and videos via QR code into one private gallery. No app, full quality, free to start. Built for weddings & events.",
     // See app/sr/page.tsx for the per-locale image rationale.
     images: [
       {
-        url: "https://www.guestcam.si/og-image.png?v=2",
+        url: `${SITE_URL}/og-image.png?v=2`,
         width: 910,
         height: 1200,
         alt: "Wedding Photo Sharing App with QR Code · Free | Guestcam",
@@ -45,7 +46,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Wedding Photo Sharing App with QR Code · Free | Guestcam",
     description: "Collect every wedding guest's photos and videos via QR code into one private gallery. No app, full quality, free to start.",
-    images: ["https://www.guestcam.si/og-image.png?v=2"],
+    images: [`${SITE_URL}/og-image.png?v=2`],
   },
 };
 

@@ -34,7 +34,7 @@ async function detectLang(): Promise<LangCode> {
     const path =
       h.get("x-pathname") ??
       h.get("next-url") ??
-      new URL(h.get("referer") ?? "https://www.guestcam.si").pathname;
+      new URL(h.get("referer") ?? SITE_URL).pathname;
     const first = path.split("/").filter(Boolean)[0] ?? "";
     if ((SUPPORTED_LANGS as string[]).includes(first)) {
       return first as LangCode;
@@ -183,8 +183,29 @@ export default async function RootLayout({
     pathname.startsWith("/admin") ||
     pathname.startsWith("/sign-in") ||
     pathname.startsWith("/sign-up") ||
+    // Photo Wall (/wall/<token>) is an unattended TV/projector display —
+    // a "15% off" popup covering the couple's photos on a big screen in
+    // front of every guest is the worst possible place for it. Needs its
+    // own check because isAlbumGuestPath only matches single-segment
+    // /<slug> paths, and the wall is two segments.
+    pathname.startsWith("/wall") ||
     isAffiliatePath ||
     isAlbumGuestPath;
+
+  // Surfaces that must stay chrome-free: the Photo Wall (an unattended
+  // venue TV — a cookie dialog sits over the couple's photos in front of
+  // every guest, and nobody is there to dismiss it) and album guest
+  // galleries.
+  //
+  // We drop the consent dialog AND every non-essential tracker together,
+  // never the dialog alone: serving GA/Meta Pixel with the banner
+  // suppressed would set marketing cookies without consent, which is
+  // exactly what the banner exists to prevent. No tracker → nothing to
+  // consent to. Note this means the two gtag() events fired from the
+  // guest gallery (guest_email_captured, referral CTA) no longer report;
+  // both call sites are already guarded with `typeof gtag === "function"`
+  // so they simply no-op.
+  const isPrivateSurface = pathname.startsWith("/wall") || isAlbumGuestPath;
 
   let showPromo = !isProtectedPath;
   if (showPromo) {
@@ -218,19 +239,23 @@ export default async function RootLayout({
           <link rel="dns-prefetch" href="https://connect.facebook.net" />
 
           {/* Cookiebot — must be beforeInteractive so auto-blocking mode can
-              intercept GA and any other third-party scripts before they fire. */}
-          <Script
-            id="Cookiebot"
-            src="https://consent.cookiebot.com/uc.js"
-            data-cbid="d27e2582-e0d4-4963-bf86-ffdf25bc79fd"
-            data-blockingmode="auto"
-            strategy="beforeInteractive"
-          />
-          <MetaPixel />
+              intercept GA and any other third-party scripts before they fire.
+              Skipped on private surfaces (see isPrivateSurface above), where
+              no non-essential tracker loads either. */}
+          {!isPrivateSurface && (
+            <Script
+              id="Cookiebot"
+              src="https://consent.cookiebot.com/uc.js"
+              data-cbid="d27e2582-e0d4-4963-bf86-ffdf25bc79fd"
+              data-blockingmode="auto"
+              strategy="beforeInteractive"
+            />
+          )}
+          {!isPrivateSurface && <MetaPixel />}
           {showPromo && <DiscountBanner lang={lang} />}
           {children}
           {showPromo && <ExitIntentPopup lang={lang} />}
-          {GA_ID && (
+          {GA_ID && !isPrivateSurface && (
             <>
               <Script
                 id="ga-loader"

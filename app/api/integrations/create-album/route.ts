@@ -1,3 +1,4 @@
+import { SITE_URL } from "@/lib/urls";
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { albums } from "@/lib/db/schema";
@@ -64,7 +65,7 @@ export async function POST(req: NextRequest) {
     })
     .returning();
 
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://www.guestcam.si";
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? SITE_URL;
 
   return NextResponse.json({
     albumId: album.id,

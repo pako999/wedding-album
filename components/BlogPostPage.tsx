@@ -1,3 +1,4 @@
+import { SITE_URL } from "@/lib/urls";
 import Link from "next/link";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SeoFooter } from "@/components/SeoFooter";
@@ -173,7 +174,7 @@ export async function BlogPostPage({ post }: Props) {
     .filter((b): b is Extract<BlogBlock, { type: "h2" }> => b.type === "h2")
     .map((h) => ({ id: h.id ?? headingId(h.text), text: h.text }));
 
-  const canonical = `https://www.guestcam.si${blogUrl(post.lang, post.slug)}`;
+  const canonical = `${SITE_URL}${blogUrl(post.lang, post.slug)}`;
 
   // JSON-LD: Article + BreadcrumbList + FAQPage (if has faqs)
   const jsonLd: Record<string, unknown>[] = [
@@ -188,7 +189,7 @@ export async function BlogPostPage({ post }: Props) {
       publisher: {
         "@type": "Organization",
         name: "Guestcam",
-        logo: { "@type": "ImageObject", url: "https://www.guestcam.si/guestcam-logo.svg" },
+        logo: { "@type": "ImageObject", url: `${SITE_URL}/guestcam-logo.svg` },
       },
       inLanguage: post.lang,
       mainEntityOfPage: canonical,
@@ -197,8 +198,8 @@ export async function BlogPostPage({ post }: Props) {
       "@context": "https://schema.org",
       "@type": "BreadcrumbList",
       itemListElement: [
-        { "@type": "ListItem", position: 1, name: "Guestcam", item: "https://www.guestcam.si" },
-        { "@type": "ListItem", position: 2, name: "Blog",      item: `https://www.guestcam.si${blogUrl(post.lang)}` },
+        { "@type": "ListItem", position: 1, name: "Guestcam", item: SITE_URL },
+        { "@type": "ListItem", position: 2, name: "Blog",      item: `${SITE_URL}${blogUrl(post.lang)}` },
         { "@type": "ListItem", position: 3, name: post.title,  item: canonical },
       ],
     },

@@ -1,0 +1,106 @@
+{
+  "slug": "kako-narediti-qr-kartico-v-canvi",
+  "lang": "sl",
+  "title": "Kako narediti QR kartico za poroko v Canvi (brezplačno, korak za korakom)",
+  "description": "Naredite lastno QR kartico za poroko v Canvi v 10 minutah — brezplačno, s koraki in nasveti za QR kodo, ki jo telefon zares prebere.",
+  "translationKey": "wedding-qr-card-canva-design",
+  "publishedAt": "2026-08-11",
+  "updatedAt": "2026-08-11",
+  "author": "Guestcam Team",
+  "category": "vodnik",
+  "readingTime": 6,
+  "tags": ["QR koda", "Canva", "poročne fotografije", "Guestcam"],
+  "tldr": "Odprite brezplačen dizajn v Canvi, dodajte imena in datum, naložite sliko QR kode iz Guestcama in izvozite kartico za tisk — v približno 10 minutah.",
+  "content": [
+    {
+      "type": "h2",
+      "text": "Zakaj si narediti lastno QR kartico"
+    },
+    {
+      "type": "p",
+      "text": "Generičen natisnjen znak s QR kodo deluje, a kartica, ki jo sami oblikujete v Canvi, lahko ujame barve, pisave in slog vaše poroke — tako deluje kot del dekoracije, ne kot naknadno prilepljen listek na mizi."
+    },
+    {
+      "type": "h2",
+      "text": "Kaj potrebujete, preden začnete"
+    },
+    {
+      "type": "ul",
+      "items": [
+        "QR kodo vaše Guestcam galerije, preneseno kot PNG (nadzorna plošča → zavihek »QR koda« → »Prenesi samo QR kodo«).",
+        "Brezplačen račun na Canvi — plačljiva naročnina za to ni potrebna.",
+        "Približno 10 minut časa."
+      ]
+    },
+    {
+      "type": "image",
+      "src": "https://www.guestcam.si/blog/canva-qr-card/card-anatomy.svg",
+      "alt": "Postavitev QR kartice za poroko: imena in datum na vrhu, QR koda na sredini, kratko navodilo spodaj",
+      "caption": "Ostanite preprosti: imena, QR koda, ena vrstica navodil — to je vse, kar kartica potrebuje.",
+      "credit": "Guestcam"
+    },
+    {
+      "type": "h2",
+      "text": "Korak za korakom: oblikovanje kartice v Canvi"
+    },
+    {
+      "type": "ol",
+      "items": [
+        "Odprite canva.com in ustvarite nov dizajn — poiščite »razglednica« ali nastavite velikost po meri 10 × 15 cm (primerna velikost za kartice na mizah).",
+        "Izberite katerokoli predlogo kot izhodišče ali začnite s praznim platnom.",
+        "Dodajte besedilno polje z imeni para, spodaj pa še eno z datumom poroke.",
+        "Kliknite Nalaganja → Naloži datoteke in dodajte PNG datoteko QR kode, ki ste jo prenesli iz nadzorne plošče Guestcam.",
+        "QR kodo postavite na sredino, veliko vsaj 3 × 3 cm, da jo telefon zlahka zazna.",
+        "Spodaj dodajte kratko navodilo, npr. »Skenirajte in delite svoje fotografije!«",
+        "Pisave in barve uskladite s svojimi vabili za enoten videz, nato kliknite Deli → Prenesi → PDF za tisk."
+      ]
+    },
+    {
+      "type": "h2",
+      "text": "Nasveti za oblikovanje QR kode, ki jo telefon zares prebere"
+    },
+    {
+      "type": "ul",
+      "items": [
+        "Okoli QR kode pustite vsaj 8 mm praznega prostora (»tihi pas«) — telefon ta rob uporabi za fokusiranje.",
+        "Kode ne pomanjšajte pod približno 3 × 3 cm na namizni kartici oziroma 2 × 2 cm na priponki.",
+        "QR koda naj bo temna na svetli podlagi — nizek kontrast je najpogostejši razlog, da koda ne deluje.",
+        "QR kode nikoli ne postavite čez razgibano fotografijo ali vzorec.",
+        "Pred tiskom celotne naklade natisnite eno testno kartico in jo sami preverite z dvema ali tremi različnimi telefoni."
+      ]
+    },
+    {
+      "type": "h2",
+      "text": "Nimate časa za oblikovanje? Uporabite pripravljeno predlogo"
+    },
+    {
+      "type": "p",
+      "text": "Če si oblikovanja raje prihranite, Guestcam vključuje 8 pripravljenih predlog QR kartic, ki samodejno izpolnijo imena in datum — prenesete jo kot PDF za tisk kar iz nadzorne plošče."
+    },
+    {
+      "type": "cta",
+      "text": "Ustvarite brezplačno poročno galerijo",
+      "href": "https://www.guestcam.si/dashboard/new"
+    },
+    {
+      "type": "faq",
+      "q": "Ali za QR kartico potrebujem Canva Pro?",
+      "a": "Ne. Brezplačen račun na Canvi pokrije vse iz tega vodnika — velikost po meri, nalaganje lastne slike QR kode in izvoz PDF za tisk."
+    },
+    {
+      "type": "faq",
+      "q": "Kje dobim sliko QR kode za svojo poroko?",
+      "a": "V nadzorni plošči Guestcam: odprite galerijo, pojdite na zavihek »QR koda« in kliknite »Prenesi samo QR kodo«, da jo prenesete kot PNG."
+    },
+    {
+      "type": "faq",
+      "q": "Kakšno velikost naj izberem za tisk?",
+      "a": "A6 (približno 10,5 × 14,8 cm) je primerna za kartice na mizah. Za večji znak pri vhodu ali darilni mizi uporabite A5 ali A4."
+    },
+    {
+      "type": "faq",
+      "q": "Zakaj natisnjena QR koda ni delovala?",
+      "a": "Najpogostejši vzroki so slika v nizki ločljivosti (vedno uporabite preneseno datoteko, nikoli posnetka zaslona), premalo praznega prostora okoli kode ali premajhna velikost. Pred tiskom cele naklade jo preizkusite."
+    }
+  ]
+}

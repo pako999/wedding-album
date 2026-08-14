@@ -1,4 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
+import {
+  addOnTotalCents, quoteShipping, standsPriceCents,
+  DEFAULT_STAND_QTY, DEFAULT_STAND_VARIANT, type StandVariant,
+} from "@/lib/print-service";
 import { currentUser } from "@clerk/nextjs/server";
 import { db } from "@/lib/db";
 import { albums, bankOrders } from "@/lib/db/schema";
@@ -6,6 +10,7 @@ import { eq } from "drizzle-orm";
 import { sendBankOrderConfirmation, sendAdminBankOrderEmail } from "@/lib/email/notifications";
 import { notifyTelegram, htmlEscape } from "@/lib/telegram";
 import { validateDiscount, incrementDiscountUsage } from "@/lib/discount";
+import { recordStandOrder } from "@/lib/stand-orders";
 
 export const runtime = "nodejs";
 
@@ -19,13 +24,23 @@ interface BillingDetails {
   name: string;
   companyName?: string;
   email?: string;
+  /** Both only arrive when stands are in the order — a courier needs a
+   *  phone number and a postcode, and a digital-only invoice needs
+   *  neither, so the form asks for them conditionally. */
+  phone?: string;
+  postalCode?: string;
   address: string;
   city: string;
   taxId?: string;
+  /** ISO-3166 alpha-2 — drives the shipping rate for printed stands. */
+  country?: string;
 }
 
 export async function POST(req: NextRequest) {
-  const { planId, albumSlug, billing, discountCode } = await req.json() as {
+  const { planId, albumSlug, billing, discountCode, tableStands, standsQty, standsVariant } = await req.json() as {
+    tableStands?: boolean;
+    standsQty?: number;
+    standsVariant?: StandVariant;
     planId: string;
     albumSlug: string;
     billing?: BillingDetails;
@@ -99,6 +114,53 @@ export async function POST(req: NextRequest) {
   });
 
   // Telegram notification — all billing details included for invoice creation
+  // Physical add-on. Priced server-side exactly as on the card path, so
+  // an invoice order can't be talked into free shipping. An unshippable
+  // country is rejected rather than quietly invoiced without postage.
+  const standsCents = addOnTotalCents(!!tableStands, billing?.country, standsQty, standsVariant);
+  if (standsCents === null) {
+    return NextResponse.json({ error: "shipping_unavailable" }, { status: 400 });
+  }
+  const standsQuote = tableStands ? quoteShipping(billing?.country) : null;
+  const standsQ = standsQty ?? DEFAULT_STAND_QTY;
+  const standsV = standsVariant ?? DEFAULT_STAND_VARIANT;
+  // Whoever raises the proforma has to know a parcel is owed — without
+  // this the customer pays and nothing ever ships.
+  const standsLines = tableStands && standsQuote
+    ? `\n📦 <b>Podstavki za mize:</b> ${standsQ}× ${standsV === "gold" ? "zlati" : "leseni"} — ${((standsPriceCents(standsQ, standsV) ?? 0) / 100).toFixed(2)} € + poštnina ${(standsQuote.cents / 100).toFixed(2)} € (${htmlEscape(standsQuote.carrier)})\nDržava dostave: ${htmlEscape((billing?.country ?? "").toUpperCase())}${standsQuote.customs ? "\n⚠️ Izven EU — potrebna carinska (komercialna) faktura" : ""}`
+    : "";
+
+  // Physical fulfilment record — until now an invoice order's stands
+  // existed only inside a Telegram message, which nothing can query.
+  if (tableStands && standsQuote) {
+    const clean = (v?: string) => (v?.trim() ? v.trim() : null);
+    const goods = standsPriceCents(standsQ, standsV) ?? 0;
+    await recordStandOrder({
+      albumSlug,
+      source: "invoice",
+      orderRef: null,
+      planId,
+      planName: plan.name,
+      planCents: plan.price * 100,
+      variant: standsV,
+      qty: standsQ,
+      standsCents: goods,
+      shipCents: standsQuote.cents,
+      shipCarrier: standsQuote.carrier,
+      shipCountry: (billing?.country ?? "").toUpperCase() || null,
+      shipCustoms: standsQuote.customs,
+      totalCents: plan.price * 100 + goods + standsQuote.cents,
+      recipientName:  clean(billing?.name),
+      recipientPhone: clean(billing?.phone),
+      recipientEmail: clean(billing?.email) ?? email,
+      address:        clean(billing?.address),
+      postalCode:     clean(billing?.postalCode),
+      city:           clean(billing?.city),
+      companyName:    clean(billing?.companyName),
+      taxId:          clean(billing?.taxId),
+    });
+  }
+
   const billingLines = billing
     ? `\n👤 <b>Podatki za predračun:</b>\nIme: ${htmlEscape(billing.name)}${billing.companyName ? `\nPodjetje: ${htmlEscape(billing.companyName)}` : ""}${billing.email ? `\nEmail za račun: ${htmlEscape(billing.email)}` : ""}\nNaslov: ${htmlEscape(billing.address)}\nKraj: ${htmlEscape(billing.city)}${billing.taxId ? `\nDavčna: ${htmlEscape(billing.taxId)}` : ""}`
     : "";
@@ -128,6 +190,7 @@ export async function POST(req: NextRequest) {
     discountLine +
     `\nEmail: ${htmlEscape(email)}` +
     billingLines +
+    standsLines +
     `\nDatum: ${new Date().toLocaleString("sl-SI")}`,
   );
 

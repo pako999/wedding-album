@@ -1,3 +1,4 @@
+import { SITE_URL } from "@/lib/urls";
 import type { Metadata } from "next";
 import { LegalPage } from "@/components/LegalPage";
 
@@ -5,19 +6,19 @@ export const metadata: Metadata = {
   title: "Pogoji uporabe",
   description: "Pogoji uporabe storitve Guestcam — paketi, plačila, pravice in obveznosti uporabnikov.",
   alternates: {
-    canonical: "https://www.guestcam.si/terms",
+    canonical: `${SITE_URL}/terms`,
     languages: {
-      sl: "https://www.guestcam.si/terms",
-      hr: "https://www.guestcam.si/hr/terms",
-      sr: "https://www.guestcam.si/sr/terms",
-      de: "https://www.guestcam.si/de/terms",
-      en: "https://www.guestcam.si/en/terms",
-      es: "https://www.guestcam.si/es/terms",
-      "x-default": "https://www.guestcam.si/terms",
+      sl: `${SITE_URL}/terms`,
+      hr: `${SITE_URL}/hr/terms`,
+      sr: `${SITE_URL}/sr/terms`,
+      de: `${SITE_URL}/de/terms`,
+      en: `${SITE_URL}/en/terms`,
+      es: `${SITE_URL}/es/terms`,
+      "x-default": `${SITE_URL}/terms`,
     },
   },
   openGraph: {
-    url: "https://www.guestcam.si/terms",
+    url: `${SITE_URL}/terms`,
     title: "Pogoji uporabe",
     description: "Pogoji uporabe storitve Guestcam — paketi, plačila, pravice in obveznosti uporabnikov.",
     images: ["/og-image.png?v=2"],

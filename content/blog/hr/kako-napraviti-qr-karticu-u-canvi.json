@@ -1,0 +1,106 @@
+{
+  "slug": "kako-napraviti-qr-karticu-u-canvi",
+  "lang": "hr",
+  "title": "Kako napraviti QR karticu za vjenčanje u Canvi (besplatno, korak po korak)",
+  "description": "Napravite vlastitu QR karticu za vjenčanje u Canvi za 10 minuta — besplatno, s koracima i savjetima za QR kod koji stvarno radi.",
+  "translationKey": "wedding-qr-card-canva-design",
+  "publishedAt": "2026-08-11",
+  "updatedAt": "2026-08-11",
+  "author": "Guestcam Team",
+  "category": "vodnik",
+  "readingTime": 6,
+  "tags": ["QR kod", "Canva", "fotografije s vjenčanja", "Guestcam"],
+  "tldr": "Otvorite besplatan dizajn u Canvi, dodajte imena i datum, dodajte sliku QR koda iz Guestcama i preuzmite karticu spremnu za tisak — za otprilike 10 minuta.",
+  "content": [
+    {
+      "type": "h2",
+      "text": "Zašto napraviti vlastitu QR karticu"
+    },
+    {
+      "type": "p",
+      "text": "Generički otisnuti znak s QR kodom funkcionira, ali kartica koju sami oblikujete u Canvi može uhvatiti boje, fontove i stil vašeg vjenčanja — tako djeluje kao dio dekoracije, a ne kao naknadno zalijepljen listić na stolu."
+    },
+    {
+      "type": "h2",
+      "text": "Što vam treba prije nego počnete"
+    },
+    {
+      "type": "ul",
+      "items": [
+        "QR kod vaše Guestcam galerije, preuzet kao PNG (nadzorna ploča → kartica »QR koda« → »Prenesi samo QR kodo« — sučelje Guestcam nadzorne ploče trenutno je na slovenskom, pa su to točni nazivi koje ćete vidjeti).",
+        "Besplatan Canva račun — plaćena pretplata za ovo nije potrebna.",
+        "Otprilike 10 minuta vremena."
+      ]
+    },
+    {
+      "type": "image",
+      "src": "https://www.guestcam.si/blog/canva-qr-card/card-anatomy.svg",
+      "alt": "Raspored QR kartice za vjenčanje: imena i datum na vrhu, QR kod u sredini, kratka uputa ispod",
+      "caption": "Neka bude jednostavno: imena, QR kod, jedna linija upute — to je sve što kartica treba.",
+      "credit": "Guestcam"
+    },
+    {
+      "type": "h2",
+      "text": "Korak po korak: oblikovanje kartice u Canvi"
+    },
+    {
+      "type": "ol",
+      "items": [
+        "Otvorite canva.com i pokrenite novi dizajn — potražite »razglednica« ili postavite prilagođenu veličinu 10 × 15 cm (dobra veličina za kartice na stolovima).",
+        "Odaberite bilo koji predložak kao polazište ili počnite s praznim platnom.",
+        "Dodajte tekstualni okvir s imenima para, a ispod njega drugi s datumom vjenčanja.",
+        "Kliknite Učitavanja → Učitaj datoteke i dodajte PNG datoteku QR koda koju ste preuzeli s Guestcam nadzorne ploče.",
+        "Postavite QR kod u sredinu, veličine barem 3 × 3 cm kako bi ga mobitel lako prepoznao.",
+        "Ispod dodajte kratku uputu, npr. »Skenirajte i podijelite svoje fotografije!«",
+        "Uskladite fontove i boje s pozivnicama za jedinstven izgled, zatim kliknite Podijeli → Preuzmi → PDF za tisak."
+      ]
+    },
+    {
+      "type": "h2",
+      "text": "Savjeti za oblikovanje QR koda koji stvarno radi"
+    },
+    {
+      "type": "ul",
+      "items": [
+        "Ostavite barem 8 mm praznog prostora (»tihu zonu«) oko QR koda — mobitel taj rub koristi za fokusiranje.",
+        "Ne smanjujte kod ispod otprilike 3 × 3 cm na kartici za stol, odnosno 2 × 2 cm na bedžu.",
+        "QR kod neka bude taman na svijetloj podlozi — nizak kontrast najčešći je razlog zašto kod ne radi.",
+        "QR kod nikad ne postavljajte preko razigrane fotografije ili uzorka.",
+        "Prije tiska cijele naklade otisnite jednu testnu karticu i sami je provjerite s dva ili tri različita mobitela."
+      ]
+    },
+    {
+      "type": "h2",
+      "text": "Nemate vremena za oblikovanje? Koristite gotov predložak"
+    },
+    {
+      "type": "p",
+      "text": "Ako si radije uštedite posao oblikovanja, Guestcam uključuje 8 gotovih predložaka QR kartica koji automatski popune imena i datum — preuzmite ga kao PDF spreman za tisak izravno s nadzorne ploče."
+    },
+    {
+      "type": "cta",
+      "text": "Kreirajte besplatnu galeriju za vjenčanje",
+      "href": "https://www.guestcam.si/dashboard/new"
+    },
+    {
+      "type": "faq",
+      "q": "Trebam li Canva Pro za izradu QR kartice?",
+      "a": "Ne. Besplatan Canva račun pokriva sve iz ovog vodiča — prilagođenu veličinu, učitavanje vlastite slike QR koda i izvoz PDF-a za tisak."
+    },
+    {
+      "type": "faq",
+      "q": "Gdje dobijem sliku QR koda za svoje vjenčanje?",
+      "a": "Na Guestcam nadzornoj ploči: otvorite galeriju, idite na karticu »QR koda« i kliknite »Prenesi samo QR kodo« da ga preuzmete kao PNG."
+    },
+    {
+      "type": "faq",
+      "q": "Koju veličinu odabrati za tisak?",
+      "a": "A6 (otprilike 10,5 × 14,8 cm) dobro funkcionira za kartice na stolovima. Za veći znak kod ulaza ili stola za poklone koristite A5 ili A4."
+    },
+    {
+      "type": "faq",
+      "q": "Zašto otisnuti QR kod nije radio?",
+      "a": "Najčešći uzroci su slika niske rezolucije (uvijek koristite preuzetu datoteku, nikad snimku zaslona), premalo praznog prostora oko koda ili premala veličina. Testirajte prije tiska cijele naklade."
+    }
+  ]
+}

@@ -1,0 +1,106 @@
+{
+  "slug": "como-disenar-tarjeta-qr-boda-canva",
+  "lang": "es",
+  "title": "Cómo diseñar una tarjeta QR de boda en Canva (gratis, paso a paso)",
+  "description": "Diseña tu propia tarjeta QR de boda en Canva en 10 minutos — gratis, con pasos y consejos para un código QR que realmente funcione.",
+  "translationKey": "wedding-qr-card-canva-design",
+  "publishedAt": "2026-08-11",
+  "updatedAt": "2026-08-11",
+  "author": "Guestcam Team",
+  "category": "vodnik",
+  "readingTime": 6,
+  "tags": ["código QR", "Canva", "fotos de boda", "Guestcam"],
+  "tldr": "Abre un diseño gratuito en Canva, añade los nombres y la fecha, sube la imagen del código QR de Guestcam y exporta un PDF listo para imprimir — en unos 10 minutos.",
+  "content": [
+    {
+      "type": "h2",
+      "text": "Por qué diseñar tu propia tarjeta QR"
+    },
+    {
+      "type": "p",
+      "text": "Un cartel genérico con código QR funciona, pero una tarjeta que diseñes tú mismo en Canva puede combinar con los colores, tipografías y estilo de tu boda — así se siente parte de la decoración y no como un papel pegado a última hora."
+    },
+    {
+      "type": "h2",
+      "text": "Qué necesitas antes de empezar"
+    },
+    {
+      "type": "ul",
+      "items": [
+        "El código QR de tu galería de Guestcam, descargado como PNG (panel de control → pestaña «QR koda» → «Prenesi samo QR kodo» — la interfaz del panel de Guestcam está actualmente en esloveno, así que esos son exactamente los nombres que verás).",
+        "Una cuenta gratuita de Canva — no hace falta suscripción de pago para esto.",
+        "Unos 10 minutos."
+      ]
+    },
+    {
+      "type": "image",
+      "src": "https://www.guestcam.si/blog/canva-qr-card/card-anatomy.svg",
+      "alt": "Diseño de una tarjeta QR de boda: nombres y fecha arriba, código QR en el centro, una breve instrucción debajo",
+      "caption": "Que sea simple: nombres, código QR, una línea de instrucción — eso es todo lo que necesita una tarjeta.",
+      "credit": "Guestcam"
+    },
+    {
+      "type": "h2",
+      "text": "Paso a paso: diseñar la tarjeta en Canva"
+    },
+    {
+      "type": "ol",
+      "items": [
+        "Entra en canva.com y crea un diseño nuevo — busca «postal» o define un tamaño personalizado de 10 × 15 cm (un buen tamaño para tarjetas de mesa).",
+        "Elige cualquier plantilla como punto de partida, o empieza con un lienzo en blanco.",
+        "Añade un cuadro de texto con los nombres de la pareja y otro debajo con la fecha de la boda.",
+        "Haz clic en Subidas → Subir archivos y añade el PNG del código QR que descargaste desde tu panel de Guestcam.",
+        "Coloca el código QR en el centro, con un tamaño mínimo de 3 × 3 cm para que el móvil lo enfoque con facilidad.",
+        "Añade debajo una instrucción breve, por ejemplo «¡Escanea y comparte tus fotos!».",
+        "Ajusta tipografías y colores a tus invitaciones para un look coherente y luego haz clic en Compartir → Descargar → PDF para imprimir."
+      ]
+    },
+    {
+      "type": "h2",
+      "text": "Consejos de diseño para un código QR que realmente escanee"
+    },
+    {
+      "type": "ul",
+      "items": [
+        "Deja al menos 8 mm de espacio vacío (la «zona silenciosa») alrededor del código QR — el móvil usa ese margen para enfocar.",
+        "No reduzcas el código por debajo de unos 3 × 3 cm en una tarjeta de mesa, ni de 2 × 2 cm en una acreditación.",
+        "Mantén el código QR oscuro sobre fondo claro — el bajo contraste es la causa más común de que un código no funcione.",
+        "Nunca coloques el código QR sobre una foto o un patrón recargado.",
+        "Imprime primero una tarjeta de prueba y escanéala tú mismo con dos o tres móviles distintos antes de imprimir toda la tirada."
+      ]
+    },
+    {
+      "type": "h2",
+      "text": "¿Sin tiempo para diseñar? Usa una plantilla ya hecha"
+    },
+    {
+      "type": "p",
+      "text": "Si prefieres ahorrarte el trabajo de diseño, Guestcam incluye 8 plantillas de tarjetas QR ya hechas que rellenan automáticamente los nombres y la fecha — descárgala como PDF lista para imprimir directamente desde tu panel."
+    },
+    {
+      "type": "cta",
+      "text": "Crea tu galería de boda gratis",
+      "href": "https://www.guestcam.si/dashboard/new"
+    },
+    {
+      "type": "faq",
+      "q": "¿Necesito Canva Pro para hacer una tarjeta QR?",
+      "a": "No. Una cuenta gratuita de Canva cubre todo lo de esta guía — tamaños personalizados, subir tu propia imagen del código QR y exportar a PDF para imprimir."
+    },
+    {
+      "type": "faq",
+      "q": "¿Dónde consigo la imagen del código QR de mi boda?",
+      "a": "En tu panel de Guestcam: abre tu galería, ve a la pestaña «QR koda» y haz clic en «Prenesi samo QR kodo» para descargarla como PNG."
+    },
+    {
+      "type": "faq",
+      "q": "¿Qué tamaño debo imprimir?",
+      "a": "A6 (unos 10,5 × 14,8 cm) funciona bien para tarjetas de mesa. Usa A5 o A4 para un cartel más grande cerca de la entrada o la mesa de regalos."
+    },
+    {
+      "type": "faq",
+      "q": "¿Por qué mi código QR impreso no escaneaba?",
+      "a": "Las causas más comunes son una imagen de baja resolución (usa siempre el archivo descargado, nunca una captura de pantalla), poco espacio en blanco alrededor del código, o un tamaño demasiado pequeño. Haz una prueba de escaneo antes de imprimir toda la tirada."
+    }
+  ]
+}

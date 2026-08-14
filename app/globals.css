@@ -1,6 +1,20 @@
 @import "tailwindcss";
 
 :root {
+  /* ── Nordic redesign tokens (redesign-preview) ────────────────────
+     Warm paper ground, ink type, one deep-honey accent. Every pair
+     below was measured, not eyeballed:
+       ink   on paper = 16.45:1   muted on paper = 5.87:1
+       honey on paper =  5.01:1   paper on ink   = 16.45:1
+     The honey is deliberately darker than the legacy #FFC94D, which
+     only reaches 1.42:1 on a light ground and therefore can never
+     carry text. */
+  --paper: #F7F6F2;
+  --ink: #14181F;
+  --muted: #5A6068;
+  --honey: #8C6218;
+  --hairline: #E4E1D9;
+
   --ivory: #F4F6FB;       /* warm ivory */
   --charcoal: #0F1729;
   --gold: #FFC94D;        /* golden yellow accent */
@@ -11,6 +25,11 @@
 }
 
 @theme inline {
+  --color-paper: var(--paper);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-honey: var(--honey);
+  --color-hairline: var(--hairline);
   --color-ivory: var(--ivory);
   --color-charcoal: var(--charcoal);
   --color-gold: var(--gold);
@@ -18,6 +37,52 @@
   --color-rose: var(--rose);
   --font-sans: var(--font-dm-sans);
   --font-serif: var(--font-cormorant);
+}
+
+/* ── Readability scale ────────────────────────────────────────────────
+   Tailwind sizes text, padding, gaps and radii in rem, so raising the
+   root font-size scales the whole UI proportionally — not just the
+   letters inside unchanged boxes. Percentages (not px) so a visitor's
+   own browser font-size preference still applies on top.
+   Mobile stays at the browser default: guest-gallery layouts are tight
+   and most guests are on phones — that surface must not risk overflow. */
+@media (min-width: 768px)  { html { font-size: 106.25%; } } /* 17px */
+@media (min-width: 1280px) { html { font-size: 112.5%;  } } /* 18px */
+
+/* ── Photo-wall mini demo (components/WallMiniDemo.tsx) ─────────────── */
+@keyframes gc-drift {
+  /* Thumbs start parked just below the stage (top:100%) and travel in
+     multiples of their OWN height — -560% clears the full 16:9 stage
+     even for the largest thumb; smaller ones simply exit earlier and
+     fade. Percent-of-self is the only unit that works here, since a
+     transform can't reference the parent's height. */
+  0%   { transform: translateY(0); opacity: 0; }
+  8%   { opacity: 1; }
+  85%  { opacity: 1; }
+  100% { transform: translateY(-560%); opacity: 0; }
+}
+/* Full-screen hero drift — viewport-based travel, unlike gc-drift's
+   self-relative travel in the mini demo. Cards park just below the fold
+   (top:100%) and cross the whole stage. */
+@keyframes gc-drift-hero {
+  0%   { transform: translateY(0); opacity: 0; }
+  6%   { opacity: 1; }
+  90%  { opacity: 1; }
+  100% { transform: translateY(-130vh); opacity: 0; }
+}
+/* The drifting cards are decoration — remove them entirely for people
+   who asked the OS for less motion, rather than freezing them mid-air. */
+@media (prefers-reduced-motion: reduce) {
+  .gc-hero-card { display: none; }
+}
+
+@keyframes gc-float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-9px); }
+}
+@keyframes gc-pop {
+  0%, 100% { transform: translate(-50%, -50%) scale(1); }
+  50%      { transform: translate(-50%, -50%) scale(1.045); }
 }
 
 html, body {
@@ -124,4 +189,20 @@ html, body {
     display: none !important;
     visibility: hidden !important;
   }
+}
+
+
+/* ── Hero entry (components/NordicHero.tsx) ──────────────────────────
+   One short rise on load, to establish reading order (copy first, then
+   the photographs). Not decoration: it is the only motion in the hero,
+   and it is removed entirely under reduced-motion. */
+@keyframes gc-rise {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.gc-rise      { animation: gc-rise .7s cubic-bezier(.16,1,.3,1) both; }
+.gc-rise-late { animation-delay: .12s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .gc-rise, .gc-rise-late { animation: none; opacity: 1; transform: none; }
 }

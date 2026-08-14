@@ -1,3 +1,4 @@
+import { SITE_URL } from "@/lib/urls";
 import { cookies } from "next/headers";
 import { db } from "@/lib/db";
 import { userAttribution } from "@/lib/db/schema";
@@ -12,7 +13,7 @@ import { GUEST_REF_COOKIE } from "@/lib/referral/attribution";
 /** Our own bare host, so an internal referrer collapses to "direct". */
 const APP_HOST = (() => {
   try {
-    return new URL(process.env.NEXT_PUBLIC_APP_URL ?? "https://www.guestcam.si")
+    return new URL(process.env.NEXT_PUBLIC_APP_URL ?? SITE_URL)
       .hostname.replace(/^www\./, "");
   } catch {
     return "guestcam.si";

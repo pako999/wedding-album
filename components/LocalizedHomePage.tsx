@@ -7,6 +7,10 @@ import { EventCard } from "@/components/EventCard";
 import { HeaderAuthButtons } from "@/components/HeaderAuthButtons";
 import { HomeMobileMenu } from "@/components/HomeMobileMenu";
 import { TrackViewContent } from "@/components/TrackViewContent";
+import { WallMiniDemo } from "@/components/WallMiniDemo";
+import { NordicHero } from "@/components/NordicHero";
+import { WALL_COPY } from "@/lib/i18n/wall-translations";
+import { STAND_VARIANTS, eur } from "@/lib/print-service";
 
 type Lang = Exclude<LangCode, "sl">;
 
@@ -96,6 +100,9 @@ interface Copy {
   heroPrimary: string;
   heroDemoBtn: string;
   heroNote: string;
+  /** Printed-stands offer in the hero. Body takes the formatted
+   *  cheapest unit price so the number can't drift from the rate card. */
+  heroPrintOffer: { title: string; body: (price: string) => string };
   trustText: string;
   trust500: string;
   threeStep: { takePhoto: string; scanQr: string; upload: string };
@@ -117,6 +124,10 @@ interface Copy {
   howSubtitle: string;
   howCta: string;
   howSteps: { label: string; title: string; desc: string }[];
+  /** Photo Wall showcase — the live TV-demo section. */
+  wall: { eyebrow: string; titleLead: string; titleAccent: string; sub: string; points: string[]; cta: string };
+  /** Sticky mobile bottom CTA. */
+  stickyCta: string;
   whyTitle: string;
   whySubtitle: string;
   whyCards: { icon: string; title: string; desc: string }[];
@@ -127,12 +138,19 @@ interface Copy {
   reviewsTitle: string;
   reviews: { text: string; name: string; date: string }[];
   pricingTitle: string;
+  /** Events teaser under the pricing grid — a category + contact CTA,
+   *  deliberately NOT a feature list (competitive edge stays private). */
+  eventsTeaser: { eyebrow: string; title: string; body: string; price: string; cta: string };
   pricingSubtitle: string;
   free: { label: string; tagline: string; price: string; features: string[]; cta: string };
   basic: { label: string; tagline: string; price: string; was: string; features: string[]; cta: string };
   plus: { label: string; tagline: string; price: string; was: string; features: string[]; cta: string; ribbon: string };
   premium: { label: string; tagline: string; price: string; was: string; features: string[]; cta: string };
   guarantee: string;
+  /** Data-protection trust badges shown under the pricing grid. */
+  trustGdpr: string;
+  trustEuServers: string;
+  trustEncryption: string;
   faqTitle: string;
   faqs: { q: string; a: string }[];
   ctaTitle: { line1: string; accent: string };
@@ -151,6 +169,7 @@ const COPY: Record<Lang, Copy> = {
     heroHead: { lead: "Fotografije s vjenčanja koje", accent: "inače nikada ne biste vidjeli", trail: "." },
     heroLead: "Skupite sve fotografije i videozapise svojih gostiju u jednoj privatnoj galeriji. Gosti samo skeniraju QR kod i u nekoliko sekundi dijele svoje trenutke.",
     heroPrimary: "Započni besplatno", heroDemoBtn: "Pogledaj demo", heroNote: "Bez kreditne kartice • Spremno za manje od 2 minute",
+    heroPrintOffer: { title: "Ne želite sami tiskati?", body: (p) => `Tiskamo QR stalke za stolove i šaljemo vam ih: već od ${p} po komadu, dodajte ih uz kupnju paketa.` },
     trustText: "Povjerenje", trust500: "500+ događaja već prikupilo uspomene s Guestcam 📸",
     threeStep: { takePhoto: "Gosti fotografiraju", scanQr: "Skeniraju QR", upload: "Učitavaju fotografije" },
     statsCreated: "kreiranih galerija", statsRating: "na temelju prvih ocjena", statsPhotos: "prikupljenih fotografija",
@@ -180,6 +199,11 @@ const COPY: Record<Lang, Copy> = {
       { label: "KORAK 02", title: "Gosti dijele fotografije", desc: "Gosti samo skeniraju QR kod i odmah počinju dijeliti fotografije i videozapise u punoj kvaliteti. Bez aplikacije i bez prijave." },
       { label: "KORAK 03", title: "Uživajte u uspomenama", desc: "Pogledajte sve fotografije i videozapise na jednom mjestu i preuzmite ih u punoj kvaliteti kad god želite." },
     ],
+    wall: { eyebrow: "Novo · Foto zid", titleLead: "Vaš događaj uživo", titleAccent: "na velikom ekranu",
+      sub: "Spojite TV ili projektor i pustite da se zid vrti sam — svaka nova fotografija doleti na ekran u nekoliko sekundi.",
+      points: ["Nove fotografije na ekranu za ~3 sekunde", "QR kod na samom zidu — gosti odmah sudjeluju", "Sponzorske slike između fotografija za poslovne događaje"],
+      cta: "Isprobaj Foto zid" },
+    stickyCta: "Kreiraj galeriju — besplatno",
     whyTitle: "Svaki gost fotografira. Vi te slike nikada ne vidite.",
     whySubtitle: "Svaki gost uhvati drugačije trenutke. Većina tih fotografija ostane na njihovim telefonima.",
     whyCards: [
@@ -207,15 +231,17 @@ const COPY: Record<Lang, Copy> = {
       { text: "Konačno smo sve uspomene skupili na jednom mjestu. Gosti iz inozemstva su učitavali fotografije na svom jeziku bez ikakvih problema.", name: "Sara & David", date: "Rujan 2025" },
     ],
     pricingTitle: "Jednostavni paketi", pricingSubtitle: "Odaberite paket koji odgovara vašem događaju.",
+    eventsTeaser: { eyebrow: "Za organizatore", title: "Eventi & Business", body: "Živi foto zid na velikom ekranu, sponzorski sadržaji, prikupljanje kontakata gostiju, suradnici i prilagođena kontrola: paket slažemo za vaš događaj.", price: "Cijena po dogovoru", cta: "Kontaktirajte nas" },
     free: { label: "Besplatno", tagline: "Isprobajte bez rizika", price: "0€",
-      features: ["Jedinstveni QR kod", "Do 20 fotografija", "1 videozapis", "Pristup 30 dana", "Bez sigurnosne kopije"], cta: "Započni besplatno" },
+      features: ["Jedinstveni QR kod", "Preuzimanje slika u punoj kvaliteti", "Do 20 fotografija", "1 videozapis", "Pristup 30 dana", "Bez sigurnosne kopije"], cta: "Započni besplatno" },
     basic: { label: "Basic", tagline: "Za manje događaje", price: "39€", was: "55€",
-      features: ["Jedinstveni QR kod", "Do 1000 fotografija", "Do 10 videozapisa", "Pristup galeriji 3 mjeseca", "Preuzimanje svih slika (ZIP)"], cta: "Odaberi Basic" },
+      features: ["Jedinstveni QR kod", "Preuzimanje slika u punoj kvaliteti", "Do 1000 fotografija", "Do 10 videozapisa", "Pristup galeriji 3 mjeseca", "Preuzimanje svih slika (ZIP)"], cta: "Odaberi Basic" },
     plus: { label: "Plus", tagline: "Za veće događaje i vjenčanja", price: "49€", was: "69€",
-      features: ["Jedinstveni QR kod", "Neograničen broj gostiju", "Do 5000 fotografija", "Do 100 videozapisa", "Pristup galeriji 1 godinu", "Preuzimanje svih slika (ZIP)", "Live galerija (projekcija)", "Personalizirana stranica s imenima", "E-mail obavijesti za par"], cta: "Odaberi Plus", ribbon: "NAJPOPULARNIJE" },
+      features: ["Jedinstveni QR kod", "Preuzimanje slika u punoj kvaliteti", "Neograničen broj gostiju", "Do 5000 fotografija", "Do 100 videozapisa", "Pristup galeriji 1 godinu", "Preuzimanje svih slika (ZIP)", "Live galerija (projekcija)", "Personalizirana stranica s imenima", "E-mail obavijesti za par"], cta: "Odaberi Plus", ribbon: "NAJPOPULARNIJE" },
     premium: { label: "Premium", tagline: "Za one koji žele sve", price: "99€", was: "149€",
-      features: ["Jedinstveni QR kod", "Neograničen broj gostiju", "Neograničeno fotografija", "Do 100 videozapisa", "Pristup galeriji 2 godine", "Preuzimanje svih slika (ZIP)", "Live galerija (projekcija)", "Personalizirana stranica s imenima", "Vlastita domena (foto.vaše-ime.si)", "Premium dizajn predlošci", "Prioritetna podrška"], cta: "Odaberi Premium" },
+      features: ["Jedinstveni QR kod", "Preuzimanje slika u punoj kvaliteti", "Neograničen broj gostiju", "Neograničeno fotografija", "Do 100 videozapisa", "Pristup galeriji 2 godine", "Preuzimanje svih slika (ZIP)", "Live galerija (projekcija)", "Personalizirana stranica s imenima", "Foto zid za TV / projektor", "Vlastita domena (foto.vaše-ime.si)", "Premium dizajn predlošci", "Prioritetna podrška"], cta: "Odaberi Premium" },
     guarantee: "30-dnevno jamstvo povrata novca – bez pitanja.",
+    trustGdpr: "GDPR sukladno", trustEuServers: "Poslužitelji u EU", trustEncryption: "SSL enkripcija",
     faqTitle: "Često postavljana pitanja",
     faqs: [
       { q: "Moraju li gosti preuzeti aplikaciju?", a: "Ne. Gosti otvore album direktno u pregledniku telefona — bez instalacije, bez prijave. Samo skeniraju QR kod i odmah učitavaju fotografije." },
@@ -237,6 +263,7 @@ const COPY: Record<Lang, Copy> = {
     heroHead: { lead: "Fotografije sa venčanja koje", accent: "inače nikada ne biste videli", trail: "." },
     heroLead: "Sakupite sve fotografije i video snimke svojih gostiju u jednoj privatnoj galeriji. Gosti samo skeniraju QR kod i za nekoliko sekundi dele svoje trenutke.",
     heroPrimary: "Započni besplatno", heroDemoBtn: "Pogledaj demo", heroNote: "Bez kreditne kartice • Spremno za manje od 2 minuta",
+    heroPrintOffer: { title: "Ne želite sami da štampate?", body: (p) => `Štampamo QR stalke za stolove i šaljemo vam ih: već od ${p} po komadu, dodajte ih uz kupovinu paketa.` },
     trustText: "Poverenje", trust500: "500+ događaja već prikupilo uspomene s Guestcam 📸",
     threeStep: { takePhoto: "Gosti fotografišu", scanQr: "Skeniraju QR", upload: "Otpremaju fotografije" },
     statsCreated: "napravljenih galerija", statsRating: "na osnovu prvih ocena", statsPhotos: "sakupljenih fotografija",
@@ -266,6 +293,11 @@ const COPY: Record<Lang, Copy> = {
       { label: "KORAK 02", title: "Gosti dele fotografije", desc: "Gosti samo skeniraju QR kod i odmah počinju da dele fotografije i video snimke u punom kvalitetu. Bez aplikacije i bez prijave." },
       { label: "KORAK 03", title: "Uživajte u uspomenama", desc: "Pogledajte sve fotografije i video snimke na jednom mestu i preuzmite ih u punom kvalitetu kad god želite." },
     ],
+    wall: { eyebrow: "Novo · Foto zid", titleLead: "Vaš događaj uživo", titleAccent: "na velikom ekranu",
+      sub: "Povežite TV ili projektor i pustite da se zid vrti sam — svaka nova fotografija doleti na ekran za nekoliko sekundi.",
+      points: ["Nove fotografije na ekranu za ~3 sekunde", "QR kod na samom zidu — gosti odmah učestvuju", "Sponzorske slike između fotografija za poslovne događaje"],
+      cta: "Isprobaj Foto zid" },
+    stickyCta: "Napravi galeriju — besplatno",
     whyTitle: "Svaki gost fotografiše. Vi te slike nikada ne vidite.",
     whySubtitle: "Svaki gost uhvati drugačije trenutke. Većina tih fotografija ostane na njihovim telefonima.",
     whyCards: [
@@ -293,15 +325,17 @@ const COPY: Record<Lang, Copy> = {
       { text: "Konačno smo sve uspomene sakupili na jednom mestu. Gosti iz inostranstva su otpremali fotografije na svom jeziku bez ikakvih problema.", name: "Sara & David", date: "Septembar 2025" },
     ],
     pricingTitle: "Jednostavni paketi", pricingSubtitle: "Izaberite paket koji odgovara vašem događaju.",
+    eventsTeaser: { eyebrow: "Za organizatore", title: "Eventi & Business", body: "Živi foto zid na velikom ekranu, sponzorski sadržaji, prikupljanje kontakata gostiju, saradnici i prilagođena kontrola: paket slažemo za vaš događaj.", price: "Cena po dogovoru", cta: "Kontaktirajte nas" },
     free: { label: "Besplatno", tagline: "Isprobajte bez rizika", price: "0€",
-      features: ["Jedinstveni QR kod", "Do 20 fotografija", "1 video snimak", "Pristup 30 dana", "Bez rezervne kopije"], cta: "Započni besplatno" },
+      features: ["Jedinstveni QR kod", "Preuzimanje slika u punom kvalitetu", "Do 20 fotografija", "1 video snimak", "Pristup 30 dana", "Bez rezervne kopije"], cta: "Započni besplatno" },
     basic: { label: "Basic", tagline: "Za manje događaje", price: "39€", was: "55€",
-      features: ["Jedinstveni QR kod", "Do 1000 fotografija", "Do 10 video snimaka", "Pristup galeriji 3 meseca", "Preuzimanje svih slika (ZIP)"], cta: "Izaberi Basic" },
+      features: ["Jedinstveni QR kod", "Preuzimanje slika u punom kvalitetu", "Do 1000 fotografija", "Do 10 video snimaka", "Pristup galeriji 3 meseca", "Preuzimanje svih slika (ZIP)"], cta: "Izaberi Basic" },
     plus: { label: "Plus", tagline: "Za veće događaje i venčanja", price: "49€", was: "69€",
-      features: ["Jedinstveni QR kod", "Neograničen broj gostiju", "Do 5000 fotografija", "Do 100 video snimaka", "Pristup galeriji 1 godinu", "Preuzimanje svih slika (ZIP)", "Live galerija (projekcija)", "Personalizovana stranica sa imenima", "E-mail obaveštenja za par"], cta: "Izaberi Plus", ribbon: "NAJPOPULARNIJE" },
+      features: ["Jedinstveni QR kod", "Preuzimanje slika u punom kvalitetu", "Neograničen broj gostiju", "Do 5000 fotografija", "Do 100 video snimaka", "Pristup galeriji 1 godinu", "Preuzimanje svih slika (ZIP)", "Live galerija (projekcija)", "Personalizovana stranica sa imenima", "E-mail obaveštenja za par"], cta: "Izaberi Plus", ribbon: "NAJPOPULARNIJE" },
     premium: { label: "Premium", tagline: "Za one koji žele sve", price: "99€", was: "149€",
-      features: ["Jedinstveni QR kod", "Neograničen broj gostiju", "Neograničeno fotografija", "Do 100 video snimaka", "Pristup galeriji 2 godine", "Preuzimanje svih slika (ZIP)", "Live galerija (projekcija)", "Personalizovana stranica sa imenima", "Sopstveni domen (foto.vase-ime.si)", "Premium dizajn šabloni", "Prioritetna podrška"], cta: "Izaberi Premium" },
+      features: ["Jedinstveni QR kod", "Preuzimanje slika u punom kvalitetu", "Neograničen broj gostiju", "Neograničeno fotografija", "Do 100 video snimaka", "Pristup galeriji 2 godine", "Preuzimanje svih slika (ZIP)", "Live galerija (projekcija)", "Personalizovana stranica sa imenima", "Foto zid za TV / projektor", "Sopstveni domen (foto.vase-ime.si)", "Premium dizajn šabloni", "Prioritetna podrška"], cta: "Izaberi Premium" },
     guarantee: "30-dnevna garancija povraćaja novca – bez pitanja.",
+    trustGdpr: "GDPR usklađeno", trustEuServers: "Serveri u EU", trustEncryption: "SSL enkripcija",
     faqTitle: "Često postavljana pitanja",
     faqs: [
       { q: "Da li gosti moraju da preuzmu aplikaciju?", a: "Ne. Gosti otvaraju album direktno u pretraživaču telefona — bez instalacije, bez prijave. Samo skeniraju QR kod i odmah otpremaju fotografije." },
@@ -323,6 +357,7 @@ const COPY: Record<Lang, Copy> = {
     heroHead: { lead: "Hochzeitsfotos, die Sie sonst", accent: "nie zu sehen bekommen würden", trail: "." },
     heroLead: "Sammeln Sie alle Fotos und Videos Ihrer Gäste in einer privaten Galerie. Gäste scannen einfach den QR-Code und teilen ihre Momente in Sekunden.",
     heroPrimary: "Kostenlos starten", heroDemoBtn: "Demo ansehen", heroNote: "Keine Kreditkarte • Bereit in unter 2 Minuten",
+    heroPrintOffer: { title: "Lieber nicht selbst drucken?", body: (p) => `Wir drucken die QR-Aufsteller für Ihre Tische und senden sie Ihnen zu: ab ${p} pro Stück, zum Paket hinzufügbar.` },
     trustText: "Vertrauen von", trust500: "500+ Events haben bereits Erinnerungen mit Guestcam gesammelt 📸",
     threeStep: { takePhoto: "Gäste fotografieren", scanQr: "QR scannen", upload: "Fotos hochladen" },
     statsCreated: "erstellte Galerien", statsRating: "auf Basis erster Bewertungen", statsPhotos: "gesammelte Fotos",
@@ -352,6 +387,11 @@ const COPY: Record<Lang, Copy> = {
       { label: "SCHRITT 02", title: "Gäste teilen Fotos", desc: "Gäste scannen einfach den QR-Code und beginnen sofort, Fotos und Videos in voller Qualität zu teilen. Keine App, keine Anmeldung." },
       { label: "SCHRITT 03", title: "Erinnerungen genießen", desc: "Schauen Sie sich alle Fotos und Videos an einem Ort an und laden Sie sie jederzeit in voller Qualität herunter." },
     ],
+    wall: { eyebrow: "Neu · Foto-Wall", titleLead: "Ihr Event live", titleAccent: "auf dem großen Bildschirm",
+      sub: "TV oder Beamer verbinden und die Wall laufen lassen — jedes neue Foto erscheint in Sekunden auf dem Bildschirm.",
+      points: ["Neue Fotos in ~3 Sekunden auf dem Bildschirm", "QR-Code direkt auf der Wall — Gäste machen sofort mit", "Sponsorenbilder zwischen den Fotos für Firmenevents"],
+      cta: "Foto-Wall ausprobieren" },
+    stickyCta: "Galerie erstellen — kostenlos",
     whyTitle: "Jeder Gast fotografiert. Sie sehen diese Fotos nie.",
     whySubtitle: "Jeder Gast hält andere Momente fest. Die meisten dieser Fotos bleiben auf den Handys.",
     whyCards: [
@@ -379,15 +419,17 @@ const COPY: Record<Lang, Copy> = {
       { text: "Endlich alle Erinnerungen an einem Ort. Internationale Gäste haben Fotos in ihrer Sprache problemlos hochgeladen.", name: "Sara & David", date: "September 2025" },
     ],
     pricingTitle: "Einfache Pakete", pricingSubtitle: "Wählen Sie das Paket, das zu Ihrer Feier passt.",
+    eventsTeaser: { eyebrow: "Für Veranstalter", title: "Events & Business", body: "Live-Foto-Wall auf großer Leinwand, Sponsoren-Inhalte, Gäste-Kontakterfassung, Mitwirkende und maßgeschneiderte Kontrolle: wir stellen das Paket für Ihre Veranstaltung zusammen.", price: "Preis auf Anfrage", cta: "Kontaktieren Sie uns" },
     free: { label: "Kostenlos", tagline: "Risikolos testen", price: "0€",
-      features: ["Einzigartiger QR-Code", "Bis zu 20 Fotos", "1 Video", "30 Tage Zugriff", "Keine Sicherung"], cta: "Kostenlos starten" },
+      features: ["Einzigartiger QR-Code", "Fotodownload in voller Qualität", "Bis zu 20 Fotos", "1 Video", "30 Tage Zugriff", "Keine Sicherung"], cta: "Kostenlos starten" },
     basic: { label: "Basic", tagline: "Für kleinere Feiern", price: "39€", was: "55€",
-      features: ["Einzigartiger QR-Code", "Bis zu 1000 Fotos", "Bis zu 10 Videos", "3 Monate Galerie-Zugriff", "Download aller Bilder (ZIP)"], cta: "Basic wählen" },
+      features: ["Einzigartiger QR-Code", "Fotodownload in voller Qualität", "Bis zu 1000 Fotos", "Bis zu 10 Videos", "3 Monate Galerie-Zugriff", "Download aller Bilder (ZIP)"], cta: "Basic wählen" },
     plus: { label: "Plus", tagline: "Für größere Feiern und Hochzeiten", price: "49€", was: "69€",
-      features: ["Einzigartiger QR-Code", "Unbegrenzt Gäste", "Bis zu 5000 Fotos", "Bis zu 100 Videos", "1 Jahr Galerie-Zugriff", "Download aller Bilder (ZIP)", "Live-Galerie (Projektion)", "Personalisierte Seite mit Namen", "E-Mail-Benachrichtigungen"], cta: "Plus wählen", ribbon: "BELIEBTESTE" },
+      features: ["Einzigartiger QR-Code", "Fotodownload in voller Qualität", "Unbegrenzt Gäste", "Bis zu 5000 Fotos", "Bis zu 100 Videos", "1 Jahr Galerie-Zugriff", "Download aller Bilder (ZIP)", "Live-Galerie (Projektion)", "Personalisierte Seite mit Namen", "E-Mail-Benachrichtigungen"], cta: "Plus wählen", ribbon: "BELIEBTESTE" },
     premium: { label: "Premium", tagline: "Für alle, die alles wollen", price: "99€", was: "149€",
-      features: ["Einzigartiger QR-Code", "Unbegrenzt Gäste", "Unbegrenzt Fotos", "Bis zu 100 Videos", "2 Jahre Galerie-Zugriff", "Download aller Bilder (ZIP)", "Live-Galerie (Projektion)", "Personalisierte Seite mit Namen", "Eigene Domain (foto.ihr-name.si)", "Premium-Design-Vorlagen", "Prioritäts-Support"], cta: "Premium wählen" },
+      features: ["Einzigartiger QR-Code", "Fotodownload in voller Qualität", "Unbegrenzt Gäste", "Unbegrenzt Fotos", "Bis zu 100 Videos", "2 Jahre Galerie-Zugriff", "Download aller Bilder (ZIP)", "Live-Galerie (Projektion)", "Personalisierte Seite mit Namen", "Foto-Wall für TV / Beamer", "Eigene Domain (foto.ihr-name.si)", "Premium-Design-Vorlagen", "Prioritäts-Support"], cta: "Premium wählen" },
     guarantee: "30-Tage-Geld-zurück-Garantie – ohne Wenn und Aber.",
+    trustGdpr: "DSGVO-konform", trustEuServers: "EU-Server", trustEncryption: "SSL-Verschlüsselung",
     faqTitle: "Häufige Fragen",
     faqs: [
       { q: "Müssen Gäste eine App herunterladen?", a: "Nein. Gäste öffnen das Album direkt im Browser ihres Handys — keine Installation, keine Anmeldung. Sie scannen einfach den QR-Code und laden sofort Fotos hoch." },
@@ -409,6 +451,7 @@ const COPY: Record<Lang, Copy> = {
     heroHead: { lead: "The wedding photos you", accent: "would otherwise never see", trail: "." },
     heroLead: "Collect every photo and video your guests take into a single private gallery. Guests scan a QR code and share their moments in seconds.",
     heroPrimary: "Start for free", heroDemoBtn: "See live demo", heroNote: "No credit card • Ready in under 2 minutes",
+    heroPrintOffer: { title: "Rather not print it yourself?", body: (p) => `We print the QR stands for your tables and post them to you: from ${p} each, added with your plan.` },
     trustText: "Trusted by", trust500: "500+ events have already collected memories with Guestcam 📸",
     threeStep: { takePhoto: "Guests snap", scanQr: "Scan QR", upload: "Upload photos" },
     statsCreated: "galleries created", statsRating: "based on early reviews", statsPhotos: "photos collected",
@@ -438,6 +481,11 @@ const COPY: Record<Lang, Copy> = {
       { label: "STEP 02", title: "Guests share photos", desc: "Guests just scan the QR code and start uploading photos and videos in full quality right away. No app, no sign-up." },
       { label: "STEP 03", title: "Enjoy the memories", desc: "View every photo and video in one place — and download them in full quality whenever you want." },
     ],
+    wall: { eyebrow: "New · Photo Wall", titleLead: "Your event live", titleAccent: "on the big screen",
+      sub: "Connect a TV or projector and let the wall run itself — every new photo flies onto the screen within seconds.",
+      points: ["New photos on screen in ~3 seconds", "QR code right on the wall — guests join in instantly", "Sponsor slides between photos for corporate events"],
+      cta: "Try the Photo Wall" },
+    stickyCta: "Create a gallery — free",
     whyTitle: "Every guest takes photos. You never see them.",
     whySubtitle: "Every guest captures different moments. Most of those photos stay on their phones.",
     whyCards: [
@@ -465,15 +513,17 @@ const COPY: Record<Lang, Copy> = {
       { text: "Finally, all our memories in one place. Even international guests uploaded photos in their own language without any issues.", name: "Sara & David", date: "September 2025" },
     ],
     pricingTitle: "Simple plans", pricingSubtitle: "Pick the plan that fits your event.",
+    eventsTeaser: { eyebrow: "For organisers", title: "Events & Business", body: "A live photo wall on the big screen, sponsor content, guest lead capture, collaborators and tailored controls: we put the package together for your event.", price: "Custom pricing", cta: "Contact us" },
     free: { label: "Free", tagline: "Try risk-free", price: "€0",
-      features: ["Unique QR code", "Up to 20 photos", "1 video", "30-day access", "No backup"], cta: "Start free" },
+      features: ["Unique QR code", "Full-quality photo download", "Up to 20 photos", "1 video", "30-day access", "No backup"], cta: "Start free" },
     basic: { label: "Basic", tagline: "For smaller events", price: "€39", was: "€55",
-      features: ["Unique QR code", "Up to 1000 photos", "Up to 10 videos", "3-month gallery access", "Bulk download (ZIP)"], cta: "Choose Basic" },
+      features: ["Unique QR code", "Full-quality photo download", "Up to 1000 photos", "Up to 10 videos", "3-month gallery access", "Bulk download (ZIP)"], cta: "Choose Basic" },
     plus: { label: "Plus", tagline: "For bigger events and weddings", price: "€49", was: "€69",
-      features: ["Unique QR code", "Unlimited guests", "Up to 5,000 photos", "Up to 100 videos", "1-year gallery access", "Bulk download (ZIP)", "Live gallery (projection)", "Personalised page with names", "Email notifications"], cta: "Choose Plus", ribbon: "MOST POPULAR" },
+      features: ["Unique QR code", "Full-quality photo download", "Unlimited guests", "Up to 5,000 photos", "Up to 100 videos", "1-year gallery access", "Bulk download (ZIP)", "Live gallery (projection)", "Personalised page with names", "Email notifications"], cta: "Choose Plus", ribbon: "MOST POPULAR" },
     premium: { label: "Premium", tagline: "For those who want it all", price: "€99", was: "€149",
-      features: ["Unique QR code", "Unlimited guests", "Unlimited photos", "Up to 100 videos", "2-year gallery access", "Bulk download (ZIP)", "Live gallery (projection)", "Personalised page with names", "Custom domain (photos.yourname.com)", "Premium design templates", "Priority support"], cta: "Choose Premium" },
+      features: ["Unique QR code", "Full-quality photo download", "Unlimited guests", "Unlimited photos", "Up to 100 videos", "2-year gallery access", "Bulk download (ZIP)", "Live gallery (projection)", "Personalised page with names", "Photo Wall for TV / projector", "Custom domain (photos.yourname.com)", "Premium design templates", "Priority support"], cta: "Choose Premium" },
     guarantee: "30-day money-back guarantee — no questions asked.",
+    trustGdpr: "GDPR Compliant", trustEuServers: "EU Data Centers", trustEncryption: "SSL Encryption",
     faqTitle: "Frequently asked questions",
     faqs: [
       { q: "Do guests have to download an app?", a: "No. Guests open the album directly in their phone browser — no install, no sign-up. They just scan the QR code and upload photos instantly." },
@@ -495,6 +545,7 @@ const COPY: Record<Lang, Copy> = {
     heroHead: { lead: "Las fotos de tu boda que", accent: "de otra forma nunca verías", trail: "." },
     heroLead: "Reúne todas las fotos y vídeos de tus invitados en una sola galería privada. Tus invitados escanean un QR y comparten sus momentos en segundos.",
     heroPrimary: "Empezar gratis", heroDemoBtn: "Ver demo", heroNote: "Sin tarjeta • Listo en menos de 2 minutos",
+    heroPrintOffer: { title: "¿Prefieres no imprimirlo tú?", body: (p) => `Imprimimos los soportes QR para tus mesas y te los enviamos: desde ${p} por unidad, se añaden con tu plan.` },
     trustText: "Confianza de", trust500: "500+ eventos ya han coleccionado recuerdos con Guestcam 📸",
     threeStep: { takePhoto: "Los invitados fotografían", scanQr: "Escanean QR", upload: "Suben fotos" },
     statsCreated: "galerías creadas", statsRating: "según primeras valoraciones", statsPhotos: "fotos recopiladas",
@@ -524,6 +575,11 @@ const COPY: Record<Lang, Copy> = {
       { label: "PASO 02", title: "Los invitados comparten fotos", desc: "Los invitados escanean el QR y empiezan a subir fotos y vídeos en calidad completa al instante. Sin app, sin registro." },
       { label: "PASO 03", title: "Disfruta los recuerdos", desc: "Ve todas las fotos y vídeos en un único lugar y descárgalos en calidad completa cuando quieras." },
     ],
+    wall: { eyebrow: "Nuevo · Muro de fotos", titleLead: "Tu evento en directo", titleAccent: "en la gran pantalla",
+      sub: "Conecta una TV o un proyector y deja que el muro gire solo — cada foto nueva vuela a la pantalla en segundos.",
+      points: ["Fotos nuevas en pantalla en ~3 segundos", "Código QR en el propio muro — los invitados participan al instante", "Diapositivas de patrocinadores entre fotos para eventos de empresa"],
+      cta: "Prueba el Muro de fotos" },
+    stickyCta: "Crea tu galería — gratis",
     whyTitle: "Cada invitado hace fotos. Tú no las ves nunca.",
     whySubtitle: "Cada invitado captura momentos distintos. La mayoría se quedan en sus móviles.",
     whyCards: [
@@ -551,15 +607,17 @@ const COPY: Record<Lang, Copy> = {
       { text: "Por fin todos los recuerdos en un sitio. Incluso los invitados internacionales subieron fotos en su idioma sin ningún problema.", name: "Sara & David", date: "Septiembre 2025" },
     ],
     pricingTitle: "Planes sencillos", pricingSubtitle: "Elige el plan que encaje con tu evento.",
+    eventsTeaser: { eyebrow: "Para organizadores", title: "Eventos & Business", body: "Muro de fotos en directo en pantalla grande, contenido de patrocinadores, captación de contactos, colaboradores y control a medida: montamos el paquete para tu evento.", price: "Precio a medida", cta: "Contáctanos" },
     free: { label: "Gratis", tagline: "Pruébalo sin riesgos", price: "0€",
-      features: ["Código QR único", "Hasta 20 fotos", "1 vídeo", "Acceso 30 días", "Sin copia de seguridad"], cta: "Empezar gratis" },
+      features: ["Código QR único", "Descarga de fotos en calidad completa", "Hasta 20 fotos", "1 vídeo", "Acceso 30 días", "Sin copia de seguridad"], cta: "Empezar gratis" },
     basic: { label: "Basic", tagline: "Para eventos pequeños", price: "39€", was: "55€",
-      features: ["Código QR único", "Hasta 1000 fotos", "Hasta 10 vídeos", "Acceso 3 meses", "Descarga masiva (ZIP)"], cta: "Elegir Basic" },
+      features: ["Código QR único", "Descarga de fotos en calidad completa", "Hasta 1000 fotos", "Hasta 10 vídeos", "Acceso 3 meses", "Descarga masiva (ZIP)"], cta: "Elegir Basic" },
     plus: { label: "Plus", tagline: "Para eventos grandes y bodas", price: "49€", was: "69€",
-      features: ["Código QR único", "Invitados ilimitados", "Hasta 5000 fotos", "Hasta 100 vídeos", "Acceso 1 año", "Descarga masiva (ZIP)", "Galería en directo (proyección)", "Página personalizada con nombres", "Avisos por email"], cta: "Elegir Plus", ribbon: "MÁS POPULAR" },
+      features: ["Código QR único", "Descarga de fotos en calidad completa", "Invitados ilimitados", "Hasta 5000 fotos", "Hasta 100 vídeos", "Acceso 1 año", "Descarga masiva (ZIP)", "Galería en directo (proyección)", "Página personalizada con nombres", "Avisos por email"], cta: "Elegir Plus", ribbon: "MÁS POPULAR" },
     premium: { label: "Premium", tagline: "Para los que lo quieren todo", price: "99€", was: "149€",
-      features: ["Código QR único", "Invitados ilimitados", "Fotos ilimitadas", "Hasta 100 vídeos", "Acceso 2 años", "Descarga masiva (ZIP)", "Galería en directo (proyección)", "Página personalizada con nombres", "Dominio propio (fotos.tu-nombre.com)", "Plantillas premium", "Soporte prioritario"], cta: "Elegir Premium" },
+      features: ["Código QR único", "Descarga de fotos en calidad completa", "Invitados ilimitados", "Fotos ilimitadas", "Hasta 100 vídeos", "Acceso 2 años", "Descarga masiva (ZIP)", "Galería en directo (proyección)", "Página personalizada con nombres", "Muro de fotos para TV / proyector", "Dominio propio (fotos.tu-nombre.com)", "Plantillas premium", "Soporte prioritario"], cta: "Elegir Premium" },
     guarantee: "Garantía de devolución de 30 días — sin preguntas.",
+    trustGdpr: "Cumple GDPR", trustEuServers: "Servidores en la UE", trustEncryption: "Cifrado SSL",
     faqTitle: "Preguntas frecuentes",
     faqs: [
       { q: "¿Tienen que descargar una app los invitados?", a: "No. Los invitados abren el álbum en el navegador del móvil — sin instalar, sin registrarse. Escanean el QR y suben fotos al instante." },
@@ -644,29 +702,31 @@ export async function LocalizedHomePage({ lang }: { lang: Lang }) {
   const featuresIcons = [IconPhone, IconGlobe, IconLock, IconCamera, IconBolt, IconQR];
 
   return (
-    <div className="min-h-screen bg-white text-[#0F1729] font-sans">
+    <div className="min-h-screen bg-white text-[color:var(--ink)] font-sans">
 
-      {/* Announcement bar */}
-      <div className="text-[#0F1729] text-center text-xs font-semibold py-2.5 px-4" style={{ background: "#FFC94D" }}>
-        {t.announce}{" "}
-        <Link href="/dashboard/new" className="underline font-bold ml-2">{t.announceLink}</Link>
-      </div>
+      {/* NOTE: the page-level announcement bar was removed — the root
+          layout already renders <DiscountBanner>, so localized pages
+          stacked two promo bars while the Slovenian homepage showed
+          one. The discount banner is the stronger offer (carries the
+          WELCOME15 code, is dismissible) and is now correctly localized,
+          so it is the single bar site-wide. t.announce / t.announceLink
+          are kept in the copy dictionary for reuse. */}
 
       {/* Navbar */}
-      <header className="sticky top-0 z-40 border-b border-[#FFC94D]/30 bg-white/80 backdrop-blur-md">
+      <header className="sticky top-0 z-40 border-b border-[color:var(--hairline)] bg-white/80 backdrop-blur-md">
         <nav className="max-w-7xl mx-auto px-6 sm:px-8 h-16 flex items-center justify-between">
           <Link href={`/${lang}`} className="flex items-center transition-transform duration-200 hover:scale-[1.03]">
             <GuestcamLogo size="sm" showMark={true} />
           </Link>
           <div className="flex items-center gap-3 sm:gap-5">
             <LanguageSwitcher current={lang} languages={HOME_HREFLANG} ariaLabel={t.switcherAria} />
-            <Link href={`/${lang}/blog`} className="hidden sm:block text-sm font-medium text-gray-600 hover:text-[#0F1729] transition-colors">
+            <Link href={`/${lang}/blog`} className="hidden sm:block text-sm font-medium text-gray-600 hover:text-[color:var(--ink)] transition-colors">
               Blog
             </Link>
             <HeaderAuthButtons lang={lang} />
             {!signedIn && (
-              <Link href="/dashboard/new" className="hidden sm:inline-flex items-center gap-1.5 px-4 sm:px-5 py-2 sm:py-2.5 rounded-full text-sm font-bold text-[#0F1729] transition-all duration-200 hover:scale-[1.03]"
-                style={{ background: "linear-gradient(135deg, #FFD966 0%, #FFC94D 55%, #F0B429 100%)", boxShadow: "0 6px 18px rgba(255,201,77,0.45)" }}>
+              <Link href="/dashboard/new" className="hidden sm:inline-flex items-center gap-1.5 px-4 sm:px-5 py-2 sm:py-2.5 rounded-full text-sm font-bold text-[color:var(--ink)] transition-all duration-200 hover:scale-[1.03]"
+                style={{ background: "var(--ink)", color: "var(--paper)" }}>
                 {t.navCta}
                 <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>
               </Link>
@@ -693,151 +753,39 @@ export async function LocalizedHomePage({ lang }: { lang: Lang }) {
       </header>
 
       {/* Hero */}
-      <section style={{ background: "#F2F4F8" }}>
-        {heroImage ? (
-          <div className="w-full">
-            <h1 className="sr-only">{heroImage.srOnlyH1}</h1>
-            <div className="overflow-hidden bg-white">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <picture>
-                <source media="(max-width: 640px)" srcSet={heroImage.mobile} />
-                <img
-                  src={heroImage.desktop}
-                  alt={heroImage.alt}
-                  className="block w-full h-auto"
-                  width={heroImage.width}
-                  height={heroImage.height}
-                  fetchPriority="high"
-                />
-              </picture>
+      <section className="overflow-hidden">
+        {/* Nordic hero, shared by all five localized homepages. */}
+        <NordicHero
+          eyebrow={t.heroEyebrow}
+          headLead={t.heroHead.lead}
+          headAccent={t.heroHead.accent}
+          headTrail={t.heroHead.trail}
+          lead={t.heroLead}
+          ctaHref="/dashboard/new"
+          ctaLabel={t.heroPrimary}
+          note={t.heroNote}
+          primaryPhoto={{ src: "/hero/wedding-avenue.webp", alt: t.heroHead.accent }}
+          secondaryPhoto={{ src: "/hero/wedding-walk-lg.webp", alt: "" }}
+          printOffer={
+            <div className="inline-flex items-start gap-3 rounded-xl px-4 py-3 text-left"
+              style={{ background: "#FFFFFF", border: "1px solid var(--hairline)" }}>
+              <p className="text-[13px] leading-snug" style={{ color: "var(--muted)" }}>
+                <span className="font-semibold" style={{ color: "var(--ink)" }}>{t.heroPrintOffer.title}</span>{" "}
+                {t.heroPrintOffer.body(eur(Math.min(...STAND_VARIANTS.map((v) => v.unitCents))))}
+              </p>
             </div>
-            <div className="flex flex-col items-center text-center px-4 py-10 sm:py-16">
-              <div className="flex flex-wrap items-center justify-center gap-4">
-                <Link href="/dashboard/new" className="inline-flex items-center gap-3 px-10 py-5 rounded-full text-[#0F1729] font-bold text-lg transition-all duration-200 hover:scale-[1.02]"
-                  style={{ background: "linear-gradient(135deg, #FFD966 0%, #FFC94D 55%, #F0B429 100%)", boxShadow: "0 14px 40px rgba(255,201,77,0.42)" }}>
-                  {t.heroPrimary}
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>
-                </Link>
-              </div>
-              <p className="mt-4 text-sm text-gray-400">{t.heroNote}</p>
-            </div>
-          </div>
-        ) : (
-          <div className="max-w-7xl mx-auto px-6 sm:px-8 py-16 xl:py-24">
-            <div className="grid lg:grid-cols-2 gap-12 xl:gap-20 items-center">
-              <div>
-                <div className="flex items-center gap-3 mb-7">
-                  <div className="flex -space-x-2.5">
-                    {["#FFC94D", "#F0B429", "#E8A800", "#FFD966", "#C9820A"].map((bg, i) => (
-                      <div key={i} className="w-9 h-9 rounded-full border-[2.5px] flex items-center justify-center text-[11px] font-bold text-[#0F1729] shrink-0" style={{ background: bg, borderColor: "#F2F4F8" }}>
-                        {["T", "A", "S", "D", "M"][i]}
-                      </div>
-                    ))}
-                  </div>
-                  <p className="text-sm text-gray-600">{t.trustText} <span className="font-bold text-[#0F1729]">{t.trust500}</span></p>
-                </div>
-                <p className="text-xs font-bold uppercase tracking-[0.18em] text-gray-400 mb-5">{t.heroEyebrow}</p>
-                <h1 className="font-extrabold leading-[1.15] tracking-tight text-[#0F1729] mb-8" style={{ fontSize: "clamp(1.9rem, 3.6vw, 3.15rem)" }}>
-                  {t.heroHead.lead}{" "}<span style={{ color: "#C9820A" }}>{t.heroHead.accent}</span>{t.heroHead.trail}
-                </h1>
-                <p className="text-lg text-gray-500 leading-relaxed mb-8 max-w-[500px]">{t.heroLead}</p>
-
-                {/* 3-step mini icons */}
-                <div className="flex items-start gap-10 mb-12">
-                  {[
-                    { label: t.threeStep.takePhoto, icon: <IconCamera /> },
-                    { label: t.threeStep.scanQr, icon: <IconQR /> },
-                    { label: t.threeStep.upload, icon: <IconBolt /> },
-                  ].map(({ label, icon }) => (
-                    <div key={label} className="flex flex-col items-center gap-2.5">
-                      <div className="w-14 h-14 rounded-2xl flex items-center justify-center" style={{ background: "rgba(255,201,77,0.18)", color: "#C9820A" }}>{icon}</div>
-                      <span className="text-xs font-semibold text-gray-500 text-center leading-tight">{label}</span>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="flex flex-wrap items-center justify-center gap-4">
-                  <Link href="/dashboard/new" className="inline-flex items-center gap-3 px-10 py-5 rounded-full text-[#0F1729] font-bold text-lg transition-all duration-200 hover:scale-[1.02]"
-                    style={{ background: "linear-gradient(135deg, #FFD966 0%, #FFC94D 55%, #F0B429 100%)", boxShadow: "0 14px 40px rgba(255,201,77,0.42)" }}>
-                    {t.heroPrimary}
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>
-                  </Link>
-                </div>
-                <p className="mt-4 text-sm text-gray-400">{t.heroNote}</p>
-              </div>
-
-              {/* Hero collage (reuses the same images as the homepage) */}
-              <div className="hidden lg:block relative select-none" style={{ height: 600 }}>
-                <div className="absolute rounded-3xl overflow-hidden shadow-2xl" style={{ top: 56, left: 0, width: 372, height: 466, transform: "rotate(-5deg)", zIndex: 20 }}>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src="/hero/scan.webp"
-                    alt=""
-                    width={372}
-                    height={466}
-                    fetchPriority="high"
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <div className="absolute rounded-2xl overflow-hidden shadow-xl" style={{ top: 0, right: 0, width: 244, height: 304, transform: "rotate(5deg)", zIndex: 30 }}>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src="/hero/gallery.webp"
-                    alt=""
-                    width={244}
-                    height={304}
-                    loading="lazy"
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <div className="absolute rounded-2xl overflow-hidden shadow-2xl" style={{ bottom: 20, right: 24, width: 252, height: 252, transform: "rotate(4deg)", zIndex: 30 }}>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src="/hero/cards.webp"
-                    alt=""
-                    width={252}
-                    height={252}
-                    loading="lazy"
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
+          }
+        />
       </section>
 
-      {/* Stats */}
-      <section className="max-w-2xl mx-auto px-6 pb-20 pt-20">
-        <div className="bg-white rounded-3xl border border-gray-100 shadow-sm grid grid-cols-3 divide-x divide-gray-100">
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 py-6 px-4 text-center">
-            <span className="text-[1.4rem]">👫👫👫</span>
-            <div>
-              <p className="font-extrabold text-xl text-[#0F1729]">500+</p>
-              <p className="text-xs text-gray-400 max-w-[90px] leading-snug">{t.statsCreated}</p>
-            </div>
-          </div>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 py-6 px-4 text-center">
-            <div className="text-amber-400 text-base leading-none shrink-0">★★★★★</div>
-            <div>
-              <p className="font-extrabold text-xl" style={{ color: "#C9820A" }}>5.0/5</p>
-              <p className="text-xs text-gray-400 max-w-[90px] leading-snug">{t.statsRating}</p>
-            </div>
-          </div>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 py-6 px-4 text-center">
-            <span className="text-[1.4rem]">📸</span>
-            <div>
-              <p className="font-extrabold text-xl text-[#0F1729]">25.000+</p>
-              <p className="text-xs text-gray-400 max-w-[90px] leading-snug">{t.statsPhotos}</p>
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* Stats band removed: 500+ / 5.0 / 25.000+ were unverifiable
+          numbers presented as metrics, with emoji as icons — the same
+          fabricated-proof pattern removed from the Slovenian page. */}
 
       {/* Event types */}
       <section className="max-w-5xl mx-auto px-6 pb-20 text-center">
-        <h2 className="text-3xl sm:text-4xl font-extrabold text-[#0F1729] mb-4 leading-tight">{t.eventsTitle}</h2>
-        <p className="text-gray-400 max-w-xl mx-auto leading-relaxed mb-10">{t.eventsSubtitle}</p>
+        <h2 className="text-3xl sm:text-4xl font-extrabold text-[color:var(--ink)] mb-4 leading-tight">{t.eventsTitle}</h2>
+        <p className="text-gray-500 max-w-xl mx-auto leading-relaxed mb-10">{t.eventsSubtitle}</p>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
           {t.eventsList.map(({ label }, i) => {
             const imgKeys = ["wedding","birthday","babyshower","gromparty","party","business","krst","matura"];
@@ -871,8 +819,8 @@ export async function LocalizedHomePage({ lang }: { lang: Lang }) {
               style={{ background: "rgba(255,201,77,0.18)", color: "#C9820A" }}>
               {t.printEyebrow}
             </div>
-            <h2 className="text-[2.5rem] font-extrabold text-[#0F1729] mb-4">{t.printTitle}</h2>
-            <p className="text-gray-400 max-w-lg mx-auto leading-relaxed">{t.printSubtitle}</p>
+            <h2 className="text-[2.5rem] font-extrabold text-[color:var(--ink)] mb-4">{t.printTitle}</h2>
+            <p className="text-gray-500 max-w-lg mx-auto leading-relaxed">{t.printSubtitle}</p>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
             {t.printTemplates.map((tpl, idx) => {
@@ -888,23 +836,23 @@ export async function LocalizedHomePage({ lang }: { lang: Lang }) {
                     <div className="absolute inset-0" style={{ background: "rgba(0,0,0,0.18)" }} />
                     <div className="absolute inset-0 flex items-center justify-center">
                       <div
-                        className={`${v.dark ? "bg-[#0F1729] text-white" : "bg-white/97 text-[#0F1729]"} rounded-xl p-4 shadow-2xl text-center`}
+                        className={`${v.dark ? "bg-[#0F1729] text-white" : "bg-white/97 text-[color:var(--ink)]"} rounded-xl p-4 shadow-2xl text-center`}
                         style={{ width: 130, transform: `rotate(${v.rotate}deg)` }}
                       >
-                        <p className={`font-serif text-[11px] font-bold mb-0.5 leading-tight ${v.dark ? "text-white" : "text-[#0F1729]"}`}>
+                        <p className={`font-serif text-[11px] font-bold mb-0.5 leading-tight ${v.dark ? "text-white" : "text-[color:var(--ink)]"}`}>
                           {v.headline}
                         </p>
-                        <p className={`text-[8px] mb-2.5 ${v.dark ? "text-white/60" : "text-gray-400"}`}>{v.sub}</p>
+                        <p className={`text-[8px] mb-2.5 ${v.dark ? "text-white/60" : "text-gray-500"}`}>{v.sub}</p>
                         <div className="flex justify-center mb-2" style={{ transform: "scale(0.48)", transformOrigin: "center", height: 33, overflow: "hidden" }}>
                           <QRPattern />
                         </div>
-                        <p className={`font-serif text-[8px] italic ${v.dark ? "text-[#f9a8c0]" : "text-[#C9820A]"}`}>Ana &amp; Marko</p>
+                        <p className={`font-serif text-[8px] italic ${v.dark ? "text-[#f9a8c0]" : "text-[#8C6218]"}`}>Ana &amp; Marko</p>
                         {v.dark ? null : <div className="w-8 h-px bg-gray-200 mx-auto mt-1.5" />}
-                        <p className={`text-[7px] mt-1 ${v.dark ? "text-white/40" : "text-gray-300"}`}>14. 06. 2025</p>
+                        <p className={`text-[7px] mt-1 ${v.dark ? "text-white/40" : "text-gray-500"}`}>14. 06. 2025</p>
                       </div>
                     </div>
-                    <div className="absolute inset-0 bg-[#FFC94D]/90 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center gap-3">
-                      <p className="text-[#0F1729] font-bold text-sm">{tpl.name}</p>
+                    <div className="absolute inset-0 bg-[color:var(--ink)]/85 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center gap-3">
+                      <p className="text-[color:var(--ink)] font-bold text-sm">{tpl.name}</p>
                       <Link
                         href="/dashboard/new"
                         className="bg-white font-bold text-xs px-5 py-2.5 rounded-full transition-transform hover:scale-105"
@@ -915,17 +863,17 @@ export async function LocalizedHomePage({ lang }: { lang: Lang }) {
                     </div>
                   </div>
                   <div className="px-3 py-2.5 bg-white flex items-center justify-between">
-                    <span className="text-xs font-semibold text-[#0F1729]">{tpl.name}</span>
-                    <span className="text-[10px] text-[#C9820A] font-medium">PDF ↓</span>
+                    <span className="text-xs font-semibold text-[color:var(--ink)]">{tpl.name}</span>
+                    <span className="text-[10px] text-[#8C6218] font-medium">PDF ↓</span>
                   </div>
                 </div>
               );
             })}
           </div>
           <div className="text-center mt-10">
-            <p className="text-sm text-gray-400 mb-5">{t.printNote}</p>
+            <p className="text-sm text-gray-500 mb-5">{t.printNote}</p>
             <Link href="/dashboard/new" className="inline-flex items-center gap-2.5 px-8 py-4 rounded-2xl font-bold text-sm transition-all duration-200 border-2"
-              style={{ borderColor: "#C9820A", color: "#C9820A" }}>
+              style={{ borderColor: "#8C6218", color: "#8C6218" }}>
               {t.printCta}
             </Link>
           </div>
@@ -933,25 +881,27 @@ export async function LocalizedHomePage({ lang }: { lang: Lang }) {
       </section>
 
       {/* How it works */}
-      <section id="how" style={{ background: "#0B1220" }} className="py-24 relative overflow-hidden">
+      <section id="how" style={{ background: "var(--paper)" }} className="py-24 relative overflow-hidden">
         <div className="max-w-6xl mx-auto px-6 relative z-10">
-          <p className="text-center text-xs font-bold uppercase tracking-[0.25em] mb-4" style={{ color: "#FFC94D" }}>{t.howEyebrow}</p>
-          <h2 className="text-center font-extrabold text-white mb-5 leading-tight" style={{ fontSize: "clamp(2rem, 4vw, 3rem)" }}>
+          <p className="text-center text-xs font-bold uppercase tracking-[0.25em] mb-4" style={{ color: "var(--honey)" }}>{t.howEyebrow}</p>
+          <h2 className="text-center font-extrabold mb-5 leading-tight text-[color:var(--ink)]" style={{ fontSize: "clamp(2rem, 4vw, 3rem)" }}>
             {t.howTitle.line1}<br />{t.howTitle.line2}
           </h2>
-          <p className="text-center max-w-xl mx-auto leading-relaxed mb-16" style={{ color: "rgba(255,255,255,0.55)", fontSize: "1.05rem" }}>{t.howSubtitle}</p>
+          <p className="text-center max-w-xl mx-auto leading-relaxed mb-16" style={{ color: "var(--muted)", fontSize: "1.05rem" }}>{t.howSubtitle}</p>
           <div className="grid md:grid-cols-3 gap-6">
+            {/* Step labels ("KORAK 01") are dropped at render time: the
+                three-column order already communicates sequence, and
+                numbered eyebrows are a banned templated pattern. */}
             {t.howSteps.map((s) => (
-              <div key={s.label} className="rounded-3xl p-7" style={{ background: "#070A12" }}>
-                <p className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: "#FFC94D" }}>{s.label}</p>
-                <h3 className="text-white font-extrabold text-2xl mb-3 leading-tight">{s.title}</h3>
-                <p style={{ color: "rgba(255,255,255,0.55)", lineHeight: 1.65 }} className="text-sm">{s.desc}</p>
+              <div key={s.label} className="rounded-3xl p-7" style={{ background: "#FFFFFF", border: "1px solid var(--hairline)" }}>
+                <h3 className="font-extrabold text-2xl mb-3 leading-tight text-[color:var(--ink)]">{s.title}</h3>
+                <p style={{ color: "var(--muted)", lineHeight: 1.65 }} className="text-sm">{s.desc}</p>
               </div>
             ))}
           </div>
           <div className="text-center mt-12">
-            <Link href="/dashboard/new" className="inline-flex items-center gap-2.5 px-9 py-4 text-[#0F1729] font-bold rounded-full transition-all duration-200 hover:scale-105"
-              style={{ background: "#FFC94D", boxShadow: "0 6px 24px rgba(255,201,77,0.45)" }}>
+            <Link href="/dashboard/new" className="inline-flex items-center gap-2.5 px-9 py-4 font-bold rounded-full transition-all duration-200 hover:scale-105"
+              style={{ background: "var(--ink)", color: "var(--paper)" }}>
               {t.howCta}
             </Link>
           </div>
@@ -959,16 +909,63 @@ export async function LocalizedHomePage({ lang }: { lang: Lang }) {
       </section>
 
       {/* Why you need it */}
-      <section id="why" className="py-24" style={{ background: "#FFF9EC" }}>
+      {/* Photo Wall showcase — live CSS demo of the differentiator */}
+      <section id="wall" className="py-24 bg-white overflow-hidden">
         <div className="max-w-6xl mx-auto px-6">
-          <h2 className="text-[2.5rem] font-extrabold text-center text-[#0F1729] mb-4">{t.whyTitle}</h2>
-          <p className="text-center text-gray-400 text-base mb-14 max-w-md mx-auto">{t.whySubtitle}</p>
+          <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+            <div className="relative order-1">
+              <div className="relative"><WallMiniDemo /></div>
+            </div>
+            <div className="order-2 text-center lg:text-left">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-widest mb-5"
+                style={{ background: "rgba(255,201,77,0.15)", color: "#C9820A" }}>
+                {t.wall.eyebrow}
+              </div>
+              <h2 className="text-[2.2rem] sm:text-[2.6rem] font-extrabold leading-[1.1] text-[color:var(--ink)] mb-5">
+                {t.wall.titleLead}{" "}
+<span
+                  className="relative z-[1]"
+                  style={{ boxShadow: "inset 0 -0.32em 0 rgba(255,201,77,0.6)", boxDecorationBreak: "clone", WebkitBoxDecorationBreak: "clone" }}
+                >{t.wall.titleAccent}</span>
+              </h2>
+              <p className="text-gray-500 text-base sm:text-lg leading-relaxed mb-8 max-w-md mx-auto lg:mx-0">{t.wall.sub}</p>
+              <ul className="space-y-3.5 w-fit mx-auto lg:mx-0 text-left mb-9">
+                {t.wall.points.map((b) => (
+                  <li key={b} className="flex items-start gap-3">
+                    <span className="mt-0.5 w-6 h-6 rounded-full flex items-center justify-center shrink-0" style={{ background: "#FFF3CC" }}>
+                      <svg className="w-3.5 h-3.5 text-[#8C6218]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={3}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                      </svg>
+                    </span>
+                    <span className="text-[15px] text-gray-600">{b}</span>
+                  </li>
+                ))}
+              </ul>
+              <Link
+                href="/dashboard/new"
+                className="inline-flex items-center gap-2.5 px-8 py-4 rounded-xl text-[color:var(--ink)] font-bold text-base transition-all duration-200 hover:scale-[1.02]"
+                style={{ background: "var(--ink)", color: "var(--paper)" }}
+              >
+                {t.wall.cta}
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                </svg>
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="why" className="py-24" style={{ background: "var(--paper)" }}>
+        <div className="max-w-6xl mx-auto px-6">
+          <h2 className="text-4xl sm:text-[3.3rem] leading-[1.08] tracking-tight font-extrabold text-center text-[color:var(--ink)] mb-4">{t.whyTitle}</h2>
+          <p className="text-center text-gray-600 text-base mb-14 max-w-md mx-auto">{t.whySubtitle}</p>
           <div className="grid md:grid-cols-3 gap-6">
             {t.whyCards.map((c) => (
-              <div key={c.title} className="bg-white border border-gray-100 rounded-2xl p-7 hover:shadow-md hover:border-[#FFC94D]/40 transition-all duration-200">
+              <div key={c.title} className="bg-white border border-gray-100 rounded-2xl p-7 hover:shadow-md hover:border-[color:var(--honey)] transition-all duration-200">
                 <div className="w-12 h-12 border border-gray-100 rounded-2xl flex items-center justify-center text-2xl mb-5 shadow-sm" style={{ background: "#FFF3CC" }}>{c.icon}</div>
-                <h3 className="font-bold text-[#0F1729] text-lg mb-2">{c.title}</h3>
-                <p className="text-gray-400 text-sm leading-relaxed">{c.desc}</p>
+                <h3 className="font-bold text-[color:var(--ink)] text-lg mb-2">{c.title}</h3>
+                <p className="text-gray-500 text-sm leading-relaxed">{c.desc}</p>
               </div>
             ))}
           </div>
@@ -978,20 +975,20 @@ export async function LocalizedHomePage({ lang }: { lang: Lang }) {
       {/* Features */}
       <section id="features" className="py-24 bg-white">
         <div className="max-w-6xl mx-auto px-6">
-          <h2 className="text-[2.5rem] font-extrabold text-center text-[#0F1729] mb-4">{t.featuresTitle}</h2>
+          <h2 className="text-4xl sm:text-[3.3rem] leading-[1.08] tracking-tight font-extrabold text-center text-[color:var(--ink)] mb-4">{t.featuresTitle}</h2>
           <p className="text-center text-gray-500 mb-14 max-w-lg mx-auto leading-relaxed">
-            {t.featuresLead1}<br /><span className="text-gray-400">{t.featuresLead2}</span>
+            {t.featuresLead1}<br /><span className="text-gray-500">{t.featuresLead2}</span>
           </p>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {t.features.map((f, i) => {
               const Icon = featuresIcons[i] ?? IconPhone;
               return (
-                <div key={f.title} className="group rounded-2xl border border-gray-100 bg-white p-7 text-left transition-all duration-200 hover:border-[#FFC94D]/40 hover:shadow-[0_12px_36px_rgba(15,23,41,0.08)]">
+                <div key={f.title} className="group rounded-2xl border border-gray-100 bg-white p-7 text-left transition-all duration-200 hover:border-[color:var(--honey)] hover:shadow-[0_12px_36px_rgba(15,23,41,0.08)]">
                   <div className="w-14 h-14 rounded-2xl flex items-center justify-center mb-5 text-white transition-transform duration-200 group-hover:scale-105"
-                    style={{ background: "linear-gradient(135deg, #FFD966 0%, #F0B429 100%)", boxShadow: "0 10px 22px rgba(255,201,77,0.4)", color: "#0F1729" }}>
+                    style={{ background: "rgba(140,98,24,0.10)", color: "var(--honey)" }}>
                     <Icon />
                   </div>
-                  <h3 className="font-bold text-[#0F1729] text-lg mb-2">{f.title}</h3>
+                  <h3 className="font-bold text-[color:var(--ink)] text-lg mb-2">{f.title}</h3>
                   <p className="text-gray-500 text-sm leading-relaxed">{f.desc}</p>
                 </div>
               );
@@ -1001,40 +998,15 @@ export async function LocalizedHomePage({ lang }: { lang: Lang }) {
       </section>
 
       {/* Testimonials */}
-      <section id="reviews" className="py-24" style={{ background: "#FFF9EC" }}>
-        <div className="max-w-6xl mx-auto px-6">
-          <h2 className="text-[2.5rem] font-extrabold text-center text-[#0F1729] mb-14">{t.reviewsTitle}</h2>
-          <div className="grid md:grid-cols-3 gap-5">
-            {t.reviews.map((r) => (
-              <div key={r.name} className="bg-white border border-gray-100 rounded-2xl p-6 shadow-sm">
-                <div className="flex gap-0.5 mb-4 text-amber-400">
-                  {[...Array(5)].map((_, i) => (
-                    <svg key={i} className="w-4 h-4 fill-current" viewBox="0 0 20 20">
-                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                    </svg>
-                  ))}
-                </div>
-                <p className="text-gray-600 text-sm leading-relaxed mb-5 italic">&ldquo;{r.text}&rdquo;</p>
-                <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-full flex items-center justify-center text-base shrink-0" style={{ background: "rgba(255,201,77,0.25)" }}>💑</div>
-                  <div>
-                    <p className="font-semibold text-[#0F1729] text-sm">{r.name}</p>
-                    <p className="text-xs text-gray-400">{r.date}</p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      {/* Reviews removed: fabricated quotes, banned by the redesign brief. */}
 
       {/* Pricing */}
       <section id="pricing" className="py-24 bg-white">
         <div className="max-w-5xl mx-auto px-6">
           {/* Meta Pixel funnel: ViewContent when the plans are seen */}
           <TrackViewContent name="Pricing" category="plans" />
-          <h2 className="text-[2.5rem] font-extrabold text-center text-[#0F1729] mb-4">{t.pricingTitle}</h2>
-          <p className="text-center text-gray-400 mb-14">{t.pricingSubtitle}</p>
+          <h2 className="text-4xl sm:text-[3.3rem] leading-[1.08] tracking-tight font-extrabold text-center text-[color:var(--ink)] mb-4">{t.pricingTitle}</h2>
+          <p className="text-center text-gray-500 mb-14">{t.pricingSubtitle}</p>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 items-start">
             {([
               { label: t.free.label,    tagline: t.free.tagline,    price: t.free.price,    was: undefined as string | undefined, features: t.free.features,    cta: t.free.cta,    ribbon: undefined as string | undefined, highlighted: false, dimmed: false },
@@ -1047,59 +1019,89 @@ export async function LocalizedHomePage({ lang }: { lang: Lang }) {
               return (
               <div key={p.label}
                 className={`${p.dimmed ? "bg-gray-50 border border-gray-200 opacity-80" : p.highlighted ? "relative bg-white" : "bg-white border border-gray-200"} rounded-3xl p-7 flex flex-col`}
-                style={p.highlighted ? { border: "2px solid #FFC94D", boxShadow: "0 8px 40px rgba(255,201,77,0.25)", transform: "translateY(-8px)" } : undefined}
+                style={p.highlighted ? { border: "2px solid var(--ink)", boxShadow: "0 10px 40px rgba(20,24,31,0.12)", transform: "translateY(-8px)" } : undefined}
               >
                 {p.ribbon ? (
-                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 text-[#0F1729] text-[10px] font-bold tracking-widest uppercase px-5 py-1.5 rounded-full" style={{ background: "#FFC94D" }}>
+                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 text-[10px] font-bold tracking-widest uppercase px-5 py-1.5 rounded-full" style={{ background: "var(--ink)", color: "var(--paper)" }}>
                     {p.ribbon}
                   </div>
                 ) : null}
-                <p className={`font-extrabold text-lg ${p.dimmed ? "text-gray-400" : "text-[#0F1729]"} mb-1`}>{p.label}</p>
-                <p className="text-sm text-gray-400 mb-6">{p.tagline}</p>
+                <p className={`font-extrabold text-lg ${p.dimmed ? "text-gray-500" : "text-[color:var(--ink)]"} mb-1`}>{p.label}</p>
+                <p className="text-sm text-gray-500 mb-6">{p.tagline}</p>
                 <div className="flex items-end gap-2 mb-7">
-                  <span className={`font-extrabold text-[3rem] leading-none ${p.dimmed ? "text-gray-400" : p.highlighted ? "" : "text-[#0F1729]"}`} style={p.highlighted ? { color: "#C9820A" } : undefined}>{p.price}</span>
-                  {p.was ? <span className="text-gray-300 line-through text-lg mb-1.5">{p.was}</span> : null}
+                  <span className={`font-extrabold text-[3rem] leading-none ${p.dimmed ? "text-gray-500" : p.highlighted ? "" : "text-[color:var(--ink)]"}`} style={p.highlighted ? { color: "#C9820A" } : undefined}>{p.price}</span>
+                  {p.was ? <span className="text-gray-500 line-through text-lg mb-1.5">{p.was}</span> : null}
                 </div>
                 <ul className="space-y-3 flex-1 mb-8">
                   {p.features.map((f) => (
                     <li key={f} className="flex items-center gap-2.5">
-                      <svg className={`w-4 h-4 shrink-0 ${p.dimmed ? "text-gray-300" : "text-[#C9820A]"}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
-                      <span className={`text-sm ${p.dimmed ? "text-gray-400" : "text-gray-600"}`}>{f}</span>
+                      <svg className={`w-4 h-4 shrink-0 ${p.dimmed ? "text-gray-500" : "text-[#8C6218]"}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+                      <span className={`text-sm ${p.dimmed ? "text-gray-500" : "text-gray-600"}`}>{f}</span>
                     </li>
                   ))}
                 </ul>
                 <Link href={href} className={`block text-center py-3.5 rounded-2xl font-bold text-sm transition-colors ${
-                  p.highlighted ? "text-[#0F1729]" : p.dimmed ? "text-gray-400 bg-white hover:bg-gray-100" : "text-[#0F1729] hover:bg-gray-50"
-                }`} style={p.highlighted ? { background: "#FFC94D" } : { border: "1.5px solid #e5e7eb" }}>
+                  p.highlighted ? "text-[color:var(--ink)]" : p.dimmed ? "text-gray-500 bg-white hover:bg-gray-100" : "text-[color:var(--ink)] hover:bg-gray-50"
+                }`} style={p.highlighted ? { background: "var(--ink)", color: "var(--paper)" } : { border: "1.5px solid var(--hairline)" }}>
                   {p.cta}
                 </Link>
               </div>
               );
             })}
           </div>
-          <div className="flex items-center justify-center gap-2 mt-10 text-sm text-gray-400">
+          {/* Events teaser — category + contact CTA, not a spec sheet. */}
+          <div className="mt-6 rounded-3xl p-7 sm:p-8 flex flex-col sm:flex-row items-start sm:items-center gap-5"
+            style={{ background: "radial-gradient(120% 160% at 50% 0%, #1B2842 0%, #0F1729 70%)" }}>
+            <div className="flex-1 min-w-0">
+              <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#FFC94D] mb-1.5">{t.eventsTeaser.eyebrow}</p>
+              <p className="font-extrabold text-xl text-white">{t.eventsTeaser.title}</p>
+              <p className="text-sm text-gray-500 mt-1.5 max-w-xl">{t.eventsTeaser.body}</p>
+            </div>
+            <div className="shrink-0 sm:text-right">
+              <p className="text-sm font-semibold text-gray-500 mb-2.5">{t.eventsTeaser.price}</p>
+              <Link href={`/${lang}/contact`}
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl font-bold text-sm text-[color:var(--ink)] hover:brightness-95 transition-all"
+                style={{ background: "linear-gradient(135deg,#FFD966,#FFC94D 60%,#F0B429)" }}>
+                {t.eventsTeaser.cta}
+              </Link>
+            </div>
+          </div>
+
+          <div className="flex items-center justify-center gap-2 mt-10 text-sm text-gray-500">
             <svg className="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.8}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
             </svg>
             {t.guarantee}
           </div>
+
+          {/* Trust badges — data protection */}
+          <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3 mt-6 text-sm text-gray-500">
+            {[t.trustGdpr, t.trustEuServers, t.trustEncryption].map((label) => (
+              <span key={label} className="flex items-center gap-1.5">
+                <svg className="w-4 h-4 shrink-0" style={{ color: "#16A34A" }} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+                </svg>
+                {label}
+              </span>
+            ))}
+          </div>
         </div>
       </section>
 
       {/* FAQ */}
-      <section id="faq" className="py-24" style={{ background: "#FFF9EC" }}>
+      <section id="faq" className="py-24" style={{ background: "var(--paper)" }}>
         <div className="max-w-2xl mx-auto px-6">
-          <h2 className="text-[2.5rem] font-extrabold text-center text-[#0F1729] mb-12">{t.faqTitle}</h2>
+          <h2 className="text-4xl sm:text-[3.3rem] leading-[1.08] tracking-tight font-extrabold text-center text-[color:var(--ink)] mb-12">{t.faqTitle}</h2>
           <div className="space-y-3">
             {t.faqs.map((faq) => (
-              <details key={faq.q} className="bg-white border border-gray-100 rounded-2xl group">
-                <summary className="flex items-center justify-between px-6 py-4 cursor-pointer font-semibold text-[#0F1729] list-none text-[0.95rem]">
+              <details key={faq.q} className="bg-white rounded-2xl group" style={{ border: "1px solid var(--hairline)" }}>
+                <summary className="flex items-center justify-between px-6 py-4 cursor-pointer font-semibold text-[color:var(--ink)] list-none text-[0.95rem]">
                   {faq.q}
-                  <svg className="w-5 h-5 text-gray-400 shrink-0 group-open:rotate-180 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                  <svg className="w-5 h-5 text-gray-500 shrink-0 group-open:rotate-180 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
                   </svg>
                 </summary>
-                <p className="px-6 pb-5 pt-1 text-sm text-gray-400 leading-relaxed">{faq.a}</p>
+                <p className="px-6 pb-5 pt-1 text-sm leading-relaxed" style={{ color: "var(--muted)" }}>{faq.a}</p>
               </details>
             ))}
           </div>
@@ -1108,19 +1110,34 @@ export async function LocalizedHomePage({ lang }: { lang: Lang }) {
 
       {/* Final CTA */}
       <section className="py-28 bg-white text-center px-6">
-        <h2 className="font-extrabold text-[#0F1729] mb-4" style={{ fontSize: "clamp(2rem, 5vw, 3.2rem)" }}>
+        <h2 className="font-extrabold text-[color:var(--ink)] mb-4" style={{ fontSize: "clamp(2rem, 5vw, 3.2rem)" }}>
           {t.ctaTitle.line1}{" "}<span style={{ color: "#C9820A" }}>{t.ctaTitle.accent}</span>.
         </h2>
         <p className="text-gray-500 text-lg mb-10 max-w-lg mx-auto leading-relaxed">{t.ctaSubtitle}</p>
-        <Link href="/dashboard/new" className="inline-flex items-center gap-2.5 px-10 py-5 text-[#0F1729] font-bold text-lg rounded-full transition-all duration-200 shadow-2xl"
-          style={{ background: "linear-gradient(135deg, #FFD966 0%, #FFC94D 55%, #F0B429 100%)", boxShadow: "0 12px 32px rgba(255,201,77,0.45)" }}>
+        <Link href="/dashboard/new" className="inline-flex items-center gap-2.5 px-10 py-5 text-[color:var(--ink)] font-bold text-lg rounded-full transition-all duration-200 shadow-2xl"
+          style={{ background: "var(--ink)", color: "var(--paper)" }}>
           {t.ctaButton}
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>
         </Link>
-        <p className="mt-5 text-sm text-gray-400">{t.ctaTrust}</p>
+        <p className="mt-5 text-sm text-gray-500">{t.ctaTrust}</p>
       </section>
 
       <SeoFooter lang={lang} />
+
+      {/* Sticky mobile CTA — phones only; desktop sees CTAs often enough. */}
+      <div className="md:hidden fixed bottom-0 inset-x-0 z-40 px-4 pt-2 bg-gradient-to-t from-white via-white/95 to-transparent"
+        style={{ paddingBottom: "max(0.75rem, env(safe-area-inset-bottom))" }}>
+        <Link
+          href="/dashboard/new"
+          className="flex items-center justify-center gap-2 w-full py-3.5 rounded-xl text-[color:var(--ink)] font-bold text-base"
+          style={{ background: "var(--ink)", color: "var(--paper)" }}
+        >
+          {t.stickyCta}
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+          </svg>
+        </Link>
+      </div>
     </div>
   );
 }

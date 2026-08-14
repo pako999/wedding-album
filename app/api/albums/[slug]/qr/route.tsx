@@ -1,3 +1,4 @@
+import { SITE_URL } from "@/lib/urls";
 import { NextRequest, NextResponse } from "next/server";
 import { ImageResponse } from "next/og";
 import { readFile } from "node:fs/promises";
@@ -146,7 +147,7 @@ export async function GET(
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://www.guestcam.si";
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? SITE_URL;
   const albumUrl = `${appUrl}/${slug}`;
 
   // Generate QR as SVG

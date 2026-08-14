@@ -9,6 +9,12 @@ import { fbEvent } from "@/lib/fbpixel";
 import type { Album } from "@/lib/db/schema";
 import { translations, type Lang } from "@/lib/i18n/translations";
 import { UPGRADE_COPY, PLAN_FEATURE_KEYS } from "@/lib/i18n/upgrade-translations";
+import {
+  SHIPPING_COUNTRIES, STAND_VARIANTS, DEFAULT_STAND_QTY, DEFAULT_STAND_VARIANT,
+  MAX_STAND_QTY, VOLUME_BREAKS, LEAD_TIME_DAYS, quoteShipping, standsPriceCents, effectiveUnitCents,
+  betterVolumeOffer,
+  volumeDiscountPercent, eur, type StandVariant,
+} from "@/lib/print-service";
 
 type PlanId = "free" | "basic" | "plus" | "premium";
 
@@ -59,6 +65,30 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
   const [companyInvoice, setCompanyInvoice] = useState(false);
   const [termsAccepted, setTermsAccepted] = useState(false);
 
+  // ── Printed QR table stands (physical add-on) ───────────────────────
+  // Priced again server-side from the country; what we show here is only
+  // a preview of that number so the customer sees the real total first.
+  const [wantStands, setWantStands] = useState(false);
+  const [standsVariant, setStandsVariant] = useState<StandVariant>(DEFAULT_STAND_VARIANT);
+  const [shipCountry, setShipCountry] = useState("SI");
+  // Quantity is held as the raw string so the field can be empty or
+  // half-typed; `standsQty` is the sanitised number everything prices
+  // from, so a blank box can never charge for 0 stands.
+  const [qtyInput, setQtyInput] = useState(String(DEFAULT_STAND_QTY));
+  const standsQty = Math.min(
+    MAX_STAND_QTY,
+    Math.max(1, Math.floor(Number(qtyInput)) || DEFAULT_STAND_QTY),
+  );
+  const shipQuote = quoteShipping(shipCountry);
+  const standsGoodsCents = standsPriceCents(standsQty, standsVariant) ?? 0;
+  const volumePercent = volumeDiscountPercent(standsQty);
+  const cheapestUnitCents = Math.min(...STAND_VARIANTS.map((v) => v.unitCents));
+  const betterOffer = betterVolumeOffer(standsQty, standsVariant);
+  /** Which product photo is open full size, if any. */
+  const [zoomVariant, setZoomVariant] = useState<StandVariant | null>(null);
+  const zoomed = zoomVariant ? STAND_VARIANTS.find((v) => v.id === zoomVariant) : null;
+  const standsCents = wantStands ? standsGoodsCents + (shipQuote?.cents ?? 0) : 0;
+
   // Discount code state
   const [discountInput, setDiscountInput] = useState("");
   const [discountStatus, setDiscountStatus] = useState<"idle" | "checking" | "valid" | "invalid">("idle");
@@ -81,6 +111,10 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
   const discountedPrice = discountStatus === "valid"
     ? Math.round(chosen.price * (1 - discountPercent / 100))
     : chosen.price;
+  /** What the customer is actually charged: plan (post-discount) plus the
+   *  physical add-on. Discounts apply to the PLAN only — never to
+   *  shipping or printed goods, which are at cost. */
+  const grandTotalCents = discountedPrice * 100 + standsCents;
 
   async function applyDiscount() {
     if (!discountInput.trim()) return;
@@ -109,6 +143,42 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
 
   return (
     <div className="min-h-screen flex flex-col" style={{ background: "#F5F5F7" }}>
+
+      {/* Full-size product preview. Fixed overlay rather than a new tab so
+          the customer never leaves a half-filled checkout form. Closes on
+          backdrop click, on the X, and on Escape. */}
+      {zoomed && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label={zoomVariant === "wood" ? u.standsWood : u.standsGold}
+          onClick={() => setZoomVariant(null)}
+          onKeyDown={(e) => { if (e.key === "Escape") setZoomVariant(null); }}
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
+        >
+          <img
+            src={zoomed.image}
+            alt={zoomVariant === "wood" ? u.standsWood : u.standsGold}
+            onClick={(e) => e.stopPropagation()}
+            onError={(e) => {
+              const img = e.currentTarget;
+              if (!img.src.endsWith(zoomed.imageFallback)) img.src = zoomed.imageFallback;
+            }}
+            className="max-w-full max-h-full object-contain rounded-xl shadow-2xl"
+          />
+          <button
+            type="button"
+            onClick={() => setZoomVariant(null)}
+            autoFocus
+            aria-label={u.standsClose}
+            className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/15 hover:bg-white/25 text-white flex items-center justify-center transition-colors"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+      )}
 
       {/* ── Top nav ─────────────────────────────────────────────────── */}
       <header className="bg-white border-b border-gray-100 sticky top-0 z-10">
@@ -207,7 +277,7 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
           </div>
 
           {/* ── Trust strip ───────────────────────────────────────────── */}
-          <div className="grid grid-cols-3 gap-2 mb-6">
+          <div className="grid grid-cols-3 gap-2 mb-3">
             {[
               { icon: "🛡️", label: u.trustRefund },
               { icon: "🔒", label: u.trustSecure },
@@ -220,26 +290,22 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
             ))}
           </div>
 
-          {/* ── Testimonial ───────────────────────────────────────────── */}
-          <div className="bg-white rounded-2xl border border-gray-100 p-5 mb-6">
-            <div className="flex gap-1 mb-3">
-              {[1,2,3,4,5].map(i => (
-                <svg key={i} className="w-4 h-4 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+          {/* ── Trust strip — data protection ────────────────────────── */}
+          <div className="grid grid-cols-3 gap-2 mb-6">
+            {[u.trustGdpr, u.trustEuServers, u.trustEncryption].map((label) => (
+              <div key={label} className="bg-white rounded-xl border border-gray-100 p-3 text-center flex flex-col items-center">
+                <svg className="w-4 h-4 mb-1" style={{ color: "#16A34A" }} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
                 </svg>
-              ))}
-            </div>
-            <p className="text-sm text-gray-600 italic leading-relaxed mb-3">
-              &ldquo;{u.testimonialQuote}&rdquo;
-            </p>
-            <div className="flex items-center gap-2">
-              <div className="w-7 h-7 rounded-full bg-[#FFF9EC] flex items-center justify-center text-sm font-bold text-[#C9820A]">A</div>
-              <div>
-                <p className="text-xs font-semibold text-gray-800">{u.testimonialAuthor}</p>
-                <p className="text-xs text-gray-400">{u.testimonialMeta}</p>
+                <p className="text-xs text-gray-600 font-medium leading-tight">{label}</p>
               </div>
-            </div>
+            ))}
           </div>
+
+          {/* Testimonial removed: the 'Ana & Marko · 500+ fotografij' quote
+              was fabricated. Five fake stars above an invented couple on the
+              PAYMENT page is the worst possible place to be caught lying.
+              Reinstate only with a real, attributable review. */}
 
           {/* ── Support card ─────────────────────────────────────────── */}
           <div className="bg-white rounded-2xl border border-gray-100 p-5 mb-4 flex items-center gap-4">
@@ -473,6 +539,200 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
             </div>
           )}
 
+          {/* ── Printed QR table stands (physical add-on) ──────────────── */}
+          {!invoiceDone && (
+            <div
+              id="stands"
+              className="rounded-2xl border-2 bg-white p-5 mb-4 transition-all scroll-mt-4"
+              style={{
+                borderColor: wantStands ? "#FFC94D" : "#e5e7eb",
+                boxShadow: wantStands ? "0 0 0 3px rgba(255,201,77,0.15)" : "none",
+              }}
+            >
+              <label className="flex items-start gap-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={wantStands}
+                  onChange={(e) => setWantStands(e.target.checked)}
+                  className="mt-1 w-5 h-5 shrink-0 accent-[#FFC94D]"
+                />
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-start justify-between gap-3">
+                    <p className="font-semibold text-gray-900">
+                      🖨 {u.standsTitle}
+                    </p>
+                    <span className="text-sm font-bold text-gray-900 whitespace-nowrap">
+                      {u.standsFrom} {eur(cheapestUnitCents)}/{u.standsPiece}
+                    </span>
+                  </div>
+                  <p className="text-xs text-gray-500 mt-1">{u.standsDesc}</p>
+                </div>
+              </label>
+
+              {wantStands && (
+                <div className="mt-4 pt-4 border-t border-gray-100">
+                  {/* Material first — it sets the unit price that the
+                      quantity below multiplies. Each option leads with its
+                      product shot; nobody picks between "wood" and "gold"
+                      from the words alone. */}
+                  <label className="block text-xs font-semibold text-gray-600 mb-1.5">
+                    {u.standsMaterial}
+                  </label>
+                  <div className="grid grid-cols-2 gap-3 mb-4">
+                    {STAND_VARIANTS.map((v) => {
+                      const active = standsVariant === v.id;
+                      const label = v.id === "wood" ? u.standsWood : u.standsGold;
+                      return (
+                        <div
+                          key={v.id}
+                          className="rounded-xl border-2 p-2 text-center transition-all"
+                          style={{
+                            borderColor: active ? "#FFC94D" : "#e5e7eb",
+                            background: active ? "#FFF9EC" : "#fff",
+                          }}
+                        >
+                          {/* Tapping the photo BOTH selects the material and
+                              opens it full size. Selecting as a side effect is
+                              deliberate: someone tapping the picture of the
+                              stand they want means "this one", and a preview
+                              that silently left the other material selected
+                              would be a trap. The image is its own button
+                              rather than the whole card being one, so the
+                              zoom control is a real button and not nested
+                              inside another. */}
+                          <button
+                            type="button"
+                            onClick={() => { setStandsVariant(v.id); setZoomVariant(v.id); }}
+                            aria-label={`${label} — ${u.standsZoom}`}
+                            className="relative block w-full rounded-lg overflow-hidden group cursor-zoom-in"
+                          >
+                            {/* Photo first, drawing as fallback — see the note
+                                on STAND_VARIANTS. object-contain, not cover, so
+                                a portrait shot is never cropped through the
+                                QR card, which is the whole product. */}
+                            <img
+                              src={v.image}
+                              alt={label}
+                              width={400}
+                              height={450}
+                              loading="lazy"
+                              onError={(e) => {
+                                const img = e.currentTarget;
+                                if (!img.src.endsWith(v.imageFallback)) img.src = v.imageFallback;
+                              }}
+                              className="w-full h-40 sm:h-52 object-contain"
+                            />
+                            <span
+                              aria-hidden
+                              className="absolute bottom-1.5 right-1.5 flex items-center justify-center w-7 h-7 rounded-full bg-black/45 text-white opacity-80 group-hover:opacity-100 transition-opacity"
+                            >
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.2-5.2m2.2-5.3a7.5 7.5 0 11-15 0 7.5 7.5 0 0115 0zM10.5 7.5v6m3-3h-6" />
+                              </svg>
+                            </span>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setStandsVariant(v.id)}
+                            aria-pressed={active}
+                            className="block w-full mt-1.5"
+                          >
+                            <span className="block text-sm font-semibold text-gray-900">{label}</span>
+                            <span className="block text-xs text-gray-500">
+                              {eur(v.unitCents)}/{u.standsPiece}
+                            </span>
+                          </button>
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  <label htmlFor="standsQty" className="block text-xs font-semibold text-gray-600 mb-1.5">
+                    {u.standsQty}
+                  </label>
+                  <input
+                    id="standsQty"
+                    type="number"
+                    inputMode="numeric"
+                    min={1}
+                    max={MAX_STAND_QTY}
+                    value={qtyInput}
+                    onChange={(e) => setQtyInput(e.target.value)}
+                    /* Clamp on blur, not on every keystroke: correcting
+                       mid-typing makes "25" impossible to reach from "2". */
+                    onBlur={() => setQtyInput(String(standsQty))}
+                    className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm text-gray-800 bg-white outline-none focus:border-[#FFC94D] mb-1.5"
+                  />
+                  <p className="text-xs text-gray-500 mb-4 flex items-center justify-between gap-3">
+                    <span>
+                      {standsQty} × {eur(effectiveUnitCents(standsQty, standsVariant) ?? 0)}
+                      {volumePercent > 0 && (
+                        <span className="ml-1.5 font-bold text-green-700">
+                          −{volumePercent}%
+                        </span>
+                      )}
+                    </span>
+                    <span className="font-semibold text-gray-700">{eur(standsGoodsCents)}</span>
+                  </p>
+
+                  {/* Because the breaks are thresholds, an order just under
+                      one costs MORE than a bigger order. Offer the better
+                      deal instead of quietly charging the worse one. */}
+                  {betterOffer ? (
+                    <button
+                      type="button"
+                      onClick={() => setQtyInput(String(betterOffer.qty))}
+                      className="w-full text-left rounded-xl border px-3 py-2 -mt-2 mb-4 text-xs transition-colors hover:bg-green-100"
+                      style={{ background: "#F0FDF4", borderColor: "#BBF7D0", color: "#15803D" }}
+                    >
+                      {u.standsBetterOffer(betterOffer.qty, eur(betterOffer.saveCents))}
+                    </button>
+                  ) : volumePercent === 0 ? (
+                    <p className="text-xs text-gray-400 -mt-2 mb-4">
+                      {u.standsVolumeHint(VOLUME_BREAKS[1].minQty, VOLUME_BREAKS[1].percentOff,
+                                          VOLUME_BREAKS[0].minQty, VOLUME_BREAKS[0].percentOff)}
+                    </p>
+                  ) : null}
+
+                  <label className="block text-xs font-semibold text-gray-600 mb-1.5">
+                    {u.standsCountry}
+                  </label>
+                  <select
+                    value={shipCountry}
+                    onChange={(e) => setShipCountry(e.target.value)}
+                    className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm text-gray-800 bg-white outline-none focus:border-[#FFC94D]"
+                  >
+                    {SHIPPING_COUNTRIES.map((c) => (
+                      <option key={c.code} value={c.code}>{c.name}</option>
+                    ))}
+                  </select>
+                  {shipQuote && (
+                    <p className="text-xs text-gray-500 mt-2 flex items-center justify-between gap-3">
+                      <span>{u.standsShipping} · {shipQuote.carrier}</span>
+                      <span className="font-semibold text-gray-700">{eur(shipQuote.cents)}</span>
+                    </p>
+                  )}
+                  <p className="text-xs text-gray-400 mt-1.5">{u.standsVat}</p>
+
+                  {/* Lead time, at the point of purchase. A wedding date
+                      can't be moved, so someone ordering four days out has
+                      to read this BEFORE paying, not in the confirmation. */}
+                  <div
+                    className="flex items-start gap-2.5 rounded-xl border px-3 py-2.5 mt-3"
+                    style={{ background: "#FFF9EC", borderColor: "rgba(255,201,77,0.5)" }}
+                  >
+                    <svg className="w-4 h-4 shrink-0 mt-0.5 text-[#C9820A]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <p className="text-xs leading-relaxed text-[#7A5A12]">
+                      {u.standsLeadTime(LEAD_TIME_DAYS)}
+                    </p>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
           {/* ── Order summary + CTA ───────────────────────────────────── */}
           <div className="bg-white rounded-2xl border border-gray-100 p-5 mb-4">
             <div className="flex items-center justify-between mb-3 pb-3 border-b border-gray-100">
@@ -490,6 +750,26 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
                 )}
               </div>
             </div>
+            {/* Physical add-on lines — only when it's actually in the order */}
+            {wantStands && shipQuote && (
+              <div className="space-y-1.5 mb-3 pb-3 border-b border-gray-100">
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-gray-600">
+                    🖨 {standsVariant === "wood" ? u.standsWood : u.standsGold} · {standsQty}×
+                    {volumePercent > 0 && <span className="ml-1.5 font-bold text-green-700">−{volumePercent}%</span>}
+                  </span>
+                  <span className="text-gray-800">{eur(standsGoodsCents)}</span>
+                </div>
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-gray-600">{u.standsShipping} · {shipQuote.carrier}</span>
+                  <span className="text-gray-800">{eur(shipQuote.cents)}</span>
+                </div>
+                <div className="flex items-center justify-between pt-2">
+                  <span className="font-semibold text-gray-900">{u.standsTotal}</span>
+                  <span className="text-xl font-bold text-gray-900">{eur(grandTotalCents)}</span>
+                </div>
+              </div>
+            )}
             <div className="flex items-center justify-between text-xs text-gray-400 mb-4">
               <span>{u.vatIncluded}</span>
               <span>{u.onetimePayment}</span>
@@ -539,7 +819,12 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
                   setIsLoading(true);
                   try {
                     if (paymentMethod === "invoice") {
-                      if (!billing.name.trim() || !billing.email.trim() || !billing.address.trim() || !billing.city.trim()) {
+                      // A parcel needs a postcode and a phone (couriers
+                      // require one); an invoice with no stands does not.
+                      // Demanding them unconditionally would add friction to
+                      // every digital-only invoice order.
+                      const missingForParcel = wantStands && (!billing.postalCode.trim() || !billing.phone.trim());
+                      if (!billing.name.trim() || !billing.email.trim() || !billing.address.trim() || !billing.city.trim() || missingForParcel) {
                         alert(u.alertMissingFields);
                         setIsLoading(false);
                         return;
@@ -550,12 +835,19 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
                         body: JSON.stringify({
                           planId: selectedPlan,
                           albumSlug: album.slug,
+                          tableStands: wantStands,
+
+                          standsQty,
+                          standsVariant,
                           discountCode: discountStatus === "valid" ? appliedCode : undefined,
                           billing: {
+                            country: shipCountry,
                             name: billing.name.trim(),
                             companyName: billing.companyName.trim() || undefined,
                             email: billing.email.trim(),
+                            phone: billing.phone.trim() || undefined,
                             address: billing.address.trim(),
+                            postalCode: billing.postalCode.trim() || undefined,
                             city: billing.city.trim(),
                             taxId: billing.taxId.trim() || undefined,
                           },
@@ -579,7 +871,7 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
                       // actually be charged (incl. discount). Consent-
                       // gated like all fbq calls (no-op pre-consent).
                       fbEvent("InitiateCheckout", {
-                        value: discountedPrice,
+                        value: grandTotalCents / 100,
                         currency: "EUR",
                         content_name: chosen.name,
                       });
@@ -589,8 +881,13 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
                         body: JSON.stringify({
                           planId: selectedPlan,
                           albumSlug: album.slug,
+                          tableStands: wantStands,
+
+                          standsQty,
+                          standsVariant,
                           discountCode: discountStatus === "valid" ? appliedCode : undefined,
                           billing: {
+                            country:     shipCountry,
                             name:        billing.name.trim(),
                             companyName: billing.companyName.trim() || undefined,
                             email:       billing.email.trim() || undefined,
@@ -604,7 +901,10 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
                       });
                       const data = await res.json() as { paymentUrl?: string; error?: string };
                       if (!res.ok || !data.paymentUrl) throw new Error(data.error ?? "no payment URL");
-                      window.location.href = data.paymentUrl;
+                      // assign() rather than `location.href = …`: same
+                      // navigation, but not a write to a value the React
+                      // Compiler treats as immutable.
+                      window.location.assign(data.paymentUrl);
                     }
                   } catch (err) {
                     console.error("[checkout]", err);

@@ -39,13 +39,13 @@ export function BlogIndexPage({ posts, lang }: Props) {
       <main className="max-w-6xl mx-auto px-6 py-14">
         {/* Hero */}
         <header className="text-center mb-12">
-          <p className="text-xs font-bold uppercase tracking-widest text-[#C9820A] mb-3">Blog</p>
+          <p className="text-xs font-bold uppercase tracking-widest text-[#8C6218] mb-3">Blog</p>
           <h1 className="font-serif text-4xl sm:text-5xl font-bold text-[#0F1729] leading-tight mb-3">{t.h1}</h1>
-          <p className="text-base text-gray-500 max-w-xl mx-auto">{t.lead}</p>
+          <p className="text-base text-gray-600 max-w-xl mx-auto">{t.lead}</p>
         </header>
 
         {posts.length === 0 && (
-          <p className="text-center text-gray-400 text-sm">{t.empty}</p>
+          <p className="text-center text-gray-500 text-sm">{t.empty}</p>
         )}
 
         {/* Featured */}
@@ -56,10 +56,10 @@ export function BlogIndexPage({ posts, lang }: Props) {
           >
             <div className="grid md:grid-cols-2">
               <div className="p-8 sm:p-10 order-2 md:order-1">
-                <p className="text-[10px] font-bold uppercase tracking-widest text-[#C9820A] mb-3">{t.featured}</p>
+                <p className="text-[10px] font-bold uppercase tracking-widest text-[#8C6218] mb-3">{t.featured}</p>
                 <h2 className="font-serif text-3xl font-bold text-[#0F1729] mb-4 leading-tight">{featured.title}</h2>
                 <p className="text-gray-500 mb-5 line-clamp-3">{featured.tldr}</p>
-                <span className="text-sm font-bold text-[#C9820A]">{t.readMore}</span>
+                <span className="text-sm font-bold text-[#8C6218]">{t.readMore}</span>
               </div>
               {featured.coverImage ? (
                 // eslint-disable-next-line @next/next/no-img-element
@@ -99,7 +99,7 @@ export function BlogIndexPage({ posts, lang }: Props) {
                   </span>
                   <h3 className="font-serif text-xl font-bold text-[#0F1729] mt-4 mb-2 leading-snug">{p.title}</h3>
                   <p className="text-sm text-gray-500 line-clamp-3 mb-4">{p.tldr}</p>
-                  <div className="flex items-center justify-between text-xs text-gray-400">
+                  <div className="flex items-center justify-between text-xs text-gray-500">
                     <time dateTime={p.publishedAt}>{new Date(p.publishedAt).toLocaleDateString(p.lang)}</time>
                     <span>{p.readingTime} min</span>
                   </div>

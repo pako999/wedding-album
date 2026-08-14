@@ -1,9 +1,10 @@
+import { SITE_URL } from "@/lib/urls";
 /**
  * Helpers for building JSON-LD structured data.
  * Drop the return value into a `<script type="application/ld+json">` tag.
  */
 
-const SITE = "https://www.guestcam.si";
+const SITE = SITE_URL;
 
 interface FaqEntry { q: string; a: string; }
 

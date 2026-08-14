@@ -1,3 +1,4 @@
+import { SITE_URL } from "@/lib/urls";
 import type { Metadata } from "next";
 import { ApplyForm } from "./ApplyForm";
 import { affiliateTranslations, type AffiliateLang } from "@/lib/i18n/affiliate-translations";
@@ -50,20 +51,20 @@ export function AffiliateApplyView({ lang }: { lang: AffiliateLang }) {
 export function affiliateApplyMetadata(lang: AffiliateLang): Metadata {
   const t = affiliateTranslations[lang].apply;
   const localizedPath = lang === "sl" ? "/affiliate/apply" : `/${lang}/affiliate/apply`;
-  const pageUrl = `https://www.guestcam.si${localizedPath}`;
+  const pageUrl = `${SITE_URL}${localizedPath}`;
   return {
     title: t.pageTitle,
     description: t.metaDescription,
     alternates: {
       canonical: pageUrl,
       languages: {
-        sl: "https://www.guestcam.si/affiliate/apply",
-        hr: "https://www.guestcam.si/hr/affiliate/apply",
-        sr: "https://www.guestcam.si/sr/affiliate/apply",
-        de: "https://www.guestcam.si/de/affiliate/apply",
-        en: "https://www.guestcam.si/en/affiliate/apply",
-        es: "https://www.guestcam.si/es/affiliate/apply",
-        "x-default": "https://www.guestcam.si/affiliate/apply",
+        sl: `${SITE_URL}/affiliate/apply`,
+        hr: `${SITE_URL}/hr/affiliate/apply`,
+        sr: `${SITE_URL}/sr/affiliate/apply`,
+        de: `${SITE_URL}/de/affiliate/apply`,
+        en: `${SITE_URL}/en/affiliate/apply`,
+        es: `${SITE_URL}/es/affiliate/apply`,
+        "x-default": `${SITE_URL}/affiliate/apply`,
       },
     },
     // CRITICAL: this page must carry its OWN og:url. Without it, the root

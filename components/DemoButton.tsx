@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useSyncExternalStore } from "react";
 
 /**
  * The album the demo QR code / link points at.
@@ -8,13 +8,23 @@ import { useState, useEffect } from "react";
  */
 const DEMO_SLUG = "ana-marko-13ka";
 
-export function DemoButton({ variant = "hero" }: { variant?: "hero" | "nav" }) {
+
+/** The origin never changes during a page's lifetime — nothing to subscribe to. */
+function emptySubscribe() { return () => {}; }
+
+export function DemoButton({ variant = "hero" }: { variant?: "hero" | "nav" | "heroDark" }) {
   const [open, setOpen] = useState(false);
 
   // Resolve the demo URL from the actual host the visitor is on — works on
-  // localhost and production alike, with no dependency on a build-time env var.
-  const [origin, setOrigin] = useState("");
-  useEffect(() => { setOrigin(window.location.origin); }, []);
+  // localhost and production alike, with no dependency on a build-time env
+  // var. useSyncExternalStore instead of effect+setState: the server
+  // snapshot is "" (same as the old initial state, so hydration matches)
+  // and the client reads the origin without an extra render pass.
+  const origin = useSyncExternalStore(
+    emptySubscribe,
+    () => window.location.origin,
+    () => "",
+  );
 
   const demoUrl = `${origin}/${DEMO_SLUG}`;
   const qrSrc = origin
@@ -24,7 +34,19 @@ export function DemoButton({ variant = "hero" }: { variant?: "hero" | "nav" }) {
 
   return (
     <>
-      {variant === "hero" ? (
+      {variant === "heroDark" ? (
+        <button
+          type="button"
+          onClick={() => setOpen(true)}
+          className="inline-flex items-center gap-2.5 px-8 py-4 sm:py-5 rounded-full font-bold text-base sm:text-lg border-2 transition-all duration-200 hover:scale-[1.02] hover:bg-white/5"
+          style={{ borderColor: "rgba(255,201,77,.65)", color: "#ffffff" }}
+        >
+          <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor" style={{ color: "#FFC94D" }}>
+            <path d="M8 5v14l11-7z" />
+          </svg>
+          Poglej demo zdaj
+        </button>
+      ) : variant === "hero" ? (
         <button
           type="button"
           onClick={() => setOpen(true)}

@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import type { LangCode } from "@/components/LanguageSwitcher";
 
@@ -160,7 +161,7 @@ export function ExitIntentPopup({ lang }: { lang: LangCode }) {
 
         <div className="px-8 pt-6 pb-8">
           {/* Eyebrow */}
-          <span className="inline-block text-xs font-bold uppercase tracking-widest text-[#C9820A] mb-3">
+          <span className="inline-block text-xs font-bold uppercase tracking-widest text-[#8C6218] mb-3">
             {t.eyebrow}
           </span>
 
@@ -194,14 +195,14 @@ export function ExitIntentPopup({ lang }: { lang: LangCode }) {
           </div>
 
           {/* CTA */}
-          <a
+          <Link
             href="/dashboard/new"
             onClick={close}
             className="block w-full text-center py-3.5 rounded-xl font-bold text-[#0F1729] text-sm transition-opacity hover:opacity-90"
             style={{ background: "linear-gradient(135deg, #FFD966 0%, #FFC94D 55%, #F0B429 100%)" }}
           >
             {t.cta}
-          </a>
+          </Link>
 
           {/* Dismiss */}
           <button

@@ -1,0 +1,254 @@
+{
+  "slug": "compartir-fotos-boda-sin-app",
+  "lang": "es",
+  "title": "Compartir fotos de boda sin app: cómo funciona en 2026",
+  "description": "¿Cómo pueden los invitados compartir las fotos de tu boda sin descargar una app? Código QR + navegador: sencillo para todas las generaciones.",
+  "translationKey": "wedding-photo-sharing-no-app",
+  "publishedAt": "2026-06-21",
+  "updatedAt": "2026-06-21",
+  "author": "Guestcam Team",
+  "category": "vodnik",
+  "readingTime": 7,
+  "tags": [
+    "compartir fotos boda",
+    "sin app",
+    "código QR",
+    "fotos de boda",
+    "Guestcam"
+  ],
+  "tldr": "Los invitados escanean un código QR con la cámara del móvil y suben las fotos directamente desde el navegador — sin descargar nada, sin registrarse.",
+  "coverImage": "https://images.unsplash.com/photo-1606216794074-735e91aa2c92?w=1600&h=900&fit=crop&q=80&auto=format",
+  "coverAlt": "Invitados de boda haciendo fotos con el móvil y compartiendo recuerdos",
+  "content": [
+    {
+      "type": "p",
+      "text": "Imagínatelo: has hecho 200 fotos en la boda de un amigo. Los novios piden que compartáis las imágenes. Ves un enlace a una app, descubres que tienes que instalarla, registrarte, dar permiso a la cámara... y lo dejas. Esto pasa exactamente en cada boda donde recoger las fotos depende de una descarga."
+    },
+    {
+      "type": "stat",
+      "value": "67 %",
+      "label": "de los invitados abandonan al compartir si hay que descargar una app",
+      "source": "Datos internos de Guestcam, 2025"
+    },
+    {
+      "type": "h2",
+      "text": "Por qué una app hunde la participación de los invitados"
+    },
+    {
+      "type": "p",
+      "text": "Instalar una app suena trivial, pero en la práctica es el mayor obstáculo. El día de la boda los invitados van de gala, con una copa en la mano, en mitad de una conversación. Ninguno de esos momentos sirve para:\n\n– buscar la app en la tienda\n– escribir una contraseña o registrarse\n– aceptar permisos (cámara, almacenamiento, ubicación...)\n– esperar a que descargue"
+    },
+    {
+      "type": "callout",
+      "text": "Cada paso adicional reduce el porcentaje de invitados que llegan al final. Una app que exige instalación pierde normalmente entre el 50 % y el 70 % de los participantes potenciales antes incluso de que vean la galería."
+    },
+    {
+      "type": "p",
+      "text": "Lo que más pesa aquí es la mezcla de generaciones de una boda. Los familiares mayores, los niños y los invitados sin costumbre técnica son justo quienes tienen las fotos espontáneas más bonitas, y los que menos ganas tienen de instalar nada nuevo."
+    },
+    {
+      "type": "image",
+      "src": "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=1200&h=720&fit=crop&q=82&auto=format",
+      "alt": "Una abuela fotografiando a los novios con el móvil",
+      "caption": "Los invitados que no instalan apps son precisamente los que guardan las fotos que nunca has visto.",
+      "credit": "Foto: Unsplash"
+    },
+    {
+      "type": "h2",
+      "text": "¿Cómo funciona compartir sin app?"
+    },
+    {
+      "type": "p",
+      "text": "La solución es un código QR más un navegador web: tecnología que ya viene en cualquier móvil moderno y no exige nada más. El proceso es así:"
+    },
+    {
+      "type": "ol",
+      "items": [
+        "El invitado ve el código QR en la mesa (una tarjeta, un cartel o una pantalla).",
+        "Abre la cámara del móvil y la apunta al código, igual que hace con la carta de un restaurante.",
+        "El navegador abre la galería de la boda automáticamente.",
+        "El invitado toca «Añadir foto», elige imágenes del carrete y pulsa subir.",
+        "Las fotos aparecen al instante en la galería compartida, sin registro y sin contraseña."
+      ]
+    },
+    {
+      "type": "p",
+      "text": "Todo ocurre dentro del navegador del móvil (Chrome, Safari, Firefox: da igual cuál). No hay nada que instalar. El invitado cierra el navegador y sigue con la fiesta."
+    },
+    {
+      "type": "image",
+      "src": "https://images.unsplash.com/photo-1531058020387-3be344556be6?w=1200&h=720&fit=crop&q=82&auto=format",
+      "alt": "Código QR en una mesa de boda escaneado por los invitados",
+      "caption": "Un código QR en la mesa: un escaneo y todos los invitados acaban en la misma galería.",
+      "credit": "Foto: Unsplash"
+    },
+    {
+      "type": "h2",
+      "text": "Comparativa: con app frente a sin app"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Criterio",
+        "Con app",
+        "Sin app (Guestcam)"
+      ],
+      "rows": [
+        [
+          "Participación media de invitados",
+          "30–50 %",
+          "75–90 %"
+        ],
+        [
+          "Pasos hasta subir una foto",
+          "5–8",
+          "2–3"
+        ],
+        [
+          "Compatibilidad (móviles antiguos)",
+          "Limitada",
+          "Cualquier móvil con navegador"
+        ],
+        [
+          "Almacenamiento",
+          "Limitado por el plan",
+          "Resolución original"
+        ],
+        [
+          "Privacidad de la galería",
+          "Depende de la app",
+          "Privada, solo con el QR"
+        ],
+        [
+          "Hace falta internet para verla",
+          "Sí",
+          "Sí"
+        ],
+        [
+          "Funciona en iPhone y Android",
+          "Casi siempre",
+          "Siempre"
+        ]
+      ]
+    },
+    {
+      "type": "h2",
+      "text": "Por qué esto importa tanto en una boda"
+    },
+    {
+      "type": "p",
+      "text": "Una boda media reúne de 80 a 120 invitados de tres o cuatro generaciones a la vez. La pareja joven de la mesa fotografía cada momento; los abuelos están sentados dos mesas más allá. Todos llevan un móvil en el bolsillo: lo que cambia es la disposición a instalarle algo nuevo."
+    },
+    {
+      "type": "p",
+      "text": "El código QR de la mesa no distingue: funciona igual para las dos generaciones. La abuela no necesita saber qué es una «app store» — sabe escanear un código, porque ya lo hace con la carta del restaurante."
+    },
+    {
+      "type": "h2",
+      "text": "Cómo preparar el envío de fotos sin app para tu boda"
+    },
+    {
+      "type": "p",
+      "text": "Guestcam es una plataforma gratuita construida exactamente sobre este principio: sin app para los invitados, sin registro y sin complicaciones técnicas. Se configura en menos de cinco minutos:"
+    },
+    {
+      "type": "ol",
+      "items": [
+        "Entra en guestcam.si/es y pulsa «Crear galería».",
+        "Escribe los nombres de la pareja y la fecha de la boda.",
+        "Descarga el código QR (un PDF listo para imprimir).",
+        "Imprime tarjetas para las mesas o un cartel grande para la entrada.",
+        "El día de la boda los invitados escanean y suben, y tú ves la galería llenarse en directo."
+      ]
+    },
+    {
+      "type": "quote",
+      "text": "No creía que fuera a funcionar. Mi suegra, de 74 años, escaneó el código QR y subió sus fotos sin ninguna ayuda. Acabamos con 340 fotos.",
+      "cite": "Ana P., novia, junio de 2025"
+    },
+    {
+      "type": "h2",
+      "text": "Consejos prácticos para la máxima participación"
+    },
+    {
+      "type": "p",
+      "text": "Incluso con un código QR hay cosas que suben la participación y cosas que la hunden. Esto funciona de verdad:"
+    },
+    {
+      "type": "ul",
+      "items": [
+        "Pon un código QR en cada mesa, no solo en la entrada. Quien no lo vea al entrar lo verá al sentarse.",
+        "Pide al DJ o al maestro de ceremonias que mencione la galería 2 o 3 veces durante la noche: «Escanead el código QR de vuestra mesa y compartid las fotos con los novios».",
+        "Añade una línea personal debajo del código: «Ana y Marko – vuestros recuerdos».",
+        "Al día siguiente, manda el código QR por WhatsApp a todos los invitados con un «¿Os queda alguna foto sin compartir?».",
+        "Mete una tarjeta con el código QR en el detalle que los invitados se llevan a casa."
+      ]
+    },
+    {
+      "type": "callout",
+      "text": "Según nuestros datos, las bodas con un código QR en cada mesa Y un DJ o presentador que lo anuncia recogen de media 3 veces más fotos que las que tienen un solo código en la puerta."
+    },
+    {
+      "type": "h2",
+      "text": "¿Qué pasa con las fotos después de la boda?"
+    },
+    {
+      "type": "p",
+      "text": "La galería sigue siendo privada y solo accesible para ti y para los invitados que tengan el código QR. Puedes descargar todas las fotos en resolución original: Guestcam no comprime ni modifica las imágenes. El plan Premium incluye:"
+    },
+    {
+      "type": "ul",
+      "items": [
+        "Fotos y vídeos ilimitados",
+        "Galería en directo para proyectar en una pantalla durante la noche",
+        "Descarga de todo en ZIP con un clic",
+        "Almacenamiento hasta 1 año",
+        "Moderación: tú apruebas qué fotos ve todo el mundo"
+      ]
+    },
+    {
+      "type": "cta",
+      "text": "Crea tu galería gratuita sin app",
+      "href": "/dashboard/new"
+    },
+    {
+      "type": "h2",
+      "text": "Preguntas frecuentes"
+    },
+    {
+      "type": "faq",
+      "q": "¿Los invitados tienen que instalar algo?",
+      "a": "No. Escanean el código QR con la cámara del móvil y la galería se abre en el navegador. Sin instalación y sin registro."
+    },
+    {
+      "type": "faq",
+      "q": "¿Funciona en móviles antiguos?",
+      "a": "Sí, siempre que el móvil tenga un navegador razonablemente actual (Chrome, Safari, Firefox). Escanear códigos QR viene integrado en la cámara de todos los dispositivos recientes: iPhone (iOS 11+) y Android (8.0+)."
+    },
+    {
+      "type": "faq",
+      "q": "¿Cuántas fotos puedo recoger?",
+      "a": "El plan gratuito admite hasta 20 fotos. Premium no tiene límite, que es lo que necesitas en una boda de más de 100 invitados."
+    },
+    {
+      "type": "faq",
+      "q": "¿La galería es privada?",
+      "a": "Sí. Solo pueden entrar quienes tengan tu código QR o el enlace directo. Guestcam no publica las fotos ni las usa para marketing."
+    },
+    {
+      "type": "faq",
+      "q": "¿Puedo ver quién sube fotos?",
+      "a": "Ves cada foto en cuanto llega. Premium añade moderación: puedes aprobar u ocultar cualquier foto antes de que la vean el resto de invitados."
+    },
+    {
+      "type": "faq",
+      "q": "¿Y si un invitado no tiene lector de QR?",
+      "a": "La cámara de cualquier móvil moderno reconoce los códigos QR por sí sola; no hace falta una app lectora. Si aun así falla, puedes compartir el enlace de la galería por WhatsApp o SMS."
+    },
+    {
+      "type": "faq",
+      "q": "¿Cómo descargo todas las fotos de los invitados?",
+      "a": "Con Premium, un clic te da un archivo ZIP con todas las fotos en resolución original y con los metadatos intactos (fecha, hora, dispositivo)."
+    }
+  ]
+}

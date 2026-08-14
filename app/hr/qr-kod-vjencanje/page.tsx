@@ -1,3 +1,4 @@
+import { SITE_URL } from "@/lib/urls";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { GUIDE_HREFLANG, LanguageSwitcher } from "@/components/LanguageSwitcher";
@@ -11,7 +12,7 @@ export const metadata: Metadata = {
   description:
     "Aplikacija za fotografije s vjenčanja preko QR koda: gosti skeniraju, vi dobivate sve slike u punoj kvaliteti. Bez instalacije. Postavite za 2 minute.",
   openGraph: {
-    url: "https://www.guestcam.si/hr/qr-kod-vjencanje",
+    url: `${SITE_URL}/hr/qr-kod-vjencanje`,
     title: "QR kod za vjenčanje — fotografije gostiju 2026",
     description:
       "Skupite sve fotografije s vjenčanja od gostiju jednim QR kodom. Bez aplikacije, u punoj kvaliteti.",
@@ -25,15 +26,15 @@ export const metadata: Metadata = {
     images: [OG_IMAGE_URL],
   },
   alternates: {
-    canonical: "https://www.guestcam.si/hr/qr-kod-vjencanje",
+    canonical: `${SITE_URL}/hr/qr-kod-vjencanje`,
     languages: {
-      "sl": "https://www.guestcam.si/sl/qr-koda-poroka",
-      "hr": "https://www.guestcam.si/hr/qr-kod-vjencanje",
-      "sr": "https://www.guestcam.si/sr/qr-kod-vencanje",
-      "de": "https://www.guestcam.si/de/hochzeitsfotos-sammeln",
-      "en": "https://www.guestcam.si/en/wedding-photo-sharing",
-      "es": "https://www.guestcam.si/es/fotos-boda-qr",
-      "x-default": "https://www.guestcam.si/sl/qr-koda-poroka",
+      "sl": `${SITE_URL}/sl/qr-koda-poroka`,
+      "hr": `${SITE_URL}/hr/qr-kod-vjencanje`,
+      "sr": `${SITE_URL}/sr/qr-kod-vencanje`,
+      "de": `${SITE_URL}/de/hochzeitsfotos-sammeln`,
+      "en": `${SITE_URL}/en/wedding-photo-sharing`,
+      "es": `${SITE_URL}/es/fotos-boda-qr`,
+      "x-default": `${SITE_URL}/sl/qr-koda-poroka`,
     },
   },
 };

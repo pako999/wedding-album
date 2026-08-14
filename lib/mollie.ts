@@ -31,6 +31,17 @@ export interface MolliePayment {
     planId?: string;
     discountCodeId?: string;
     affiliateRef?: string;
+    // Physical add-on. Mollie stores metadata as strings, so the flag is
+    // "1" rather than a boolean. /api/checkout writes these; the webhook
+    // and admin/payments read them back.
+    tableStands?: string;
+    standsQty?: string;
+    standsVariant?: string;
+    standsCents?: string;
+    shipCountry?: string;
+    shipCents?: string;
+    shipCarrier?: string;
+    shipCustoms?: string;
   } | null;
   createdAt: string;
   _links?: {

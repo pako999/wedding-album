@@ -15,6 +15,7 @@
  *  • Keyboard Esc closes (when not in browser fullscreen)
  */
 
+import { SITE_URL } from "@/lib/urls";
 import { useState, useEffect, useRef } from "react";
 import type { Album, Photo } from "@/lib/db/schema";
 import { bunnyDisplayUrl } from "@/lib/storage/bunny";
@@ -446,8 +447,8 @@ export function ProjectionWall({ album, photos, onClose }: Props) {
         <a
           href={
             album.referralCode
-              ? `https://www.guestcam.si/?ref=${encodeURIComponent(album.referralCode)}&tp=live_display`
-              : "https://www.guestcam.si"
+              ? `${SITE_URL}/?ref=${encodeURIComponent(album.referralCode)}&tp=live_display`
+              : SITE_URL
           }
           target="_blank"
           rel="noopener"

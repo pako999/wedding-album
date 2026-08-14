@@ -23,7 +23,7 @@ const isProtectedRoute = createRouteMatcher(["/dashboard(.*)"]);
  */
 const PUBLIC_ROOTS = new Set([
   "", "blog", "contact", "privacy", "terms", "gdpr", "cookies", "refund",
-  "admin", "dashboard", "api", "sign-in", "sign-up", "dev",
+  "admin", "dashboard", "api", "sign-in", "sign-up", "dev", "wall",
   "sl", "hr", "sr", "de", "en", "es",
   "robots.txt", "sitemap.xml", "favicon.ico", "manifest.json",
   "opengraph-image", "_next",
