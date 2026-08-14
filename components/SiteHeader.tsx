@@ -9,38 +9,56 @@ import {
 import { HeaderAuthButtons } from "@/components/HeaderAuthButtons";
 
 interface NavLinkSet {
-  home: string;          // label for the "back to home" link
-  blog: string;          // label for the blog link
-  cta: string;           // label for the primary "Create gallery" button
-  switcherAria: string;  // a11y label for the language picker
+  how: string;
+  events: string;
+  templates: string;
+  wall: string;
+  pricing: string;
+  faq: string;
+  business: string;
+  blog: string;
+  contact: string;
+  cta: string;
+  menu: string;
+  switcherAria: string;
 }
 
-// Login / Dashboard labels are owned by HeaderAuthButtons so we don't
-// have to maintain the same copy in two places.
 const NAV_COPY: Record<LangCode, NavLinkSet> = {
-  sl: { home: "Domov",   blog: "Blog", cta: "Ustvari galerijo",  switcherAria: "Spremeni jezik" },
-  hr: { home: "Početna", blog: "Blog", cta: "Kreiraj galeriju",  switcherAria: "Promijeni jezik" },
-  sr: { home: "Početna", blog: "Blog", cta: "Napravi galeriju",  switcherAria: "Promeni jezik" },
-  de: { home: "Start",   blog: "Blog", cta: "Galerie erstellen", switcherAria: "Sprache wechseln" },
-  en: { home: "Home",    blog: "Blog", cta: "Create gallery",    switcherAria: "Change language" },
-  es: { home: "Inicio",  blog: "Blog", cta: "Crear galería",     switcherAria: "Cambiar idioma" },
+  sl: {
+    how: "Kako deluje", events: "Dogodki", templates: "Predloge", wall: "Live Wall",
+    pricing: "Cenik", faq: "FAQ", business: "Za podjetja", blog: "Blog",
+    contact: "Kontakt", cta: "Ustvari album", menu: "Meni", switcherAria: "Spremeni jezik",
+  },
+  hr: {
+    how: "Kako radi", events: "Događaji", templates: "Predlošci", wall: "Live Wall",
+    pricing: "Cijene", faq: "FAQ", business: "Za tvrtke", blog: "Blog",
+    contact: "Kontakt", cta: "Kreiraj album", menu: "Izbornik", switcherAria: "Promijeni jezik",
+  },
+  sr: {
+    how: "Kako radi", events: "Događaji", templates: "Predlošci", wall: "Live Wall",
+    pricing: "Cene", faq: "FAQ", business: "Za firme", blog: "Blog",
+    contact: "Kontakt", cta: "Napravi album", menu: "Meni", switcherAria: "Promeni jezik",
+  },
+  de: {
+    how: "So geht's", events: "Events", templates: "Vorlagen", wall: "Live Wall",
+    pricing: "Preise", faq: "FAQ", business: "Für Firmen", blog: "Blog",
+    contact: "Kontakt", cta: "Album erstellen", menu: "Menü", switcherAria: "Sprache wechseln",
+  },
+  en: {
+    how: "How it works", events: "Events", templates: "Templates", wall: "Live Wall",
+    pricing: "Pricing", faq: "FAQ", business: "For business", blog: "Blog",
+    contact: "Contact", cta: "Create album", menu: "Menu", switcherAria: "Change language",
+  },
+  es: {
+    how: "Cómo funciona", events: "Eventos", templates: "Plantillas", wall: "Live Wall",
+    pricing: "Precios", faq: "FAQ", business: "Para empresas", blog: "Blog",
+    contact: "Contacto", cta: "Crear álbum", menu: "Menú", switcherAria: "Cambiar idioma",
+  },
 };
 
-/**
- * Shared site header used on every public marketing/legal/SEO page so
- * the navigation, logo, language switcher and CTA all look identical
- * across pages and across languages. Pages used to copy/paste their
- * own SiteHeader function — that's gone.
- *
- * Pass a `hreflang` map to control where the language-switcher flag
- * links go. Defaults to HOME_HREFLANG (every language → its homepage),
- * which is right for legal pages. Guide / alternatives pages pass
- * GUIDE_HREFLANG / ALTERNATIVES_HREFLANG.
- */
 export async function SiteHeader({
   lang,
   hreflang = HOME_HREFLANG,
-  /** Path to link the logo to. Default: homepage for the given language. */
   homeHref,
 }: {
   lang: LangCode;
@@ -49,53 +67,124 @@ export async function SiteHeader({
 }) {
   const copy = NAV_COPY[lang];
   const resolvedHome = homeHref ?? (lang === "sl" ? "/" : `/${lang}`);
-  // Hide the "Create gallery" CTA for signed-in visitors — repeated
-  // CTAs on every page are noise once they're already a customer.
+  const contactHref = lang === "sl" ? "/contact" : `/${lang}/contact`;
+  const blogHref = lang === "sl" ? "/blog" : `/${lang}/blog`;
+
   let signedIn = false;
   try {
     const session = await auth();
     signedIn = !!session.userId;
-  } catch { /* Clerk hiccup — render signed-out */ }
+  } catch {
+    // Render the signed-out header if Clerk is unavailable during static rendering.
+  }
+
+  const anchor = (id: string) => `${resolvedHome}#${id}`;
+
+  const desktopLinks = [
+    [anchor("how"), copy.how],
+    [anchor("events"), copy.events],
+    [anchor("templates"), copy.templates],
+    [anchor("wall"), copy.wall],
+    [anchor("pricing"), copy.pricing],
+    [anchor("business"), copy.business],
+    [blogHref, copy.blog],
+  ] as const;
+
+  const mobileLinks = [
+    [anchor("how"), copy.how],
+    [anchor("events"), copy.events],
+    [anchor("templates"), copy.templates],
+    [anchor("wall"), copy.wall],
+    [anchor("pricing"), copy.pricing],
+    [anchor("faq"), copy.faq],
+    [anchor("business"), copy.business],
+    [blogHref, copy.blog],
+    [contactHref, copy.contact],
+  ] as const;
 
   return (
-    <header className="sticky top-0 z-40 border-b border-[#F4B400]/30 bg-white/85 backdrop-blur-md">
-      <nav className="max-w-7xl mx-auto px-6 sm:px-8 h-16 flex items-center justify-between">
+    <header className="sticky top-0 z-50 border-b border-black/10 bg-[#FFFDF8]/95 backdrop-blur-xl">
+      <nav className="mx-auto flex h-[76px] max-w-[1500px] items-center gap-3 px-5 sm:px-7 lg:px-8">
         <Link
           href={resolvedHome}
-          className="flex items-center transition-transform duration-200 hover:scale-[1.03]"
+          className="shrink-0 transition-transform duration-200 hover:scale-[1.02]"
+          aria-label="CamLove"
         >
-          <CamLoveLogo size="sm" showMark={true} />
+          <CamLoveLogo size="sm" showMark />
         </Link>
 
-        <div className="flex items-center gap-3 sm:gap-5">
+        <div className="mx-auto hidden min-w-0 items-center gap-3 lg:flex xl:gap-5 2xl:gap-7">
+          {desktopLinks.map(([href, label]) => (
+            <Link
+              key={href}
+              href={href}
+              className="whitespace-nowrap text-[13px] font-semibold text-black/58 transition-colors hover:text-black xl:text-sm"
+            >
+              {label}
+            </Link>
+          ))}
+        </div>
+
+        <div className="ml-auto hidden shrink-0 items-center gap-2 lg:flex xl:gap-3">
           <LanguageSwitcher current={lang} languages={hreflang} ariaLabel={copy.switcherAria} />
-          <Link
-            href={resolvedHome}
-            className="hidden sm:inline text-sm font-medium text-gray-600 hover:text-[#111111] transition-colors"
-          >
-            {copy.home}
-          </Link>
-          <Link
-            href={lang === "sl" ? "/blog" : `/${lang}/blog`}
-            className="hidden sm:inline text-sm font-medium text-gray-600 hover:text-[#111111] transition-colors"
-          >
-            {copy.blog}
-          </Link>
-          <HeaderAuthButtons lang={lang} />
+          <div className="hidden xl:block">
+            <HeaderAuthButtons lang={lang} />
+          </div>
           {!signedIn && (
             <Link
               href="/dashboard/new"
-              className="inline-flex items-center gap-1.5 px-4 sm:px-5 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-bold transition-all duration-200 hover:scale-[1.03]"
-              style={{
-                background: "linear-gradient(135deg, #FFCC3D 0%, #F4B400 55%, #D69E00 100%)",
-                boxShadow: "0 6px 18px rgba(255,201,77,0.45)",
-                color: "#111111",
-              }}
+              className="rounded-full bg-black px-4 py-3 text-[13px] font-black text-white transition-transform hover:scale-[1.02] xl:px-5 xl:text-sm"
             >
-              {copy.cta} →
+              {copy.cta}
             </Link>
           )}
         </div>
+
+        <details className="group ml-auto lg:hidden">
+          <summary className="relative z-[70] flex cursor-pointer list-none items-center gap-2 rounded-full border border-black/10 bg-white px-4 py-2.5 text-sm font-black shadow-sm transition-all group-open:fixed group-open:right-5 group-open:top-5 group-open:z-[80] group-open:h-12 group-open:w-12 group-open:justify-center group-open:rounded-full group-open:border-black group-open:bg-black group-open:p-0 group-open:text-white [&::-webkit-details-marker]:hidden sm:group-open:right-8">
+            <span className="group-open:hidden">{copy.menu}</span>
+            <span className="text-lg leading-none group-open:hidden">☰</span>
+            <span className="hidden text-2xl font-light leading-none group-open:block" aria-hidden="true">×</span>
+            <span className="sr-only group-open:not-sr-only group-open:absolute group-open:h-px group-open:w-px group-open:overflow-hidden">Zapri meni</span>
+          </summary>
+
+          <div className="fixed inset-0 z-[60] flex min-h-[100dvh] w-screen flex-col overflow-y-auto bg-[#FFFDF8] px-5 pb-8 pt-5 text-black sm:px-8">
+            <div className="flex min-h-12 items-center justify-between border-b border-black/10 pb-5 pr-16">
+              <Link href={resolvedHome} aria-label="CamLove" className="shrink-0">
+                <CamLoveLogo size="sm" showMark />
+              </Link>
+            </div>
+
+            <div className="flex flex-1 flex-col justify-center py-7 sm:py-10">
+              <nav className="flex flex-col">
+                {mobileLinks.map(([href, label]) => (
+                  <Link
+                    key={href}
+                    href={href}
+                    className="group/link flex items-center justify-between border-b border-black/10 py-4 text-[clamp(1.65rem,7vw,2.8rem)] font-black leading-none tracking-[-.045em]"
+                  >
+                    <span>{label}</span>
+                    <span className="text-xl font-medium text-[#F4B400] transition-transform group-hover/link:translate-x-1">↗</span>
+                  </Link>
+                ))}
+              </nav>
+            </div>
+
+            <div className="mt-auto border-t border-black/10 pt-5">
+              <div className="flex items-center justify-between gap-4">
+                <span className="text-xs font-black uppercase tracking-[.15em] text-black/40">{copy.switcherAria}</span>
+                <LanguageSwitcher current={lang} languages={hreflang} ariaLabel={copy.switcherAria} />
+              </div>
+              <Link
+                href="/dashboard/new"
+                className="mt-5 block rounded-full bg-[#F4B400] px-6 py-4 text-center text-base font-black text-black shadow-[0_12px_30px_rgba(244,180,0,.24)]"
+              >
+                {copy.cta} →
+              </Link>
+              <p className="mt-4 text-center text-xs font-semibold text-black/40">camlove.me · Every camera. One story.</p>
+            </div>
+          </div>
+        </details>
       </nav>
     </header>
   );

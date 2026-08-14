@@ -1,0 +1,157 @@
+name: Fix CamLove mobile hero and QR print service
+
+on:
+  push:
+    branches:
+      - camlove-real-photo-preview
+    paths:
+      - .github/workflows/fix-mobile-hero-print.yml
+
+jobs:
+  patch-homepage:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: camlove-real-photo-preview
+          fetch-depth: 0
+
+      - name: Patch CamLove homepage
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          p = Path('components/CamLoveHomePage.tsx')
+          text = p.read_text()
+
+          def replace_once(old: str, new: str, label: str):
+              global text
+              if old not in text:
+                  raise SystemExit(f'Missing expected block: {label}')
+              text = text.replace(old, new, 1)
+
+          replace_once(
+              'import { WallMiniDemo } from "@/components/WallMiniDemo";\n',
+              'import { WallMiniDemo } from "@/components/WallMiniDemo";\nimport { STAND_VARIANTS, eur } from "@/lib/print-service";\n',
+              'print-service import',
+          )
+
+          replace_once(
+              'export async function CamLoveHomePage() {\n  return (',
+              'export async function CamLoveHomePage() {\n  const printedStandFrom = eur(Math.min(...STAND_VARIANTS.map((variant) => variant.unitCents)));\n\n  return (',
+              'homepage function',
+          )
+
+          replace_once(
+              '    q: "Kaj če gost med nalaganjem izgubi internet?",\n    a: "CamLove je zasnovan za uporabo na dogodkih. Ko je povezava slaba, se nalaganje lahko nadaljuje, ko je povezava ponovno na voljo, zato gostu ni treba pošiljati slik po več različnih kanalih.",\n  },\n] as const;',
+              '    q: "Kaj če gost med nalaganjem izgubi internet?",\n    a: "CamLove je zasnovan za uporabo na dogodkih. Ko je povezava slaba, se nalaganje lahko nadaljuje, ko je povezava ponovno na voljo, zato gostu ni treba pošiljati slik po več različnih kanalih.",\n  },\n  {\n    q: "Ali lahko CamLove natisne QR kartice in namizne podstavke?",\n    a: "Da. Ob nakupu paketa lahko naročite tudi fizične QR kartice z lesenimi ali zlatimi namiznimi podstavki. Natisnemo jih z vašo QR kodo in jih pošljemo pripravljene za postavitev na dogodku.",\n  },\n] as const;',
+              'print FAQ',
+          )
+
+          replace_once(
+              '["QR predloge za tisk", "Pripravljene kartice za mize, vhod, vabila in druge točke dogodka."],',
+              '["QR predloge + tisk", "Izberite predlogo ali naročite fizične QR kartice in namizne podstavke, ki jih natisnemo ter pošljemo mi."],',
+              'print feature',
+          )
+
+          replace_once(
+              '<div className="mx-auto grid max-w-[1440px] gap-14 px-5 py-14 sm:px-8 sm:py-20 lg:grid-cols-[.9fr_1.1fr] lg:items-center lg:py-24">',
+              '<div className="mx-auto grid max-w-[1440px] gap-10 px-5 pb-12 pt-10 sm:gap-14 sm:px-8 sm:py-20 lg:grid-cols-[.9fr_1.1fr] lg:items-center lg:py-24">',
+              'hero wrapper',
+          )
+
+          replace_once(
+              '<h1 className="mt-7 max-w-[760px] text-[clamp(3.3rem,6.2vw,6.7rem)] font-black leading-[1.02] tracking-[-.065em]">',
+              '<h1 className="mt-6 max-w-[760px] text-[clamp(2.8rem,13vw,6.7rem)] font-black leading-[1.07] tracking-[-.05em] sm:mt-7 sm:leading-[1.02] sm:tracking-[-.065em]">',
+              'mobile hero title',
+          )
+
+          replace_once(
+              '<span className="mt-2 block text-[#F4B400]">En sam album.</span>',
+              '<span className="mt-3 block text-[#F4B400] sm:mt-2">En sam album.</span>',
+              'hero title line gap',
+          )
+
+          replace_once(
+              '<p className="mt-7 max-w-2xl text-lg leading-8 text-black/60 sm:text-xl">',
+              '<p className="mt-5 max-w-2xl text-[17px] leading-7 text-black/60 sm:mt-7 sm:text-xl sm:leading-8">',
+              'hero copy mobile',
+          )
+
+          replace_once(
+              '<div className="mt-9 flex flex-col gap-3 sm:flex-row">',
+              '<div className="mt-7 flex flex-col gap-3 sm:mt-9 sm:flex-row">',
+              'hero buttons spacing',
+          )
+
+          replace_once(
+              '            <p className="mt-4 text-sm font-semibold text-black/45">Brez kreditne kartice · pripravljeno v manj kot 2 minutah</p>\n\n            <div className="mt-10 grid max-w-2xl grid-cols-3 gap-3">',
+              '''            <p className="mt-4 text-sm font-semibold text-black/45">Brez kreditne kartice · pripravljeno v manj kot 2 minutah</p>\n\n            <a href="#print-service" className="mt-6 flex max-w-2xl items-start gap-3 rounded-[22px] border border-[#F4B400]/35 bg-[#FFF6CE] p-4 transition-transform hover:scale-[1.01] sm:p-5">\n              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#F4B400] text-lg">▣</span>\n              <span>\n                <strong className="block text-sm font-black sm:text-base">Ne želite sami tiskati?</strong>\n                <span className="mt-1 block text-sm leading-6 text-black/58">QR kartice in namizne podstavke natisnemo mi ter jih pošljemo pripravljene za dogodek — že od {printedStandFrom}/kos.</span>\n                <span className="mt-2 block text-xs font-black text-[#8C6800]">Poglej tiskane QR podstavke →</span>\n              </span>\n            </a>\n\n            <div className="mt-8 grid max-w-2xl grid-cols-3 gap-2 sm:mt-10 sm:gap-3">''',
+              'hero print teaser',
+          )
+
+          replace_once(
+              'className="rounded-[20px] border border-black/8 bg-white p-4 shadow-sm"',
+              'className="rounded-[18px] border border-black/8 bg-white p-3.5 shadow-sm sm:rounded-[20px] sm:p-4"',
+              'stat card mobile',
+          )
+
+          replace_once(
+              'className="text-xl font-black sm:text-2xl"',
+              'className="text-lg font-black sm:text-2xl"',
+              'stat number mobile',
+          )
+
+          replace_once(
+              'className="mt-1 text-[11px] font-semibold leading-4 text-black/45 sm:text-xs"',
+              'className="mt-1 text-[10px] font-semibold leading-[1.35] text-black/45 sm:text-xs"',
+              'stat label mobile',
+          )
+
+          replace_once(
+              '<div className="relative grid grid-cols-12 gap-3">',
+              '<div className="relative grid grid-cols-12 gap-2 sm:gap-3">',
+              'hero gallery gap',
+          )
+
+          replace_once(
+              '<div className="relative col-span-8 min-h-[620px] overflow-hidden rounded-[34px] bg-black/5 shadow-2xl">',
+              '<div className="relative col-span-8 min-h-[390px] overflow-hidden rounded-[24px] bg-black/5 shadow-2xl sm:min-h-[520px] sm:rounded-[34px] lg:min-h-[620px]">',
+              'hero primary image height',
+          )
+
+          old_side = '<div className="relative col-span-4 min-h-[300px] overflow-hidden rounded-[26px] bg-black/5 shadow-xl">'
+          new_side = '<div className="relative col-span-4 min-h-[190px] overflow-hidden rounded-[20px] bg-black/5 shadow-xl sm:min-h-[254px] sm:rounded-[26px] lg:min-h-[300px]">'
+          if text.count(old_side) != 2:
+              raise SystemExit(f'Expected two side hero cards, found {text.count(old_side)}')
+          text = text.replace(old_side, new_side)
+
+          replace_once(
+              '<div className="absolute bottom-5 left-5 rounded-full bg-black/75 px-4 py-2 text-xs font-bold text-white backdrop-blur">Poroka · pravi trenutki gostov</div>',
+              '<div className="absolute bottom-5 left-5 hidden rounded-full bg-black/75 px-4 py-2 text-xs font-bold text-white backdrop-blur sm:block">Poroka · pravi trenutki gostov</div>',
+              'mobile image label',
+          )
+
+          replace_once(
+              '          <div className="mt-9 text-center"><Link href="/dashboard/new" className="inline-flex rounded-full bg-black px-7 py-4 font-black text-white">Ustvari galerijo in QR kodo →</Link></div>\n        </div>\n      </section>\n\n      {/* FEATURES */}',
+              '''          <div className="mt-9 text-center"><Link href="/dashboard/new" className="inline-flex rounded-full bg-black px-7 py-4 font-black text-white">Ustvari galerijo in QR kodo →</Link></div>\n\n          <div id="print-service" className="mt-16 overflow-hidden rounded-[34px] bg-[#151515] text-white shadow-2xl sm:mt-20">\n            <div className="grid lg:grid-cols-[1.05fr_.95fr] lg:items-stretch">\n              <div className="p-7 sm:p-10 lg:p-12">\n                <span className="inline-flex rounded-full bg-[#F4B400] px-4 py-2 text-[11px] font-black uppercase tracking-[.14em] text-black">Tisk + namizni podstavki</span>\n                <h3 className="mt-6 max-w-2xl text-3xl font-black leading-[1.04] tracking-[-.04em] sm:text-5xl">Mi natisnemo. Vi samo postavite na mize.</h3>\n                <p className="mt-5 max-w-2xl text-base leading-7 text-white/58 sm:text-lg sm:leading-8">Naročite fizične QR kartice in namizne podstavke skupaj s CamLove paketom. Kartice personaliziramo z vašo QR kodo, natisnemo na 200 g papir in jih pošljemo pripravljene za vaš dogodek.</p>\n                <div className="mt-7 grid gap-3 text-sm font-semibold text-white/72 sm:grid-cols-2">\n                  <span>✓ vaša CamLove QR koda</span>\n                  <span>✓ leseni ali zlati podstavek</span>\n                  <span>✓ tisk je vključen v ceno</span>\n                  <span>✓ dostava na vaš naslov</span>\n                </div>\n                <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">\n                  <Link href="/dashboard/new" className="rounded-full bg-[#F4B400] px-7 py-4 text-center font-black text-black">Dodaj podstavke ob nakupu →</Link>\n                  <span className="text-sm font-semibold text-white/45">Od {printedStandFrom}/kos · naročite vsaj 10 dni pred dogodkom</span>\n                </div>\n              </div>\n\n              <div className="grid grid-cols-2 gap-px bg-white/10 p-px">\n                {[\n                  ["/print/stand-wood.webp", "Leseni podstavek", "3,00 € / kos"],\n                  ["/print/stand-gold.webp", "Zlati podstavek", "4,50 € / kos"],\n                ].map(([src, name, price]) => (\n                  <div key={name} className="bg-[#202020] p-3 sm:p-5">\n                    <div className="relative aspect-[4/5] overflow-hidden rounded-[22px] bg-white">\n                      <Image src={src} alt={`${name} za CamLove QR kartico`} fill sizes="(max-width:1024px) 50vw, 25vw" className="object-cover" />\n                    </div>\n                    <div className="px-1 pb-2 pt-4">\n                      <p className="text-sm font-black sm:text-base">{name}</p>\n                      <p className="mt-1 text-xs font-semibold text-[#F4B400] sm:text-sm">{price}</p>\n                    </div>\n                  </div>\n                ))}\n              </div>\n            </div>\n          </div>\n        </div>\n      </section>\n\n      {/* FEATURES */}''',
+              'physical print service block',
+          )
+
+          p.write_text(text)
+          print('Patched', p)
+          PY
+
+      - name: Verify no stale mobile hero heights
+        run: |
+          grep -n "printedStandFrom\|print-service\|min-h-\[390px\]" components/CamLoveHomePage.tsx
+
+      - name: Commit and push
+        run: |
+          git config user.name "camlove-ui-bot"
+          git config user.email "bot@camlove.me"
+          git add components/CamLoveHomePage.tsx
+          git commit -m "Fix mobile hero and restore printed QR stand offer"
+          git push origin HEAD:camlove-real-photo-preview
