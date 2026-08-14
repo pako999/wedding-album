@@ -13,6 +13,9 @@ import { safeJsonLd } from "@/lib/seo/jsonld-safe";
 import { WallMiniDemo } from "@/components/WallMiniDemo";
 import { NordicHero } from "@/components/NordicHero";
 import { STAND_VARIANTS, eur } from "@/lib/print-service";
+import { PrintShowroom } from "@/components/PrintShowroom";
+import { BusinessSection } from "@/components/BusinessSection";
+import { PRINT_COPY, BUSINESS_COPY } from "@/lib/homepage-sections-copy";
 
 export const metadata: Metadata = {
   alternates: {
@@ -249,6 +252,7 @@ export default async function HomePage() {
             {[
               { href: "#how", label: "Kako deluje" },
                             { href: "#pricing", label: "Cenik" },
+              { href: "#business", label: "Podjetja" },
               { href: "/blog", label: "Blog" },
               { href: "#faq", label: "FAQ" },
             ].map((item) => {
@@ -304,6 +308,7 @@ export default async function HomePage() {
               links={[
                 { href: "#how", label: "Kako deluje" },
                                 { href: "#pricing", label: "Cenik" },
+                { href: "#business", label: "Podjetja" },
                 { href: "#faq", label: "FAQ" },
                 { href: "/contact", label: "Kontakt" },
               ]}
@@ -887,6 +892,10 @@ export default async function HomePage() {
       </section>
 
       {/* ── FAQ ─────────────────────────────────────────────────────────────── */}
+      <PrintShowroom copy={PRINT_COPY.sl} />
+
+      <BusinessSection copy={BUSINESS_COPY.sl} contactHref="/contact" />
+
       <section id="faq" className="py-24" style={{ background: "var(--paper)" }}>
         <div className="max-w-2xl mx-auto px-6">
           <h2 className="text-4xl sm:text-[3.3rem] leading-[1.08] tracking-tight font-extrabold text-center text-[color:var(--ink)] mb-12">Pogosta vprašanja</h2>
@@ -935,24 +944,24 @@ export default async function HomePage() {
       </section>
 
       {/* ── Footer ──────────────────────────────────────────────────────────── */}
-      <footer className="pt-16 pb-8" style={{ background: "#FFFFFF", borderTop: "1px solid var(--hairline)", color: "var(--ink)" }}>
+      <footer className="pt-16 pb-8" style={{ background: "var(--ink)", borderTop: "1px solid rgba(255,255,255,.1)", color: "#FFFFFF" }}>
         <div className="max-w-6xl mx-auto px-6">
 
           {/* Top grid */}
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10 pb-12 border-b border-[color:var(--hairline)]">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10 pb-12 border-b border-white/10">
 
             {/* Brand */}
             <div className="col-span-2 md:col-span-3 lg:col-span-1">
               <div className="mb-3">
-                <GuestcamLogo size="sm" showMark={true} variant="onLight" />
+                <GuestcamLogo size="sm" showMark={true} variant="onDark" />
               </div>
-              <p className="text-[color:var(--muted)] text-xs leading-relaxed mb-5">
+              <p className="text-gray-400 text-xs leading-relaxed mb-5">
                 Poročna galerija s QR kodo — brez aplikacije. Gostje fotografirajo, vi zbirate spomine.
               </p>
               {/* Social */}
               <div className="flex items-center gap-3">
-                <a href="https://www.instagram.com/guest.cam" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="w-8 h-8 rounded-full flex items-center justify-center bg-[color:var(--paper)] hover:bg-[color:var(--hairline)] transition-colors">
-                  <svg className="w-4 h-4 text-[color:var(--muted)]" fill="currentColor" viewBox="0 0 24 24">
+                <a href="https://www.instagram.com/guest.cam" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="w-8 h-8 rounded-full flex items-center justify-center bg-white/10 hover:bg-white/20 transition-colors">
+                  <svg className="w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/>
                   </svg>
                 </a>
@@ -961,45 +970,45 @@ export default async function HomePage() {
 
             {/* Produkt */}
             <div>
-              <h3 className="text-xs font-bold uppercase tracking-widest text-[color:var(--muted)] mb-4">Produkt</h3>
-              <ul className="space-y-2.5 text-sm text-[color:var(--muted)]">
-                <li><a href="#how" className="hover:text-[color:var(--ink)] transition-colors">Kako deluje</a></li>
-                <li><a href="#features" className="hover:text-[color:var(--ink)] transition-colors">Funkcionalnosti</a></li>
-                <li><a href="#pricing" className="hover:text-[color:var(--ink)] transition-colors">Cenik</a></li>
-                <li><a href="#faq" className="hover:text-[color:var(--ink)] transition-colors">Pogosta vprašanja</a></li>
-                <li><Link href="/blog" className="hover:text-[color:var(--ink)] transition-colors">Blog</Link></li>
-                <li><Link href="/dashboard/new" className="hover:text-[color:var(--ink)] transition-colors">Ustvari album</Link></li>
-                <li><Link href="/dashboard" className="hover:text-[color:var(--ink)] transition-colors">Prijava</Link></li>
-                <li><Link href="/affiliate/apply" className="hover:text-[color:var(--ink)] transition-colors">Partnerski program</Link></li>
+              <h3 className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4">Produkt</h3>
+              <ul className="space-y-2.5 text-sm text-gray-400">
+                <li><a href="#how" className="hover:text-white transition-colors">Kako deluje</a></li>
+                <li><a href="#features" className="hover:text-white transition-colors">Funkcionalnosti</a></li>
+                <li><a href="#pricing" className="hover:text-white transition-colors">Cenik</a></li>
+                <li><a href="#faq" className="hover:text-white transition-colors">Pogosta vprašanja</a></li>
+                <li><Link href="/blog" className="hover:text-white transition-colors">Blog</Link></li>
+                <li><Link href="/dashboard/new" className="hover:text-white transition-colors">Ustvari album</Link></li>
+                <li><Link href="/dashboard" className="hover:text-white transition-colors">Prijava</Link></li>
+                <li><Link href="/affiliate/apply" className="hover:text-white transition-colors">Partnerski program</Link></li>
               </ul>
             </div>
 
             {/* Vodniki — only the Slovenian guide + alternatives, so every
                 footer label matches the page's language. */}
             <div>
-              <h3 className="text-xs font-bold uppercase tracking-widest text-[color:var(--muted)] mb-4">Vodniki</h3>
-              <ul className="space-y-2.5 text-sm text-[color:var(--muted)]">
-                <li><Link href="/sl/qr-koda-poroka" className="hover:text-[color:var(--ink)] transition-colors">QR koda za poroko</Link></li>
-                <li><Link href="/sl/alternative-aplikacije" className="hover:text-[color:var(--ink)] transition-colors">Primerjava aplikacij</Link></li>
-                <li><Link href="/sl/slike-s-poroke" className="hover:text-[color:var(--ink)] transition-colors">Slike s poroke</Link></li>
-                <li><Link href="/sl/qr-koda-za-poroko" className="hover:text-[color:var(--ink)] transition-colors">QR koda za poroko (vodnik)</Link></li>
-                <li><Link href="/sl/porocni-album" className="hover:text-[color:var(--ink)] transition-colors">Poročni album</Link></li>
-                <li><Link href="/sl/zbiranje-slik-s-poroke" className="hover:text-[color:var(--ink)] transition-colors">Zbiranje slik s poroke</Link></li>
-                <li><Link href="/sl/slike-z-rojstnega-dne" className="hover:text-[color:var(--ink)] transition-colors">Slike z rojstnega dne</Link></li>
-                <li><Link href="/sl/baby-shower-slike" className="hover:text-[color:var(--ink)] transition-colors">Baby shower slike</Link></li>
+              <h3 className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4">Vodniki</h3>
+              <ul className="space-y-2.5 text-sm text-gray-400">
+                <li><Link href="/sl/qr-koda-poroka" className="hover:text-white transition-colors">QR koda za poroko</Link></li>
+                <li><Link href="/sl/alternative-aplikacije" className="hover:text-white transition-colors">Primerjava aplikacij</Link></li>
+                <li><Link href="/sl/slike-s-poroke" className="hover:text-white transition-colors">Slike s poroke</Link></li>
+                <li><Link href="/sl/qr-koda-za-poroko" className="hover:text-white transition-colors">QR koda za poroko (vodnik)</Link></li>
+                <li><Link href="/sl/porocni-album" className="hover:text-white transition-colors">Poročni album</Link></li>
+                <li><Link href="/sl/zbiranje-slik-s-poroke" className="hover:text-white transition-colors">Zbiranje slik s poroke</Link></li>
+                <li><Link href="/sl/slike-z-rojstnega-dne" className="hover:text-white transition-colors">Slike z rojstnega dne</Link></li>
+                <li><Link href="/sl/baby-shower-slike" className="hover:text-white transition-colors">Baby shower slike</Link></li>
               </ul>
             </div>
 
             {/* Pravno */}
             <div>
-              <h3 className="text-xs font-bold uppercase tracking-widest text-[color:var(--muted)] mb-4">Pravno</h3>
-              <ul className="space-y-2.5 text-sm text-[color:var(--muted)]">
-                <li><Link href="/privacy" className="hover:text-[color:var(--ink)] transition-colors">Zasebnost</Link></li>
-                <li><Link href="/terms" className="hover:text-[color:var(--ink)] transition-colors">Pogoji uporabe</Link></li>
-                <li><Link href="/cookies" className="hover:text-[color:var(--ink)] transition-colors">Piškotki</Link></li>
-                <li><Link href="/gdpr" className="hover:text-[color:var(--ink)] transition-colors">GDPR</Link></li>
-                <li><Link href="/refund" className="hover:text-[color:var(--ink)] transition-colors">Vračilo denarja</Link></li>
-                <li><Link href="/contact" className="hover:text-[color:var(--ink)] transition-colors">Kontakt</Link></li>
+              <h3 className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4">Pravno</h3>
+              <ul className="space-y-2.5 text-sm text-gray-400">
+                <li><Link href="/privacy" className="hover:text-white transition-colors">Zasebnost</Link></li>
+                <li><Link href="/terms" className="hover:text-white transition-colors">Pogoji uporabe</Link></li>
+                <li><Link href="/cookies" className="hover:text-white transition-colors">Piškotki</Link></li>
+                <li><Link href="/gdpr" className="hover:text-white transition-colors">GDPR</Link></li>
+                <li><Link href="/refund" className="hover:text-white transition-colors">Vračilo denarja</Link></li>
+                <li><Link href="/contact" className="hover:text-white transition-colors">Kontakt</Link></li>
               </ul>
             </div>
 
@@ -1007,18 +1016,18 @@ export default async function HomePage() {
 
           {/* Bottom bar */}
           <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <p className="text-xs text-[color:var(--muted)]">
+            <p className="text-xs text-gray-400">
               © {new Date().getFullYear()} Guestcam · Sport group d.o.o. · Narejeno v Sloveniji by{" "}
               <a
                 href="https://www.futurecode.si"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="font-semibold text-[color:var(--honey)] hover:text-[color:var(--ink)] transition-colors"
+                className="font-semibold text-[#FFC94D] hover:text-white transition-colors"
               >
                 Futurecode.si
               </a>
             </p>
-            <div className="flex items-center gap-4 text-xs text-gray-600">
+            <div className="flex items-center gap-4 text-xs text-gray-400">
               <span className="flex items-center gap-1">
                 <svg className="w-3.5 h-3.5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
@@ -1032,7 +1041,7 @@ export default async function HomePage() {
                 GDPR
               </span>
               <span className="flex items-center gap-1">
-                <svg className="w-3.5 h-3.5 text-[color:var(--muted)]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+                <svg className="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
                 </svg>
                 Brez registracije za goste

@@ -6,6 +6,9 @@ import { GuestcamLogo } from "@/components/GuestcamLogo";
 import { EventCard } from "@/components/EventCard";
 import { HeaderAuthButtons } from "@/components/HeaderAuthButtons";
 import { HomeMobileMenu } from "@/components/HomeMobileMenu";
+import { PrintShowroom } from "@/components/PrintShowroom";
+import { BusinessSection } from "@/components/BusinessSection";
+import { PRINT_COPY, BUSINESS_COPY, NAV_BUSINESS } from "@/lib/homepage-sections-copy";
 import { TrackViewContent } from "@/components/TrackViewContent";
 import { WallMiniDemo } from "@/components/WallMiniDemo";
 import { NordicHero } from "@/components/NordicHero";
@@ -702,6 +705,9 @@ export async function LocalizedHomePage({ lang }: { lang: Lang }) {
           </Link>
           <div className="flex items-center gap-3 sm:gap-5">
             <LanguageSwitcher current={lang} languages={HOME_HREFLANG} ariaLabel={t.switcherAria} />
+            <a href="#business" className="hidden md:block text-sm font-medium text-gray-600 hover:text-[color:var(--ink)] transition-colors">
+              {NAV_BUSINESS[lang]}
+            </a>
             <Link href={`/${lang}/blog`} className="hidden sm:block text-sm font-medium text-gray-600 hover:text-[color:var(--ink)] transition-colors">
               Blog
             </Link>
@@ -717,6 +723,7 @@ export async function LocalizedHomePage({ lang }: { lang: Lang }) {
               signedIn={signedIn}
               lang={lang}
               links={[
+                { href: "#business", label: NAV_BUSINESS[lang] },
                 { href: `/${lang}/blog`, label: t.navBlog },
                 { href: `/${lang}/contact`, label: t.navContact },
               ]}
@@ -1003,6 +1010,10 @@ export async function LocalizedHomePage({ lang }: { lang: Lang }) {
       </section>
 
       {/* FAQ */}
+      <PrintShowroom copy={PRINT_COPY[lang]} />
+
+      <BusinessSection copy={BUSINESS_COPY[lang]} contactHref={`/${lang}/contact`} />
+
       <section id="faq" className="py-24" style={{ background: "var(--paper)" }}>
         <div className="max-w-2xl mx-auto px-6">
           <h2 className="text-4xl sm:text-[3.3rem] leading-[1.08] tracking-tight font-extrabold text-center text-[color:var(--ink)] mb-12">{t.faqTitle}</h2>
