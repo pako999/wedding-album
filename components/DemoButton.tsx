@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useSyncExternalStore } from "react";
+import { createPortal } from "react-dom";
 
 /**
  * The album the demo QR code / link points at.
@@ -68,7 +69,12 @@ export function DemoButton({ variant = "hero" }: { variant?: "hero" | "nav" | "h
         </button>
       )}
 
-      {open && (
+      {/* Portal to <body>: the hero that hosts this button has transformed
+          ancestors, and transform/filter turn an element into the CONTAINING
+          BLOCK for position:fixed descendants — so without the portal the
+          overlay pins to that box, dims only part of the page and the card
+          clips off-screen. Same trap as MobileMenu. */}
+      {open && createPortal(
         <div className="fixed inset-0 z-[60] overflow-y-auto" role="dialog" aria-modal="true">
           <div
             className="fixed inset-0 bg-[#0F1729]/70 backdrop-blur-sm"
@@ -131,7 +137,8 @@ export function DemoButton({ variant = "hero" }: { variant?: "hero" | "nav" | "h
             </p>
           </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </>
   );
