@@ -21,7 +21,7 @@ export const metadata: Metadata = {
     url: `${SITE_URL}/cookies`,
     title: "Politika piškotkov",
     description: "Politika piškotkov CamLove — uporabljamo le tehnično nujne piškotke, brez oglaševalskih ali sledilnih.",
-    images: ["/og-image.png?v=2"],
+    images: ["/opengraph-image?v=3"],
   },
   robots: { index: true, follow: true },
 };

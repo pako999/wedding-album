@@ -34,9 +34,9 @@ export const metadata: Metadata = {
     // See app/sr/page.tsx for the per-locale image rationale.
     images: [
       {
-        url: `${SITE_URL}/og-image.png?v=2`,
-        width: 910,
-        height: 1200,
+        url: `${SITE_URL}/opengraph-image?v=3`,
+        width: 1200,
+        height: 630,
         alt: "Wedding Photo Sharing App with QR Code · Free | CamLove",
         type: "image/png",
       },
@@ -46,7 +46,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Wedding Photo Sharing App with QR Code · Free | CamLove",
     description: "Collect every wedding guest's photos and videos via QR code into one private gallery. No app, full quality, free to start.",
-    images: [`${SITE_URL}/og-image.png?v=2`],
+    images: [`${SITE_URL}/opengraph-image?v=3`],
   },
 };
 

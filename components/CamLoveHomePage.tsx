@@ -37,8 +37,8 @@ export const HOME_FAQS = [
 ] as const;
 
 const EVENT_CARDS = [
-  { title: "Poroke", image: "/events/T+ I-2497.JPG", desc: "Vsi spontani trenutki gostov v enem poročnem albumu." },
-  { title: "Rojstni dnevi", image: "/events/kim-bd-party (95).JPEG", desc: "Fotografije družine in prijateljev brez WhatsApp kaosa." },
+  { title: "Poroke", image: "/events/wedding-couple.webp", desc: "Vsi spontani trenutki gostov v enem poročnem albumu." },
+  { title: "Rojstni dnevi", image: "/events/birthday-party.webp", desc: "Fotografije družine in prijateljev brez WhatsApp kaosa." },
   { title: "Baby shower", image: "/events/babyshower.webp", desc: "Nežni trenutki, dekoracija in fotografije vseh povabljenih." },
   { title: "Dekliščine in fantovščine", image: "/events/gromparty.webp", desc: "Ena QR koda za celotno zabavo in vse telefone." },
   { title: "Zabave", image: "/events/party.webp", desc: "Najboljši utrinki večera se sproti zbirajo v galeriji." },
@@ -100,7 +100,7 @@ const PLANS = [
 function Check({ children }: { children: React.ReactNode }) {
   return (
     <li className="flex gap-2.5 text-sm leading-6">
-      <span className="mt-0.5 font-black text-[#F4B400]">✓</span>
+      <span className="mt-0.5 font-black text-[#8F6900]">✓</span>
       <span>{children}</span>
     </li>
   );
@@ -143,7 +143,7 @@ export async function CamLoveHomePage() {
             </div>
             <h1 className="mt-6 max-w-[760px] text-[clamp(2.8rem,13vw,6.7rem)] font-black leading-[1.07] tracking-[-.05em] sm:mt-7 sm:leading-[1.02] sm:tracking-[-.065em]">
               Vse fotografije gostov.
-              <span className="mt-3 block text-[#F4B400] sm:mt-2">En sam album.</span>
+              <span className="mt-3 block text-[#B88700] sm:mt-2">En sam album.</span>
             </h1>
             <p className="mt-5 max-w-2xl text-[17px] leading-7 text-black/60 sm:mt-7 sm:text-xl sm:leading-8">
               Gostje skenirajo QR kodo in dodajo fotografije ter videe neposredno v vašo zasebno galerijo — brez aplikacije in brez registracije.
@@ -182,11 +182,11 @@ export async function CamLoveHomePage() {
             <div className="absolute -right-10 bottom-10 h-64 w-64 rounded-full bg-[#F4B400]/15 blur-3xl" />
             <div className="relative grid grid-cols-12 gap-2 sm:gap-3">
               <div className="relative col-span-8 min-h-[390px] overflow-hidden rounded-[24px] bg-black/5 shadow-2xl sm:min-h-[520px] sm:rounded-[34px] lg:min-h-[620px]">
-                <Image src="/events/T+ I-2497.JPG" alt="Gostje na poroki ustvarjajo fotografije za CamLove album" fill priority sizes="(max-width:1024px) 66vw, 38vw" className="object-cover" />
+                <Image src="/events/wedding-couple.webp" alt="Gostje na poroki ustvarjajo fotografije za CamLove album" fill priority sizes="(max-width:1024px) 66vw, 38vw" className="object-cover" />
                 <div className="absolute bottom-5 left-5 hidden rounded-full bg-black/75 px-4 py-2 text-xs font-bold text-white backdrop-blur sm:block">Poroka · pravi trenutki gostov</div>
               </div>
               <div className="relative col-span-4 min-h-[190px] overflow-hidden rounded-[20px] bg-black/5 shadow-xl sm:min-h-[254px] sm:rounded-[26px] lg:min-h-[300px]">
-                <Image src="/events/kim-bd-party (95).JPEG" alt="Rojstnodnevni dogodek" fill sizes="(max-width:1024px) 33vw, 20vw" className="object-cover" />
+                <Image src="/events/birthday-party.webp" alt="Rojstnodnevni dogodek" fill sizes="(max-width:1024px) 33vw, 20vw" className="object-cover" />
               </div>
               <div className="relative col-span-4 min-h-[190px] overflow-hidden rounded-[20px] bg-black/5 shadow-xl sm:min-h-[254px] sm:rounded-[26px] lg:min-h-[300px]">
                 <Image src="/events/babyshower.webp" alt="Baby shower dogodek" fill sizes="(max-width:1024px) 33vw, 20vw" className="object-cover" />
@@ -207,7 +207,7 @@ export async function CamLoveHomePage() {
       <section className="mx-auto max-w-[1320px] px-5 py-24 sm:px-8 sm:py-32">
         <div className="grid gap-12 lg:grid-cols-[.82fr_1.18fr] lg:items-end">
           <div>
-            <p className="text-xs font-black uppercase tracking-[.18em] text-[#9A7100]">Problem, ki ga CamLove reši</p>
+            <p className="text-xs font-black uppercase tracking-[.18em] text-[#8F6900]">Problem, ki ga CamLove reši</p>
             <h2 className="mt-4 text-4xl font-black leading-[1.03] tracking-[-.045em] sm:text-6xl">Vsak gost fotografira. Vi pa večine teh slik nikoli ne vidite.</h2>
           </div>
           <p className="max-w-2xl text-lg leading-8 text-black/55 lg:ml-auto">Po dogodku so fotografije razpršene med telefoni, WhatsApp skupinami in družbenimi omrežji. CamLove jih z eno QR kodo zbere na enem mestu.</p>
@@ -219,7 +219,7 @@ export async function CamLoveHomePage() {
             ["03", "Celotna zgodba dogodka", "CamLove združi različne poglede vseh gostov v en zasebni album."],
           ].map(([n,t,d]) => (
             <article key={n} className="rounded-[30px] border border-black/10 bg-white p-8 shadow-sm">
-              <span className="text-sm font-black text-[#F4B400]">{n}</span>
+              <span className="text-sm font-black text-[#8F6900]">{n}</span>
               <h3 className="mt-8 text-2xl font-black tracking-[-.03em]">{t}</h3>
               <p className="mt-3 leading-7 text-black/55">{d}</p>
             </article>
@@ -281,16 +281,16 @@ export async function CamLoveHomePage() {
       <section id="templates" className="bg-white py-24 sm:py-32">
         <div className="mx-auto max-w-[1320px] px-5 sm:px-8">
           <div className="mx-auto max-w-3xl text-center">
-            <p className="text-xs font-black uppercase tracking-[.18em] text-[#9A7100]">Predloge za tisk</p>
+            <p className="text-xs font-black uppercase tracking-[.18em] text-[#8F6900]">Predloge za tisk</p>
             <h2 className="mt-4 text-4xl font-black tracking-[-.05em] sm:text-6xl">Kartice, ki goste spodbudijo k deljenju fotografij.</h2>
             <p className="mt-5 text-lg leading-8 text-black/55">Dodajte svojo QR kodo, ime dogodka in datum. Natisnite jih in postavite tja, kjer jih gostje res opazijo.</p>
           </div>
           <div className="mt-14 grid gap-5 md:grid-cols-2 lg:grid-cols-4">
             {[
-              ["Klasična", "/events/T+ I-2497.JPG", "Capture the Love"],
-              ["Elegantna", "/events/IMG_5525.jpeg", "Deli naše spomine"],
-              ["Moderna", "/events/IMG_0989.JPG", "Scan & Share"],
-              ["Minimalistična", "/events/IMG_0850.jpg", "Naš dan"],
+              ["Klasična", "/events/wedding-couple.webp", "Capture the Love"],
+              ["Elegantna", "/events/template-elegant.webp", "Deli naše spomine"],
+              ["Moderna", "/events/template-modern.webp", "Scan & Share"],
+              ["Minimalistična", "/events/template-minimal.webp", "Naš dan"],
             ].map(([name, image, headline]) => (
               <article key={name} className="group relative min-h-[470px] overflow-hidden rounded-[30px] bg-black shadow-lg">
                 <Image src={image} alt={`CamLove QR predloga ${name}`} fill sizes="(max-width:768px) 100vw, 25vw" className="object-cover opacity-65 transition-transform duration-500 group-hover:scale-[1.03]" />
@@ -350,7 +350,7 @@ export async function CamLoveHomePage() {
         <div className="mx-auto max-w-[1320px] px-5 sm:px-8">
           <div className="grid gap-10 lg:grid-cols-[.75fr_1.25fr]">
             <div>
-              <p className="text-xs font-black uppercase tracking-[.18em] text-[#9A7100]">Zakaj CamLove</p>
+              <p className="text-xs font-black uppercase tracking-[.18em] text-[#8F6900]">Zakaj CamLove</p>
               <h2 className="mt-4 text-4xl font-black leading-[1.03] tracking-[-.05em] sm:text-6xl">Vse, kar potrebujete. Nič, česar gostje ne potrebujejo.</h2>
               <p className="mt-6 text-lg leading-8 text-black/55">Najpomembnejši del je preprostost: gost vidi QR kodo, skenira in naloži.</p>
             </div>
@@ -383,7 +383,7 @@ export async function CamLoveHomePage() {
       {/* REVIEWS */}
       <section className="bg-white py-24 sm:py-32">
         <div className="mx-auto max-w-[1320px] px-5 sm:px-8">
-          <p className="text-center text-xs font-black uppercase tracking-[.18em] text-[#9A7100]">Mnenja uporabnikov</p>
+          <p className="text-center text-xs font-black uppercase tracking-[.18em] text-[#8F6900]">Mnenja uporabnikov</p>
           <h2 className="mx-auto mt-4 max-w-3xl text-center text-4xl font-black tracking-[-.05em] sm:text-6xl">Spomini, ki bi drugače ostali na telefonih.</h2>
           <div className="mt-14 grid gap-4 lg:grid-cols-3">
             {[
@@ -392,7 +392,7 @@ export async function CamLoveHomePage() {
               ["Gostje iz tujine so brez težav nalagali fotografije s svojih telefonov. Po dogodku smo vse prenesli naenkrat in imeli celotno zgodbo večera.", "Sara & David", "Dogodek"],
             ].map(([quote, name, type]) => (
               <blockquote key={name} className="rounded-[30px] border border-black/10 bg-[#FFFDF8] p-8">
-                <div className="text-[#F4B400]">★★★★★</div>
+                <div className="text-[#8F6900]">★★★★★</div>
                 <p className="mt-6 text-lg font-semibold leading-8">“{quote}”</p>
                 <footer className="mt-7 text-sm text-black/45"><strong className="text-black">{name}</strong> · {type}</footer>
               </blockquote>
@@ -405,7 +405,7 @@ export async function CamLoveHomePage() {
       <section id="pricing" className="py-24 sm:py-32">
         <div className="mx-auto max-w-[1320px] px-5 sm:px-8">
           <div className="mx-auto max-w-3xl text-center">
-            <p className="text-xs font-black uppercase tracking-[.18em] text-[#9A7100]">Enkratno plačilo · brez naročnine</p>
+            <p className="text-xs font-black uppercase tracking-[.18em] text-[#8F6900]">Enkratno plačilo · brez naročnine</p>
             <h2 className="mt-4 text-4xl font-black tracking-[-.05em] sm:text-6xl">Preprosti paketi za vsak dogodek.</h2>
             <p className="mt-5 text-lg leading-8 text-black/55">Začnite brezplačno. Plačate šele, ko potrebujete več prostora in funkcij.</p>
           </div>
@@ -446,7 +446,7 @@ export async function CamLoveHomePage() {
       <section id="faq" className="bg-white py-24 sm:py-32">
         <div className="mx-auto grid max-w-[1180px] gap-12 px-5 sm:px-8 lg:grid-cols-[.65fr_1.35fr]">
           <div>
-            <p className="text-xs font-black uppercase tracking-[.18em] text-[#9A7100]">Pogosta vprašanja</p>
+            <p className="text-xs font-black uppercase tracking-[.18em] text-[#8F6900]">Pogosta vprašanja</p>
             <h2 className="mt-4 text-4xl font-black leading-[1.03] tracking-[-.05em] sm:text-5xl">Vse, kar želite vedeti pred dogodkom.</h2>
             <Link href="/contact" className="mt-7 inline-flex font-black underline decoration-[#F4B400] decoration-4 underline-offset-4">Imate drugo vprašanje? Pišite nam →</Link>
           </div>

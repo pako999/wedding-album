@@ -21,7 +21,7 @@ export const metadata: Metadata = {
     url: `${SITE_URL}/privacy`,
     title: "Politika zasebnosti",
     description: "Politika zasebnosti storitve CamLove. Izveste, katere podatke zbiramo, kako jih varujemo in kakšne so vaše pravice po GDPR.",
-    images: ["/og-image.png?v=2"],
+    images: ["/opengraph-image?v=3"],
   },
   robots: { index: true, follow: true },
 };

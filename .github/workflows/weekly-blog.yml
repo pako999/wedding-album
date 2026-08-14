@@ -1,24 +1,24 @@
 name: Weekly auto-blog
 
+# Runs every Monday and Thursday at 08:00 UTC; consumes one topic
+# from content/blog/topics-queue.json, generates a 6-language post,
+# commits the new files. Vercel auto-deploys from main on push.
+#
+# Manual run via "Run workflow" in the Actions tab is supported.
+
 on:
   schedule:
-    - cron: "0 8 * * 1"
-    - cron: "0 8 * * 4"
+    - cron: "0 8 * * 1"   # Monday 08:00 UTC
+    - cron: "0 8 * * 4"   # Thursday 08:00 UTC
   workflow_dispatch:
     inputs:
       topic:
         description: "Topic to generate (optional — defaults to head of topics-queue.json)"
         required: false
         type: string
-  push:
-    branches:
-      - camlove-real-photo-preview
-    paths:
-      - .github/workflows/weekly-blog.yml
 
 jobs:
   generate:
-    if: github.event_name != 'push'
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -54,85 +54,8 @@ jobs:
             echo "No changes to commit."
             exit 0
           fi
+          # Subject line — derive from first new file's title field for context
           NEW_FILE=$(git diff --cached --name-only --diff-filter=A | grep '^content/blog/en/' | head -n 1)
           TITLE=$(node -e "console.log(require('./${NEW_FILE}').title || 'auto')" 2>/dev/null || echo "auto")
           git commit -m "blog: auto-generate \"$TITLE\""
           git push
-
-  convert-business-image:
-    if: github.event_name == 'push'
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: camlove-real-photo-preview
-          fetch-depth: 0
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: npm
-
-      - run: npm ci
-
-      - name: Download source JPG
-        run: |
-          mkdir -p public/events
-          curl -L --fail --retry 3 "https://raw.githubusercontent.com/pako999/wedding-album/main/2.1.organizacija-dogodkov-dogodkey%20%281%29.jpg" -o /tmp/business-source.jpg
-
-      - name: Convert JPG to optimized WebP
-        run: |
-          node - <<'NODE'
-          const sharp = require('sharp');
-          sharp('/tmp/business-source.jpg')
-            .rotate()
-            .resize({ width: 1600, height: 1600, fit: 'inside', withoutEnlargement: true })
-            .webp({ quality: 82, effort: 6 })
-            .toFile('public/events/organizacija-dogodkov-dogodek.webp')
-            .then(info => console.log(info))
-            .catch(err => { console.error(err); process.exit(1); });
-          NODE
-
-      - name: Point pages to local WebP and improve hero spacing
-        run: |
-          python3 - <<'PY'
-          from pathlib import Path
-
-          live = Path('app/camlove-live-v2/page.tsx')
-          text = live.read_text()
-          text = text.replace(
-              'const businessImage = "https://raw.githubusercontent.com/pako999/wedding-album/main/2.1.organizacija-dogodkov-dogodkey%20%281%29.jpg";',
-              'const businessImage = "/events/organizacija-dogodkov-dogodek.webp";'
-          )
-          text = text.replace(
-              '<div className="min-h-[560px] overflow-hidden rounded-[30px] bg-black">\n            <img src={businessImage} alt="Poslovni dogodek" loading="lazy" decoding="async" className="h-[560px] w-full object-cover" />\n          </div>',
-              '<div className="relative min-h-[560px] overflow-hidden rounded-[30px] bg-black">\n            <Image src={businessImage} alt="Poslovni dogodek" fill sizes="50vw" className="object-cover" />\n          </div>'
-          )
-          live.write_text(text)
-
-          fixed = Path('app/camlove-fixed/page.tsx')
-          text = fixed.read_text()
-          text = text.replace('["/events/business.webp", "Poslovni dogodki"]', '["/events/organizacija-dogodkov-dogodek.webp", "Poslovni dogodki"]')
-          text = text.replace('Image src="/events/business.webp" alt="Poslovni dogodek"', 'Image src="/events/organizacija-dogodkov-dogodek.webp" alt="Poslovni dogodek"')
-          text = text.replace('leading-[.91] tracking-[-.06em]">Vse fotografije gostov.', 'leading-[1.02] tracking-[-.055em]">Vse fotografije gostov.')
-          fixed.write_text(text)
-          PY
-
-      - name: Verify WebP
-        run: |
-          file public/events/organizacija-dogodkov-dogodek.webp
-          ls -lh /tmp/business-source.jpg public/events/organizacija-dogodkov-dogodek.webp
-
-      - name: Commit optimized WebP
-        run: |
-          git config user.name "camlove-image-bot"
-          git config user.email "bot@camlove.me"
-          git add public/events/organizacija-dogodkov-dogodek.webp app/camlove-live-v2/page.tsx app/camlove-fixed/page.tsx
-          if git diff --cached --quiet; then
-            echo "No changes to commit."
-            exit 0
-          fi
-          git commit -m "Optimize business event image to WebP"
-          git push origin HEAD:camlove-real-photo-preview

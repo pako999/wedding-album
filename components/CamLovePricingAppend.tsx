@@ -46,7 +46,7 @@ export function CamLovePricingAppend() {
       <footer className="bg-[#111] text-white !block">
         <div className="mx-auto max-w-[1320px] px-5 py-14 sm:px-8">
           <div className="grid gap-12 lg:grid-cols-[1.4fr_repeat(3,1fr)]">
-            <div><Image src="/camlove-brand-logo.svg" alt="CamLove" width={210} height={70} /><p className="mt-5 max-w-[340px] leading-7 text-white/50">QR album za poroke, rojstne dneve, baby showerje, zabave in poslovne dogodke.</p><p className="mt-5 font-bold text-[#F4B400]">camlove.me</p></div>
+            <div><Image src="/camlove-black-yellow-logo.svg" alt="CamLove" width={210} height={70} /><p className="mt-5 max-w-[340px] leading-7 text-white/50">QR album za poroke, rojstne dneve, baby showerje, zabave in poslovne dogodke.</p><p className="mt-5 font-bold text-[#F4B400]">camlove.me</p></div>
             <div><b>Produkt</b><div className="mt-4 flex flex-col gap-3 text-sm text-white/55"><a href="#how">Kako deluje</a><a href="#events">Dogodki</a><a href="#wall">Live Wall</a><a href="#pricing">Cenik</a></div></div>
             <div><b>Za uporabnike</b><div className="mt-4 flex flex-col gap-3 text-sm text-white/55"><Link href="/dashboard/new">Ustvari album</Link><Link href="/dashboard">Moj račun</Link><Link href="/contact">Kontakt</Link><a href="#business-new">Za podjetja</a></div></div>
             <div><b>Pravno</b><div className="mt-4 flex flex-col gap-3 text-sm text-white/55"><Link href="/privacy">Zasebnost</Link><Link href="/terms">Pogoji uporabe</Link><Link href="/cookies">Piškotki</Link><Link href="/gdpr">GDPR</Link></div></div>

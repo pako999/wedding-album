@@ -116,9 +116,9 @@ export const metadata: Metadata = {
     // weeks because crawlers cache aggressively.
     images: [
       {
-        url: "/og-image.png?v=2",
-        width: 910,
-        height: 1200,
+        url: "/opengraph-image?v=3",
+        width: 1200,
+        height: 630,
         alt: "QR koda za dogodke • Fotografije gostov v živo | CamLove",
         type: "image/png",
       },
@@ -129,7 +129,7 @@ export const metadata: Metadata = {
     title: "QR koda za dogodke • Fotografije gostov v živo | CamLove",
     description:
       "Z eno QR kodo zberite vse fotografije in videe gostov v zasebni galeriji. Brez aplikacije, polna kakovost, brezplačen začetek.",
-    images: ["/og-image.png?v=2"],
+    images: ["/opengraph-image?v=3"],
   },
 };
 

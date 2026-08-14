@@ -34,9 +34,9 @@ export const metadata: Metadata = {
     // See app/sr/page.tsx for the per-locale image rationale.
     images: [
       {
-        url: `${SITE_URL}/og-image.png?v=2`,
-        width: 910,
-        height: 1200,
+        url: `${SITE_URL}/opengraph-image?v=3`,
+        width: 1200,
+        height: 630,
         alt: "Código QR para fotos de boda · Sin app · Gratis | CamLove",
         type: "image/png",
       },
@@ -46,7 +46,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Código QR para fotos de boda · Sin app · Gratis | CamLove",
     description: "Reúne todas las fotos y vídeos de tus invitados con un código QR en una galería privada. Sin app, calidad completa, gratis para empezar.",
-    images: [`${SITE_URL}/og-image.png?v=2`],
+    images: [`${SITE_URL}/opengraph-image?v=3`],
   },
 };
 

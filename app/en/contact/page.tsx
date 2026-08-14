@@ -21,7 +21,7 @@ export const metadata: Metadata = {
     url: `${SITE_URL}/en/contact`,
     title: "Contact",
     description: "Get in touch — email, WhatsApp, Premium wedding-day support.",
-    images: ["/og-image.png?v=2"],
+    images: ["/opengraph-image?v=3"],
   },
   robots: { index: true, follow: true },
 };

@@ -37,9 +37,9 @@ export const metadata: Metadata = {
     // bumping ?v=.
     images: [
       {
-        url: `${SITE_URL}/og-image.png?v=2`,
-        width: 910,
-        height: 1200,
+        url: `${SITE_URL}/opengraph-image?v=3`,
+        width: 1200,
+        height: 630,
         alt: "QR kod za venčanje · Fotografije gostiju uživo | CamLove",
         type: "image/png",
       },
@@ -49,7 +49,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "QR kod za venčanje · Fotografije gostiju uživo | CamLove",
     description: "Sakupite sve fotografije i video snimke gostiju sa venčanja preko QR koda u privatnoj galeriji. Bez aplikacije, pun kvalitet, besplatno za probu.",
-    images: [`${SITE_URL}/og-image.png?v=2`],
+    images: [`${SITE_URL}/opengraph-image?v=3`],
   },
 };
 

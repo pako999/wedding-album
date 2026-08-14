@@ -1,1 +1,0 @@
-Real event photos uploaded for the CamLove preview. The Next.js Image component serves responsive optimized WebP/AVIF variants in production.

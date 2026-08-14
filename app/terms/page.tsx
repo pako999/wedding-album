@@ -21,7 +21,7 @@ export const metadata: Metadata = {
     url: `${SITE_URL}/terms`,
     title: "Pogoji uporabe",
     description: "Pogoji uporabe storitve CamLove — paketi, plačila, pravice in obveznosti uporabnikov.",
-    images: ["/og-image.png?v=2"],
+    images: ["/opengraph-image?v=3"],
   },
   robots: { index: true, follow: true },
 };

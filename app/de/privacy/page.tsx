@@ -5,7 +5,7 @@ import { LegalPage } from "@/components/LegalPage";
 export const metadata: Metadata = {
   title: "Datenschutzerklärung",
   alternates: { canonical: `${SITE_URL}/de/privacy` },
-  openGraph: { url: `${SITE_URL}/de/privacy`, title: "Datenschutzerklärung", images: ["/og-image.png?v=2"] },
+  openGraph: { url: `${SITE_URL}/de/privacy`, title: "Datenschutzerklärung", images: ["/opengraph-image?v=3"] },
   robots: { index: true, follow: true },
 };
 

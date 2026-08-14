@@ -5,7 +5,7 @@ import { LegalPage } from "@/components/LegalPage";
 export const metadata: Metadata = {
   title: "Your GDPR Rights",
   alternates: { canonical: `${SITE_URL}/en/gdpr` },
-  openGraph: { url: `${SITE_URL}/en/gdpr`, title: "Your GDPR Rights", images: ["/og-image.png?v=2"] },
+  openGraph: { url: `${SITE_URL}/en/gdpr`, title: "Your GDPR Rights", images: ["/opengraph-image?v=3"] },
   robots: { index: true, follow: true },
 };
 

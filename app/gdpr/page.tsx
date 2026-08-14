@@ -21,7 +21,7 @@ export const metadata: Metadata = {
     url: `${SITE_URL}/gdpr`,
     title: "Pravice po GDPR",
     description: "Vaše pravice po GDPR pri uporabi storitve CamLove: dostop, popravek, izbris, prenosljivost, pritožba.",
-    images: ["/og-image.png?v=2"],
+    images: ["/opengraph-image?v=3"],
   },
   robots: { index: true, follow: true },
 };

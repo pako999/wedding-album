@@ -5,7 +5,7 @@ import { LegalPage } from "@/components/LegalPage";
 export const metadata: Metadata = {
   title: "Politika povrata novca",
   alternates: { canonical: `${SITE_URL}/hr/refund` },
-  openGraph: { url: `${SITE_URL}/hr/refund`, title: "Politika povrata novca", images: ["/og-image.png?v=2"] },
+  openGraph: { url: `${SITE_URL}/hr/refund`, title: "Politika povrata novca", images: ["/opengraph-image?v=3"] },
   robots: { index: true, follow: true },
 };
 

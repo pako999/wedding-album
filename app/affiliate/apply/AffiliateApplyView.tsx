@@ -1,4 +1,5 @@
 import { SITE_URL } from "@/lib/urls";
+import { ogImage, OG_IMAGE_URL } from "@/lib/og";
 import type { Metadata } from "next";
 import { ApplyForm } from "./ApplyForm";
 import { affiliateTranslations, type AffiliateLang } from "@/lib/i18n/affiliate-translations";
@@ -78,21 +79,13 @@ export function affiliateApplyMetadata(lang: AffiliateLang): Metadata {
       url: pageUrl,
       title: t.pageTitle,
       description: t.metaDescription,
-      images: [
-        {
-          url: "/og-image.png?v=2",
-          width: 910,
-          height: 1200,
-          alt: t.pageTitle,
-          type: "image/png",
-        },
-      ],
+      images: [ogImage(t.pageTitle)],
     },
     twitter: {
       card: "summary_large_image",
       title: t.pageTitle,
       description: t.metaDescription,
-      images: ["/og-image.png?v=2"],
+      images: [OG_IMAGE_URL],
     },
     robots: { index: true, follow: true },
   };

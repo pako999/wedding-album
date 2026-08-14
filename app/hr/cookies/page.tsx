@@ -5,7 +5,7 @@ import { LegalPage } from "@/components/LegalPage";
 export const metadata: Metadata = {
   title: "Politika kolačića",
   alternates: { canonical: `${SITE_URL}/hr/cookies` },
-  openGraph: { url: `${SITE_URL}/hr/cookies`, title: "Politika kolačića", images: ["/og-image.png?v=2"] },
+  openGraph: { url: `${SITE_URL}/hr/cookies`, title: "Politika kolačića", images: ["/opengraph-image?v=3"] },
   robots: { index: true, follow: true },
 };
 

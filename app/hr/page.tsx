@@ -32,9 +32,9 @@ export const metadata: Metadata = {
     // See app/sr/page.tsx for the per-locale image rationale.
     images: [
       {
-        url: `${SITE_URL}/og-image.png?v=2`,
-        width: 910,
-        height: 1200,
+        url: `${SITE_URL}/opengraph-image?v=3`,
+        width: 1200,
+        height: 630,
         alt: "QR kod za vjenčanje · Fotografije gostiju uživo | CamLove",
         type: "image/png",
       },
@@ -44,7 +44,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "QR kod za vjenčanje · Fotografije gostiju uživo | CamLove",
     description: "Skupite sve fotografije i videozapise gostiju s vjenčanja preko QR koda u privatnoj galeriji. Bez aplikacije, puna kvaliteta, besplatno za isprobati.",
-    images: [`${SITE_URL}/og-image.png?v=2`],
+    images: [`${SITE_URL}/opengraph-image?v=3`],
   },
 };
 

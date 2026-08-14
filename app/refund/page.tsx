@@ -1,4 +1,5 @@
 import { SITE_URL } from "@/lib/urls";
+import { ogImage } from "@/lib/og";
 import type { Metadata } from "next";
 import { LegalPage } from "@/components/LegalPage";
 
@@ -21,7 +22,7 @@ export const metadata: Metadata = {
     url: `${SITE_URL}/refund`,
     title: "Politika vračila denarja",
     description: "Politika vračila denarja CamLove — 30-dnevna garancija vračila, pogoji, postopek in roki.",
-    images: ["/og-image.png?v=2"],
+    images: [ogImage("CamLove")],
   },
   robots: { index: true, follow: true },
 };

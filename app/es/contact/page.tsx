@@ -21,7 +21,7 @@ export const metadata: Metadata = {
     url: `${SITE_URL}/es/contact`,
     title: "Contacto",
     description: "Escríbenos — email, WhatsApp, soporte Premium para tu galería de boda.",
-    images: ["/og-image.png?v=2"],
+    images: ["/opengraph-image?v=3"],
   },
   robots: { index: true, follow: true },
 };

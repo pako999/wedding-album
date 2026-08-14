@@ -5,7 +5,7 @@ import { LegalPage } from "@/components/LegalPage";
 export const metadata: Metadata = {
   title: "Política de reembolsos",
   alternates: { canonical: `${SITE_URL}/es/refund` },
-  openGraph: { url: `${SITE_URL}/es/refund`, title: "Política de reembolsos", images: ["/og-image.png?v=2"] },
+  openGraph: { url: `${SITE_URL}/es/refund`, title: "Política de reembolsos", images: ["/opengraph-image?v=3"] },
   robots: { index: true, follow: true },
 };
 

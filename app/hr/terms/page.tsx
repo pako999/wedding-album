@@ -5,7 +5,7 @@ import { LegalPage } from "@/components/LegalPage";
 export const metadata: Metadata = {
   title: "Uvjeti korištenja",
   alternates: { canonical: `${SITE_URL}/hr/terms` },
-  openGraph: { url: `${SITE_URL}/hr/terms`, title: "Uvjeti korištenja", images: ["/og-image.png?v=2"] },
+  openGraph: { url: `${SITE_URL}/hr/terms`, title: "Uvjeti korištenja", images: ["/opengraph-image?v=3"] },
   robots: { index: true, follow: true },
 };
 
