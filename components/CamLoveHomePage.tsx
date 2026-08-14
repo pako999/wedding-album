@@ -183,18 +183,19 @@ export async function CamLoveHomePage() {
             {/* Collage: one tall wedding lead + two stacked tiles. 7+5 with
                 the lead spanning both rows, so every grid cell is filled;
                 the previous 8/4/4 split left an empty cell beside the
-                second tile. Both tiles show guests actually photographing
-                with phones, which is the product story, not decoration. */}
+                second tile. All three photographs are real customer event
+                photos, not stock: the product's whole promise is real
+                guest moments, so the hero cannot open with staged ones. */}
             <div className="relative grid grid-cols-12 grid-rows-2 gap-2 sm:gap-3">
               <div className="relative col-span-7 row-span-2 min-h-[420px] overflow-hidden rounded-[24px] bg-black/5 shadow-2xl sm:min-h-[540px] sm:rounded-[34px] lg:min-h-[620px]">
                 <Image src="/hero/wedding-kiss.webp" alt="Mladoporočenca med poljubom v drevoredu, fotografija s poroke" fill priority sizes="(max-width:1024px) 58vw, 33vw" className="object-cover" />
                 <div className="absolute bottom-5 left-5 hidden rounded-full bg-black/75 px-4 py-2 text-xs font-bold text-white backdrop-blur sm:block">Poroka · pravi trenutki gostov</div>
               </div>
               <div className="relative col-span-5 overflow-hidden rounded-[20px] bg-black/5 shadow-xl sm:rounded-[26px]">
-                <Image src="/events/party.webp" alt="Gost s telefonom fotografira par med zdravico na zabavi" fill sizes="(max-width:1024px) 42vw, 24vw" className="object-cover" />
+                <Image src="/hero/party-family.webp" alt="Družinski selfie s cvetličnimi ogrlicami na poletni zabavi" fill sizes="(max-width:1024px) 42vw, 24vw" className="object-cover" />
               </div>
               <div className="relative col-span-5 overflow-hidden rounded-[20px] bg-black/5 shadow-xl sm:rounded-[26px]">
-                <Image src="/events/babyshower.webp" alt="Gostje fotografirajo bodočo mamico na baby showerju" fill sizes="(max-width:1024px) 42vw, 24vw" className="object-cover" />
+                <Image src="/hero/babyshower-friends.webp" alt="Prijateljice se smejijo ob bodoči mamici na baby showerju" fill sizes="(max-width:1024px) 42vw, 24vw" className="object-cover" />
               </div>
             </div>
           </div>
