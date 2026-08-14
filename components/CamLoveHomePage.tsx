@@ -3,6 +3,7 @@ import Link from "next/link";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SeoFooter } from "@/components/SeoFooter";
 import { WallMiniDemo } from "@/components/WallMiniDemo";
+import { STAND_VARIANTS, eur } from "@/lib/print-service";
 
 export const HOME_FAQS = [
   {
@@ -29,6 +30,10 @@ export const HOME_FAQS = [
     q: "Kaj če gost med nalaganjem izgubi internet?",
     a: "CamLove je zasnovan za uporabo na dogodkih. Ko je povezava slaba, se nalaganje lahko nadaljuje, ko je povezava ponovno na voljo, zato gostu ni treba pošiljati slik po več različnih kanalih.",
   },
+  {
+    q: "Ali lahko CamLove natisne QR kartice in namizne podstavke?",
+    a: "Da. Ob nakupu paketa lahko naročite tudi fizične QR kartice z lesenimi ali zlatimi namiznimi podstavki. Natisnemo jih z vašo QR kodo in jih pošljemo pripravljene za postavitev na dogodku.",
+  },
 ] as const;
 
 const EVENT_CARDS = [
@@ -50,7 +55,7 @@ const FEATURES = [
   ["Live Photo Wall", "Nove fotografije lahko v nekaj sekundah prikažete na TV-ju ali projektorju."],
   ["Več jezikov", "Vmesnik je pripravljen za slovenske in mednarodne goste."],
   ["ZIP prenos", "Po dogodku vse datoteke prenesete naenkrat in jih varno arhivirate."],
-  ["QR predloge za tisk", "Pripravljene kartice za mize, vhod, vabila in druge točke dogodka."],
+  ["QR predloge + tisk", "Izberite predlogo ali naročite fizične QR kartice in namizne podstavke, ki jih natisnemo ter pošljemo mi."],
 ] as const;
 
 const PLANS = [
@@ -123,25 +128,27 @@ function MiniQR() {
 }
 
 export async function CamLoveHomePage() {
+  const printedStandFrom = eur(Math.min(...STAND_VARIANTS.map((variant) => variant.unitCents)));
+
   return (
     <main className="min-h-screen overflow-hidden bg-[#FFFDF8] text-[#111111]">
       <SiteHeader lang="sl" />
 
       {/* HERO */}
       <section className="relative border-b border-black/10">
-        <div className="mx-auto grid max-w-[1440px] gap-14 px-5 py-14 sm:px-8 sm:py-20 lg:grid-cols-[.9fr_1.1fr] lg:items-center lg:py-24">
+        <div className="mx-auto grid max-w-[1440px] gap-10 px-5 pb-12 pt-10 sm:gap-14 sm:px-8 sm:py-20 lg:grid-cols-[.9fr_1.1fr] lg:items-center lg:py-24">
           <div className="relative z-10">
             <div className="inline-flex items-center rounded-full border border-black/10 bg-white px-4 py-2 text-xs font-black uppercase tracking-[.15em] text-black/55 shadow-sm">
               QR foto album za vse vrste dogodkov
             </div>
-            <h1 className="mt-7 max-w-[760px] text-[clamp(3.3rem,6.2vw,6.7rem)] font-black leading-[1.02] tracking-[-.065em]">
+            <h1 className="mt-6 max-w-[760px] text-[clamp(2.8rem,13vw,6.7rem)] font-black leading-[1.07] tracking-[-.05em] sm:mt-7 sm:leading-[1.02] sm:tracking-[-.065em]">
               Vse fotografije gostov.
-              <span className="mt-2 block text-[#F4B400]">En sam album.</span>
+              <span className="mt-3 block text-[#F4B400] sm:mt-2">En sam album.</span>
             </h1>
-            <p className="mt-7 max-w-2xl text-lg leading-8 text-black/60 sm:text-xl">
+            <p className="mt-5 max-w-2xl text-[17px] leading-7 text-black/60 sm:mt-7 sm:text-xl sm:leading-8">
               Gostje skenirajo QR kodo in dodajo fotografije ter videe neposredno v vašo zasebno galerijo — brez aplikacije in brez registracije.
             </p>
-            <div className="mt-9 flex flex-col gap-3 sm:flex-row">
+            <div className="mt-7 flex flex-col gap-3 sm:mt-9 sm:flex-row">
               <Link href="/dashboard/new" className="rounded-full bg-[#F4B400] px-8 py-4 text-center text-base font-black text-black shadow-[0_12px_30px_rgba(244,180,0,.25)] transition-transform hover:scale-[1.02]">
                 Začni brezplačno →
               </Link>
@@ -151,11 +158,20 @@ export async function CamLoveHomePage() {
             </div>
             <p className="mt-4 text-sm font-semibold text-black/45">Brez kreditne kartice · pripravljeno v manj kot 2 minutah</p>
 
-            <div className="mt-10 grid max-w-2xl grid-cols-3 gap-3">
+            <a href="#print-service" className="mt-6 flex max-w-2xl items-start gap-3 rounded-[22px] border border-[#F4B400]/35 bg-[#FFF6CE] p-4 transition-transform hover:scale-[1.01] sm:p-5">
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#F4B400] text-lg">▣</span>
+              <span>
+                <strong className="block text-sm font-black sm:text-base">Ne želite sami tiskati?</strong>
+                <span className="mt-1 block text-sm leading-6 text-black/58">QR kartice in namizne podstavke natisnemo mi ter jih pošljemo pripravljene za dogodek — že od {printedStandFrom}/kos.</span>
+                <span className="mt-2 block text-xs font-black text-[#8C6800]">Poglej tiskane QR podstavke →</span>
+              </span>
+            </a>
+
+            <div className="mt-8 grid max-w-2xl grid-cols-3 gap-2 sm:mt-10 sm:gap-3">
               {[['500+', 'ustvarjenih galerij'], ['25.000+', 'zbranih fotografij'], ['5.0/5', 'prve ocene']].map(([n, l]) => (
-                <div key={l} className="rounded-[20px] border border-black/8 bg-white p-4 shadow-sm">
-                  <div className="text-xl font-black sm:text-2xl">{n}</div>
-                  <div className="mt-1 text-[11px] font-semibold leading-4 text-black/45 sm:text-xs">{l}</div>
+                <div key={l} className="rounded-[18px] border border-black/8 bg-white p-3.5 shadow-sm sm:rounded-[20px] sm:p-4">
+                  <div className="text-lg font-black sm:text-2xl">{n}</div>
+                  <div className="mt-1 text-[10px] font-semibold leading-[1.35] text-black/45 sm:text-xs">{l}</div>
                 </div>
               ))}
             </div>
@@ -164,15 +180,15 @@ export async function CamLoveHomePage() {
           <div className="relative">
             <div className="absolute -left-6 top-20 h-52 w-52 rounded-full bg-[#F4B400]/20 blur-3xl" />
             <div className="absolute -right-10 bottom-10 h-64 w-64 rounded-full bg-[#F4B400]/15 blur-3xl" />
-            <div className="relative grid grid-cols-12 gap-3">
-              <div className="relative col-span-8 min-h-[620px] overflow-hidden rounded-[34px] bg-black/5 shadow-2xl">
+            <div className="relative grid grid-cols-12 gap-2 sm:gap-3">
+              <div className="relative col-span-8 min-h-[390px] overflow-hidden rounded-[24px] bg-black/5 shadow-2xl sm:min-h-[520px] sm:rounded-[34px] lg:min-h-[620px]">
                 <Image src="/events/T+ I-2497.JPG" alt="Gostje na poroki ustvarjajo fotografije za CamLove album" fill priority sizes="(max-width:1024px) 66vw, 38vw" className="object-cover" />
-                <div className="absolute bottom-5 left-5 rounded-full bg-black/75 px-4 py-2 text-xs font-bold text-white backdrop-blur">Poroka · pravi trenutki gostov</div>
+                <div className="absolute bottom-5 left-5 hidden rounded-full bg-black/75 px-4 py-2 text-xs font-bold text-white backdrop-blur sm:block">Poroka · pravi trenutki gostov</div>
               </div>
-              <div className="relative col-span-4 min-h-[300px] overflow-hidden rounded-[26px] bg-black/5 shadow-xl">
+              <div className="relative col-span-4 min-h-[190px] overflow-hidden rounded-[20px] bg-black/5 shadow-xl sm:min-h-[254px] sm:rounded-[26px] lg:min-h-[300px]">
                 <Image src="/events/kim-bd-party (95).JPEG" alt="Rojstnodnevni dogodek" fill sizes="(max-width:1024px) 33vw, 20vw" className="object-cover" />
               </div>
-              <div className="relative col-span-4 min-h-[300px] overflow-hidden rounded-[26px] bg-black/5 shadow-xl">
+              <div className="relative col-span-4 min-h-[190px] overflow-hidden rounded-[20px] bg-black/5 shadow-xl sm:min-h-[254px] sm:rounded-[26px] lg:min-h-[300px]">
                 <Image src="/events/babyshower.webp" alt="Baby shower dogodek" fill sizes="(max-width:1024px) 33vw, 20vw" className="object-cover" />
               </div>
             </div>
@@ -289,6 +305,43 @@ export async function CamLoveHomePage() {
             ))}
           </div>
           <div className="mt-9 text-center"><Link href="/dashboard/new" className="inline-flex rounded-full bg-black px-7 py-4 font-black text-white">Ustvari galerijo in QR kodo →</Link></div>
+
+          <div id="print-service" className="mt-16 overflow-hidden rounded-[34px] bg-[#151515] text-white shadow-2xl sm:mt-20">
+            <div className="grid lg:grid-cols-[1.05fr_.95fr] lg:items-stretch">
+              <div className="p-7 sm:p-10 lg:p-12">
+                <span className="inline-flex rounded-full bg-[#F4B400] px-4 py-2 text-[11px] font-black uppercase tracking-[.14em] text-black">Tisk + namizni podstavki</span>
+                <h3 className="mt-6 max-w-2xl text-3xl font-black leading-[1.04] tracking-[-.04em] sm:text-5xl">Mi natisnemo. Vi samo postavite na mize.</h3>
+                <p className="mt-5 max-w-2xl text-base leading-7 text-white/58 sm:text-lg sm:leading-8">Naročite fizične QR kartice in namizne podstavke skupaj s CamLove paketom. Kartice personaliziramo z vašo QR kodo, natisnemo na 200 g papir in jih pošljemo pripravljene za vaš dogodek.</p>
+                <div className="mt-7 grid gap-3 text-sm font-semibold text-white/72 sm:grid-cols-2">
+                  <span>✓ vaša CamLove QR koda</span>
+                  <span>✓ leseni ali zlati podstavek</span>
+                  <span>✓ tisk je vključen v ceno</span>
+                  <span>✓ dostava na vaš naslov</span>
+                </div>
+                <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
+                  <Link href="/dashboard/new" className="rounded-full bg-[#F4B400] px-7 py-4 text-center font-black text-black">Dodaj podstavke ob nakupu →</Link>
+                  <span className="text-sm font-semibold text-white/45">Od {printedStandFrom}/kos · naročite vsaj 10 dni pred dogodkom</span>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-px bg-white/10 p-px">
+                {[
+                  ["/print/stand-wood.webp", "Leseni podstavek", "3,00 € / kos"],
+                  ["/print/stand-gold.webp", "Zlati podstavek", "4,50 € / kos"],
+                ].map(([src, name, price]) => (
+                  <div key={name} className="bg-[#202020] p-3 sm:p-5">
+                    <div className="relative aspect-[4/5] overflow-hidden rounded-[22px] bg-white">
+                      <Image src={src} alt={`${name} za CamLove QR kartico`} fill sizes="(max-width:1024px) 50vw, 25vw" className="object-cover" />
+                    </div>
+                    <div className="px-1 pb-2 pt-4">
+                      <p className="text-sm font-black sm:text-base">{name}</p>
+                      <p className="mt-1 text-xs font-semibold text-[#F4B400] sm:text-sm">{price}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
