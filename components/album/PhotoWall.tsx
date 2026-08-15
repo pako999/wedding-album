@@ -384,7 +384,7 @@ export function PhotoWall({
            left-6, ~40px tall), never bottom-left where it covered the
            QR chip that lives in that corner. */
         // eslint-disable-next-line @next/next/no-img-element
-        <img src={logoUrl} alt="" className="absolute top-[4.7rem] left-6 z-[3] w-14 h-14 rounded-xl object-cover border border-white/30 shadow-lg opacity-90" />
+        <img src={logoUrl} alt="" className="absolute top-[4.7rem] left-6 z-[3] h-14 w-auto max-w-[22vw] rounded-xl object-contain border border-white/30 shadow-lg opacity-90" />
       )}
       <style>{`
         @keyframes wallCenterFade {

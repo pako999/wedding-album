@@ -52,7 +52,7 @@ export function WelcomeScreen({ albumSlug, title, text, button, bgUrl, fontStack
       </div>
       {logoUrl && (
         // eslint-disable-next-line @next/next/no-img-element
-        <img src={logoUrl} alt="" className="absolute top-6 left-1/2 -translate-x-1/2 w-14 h-14 rounded-xl object-cover border border-white/40 shadow-lg" />
+        <img src={logoUrl} alt="" className="absolute top-6 left-1/2 -translate-x-1/2 h-14 w-auto max-w-[60%] rounded-xl object-contain border border-white/40 shadow-lg" />
       )}
       <div className="relative p-6 pb-10 max-w-md mx-auto w-full">
         <h1 className="text-white text-4xl leading-tight" style={{ fontFamily: fontStack }}>{title}</h1>

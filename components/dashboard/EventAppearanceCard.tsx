@@ -55,7 +55,7 @@ function FileBtn({ kind, label, current, onPick }: {
     <label className="flex items-center gap-3 cursor-pointer">
       {current
         // eslint-disable-next-line @next/next/no-img-element
-        ? <img src={current} alt="" className="w-12 h-12 rounded-lg object-cover border border-gray-200" />
+        ? <img src={current} alt="" className="w-12 h-12 rounded-lg object-contain bg-gray-50 p-0.5 border border-gray-200" />
         : <span className="w-12 h-12 rounded-lg border border-dashed border-gray-300 flex items-center justify-center text-gray-300 text-xl">+</span>}
       <span className="text-xs font-semibold text-[#C9820A] underline underline-offset-2">{label}</span>
       <input type="file" accept="image/jpeg,image/png,image/webp" className="hidden"
@@ -151,7 +151,7 @@ export function EventAppearanceCard({ albumSlug, coupleName }: { albumSlug: stri
         <div className="space-y-5">
           <div>
             <p className="text-sm font-semibold text-gray-900 mb-1">Logotip eventa</p>
-            <p className="text-xs text-gray-500 mb-2">Kvadraten (1:1), prikazan v galeriji in na foto steni.</p>
+            <p className="text-xs text-gray-500 mb-2">Poljubno razmerje — širok ali kvadraten. Prikazan v galeriji in na foto steni.</p>
             <FileBtn kind="logo" label="Naloži logotip" current={a.logoUrl} onPick={upload} />
           </div>
 
@@ -225,7 +225,7 @@ export function EventAppearanceCard({ albumSlug, coupleName }: { albumSlug: stri
               <div className="absolute inset-0" style={{ background: "linear-gradient(0deg, rgba(10,14,25,.86) 0%, rgba(10,14,25,.25) 55%, rgba(10,14,25,.35) 100%)" }} />
               {a.logoUrl && (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img src={a.logoUrl} alt="" className="absolute top-3 left-1/2 -translate-x-1/2 w-9 h-9 rounded-lg object-cover border border-white/40" />
+                <img src={a.logoUrl} alt="" className="absolute top-3 left-1/2 -translate-x-1/2 h-9 w-auto max-w-[60%] rounded-lg object-contain border border-white/40" />
               )}
               <div className="absolute inset-x-3 bottom-3">
                 <p className="text-white text-lg leading-tight" style={{ fontFamily: WELCOME_FONT_STACKS[a.welcomeFont] }}>{title}</p>

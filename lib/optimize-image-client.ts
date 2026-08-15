@@ -18,10 +18,16 @@
 
 export type AppearanceKind = "logo" | "background" | "welcome";
 
-/** Longest edge after downscale. Logos render small; backgrounds at
- *  phone-screen size, where 1920px is already retina-grade. */
+/** Longest edge after downscale. Backgrounds render at phone-screen
+ *  size, where 1920px is already retina-grade.
+ *
+ *  Logos are capped higher than their display size looks like it needs
+ *  because scaling is by LONGEST edge: a wide 2000x300 wordmark capped
+ *  at 512 would come out only 77px tall, and it renders at 56px CSS —
+ *  i.e. blurry on any retina screen. 768 keeps wide marks sharp while
+ *  still being a tiny file. */
 const MAX_DIM: Record<AppearanceKind, number> = {
-  logo: 512,
+  logo: 768,
   background: 1920,
   welcome: 1920,
 };
