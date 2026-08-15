@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { WELCOME_FONT_STACKS, type WelcomeFont } from "@/lib/album-appearance";
+import { optimizeAppearanceImage, type AppearanceKind } from "@/lib/optimize-image-client";
 
 /**
  * Appearance & welcome-screen editor with a live phone preview — the
@@ -35,9 +36,38 @@ const FONTS: { id: WelcomeFont; label: string }[] = [
   { id: "classic", label: "Klasična" },
 ];
 
+/** Source files larger than this are refused before any work happens —
+ *  matches nothing real: cameras top out well under it, and anything
+ *  bigger is a mis-pick (video, RAW). */
+const MAX_SOURCE_MB = 25;
+
+/** Hoisted to module scope so it is a stable component: defined inside
+ *  EventAppearanceCard it was recreated on every render, which both
+ *  tripped react-hooks/static-components and remounted the file input on
+ *  each keystroke of the welcome form. */
+function FileBtn({ kind, label, current, onPick }: {
+  kind: AppearanceKind;
+  label: string;
+  current: string | null;
+  onPick: (kind: AppearanceKind, file: File) => void;
+}) {
+  return (
+    <label className="flex items-center gap-3 cursor-pointer">
+      {current
+        // eslint-disable-next-line @next/next/no-img-element
+        ? <img src={current} alt="" className="w-12 h-12 rounded-lg object-cover border border-gray-200" />
+        : <span className="w-12 h-12 rounded-lg border border-dashed border-gray-300 flex items-center justify-center text-gray-300 text-xl">+</span>}
+      <span className="text-xs font-semibold text-[#C9820A] underline underline-offset-2">{label}</span>
+      <input type="file" accept="image/jpeg,image/png,image/webp" className="hidden"
+        onChange={(e) => { const f = e.target.files?.[0]; if (f) onPick(kind, f); e.target.value = ""; }} />
+    </label>
+  );
+}
+
 export function EventAppearanceCard({ albumSlug, coupleName }: { albumSlug: string; coupleName: string }) {
   const [a, setA] = useState<Appearance>(EMPTY);
   const [saving, setSaving] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
   const debounce = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
@@ -64,30 +94,40 @@ export function EventAppearanceCard({ albumSlug, coupleName }: { albumSlug: stri
     }, 500);
   }
 
-  async function upload(kind: "logo" | "background" | "welcome", file: File) {
+  async function upload(kind: AppearanceKind, file: File) {
+    setUploadError(null);
+    if (file.size > MAX_SOURCE_MB * 1024 * 1024) {
+      setUploadError(`Slika je prevelika (največ ${MAX_SOURCE_MB} MB). Izberite manjšo datoteko.`);
+      return;
+    }
     setSaving(true);
     try {
+      // Downscale + re-encode to WebP in the browser: a phone photo
+      // becomes a few hundred KB before it ever leaves the device.
+      const { blob, contentType } = await optimizeAppearanceImage(file, kind);
+      if (blob.size > 10 * 1024 * 1024) {
+        setUploadError("Slika je tudi po optimizaciji prevelika (največ 10 MB).");
+        return;
+      }
       const res = await fetch(`/api/albums/${albumSlug}/appearance?kind=${kind}`, {
         method: "PUT",
-        headers: { "Content-Type": file.type },
-        body: file,
+        headers: { "Content-Type": contentType },
+        body: blob,
       });
-      const d = await res.json();
-      if (res.ok && d.appearance) setA({ ...EMPTY, ...d.appearance });
+      const d = await res.json().catch(() => null);
+      if (res.ok && d?.appearance) {
+        setA({ ...EMPTY, ...d.appearance });
+      } else {
+        // The old version swallowed failures silently — an oversized or
+        // unsupported file looked like "I uploaded and nothing happened".
+        setUploadError(d?.error === "Unsupported file type"
+          ? "Ta vrsta datoteke ni podprta. Uporabite JPG, PNG ali WebP."
+          : `Nalaganje ni uspelo${d?.error ? `: ${d.error}` : ""}. Poskusite znova.`);
+      }
+    } catch {
+      setUploadError("Nalaganje ni uspelo. Preverite povezavo in poskusite znova.");
     } finally { setSaving(false); }
   }
-
-  const FileBtn = ({ kind, label, current }: { kind: "logo" | "background" | "welcome"; label: string; current: string | null }) => (
-    <label className="flex items-center gap-3 cursor-pointer">
-      {current
-        // eslint-disable-next-line @next/next/no-img-element
-        ? <img src={current} alt="" className="w-12 h-12 rounded-lg object-cover border border-gray-200" />
-        : <span className="w-12 h-12 rounded-lg border border-dashed border-gray-300 flex items-center justify-center text-gray-300 text-xl">+</span>}
-      <span className="text-xs font-semibold text-[#C9820A] underline underline-offset-2">{label}</span>
-      <input type="file" accept="image/jpeg,image/png,image/webp" className="hidden"
-        onChange={(e) => { const f = e.target.files?.[0]; if (f) void upload(kind, f); e.target.value = ""; }} />
-    </label>
-  );
 
   const accent = a.accentColor ?? "#FFC94D";
   const title = a.welcomeTitle || coupleName;
@@ -101,13 +141,18 @@ export function EventAppearanceCard({ albumSlug, coupleName }: { albumSlug: stri
         {saving && <span className="text-xs text-gray-400">Shranjujem…</span>}
       </div>
       <p className="text-xs text-gray-500 mb-5">Logotip, barva in pozdravni zaslon, ki ga gost vidi ob prvem obisku.</p>
+      {uploadError && (
+        <p className="mb-4 rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-xs font-semibold text-red-700">
+          {uploadError}
+        </p>
+      )}
 
       <div className="grid lg:grid-cols-[1fr,220px] gap-6">
         <div className="space-y-5">
           <div>
             <p className="text-sm font-semibold text-gray-900 mb-1">Logotip eventa</p>
             <p className="text-xs text-gray-500 mb-2">Kvadraten (1:1), prikazan v galeriji in na foto steni.</p>
-            <FileBtn kind="logo" label="Naloži logotip" current={a.logoUrl} />
+            <FileBtn kind="logo" label="Naloži logotip" current={a.logoUrl} onPick={upload} />
           </div>
 
           <div>
@@ -129,7 +174,7 @@ export function EventAppearanceCard({ albumSlug, coupleName }: { albumSlug: stri
           <div>
             <p className="text-sm font-semibold text-gray-900 mb-1">Ozadje albuma</p>
             <p className="text-xs text-gray-500 mb-2">Slika v ozadju galerije; privzeto čista svetla podlaga.</p>
-            <FileBtn kind="background" label="Naloži ozadje" current={a.backgroundUrl} />
+            <FileBtn kind="background" label="Naloži ozadje" current={a.backgroundUrl} onPick={upload} />
           </div>
 
           <div className="pt-4 border-t border-gray-100">
@@ -162,7 +207,7 @@ export function EventAppearanceCard({ albumSlug, coupleName }: { albumSlug: stri
                     {FONTS.map((f) => <option key={f.id} value={f.id}>{f.label}</option>)}
                   </select>
                 </div>
-                <FileBtn kind="welcome" label="Ozadje pozdravnega zaslona" current={a.welcomeBgUrl} />
+                <FileBtn kind="welcome" label="Ozadje pozdravnega zaslona" current={a.welcomeBgUrl} onPick={upload} />
               </div>
             )}
           </div>

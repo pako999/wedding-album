@@ -83,6 +83,16 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ slug
     return NextResponse.json({ error: `Upload failed: ${msg}` }, { status: 502 });
   }
   const url = `${cdnUrl()}/${key}`;
-  await setAlbumAppearance(res.album.id, { [KINDS[kind]]: url });
+  // setAlbumAppearance never throws (a missing table must not break the
+  // gallery) so it MUST be checked here. Ignoring it returned 200 with
+  // appearance:null, which the UI read as "nothing changed" — the upload
+  // looked like it silently did nothing.
+  const stored = await setAlbumAppearance(res.album.id, { [KINDS[kind]]: url });
+  if (!stored) {
+    return NextResponse.json(
+      { error: "Image uploaded but could not be saved. Please try again." },
+      { status: 503 },
+    );
+  }
   return NextResponse.json({ url, appearance: await getAlbumAppearance(res.album.id) });
 }
