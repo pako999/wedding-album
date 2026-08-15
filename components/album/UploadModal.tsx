@@ -238,7 +238,7 @@ async function uploadFile(
 
   // ── Bunny Storage (XHR proxy — real byte-level progress) ────────────────────
   if (urlData.type === "bunny-storage") {
-    const publicUrl = await xhrUpload(
+    const publicUrl = await retryingXhrUpload(
       `/api/albums/${albumSlug}/bunny-upload?key=${encodeURIComponent(urlData.key)}`,
       file,
       // Scale to 0-90 % so the final save step fills the last 10 %
@@ -390,6 +390,64 @@ async function uploadViaCFStream(
  */
 const STALL_MS = 25_000; // 25 s — typical iOS background grace period is ~30 s
 
+interface UploadHttpError extends Error { status?: number; retryAfterMs?: number }
+
+/**
+ * Statuses worth retrying. 429 and 503 are Bunny's documented
+ * back-pressure responses; 502/504 and status 0 are transient transport
+ * failures. Everything else (400 wrong type, 401 password, 413 too big)
+ * is permanent — retrying only wastes the guest's battery.
+ */
+const RETRIABLE = new Set([0, 429, 500, 502, 503, 504]);
+
+/** 2s, 5s, 10s, 20s — then give up and let the guest retry by hand. */
+const BACKOFF_MS = [2_000, 5_000, 10_000, 20_000];
+
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+/**
+ * Photo upload with back-pressure handling.
+ *
+ * At a 1000-guest event the storage backend WILL push back: Bunny caps
+ * concurrent connections per storage zone and answers 429 / 503 SlowDown
+ * beyond it, and a venue where everyone shares one Wi-Fi looks to it like
+ * a single IP. Without this wrapper the guest just saw a red error and a
+ * photo that never arrived.
+ *
+ * Honours Retry-After when the server sends it, otherwise exponential
+ * backoff. Each delay gets up to 1s of random jitter so a room full of
+ * phones that failed together does not retry in lockstep and cause the
+ * next thundering herd.
+ *
+ * STALL is deliberately NOT retried here — it means the phone was locked
+ * or backgrounded, and the visibility-change handler already owns that
+ * case.
+ */
+async function retryingXhrUpload(
+  url: string,
+  file: File,
+  onProgress: (pct: number) => void,
+  albumPassword = "",
+): Promise<string> {
+  let lastErr: unknown;
+  for (let attempt = 0; attempt <= BACKOFF_MS.length; attempt++) {
+    try {
+      return await xhrUpload(url, file, onProgress, albumPassword);
+    } catch (err) {
+      lastErr = err;
+      const e = err as UploadHttpError;
+      if (e?.message === "STALL") throw err;
+      const status = e?.status;
+      if (status === undefined || !RETRIABLE.has(status)) throw err;
+      if (attempt === BACKOFF_MS.length) break;
+      const base = e.retryAfterMs ?? BACKOFF_MS[attempt];
+      await sleep(base + Math.random() * 1000);
+      onProgress(0); // restarting this file — don't leave a stale bar
+    }
+  }
+  throw lastErr;
+}
+
 function xhrUpload(
   url: string,
   file: File,
@@ -431,11 +489,25 @@ function xhrUpload(
           reject(new Error("Invalid response from storage proxy"));
         }
       } else {
-        reject(new Error(`Upload failed (${xhr.status}): ${xhr.responseText.slice(0, 200)}`));
+        // Attach the status + Retry-After so retryingXhrUpload can tell a
+        // transient "server is busy" apart from a permanent rejection.
+        const err = new Error(`Upload failed (${xhr.status}): ${xhr.responseText.slice(0, 200)}`) as UploadHttpError;
+        err.status = xhr.status;
+        const ra = xhr.getResponseHeader("Retry-After");
+        if (ra) {
+          const secs = Number(ra);
+          if (Number.isFinite(secs)) err.retryAfterMs = secs * 1000;
+        }
+        reject(err);
       }
     });
 
-    xhr.addEventListener("error", () => { clearStall(); reject(new Error("Network error during upload")); });
+    xhr.addEventListener("error", () => {
+      clearStall();
+      const err = new Error("Network error during upload") as UploadHttpError;
+      err.status = 0;                       // 0 = transport failure, retriable
+      reject(err);
+    });
     xhr.addEventListener("abort", () => { clearStall(); reject(new Error("STALL")); });
 
     xhr.open("PUT", url);

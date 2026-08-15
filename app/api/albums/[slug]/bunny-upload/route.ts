@@ -167,6 +167,25 @@ export async function PUT(
     if (!bunnyRes.ok) {
       const msg = await bunnyRes.text().catch(() => bunnyRes.statusText);
       console.error(`[bunny-upload] Bunny error ${bunnyRes.status}:`, msg);
+
+      // Back-pressure must reach the client INTACT. Bunny caps concurrent
+      // connections per storage zone and answers 429 / 503 SlowDown past
+      // it — at a 1000-guest event on one venue Wi-Fi (one public IP to
+      // Bunny) that is an expected condition, not a failure. Flattening
+      // it to 502 and dropping Retry-After threw away the one piece of
+      // information the client needs to pace its retry, so the status and
+      // the header are now passed through and the uploader honours them.
+      if (bunnyRes.status === 429 || bunnyRes.status === 503) {
+        const retryAfter = bunnyRes.headers.get("retry-after");
+        return NextResponse.json(
+          { error: "Storage busy, retrying", retriable: true },
+          {
+            status: bunnyRes.status,
+            headers: retryAfter ? { "Retry-After": retryAfter } : undefined,
+          },
+        );
+      }
+
       return NextResponse.json(
         { error: `Storage error (${bunnyRes.status}): ${msg}` },
         { status: 502 },
