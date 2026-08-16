@@ -28,9 +28,15 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   if (!(VALID as string[]).includes(lang)) return {};
   const langCode = lang as LangCode;
 
+  // Page-name only: the layout title template appends "| Guestcam", so a
+  // brand here rendered doubled ("Blog — Guestcam | Guestcam").
   const titles: Record<LangCode, string> = {
-    sl: "Blog — Guestcam", hr: "Blog — Guestcam", sr: "Blog — Guestcam",
-    de: "Blog — Guestcam", en: "Blog — Guestcam", es: "Blog — Guestcam",
+    sl: "Blog: QR kode in fotografije z dogodkov",
+    hr: "Blog: QR kodovi i fotografije s događaja",
+    sr: "Blog: QR kodovi i fotografije sa događaja",
+    de: "Blog: QR-Codes und Eventfotos",
+    en: "Blog: QR codes and event photos",
+    es: "Blog: códigos QR y fotos de eventos",
   };
   const descriptions: Record<LangCode, string> = {
     sl: "Nasveti in vodniki za zbiranje fotografij gostov.",

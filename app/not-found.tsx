@@ -18,7 +18,7 @@ import { GuestcamLogo } from "@/components/GuestcamLogo";
  */
 
 export const metadata: Metadata = {
-  title: "Stran ni najdena · Guestcam",
+  title: "Stran ni najdena",
   description: "Iskane strani ni mogoče najti.",
   robots: { index: false, follow: false },
 };
