@@ -6,6 +6,7 @@ import { AdminShell } from "@/components/admin/AdminShell";
 // Shared cold-start bootstrap (also used by guest album pages via
 // withSchemaHealing) — see lib/db/bootstrap.ts for the full story.
 import { ensureMigrations } from "@/lib/db/bootstrap";
+import { HideCookiebot } from "@/components/HideCookiebot";
 
 export const dynamic = "force-dynamic";
 
@@ -71,6 +72,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
 
   return (
     <AdminShell nav={NAV} adminEmail={admin.email}>
+      <HideCookiebot />
       {children}
     </AdminShell>
   );
