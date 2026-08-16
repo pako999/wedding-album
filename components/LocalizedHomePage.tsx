@@ -3,7 +3,6 @@ import { auth } from "@clerk/nextjs/server";
 import { LanguageSwitcher, HOME_HREFLANG, type LangCode } from "@/components/LanguageSwitcher";
 import { SeoFooter } from "@/components/SeoFooter";
 import { GuestcamLogo } from "@/components/GuestcamLogo";
-import { EventCard } from "@/components/EventCard";
 import { HeaderAuthButtons } from "@/components/HeaderAuthButtons";
 import { HomeMobileMenu } from "@/components/HomeMobileMenu";
 import { PrintShowroom } from "@/components/PrintShowroom";
@@ -770,35 +769,6 @@ export async function LocalizedHomePage({ lang }: { lang: Lang }) {
       {/* Stats band removed: 500+ / 5.0 / 25.000+ were unverifiable
           numbers presented as metrics, with emoji as icons — the same
           fabricated-proof pattern removed from the Slovenian page. */}
-
-      {/* Event types */}
-      <section className="max-w-5xl mx-auto px-6 pb-20 text-center">
-        <h2 className="text-3xl sm:text-4xl font-extrabold text-[color:var(--ink)] mb-4 leading-tight">{t.eventsTitle}</h2>
-        <p className="text-gray-500 max-w-xl mx-auto leading-relaxed mb-10">{t.eventsSubtitle}</p>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
-          {t.eventsList.map(({ label }, i) => {
-            const imgKeys = ["wedding","birthday","babyshower","gromparty","party","business","krst","matura"];
-            const imgBgs  = [
-              "linear-gradient(135deg,#fce7e9,#f9cdd2)",
-              "linear-gradient(135deg,#fef3c7,#fde68a)",
-              "linear-gradient(135deg,#fce7f3,#f9a8d4)",
-              "linear-gradient(135deg,#1e2a3a,#2d3f55)",
-              "linear-gradient(135deg,#f3e8ff,#d8b4fe)",
-              "linear-gradient(135deg,#f1f5f9,#cbd5e1)",
-              "linear-gradient(135deg,#e0f2fe,#7dd3fc)",
-              "linear-gradient(135deg,#dcfce7,#86efac)",
-            ];
-            return (
-              <EventCard
-                key={label}
-                imgKey={imgKeys[i] ?? "wedding"}
-                label={label}
-                bg={imgBgs[i] ?? imgBgs[0]}
-              />
-            );
-          })}
-        </div>
-      </section>
 
 
       {/* How it works */}

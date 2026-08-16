@@ -7,7 +7,6 @@ import { DemoButton } from "@/components/DemoButton";
 import { HomeMobileMenu } from "@/components/HomeMobileMenu";
 import { LanguageSwitcher, HOME_HREFLANG } from "@/components/LanguageSwitcher";
 import { HeaderAuthButtons } from "@/components/HeaderAuthButtons";
-import { EventCard } from "@/components/EventCard";
 import { TrackViewContent } from "@/components/TrackViewContent";
 import { safeJsonLd } from "@/lib/seo/jsonld-safe";
 import { WallMiniDemo } from "@/components/WallMiniDemo";
@@ -424,28 +423,6 @@ export default async function HomePage() {
           metrics are exactly the fake-statistics pattern the brief bans,
           and it used emoji as iconography. Real proof (named couples,
           actual counts) can replace it when the numbers can be sourced. */}
-
-      {/* ── Event types ─────────────────────────────────────────────────────── */}
-      <section className="max-w-5xl mx-auto px-6 pb-20 text-center">
-        <h2 className="text-3xl sm:text-4xl font-extrabold text-[color:var(--ink)] mb-4 leading-tight">Za vsak poseben trenutek</h2>
-        <p className="text-gray-500 max-w-xl mx-auto leading-relaxed mb-10">
-          Guestcam zbira fotografije vaših gostov — za poroke, rojstne dneve, baby shower, obletnice, poslovne zabave in vsak dogodek, ki si zasluži spomin.
-        </p>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
-          {([
-            { key: "wedding",     label: "Poroka",          bg: "var(--hairline)" },
-            { key: "birthday",    label: "Rojstni dan",     bg: "var(--hairline)" },
-            { key: "babyshower",  label: "Baby shower",     bg: "var(--hairline)" },
-            { key: "gromparty",   label: "Fantovščina",     bg: "var(--hairline)" },
-            { key: "party",       label: "Zabava",          bg: "var(--hairline)" },
-            { key: "business",    label: "Poslovna zabava", bg: "var(--hairline)" },
-            { key: "krst",        label: "Krst",            bg: "var(--hairline)" },
-            { key: "matura",      label: "Matura",          bg: "var(--hairline)" },
-          ] as const).map(({ key, label, bg }) => (
-            <EventCard key={key} imgKey={key} label={label} bg={bg} />
-          ))}
-        </div>
-      </section>
 
       {/* ── Print Templates ─────────────────────────────────────────────────── */}
 
