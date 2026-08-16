@@ -11,6 +11,7 @@ import { TrackViewContent } from "@/components/TrackViewContent";
 import { safeJsonLd } from "@/lib/seo/jsonld-safe";
 import { WallMiniDemo } from "@/components/WallMiniDemo";
 import { NordicHero } from "@/components/NordicHero";
+import { EventSpotlight } from "@/components/EventSpotlight";
 import { STAND_VARIANTS, eur } from "@/lib/print-service";
 import { PrintShowroom } from "@/components/PrintShowroom";
 import { BusinessSection } from "@/components/BusinessSection";
@@ -357,6 +358,9 @@ export default async function HomePage() {
           </div>
         }
       />
+
+      {/* First big public event — approved copy, banner links to Eventim. */}
+      <EventSpotlight />
 
       <section className="overflow-hidden">
         {/* ── Trust band — full-width navy, structured like the ad ─────── */}

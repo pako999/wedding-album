@@ -17,10 +17,9 @@ import Image from "next/image";
 const TICKETS_URL =
   "https://www.eventim.si/event/nina-badric-terasa-kino-centra-maribox-21971077/";
 
-/** Set when the real photo lands in public/events/. */
 const IMAGE = "/events/nina-badric-maribox.webp";
-/** width/height of the converted WebP — filled in with the real file. */
-const ASPECT = { w: 1600, h: 900 };
+/** Real dimensions of the converted banner (1600x619 WebP, 73 KB). */
+const ASPECT = { w: 1600, h: 619 };
 
 export function EventSpotlight() {
   return (
@@ -50,7 +49,7 @@ export function EventSpotlight() {
         <span className="block overflow-hidden rounded-[24px] shadow-xl transition-transform duration-200 group-hover:scale-[1.01] sm:rounded-[32px]">
           <Image
             src={IMAGE}
-            alt="Koncert Nine Badrič na terasi Kino centra Maribox v Mariboru"
+            alt="Nina Badrič, 18. 9. ob 20. uri, terasa Kino centra Maribox: Guestcam bo z vami na dogodku"
             width={ASPECT.w}
             height={ASPECT.h}
             sizes="(max-width: 1024px) 100vw, 1024px"
