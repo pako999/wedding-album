@@ -1,0 +1,49 @@
+{
+  "translationKey": "nina-badric-maribox-2026",
+  "publishedAt": "2026-08-17",
+  "updatedAt": "2026-08-17",
+  "author": "Guestcam Team",
+  "category": "novice",
+  "readingTime": 2,
+  "coverImage": "/events/nina-badric-maribox.webp",
+  "slug": "guestcam-at-nina-badric-concert",
+  "title": "Guestcam live at the Nina Badrić concert in Maribor",
+  "description": "On 18 September at 8 pm, Guestcam will collect visitors' photos at the Nina Badrić concert on the Maribox cinema terrace.",
+  "tags": [
+    "news",
+    "concert",
+    "photo wall",
+    "Maribor"
+  ],
+  "tldr": "Guestcam will be at the Nina Badrić concert on the Maribox cinema terrace in Maribor on 18 September at 8 pm. Visitors share photos via QR code, and the best moments appear live on the photo wall.",
+  "coverAlt": "Nina Badrić, 18 September at 8 pm, Maribox cinema terrace",
+  "content": [
+    {
+      "type": "p",
+      "text": "Guestcam is heading to its first big public event: the Nina Badrić concert on the Maribox cinema terrace in Maribor, on 18 September at 8 pm."
+    },
+    {
+      "type": "h2",
+      "text": "How it works at the concert"
+    },
+    {
+      "type": "ul",
+      "items": [
+        "QR codes will be around the venue; visitors scan them with their phone.",
+        "Photos and videos upload to the shared event gallery, with no app and no signup.",
+        "The best moments appear live on the photo wall.",
+        "Everything in full quality, stored in the EU."
+      ]
+    },
+    {
+      "type": "callout",
+      "text": "Coming to the concert? Find the QR code at the venue and add your photos to the shared memory of the night."
+    },
+    {
+      "type": "cta",
+      "text": "Tickets on Eventim.si",
+      "href": "https://www.eventim.si/event/nina-badric-terasa-kino-centra-maribox-21971077/"
+    }
+  ],
+  "lang": "en"
+}
