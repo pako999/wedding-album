@@ -5,6 +5,18 @@ import { translations, type Lang } from "@/lib/i18n/translations";
 import { LEAD_COPY } from "@/lib/i18n/lead-translations";
 import { GuestReferralCta } from "@/components/album/GuestReferralCta";
 
+/** Stable per-browser id for upload rate-shaping (not security). Persisted
+ *  so a guest's whole session shares one bucket. crypto.randomUUID is CSPRNG
+ *  and available in every browser that can upload here. */
+function uploadClientId(): string {
+  try {
+    const KEY = "gc-upload-client";
+    let v = localStorage.getItem(KEY);
+    if (!v) { v = crypto.randomUUID(); localStorage.setItem(KEY, v); }
+    return v;
+  } catch { return "anon"; }
+}
+
 interface Props {
   albumSlug: string;
   albumId: string;
@@ -198,7 +210,7 @@ async function uploadFile(
   // 1. Ask server which upload path to use
   const urlRes = await fetch(`/api/albums/${albumSlug}/upload-url`, {
     method: "POST",
-    headers: { "Content-Type": "application/json", "x-album-password": albumPassword },
+    headers: { "Content-Type": "application/json", "x-album-password": albumPassword, "x-upload-client": uploadClientId() },
     body: JSON.stringify({ filename: file.name, contentType: file.type, size: file.size }),
   });
   if (!urlRes.ok) {

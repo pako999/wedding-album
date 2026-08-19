@@ -23,3 +23,16 @@ export const db = new Proxy({} as NeonHttpDatabase<typeof schema>, {
     return (getDb() as unknown as Record<string | symbol, unknown>)[prop];
   },
 });
+
+// Raw Neon tagged-template client, for the few places that need SQL Drizzle
+// doesn't express cleanly — e.g. `FOR UPDATE SKIP LOCKED` atomic job claims
+// in the storage deletion queue. Lazily created and cached like getDb().
+let _sql: NeonQueryFunction<false, false> | null = null;
+export function getSql(): NeonQueryFunction<false, false> {
+  if (!_sql) {
+    const url = process.env.DATABASE_URL;
+    if (!url) throw new Error("DATABASE_URL environment variable is not set");
+    _sql = neon(url);
+  }
+  return _sql;
+}

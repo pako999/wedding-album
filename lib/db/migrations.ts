@@ -735,6 +735,44 @@ export async function runMigrations() {
        AND couple_name <> ''
   `);
 
+  // ── Distributed rate-limit buckets ────────────────────────────────────────
+  // Fixed-window counters shared across Vercel instances. Key is
+  // namespace + hashed identifier + window start (never a raw IP/email).
+  // Reads/writes use leased quota so a warm instance does ~1 DB op per N
+  // requests, not one per request. Expired buckets are swept by the hourly
+  // maintenance cron, never on a user request. See lib/rate-limit.ts.
+  await run("create rate_limit_buckets", (q) => q`
+    CREATE TABLE IF NOT EXISTS rate_limit_buckets (
+      bucket_key   TEXT PRIMARY KEY,          -- namespace:idHash:windowStart
+      count        INTEGER NOT NULL DEFAULT 0,
+      expires_at   TIMESTAMPTZ NOT NULL
+    )
+  `);
+  await run("rate_limit_buckets expiry", (q) => q`CREATE INDEX IF NOT EXISTS rate_limit_buckets_expiry ON rate_limit_buckets (expires_at)`);
+
+  // ── Durable storage deletion queue ────────────────────────────────────────
+  // A deletion job is persisted BEFORE the live photo row is removed, so a
+  // failed remote delete never becomes an orphaned file with no pointer.
+  // dedup_key (provider + target hash) makes re-queuing the same target a
+  // no-op. See lib/storage/deletion-queue.ts.
+  await run("create storage_deletion_jobs", (q) => q`
+    CREATE TABLE IF NOT EXISTS storage_deletion_jobs (
+      id           TEXT PRIMARY KEY,
+      provider     VARCHAR(16) NOT NULL,       -- 'bunny-storage' | 'bunny-stream'
+      target       TEXT NOT NULL,              -- blobUrl or stream video id
+      dedup_key    TEXT NOT NULL,              -- provider + sha256(target)
+      status       VARCHAR(12) NOT NULL DEFAULT 'pending', -- pending|processing|dead
+      attempts     INTEGER NOT NULL DEFAULT 0,
+      not_before   TIMESTAMPTZ NOT NULL DEFAULT NOW(),      -- backoff / safety delay
+      locked_at    TIMESTAMPTZ,               -- claim time, for stale-lock recovery
+      last_error   TEXT,
+      created_at   TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      updated_at   TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )
+  `);
+  await run("storage_deletion_jobs dedup",  (q) => q`CREATE UNIQUE INDEX IF NOT EXISTS storage_deletion_jobs_dedup ON storage_deletion_jobs (dedup_key)`);
+  await run("storage_deletion_jobs claim",  (q) => q`CREATE INDEX IF NOT EXISTS storage_deletion_jobs_claim ON storage_deletion_jobs (status, not_before)`);
+
   if (failures === 0) {
     console.log("[migrations] ✓ DB schema up to date");
   } else {
