@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { randomBase36 } from "@/lib/secure-random";
 import { db } from "@/lib/db";
 import { albums, userPlanOverrides } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
@@ -120,7 +121,7 @@ export async function POST(
     try {
       const firstLast = [clerkUser?.firstName, clerkUser?.lastName].filter(Boolean).join(" ").trim();
       const coupleName = firstLast || ownerEmail?.split("@")[0] || "Moja prva galerija";
-      const suffix = Math.random().toString(36).slice(2, 6);
+      const suffix = randomBase36(4);
       const baseSlug = slugify(coupleName) || "galerija";
       const slug = `${baseSlug}-${suffix}`;
 

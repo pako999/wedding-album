@@ -73,7 +73,14 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const planBase = PLAN_LABELS[planId] ?? { name: planId, price: 0 };
+  // Reject unknown plans instead of falling back to price 0: the old
+  // `?? { price: 0 }` let a client POST any planId and receive a €0
+  // invoice for a paid plan. Plan identity and price come only from the
+  // canonical PLAN_LABELS catalog, never from the request.
+  const planBase = PLAN_LABELS[planId];
+  if (!planBase) {
+    return NextResponse.json({ error: "Unknown plan" }, { status: 400 });
+  }
   let finalPrice = planBase.price;
   let discountCodeId: string | undefined;
   let discountPercent: number | undefined;
@@ -85,6 +92,13 @@ export async function POST(req: NextRequest) {
       discountCodeId = disc.discountCodeId;
       discountPercent = disc.percentOff;
     }
+  }
+
+  // A valid paid plan can never legitimately reach a non-positive total;
+  // if a discount does, treat it as an abuse/misconfiguration and refuse
+  // rather than persist a €0 (or negative) invoice.
+  if (!Number.isFinite(finalPrice) || finalPrice <= 0) {
+    return NextResponse.json({ error: "Invalid order total" }, { status: 400 });
   }
 
   const plan = { name: planBase.name, price: finalPrice };

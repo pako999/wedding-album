@@ -1,6 +1,7 @@
 "use server";
 
 import { auth, currentUser } from "@clerk/nextjs/server";
+import { randomBase36 } from "@/lib/secure-random";
 import { redirect } from "next/navigation";
 import { and, desc, eq, gt, ne } from "drizzle-orm";
 import { db } from "@/lib/db";
@@ -64,7 +65,7 @@ export async function createAlbum(formData: FormData) {
   }
 
   // Unique slug: event-name-XXXX
-  const suffix = Math.random().toString(36).slice(2, 6);
+  const suffix = randomBase36(4);
   const slug   = `${slugify(coupleName)}-${suffix}`;
 
   // Inherit the active paid plan from any existing album owned by this user.
