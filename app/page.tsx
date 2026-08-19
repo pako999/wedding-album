@@ -12,6 +12,7 @@ import { safeJsonLd } from "@/lib/seo/jsonld-safe";
 import { WallMiniDemo } from "@/components/WallMiniDemo";
 import { NordicHero } from "@/components/NordicHero";
 import { EventSpotlight } from "@/components/EventSpotlight";
+import { PromoVideo } from "@/components/PromoVideo";
 import { STAND_VARIANTS, eur } from "@/lib/print-service";
 import { PrintShowroom } from "@/components/PrintShowroom";
 import { BusinessSection } from "@/components/BusinessSection";
@@ -358,6 +359,9 @@ export default async function HomePage() {
           </div>
         }
       />
+
+      {/* How-it-works promo video (SL only — the clip is Slovenian). */}
+      <PromoVideo />
 
       {/* First big public event — approved copy, banner links to Eventim. */}
       <EventSpotlight />
