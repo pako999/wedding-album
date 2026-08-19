@@ -73,9 +73,14 @@ export async function checkRateLimit(
   namespace: string,
   limit: number,
   windowMs: number,
+  /** Explicit per-caller identifier (e.g. a browser UUID). When omitted the
+   *  key falls back to the client IP. Without this, callers that only vary
+   *  the namespace share one bucket per IP — so many guests behind one venue
+   *  IP would collide in a single bucket instead of each getting their own. */
+  identifier?: string,
 ): Promise<RateLimitResult> {
-  const ip = await getClientIp();
-  const key = `${namespace}:${ip}`;
+  const who = identifier ?? (await getClientIp());
+  const key = `${namespace}:${who}`;
   const now = Date.now();
   const cutoff = now - windowMs;
 

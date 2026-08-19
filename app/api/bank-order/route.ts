@@ -81,6 +81,14 @@ export async function POST(req: NextRequest) {
   if (!planBase) {
     return NextResponse.json({ error: "Unknown plan" }, { status: 400 });
   }
+  // The base plan price must itself be positive — this is what catches a
+  // bogus plan slipping past the catalog. A €0 TOTAL is only legitimate
+  // when it comes from a VALIDATED discount (admins may create up to 100%
+  // off), so that case is allowed below.
+  if (!Number.isFinite(planBase.price) || planBase.price <= 0) {
+    return NextResponse.json({ error: "Invalid plan price" }, { status: 400 });
+  }
+
   let finalPrice = planBase.price;
   let discountCodeId: string | undefined;
   let discountPercent: number | undefined;
@@ -88,16 +96,15 @@ export async function POST(req: NextRequest) {
   if (discountCode) {
     const disc = await validateDiscount(discountCode, planId);
     if (disc.valid) {
-      finalPrice = disc.finalPrice;
+      finalPrice = disc.finalPrice; // may be 0 for a valid 100% discount
       discountCodeId = disc.discountCodeId;
       discountPercent = disc.percentOff;
     }
   }
 
-  // A valid paid plan can never legitimately reach a non-positive total;
-  // if a discount does, treat it as an abuse/misconfiguration and refuse
-  // rather than persist a €0 (or negative) invoice.
-  if (!Number.isFinite(finalPrice) || finalPrice <= 0) {
+  // A negative total is never valid; 0 is valid only via the checked discount
+  // above (planBase.price was already asserted positive).
+  if (!Number.isFinite(finalPrice) || finalPrice < 0) {
     return NextResponse.json({ error: "Invalid order total" }, { status: 400 });
   }
 

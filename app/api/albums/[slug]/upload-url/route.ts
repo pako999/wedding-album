@@ -58,8 +58,8 @@ export async function POST(
   //    catches a single runaway loop instantly.
   const clientId = req.headers.get("x-upload-client")?.slice(0, 64);
   const shaper = clientId
-    ? await checkRateLimit(`upload-url:c`, 40, 60_000)
-    : await checkRateLimit(`upload-url:ip`, 15, 60_000);
+    ? await checkRateLimit("upload-url:c", 40, 60_000, clientId) // per browser
+    : await checkRateLimit("upload-url:ip", 15, 60_000);          // per IP fallback
   if (!shaper.ok) return shaper.response;
 
   // 2. Authoritative venue/IP ceiling (distributed, shared across all
