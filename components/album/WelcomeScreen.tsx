@@ -27,10 +27,13 @@ export function WelcomeScreen({ albumSlug, title, text, button, bgUrl, fontStack
   const [name, setName] = useState(initialName);
 
   useEffect(() => {
+    // First-visit check must run on the client (localStorage is unavailable
+    // during SSR), so the setState-in-effect here is intentional and correct.
+    /* eslint-disable react-hooks/set-state-in-effect */
     try {
       if (!localStorage.getItem(storageKey)) setVisible(true);
     } catch { setVisible(true); }
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- SSR-safe first-visit check
+    /* eslint-enable react-hooks/set-state-in-effect */
   }, [storageKey]);
 
   if (!visible) return null;

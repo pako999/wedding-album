@@ -1,0 +1,40 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  quality-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      # Fail fast on regressions of the security/cost hardening.
+      - name: Security regression audit
+        run: node scripts/security-audit.mjs
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Typecheck
+        run: npx tsc --noEmit
+
+      # Production dependency vulnerabilities (prod deps only; dev noise excluded).
+      - name: Dependency audit (prod, high+)
+        run: npm audit --omit=dev --audit-level=high
+        continue-on-error: true
+
+      - name: Production build
+        run: npm run build
+        env:
+          # Build must succeed without real secrets; the app reads env at
+          # request time, not build time. A dummy APP_URL keeps SITE_URL valid.
+          NEXT_PUBLIC_APP_URL: https://www.guestcam.si
