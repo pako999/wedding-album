@@ -14,7 +14,7 @@
  *
  * Env vars expected:
  *   ANTHROPIC_API_KEY  — required
- *   ANTHROPIC_MODEL    — optional, defaults to "claude-sonnet-4-6"
+ *   ANTHROPIC_MODEL    — optional, defaults to "claude-sonnet-5"
  */
 import fs from "node:fs/promises";
 import path from "node:path";
@@ -51,7 +51,7 @@ async function getNextTopic(arg: string | undefined): Promise<{ topic: string; p
 async function callClaude(topic: string): Promise<unknown> {
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) throw new Error("ANTHROPIC_API_KEY not set");
-  const model = process.env.ANTHROPIC_MODEL ?? "claude-sonnet-4-6";
+  const model = process.env.ANTHROPIC_MODEL ?? "claude-sonnet-5";
 
   const prompt = `You are a wedding-tech content writer for Guestcam (guestcam.si), a QR-code wedding photo gallery SaaS targeting Slovenia + EU markets.
 
