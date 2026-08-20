@@ -1594,7 +1594,7 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
                         placeholder={t.yourNamePlaceholder}
                         autoComplete="given-name"
                         autoFocus
-                        className="flex-1 px-3 py-2 border rounded-xl text-sm outline-none transition-all"
+                        className="min-w-0 flex-1 px-3 py-2 border rounded-xl text-sm outline-none transition-all"
                         style={{ borderColor: BRAND.border }}
                       />
                       <button
@@ -1793,7 +1793,12 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
                       onFocus={e => e.currentTarget.scrollIntoView({ block: "center", behavior: "smooth" })}
                       placeholder={t.yourNamePlaceholder}
                       autoComplete="given-name"
-                      className="flex-1 px-3.5 py-2.5 bg-white border rounded-full text-sm outline-none transition-all focus:ring-2"
+                      // min-w-0 is load-bearing: without it the input keeps its
+                      // ~20ch intrinsic width and refuses to shrink, pushing the
+                      // OK button off the right edge on narrow phones (the
+                      // comment input below already has it). flex-1 alone is not
+                      // enough — a flex item's default min-width is auto.
+                      className="min-w-0 flex-1 px-3.5 py-2.5 bg-white border rounded-full text-sm outline-none transition-all focus:ring-2"
                       style={{ borderColor: lightboxNamePrompt ? "#EF4444" : BRAND.border }}
                     />
                     <button
