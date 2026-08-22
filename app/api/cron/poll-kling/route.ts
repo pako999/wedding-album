@@ -15,17 +15,15 @@ export const maxDuration = 60;
  * Also called client-side by FilmStudio as a fallback.
  */
 export async function GET(req: NextRequest) {
-  // Protect: only Vercel Cron or internal calls (Authorization header or secret param)
-  const authHeader = req.headers.get("authorization");
-  const secret = req.nextUrl.searchParams.get("secret");
+  // Authorization: Bearer <CRON_SECRET> only. The old `?secret=` query
+  // fallback was dropped: query strings land in access logs, referrers
+  // and browser history, and the "called client-side by FilmStudio"
+  // comment that justified it referenced a caller that no longer exists.
   const cronSecret = process.env.CRON_SECRET;
-  // Fail closed if CRON_SECRET is not configured.
   if (!cronSecret) {
     return NextResponse.json({ error: "CRON_SECRET not configured" }, { status: 503 });
   }
-  const isVercelCron = authHeader === `Bearer ${cronSecret}`;
-  const isManual     = secret === cronSecret;
-  if (!isVercelCron && !isManual) {
+  if (req.headers.get("authorization") !== `Bearer ${cronSecret}`) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

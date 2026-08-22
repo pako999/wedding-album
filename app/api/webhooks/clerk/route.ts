@@ -46,6 +46,17 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Missing svix headers" }, { status: 400 });
   }
 
+  // Reject stale/replayed deliveries. svix-timestamp is Unix seconds and
+  // is part of the signed payload, so it cannot be tampered without
+  // breaking the signature — but a captured VALID request could be
+  // replayed indefinitely without a freshness window. Svix's own
+  // libraries use a 5-minute tolerance; match it.
+  const tsSec = Number(svixTimestamp);
+  if (!Number.isFinite(tsSec) || Math.abs(Date.now() / 1000 - tsSec) > 300) {
+    console.error("[clerk webhook] stale timestamp");
+    return NextResponse.json({ error: "Stale webhook" }, { status: 400 });
+  }
+
   const body = await req.text();
 
   // Verify signature. Svix sends one or more space-separated entries

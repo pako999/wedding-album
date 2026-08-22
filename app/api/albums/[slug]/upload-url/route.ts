@@ -22,7 +22,7 @@ import {
   createBunnyStreamUpload,
 } from "@/lib/storage/bunny";
 import { hashAlbumPassword, needsRehash, verifyAlbumPassword } from "@/lib/album-password";
-import { checkRateLimit } from "@/lib/rate-limit";
+import { checkRateLimit, checkDistributedLimit, getClientIp } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
 
@@ -49,12 +49,31 @@ export async function POST(
 ) {
   const { slug } = await params;
 
-  // Rate limit — protects against album-password brute force and
-  // photo-count exhaustion. 30 upload URLs / minute per IP is generous
-  // for real batch uploads (guests dragging in 20+ photos) but stops
-  // a script hitting the endpoint thousands of times.
-  const rl = await checkRateLimit("upload-url", 30, 60_000);
-  if (!rl.ok) return rl.response;
+  // Two-layer rate limit.
+  //
+  // 1. Per-browser shaping (in-memory, per-instance): each device has an
+  //    x-upload-client UUID; normal batch uploads (20+ photos dragged in)
+  //    stay well under 40/min. Clients with no UUID (old/scripted) fall
+  //    back to their IP under a tighter ceiling. This layer is cheap and
+  //    catches a single runaway loop instantly.
+  const clientId = req.headers.get("x-upload-client")?.slice(0, 64);
+  const shaper = clientId
+    ? await checkRateLimit("upload-url:c", 40, 60_000, clientId) // per browser
+    : await checkRateLimit("upload-url:ip", 15, 60_000);          // per IP fallback
+  if (!shaper.ok) return shaper.response;
+
+  // 2. Authoritative venue/IP ceiling (distributed, shared across all
+  //    instances via Neon, leased ~5 at a time). At a 1000-guest event
+  //    everyone shares one public IP, so this fleet-wide cap is what
+  //    actually protects the storage backend from a stampede. Fails open
+  //    on DB trouble — layer 1 still holds.
+  const venue = await checkDistributedLimit("upload-venue", await getClientIp(), 600, 60_000);
+  if (!venue.ok) {
+    return NextResponse.json(
+      { error: "Too many uploads from this location right now, please retry.", retryAfter: venue.retryAfter },
+      { status: 429, headers: { "Retry-After": String(venue.retryAfter) } },
+    );
+  }
 
   const body = await req.json() as { filename: string; contentType: string; size: number };
   const { filename, contentType } = body;

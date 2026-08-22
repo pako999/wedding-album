@@ -7,9 +7,6 @@ import { runMigrations } from "@/lib/db/migrations";
  * Protected by a simple secret so it can't be abused in production.
  */
 export async function GET(request: Request) {
-  const { searchParams } = new URL(request.url);
-  const secret = searchParams.get("secret");
-
   // Require MIGRATE_SECRET — fail closed if it is not configured, so the
   // endpoint can never run migrations unauthenticated.
   const expectedSecret = process.env.MIGRATE_SECRET;
@@ -19,7 +16,10 @@ export async function GET(request: Request) {
       { status: 503 },
     );
   }
-  if (secret !== expectedSecret) {
+  // Authorization: Bearer <MIGRATE_SECRET>. Moved off the ?secret= query
+  // param so the secret cannot leak via access logs, referrers or shared
+  // browser history.
+  if (request.headers.get("authorization") !== `Bearer ${expectedSecret}`) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

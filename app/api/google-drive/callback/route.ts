@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { verifyOAuthState } from "@/lib/oauth-state";
 import { auth } from "@clerk/nextjs/server";
 import { db } from "@/lib/db";
 import { albums, photos } from "@/lib/db/schema";
@@ -20,14 +21,22 @@ const UPLOAD_BATCH = 4;
  */
 export async function GET(req: NextRequest) {
   const params = req.nextUrl.searchParams;
-  const slug = params.get("state");
+  const rawState = params.get("state");
   const code = params.get("code");
   const oauthError = params.get("error");
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? req.nextUrl.origin;
 
-  if (!slug) {
+  if (!rawState) {
     return NextResponse.json({ error: "Missing state" }, { status: 400 });
   }
+  // Verify the HMAC-signed, expiring, user-bound state (defence against
+  // OAuth CSRF). slug + userId come from the verified payload, not the
+  // query string.
+  const st = verifyOAuthState(rawState);
+  if (!st) {
+    return NextResponse.json({ error: "Invalid or expired state" }, { status: 400 });
+  }
+  const slug = st.slug;
   const back = (result: string, extra = "") =>
     NextResponse.redirect(new URL(`/dashboard/${slug}?tab=gallery&drive=${result}${extra}`, appUrl));
 
@@ -36,7 +45,8 @@ export async function GET(req: NextRequest) {
 
   let userId: string | null = null;
   try { userId = (await auth()).userId; } catch { /* */ }
-  if (!userId) return back("error");
+  // The session user must be the same user who started the flow.
+  if (!userId || userId !== st.userId) return back("error");
 
   const album = await db.query.albums
     .findFirst({ where: eq(albums.slug, slug) })

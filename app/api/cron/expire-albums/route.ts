@@ -13,7 +13,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { albums, photos } from "@/lib/db/schema";
 import { eq, sql } from "drizzle-orm";
-import { deleteBunnyFile, deleteBunnyStreamVideo } from "@/lib/storage/bunny";
+import { enqueueDeletions } from "@/lib/storage/deletion-queue";
 
 export const runtime = "nodejs";
 export const maxDuration = 300; // 5 min — enough for large albums
@@ -57,37 +57,42 @@ export async function GET(req: NextRequest) {
       .from(photos)
       .where(eq(photos.albumId, album.id));
 
-    let deleted = 0;
-    let errors = 0;
+    // Queue every file for durable deletion BEFORE touching the DB rows.
+    // The old flow deleted the remote file inline and dropped the DB row
+    // even when that failed, orphaning paid storage with no pointer. Now
+    // the queue owns the physical delete with retries and a dead-letter;
+    // the worker runs hourly (/api/cron/deletion-worker).
+    const jobs = albumPhotos
+      .map((p) =>
+        p.cfStreamVideoId
+          ? { provider: "bunny-stream" as const, target: p.cfStreamVideoId }
+          : p.blobUrl
+            ? { provider: "bunny-storage" as const, target: p.blobUrl }
+            : null,
+      )
+      .filter((j): j is { provider: "bunny-stream" | "bunny-storage"; target: string } => j !== null);
 
-    for (const photo of albumPhotos) {
-      try {
-        if (photo.cfStreamVideoId) {
-          // Bunny Stream video
-          await deleteBunnyStreamVideo(photo.cfStreamVideoId);
-        } else if (photo.blobUrl) {
-          // Bunny Storage file
-          await deleteBunnyFile(photo.blobUrl);
-        }
-        deleted++;
-      } catch (err) {
-        console.error(`[expire-albums] Failed to delete file for photo ${photo.id}:`, err);
-        errors++;
-      }
+    let queued = 0;
+    try {
+      queued = await enqueueDeletions(jobs);
+    } catch (err) {
+      // If the hand-off to the queue fails, DO NOT delete the photo rows —
+      // that would strand the files. Skip this album; next run retries.
+      console.error(`[expire-albums] enqueue failed for "${album.slug}", keeping rows:`, err);
+      results.push({ slug: album.slug, deleted: 0, errors: jobs.length });
+      continue;
     }
 
-    // Delete all photos from DB for this album
+    // Safe to remove the rows now that deletion is durably recorded.
     await db.delete(photos).where(eq(photos.albumId, album.id));
-
-    // Reset album photo/pending counts
     await db
       .update(albums)
       .set({ photoCount: 0, pendingCount: 0 })
       .where(eq(albums.id, album.id));
 
-    totalDeleted += deleted;
-    results.push({ slug: album.slug, deleted, errors });
-    console.log(`[expire-albums] Album "${album.slug}": deleted ${deleted} files, ${errors} errors`);
+    totalDeleted += queued;
+    results.push({ slug: album.slug, deleted: queued, errors: 0 });
+    console.log(`[expire-albums] Album "${album.slug}": queued ${queued} file(s) for deletion, rows removed`);
   }
 
   return NextResponse.json({

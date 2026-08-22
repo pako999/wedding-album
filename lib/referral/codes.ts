@@ -1,3 +1,4 @@
+import { randomBase36 } from "@/lib/secure-random";
 import { db } from "@/lib/db";
 import { albums } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
@@ -49,7 +50,7 @@ export function normalizeNamePart(input: string): string {
 }
 
 function randomSuffix(): string {
-  return Math.random().toString(36).slice(2, 2 + SUFFIX_LEN).toUpperCase();
+  return randomBase36(SUFFIX_LEN).toUpperCase();
 }
 
 /** Build one candidate. Not guaranteed unique — caller must probe DB. */
