@@ -4,9 +4,9 @@ import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 
 const steps = [
-  { no: "1", title: "Izberite dogodek", text: "Izberite vrsto dogodka, za katerega ustvarjate galerijo.", src: "/how/guestcam-step-1-event.webp?v=5", alt: "Guestcam izbira vrste dogodka pri ustvarjanju nove galerije" },
-  { no: "2", title: "Vnesite podatke", text: "Vnesite osnovne podatke in galerija bo pripravljena v manj kot dveh minutah.", src: "/how/guestcam-step-2-details.webp?v=5", alt: "Guestcam vnos podatkov za poročno galerijo" },
-  { no: "3", title: "Delite QR kodo", text: "Gostje skenirajo QR kodo — brez aplikacije in brez prijave — ter začnejo deliti fotografije.", src: "/how/guestcam-step-3-qr.webp?v=5", alt: "Guestcam QR koda, ki jo gostje skenirajo za nalaganje fotografij" },
+  { no: "1", title: "Izberite dogodek", text: "Izberite vrsto dogodka, za katerega ustvarjate galerijo.", src: "/how/guestcam-step-1-event.webp?v=6", alt: "Guestcam izbira vrste dogodka pri ustvarjanju nove galerije" },
+  { no: "2", title: "Vnesite podatke", text: "Vnesite osnovne podatke in galerija bo pripravljena v manj kot dveh minutah.", src: "/how/guestcam-step-2-details.webp?v=6", alt: "Guestcam vnos podatkov za poročno galerijo" },
+  { no: "3", title: "Delite QR kodo", text: "Gostje skenirajo QR kodo — brez aplikacije in brez prijave — ter začnejo deliti fotografije.", src: "/how/guestcam-step-3-qr.webp?v=6", alt: "Guestcam QR koda, ki jo gostje skenirajo za nalaganje fotografij" },
 ] as const;
 
 export function GuestcamProcessHowOverride() {
