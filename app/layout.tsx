@@ -7,6 +7,7 @@ import { auth } from "@clerk/nextjs/server";
 import { clerkLocaleFor } from "@/lib/clerk-locales";
 import { ExitIntentPopup } from "@/components/ExitIntentPopup";
 import { DiscountBanner } from "@/components/DiscountBanner";
+import { GuestcamProcessHowOverride } from "@/components/GuestcamProcessHowOverride";
 import MetaPixel from "@/components/MetaPixel";
 import type { LangCode } from "@/components/LanguageSwitcher";
 import { db } from "@/lib/db";
@@ -254,6 +255,7 @@ export default async function RootLayout({
           {!isPrivateSurface && <MetaPixel />}
           {showPromo && <DiscountBanner lang={lang} />}
           {children}
+          <GuestcamProcessHowOverride />
           {showPromo && <ExitIntentPopup lang={lang} />}
           {GA_ID && !isPrivateSurface && (
             <>
