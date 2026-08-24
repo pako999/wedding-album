@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { LanguageSwitcher, HOME_HREFLANG, type LangCode } from "./LanguageSwitcher";
 import { UserButton } from "@clerk/nextjs";
 
@@ -22,6 +22,14 @@ export interface HomeMobileMenuProps {
   labels: HomeMobileMenuLabels;
 }
 
+const LOCALIZED_SECTION_LABELS: Partial<Record<LangCode, { how: string; pricing: string; faq: string }>> = {
+  hr: { how: "Kako radi", pricing: "Cijene", faq: "FAQ" },
+  sr: { how: "Kako radi", pricing: "Cene", faq: "FAQ" },
+  de: { how: "So funktioniert's", pricing: "Preise", faq: "FAQ" },
+  en: { how: "How it works", pricing: "Pricing", faq: "FAQ" },
+  es: { how: "Cómo funciona", pricing: "Precios", faq: "FAQ" },
+};
+
 /**
  * Hamburger menu for the homepage navbar — visible only below `md`.
  *
@@ -31,6 +39,27 @@ export interface HomeMobileMenuProps {
  */
 export function HomeMobileMenu({ signedIn = false, lang, links, labels }: HomeMobileMenuProps) {
   const [open, setOpen] = useState(false);
+
+  // Localized homepages historically passed only Business / Blog / Contact.
+  // Expand that signature to match the Slovenian homepage menu exactly:
+  // How it works / Pricing / Business / Blog / FAQ / Contact.
+  const menuLinks = useMemo(() => {
+    if (lang === "sl" || links.some((l) => l.href === "#how")) return links;
+    const copy = LOCALIZED_SECTION_LABELS[lang];
+    const business = links.find((l) => l.href === "#business");
+    const blog = links.find((l) => l.href.endsWith("/blog"));
+    const contact = links.find((l) => l.href.endsWith("/contact"));
+    if (!copy || !business || !blog) return links;
+
+    return [
+      { href: "#how", label: copy.how },
+      { href: "#pricing", label: copy.pricing },
+      business,
+      blog,
+      { href: "#faq", label: copy.faq },
+      ...(contact ? [contact] : []),
+    ];
+  }, [lang, links]);
 
   useEffect(() => {
     if (!open) return;
@@ -82,7 +111,7 @@ export function HomeMobileMenu({ signedIn = false, lang, links, labels }: HomeMo
                 </span>
                 <LanguageSwitcher current={lang} languages={HOME_HREFLANG} ariaLabel={labels.languageAria} />
               </div>
-              {links.map((l) => {
+              {menuLinks.map((l) => {
                 const isAnchor = l.href.startsWith("#");
                 const className = "px-3 py-3 rounded-lg text-base font-semibold text-[#0F1729] hover:bg-[#FFF9EC] transition-colors";
                 return isAnchor ? (
