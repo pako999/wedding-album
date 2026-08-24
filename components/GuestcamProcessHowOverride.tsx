@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
+import { usePathname } from "next/navigation";
 
 type Lang = "sl" | "hr" | "sr" | "de" | "en" | "es";
 
@@ -22,11 +23,27 @@ type Copy = {
   steps: Step[];
 };
 
+type NavCopy = {
+  how: string;
+  pricing: string;
+  business: string;
+  blog: string;
+  faq: string;
+};
+
 const STEP_IMAGES = [
   "/how/guestcam-step-1-event.webp?v=6",
   "/how/guestcam-step-2-details.webp?v=6",
   "/how/guestcam-step-3-qr.webp?v=6",
 ] as const;
+
+const NAV_COPY: Record<Exclude<Lang, "sl">, NavCopy> = {
+  hr: { how: "Kako radi", pricing: "Cijene", business: "Tvrtke", blog: "Blog", faq: "FAQ" },
+  sr: { how: "Kako radi", pricing: "Cene", business: "Kompanije", blog: "Blog", faq: "FAQ" },
+  de: { how: "So funktioniert's", pricing: "Preise", business: "Unternehmen", blog: "Blog", faq: "FAQ" },
+  en: { how: "How it works", pricing: "Pricing", business: "Business", blog: "Blog", faq: "FAQ" },
+  es: { how: "Cómo funciona", pricing: "Precios", business: "Empresas", blog: "Blog", faq: "FAQ" },
+};
 
 const COPY: Record<Lang, Copy> = {
   sl: {
@@ -111,60 +128,117 @@ function homeLang(pathname: string): Lang | null {
 }
 
 export function GuestcamProcessHowOverride() {
+  const pathname = usePathname();
   const [target, setTarget] = useState<HTMLElement | null>(null);
+  const [navTarget, setNavTarget] = useState<HTMLElement | null>(null);
   const [lang, setLang] = useState<Lang>("sl");
 
   useEffect(() => {
-    const detected = homeLang(window.location.pathname);
+    setTarget(null);
+    setNavTarget(null);
+
+    const detected = homeLang(pathname);
     if (!detected) return;
+
     setLang(detected);
     setTarget(document.getElementById("how"));
-  }, []);
+
+    if (detected === "sl") return;
+
+    const nav = document.querySelector("header nav") as HTMLElement | null;
+    if (!nav) return;
+
+    const previousPosition = nav.style.position;
+    nav.style.position = "relative";
+
+    // Localized homepages previously rendered Business + Blog inside the
+    // right-hand controls. Hide those two legacy links now that the same
+    // five-item center navigation as the Slovenian homepage is injected.
+    const legacyLinks = Array.from(nav.querySelectorAll<HTMLAnchorElement>("a")).filter((link) => {
+      const href = link.getAttribute("href");
+      return href === "#business" || href === `/${detected}/blog`;
+    });
+    const previousDisplays = legacyLinks.map((link) => link.style.display);
+    legacyLinks.forEach((link) => link.style.setProperty("display", "none", "important"));
+
+    setNavTarget(nav);
+
+    return () => {
+      nav.style.position = previousPosition;
+      legacyLinks.forEach((link, index) => {
+        link.style.display = previousDisplays[index] ?? "";
+      });
+    };
+  }, [pathname]);
 
   const copy = useMemo(() => COPY[lang], [lang]);
-  if (!target) return null;
+  const localizedNav = lang === "sl" ? null : NAV_COPY[lang];
 
-  return createPortal(
-    <div className="guestcam-process-replacement mx-auto max-w-[1240px] px-5 sm:px-8">
-      <style>{`#how > :not(.guestcam-process-replacement){display:none!important}#how{padding-top:6rem!important;padding-bottom:6rem!important;background:#F7F5F1!important}@media(min-width:768px){#how{padding-top:7rem!important;padding-bottom:7rem!important}}`}</style>
-      <div className="mx-auto max-w-[820px] text-center">
-        <p className="text-[11px] font-extrabold uppercase tracking-[0.2em] text-[#9A6A16]">{copy.label}</p>
-        <h2 className="mt-4 text-[clamp(2.35rem,5vw,4.3rem)] font-extrabold leading-[0.98] tracking-[-0.045em] text-[#171A20]">
-          {copy.headingLine1}<br />{copy.headingLine2}
-        </h2>
-        <p className="mx-auto mt-6 max-w-[700px] text-base leading-7 text-[#6E7480] sm:text-lg sm:leading-8">{copy.intro}</p>
-      </div>
+  if (!target && !navTarget) return null;
 
-      <div className="mt-12 grid gap-6 md:mt-16 md:grid-cols-3 md:gap-9">
-        {copy.steps.map((step, index) => (
-          <div key={step.no} className="relative min-w-0">
-            <article className="h-full overflow-hidden rounded-[22px] border border-black/[0.08] bg-white shadow-[0_12px_35px_rgba(22,26,32,0.06)]">
-              <div className="px-6 pb-5 pt-6 text-center sm:px-7">
-                <div className="flex items-center justify-center gap-3">
-                  <span className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#FFF0C8] text-sm font-extrabold text-[#A96C00]">{step.no}.</span>
-                  <h3 className="text-xl font-extrabold tracking-[-0.02em] text-[#171A20]">{step.title}</h3>
-                </div>
-                <p className="mx-auto mt-3 max-w-[290px] text-sm leading-6 text-[#747A86]">{step.text}</p>
-              </div>
-              <div className="border-t border-black/[0.06] bg-[#FAF9F7] p-3 sm:p-4">
-                <div className="flex min-h-[360px] items-start justify-center overflow-hidden rounded-[15px] border border-black/[0.06] bg-white sm:min-h-[410px]">
-                  <img src={step.src} alt={step.alt} loading="lazy" decoding="async" className="block h-auto max-h-[430px] w-full object-contain object-top" />
-                </div>
-              </div>
-            </article>
-            {index < copy.steps.length - 1 && (
-              <div className="absolute -right-[28px] top-1/2 z-10 hidden h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border-4 border-[#F7F5F1] bg-[#F4B400] text-lg font-bold text-white md:flex" aria-hidden="true">→</div>
-            )}
+  return (
+    <>
+      {target && createPortal(
+        <div className="guestcam-process-replacement mx-auto max-w-[1240px] px-5 sm:px-8">
+          <style>{`#how > :not(.guestcam-process-replacement){display:none!important}#how{padding-top:6rem!important;padding-bottom:6rem!important;background:#F7F5F1!important}@media(min-width:768px){#how{padding-top:7rem!important;padding-bottom:7rem!important}}`}</style>
+          <div className="mx-auto max-w-[820px] text-center">
+            <p className="text-[11px] font-extrabold uppercase tracking-[0.2em] text-[#9A6A16]">{copy.label}</p>
+            <h2 className="mt-4 text-[clamp(2.35rem,5vw,4.3rem)] font-extrabold leading-[0.98] tracking-[-0.045em] text-[#171A20]">
+              {copy.headingLine1}<br />{copy.headingLine2}
+            </h2>
+            <p className="mx-auto mt-6 max-w-[700px] text-base leading-7 text-[#6E7480] sm:text-lg sm:leading-8">{copy.intro}</p>
           </div>
-        ))}
-      </div>
 
-      <div className="mt-10 text-center sm:mt-12">
-        <a href="/dashboard/new" className="inline-flex min-h-13 items-center justify-center gap-2 rounded-xl bg-[#171A20] px-7 text-sm font-bold text-white transition-transform hover:-translate-y-0.5 sm:text-base">
-          {copy.cta} <span aria-hidden="true">→</span>
-        </a>
-      </div>
-    </div>,
-    target,
+          <div className="mt-12 grid gap-6 md:mt-16 md:grid-cols-3 md:gap-9">
+            {copy.steps.map((step, index) => (
+              <div key={step.no} className="relative min-w-0">
+                <article className="h-full overflow-hidden rounded-[22px] border border-black/[0.08] bg-white shadow-[0_12px_35px_rgba(22,26,32,0.06)]">
+                  <div className="px-6 pb-5 pt-6 text-center sm:px-7">
+                    <div className="flex items-center justify-center gap-3">
+                      <span className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#FFF0C8] text-sm font-extrabold text-[#A96C00]">{step.no}.</span>
+                      <h3 className="text-xl font-extrabold tracking-[-0.02em] text-[#171A20]">{step.title}</h3>
+                    </div>
+                    <p className="mx-auto mt-3 max-w-[290px] text-sm leading-6 text-[#747A86]">{step.text}</p>
+                  </div>
+                  <div className="border-t border-black/[0.06] bg-[#FAF9F7] p-3 sm:p-4">
+                    <div className="flex min-h-[360px] items-start justify-center overflow-hidden rounded-[15px] border border-black/[0.06] bg-white sm:min-h-[410px]">
+                      <img src={step.src} alt={step.alt} loading="lazy" decoding="async" className="block h-auto max-h-[430px] w-full object-contain object-top" />
+                    </div>
+                  </div>
+                </article>
+                {index < copy.steps.length - 1 && (
+                  <div className="absolute -right-[28px] top-1/2 z-10 hidden h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border-4 border-[#F7F5F1] bg-[#F4B400] text-lg font-bold text-white md:flex" aria-hidden="true">→</div>
+                )}
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-10 text-center sm:mt-12">
+            <a href="/dashboard/new" className="inline-flex min-h-13 items-center justify-center gap-2 rounded-xl bg-[#171A20] px-7 text-sm font-bold text-white transition-transform hover:-translate-y-0.5 sm:text-base">
+              {copy.cta} <span aria-hidden="true">→</span>
+            </a>
+          </div>
+        </div>,
+        target,
+      )}
+
+      {navTarget && localizedNav && createPortal(
+        <div className="guestcam-localized-desktop-nav absolute left-1/2 top-1/2 z-10 hidden -translate-x-1/2 -translate-y-1/2 items-center gap-7 whitespace-nowrap text-sm font-medium text-gray-600 md:flex lg:gap-9">
+          {[
+            { href: "#how", label: localizedNav.how },
+            { href: "#pricing", label: localizedNav.pricing },
+            { href: "#business", label: localizedNav.business },
+            { href: `/${lang}/blog`, label: localizedNav.blog },
+            { href: "#faq", label: localizedNav.faq },
+          ].map((item) => (
+            <a key={item.href} href={item.href} className="group relative py-1 transition-colors hover:text-[#171A20]">
+              {item.label}
+              <span className="absolute -bottom-0.5 left-0 h-[2px] w-0 rounded-full bg-[#C9820A] transition-all duration-300 ease-out group-hover:w-full" />
+            </a>
+          ))}
+        </div>,
+        navTarget,
+      )}
+    </>
   );
 }
