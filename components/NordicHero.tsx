@@ -11,15 +11,6 @@ import type { ReactNode } from "react";
  * and the composition is a plain editorial split: copy on a left axis,
  * two real photographs on the right at different sizes so the eye has a
  * path. No rotation, no drift, no gradients.
- *
- * Contrast is measured, not eyeballed (WCAG AA):
- *   ink   #14181F on paper #F7F6F2 = 16.45:1
- *   muted #5A6068 on paper         =  5.87:1
- *   honey #8C6218 on paper         =  5.01:1  (accent that survives body text)
- *   paper on ink CTA               = 16.45:1
- *
- * The only motion is a short entry fade, gated on prefers-reduced-motion
- * in globals.css. Photography carries the page; motion does not.
  */
 
 interface Props {
@@ -31,7 +22,7 @@ interface Props {
   ctaHref: string;
   ctaLabel: string;
   note: string;
-  /** Optional secondary action (demo), rendered as a quiet text link. */
+  /** Optional secondary action (demo). */
   demoSlot?: ReactNode;
   /** Printed-stands offer, below the reassurance line. */
   printOffer?: ReactNode;
@@ -47,28 +38,24 @@ export function NordicHero({
 }: Props) {
   return (
     <section className="relative" style={{ background: "var(--paper)" }}>
-      <div className="max-w-7xl mx-auto px-5 sm:px-8 pt-14 pb-16 sm:pt-20 sm:pb-24">
-        <div className="grid lg:grid-cols-12 gap-10 lg:gap-14 items-center">
+      <div className="max-w-7xl mx-auto px-5 sm:px-8 pt-10 pb-11 sm:pt-20 sm:pb-24">
+        <div className="grid lg:grid-cols-12 gap-8 sm:gap-10 lg:gap-14 items-center">
 
           {/* ── Copy column ─────────────────────────────────────────── */}
-          <div className="lg:col-span-6 gc-rise">
+          <div className="lg:col-span-6 gc-rise text-center lg:text-left">
             <p
-              className="text-[11px] font-semibold uppercase tracking-[0.2em] mb-5"
+              className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-[0.19em] mb-4 sm:mb-5"
               style={{ color: "var(--honey)" }}
             >
               {eyebrow}
             </p>
 
             <h1
-              className="font-semibold tracking-tight"
+              className="font-semibold tracking-[-0.035em] max-w-[14ch] mx-auto lg:max-w-none lg:mx-0"
               style={{
                 color: "var(--ink)",
-                // Scale planned around the photo: 5-word headline, two
-                // lines at desktop, never four.
-                // Capped at 3.3rem: at 3.9rem a long Slovenian or German
-                // headline broke to three lines, which is a font-size error.
-                fontSize: "clamp(2.1rem, 3.7vw, 3.3rem)",
-                lineHeight: 1.08,
+                fontSize: "clamp(2.45rem, 9.6vw, 3.3rem)",
+                lineHeight: 1.04,
               }}
             >
               {headLead}{" "}
@@ -77,16 +64,16 @@ export function NordicHero({
             </h1>
 
             <p
-              className="mt-6 text-base sm:text-lg leading-relaxed max-w-[46ch]"
+              className="mt-5 sm:mt-6 text-[15px] sm:text-lg leading-[1.65] max-w-[38rem] lg:max-w-[46ch] mx-auto lg:mx-0"
               style={{ color: "var(--muted)" }}
             >
               {lead}
             </p>
 
-            <div className="mt-9 flex flex-wrap items-center gap-x-7 gap-y-4">
+            <div className="mt-7 sm:mt-9 flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center gap-3 sm:gap-x-7 sm:gap-y-4 max-w-md mx-auto lg:max-w-none lg:mx-0">
               <Link
                 href={ctaHref}
-                className="inline-flex items-center gap-2 px-7 py-4 rounded-full text-sm sm:text-base font-semibold transition-transform duration-200 active:scale-[0.98]"
+                className="inline-flex w-full sm:w-auto items-center justify-center gap-2 px-6 sm:px-7 py-3.5 sm:py-4 rounded-full text-[15px] sm:text-base font-semibold transition-transform duration-200 active:scale-[0.98]"
                 style={{ background: "var(--ink)", color: "var(--paper)" }}
               >
                 {ctaLabel}
@@ -97,25 +84,23 @@ export function NordicHero({
               {demoSlot}
             </div>
 
-            <p className="mt-6 text-sm" style={{ color: "var(--muted)" }}>
+            <p className="mt-4 sm:mt-6 text-[13px] sm:text-sm" style={{ color: "var(--muted)" }}>
               {note}
             </p>
 
-            {printOffer ? <div className="mt-7">{printOffer}</div> : null}
+            {printOffer ? (
+              <div className="mt-5 sm:mt-7 max-w-md mx-auto lg:max-w-none lg:mx-0 [&>div]:w-full">
+                {printOffer}
+              </div>
+            ) : null}
           </div>
 
           {/* ── Photograph column ───────────────────────────────────── */}
-          {/* Two sizes, one overlap, no rotation: an editorial pairing
-              rather than a scattered collage. The companion frame sits
-              INSIDE the primary vertically and only breaks the left edge, so
-              it never spills past the section hairline. Hidden from assistive tech
-              only for the decorative second frame; the lead photo keeps
-              a real alt. */}
           <div className="lg:col-span-6 gc-rise gc-rise-late">
-            <div className="relative">
+            <div className="relative max-w-xl mx-auto lg:max-w-none">
               <div
                 className="relative overflow-hidden rounded-xl"
-                style={{ aspectRatio: "4 / 3", boxShadow: "0 24px 60px rgba(20,24,31,.14)" }}
+                style={{ aspectRatio: "4 / 3", boxShadow: "0 20px 48px rgba(20,24,31,.12)" }}
               >
                 <Image
                   src={primaryPhoto.src}
@@ -150,8 +135,6 @@ export function NordicHero({
         </div>
       </div>
 
-      {/* Hairline close, not a coloured band: the section ends where the
-          next one begins, with no decorative divider. */}
       <div className="h-px" style={{ background: "var(--hairline)" }} />
     </section>
   );
