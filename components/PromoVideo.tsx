@@ -1,17 +1,17 @@
 /**
  * "How it works" promo video under the hero, Slovenian homepage only.
  *
- * The source is a 25 s portrait (9:16) clip, so it is presented as a
- * phone: that is both honest to the footage and on-message, since the
- * guest experience IS a phone. Transcoded from the delivered HEVC .mov
- * to H.264 (HEVC does not play in Chrome/Firefox/most Androids), with
- * faststart and a poster frame so nothing downloads until the visitor
- * presses play (preload="metadata", no autoplay).
+ * Mobile keeps the existing 25 s portrait clip presented as a phone.
+ * Desktop uses the dedicated 16:9 cut so the media fills the available
+ * space naturally instead of showing a narrow phone in a wide layout.
  */
+const DESKTOP_VIDEO =
+  "https://www.dropbox.com/scl/fi/qtuzczykxuoa9q19lktyb/guestcam_16x9.mp4?rlkey=5w335kv6w5b90t8q4js3w7e3u&raw=1";
+
 export function PromoVideo() {
   return (
     <section className="border-b border-[color:var(--hairline)]" style={{ background: "var(--paper)" }}>
-      <div className="mx-auto grid max-w-5xl items-center gap-10 px-6 py-16 sm:py-20 lg:grid-cols-[1.1fr_.9fr]">
+      <div className="mx-auto grid max-w-6xl items-center gap-10 px-6 py-16 sm:py-20 lg:grid-cols-[.82fr_1.18fr] lg:gap-14">
         <div className="text-center lg:text-left">
           <h2 className="text-3xl font-extrabold tracking-tight text-[color:var(--ink)] sm:text-4xl">
             Poglejte, kako deluje
@@ -27,7 +27,8 @@ export function PromoVideo() {
           </ul>
         </div>
 
-        <div className="mx-auto w-full max-w-[300px]">
+        {/* Mobile / tablet: keep the existing portrait phone presentation. */}
+        <div className="mx-auto w-full max-w-[300px] lg:hidden">
           <div className="overflow-hidden rounded-[2rem] border-[6px] border-[color:var(--ink)] bg-black shadow-2xl">
             <video
               controls
@@ -38,6 +39,21 @@ export function PromoVideo() {
               aria-label="Predstavitveni video: kako Guestcam zbira fotografije gostov prek QR kode"
             >
               <source src="/promo/kako-deluje.mp4" type="video/mp4" />
+            </video>
+          </div>
+        </div>
+
+        {/* Desktop: dedicated landscape edit supplied for the wide layout. */}
+        <div className="hidden w-full lg:block">
+          <div className="overflow-hidden rounded-[1.5rem] border border-black/10 bg-black shadow-[0_20px_55px_rgba(17,24,39,.16)]">
+            <video
+              controls
+              playsInline
+              preload="metadata"
+              className="block aspect-video w-full bg-black object-contain"
+              aria-label="Predstavitveni video: kako Guestcam deluje na namiznem prikazu"
+            >
+              <source src={DESKTOP_VIDEO} type="video/mp4" />
             </video>
           </div>
         </div>
