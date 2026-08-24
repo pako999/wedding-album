@@ -9,18 +9,12 @@ import { createPortal } from "react-dom";
  */
 const DEMO_SLUG = "ana-marko-13ka";
 
-
 /** The origin never changes during a page's lifetime — nothing to subscribe to. */
 function emptySubscribe() { return () => {}; }
 
 export function DemoButton({ variant = "hero" }: { variant?: "hero" | "nav" | "heroDark" }) {
   const [open, setOpen] = useState(false);
 
-  // Resolve the demo URL from the actual host the visitor is on — works on
-  // localhost and production alike, with no dependency on a build-time env
-  // var. useSyncExternalStore instead of effect+setState: the server
-  // snapshot is "" (same as the old initial state, so hydration matches)
-  // and the client reads the origin without an extra render pass.
   const origin = useSyncExternalStore(
     emptySubscribe,
     () => window.location.origin,
@@ -39,7 +33,7 @@ export function DemoButton({ variant = "hero" }: { variant?: "hero" | "nav" | "h
         <button
           type="button"
           onClick={() => setOpen(true)}
-          className="inline-flex items-center gap-2.5 px-8 py-4 sm:py-5 rounded-full font-bold text-base sm:text-lg border-2 transition-all duration-200 hover:scale-[1.02] hover:bg-white/5"
+          className="inline-flex w-full sm:w-auto items-center justify-center gap-2.5 px-6 sm:px-8 py-3.5 sm:py-5 rounded-full font-bold text-[15px] sm:text-lg border-2 transition-all duration-200 hover:scale-[1.02] hover:bg-white/5"
           style={{ borderColor: "rgba(255,201,77,.65)", color: "#ffffff" }}
         >
           <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor" style={{ color: "#FFC94D" }}>
@@ -51,7 +45,7 @@ export function DemoButton({ variant = "hero" }: { variant?: "hero" | "nav" | "h
         <button
           type="button"
           onClick={() => setOpen(true)}
-          className="inline-flex items-center gap-2.5 px-8 py-5 rounded-full font-bold text-lg border-2 transition-all duration-200 hover:scale-[1.02]"
+          className="inline-flex w-full sm:w-auto items-center justify-center gap-2.5 px-6 sm:px-8 py-3.5 sm:py-5 rounded-full font-bold text-[15px] sm:text-lg border-2 transition-all duration-200 hover:scale-[1.02]"
           style={{ borderColor: "#FFC94D", color: "#0F1729" }}
         >
           <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor" style={{ color: "#C9820A" }}>
@@ -69,11 +63,6 @@ export function DemoButton({ variant = "hero" }: { variant?: "hero" | "nav" | "h
         </button>
       )}
 
-      {/* Portal to <body>: the hero that hosts this button has transformed
-          ancestors, and transform/filter turn an element into the CONTAINING
-          BLOCK for position:fixed descendants — so without the portal the
-          overlay pins to that box, dims only part of the page and the card
-          clips off-screen. Same trap as MobileMenu. */}
       {open && createPortal(
         <div className="fixed inset-0 z-[60] overflow-y-auto" role="dialog" aria-modal="true">
           <div
