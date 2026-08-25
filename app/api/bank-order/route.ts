@@ -73,7 +73,22 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const planBase = PLAN_LABELS[planId] ?? { name: planId, price: 0 };
+  // Reject unknown plans instead of falling back to price 0: the old
+  // `?? { price: 0 }` let a client POST any planId and receive a €0
+  // invoice for a paid plan. Plan identity and price come only from the
+  // canonical PLAN_LABELS catalog, never from the request.
+  const planBase = PLAN_LABELS[planId];
+  if (!planBase) {
+    return NextResponse.json({ error: "Unknown plan" }, { status: 400 });
+  }
+  // The base plan price must itself be positive — this is what catches a
+  // bogus plan slipping past the catalog. A €0 TOTAL is only legitimate
+  // when it comes from a VALIDATED discount (admins may create up to 100%
+  // off), so that case is allowed below.
+  if (!Number.isFinite(planBase.price) || planBase.price <= 0) {
+    return NextResponse.json({ error: "Invalid plan price" }, { status: 400 });
+  }
+
   let finalPrice = planBase.price;
   let discountCodeId: string | undefined;
   let discountPercent: number | undefined;
@@ -81,10 +96,16 @@ export async function POST(req: NextRequest) {
   if (discountCode) {
     const disc = await validateDiscount(discountCode, planId);
     if (disc.valid) {
-      finalPrice = disc.finalPrice;
+      finalPrice = disc.finalPrice; // may be 0 for a valid 100% discount
       discountCodeId = disc.discountCodeId;
       discountPercent = disc.percentOff;
     }
+  }
+
+  // A negative total is never valid; 0 is valid only via the checked discount
+  // above (planBase.price was already asserted positive).
+  if (!Number.isFinite(finalPrice) || finalPrice < 0) {
+    return NextResponse.json({ error: "Invalid order total" }, { status: 400 });
   }
 
   const plan = { name: planBase.name, price: finalPrice };

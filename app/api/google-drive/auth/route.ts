@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { signOAuthState } from "@/lib/oauth-state";
 import { auth } from "@clerk/nextjs/server";
 import { db } from "@/lib/db";
 import { albums } from "@/lib/db/schema";
@@ -39,5 +40,5 @@ export async function GET(req: NextRequest) {
   }
 
   const redirectUri = `${appUrl}/api/google-drive/callback`;
-  return NextResponse.redirect(buildAuthUrl(redirectUri, slug));
+  return NextResponse.redirect(buildAuthUrl(redirectUri, signOAuthState(slug, userId)));
 }

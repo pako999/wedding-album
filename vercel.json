@@ -5,6 +5,10 @@
       "schedule": "0 3 * * *"
     },
     {
+      "path": "/api/cron/deletion-worker",
+      "schedule": "17 * * * *"
+    },
+    {
       "path": "/api/cron/poll-kling",
       "schedule": "*/2 * * * *"
     },

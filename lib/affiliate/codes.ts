@@ -1,3 +1,4 @@
+import { randomFromAlphabet } from "@/lib/secure-random";
 import { db } from "@/lib/db";
 import { affiliates } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
@@ -5,11 +6,7 @@ import { eq } from "drizzle-orm";
 const ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; // no 0/O/1/I to avoid confusion
 
 function randomCode(len: number): string {
-  let out = "";
-  for (let i = 0; i < len; i++) {
-    out += ALPHABET[Math.floor(Math.random() * ALPHABET.length)];
-  }
-  return out;
+  return randomFromAlphabet(ALPHABET, len);
 }
 
 /**
