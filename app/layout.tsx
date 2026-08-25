@@ -2,12 +2,12 @@ import type { Metadata, Viewport } from "next";
 import { headers } from "next/headers";
 import { DM_Sans, Cormorant_Garamond } from "next/font/google";
 import Script from "next/script";
-import { ClerkProvider } from "@clerk/nextjs";
 import { auth } from "@clerk/nextjs/server";
 import { clerkLocaleFor } from "@/lib/clerk-locales";
 import { ExitIntentPopup } from "@/components/ExitIntentPopup";
 import { DiscountBanner } from "@/components/DiscountBanner";
 import { GuestcamProcessHowOverride } from "@/components/GuestcamProcessHowOverride";
+import { GuestcamClerkProvider } from "@/components/GuestcamClerkProvider";
 import MetaPixel from "@/components/MetaPixel";
 import type { LangCode } from "@/components/LanguageSwitcher";
 import { db } from "@/lib/db";
@@ -228,7 +228,7 @@ export default async function RootLayout({
   }
 
   return (
-    <ClerkProvider localization={clerkLocalization}>
+    <GuestcamClerkProvider localization={clerkLocalization}>
       <html lang={lang} className={`${dmSans.variable} ${cormorant.variable}`}>
         <body className="font-sans antialiased bg-[#F2F4F8] text-[#0F1729] min-h-screen">
           {/* Preconnect hints — trim ~100-300 ms off TLS handshake for the
@@ -277,6 +277,6 @@ export default async function RootLayout({
           )}
         </body>
       </html>
-    </ClerkProvider>
+    </GuestcamClerkProvider>
   );
 }
