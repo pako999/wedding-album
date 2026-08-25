@@ -32,7 +32,15 @@ export async function GET(req: NextRequest) {
   });
 
   if (!album) {
-    return new NextResponse("Album not found for this domain.", { status: 404 });
+    return new NextResponse("Album not found for this domain.", {
+      status: 404,
+      headers: {
+        "x-debug-domain": domain,
+        "x-debug-host": req.headers.get("host") ?? "",
+        "x-debug-forwarded-host": req.headers.get("x-forwarded-host") ?? "",
+        "x-debug-url-host": req.nextUrl.hostname,
+      },
+    });
   }
 
   // Rewrite internally to the slug page, keeping query params
