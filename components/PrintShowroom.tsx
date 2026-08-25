@@ -1,7 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
-import { STAND_VARIANTS, eur } from "@/lib/print-service";
+import type { LangCode } from "@/components/LanguageSwitcher";
+import { GuestcamTemplatesCarousel } from "@/components/GuestcamTemplatesCarousel";
 import { PrintSectionMover } from "@/components/PrintSectionMover";
+import { STAND_VARIANTS, eur } from "@/lib/print-service";
 
 export interface PrintShowroomCopy {
   badge: string;
@@ -23,205 +25,126 @@ export interface PrintShowroomCopy {
   trustLine: string;
 }
 
-function MiniQr() {
-  const cells = [
-    1,1,1,1,1,0,1,1,1,
-    1,0,0,0,1,0,1,0,1,
-    1,0,1,0,1,0,1,1,1,
-    1,0,0,0,1,0,0,0,0,
-    1,1,1,1,1,0,1,0,1,
-    0,0,0,0,0,0,0,1,0,
-    1,1,1,0,1,1,1,0,1,
-    1,0,1,0,0,1,0,1,0,
-    1,1,1,0,1,0,1,1,1,
-  ];
+const PRINT_SERVICE: Record<LangCode, { badge: string; title: string; lead: string; bullets: [string, string, string, string]; cta: string }> = {
+  sl: {
+    badge: "Tisk + namizni podstavki",
+    title: "Mi natisnemo. Vi samo postavite na mize.",
+    lead: "Naročite fizične QR kartice in namizne podstavke skupaj z Guestcam paketom. Kartice personaliziramo z vašo QR kodo, natisnemo in jih pošljemo pripravljene za vaš dogodek.",
+    bullets: ["vaša Guestcam QR koda", "leseni ali zlati podstavek", "tisk je vključen v ceno", "dostava na vaš naslov"],
+    cta: "Dodaj podstavke ob nakupu →",
+  },
+  hr: {
+    badge: "Tisak + stolni stalci",
+    title: "Mi tiskamo. Vi ih samo postavite na stolove.",
+    lead: "Naručite fizičke QR kartice i stolne stalke zajedno s Guestcam paketom. Personaliziramo ih vašim QR kodom, tiskamo i šaljemo spremne za događaj.",
+    bullets: ["vaš Guestcam QR kod", "drveni ili zlatni stalak", "tisak uključen u cijenu", "dostava na vašu adresu"],
+    cta: "Dodaj stalke pri kupnji →",
+  },
+  sr: {
+    badge: "Štampa + stoni stalci",
+    title: "Mi štampamo. Vi ih samo postavite na stolove.",
+    lead: "Naručite fizičke QR kartice i stalke za sto zajedno sa Guestcam paketom. Personalizujemo ih vašim QR kodom, štampamo i šaljemo spremne za događaj.",
+    bullets: ["vaš Guestcam QR kod", "drveni ili zlatni stalak", "štampa uključena u cenu", "dostava na vašu adresu"],
+    cta: "Dodaj stalke pri kupovini →",
+  },
+  de: {
+    badge: "Druck + Tischaufsteller",
+    title: "Wir drucken. Sie stellen die Karten nur noch auf.",
+    lead: "Bestellen Sie gedruckte QR-Karten und Tischaufsteller zusammen mit Ihrem Guestcam-Paket. Wir personalisieren, drucken und liefern alles fertig für Ihr Event.",
+    bullets: ["Ihr Guestcam QR-Code", "Holz- oder Goldaufsteller", "Druck im Preis enthalten", "Lieferung an Ihre Adresse"],
+    cta: "Aufsteller bei der Bestellung hinzufügen →",
+  },
+  en: {
+    badge: "Print + table stands",
+    title: "We print. You just place them on the tables.",
+    lead: "Order physical QR cards and table stands with your Guestcam package. We personalize, print and ship everything ready for your event.",
+    bullets: ["your Guestcam QR code", "wood or gold stand", "printing included", "delivery to your address"],
+    cta: "Add stands when ordering →",
+  },
+  es: {
+    badge: "Impresión + soportes de mesa",
+    title: "Nosotros imprimimos. Tú solo los colocas en las mesas.",
+    lead: "Pide tarjetas QR físicas y soportes de mesa con tu paquete Guestcam. Personalizamos, imprimimos y enviamos todo listo para tu evento.",
+    bullets: ["tu código QR Guestcam", "soporte de madera o dorado", "impresión incluida", "envío a tu dirección"],
+    cta: "Añadir soportes al comprar →",
+  },
+};
+
+export function PrintShowroom({ copy, lang = "sl" }: { copy: PrintShowroomCopy; lang?: LangCode }) {
+  const printedStandFrom = eur(Math.min(...STAND_VARIANTS.map((variant) => variant.unitCents)));
+  const detail = PRINT_SERVICE[lang];
+  const startHref = `/dashboard/new?lang=${lang}`;
 
   return (
-    <div className="grid h-14 w-14 grid-cols-9 gap-[2px] rounded-md bg-white p-1.5" aria-hidden="true">
-      {cells.map((cell, index) => (
-        <span key={index} className={cell ? "bg-[#11151D]" : "bg-white"} />
-      ))}
-    </div>
-  );
-}
-
-/**
- * Photo-first print / QR section based on the approved reference layout.
- * Every photo shown here is an existing Guestcam-owned project asset:
- * two real product stand photos and two real event visuals from the repo.
- */
-export function PrintShowroom({ copy }: { copy: PrintShowroomCopy }) {
-  const from = eur(Math.min(...STAND_VARIANTS.map((v) => v.unitCents)));
-  const visuals = [
-    {
-      src: "/print/stand-wood.webp",
-      alt: copy.imageAlts[0],
-      fit: "object-contain p-7 sm:p-9",
-      bg: "bg-[#EFEAE1]",
-      label: copy.woodName,
-    },
-    {
-      src: "/events/organizacija-dogodkov-dogodek.webp",
-      alt: copy.imageAlts[1],
-      fit: "object-cover",
-      bg: "bg-[#EAE6DE]",
-      label: copy.statusUpload,
-    },
-    {
-      src: "/print/stand-gold.webp",
-      alt: copy.imageAlts[2],
-      fit: "object-contain p-7 sm:p-9",
-      bg: "bg-[#F1ECE1]",
-      label: copy.goldName,
-    },
-    {
-      src: "/events/nina-badric-maribox.webp",
-      alt: copy.imageAlts[3],
-      fit: "object-cover",
-      bg: "bg-[#EAE6DE]",
-      label: copy.statusNew,
-    },
-  ] as const;
-
-  return (
-    <section id="print-service" className="overflow-hidden bg-[#FBF9F4] py-20 sm:py-28">
+    <section id="templates" className="border-y border-black/5 bg-[#FFFDF8] py-20 sm:py-24 lg:py-28">
       <PrintSectionMover />
+      <div className="mx-auto max-w-[1480px] px-5 sm:px-8">
+        <div className="grid items-center gap-5 lg:grid-cols-[auto_1fr_auto]">
+          <p className="text-center text-xs font-black uppercase tracking-[.19em] text-[#8F6900] lg:text-left">{copy.badge}</p>
 
-      <div className="mx-auto max-w-[1320px] px-5 sm:px-8">
-        <div className="grid gap-5 border-b border-black/10 pb-7 lg:grid-cols-[1fr_auto_1fr] lg:items-center">
-          <p className="text-[11px] font-extrabold uppercase tracking-[0.24em] text-[#9A6A16]">
-            {copy.badge}
-          </p>
-
-          <div className="flex flex-wrap items-center gap-x-6 gap-y-3 text-sm font-semibold text-[#77746F] lg:justify-center">
-            {copy.bullets.map((item) => (
-              <span key={item} className="inline-flex items-center gap-2">
-                <span className="inline-flex h-5 w-5 items-center justify-center rounded-full border border-[#D99B00] text-[11px] font-black text-[#A96C00]">
-                  ✓
-                </span>
-                {item}
+          <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-xs font-bold text-black/52 sm:gap-x-7 sm:text-sm">
+            {copy.bullets.map((benefit) => (
+              <span key={benefit} className="inline-flex items-center gap-2">
+                <span className="flex h-5 w-5 items-center justify-center rounded-full border border-[#F4B400] text-[10px] font-black text-[#8F6900]">✓</span>
+                {benefit}
               </span>
             ))}
           </div>
 
-          <div className="lg:justify-self-end">
-            <Link
-              href="/dashboard/new"
-              className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border-2 border-[#E0A100] bg-white px-6 text-sm font-extrabold text-[#171A20] transition-transform hover:-translate-y-0.5"
-            >
-              <span aria-hidden="true">▣</span>
-              {copy.designCta}
-            </Link>
-          </div>
+          <Link href="#template-showcase" className="mx-auto inline-flex items-center justify-center gap-2 rounded-full border-2 border-[#F4B400] bg-white px-5 py-3 text-sm font-black text-black transition-colors hover:bg-[#F4B400] lg:mx-0">
+            <span aria-hidden="true">▣</span>
+            {copy.designCta}
+          </Link>
         </div>
 
-        <div className="mx-auto max-w-[930px] py-14 text-center sm:py-16 lg:py-20">
-          <h2 className="text-[clamp(2.7rem,6vw,5.35rem)] font-extrabold leading-[0.94] tracking-[-0.055em] text-[#12151B]">
+        <div className="mx-auto mt-10 max-w-4xl text-center sm:mt-12">
+          <h2 className="font-serif text-[clamp(3.2rem,7vw,6rem)] font-semibold leading-[.94] tracking-[-.05em] text-black">
             {copy.title}
-            <span className="mt-2 block font-semibold italic tracking-[-0.045em] text-[#B77B00]">
-              {copy.accentTitle}
-            </span>
+            <span className="mt-2 block italic text-[#B88700]">{copy.accentTitle}</span>
           </h2>
-          <p className="mx-auto mt-7 max-w-[720px] text-base leading-7 text-[#77746F] sm:text-xl sm:leading-8">
-            {copy.body}
-          </p>
+          <p className="mx-auto mt-6 max-w-2xl text-base leading-7 text-black/55 sm:text-lg sm:leading-8">{copy.body}</p>
         </div>
 
-        <div className="relative">
-          <div className="no-scrollbar -mx-5 flex snap-x snap-mandatory gap-3 overflow-x-auto px-5 pb-16 pt-3 sm:-mx-8 sm:px-8 lg:mx-0 lg:grid lg:grid-cols-4 lg:gap-4 lg:overflow-visible lg:px-0">
-            {visuals.map((visual, index) => (
-              <figure
-                key={visual.src}
-                className={`relative min-w-[76vw] snap-center overflow-hidden rounded-[24px] border border-black/5 shadow-[0_18px_44px_rgba(34,29,19,.08)] sm:min-w-[48vw] lg:min-w-0 ${visual.bg}`}
-              >
-                <div className="relative aspect-[4/5]">
-                  <Image
-                    src={visual.src}
-                    alt={visual.alt}
-                    fill
-                    sizes="(max-width:640px) 76vw, (max-width:1024px) 48vw, 25vw"
-                    className={visual.fit}
-                  />
+        <GuestcamTemplatesCarousel lang={lang} />
 
-                  {(index === 1 || index === 3) && (
-                    <div className="absolute inset-x-0 bottom-0 h-36 bg-gradient-to-t from-black/45 via-black/10 to-transparent" aria-hidden="true" />
-                  )}
-
-                  {index === 0 && (
-                    <div className="absolute bottom-4 left-4 rounded-[18px] border-2 border-[#E2A600] bg-white p-3 shadow-[0_16px_35px_rgba(34,29,19,.14)]">
-                      <p className="mb-2 text-[11px] font-extrabold text-[#171A20]">{copy.statusPhoto}</p>
-                      <MiniQr />
-                    </div>
-                  )}
-
-                  {index === 1 && (
-                    <div className="absolute -bottom-1 left-1/2 w-[84%] -translate-x-1/2 rounded-[18px] bg-white px-4 py-3 shadow-[0_16px_35px_rgba(34,29,19,.16)]">
-                      <div className="flex items-center gap-3">
-                        <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#FFF2C9] text-lg font-black text-[#A66E00]">✓</span>
-                        <div>
-                          <p className="text-sm font-extrabold text-[#171A20]">{copy.statusUpload}</p>
-                          <p className="mt-0.5 text-[11px] text-[#8A8781]">Guestcam</p>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
-                  {index === 2 && (
-                    <div className="absolute left-4 top-4 rounded-[18px] bg-white/96 px-4 py-3 shadow-[0_16px_35px_rgba(34,29,19,.14)] backdrop-blur-sm">
-                      <div className="flex items-center gap-3">
-                        <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-[#FFF2C9] text-[#A66E00]">▶</span>
-                        <div>
-                          <p className="text-sm font-extrabold text-[#171A20]">{copy.statusLive}</p>
-                          <p className="mt-0.5 text-[11px] text-[#8A8781]">Guestcam QR</p>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
-                  {index === 3 && (
-                    <div className="absolute bottom-4 right-4 max-w-[82%] rounded-[18px] bg-white/96 px-4 py-3 shadow-[0_16px_35px_rgba(34,29,19,.15)] backdrop-blur-sm">
-                      <div className="flex items-center gap-3">
-                        <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#FFF2C9] text-[#A66E00]">▧</span>
-                        <div>
-                          <p className="text-sm font-extrabold text-[#171A20]">{copy.statusNew}</p>
-                          <p className="mt-0.5 text-[11px] text-[#8A8781]">Guestcam</p>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
-                  <figcaption className="sr-only">{visual.label}</figcaption>
-                </div>
-              </figure>
-            ))}
-          </div>
-
-          <div className="pointer-events-none absolute -left-2 top-1/2 hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-black/10 bg-white text-xl text-[#171A20] shadow-lg lg:flex" aria-hidden="true">
-            ‹
-          </div>
-          <div className="pointer-events-none absolute -right-2 top-1/2 hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-black/10 bg-white text-xl text-[#171A20] shadow-lg lg:flex" aria-hidden="true">
-            ›
-          </div>
-        </div>
-
-        <div className="mt-1 flex flex-col items-center text-center">
-          <div className="mb-7 flex items-center gap-2" aria-hidden="true">
-            <span className="h-2 w-2 rounded-full bg-[#CBC7BF]" />
-            <span className="h-2 w-2 rounded-full bg-[#CBC7BF]" />
-            <span className="h-2 w-2 rounded-full bg-[#CBC7BF]" />
-            <span className="h-2 w-7 rounded-full bg-[#E3A600]" />
-          </div>
-
-          <p className="text-sm font-semibold text-[#8C8983]">♡ &nbsp; {copy.trustLine} &nbsp; ♡</p>
-
-          <Link
-            href="/dashboard/new"
-            className="mt-8 inline-flex min-h-14 items-center justify-center rounded-full bg-[#12151B] px-8 text-base font-extrabold text-white transition-transform hover:-translate-y-0.5"
-          >
+        <div className="mt-9 text-center">
+          <Link href={startHref} className="inline-flex rounded-full bg-black px-7 py-4 font-black text-white transition-transform hover:scale-[1.02]">
             {copy.cta}
           </Link>
+        </div>
 
-          <p className="mt-4 text-xs font-semibold text-[#99958D]">{copy.note(from)}</p>
+        <div id="print-service" className="mt-16 overflow-hidden rounded-[34px] bg-[#151515] text-white shadow-2xl sm:mt-20">
+          <div className="grid lg:grid-cols-[1.05fr_.95fr] lg:items-stretch">
+            <div className="p-7 sm:p-10 lg:p-12">
+              <span className="inline-flex rounded-full bg-[#F4B400] px-4 py-2 text-[11px] font-black uppercase tracking-[.14em] text-black">{detail.badge}</span>
+              <h3 className="mt-6 max-w-2xl text-3xl font-black leading-[1.04] tracking-[-.04em] sm:text-5xl">{detail.title}</h3>
+              <p className="mt-5 max-w-2xl text-base leading-7 text-white/58 sm:text-lg sm:leading-8">{detail.lead}</p>
+              <div className="mt-7 grid gap-3 text-sm font-semibold text-white/72 sm:grid-cols-2">
+                {detail.bullets.map((bullet) => <span key={bullet}>✓ {bullet}</span>)}
+              </div>
+              <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
+                <Link href={startHref} className="rounded-full bg-[#F4B400] px-7 py-4 text-center font-black text-black">{detail.cta}</Link>
+                <span className="text-sm font-semibold text-white/45">{copy.note(printedStandFrom)}</span>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-px bg-white/10 p-px">
+              {[
+                ["/print/stand-wood.webp", copy.woodName, `3,00 € ${copy.perPiece}`],
+                ["/print/stand-gold.webp", copy.goldName, `4,50 € ${copy.perPiece}`],
+              ].map(([src, name, price]) => (
+                <div key={name} className="bg-[#202020] p-3 sm:p-5">
+                  <div className="relative aspect-[4/5] overflow-hidden rounded-[22px] bg-white">
+                    <Image src={src} alt={`${name} Guestcam QR`} fill sizes="(max-width:1024px) 50vw, 25vw" className="object-cover" />
+                  </div>
+                  <div className="px-1 pb-2 pt-4">
+                    <p className="text-sm font-black sm:text-base">{name}</p>
+                    <p className="mt-1 text-xs font-semibold text-[#F4B400] sm:text-sm">{price}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </section>
