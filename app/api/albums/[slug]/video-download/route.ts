@@ -1,23 +1,16 @@
 /**
  * GET /api/albums/:slug/video-download?vid=<bunnyVideoId>
  *
- * Owner-authenticated proxy that streams a Bunny Stream video back to
- * the client. Used by the ZIP downloader as a robust fallback for
- * every case where the public CDN URL doesn't work:
- *   • BUNNY_STREAM_CDN_URL env var not set (or set to the wrong pull zone)
- *   • Video has no 720p MP4 fallback (originals below 720p, or newly-
- *     enabled MP4 Fallback that hasn't reprocessed old uploads yet)
- *   • Bunny library's MP4 Fallback toggle is on but Bunny's CDN edge
- *     is serving stale 404s for a few minutes after enable
+ * Streams a Bunny Stream MP4 through Guestcam with Range support.
  *
- * Works by:
- *   1. Fetching the video metadata via Bunny Stream API (authenticated)
- *      to learn which resolutions Bunny actually transcoded.
- *   2. Building the best CDN MP4 URL from that list and fetching it,
- *      then streaming the response straight to the client. No buffering
- *      → no Vercel memory limit hit even for multi-GB videos.
- *   3. If the CDN MP4 also 404s (MP4 Fallback genuinely off in the
- *      library), returns a 502 with a clear message naming the toggle.
+ * Two authorization modes:
+ *   • normal owner-authenticated mode for ZIP/download flows;
+ *   • short-lived signed `play=1` mode for guest playback on iOS Safari.
+ *
+ * The signed playback mode exists because iPhone/iPad Safari can fail direct
+ * Bunny media requests when Stream security/referrer rules are enabled. The
+ * browser talks only to guestcam.si; this route fetches Bunny server-side and
+ * forwards byte ranges required by Apple's native video player.
  */
 
 import { NextRequest, NextResponse } from "next/server";
@@ -31,18 +24,16 @@ import {
   signBunnyStreamUrl,
 } from "@/lib/storage/bunny";
 import { checkAlbumOwnership } from "@/lib/album-ownership";
+import { verifyVideoPlaybackToken } from "@/lib/video-playback-token";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
-export const maxDuration = 300; // 5 min — large guest videos take time
+export const maxDuration = 300;
 
 export async function GET(
   req: NextRequest,
   { params }: { params: Promise<{ slug: string }> },
 ) {
-  // Belt-and-braces: every code path inside must return a JSON-bodied
-  // response so the ZIP downloader sees a real `error` field instead
-  // of an HTTP/2 empty statusText (which would just render as "500: ").
   try {
     if (!isBunnyStreamConfigured()) {
       return NextResponse.json(
@@ -55,23 +46,44 @@ export async function GET(
     const vid = req.nextUrl.searchParams.get("vid");
     if (!vid) return NextResponse.json({ error: "Missing vid" }, { status: 400 });
 
-    // Auth — album owner or platform admin only. We don't want the proxy
-    // to be a free unauthenticated CDN egress for every guest.
+    const playbackMode = req.nextUrl.searchParams.get("play") === "1";
+    const expiresAt = Number(req.nextUrl.searchParams.get("exp") ?? "0");
+    const playbackToken = req.nextUrl.searchParams.get("sig") ?? "";
+
     const album = await db.query.albums.findFirst({ where: eq(albums.slug, slug) });
     if (!album) return NextResponse.json({ error: "Not found" }, { status: 404 });
-    const owner = await checkAlbumOwnership(album);
-    if (!owner.ok) return NextResponse.json({ error: owner.error }, { status: owner.status });
 
-    // Confirm this videoId actually belongs to this album — otherwise an
-    // admin could be tricked into proxying any video in our Bunny library.
+    if (playbackMode) {
+      // Guest playback is allowed only for an active published album and only
+      // with the short-lived server-generated HMAC token embedded in a gallery
+      // response that already passed the album's password gate.
+      if (!album.isPublished) {
+        return NextResponse.json({ error: "Not found" }, { status: 404 });
+      }
+      if (!verifyVideoPlaybackToken(slug, vid, expiresAt, playbackToken)) {
+        return NextResponse.json({ error: "Invalid or expired playback token" }, { status: 403 });
+      }
+    } else {
+      // Existing ZIP/download flow remains owner/admin only.
+      const owner = await checkAlbumOwnership(album);
+      if (!owner.ok) return NextResponse.json({ error: owner.error }, { status: owner.status });
+    }
+
+    // Confirm this video belongs to this album. Guest playback additionally
+    // requires the row itself to be published.
     const photo = await db.query.photos.findFirst({
-      where: and(eq(photos.albumId, album.id), eq(photos.cfStreamVideoId, vid)),
+      where: playbackMode
+        ? and(
+            eq(photos.albumId, album.id),
+            eq(photos.cfStreamVideoId, vid),
+            eq(photos.status, "published"),
+          )
+        : and(eq(photos.albumId, album.id), eq(photos.cfStreamVideoId, vid)),
     });
     if (!photo) {
       return NextResponse.json({ error: "Video not in this album" }, { status: 404 });
     }
 
-    // Find which MP4 resolutions Bunny actually transcoded.
     const meta = await getBunnyStreamVideo(vid);
     if (!meta) {
       return NextResponse.json(
@@ -92,30 +104,24 @@ export async function GET(
         {
           error:
             "No MP4 fallback URL available. Either BUNNY_STREAM_CDN_URL is unset " +
-            "or Bunny Stream library has no `mp4Fallback` resolutions (enable " +
-            "'MP4 Fallback' in the Bunny library settings; existing videos may " +
-            "need to be reprocessed).",
+            "or Bunny Stream library has no MP4 fallback resolutions.",
           availableResolutions: meta.availableResolutions,
         },
         { status: 502 },
       );
     }
 
-    // If Token Authentication is enabled on the Bunny Stream library
-    // (recommended for security), sign the URL so the CDN accepts the
-    // request. Falls through to the unsigned URL when the security
-    // key env var isn't set — the resulting 403 is then surfaced with
-    // a clear "set BUNNY_STREAM_SECURITY_KEY" hint below.
     const fetchUrl = await signBunnyStreamUrl(best.url);
 
-    // Fetch the CDN MP4. Wrap separately so a fetch-level throw
-    // (DNS, TLS, ECONNRESET, etc.) still surfaces with a real reason.
     let upstream: Response;
     try {
       const upstreamHeaders: Record<string, string> = {};
       const range = req.headers.get("range");
       if (range) upstreamHeaders.range = range;
-      upstream = await fetch(fetchUrl, { headers: upstreamHeaders });
+      upstream = await fetch(fetchUrl, {
+        headers: upstreamHeaders,
+        cache: "no-store",
+      });
     } catch (err) {
       const detail = err instanceof Error ? err.message : String(err);
       console.error(`[video-download] upstream fetch threw for ${best.url}:`, detail);
@@ -131,40 +137,23 @@ export async function GET(
         `[video-download] Bunny CDN ${upstream.status} for ${best.url} — body:`,
         body.slice(0, 200),
       );
-      // Status-specific hints — 403 vs 404 mean very different things.
       let hint =
-        "Most common cause: MP4 Fallback is OFF in the library settings " +
-        "(Bunny dashboard → Stream → Libraries → your library → toggle " +
-        "'Enable MP4 Fallback'). Existing videos may need a re-encode.";
+        "Most common cause: MP4 Fallback is OFF in the Bunny Stream library settings.";
       try {
         const host = new URL(best.url).hostname;
         if (!host.startsWith("vz-")) {
           hint =
-            `BUNNY_STREAM_CDN_URL appears to be set to "${host}" — that ` +
-            "looks like a Bunny Storage pull zone, not a Stream pull zone. " +
-            "Open Bunny dashboard → Stream → Libraries → your library → " +
-            "API → 'CDN Hostname' (starts with 'vz-…') and paste THAT into " +
-            "the BUNNY_STREAM_CDN_URL Vercel env var (e.g. " +
-            "https://vz-XXXXXXXX-XXX.b-cdn.net).";
+            `BUNNY_STREAM_CDN_URL appears to be set to "${host}" — expected the Stream CDN hostname starting with vz-.`;
         } else if (upstream.status === 403) {
           if (!process.env.BUNNY_STREAM_SECURITY_KEY) {
             hint =
-              "Token Authentication is ON in the Bunny Stream library, but " +
-              "BUNNY_STREAM_SECURITY_KEY is not set in Vercel. Open Bunny " +
-              "dashboard → Stream → Libraries → your library → Security tab " +
-              "→ copy the 'Token authentication key' → paste it into a new " +
-              "Vercel env var named BUNNY_STREAM_SECURITY_KEY and redeploy.";
+              "Token Authentication is ON in Bunny Stream but BUNNY_STREAM_SECURITY_KEY is not configured in Vercel.";
           } else {
             hint =
-              "Token Authentication is ON and signing IS happening, but the " +
-              "key didn't match. Re-copy the 'Token authentication key' from " +
-              "Bunny dashboard → Stream → Libraries → your library → Security " +
-              "tab into BUNNY_STREAM_SECURITY_KEY (no whitespace, no quotes). " +
-              "If you have Referrer / IP / Geo restrictions ON, the request " +
-              "is also coming from Vercel — relax those rules or disable them.";
+              "Bunny rejected the signed request. Re-check the Stream token key and any Referrer / IP / Geo restrictions.";
           }
         }
-      } catch { /* URL parse failed — keep the default hint */ }
+      } catch { /* keep default hint */ }
       return NextResponse.json(
         {
           error: `Bunny CDN returned ${upstream.status} for ${best.res} MP4. ${hint}`,
@@ -177,35 +166,33 @@ export async function GET(
 
     if (!upstream.body) {
       return NextResponse.json(
-        { error: "Bunny CDN returned 200 with no body", url: best.url },
+        { error: "Bunny CDN returned a response with no body", url: best.url },
         { status: 502 },
       );
     }
 
-    // Filename — Content-Disposition so browsers + client-zip both pick it up.
     const downloadName =
       (photo.originalFilename ?? `video-${vid}`).replace(/\.[^.]+$/, "") + ".mp4";
 
     const outHeaders = new Headers();
-    outHeaders.set("Content-Type", "video/mp4");
+    outHeaders.set("Content-Type", upstream.headers.get("content-type") ?? "video/mp4");
     outHeaders.set(
       "Content-Disposition",
-      `attachment; filename="${downloadName.replace(/[^\w.\-]+/g, "_")}"`,
+      `${playbackMode ? "inline" : "attachment"}; filename="${downloadName.replace(/[^\w.\-]+/g, "_")}"`,
     );
+    outHeaders.set("Accept-Ranges", upstream.headers.get("accept-ranges") ?? "bytes");
+    outHeaders.set("Cache-Control", "private, no-store, max-age=0");
+
     const len = upstream.headers.get("content-length");
     if (len) outHeaders.set("Content-Length", len);
     const cr = upstream.headers.get("content-range");
     if (cr) outHeaders.set("Content-Range", cr);
-    const ar = upstream.headers.get("accept-ranges");
-    if (ar) outHeaders.set("Accept-Ranges", ar);
 
     return new Response(upstream.body, {
       status: upstream.status,
       headers: outHeaders,
     });
   } catch (err) {
-    // Catch-all so the client never sees a bare 500 with empty body.
-    // The Vercel runtime logs the stack via console.error.
     const detail = err instanceof Error ? `${err.name}: ${err.message}` : String(err);
     console.error("[video-download] unhandled error:", detail, err);
     return NextResponse.json(
