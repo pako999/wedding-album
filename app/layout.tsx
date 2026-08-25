@@ -14,6 +14,7 @@ import { db } from "@/lib/db";
 import { albums } from "@/lib/db/schema";
 import { and, eq, ne } from "drizzle-orm";
 import { SITE_URL } from "@/lib/urls";
+import { PRIMARY_ORIGIN, SPANISH_HOST, SPANISH_ORIGIN } from "@/lib/domains";
 import "./globals.css";
 
 /**
@@ -27,11 +28,16 @@ const SUPPORTED_LANGS: LangCode[] = ["sl", "hr", "sr", "de", "en", "es"];
 
 /** Detect the visitor's UI language from the request URL so Clerk's
  *  sign-in / sign-up flows render in the same language as the
- *  surrounding page. Middleware sets x-pathname; we fall back to
- *  parsing the standard "next-url" / "referer" headers. */
+ *  surrounding page. Middleware sets x-pathname and, for country-domain
+ *  aliases such as guestcam.es, x-site-locale. */
 async function detectLang(): Promise<LangCode> {
   try {
     const h = await headers();
+    const forcedLocale = h.get("x-site-locale");
+    if (forcedLocale && (SUPPORTED_LANGS as string[]).includes(forcedLocale)) {
+      return forcedLocale as LangCode;
+    }
+
     const path =
       h.get("x-pathname") ??
       h.get("next-url") ??
@@ -70,12 +76,6 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    // Optimized against the SL SERP for "QR koda za poroko" — there's
-    // no clear competitor on that query, so leading with the exact
-    // phrase puts us in the strongest position for cold organic.
-    // Template applies to child routes that set their own string title
-    // (blog posts, legal pages); the homepage uses `default` directly,
-    // which is NOT wrapped by the template.
     default: "QR koda za dogodke • Fotografije gostov v živo | Guestcam",
     template: "%s | Guestcam",
   },
@@ -92,13 +92,9 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: "Guestcam" }],
   manifest: "/manifest.json",
-  // Explicit SVG icon — Google accepts SVG with no size restriction.
-  // The 48×48 PNG is auto-added by Next.js from app/icon.tsx.
   icons: {
     icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
   },
-  // Site is live — individual private routes (albums, dashboard, etc.) override
-  // this with their own noindex where appropriate.
   robots: { index: true, follow: true },
   openGraph: {
     type: "website",
@@ -108,13 +104,6 @@ export const metadata: Metadata = {
     title: "QR koda za dogodke • Fotografije gostov v živo | Guestcam",
     description:
       "Z eno QR kodo zberite vse fotografije in videe gostov v zasebni galeriji. Brez aplikacije, polna kakovost, brezplačen začetek. Za poroke in dogodke.",
-    // Social link-preview image. iMessage, WhatsApp, Slack, Facebook,
-    // LinkedIn and Telegram all read OG image tags; without an
-    // `images:` entry they render a text-only card (which is what
-    // the user's iMessage screenshot showed). Versioned filename
-    // (?v=) busts the Facebook/Twitter scrape cache when we update
-    // the image; without it, the old "no image" version sticks for
-    // weeks because crawlers cache aggressively.
     images: [
       {
         url: "/og-image.png?v=2",
@@ -159,15 +148,10 @@ export default async function RootLayout({
   // who have not yet purchased a plan.
   const h = await headers();
   const pathname = h.get("x-pathname") ?? "";
-  // Affiliate paths are matched in any locale: /affiliate/*, /hr/affiliate/*,
-  // /sr/affiliate/*, etc. The discount banner + exit popup are for paying
-  // customers; partners are a different audience and the offer doesn't
-  // apply to them.
   const isAffiliatePath = /^\/(?:sl|hr|sr|de|en|es)?\/?affiliate(?:\/|$)/.test(pathname);
 
   // Album guest pages live at /<slug>. Owners have already paid, guests
-  // don't need to see a "15% off your first plan" pitch when they're
-  // opening a wedding gallery. Mirrors middleware.ts isAlbumGuestPath.
+  // don't need to see a promotion when opening a private gallery.
   const isAlbumGuestPath = (() => {
     const segments = pathname.split("/").filter(Boolean);
     if (segments.length !== 1) return false;
@@ -184,38 +168,14 @@ export default async function RootLayout({
     pathname.startsWith("/admin") ||
     pathname.startsWith("/sign-in") ||
     pathname.startsWith("/sign-up") ||
-    // Photo Wall (/wall/<token>) is an unattended TV/projector display —
-    // a "15% off" popup covering the couple's photos on a big screen in
-    // front of every guest is the worst possible place for it. Needs its
-    // own check because isAlbumGuestPath only matches single-segment
-    // /<slug> paths, and the wall is two segments.
     pathname.startsWith("/wall") ||
     isAffiliatePath ||
     isAlbumGuestPath;
 
-  // Surfaces that must stay chrome-free: the Photo Wall (an unattended
-  // venue TV — a cookie dialog sits over the couple's photos in front of
-  // every guest, and nobody is there to dismiss it) and album guest
-  // galleries.
-  //
-  // We drop the consent dialog AND every non-essential tracker together,
-  // never the dialog alone: serving GA/Meta Pixel with the banner
-  // suppressed would set marketing cookies without consent, which is
-  // exactly what the banner exists to prevent. No tracker → nothing to
-  // consent to. Note this means the two gtag() events fired from the
-  // guest gallery (guest_email_captured, referral CTA) no longer report;
-  // both call sites are already guarded with `typeof gtag === "function"`
-  // so they simply no-op.
   const isPrivateSurface = pathname.startsWith("/wall") || isAlbumGuestPath;
 
   let showPromo = !isProtectedPath;
   if (showPromo) {
-    // try/catch: ISR pages (blog, revalidate=3600) are regenerated in the
-    // BACKGROUND, where no request passes through clerkMiddleware — auth()
-    // then throws "Clerk can't detect usage of clerkMiddleware()". There is
-    // no user in that context anyway, so treating it as signed-out is
-    // exactly right (the promo banner state gets refined on the client
-    // for real visitors).
     try {
       const { userId } = await auth();
       if (userId) {
@@ -228,21 +188,23 @@ export default async function RootLayout({
   }
 
   return (
-    <ClerkProvider localization={clerkLocalization}>
+    <ClerkProvider
+      localization={clerkLocalization}
+      // The same Next.js deployment serves the primary .si domain and the
+      // Spanish .es satellite. Clerk can decide client-side from the URL.
+      isSatellite={(url) => url.hostname === SPANISH_HOST}
+      domain={(url) => url.hostname}
+      signInUrl={`${PRIMARY_ORIGIN}/sign-in`}
+      signUpUrl={`${PRIMARY_ORIGIN}/sign-up`}
+      allowedRedirectOrigins={[SPANISH_ORIGIN]}
+    >
       <html lang={lang} className={`${dmSans.variable} ${cormorant.variable}`}>
         <body className="font-sans antialiased bg-[#F2F4F8] text-[#0F1729] min-h-screen">
-          {/* Preconnect hints — trim ~100-300 ms off TLS handshake for the
-              third-party scripts we KNOW will load on every page. Next.js
-              hoists these to <head> automatically. */}
           <link rel="preconnect" href="https://www.googletagmanager.com" />
           <link rel="preconnect" href="https://consent.cookiebot.com" />
           <link rel="dns-prefetch" href="https://www.google-analytics.com" />
           <link rel="dns-prefetch" href="https://connect.facebook.net" />
 
-          {/* Cookiebot — must be beforeInteractive so auto-blocking mode can
-              intercept GA and any other third-party scripts before they fire.
-              Skipped on private surfaces (see isPrivateSurface above), where
-              no non-essential tracker loads either. */}
           {!isPrivateSurface && (
             <Script
               id="Cookiebot"
