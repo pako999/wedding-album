@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { headers } from "next/headers";
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { db } from "@/lib/db";
 import { albums, photos, moments } from "@/lib/db/schema";
@@ -55,6 +56,34 @@ function modernBunnyPlayerUrl(url: string): string {
     "https://iframe.mediadelivery.net/embed/",
     "https://player.mediadelivery.net/embed/",
   );
+}
+
+/**
+ * Safari (iPhone/iPad/macOS) is most reliable with its native HLS pipeline.
+ * Bunny Stream exposes HLS next to the thumbnail on the same CDN hostname:
+ *   https://<pull-zone>/<video-id>/playlist.m3u8
+ *
+ * Older Guestcam rows already contain thumbnailUrl, so this works for old
+ * uploads too without touching the database or re-uploading the video.
+ */
+function bunnyHlsUrl(thumbnailUrl: string | null | undefined, videoId: string): string | null {
+  if (!thumbnailUrl || !videoId) return null;
+  try {
+    const normalized = /^https?:\/\//i.test(thumbnailUrl)
+      ? thumbnailUrl
+      : `https://${thumbnailUrl}`;
+    const thumbnail = new URL(normalized);
+    return `${thumbnail.protocol}//${thumbnail.host}/${videoId}/playlist.m3u8`;
+  } catch {
+    return null;
+  }
+}
+
+function isSafariUserAgent(userAgent: string): boolean {
+  if (!userAgent) return false;
+  const hasSafari = /Safari\//i.test(userAgent);
+  const isOtherWebKitBrowser = /CriOS|FxiOS|EdgiOS|OPiOS|DuckDuckGo/i.test(userAgent);
+  return hasSafari && !isOtherWebKitBrowser;
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -188,14 +217,29 @@ export default async function AlbumPage({ params, searchParams }: Props) {
       })
     : [];
 
-  // Existing Bunny Stream rows keep the legacy embed hostname in blobUrl.
-  // Upgrade the URL only for playback; nothing is rewritten in the database.
-  // This immediately fixes old uploads while keeping all stored metadata intact.
-  const playbackPhotos = albumPhotos.map((photo) =>
-    photo.cfStreamVideoId
-      ? { ...photo, blobUrl: modernBunnyPlayerUrl(photo.blobUrl) }
-      : photo,
-  );
+  const requestHeaders = await headers();
+  const safari = isSafariUserAgent(requestHeaders.get("user-agent") ?? "");
+
+  // Safari gets native HLS instead of the Bunny iframe. Setting
+  // cfStreamVideoId to null intentionally sends VideoCard through its native
+  // <video controls playsInline> branch. Other browsers keep the modern Bunny
+  // player. This applies to old uploads at read-time; DB rows stay untouched.
+  const playbackPhotos = albumPhotos.map((photo) => {
+    if (!photo.cfStreamVideoId) return photo;
+
+    if (safari) {
+      const hlsUrl = bunnyHlsUrl(photo.thumbnailUrl, photo.cfStreamVideoId);
+      if (hlsUrl) {
+        return {
+          ...photo,
+          blobUrl: hlsUrl,
+          cfStreamVideoId: null,
+        };
+      }
+    }
+
+    return { ...photo, blobUrl: modernBunnyPlayerUrl(photo.blobUrl) };
+  });
 
   // Events/business package flag. getAlbumFlags never throws — if the
   // table isn't there yet the feature simply reads as off.
