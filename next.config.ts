@@ -15,6 +15,12 @@ const nextConfig: NextConfig = {
   },
   async redirects() {
     return [
+      // Preview homepage uses the exact CamLove-owned event photography for
+      // the three assets whose local Guestcam copies differ. The other event
+      // assets are already byte-identical between the repositories.
+      { source: "/events/babyshower.webp", destination: "https://www.camlove.me/events/babyshower.webp", permanent: false },
+      { source: "/events/gromparty.webp", destination: "https://www.camlove.me/events/gromparty.webp", permanent: false },
+      { source: "/events/party.webp", destination: "https://www.camlove.me/events/party.webp", permanent: false },
       // /favicon.ico → Next.js dynamic icon route so Google finds a favicon
       // at the conventional path (in addition to the <link rel="icon"> tag).
       { source: "/favicon.ico", destination: "/icon", permanent: false },
