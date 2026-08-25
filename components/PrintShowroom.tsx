@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { STAND_VARIANTS, eur } from "@/lib/print-service";
+import { PrintSectionMover } from "@/components/PrintSectionMover";
 
 export interface PrintShowroomCopy {
   badge: string;
@@ -40,6 +41,7 @@ export function PrintShowroom({ copy }: { copy: PrintShowroomCopy }) {
 
   return (
     <section id="print-service" className="overflow-hidden bg-[#FBF9F4] py-20 sm:py-28">
+      <PrintSectionMover />
       <div className="mx-auto max-w-[1320px] px-5 sm:px-8">
         <div className="grid gap-6 border-b border-black/10 pb-8 lg:grid-cols-[1fr_auto_1fr] lg:items-center">
           <p className="text-[11px] font-extrabold uppercase tracking-[0.24em] text-[#9A6A16]">
