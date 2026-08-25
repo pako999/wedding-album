@@ -10,8 +10,6 @@ import { checkRateLimit } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
 
-// Accepted upload MIME types — mirrors /upload-url. A record whose type
-// isn't a real image/video has no place in a gallery.
 const ALLOWED_IMAGE_TYPES = new Set([
   "image/jpeg", "image/jpg", "image/png", "image/webp",
   "image/heic", "image/heif", "image/gif",
@@ -21,38 +19,49 @@ const ALLOWED_VIDEO_TYPES = new Set([
   "video/webm", "video/mpeg", "video/3gpp", "video/avi",
 ]);
 
-// Bound free-text fields a guest controls so a record can't carry a
-// megabyte of attacker-supplied text into the DB / owner notifications.
 const MAX_UPLOADER_NAME = 80;
 const MAX_FILENAME = 255;
+const VENUE_SAVES_PER_MINUTE = 2_000;
 
 interface SaveBody {
-  // R2 / Vercel Blob upload
   blobUrl?: string;
-  // Cloudflare Stream upload
   cfStreamVideoId?: string;
-  // Common
   mimeType: string;
   originalFilename?: string;
   sizeBytes?: number;
   uploaderName: string;
-  // Optional sub-gallery / moment the photo is uploaded into
   momentId?: string;
-  // Pixel dimensions measured client-side (images only)
   width?: number;
   height?: number;
 }
 
+function configuredR2Host(): string | null {
+  const raw = process.env.CLOUDFLARE_R2_PUBLIC_URL;
+  if (!raw) return null;
+  try {
+    const parsed = new URL(raw);
+    return parsed.protocol === "https:" ? parsed.hostname.toLowerCase() : null;
+  } catch {
+    return null;
+  }
+}
+
 /**
- * Only accept blob URLs that point at our own storage providers.
- * Prevents a caller from injecting an arbitrary external URL as a "photo".
+ * Only accept media URLs that point at one of our configured storage providers.
+ * R2 may use either an r2.dev hostname or a custom CDN domain, so it is matched
+ * against CLOUDFLARE_R2_PUBLIC_URL exactly rather than allowing arbitrary R2 URLs.
  */
 function isAllowedBlobUrl(u: string): boolean {
   let parsed: URL;
   try { parsed = new URL(u); } catch { return false; }
   if (parsed.protocol !== "https:") return false;
   const h = parsed.hostname.toLowerCase();
-  return h.endsWith(".b-cdn.net") || h.endsWith(".public.blob.vercel-storage.com");
+  const r2Host = configuredR2Host();
+  return (
+    h.endsWith(".b-cdn.net") ||
+    h.endsWith(".public.blob.vercel-storage.com") ||
+    (r2Host !== null && h === r2Host)
+  );
 }
 
 export async function POST(
@@ -61,16 +70,23 @@ export async function POST(
 ) {
   const { slug } = await params;
 
-  // Rate limit — this endpoint writes a DB row + can fire an owner email
-  // per call. Cap it so a script can't flood a gallery or the owner's
-  // inbox. 60/min per IP covers a real batch upload.
-  const rl = await checkRateLimit("save-upload", 60, 60_000);
+  // A venue can put hundreds of phones behind one NAT/public IP. The old
+  // 60/min per-IP cap caused successful direct uploads to fail at the final
+  // metadata-save step. This route only writes small JSON/DB records, so a
+  // 2,000/min coarse venue cap supports a 500-person burst while still putting
+  // a ceiling on a single-source script. Album/file/duplicate checks below are
+  // the authoritative data controls.
+  const rl = await checkRateLimit("save-upload-venue", VENUE_SAVES_PER_MINUTE, 60_000);
   if (!rl.ok) return rl.response;
 
-  const body: SaveBody = await req.json();
+  let body: SaveBody;
+  try {
+    body = await req.json() as SaveBody;
+  } catch {
+    return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
+  }
+
   const { blobUrl, cfStreamVideoId, mimeType, originalFilename, sizeBytes, momentId } = body;
-  // Optional pixel dimensions, measured client-side on the uploaded file.
-  // Clamped; anything implausible is dropped rather than stored.
   const asDim = (v: unknown) => {
     const n = typeof v === "number" ? Math.round(v) : NaN;
     return Number.isFinite(n) && n > 0 && n <= 20000 ? n : null;
@@ -87,12 +103,10 @@ export async function POST(
   if (!mimeType) {
     return NextResponse.json({ error: "mimeType required" }, { status: 400 });
   }
-  // MIME must be a real, whitelisted image/video type.
   if (!ALLOWED_IMAGE_TYPES.has(mimeType) && !ALLOWED_VIDEO_TYPES.has(mimeType)) {
     return NextResponse.json({ error: "Unsupported file type" }, { status: 400 });
   }
 
-  // Bound guest-controlled free text. uploaderName is required.
   const uploaderName = (typeof body.uploaderName === "string" ? body.uploaderName : "").trim();
   if (!uploaderName) {
     return NextResponse.json({ error: "uploaderName required" }, { status: 400 });
@@ -104,12 +118,10 @@ export async function POST(
     return NextResponse.json({ error: "originalFilename too long" }, { status: 400 });
   }
 
-  // Belt-and-suspenders: even if the upload-url pre-check was bypassed,
-  // reject oversized files before we record them. Caps match upload-url.
   if (typeof sizeBytes === "number") {
     const isVideo = mimeType.startsWith("video/");
     const cap = isVideo ? 500 * 1024 * 1024 : 60 * 1024 * 1024;
-    if (sizeBytes > cap) {
+    if (!Number.isFinite(sizeBytes) || sizeBytes < 0 || sizeBytes > cap) {
       const mb = Math.floor(cap / (1024 * 1024));
       return NextResponse.json(
         { error: `File too large (max ${mb} MB per ${isVideo ? "video" : "photo"})` },
@@ -123,10 +135,6 @@ export async function POST(
     return NextResponse.json({ error: "Album not found" }, { status: 404 });
   }
 
-  // Event permission gates. Enforced HERE, not only in the UI — hiding
-  // a button is decoration; this is the door. getAlbumFlags never
-  // throws, so a missing flags table degrades to "everything allowed",
-  // which is exactly the pre-feature behaviour.
   {
     const flags = await getAlbumFlags(album.id);
     if (flags.albumPermission === "view_only") {
@@ -141,9 +149,6 @@ export async function POST(
     }
   }
 
-  // Password gate — ONLY when the album actually has a password set.
-  // Open link/QR albums (the default) accept uploads with no password,
-  // matching /upload-url and /bunny-upload.
   if (album.password) {
     const provided = req.headers.get("x-album-password") ?? "";
     const ok = await verifyAlbumPassword(provided, album.password);
@@ -152,14 +157,10 @@ export async function POST(
     }
   }
 
-  // Enforce the plan's photo cap here too — /upload-url checks it, but
-  // this endpoint is a separate request and must not be bypassable.
   if (album.photoCount >= album.maxPhotos) {
     return NextResponse.json({ error: "Album photo limit reached" }, { status: 403 });
   }
 
-  // Skip duplicates — an identical file (same name + size) is already in this album.
-  // Safety net in case the upload-url pre-check was bypassed or a batch raced.
   if (originalFilename && typeof sizeBytes === "number") {
     const dup = await db.query.photos.findFirst({
       where: and(
@@ -173,7 +174,6 @@ export async function POST(
     }
   }
 
-  // Idempotency — deduplicate by blobUrl or cfStreamVideoId
   if (blobUrl) {
     const existing = await db.query.photos.findFirst({
       where: eq(photos.blobUrl, blobUrl),
@@ -194,7 +194,6 @@ export async function POST(
   const isVideo = mimeType.startsWith("video/");
   const status = album.moderationEnabled ? "pending" : "published";
 
-  // Validate the moment belongs to this album — ignore it otherwise.
   let validMomentId: string | null = null;
   if (momentId) {
     const moment = await db.query.moments.findFirst({
@@ -203,7 +202,6 @@ export async function POST(
     if (moment) validMomentId = moment.id;
   }
 
-  // Build the stored URL values (iframe URL saved in blobUrl for stream videos)
   const storedBlobUrl = blobUrl
     ?? (cfStreamVideoId ? bunnyStreamIframeUrl(cfStreamVideoId) : "");
   const storedThumbnailUrl = cfStreamVideoId
@@ -225,7 +223,6 @@ export async function POST(
     status,
   }).returning();
 
-  // Update counters
   if (status === "published") {
     await db.update(albums)
       .set({ photoCount: sql`${albums.photoCount} + 1`, updatedAt: new Date() })
@@ -236,7 +233,6 @@ export async function POST(
       .where(eq(albums.id, album.id));
   }
 
-  // Email notification for photos only
   if (album.notifyEmail && !isVideo) {
     sendNewPhotoNotification({
       to: album.notifyEmail,
