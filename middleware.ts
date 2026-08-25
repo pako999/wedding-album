@@ -11,6 +11,7 @@ import {
   PRIMARY_GUESTCAM_ORIGIN,
   SPANISH_GUESTCAM_ORIGIN,
   isSpanishGuestcamHost,
+  isSpanishGuestcamSatelliteHost,
   normalizedHostname,
 } from "@/lib/site-domains";
 
@@ -259,18 +260,18 @@ export default clerkMiddleware(
   },
   (req) => {
     const hostname = normalizedHostname(req.headers.get("host") ?? req.nextUrl.hostname);
-    if (isSpanishGuestcamHost(hostname)) {
+    if (isSpanishGuestcamSatelliteHost(hostname)) {
       return {
         isSatellite: true,
-        domain: hostname,
+        domain: "guestcam.es",
         signInUrl: `${PRIMARY_GUESTCAM_ORIGIN}/sign-in`,
         signUpUrl: `${PRIMARY_GUESTCAM_ORIGIN}/sign-up`,
         satelliteAutoSync: true,
-        authorizedParties: [PRIMARY_GUESTCAM_ORIGIN, SPANISH_GUESTCAM_ORIGIN, "https://guestcam.es"],
+        authorizedParties: [PRIMARY_GUESTCAM_ORIGIN, SPANISH_GUESTCAM_ORIGIN],
       };
     }
     return {
-      authorizedParties: [PRIMARY_GUESTCAM_ORIGIN, SPANISH_GUESTCAM_ORIGIN, "https://guestcam.es"],
+      authorizedParties: [PRIMARY_GUESTCAM_ORIGIN, SPANISH_GUESTCAM_ORIGIN],
     };
   },
 );
