@@ -44,6 +44,19 @@ const EVENT_LABEL_SL: Record<string, string> = {
   other:       "Album dogodka za",
 };
 
+/**
+ * Bunny's 2026 player is served from player.mediadelivery.net. Existing
+ * uploads in Guestcam still store the legacy iframe.mediadelivery.net URL,
+ * so normalize at read-time instead of forcing guests to re-upload videos.
+ * Non-Bunny URLs are returned untouched.
+ */
+function modernBunnyPlayerUrl(url: string): string {
+  return url.replace(
+    "https://iframe.mediadelivery.net/embed/",
+    "https://player.mediadelivery.net/embed/",
+  );
+}
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   // withSchemaHealing: if the schema is stale (new column deployed but
@@ -175,6 +188,15 @@ export default async function AlbumPage({ params, searchParams }: Props) {
       })
     : [];
 
+  // Existing Bunny Stream rows keep the legacy embed hostname in blobUrl.
+  // Upgrade the URL only for playback; nothing is rewritten in the database.
+  // This immediately fixes old uploads while keeping all stored metadata intact.
+  const playbackPhotos = albumPhotos.map((photo) =>
+    photo.cfStreamVideoId
+      ? { ...photo, blobUrl: modernBunnyPlayerUrl(photo.blobUrl) }
+      : photo,
+  );
+
   // Events/business package flag. getAlbumFlags never throws — if the
   // table isn't there yet the feature simply reads as off.
   const flags = await getAlbumFlags(album.id);
@@ -198,7 +220,7 @@ export default async function AlbumPage({ params, searchParams }: Props) {
       <style>{`#CookiebotWidget { display: none !important; }`}</style>
       <AlbumGuestView
         album={toPublicAlbum(album)}
-        photos={albumPhotos}
+        photos={playbackPhotos}
         moments={albumMoments}
         passwordRequired={passwordRequired}
         passwordCorrect={passwordCorrect}
