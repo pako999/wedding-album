@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState, useEffect, useMemo } from "react";
 import { LanguageSwitcher, HOME_HREFLANG, type LangCode } from "./LanguageSwitcher";
-import { UserButton } from "@clerk/nextjs";
+import { SignInButton, UserButton } from "@clerk/nextjs";
 
 export interface HomeMobileMenuLabels {
   open: string;
@@ -32,17 +32,12 @@ const LOCALIZED_SECTION_LABELS: Partial<Record<LangCode, { how: string; pricing:
 
 /**
  * Hamburger menu for the homepage navbar — visible only below `md`.
- *
- * `signedIn` is resolved server-side on each homepage (Clerk's auth() in SSR)
- * so the menu doesn't flash the wrong auth state during Clerk hydration.
- * Labels + links are passed in so the same component drives every locale.
+ * Clerk's SignInButton is used for signed-out visitors so a click from the
+ * guestcam.es satellite performs Clerk's cross-domain session handshake.
  */
 export function HomeMobileMenu({ signedIn = false, lang, links, labels }: HomeMobileMenuProps) {
   const [open, setOpen] = useState(false);
 
-  // Localized homepages historically passed only Business / Blog / Contact.
-  // Expand that signature to match the Slovenian homepage menu exactly:
-  // How it works / Pricing / Business / Blog / FAQ / Contact.
   const menuLinks = useMemo(() => {
     if (lang === "sl" || links.some((l) => l.href === "#how")) return links;
     const copy = LOCALIZED_SECTION_LABELS[lang];
@@ -125,8 +120,6 @@ export function HomeMobileMenu({ signedIn = false, lang, links, labels }: HomeMo
                 );
               })}
               <div className="my-2 h-px bg-gray-100" />
-              {/* Auth-aware row — signed out: sign-in; signed in:
-                  dashboard + avatar. */}
               {signedIn ? (
                 <div className="px-3 py-2 flex items-center justify-between gap-3" role="menuitem">
                   <Link
@@ -141,14 +134,16 @@ export function HomeMobileMenu({ signedIn = false, lang, links, labels }: HomeMo
                   />
                 </div>
               ) : (
-                <Link
-                  href="/sign-in"
-                  onClick={() => setOpen(false)}
-                  role="menuitem"
-                  className="px-3 py-3 rounded-lg text-base font-medium text-gray-600 hover:bg-gray-50 transition-colors"
-                >
-                  {labels.signIn}
-                </Link>
+                <SignInButton mode="redirect">
+                  <button
+                    type="button"
+                    onClick={() => setOpen(false)}
+                    role="menuitem"
+                    className="px-3 py-3 rounded-lg text-left text-base font-medium text-gray-600 hover:bg-gray-50 transition-colors"
+                  >
+                    {labels.signIn}
+                  </button>
+                </SignInButton>
               )}
               {!signedIn && (
                 <Link
