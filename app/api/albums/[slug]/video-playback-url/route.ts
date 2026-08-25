@@ -3,10 +3,36 @@ import { db } from "@/lib/db";
 import { albums, photos } from "@/lib/db/schema";
 import { and, eq } from "drizzle-orm";
 import { verifyAlbumPassword } from "@/lib/album-password";
-import { createVideoPlaybackToken } from "@/lib/video-playback-token";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+
+function bunnyPlayer2Url(rawUrl: string): string | null {
+  try {
+    const url = new URL(rawUrl);
+
+    if (url.hostname === "iframe.mediadelivery.net") {
+      url.hostname = "player.mediadelivery.net";
+    }
+
+    if (url.hostname !== "player.mediadelivery.net" || !url.pathname.includes("/embed/")) {
+      return null;
+    }
+
+    // Bunny Stream Player 2 officially supports these iOS-specific options.
+    // Keep autoplay disabled so Safari starts playback only after a user tap,
+    // force inline playback, and disable the native iOS player handoff so the
+    // same Bunny Player 2 implementation is used on iPhone as on desktop.
+    url.searchParams.set("autoplay", "false");
+    url.searchParams.set("preload", "true");
+    url.searchParams.set("playsinline", "true");
+    url.searchParams.set("disableIosPlayer", "true");
+
+    return url.toString();
+  } catch {
+    return null;
+  }
+}
 
 export async function GET(
   req: NextRequest,
@@ -41,21 +67,13 @@ export async function GET(
     return NextResponse.json({ error: "Video not found" }, { status: 404 });
   }
 
-  const exp = Math.floor(Date.now() / 1000) + 2 * 60 * 60;
-  const sig = createVideoPlaybackToken(slug, vid, exp);
-  if (!sig) {
-    return NextResponse.json({ error: "Playback signing unavailable" }, { status: 503 });
+  const url = bunnyPlayer2Url(photo.blobUrl);
+  if (!url) {
+    return NextResponse.json({ error: "Bunny Player URL unavailable" }, { status: 502 });
   }
 
-  const qs = new URLSearchParams({
-    vid,
-    play: "1",
-    exp: String(exp),
-    sig,
-  });
-
   return NextResponse.json(
-    { url: `/api/albums/${encodeURIComponent(slug)}/video-download?${qs.toString()}` },
+    { url },
     { headers: { "Cache-Control": "private, no-store, max-age=0" } },
   );
 }
