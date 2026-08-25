@@ -8,17 +8,25 @@ function isIosDevice(): boolean {
 
   if (/iPhone|iPad|iPod/i.test(ua)) return true;
 
-  // iPadOS (and iOS Safari when "Request Desktop Website" is active) can
-  // identify as Macintosh. Real Macs report maxTouchPoints=0, iOS/iPadOS > 1.
+  // iPadOS can identify as Macintosh when requesting a desktop site.
   return /Mac/i.test(platform + " " + ua) && navigator.maxTouchPoints > 1;
 }
 
-function bunnyVideoId(src: string): string | null {
+function bunnyVideoIdFromUrl(src: string): string | null {
   try {
     const url = new URL(src, window.location.href);
-    if (!/mediadelivery\.net$/i.test(url.hostname)) return null;
-    const match = url.pathname.match(/\/embed\/[^/]+\/([a-z0-9-]+)/i);
-    return match?.[1] ?? null;
+
+    // Bunny iframe/player URL: /embed/{libraryId}/{videoId}
+    const embedMatch = url.pathname.match(/\/embed\/[^/]+\/([a-z0-9-]+)/i);
+    if (embedMatch?.[1]) return embedMatch[1];
+
+    // Guestcam playback proxy: ?vid={videoId}
+    const queryVid = url.searchParams.get("vid");
+    if (queryVid) return queryVid;
+
+    // Bunny HLS / MP4 paths: /{videoId}/playlist.m3u8 or /{videoId}/play_720p.mp4
+    const mediaMatch = url.pathname.match(/\/([a-f0-9-]{20,})\/(?:playlist\.m3u8|play_[^/]+\.mp4)$/i);
+    return mediaMatch?.[1] ?? null;
   } catch {
     return null;
   }
@@ -34,14 +42,14 @@ export function IosBunnyPlaybackFix() {
     const slug = decodeURIComponent(pathParts[0]);
     const albumPassword = new URLSearchParams(window.location.search).get("pw") ?? "";
 
-    const upgradeIframe = async (iframe: HTMLIFrameElement) => {
-      if (iframe.dataset.iosPlaybackChecked === "1") return;
+    const upgradeElement = async (element: HTMLIFrameElement | HTMLVideoElement) => {
+      if (element.dataset.iosPlaybackChecked === "1") return;
 
-      const src = iframe.getAttribute("src") ?? "";
-      const vid = bunnyVideoId(src);
+      const src = element.getAttribute("src") ?? "";
+      const vid = bunnyVideoIdFromUrl(src);
       if (!vid) return;
 
-      iframe.dataset.iosPlaybackChecked = "1";
+      element.dataset.iosPlaybackChecked = "1";
 
       try {
         const qs = new URLSearchParams({ vid });
@@ -51,41 +59,48 @@ export function IosBunnyPlaybackFix() {
           `/api/albums/${encodeURIComponent(slug)}/video-playback-url?${qs.toString()}`,
           { cache: "no-store", credentials: "same-origin" },
         );
+
         if (!response.ok) {
-          console.warn("[ios-video] playback URL request failed", response.status);
+          console.warn("[ios-video] Bunny Player 2 URL request failed", response.status);
           return;
         }
 
         const data = (await response.json()) as { url?: string };
-        if (!data.url || !iframe.isConnected) return;
+        if (!data.url || !element.isConnected) return;
 
-        const video = document.createElement("video");
-        video.src = data.url;
-        video.controls = true;
-        video.playsInline = true;
-        video.preload = "metadata";
-        video.setAttribute("playsinline", "");
-        video.setAttribute("webkit-playsinline", "");
-        video.style.position = "absolute";
-        video.style.inset = "0";
-        video.style.width = "100%";
-        video.style.height = "100%";
-        video.style.objectFit = "contain";
-        video.style.background = "#000";
+        if (element instanceof HTMLIFrameElement) {
+          element.src = data.url;
+          element.allow = "accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture";
+          element.allowFullscreen = true;
+          return;
+        }
 
-        iframe.replaceWith(video);
-        video.load();
+        // Server-side Safari fallbacks from earlier versions may already have
+        // rendered a native <video>. On iOS replace that with Bunny Player 2
+        // so the browser uses Bunny's officially supported iOS playback path.
+        const iframe = document.createElement("iframe");
+        iframe.src = data.url;
+        iframe.allow = "accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture";
+        iframe.allowFullscreen = true;
+        iframe.setAttribute("frameborder", "0");
+        iframe.style.display = "block";
+        iframe.style.width = "100%";
+        iframe.style.aspectRatio = "16 / 9";
+        iframe.style.border = "0";
+        iframe.style.background = "#000";
+
+        element.replaceWith(iframe);
       } catch (error) {
-        console.warn("[ios-video] failed to switch Bunny iframe", error);
+        console.warn("[ios-video] failed to switch to Bunny Player 2", error);
       }
     };
 
     const scan = (root: ParentNode = document) => {
       root
-        .querySelectorAll<HTMLIFrameElement>(
-          'iframe[src*="player.mediadelivery.net/embed/"], iframe[src*="iframe.mediadelivery.net/embed/"]',
+        .querySelectorAll<HTMLIFrameElement | HTMLVideoElement>(
+          'iframe[src*="mediadelivery.net/embed/"], video[src*="/video-download?"], video[src*="playlist.m3u8"], video[src*="/play_"]',
         )
-        .forEach((iframe) => { void upgradeIframe(iframe); });
+        .forEach((element) => { void upgradeElement(element); });
     };
 
     scan();
@@ -94,8 +109,9 @@ export function IosBunnyPlaybackFix() {
       for (const mutation of mutations) {
         for (const node of mutation.addedNodes) {
           if (!(node instanceof HTMLElement)) continue;
-          if (node.tagName === "IFRAME") {
-            void upgradeIframe(node as HTMLIFrameElement);
+
+          if (node instanceof HTMLIFrameElement || node instanceof HTMLVideoElement) {
+            void upgradeElement(node);
           } else {
             scan(node);
           }
