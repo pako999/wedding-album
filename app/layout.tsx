@@ -17,11 +17,6 @@ import { SITE_URL } from "@/lib/urls";
 import { PRIMARY_ORIGIN, SPANISH_HOST, SPANISH_ORIGIN } from "@/lib/domains";
 import "./globals.css";
 
-/**
- * Google Analytics 4 measurement ID. Hardcoded fallback for prod;
- * overridable via NEXT_PUBLIC_GA_MEASUREMENT_ID if we ever spin up
- * a separate property (staging, beta).
- */
 const GA_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID ?? "G-NCHGTBTWPF";
 
 const SUPPORTED_LANGS: LangCode[] = ["sl", "hr", "sr", "de", "en", "es"];
@@ -123,7 +118,6 @@ export const metadata: Metadata = {
   },
 };
 
-/** Returns true if the visitor has at least one paid album (basic/plus/premium). */
 async function checkHasPaidPlan(userId: string): Promise<boolean> {
   try {
     const row = await db.query.albums.findFirst({
@@ -144,14 +138,10 @@ export default async function RootLayout({
   const lang = await detectLang();
   const clerkLocalization = clerkLocaleFor(lang);
 
-  // Only show promo banners on public marketing pages to visitors
-  // who have not yet purchased a plan.
   const h = await headers();
   const pathname = h.get("x-pathname") ?? "";
   const isAffiliatePath = /^\/(?:sl|hr|sr|de|en|es)?\/?affiliate(?:\/|$)/.test(pathname);
 
-  // Album guest pages live at /<slug>. Owners have already paid, guests
-  // don't need to see a promotion when opening a private gallery.
   const isAlbumGuestPath = (() => {
     const segments = pathname.split("/").filter(Boolean);
     if (segments.length !== 1) return false;
@@ -190,12 +180,13 @@ export default async function RootLayout({
   return (
     <ClerkProvider
       localization={clerkLocalization}
-      // The same Next.js deployment serves the primary .si domain and the
-      // Spanish .es satellite. Clerk can decide client-side from the URL.
       isSatellite={(url) => url.hostname === SPANISH_HOST}
       domain={(url) => url.hostname}
-      signInUrl={`${PRIMARY_ORIGIN}/sign-in`}
-      signUpUrl={`${PRIMARY_ORIGIN}/sign-up`}
+      // Auth always completes on Clerk's primary Guestcam domain. The lang
+      // query keeps the primary form in the language of the page that started
+      // the flow (Spanish for guestcam.es), then Clerk returns to the satellite.
+      signInUrl={`${PRIMARY_ORIGIN}/sign-in?lang=${lang}`}
+      signUpUrl={`${PRIMARY_ORIGIN}/sign-up?lang=${lang}`}
       allowedRedirectOrigins={[SPANISH_ORIGIN]}
     >
       <html lang={lang} className={`${dmSans.variable} ${cormorant.variable}`}>
