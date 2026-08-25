@@ -64,6 +64,21 @@ function parseHostname(url: string | undefined): string {
 
 const APP_HOSTNAME = parseHostname(process.env.NEXT_PUBLIC_APP_URL);
 
+function requestHostCandidates(req: NextRequest): string[] {
+  const forwarded = (req.headers.get("x-forwarded-host") ?? "")
+    .split(",")
+    .map((value) => normalizedHostname(value))
+    .filter(Boolean);
+  const direct = [req.headers.get("host") ?? "", req.nextUrl.hostname]
+    .map((value) => normalizedHostname(value))
+    .filter(Boolean);
+  return [...new Set([...forwarded, ...direct])];
+}
+
+function requestHostname(req: NextRequest): string {
+  return requestHostCandidates(req)[0] ?? "";
+}
+
 function isOwnDomain(hostname: string) {
   const bare = normalizedHostname(hostname);
   return (
@@ -79,9 +94,10 @@ function isOwnDomain(hostname: string) {
 
 export default clerkMiddleware(
   async (auth, req) => {
-  const hostname = req.headers.get("host") ?? "";
+  const hostCandidates = requestHostCandidates(req);
+  const hostname = requestHostname(req);
   const pathname = req.nextUrl.pathname;
-  const spanishRequest = isSpanishGuestcamHost(hostname);
+  const spanishRequest = hostCandidates.some((host) => isSpanishGuestcamHost(host));
   const effectivePathname = spanishRequest && pathname === "/" ? "/es" : pathname;
 
   // ── Normalize malformed paths with backslashes ─────────────────────────────
@@ -98,8 +114,11 @@ export default clerkMiddleware(
   }
 
   // ── Custom domain routing ──────────────────────────────────────────────────
-  // Only fire for requests that come from a *custom* domain (premium feature)
-  if (!isOwnDomain(hostname) && !isInternalApi(req)) {
+  // Only fire for requests that come from a *custom* domain (premium feature).
+  // Vercel can preserve the public custom domain in x-forwarded-host while
+  // host/nextUrl point at the deployment, so official locale domains are
+  // excluded if ANY trusted host candidate identifies them.
+  if (!spanishRequest && !isOwnDomain(hostname) && !isInternalApi(req)) {
     const bareHost = normalizedHostname(hostname);
 
     if (!pathname.startsWith("/api") && !pathname.startsWith("/_next")) {
@@ -259,8 +278,9 @@ export default clerkMiddleware(
   return res;
   },
   (req) => {
-    const hostname = normalizedHostname(req.headers.get("host") ?? req.nextUrl.hostname);
-    if (isSpanishGuestcamSatelliteHost(hostname)) {
+    const hostCandidates = requestHostCandidates(req);
+    const satelliteHost = hostCandidates.find((host) => isSpanishGuestcamSatelliteHost(host));
+    if (satelliteHost) {
       return {
         isSatellite: true,
         domain: "guestcam.es",
