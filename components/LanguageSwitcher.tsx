@@ -1,6 +1,7 @@
 "use client";
 
 import { SITE_URL } from "@/lib/urls";
+import { SPANISH_ORIGIN } from "@/lib/domains";
 import Link from "next/link";
 import { useState, useEffect, useRef } from "react";
 
@@ -18,19 +19,11 @@ const LANG_META: Record<LangCode, { flag: string; label: string }> = {
 const ORDER: LangCode[] = ["sl", "hr", "sr", "en", "de", "es"];
 
 interface Props {
-  /** The language of the current page. Highlighted in the menu. */
   current: LangCode;
-  /** Map of lang code → absolute or relative URL for that language's equivalent of the page. */
   languages: Partial<Record<LangCode, string>>;
-  /** Optional accessible label. */
   ariaLabel?: string;
 }
 
-/**
- * Compact dropdown language switcher with flag emojis. Click-outside and
- * Escape close the menu. Use in any site header by passing the current
- * language and a map of language → URL (typically your hreflang map).
- */
 export function LanguageSwitcher({ current, languages, ariaLabel }: Props) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -121,23 +114,16 @@ export function LanguageSwitcher({ current, languages, ariaLabel }: Props) {
   );
 }
 
-/**
- * Per-language homepage URLs. The Slovenian homepage lives at `/`;
- * every other language has its own minimal landing page at `/<lang>`.
- */
+/** Homepage language cluster. Spanish now lives on the country domain. */
 export const HOME_HREFLANG: Record<LangCode, string> = {
   sl: `${SITE_URL}/`,
   hr: `${SITE_URL}/hr`,
   sr: `${SITE_URL}/sr`,
   de: `${SITE_URL}/de`,
   en: `${SITE_URL}/en`,
-  es: `${SITE_URL}/es`,
+  es: `${SPANISH_ORIGIN}/`,
 };
 
-/**
- * Canonical hreflang map for the six wedding-guide landing pages.
- * Exported so guide pages and the homepage can share one source of truth.
- */
 export const GUIDE_HREFLANG: Record<LangCode, string> = {
   sl: `${SITE_URL}/sl/qr-koda-poroka`,
   hr: `${SITE_URL}/hr/qr-kod-vjencanje`,
@@ -147,7 +133,6 @@ export const GUIDE_HREFLANG: Record<LangCode, string> = {
   es: `${SITE_URL}/es/fotos-boda-qr`,
 };
 
-/** Hreflang map for the "alternatives / comparison" landing pages. */
 export const ALTERNATIVES_HREFLANG: Record<LangCode, string> = {
   sl: `${SITE_URL}/sl/alternative-aplikacije`,
   hr: `${SITE_URL}/hr/alternativne-aplikacije`,
