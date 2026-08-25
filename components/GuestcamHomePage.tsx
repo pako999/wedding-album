@@ -43,10 +43,10 @@ const FEATURES = [
 ] as const;
 
 const PLANS = [
-  ["Free", "0 €", "Preizkusite brez tveganja", ["Unikatna QR koda", "Do 20 fotografij", "30 dni dostopa", "Zasebna galerija"]],
-  ["Basic", "39 €", "Za manjše dogodke", ["Unikatna QR koda", "Več prostora", "Video podpora", "Prenos vsebin"]],
-  ["Plus", "49 €", "Za poroke in večje dogodke", ["Neomejeno gostov", "Fotografije + videi", "Live Photo Wall", "Prenos vsebin"]],
-  ["Premium", "99 €", "Za tiste, ki želite vse", ["Neomejeno gostov", "Fotografije + videi", "Live Photo Wall", "Premium možnosti"]],
+  ["Free", "0 €", "Preizkusite brez tveganja", ["Unikatna QR koda", "Prenos slik v polni kakovosti", "Do 20 fotografij", "1 videoposnetek", "Dostop 30 dni", "Brez varnostne kopije"]],
+  ["Basic", "39 €", "Za manjše dogodke", ["Unikatna QR koda", "Prenos slik v polni kakovosti", "Do 1000 fotografij", "Do 10 videoposnetkov", "Dostop do galerije 3 mesece", "Prenos vseh slik (ZIP)"]],
+  ["Plus", "49 €", "Za poroke in večje dogodke", ["Unikatna QR koda", "Prenos slik v polni kakovosti", "Neomejeno število gostov", "Do 5000 fotografij", "Do 100 videoposnetkov", "Dostop do galerije 1 leto", "Prenos vseh slik (ZIP)", "Live galerija (projekcija)", "Personalizirana stran z imeni", "E-mail obvestila za par"]],
+  ["Premium", "99 €", "Za tiste, ki želite vse", ["Unikatna QR koda", "Prenos slik v polni kakovosti", "Neomejeno število gostov", "Neomejeno fotografij", "Do 100 videoposnetkov", "Dostop do galerije 2 leti", "Prenos vseh slik (ZIP)", "Live galerija (projekcija)", "Personalizirana stran z imeni", "Foto stena za TV / projektor", "Lastna domena (foto.vase-ime.si)", "Premium design predloge", "Prioritetna podpora"]],
 ] as const;
 
 async function Header() {
@@ -96,7 +96,7 @@ export async function GuestcamHomePage() {
       </div>
     </section>
 
-    <section className="bg-[#FFFDF8] px-4 py-8 sm:px-8 sm:py-12"><div className="mx-auto grid max-w-[1400px] overflow-hidden rounded-[30px] border border-black/10 bg-[#140313] text-white shadow-2xl lg:grid-cols-[1.35fr_.65fr]"><div className="relative min-h-[280px] sm:min-h-[360px]"><Image src="/events/nina-badric-maribox.webp" alt="Nina Badrić — Guestcam na dogodku" fill sizes="(max-width:1024px) 100vw, 68vw" className="object-cover" /></div><div className="flex flex-col justify-center p-7 sm:p-10"><p className="text-xs font-black uppercase tracking-[.18em] text-[#FFD33D]">Guestcam v živo · 18. 9. 2026</p><h2 className="mt-4 text-3xl font-black leading-[1.04] tracking-[-.045em] sm:text-5xl">Guestcam bo z vami na koncertu Nine Badrić</h2><p className="mt-5 leading-7 text-white/70">Gostje bodo skenirali Guestcam QR kodo ter fotografije in videe takoj delili v skupno galerijo.</p><Link href="/blog" className="mt-7 inline-flex w-fit rounded-full bg-[#FFD33D] px-6 py-3.5 font-black text-black">Več o Guestcam →</Link></div></div></section>
+    <section className="bg-[#FFFDF8] px-4 py-8 sm:px-8 sm:py-12"><div className="mx-auto grid max-w-[1400px] overflow-hidden rounded-[30px] border border-black/10 bg-[#140313] text-white shadow-2xl lg:grid-cols-[1.35fr_.65fr]"><div className="relative min-h-[280px] bg-black sm:min-h-[360px]"><Image src="/events/nina-badric-maribox.webp" alt="Nina Badrić — Guestcam na dogodku" fill sizes="(max-width:1024px) 100vw, 68vw" className="object-contain" /></div><div className="flex flex-col justify-center p-7 sm:p-10"><p className="text-xs font-black uppercase tracking-[.18em] text-[#FFD33D]">Guestcam v živo · 18. 9. 2026</p><h2 className="mt-4 text-3xl font-black leading-[1.04] tracking-[-.045em] sm:text-5xl">Guestcam bo z vami na koncertu Nine Badrić</h2><p className="mt-5 leading-7 text-white/70">Gostje bodo skenirali Guestcam QR kodo ter fotografije in videe takoj delili v skupno galerijo.</p><Link href="/blog" className="mt-7 inline-flex w-fit rounded-full bg-[#FFD33D] px-6 py-3.5 font-black text-black">Več o Guestcam →</Link></div></div></section>
 
     <section className="border-y border-black/10 bg-white"><div className="mx-auto grid max-w-[1240px] grid-cols-2 gap-3 px-5 py-5 sm:grid-cols-4 sm:px-8">{["Brez aplikacije","Fotografije + videi","Originalna kakovost","Zasebna galerija"].map(x => <div key={x} className="flex items-center gap-3 rounded-2xl p-2 sm:justify-center"><span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#FFF2B3] font-black">✓</span><span className="text-sm font-extrabold text-black/65">{x}</span></div>)}</div></section>
 
