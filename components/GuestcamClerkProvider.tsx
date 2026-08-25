@@ -4,7 +4,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import {
   PRIMARY_GUESTCAM_ORIGIN,
   SPANISH_GUESTCAM_ORIGIN,
-  isSpanishGuestcamHost,
+  isSpanishGuestcamSatelliteHost,
   normalizedHostname,
 } from "@/lib/site-domains";
 
@@ -21,14 +21,14 @@ export async function GuestcamClerkProvider({
   const host = normalizedHostname(
     h.get("x-forwarded-host") ?? h.get("host") ?? "www.guestcam.si",
   );
-  const satellite = isSpanishGuestcamHost(host);
+  const satellite = isSpanishGuestcamSatelliteHost(host);
 
   if (satellite) {
     return (
       <ClerkProvider
         localization={localization}
         isSatellite
-        domain={host}
+        domain="guestcam.es"
         signInUrl={`${PRIMARY_GUESTCAM_ORIGIN}/sign-in`}
         signUpUrl={`${PRIMARY_GUESTCAM_ORIGIN}/sign-up`}
         satelliteAutoSync
@@ -43,7 +43,7 @@ export async function GuestcamClerkProvider({
       localization={localization}
       signInUrl="/sign-in"
       signUpUrl="/sign-up"
-      allowedRedirectOrigins={[SPANISH_GUESTCAM_ORIGIN, "https://guestcam.es"]}
+      allowedRedirectOrigins={[SPANISH_GUESTCAM_ORIGIN]}
     >
       {children}
     </ClerkProvider>
