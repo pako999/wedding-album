@@ -12,6 +12,7 @@ import { verifiedEmails } from "@/lib/album-ownership";
 import { toPublicAlbum } from "@/lib/album-view";
 import { getAlbumFlags } from "@/lib/album-flags";
 import { getAlbumAppearance, WELCOME_FONT_STACKS, type WelcomeFont } from "@/lib/album-appearance";
+import { createVideoPlaybackToken } from "@/lib/video-playback-token";
 import type { Metadata } from "next";
 
 export const dynamic = "force-dynamic";
@@ -59,12 +60,10 @@ function modernBunnyPlayerUrl(url: string): string {
 }
 
 /**
- * Safari (iPhone/iPad/macOS) is most reliable with its native HLS pipeline.
- * Bunny Stream exposes HLS next to the thumbnail on the same CDN hostname:
- *   https://<pull-zone>/<video-id>/playlist.m3u8
- *
- * Older Guestcam rows already contain thumbnailUrl, so this works for old
- * uploads too without touching the database or re-uploading the video.
+ * macOS Safari works reliably with Bunny's native HLS stream. iPhone/iPad
+ * Safari is handled separately below through the same-origin Guestcam MP4
+ * proxy because Apple's mobile player can reject direct Bunny media requests
+ * when Stream security/referrer protection is enabled.
  */
 function bunnyHlsUrl(thumbnailUrl: string | null | undefined, videoId: string): string | null {
   if (!thumbnailUrl || !videoId) return null;
@@ -84,6 +83,14 @@ function isSafariUserAgent(userAgent: string): boolean {
   const hasSafari = /Safari\//i.test(userAgent);
   const isOtherWebKitBrowser = /CriOS|FxiOS|EdgiOS|OPiOS|DuckDuckGo/i.test(userAgent);
   return hasSafari && !isOtherWebKitBrowser;
+}
+
+function isIosSafariUserAgent(userAgent: string): boolean {
+  if (!isSafariUserAgent(userAgent)) return false;
+  // iPadOS can request desktop websites and identify as Macintosh, but still
+  // includes Mobile/<build>. Cover both classic iOS and desktop-style iPad UA.
+  return /iPhone|iPad|iPod/i.test(userAgent) ||
+    (/Macintosh/i.test(userAgent) && /Mobile\//i.test(userAgent));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -218,14 +225,37 @@ export default async function AlbumPage({ params, searchParams }: Props) {
     : [];
 
   const requestHeaders = await headers();
-  const safari = isSafariUserAgent(requestHeaders.get("user-agent") ?? "");
+  const userAgent = requestHeaders.get("user-agent") ?? "";
+  const safari = isSafariUserAgent(userAgent);
+  const iosSafari = isIosSafariUserAgent(userAgent);
+  const playbackExpiresAt = Math.floor(Date.now() / 1000) + 2 * 60 * 60;
 
-  // Safari gets native HLS instead of the Bunny iframe. Setting
-  // cfStreamVideoId to null intentionally sends VideoCard through its native
-  // <video controls playsInline> branch. Other browsers keep the modern Bunny
-  // player. This applies to old uploads at read-time; DB rows stay untouched.
+  // Browser-specific playback:
+  //   • iPhone/iPad Safari → same-origin signed MP4 proxy with Range support.
+  //   • macOS Safari       → native Bunny HLS (confirmed working).
+  //   • Chrome/Edge/etc.   → modern Bunny iframe player.
+  //
+  // In the native branches cfStreamVideoId is intentionally nulled so
+  // VideoCard renders <video controls playsInline> instead of an iframe.
   const playbackPhotos = albumPhotos.map((photo) => {
     if (!photo.cfStreamVideoId) return photo;
+
+    if (iosSafari) {
+      const sig = createVideoPlaybackToken(slug, photo.cfStreamVideoId, playbackExpiresAt);
+      if (sig) {
+        const qs = new URLSearchParams({
+          vid: photo.cfStreamVideoId,
+          play: "1",
+          exp: String(playbackExpiresAt),
+          sig,
+        });
+        return {
+          ...photo,
+          blobUrl: `/api/albums/${encodeURIComponent(slug)}/video-download?${qs.toString()}`,
+          cfStreamVideoId: null,
+        };
+      }
+    }
 
     if (safari) {
       const hlsUrl = bunnyHlsUrl(photo.thumbnailUrl, photo.cfStreamVideoId);
