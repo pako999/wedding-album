@@ -40,6 +40,8 @@ const nextConfig: NextConfig = {
       allowedOrigins: [
         "guestcam.si",
         "www.guestcam.si",
+        "guestcam.es",
+        "www.guestcam.es",
         "guestcam.me",
         "www.guestcam.me",
         "guestcam-*.vercel.app",
