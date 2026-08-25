@@ -9,7 +9,7 @@
  *
  * The signed playback mode exists because iPhone/iPad Safari can fail direct
  * Bunny media requests when Stream security/referrer rules are enabled. The
- * browser talks only to guestcam.si; this route fetches Bunny server-side and
+ * browser talks only to Guestcam; this route fetches Bunny server-side and
  * forwards byte ranges required by Apple's native video player.
  */
 
@@ -49,28 +49,35 @@ export async function GET(
     const playbackMode = req.nextUrl.searchParams.get("play") === "1";
     const expiresAt = Number(req.nextUrl.searchParams.get("exp") ?? "0");
     const playbackToken = req.nextUrl.searchParams.get("sig") ?? "";
+    const requestedRange = req.headers.get("range");
+
+    // Temporary low-noise diagnostics for the iOS playback path. This tells us
+    // whether Safari reached the route and whether it sent the byte-range that
+    // Apple's media stack normally requires. No album/user PII is logged.
+    if (playbackMode) {
+      console.info("[video-playback] request", {
+        video: vid.slice(0, 8),
+        range: requestedRange ?? "none",
+        ua: (req.headers.get("user-agent") ?? "").slice(0, 160),
+      });
+    }
 
     const album = await db.query.albums.findFirst({ where: eq(albums.slug, slug) });
     if (!album) return NextResponse.json({ error: "Not found" }, { status: 404 });
 
     if (playbackMode) {
-      // Guest playback is allowed only for an active published album and only
-      // with the short-lived server-generated HMAC token embedded in a gallery
-      // response that already passed the album's password gate.
       if (!album.isPublished) {
         return NextResponse.json({ error: "Not found" }, { status: 404 });
       }
       if (!verifyVideoPlaybackToken(slug, vid, expiresAt, playbackToken)) {
+        console.warn("[video-playback] rejected token", { video: vid.slice(0, 8) });
         return NextResponse.json({ error: "Invalid or expired playback token" }, { status: 403 });
       }
     } else {
-      // Existing ZIP/download flow remains owner/admin only.
       const owner = await checkAlbumOwnership(album);
       if (!owner.ok) return NextResponse.json({ error: owner.error }, { status: owner.status });
     }
 
-    // Confirm this video belongs to this album. Guest playback additionally
-    // requires the row itself to be published.
     const photo = await db.query.photos.findFirst({
       where: playbackMode
         ? and(
@@ -116,8 +123,7 @@ export async function GET(
     let upstream: Response;
     try {
       const upstreamHeaders: Record<string, string> = {};
-      const range = req.headers.get("range");
-      if (range) upstreamHeaders.range = range;
+      if (requestedRange) upstreamHeaders.range = requestedRange;
       upstream = await fetch(fetchUrl, {
         headers: upstreamHeaders,
         cache: "no-store",
@@ -129,6 +135,17 @@ export async function GET(
         { error: `Bunny CDN fetch failed: ${detail.slice(0, 200)}`, url: best.url },
         { status: 502 },
       );
+    }
+
+    if (playbackMode) {
+      console.info("[video-playback] upstream", {
+        video: vid.slice(0, 8),
+        status: upstream.status,
+        rangeRequested: requestedRange ?? "none",
+        contentType: upstream.headers.get("content-type") ?? "none",
+        contentRange: upstream.headers.get("content-range") ?? "none",
+        contentLength: upstream.headers.get("content-length") ?? "none",
+      });
     }
 
     if (!upstream.ok && upstream.status !== 206) {
@@ -175,12 +192,23 @@ export async function GET(
       (photo.originalFilename ?? `video-${vid}`).replace(/\.[^.]+$/, "") + ".mp4";
 
     const outHeaders = new Headers();
-    outHeaders.set("Content-Type", upstream.headers.get("content-type") ?? "video/mp4");
+
+    // iOS Safari is strict about proxied media MIME types. Bunny can return
+    // application/octet-stream for MP4 fallback files; macOS/Chrome will sniff
+    // it, while iOS may refuse to initialise the decoder. Force the correct
+    // media type for playback and do not send Content-Disposition at all.
     outHeaders.set(
-      "Content-Disposition",
-      `${playbackMode ? "inline" : "attachment"}; filename="${downloadName.replace(/[^\w.\-]+/g, "_")}"`,
+      "Content-Type",
+      playbackMode ? "video/mp4" : (upstream.headers.get("content-type") ?? "video/mp4"),
     );
-    outHeaders.set("Accept-Ranges", upstream.headers.get("accept-ranges") ?? "bytes");
+    if (!playbackMode) {
+      outHeaders.set(
+        "Content-Disposition",
+        `attachment; filename="${downloadName.replace(/[^\w.\-]+/g, "_")}"`,
+      );
+    }
+
+    outHeaders.set("Accept-Ranges", "bytes");
     outHeaders.set("Cache-Control", "private, no-store, max-age=0");
 
     const len = upstream.headers.get("content-length");
