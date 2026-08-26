@@ -4,7 +4,7 @@ import { albums, photos, moments } from "@/lib/db/schema";
 import { eq, and, sql } from "drizzle-orm";
 import { sendNewPhotoNotification } from "@/lib/email/notifications";
 import { bunnyStreamThumbnailUrl, bunnyStreamIframeUrl } from "@/lib/storage/bunny";
-import { verifyAlbumPassword } from "@/lib/album-password";
+import { hasAlbumRequestAccess } from "@/lib/album-request-access";
 import { getAlbumFlags } from "@/lib/album-flags";
 import { checkRateLimit } from "@/lib/rate-limit";
 
@@ -147,6 +147,13 @@ export async function POST(
     return NextResponse.json({ error: "Album not found" }, { status: 404 });
   }
 
+  // Open/link-only albums pass automatically. Protected albums use the same
+  // HttpOnly access cookie as the gallery; the legacy header remains accepted
+  // by hasAlbumRequestAccess only for backwards compatibility.
+  if (!(await hasAlbumRequestAccess(req, slug, album))) {
+    return NextResponse.json({ error: "Wrong album password" }, { status: 403 });
+  }
+
   if (blobUrl && !blobUrlBelongsToAlbum(blobUrl, album.id)) {
     return NextResponse.json({ error: "Media URL does not belong to this album" }, { status: 409 });
   }
@@ -160,13 +167,6 @@ export async function POST(
   }
   if (!isVideo && !flags.allowPhotos) {
     return NextResponse.json({ error: "photos_not_allowed" }, { status: 403 });
-  }
-
-  if (album.password) {
-    const provided = req.headers.get("x-album-password") ?? "";
-    if (!(await verifyAlbumPassword(provided, album.password))) {
-      return NextResponse.json({ error: "Wrong album password" }, { status: 403 });
-    }
   }
 
   // Idempotency and cross-album protection. If the same managed object/video
