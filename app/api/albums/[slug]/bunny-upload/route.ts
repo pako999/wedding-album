@@ -12,7 +12,7 @@ import { albums, photos } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { isBunnyStorageConfigured } from "@/lib/storage/bunny";
 import { isBunnyS3Selected } from "@/lib/storage/bunny-s3";
-import { verifyAlbumPassword } from "@/lib/album-password";
+import { hasAlbumRequestAccess } from "@/lib/album-request-access";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { getAlbumFlags } from "@/lib/album-flags";
 
@@ -62,11 +62,8 @@ export async function PUT(
     return NextResponse.json({ error: "Album not found" }, { status: 404 });
   }
 
-  if (album.password) {
-    const provided = req.headers.get("x-album-password") ?? "";
-    if (!(await verifyAlbumPassword(provided, album.password))) {
-      return NextResponse.json({ error: "Wrong album password" }, { status: 403 });
-    }
+  if (!(await hasAlbumRequestAccess(req, slug, album))) {
+    return NextResponse.json({ error: "Wrong album password" }, { status: 403 });
   }
 
   const flags = await getAlbumFlags(album.id);
