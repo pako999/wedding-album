@@ -10,7 +10,12 @@ import { sendAdminPaymentEmail, sendAffiliateCommissionEmail, sendAdminAffiliate
 import { incrementDiscountUsage } from "@/lib/discount";
 import { db } from "@/lib/db";
 import { affiliates, affiliateCommissions, affiliateClicks, albums, cardBilling } from "@/lib/db/schema";
-import { eq, sql, and, isNull, or } from "drizzle-orm";
+import { eq, sql, and, isNull } from "drizzle-orm";
+import {
+  claimWebhookEvent,
+  releaseWebhookEvent,
+  maybePruneWebhookReceipts,
+} from "@/lib/webhook-idempotency";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -26,19 +31,54 @@ function planLabel(planId: string): { emoji: string; text: string } {
   }
 }
 
+/**
+ * Run one retryable webhook side effect exactly once across serverless
+ * instances. If the action throws, release its claim so Mollie's next retry
+ * can try again. A successful action keeps the receipt permanently (90-day
+ * retention in webhook-idempotency.ts).
+ */
+async function runPaymentAction(
+  action: string,
+  paymentId: string,
+  fn: () => Promise<unknown>,
+): Promise<boolean> {
+  let claimed: boolean;
+  try {
+    claimed = await claimWebhookEvent(`mollie:${action}`, paymentId);
+  } catch (err) {
+    console.error(`[mollie webhook] cannot claim ${action}:`, err);
+    return false;
+  }
+
+  if (!claimed) return true;
+
+  try {
+    await fn();
+    return true;
+  } catch (err) {
+    console.error(`[mollie webhook] ${action} failed:`, err);
+    await releaseWebhookEvent(`mollie:${action}`, paymentId).catch((releaseErr) =>
+      console.error(`[mollie webhook] could not release ${action} claim:`, releaseErr),
+    );
+    return false;
+  }
+}
+
 export async function POST(req: NextRequest) {
   if (!mollieConfigured()) {
     return NextResponse.json({ error: "Mollie not configured" }, { status: 503 });
   }
 
-  // Mollie sends application/x-www-form-urlencoded with id=tr_xxxx
+  // Mollie webhooks are not signed. Authenticity comes from fetching the
+  // supplied transaction id from Mollie's authenticated API and trusting only
+  // the status + metadata returned by Mollie, never fields from this request.
   const body = await req.text();
   const params = new URLSearchParams(body);
-  const paymentId = params.get("id");
+  const paymentId = params.get("id")?.trim() ?? "";
 
-  if (!paymentId) {
-    console.error("[mollie webhook] missing payment id");
-    return NextResponse.json({ error: "Missing id" }, { status: 400 });
+  if (!/^tr_[A-Za-z0-9]+$/.test(paymentId)) {
+    console.error("[mollie webhook] missing/invalid payment id");
+    return NextResponse.json({ error: "Invalid id" }, { status: 400 });
   }
 
   let payment;
@@ -49,23 +89,30 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Payment fetch failed" }, { status: 500 });
   }
 
-  // Mollie fires webhooks for every status change. We act on three:
-  //   • paid          → apply plan + create affiliate commission
-  //   • refunded /
-  //     charged_back  → clawback any affiliate commission
-  //   • partial refund (status stays "paid" but amountRefunded > 0)
-  //                   → also clawback (treated as full cancel for simplicity)
+  // Mollie fires webhooks for every status change. Refunded/charged-back
+  // payments only need affiliate clawback; unpaid states are acknowledged.
   const refunded = isRefundedStatus(payment.status) ||
     (parseFloat(payment.amountRefunded?.value ?? "0") > 0);
   if (refunded) {
-    await clawbackAffiliateCommission(paymentId).catch((err) =>
-      console.error("[mollie webhook] commission clawback failed:", err),
-    );
-    return NextResponse.json({ received: true });
+    try {
+      await clawbackAffiliateCommission(paymentId);
+      return NextResponse.json(
+        { received: true },
+        { headers: { "Cache-Control": "no-store" } },
+      );
+    } catch (err) {
+      // Do not acknowledge a failed clawback. Mollie will retry and the
+      // transition below is idempotent.
+      console.error("[mollie webhook] commission clawback failed:", err);
+      return NextResponse.json({ error: "Refund reconciliation failed" }, { status: 500 });
+    }
   }
 
   if (!isPaidStatus(payment.status)) {
-    return NextResponse.json({ received: true });
+    return NextResponse.json(
+      { received: true },
+      { headers: { "Cache-Control": "no-store" } },
+    );
   }
 
   const albumSlug = payment.metadata?.albumSlug;
@@ -76,11 +123,29 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Missing metadata" }, { status: 400 });
   }
 
+  // Migration-safe retry marker. Why this exists in addition to the per-action
+  // receipts below:
+  //   - first webhook handled by THIS code: marker is new; if plan becomes
+  //     applied we run actions and retries can finish any failed ones;
+  //   - payment already processed by the OLD code before this deploy: marker
+  //     is new but plan is already_applied, so we stop here and do not resend
+  //     old customer/admin notifications or increment historical counters.
+  let firstSeenByRetrySafeFlow: boolean;
+  try {
+    firstSeenByRetrySafeFlow = await claimWebhookEvent("mollie:paid-flow-v2", paymentId);
+  } catch (err) {
+    console.error("[mollie webhook] idempotency store unavailable:", err);
+    return NextResponse.json({ error: "Webhook store unavailable" }, { status: 503 });
+  }
+
   let applied;
   try {
     applied = await applyPlanToAlbum(albumSlug, planId, paymentId);
   } catch (err) {
     console.error("[mollie webhook] DB update failed:", err);
+    if (firstSeenByRetrySafeFlow) {
+      await releaseWebhookEvent("mollie:paid-flow-v2", paymentId).catch(() => {});
+    }
     return NextResponse.json({ error: "DB update failed" }, { status: 500 });
   }
 
@@ -89,62 +154,61 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Unknown plan" }, { status: 400 });
   }
 
-  if (applied.status === "already_applied") {
-    return NextResponse.json({ received: true });
+  if (applied.status === "already_applied" && firstSeenByRetrySafeFlow) {
+    // Historical payment from before the retry-safe flow was deployed.
+    return NextResponse.json(
+      { received: true, legacyAlreadyProcessed: true },
+      { headers: { "Cache-Control": "no-store" } },
+    );
   }
 
-  // ── Meta Conversions API: server-side Purchase (dedupes with browser) ──
-  // Fired here — AFTER the applyPlanToAlbum idempotency guard, so a
-  // webhook replay for the same tr_… never re-sends. Uses payment.id as
-  // event_id — the browser Pixel's Purchase (fired from
-  // AlbumAdminPanel.tsx on the Mollie return) uses album.stripeSessionId
-  // as its eventID, which is set to this same payment.id by
-  // applyPlanToAlbum. Meta collapses the pair on shared event_id.
-  //
-  // Note on GDPR: the browser Pixel is Cookiebot-gated (marketing
-  // consent). This server-side send fires unconditionally on a
-  // completed transaction the user explicitly initiated, which is the
-  // industry norm for e-commerce measurement. If we later add a
-  // documented policy of blocking all marketing signals without
-  // consent, gate this call on a consent-at-checkout flag.
-  try {
+  let retryNeeded = false;
+
+  // ── Meta Conversions API ────────────────────────────────────────────────
+  // Same payment id is also the browser Pixel event id, so Meta can dedupe
+  // browser + server. The receipt additionally prevents repeated CAPI calls.
+  const metaOk = await runPaymentAction("meta-purchase", paymentId, async () => {
     const buyerAlbum = await db.query.albums.findFirst({
       columns: { ownerEmail: true, notifyEmail: true },
       where: eq(albums.slug, albumSlug),
     });
     await sendPurchaseEvent({
-      eventId:        paymentId,
-      email:          buyerAlbum?.notifyEmail ?? buyerAlbum?.ownerEmail ?? null,
-      value:          Number(payment.amount.value),
-      currency:       payment.amount.currency,
-      contentName:    planLabel(planId).text,
+      eventId: paymentId,
+      email: buyerAlbum?.notifyEmail ?? buyerAlbum?.ownerEmail ?? null,
+      value: Number(payment.amount.value),
+      currency: payment.amount.currency,
+      contentName: planLabel(planId).text,
       eventSourceUrl: SITE_URL,
-      clientIp:       req.headers.get("x-vercel-forwarded-for")
-                        ?? req.headers.get("x-forwarded-for")
-                        ?? null,
+      clientIp: req.headers.get("x-vercel-forwarded-for")
+        ?? req.headers.get("x-forwarded-for")
+        ?? null,
       clientUserAgent: req.headers.get("user-agent") ?? null,
     });
-  } catch (err) {
-    // sendPurchaseEvent already swallows its own errors, but wrap
-    // here too so any read-side hiccup can't break the webhook.
-    console.error("[mollie webhook] meta-capi send failed:", err);
+  });
+  if (!metaOk) {
+    // Analytics must never hold up fulfilment/webhook acknowledgement.
+    console.warn("[mollie webhook] meta purchase action will not block payment fulfilment");
   }
 
-  // Increment discount usage counter if a code was used
-  // Flip the parcel to "paid" so the admin Orders tab can safely filter
-  // out anything unpaid — nothing should be printed and posted on the
-  // strength of an abandoned checkout.
+  // ── Physical stand order ────────────────────────────────────────────────
   if (payment.metadata?.tableStands === "1") {
-    await markStandOrderPaid(payment.id);
+    const standOk = await runPaymentAction("stand-order-paid", paymentId, async () => {
+      await markStandOrderPaid(payment.id);
+    });
+    if (!standOk) retryNeeded = true;
   }
 
+  // ── Discount usage ──────────────────────────────────────────────────────
+  // This increments a counter, so it MUST have its own receipt. Retrying it
+  // blindly would double-count the same sale.
   if (payment.metadata?.discountCodeId) {
-    await incrementDiscountUsage(payment.metadata.discountCodeId).catch(() => {});
+    const discountOk = await runPaymentAction("discount-usage", paymentId, async () => {
+      await incrementDiscountUsage(payment.metadata!.discountCodeId!);
+    });
+    if (!discountOk) retryNeeded = true;
   }
 
-  // Guest-referral: mark the conversion as paid so K-factor reporting
-  // picks it up. Idempotent — markConversionPaid only flips the first
-  // unpaid row for this Clerk id. Best-effort.
+  // Guest-referral conversion is internally idempotent; retry until it lands.
   try {
     const buyer = await db.query.albums.findFirst({
       columns: { ownerClerkId: true },
@@ -153,13 +217,12 @@ export async function POST(req: NextRequest) {
     if (buyer?.ownerClerkId) await markConversionPaid(buyer.ownerClerkId);
   } catch (err) {
     console.warn("[mollie webhook] referral conversion mark-paid failed:", err);
+    retryNeeded = true;
   }
 
   // ── Affiliate commission ────────────────────────────────────────────────
-  // If the customer arrived via a partner link, we created the Mollie
-  // payment with an affiliateRef in metadata (see /api/checkout). Now
-  // that the payment is paid, create a pending commission. The lock
-  // period (14 days) protects us from refund clawbacks.
+  // createAffiliateCommission has its own unique payment guard. Do not swallow
+  // a transient DB failure anymore; a webhook retry can safely finish it.
   const affiliateRef = payment.metadata?.affiliateRef;
   if (affiliateRef) {
     try {
@@ -171,11 +234,12 @@ export async function POST(req: NextRequest) {
         customerEmail: null,
         orderAmountCents: Math.round(parseFloat(payment.amount.value) * 100),
         orderCurrency: payment.amount.currency.toUpperCase(),
-        promoCode: payment.metadata?.discountCodeId ? null : null, // resolved inside helper from discountCodeId
+        promoCode: payment.metadata?.discountCodeId ? null : null,
         discountCodeId: payment.metadata?.discountCodeId ?? null,
       });
     } catch (err) {
       console.error("[mollie webhook] affiliate commission failed:", err);
+      retryNeeded = true;
     }
   }
 
@@ -183,8 +247,7 @@ export async function POST(req: NextRequest) {
   const currency = payment.amount.currency;
   const { emoji, text } = planLabel(planId);
 
-  // Billing captured at checkout — include it in the ping so you have
-  // everything needed to issue the invoice without opening the admin.
+  // Billing captured at checkout — include it in the Telegram ping.
   let billingLines = "";
   try {
     const b = await db.query.cardBilling.findFirst({
@@ -195,31 +258,53 @@ export async function POST(req: NextRequest) {
         `\n👤 <b>Podatki za račun:</b>\n` +
         `Ime: ${htmlEscape(b.name ?? "—")}` +
         (b.companyName ? `\nPodjetje: ${htmlEscape(b.companyName)}` : "") +
-        (b.phone   ? `\nTel: ${htmlEscape(b.phone)}` : "") +
-        (b.email   ? `\nEmail: ${htmlEscape(b.email)}` : "") +
+        (b.phone ? `\nTel: ${htmlEscape(b.phone)}` : "") +
+        (b.email ? `\nEmail: ${htmlEscape(b.email)}` : "") +
         `\nNaslov: ${htmlEscape(b.address ?? "—")}, ${htmlEscape(b.postalCode ?? "")} ${htmlEscape(b.city ?? "")}` +
-        (b.taxId   ? `\nDavčna: ${htmlEscape(b.taxId)}` : "");
+        (b.taxId ? `\nDavčna: ${htmlEscape(b.taxId)}` : "");
     }
-  } catch { /* best-effort */ }
+  } catch {
+    // Best-effort display data; payment fulfilment does not depend on it.
+  }
 
-  await Promise.all([
-    notifyTelegram(
+  const telegramOk = await runPaymentAction("telegram-payment", paymentId, async () => {
+    const sent = await notifyTelegram(
       `${emoji} <b>Plačilo: ${text}</b>\n` +
       `${amount} ${currency}\n` +
       `Album: <code>${htmlEscape(albumSlug)}</code>` +
       billingLines,
-    ),
-    sendAdminPaymentEmail({
+    );
+    if (!sent) throw new Error("Telegram provider returned false");
+  });
+  if (!telegramOk) retryNeeded = true;
+
+  const adminEmailOk = await runPaymentAction("admin-payment-email", paymentId, async () => {
+    await sendAdminPaymentEmail({
       albumSlug,
       planId,
       amount,
       currency,
       paymentId,
       method: payment.method ?? null,
-    }),
-  ]);
+    });
+  });
+  if (!adminEmailOk) retryNeeded = true;
 
-  return NextResponse.json({ received: true });
+  await maybePruneWebhookReceipts();
+
+  if (retryNeeded) {
+    // Plan activation is already safe/idempotent. Returning 500 asks Mollie to
+    // retry only the side effects whose individual claims were released.
+    return NextResponse.json(
+      { error: "Payment applied; reconciliation incomplete" },
+      { status: 500, headers: { "Cache-Control": "no-store" } },
+    );
+  }
+
+  return NextResponse.json(
+    { received: true },
+    { headers: { "Cache-Control": "no-store" } },
+  );
 }
 
 const LOCK_DAYS = Number(process.env.AFFILIATE_COMMISSION_LOCK_DAYS ?? 14);
@@ -249,12 +334,10 @@ async function createAffiliateCommission(params: {
   if (!affiliate || affiliate.status !== "active") return;
 
   // Fraud check: block self-referral. We check three independent signals
-  // because `albums.ownerEmail` is often null (the create-album flow
-  // doesn't always populate it, see Codex review on PR #97):
-  //   1. Clerk userId match — most reliable when the affiliate has signed in.
-  //   2. ownerEmail / notifyEmail vs affiliate email — covers external affiliates.
-  //   3. Live Clerk lookup by ownerClerkId — last resort, catches the common
-  //      case where the buyer is logged in but ownerEmail wasn't persisted.
+  // because `albums.ownerEmail` is often null:
+  //   1. Clerk userId match.
+  //   2. ownerEmail / notifyEmail vs affiliate email.
+  //   3. Live Clerk lookup by ownerClerkId as a last resort.
   const album = await db.query.albums.findFirst({
     where: eq(import_albums.slug, params.albumSlug),
   });
@@ -272,8 +355,7 @@ async function createAffiliateCommission(params: {
       const emails = (user.emailAddresses ?? []).map((e) => e.emailAddress.toLowerCase());
       if (emails.includes(affiliate.email.toLowerCase())) isSelf = true;
     } catch {
-      // Clerk unavailable — fall through with isSelf=false, we still have
-      // the two cheaper checks above.
+      // Clerk unavailable — fall through with the two cheaper checks above.
     }
   }
   if (isSelf) {
@@ -300,7 +382,6 @@ async function createAffiliateCommission(params: {
     lockUntil,
   }).returning();
 
-  // Bump affiliate stats atomically.
   await db.update(affiliates).set({
     totalConversions: sql`${affiliates.totalConversions} + 1`,
     totalEarningsCents: sql`${affiliates.totalEarningsCents} + ${commissionAmountCents}`,
@@ -308,10 +389,6 @@ async function createAffiliateCommission(params: {
     updatedAt: new Date(),
   }).where(eq(affiliates.id, affiliate.id));
 
-  // Mark the latest unconverted click for this affiliate as the source.
-  // Best-effort — if there's no click row (e.g. user typed the URL with
-  // ?ref=... directly without going through /api/affiliate/track), we
-  // just skip silently.
   await db.update(affiliateClicks).set({
     convertedMolliePaymentId: params.molliePaymentId,
     convertedAt: new Date(),
@@ -322,8 +399,6 @@ async function createAffiliateCommission(params: {
     ),
   ).catch(() => {});
 
-  // If a discount code was used and it belongs to this affiliate, pull its
-  // code string so we can surface it in the admin notification.
   let promoCode: string | null = null;
   if (params.discountCodeId) {
     const dc = await db.query.discountCodes.findFirst({
@@ -332,7 +407,6 @@ async function createAffiliateCommission(params: {
     if (dc && dc.affiliateId === affiliate.id) promoCode = dc.code;
   }
 
-  // Fire the two notification emails in parallel. Both are best-effort.
   await Promise.all([
     sendAffiliateCommissionEmail({
       to: affiliate.email,
@@ -363,17 +437,11 @@ async function createAffiliateCommission(params: {
   }).where(eq(affiliateCommissions.id, commission.id)).catch(() => {});
 }
 
-// We import albums dynamically inside the helper to avoid loading it at module
-// init time when the webhook is cold. Trick to keep the helper self-contained.
 import { albums as import_albums, discountCodes as import_discountCodes } from "@/lib/db/schema";
 
 /**
  * Reverse an affiliate commission when a paid order is later refunded or
- * charged back. Handles both pending and approved commissions: pending
- * → just cancel + drain pendingBalance; approved → cancel + drain
- * availableBalance (the funds were already promised but never actually
- * paid out yet, so this is safe; paid commissions are left alone and
- * need a manual decision because we've already wired money out).
+ * charged back. Handles both pending and approved commissions.
  */
 async function clawbackAffiliateCommission(molliePaymentId: string) {
   const found = await db.query.affiliateCommissions.findFirst({
@@ -383,12 +451,6 @@ async function clawbackAffiliateCommission(molliePaymentId: string) {
   if (found.status !== "pending" && found.status !== "approved") return;
 
   const previousStatus = found.status;
-
-  // Atomic transition: the WHERE includes the previous status, so a
-  // concurrent cron run that flipped pending → approved between our read
-  // and write will lose the race here, returning no rows. That keeps the
-  // balance deduction below in lockstep with the actual status the
-  // commission was in.
   const reversed = await db.update(affiliateCommissions).set({
     status: "cancelled",
     cancelledAt: new Date(),
@@ -399,10 +461,6 @@ async function clawbackAffiliateCommission(molliePaymentId: string) {
   )).returning();
   if (reversed.length === 0) return;
 
-  // Drain ONLY the balance bucket that actually held this commission's
-  // money. Subtracting from both — as the first cut did — could
-  // underpay an affiliate who had unrelated approved sales sitting in
-  // availableBalanceCents while a still-pending sale was being refunded.
   if (previousStatus === "approved") {
     await db.update(affiliates).set({
       availableBalanceCents: sql`GREATEST(0, ${affiliates.availableBalanceCents} - ${found.commissionAmountCents})`,
