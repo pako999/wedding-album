@@ -12,12 +12,13 @@ import { inferLangFromLocation } from "@/lib/i18n/infer-lang";
 import { recordUserCountry } from "@/lib/user-country";
 import { getAlbumCreationGate } from "@/lib/album-limits";
 import { generateWallToken } from "@/lib/wall-token";
+import { hashAlbumPassword } from "@/lib/album-password";
 
 function slugify(text: string): string {
   return text
     .toLowerCase()
     .normalize("NFD")
-    .replace(/[̀-ͯ]/g, "") // strip diacritics
+    .replace(/[̀-ͯ]/g, "")
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "")
     .slice(0, 40);
@@ -33,10 +34,6 @@ export async function createAlbum(formData: FormData) {
   }
   if (!userId) redirect("/sign-in");
 
-  // Server-side backstop: every package is tied to one event. Paid albums
-  // do not unlock extra paid events, while Free is limited to one active
-  // event at a time. A new event created after a paid one starts on Free
-  // and can be upgraded separately.
   const gate = await getAlbumCreationGate(userId);
   if (!gate.allowed) {
     redirect(`/dashboard/${gate.mostRecentSlug}/upgrade`);
@@ -46,10 +43,8 @@ export async function createAlbum(formData: FormData) {
   const coupleName = (formData.get("coupleName")  as string ?? "").trim();
   const eventDate  = (formData.get("eventDate")   as string ?? "").trim();
   const location   = (formData.get("location")    as string ?? "").trim() || null;
-  const password   = (formData.get("password")    as string ?? "").trim() || null;
-  // Optional: when the owner came from a pricing card (homepage → wizard),
-  // remember which paid plan they picked so we can route them straight to
-  // checkout for THIS event after the onboarding wizard.
+  const passwordRaw = (formData.get("password")   as string ?? "").trim();
+  const password = passwordRaw ? await hashAlbumPassword(passwordRaw) : null;
   const planRaw    = (formData.get("plan")        as string ?? "").trim();
   const plan       = (planRaw === "basic" || planRaw === "plus" || planRaw === "premium") ? planRaw : null;
 
@@ -57,31 +52,22 @@ export async function createAlbum(formData: FormData) {
     throw new Error("Ime in datum sta obvezni polji.");
   }
 
-  // Mirror of the wizard's client-side cap. Long names overflow QR print
-  // cards, referral codes (VARCHAR 20 after folding), email subjects and
-  // page titles — reject instead of silently truncating.
   if (coupleName.length > 40) {
     throw new Error("Ime dogodka je predolgo — največ 40 znakov.");
   }
+  if (passwordRaw.length > 128) {
+    throw new Error("Geslo je predolgo — največ 128 znakov.");
+  }
 
-  // Unique slug: event-name-XXXX
   const suffix = Math.random().toString(36).slice(2, 6);
   const slug   = `${slugify(coupleName)}-${suffix}`;
 
-  // Every newly created event starts with its own Free entitlement. A paid
-  // plan on another event is deliberately NOT inherited: Basic/Plus/Premium
-  // are one-time purchases for one event only.
   let inheritedPlan: "free" | "basic" | "plus" | "premium" = "free";
   let inheritedMax = 20;
   let inheritedFilm: "free" | "pro" | "premium" = "free";
   let inheritedExpiry: Date | null = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
   let inheritedSessionId: string | undefined;
 
-  // Admin-set override (writes by /api/admin/users/:clerkId/upgrade for
-  // users who hadn't created any album yet). Wins over the normal Free
-  // start so a freshly-promoted user gets the chosen plan on this event.
-  // One-shot: deleted after consumption. Try/catch keeps album creation
-  // alive on a fresh DB where the migration hasn't run yet.
   try {
     const override = await db.query.userPlanOverrides.findFirst({
       where: eq(userPlanOverrides.clerkId, userId),
@@ -100,10 +86,6 @@ export async function createAlbum(formData: FormData) {
     console.warn("[create-album] user_plan_overrides lookup failed:", err);
   }
 
-  // Generate a unique referral code so guests at this event can invite
-  // others via the upload-success CTA / gallery footer. Best-effort:
-  // if generation fails we still create the album — the referral engine
-  // can lazy-fill on the next read.
   let referralCode: string | null = null;
   try {
     referralCode = await generateUniqueReferralCode(coupleName);
@@ -111,9 +93,6 @@ export async function createAlbum(formData: FormData) {
     console.warn("[create-album] referral code generation failed:", err);
   }
 
-  // Persist the owner's email on the album row — admin views and the
-  // affiliate self-referral check both rely on it, and Clerk lookups at
-  // render time are slow/paginated. Best-effort.
   let ownerEmail: string | null = null;
   try {
     const creator = await currentUser();
@@ -128,8 +107,6 @@ export async function createAlbum(formData: FormData) {
     coupleName,
     weddingDate:       eventDate,
     location,
-    // Croatian wedding → Croatian gallery by default. Guests can still
-    // switch languages in the header; ?lang= URL param overrides.
     defaultLang:       inferLangFromLocation(location),
     password,
     isPublished:       true,
@@ -143,19 +120,13 @@ export async function createAlbum(formData: FormData) {
     wallToken:         generateWallToken(),
   }).returning({ id: albums.id });
 
-  // If this user showed up via a ?ref= link from another album's guest,
-  // stamp the attribution + log a conversion row (K-factor source).
   const newAlbumId = inserted[0]?.id;
   if (newAlbumId) {
     await attributeNewAlbumFromCookie(newAlbumId, userId).catch(() => {});
   }
 
-  // Record the creator's country (x-vercel-ip-country) for the admin
-  // Uporabniki view. Best-effort.
   await recordUserCountry(userId);
 
-  // Send a welcome email on the owner's *first* album. Best-effort — if
-  // anything goes wrong (Resend down, no email on file) we still redirect.
   try {
     const userAlbums = await db.query.albums.findMany({
       where: eq(albums.ownerClerkId, userId),
@@ -178,7 +149,6 @@ export async function createAlbum(formData: FormData) {
     console.error("[create-album] welcome email error:", err);
   }
 
-  // Send privacy agreement confirmation on every gallery creation. Best-effort.
   try {
     const agreementUser = await currentUser();
     const agreementEmail = agreementUser?.emailAddresses?.[0]?.emailAddress;
