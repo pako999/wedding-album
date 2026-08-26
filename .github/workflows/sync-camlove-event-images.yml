@@ -1,0 +1,54 @@
+name: Sync CamLove event images into Guestcam
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/sync-camlove-event-images.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  sync-images:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Guestcam
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Checkout CamLove source images
+        uses: actions/checkout@v4
+        with:
+          repository: pako999/camlove.me
+          ref: main
+          path: _camlove_source
+
+      - name: Copy all event images locally
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p public/events
+          find _camlove_source/public/events -maxdepth 1 -type f \
+            \( -iname '*.webp' -o -iname '*.png' -o -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.avif' -o -iname '*.gif' \) \
+            -print0 | while IFS= read -r -d '' file; do
+              cp -f "$file" "public/events/$(basename "$file")"
+            done
+          rm -rf _camlove_source
+
+      - name: Commit CamLove images to Guestcam
+        shell: bash
+        run: |
+          set -euo pipefail
+          git add public/events
+          if git diff --cached --quiet; then
+            echo "Guestcam already contains the exact CamLove event images."
+            exit 0
+          fi
+          git config user.name "guestcam-image-sync"
+          git config user.email "actions@users.noreply.github.com"
+          git commit -m "fix(home): copy all CamLove event images into Guestcam"
+          git push origin HEAD:main
