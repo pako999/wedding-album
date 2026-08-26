@@ -3,8 +3,8 @@
  *
  * Returns the upload strategy used by the browser:
  *   • videos -> Bunny Stream tus (direct browser -> Bunny)
- *   • photos -> Bunny S3 presigned PUT (direct browser -> Bunny) when enabled
- *   • legacy Bunny Storage gateway is kept only as a fallback
+ *   • photos -> Bunny S3 presigned PUT when S3 is selected
+ *   • legacy Bunny Storage is only used by installations with NO S3 endpoint
  */
 
 import { NextRequest, NextResponse } from "next/server";
@@ -18,6 +18,7 @@ import {
 } from "@/lib/storage/bunny";
 import {
   isBunnyS3Configured,
+  isBunnyS3Selected,
   createBunnyS3PresignedUpload,
 } from "@/lib/storage/bunny-s3";
 import { hashAlbumPassword, needsRehash, verifyAlbumPassword } from "@/lib/album-password";
@@ -93,8 +94,6 @@ export async function POST(
     return NextResponse.json({ error: "Unsupported file type" }, { status: 400 });
   }
 
-  // IMPORTANT: permission gates happen before creating any remote S3 object
-  // URL or Bunny Stream video record, so disabled uploads cannot consume storage.
   const flags = await getAlbumFlags(album.id);
   if (flags.albumPermission === "view_only") {
     return NextResponse.json({ error: "uploads_disabled" }, { status: 403 });
@@ -106,7 +105,7 @@ export async function POST(
     return NextResponse.json({ error: "photos_not_allowed" }, { status: 403 });
   }
 
-  if (album.photoCount >= album.maxPhotos) {
+  if (album.photoCount + album.pendingCount >= album.maxPhotos) {
     return NextResponse.json({ error: "Album photo limit reached" }, { status: 403 });
   }
 
@@ -137,8 +136,7 @@ export async function POST(
       .select({ count: sql<number>`count(*)` })
       .from(photos)
       .where(and(eq(photos.albumId, album.id), like(photos.mimeType, "video/%")));
-    const videoCount = Number(videoCountResult[0]?.count ?? 0);
-    if (videoCount >= 1) {
+    if (Number(videoCountResult[0]?.count ?? 0) >= 1) {
       return NextResponse.json(
         { error: "Free plan allows only 1 video. Upgrade to upload more." },
         { status: 403 },
@@ -162,15 +160,24 @@ export async function POST(
   const ext = EXTENSION_BY_MIME[contentType] ?? "bin";
   const key = `albums/${album.id}/${crypto.randomUUID()}.${ext}`;
 
-  if (isBunnyS3Configured()) {
+  // Once an S3 endpoint is selected, configuration/signing errors fail closed.
+  // Never route those files into the old zone and silently split new uploads.
+  if (isBunnyS3Selected()) {
+    if (!isBunnyS3Configured()) {
+      console.error("[upload-url/bunny-s3] S3 selected but credentials are incomplete");
+      return NextResponse.json({ error: "Photo storage configuration unavailable" }, { status: 503 });
+    }
     try {
       const direct = await createBunnyS3PresignedUpload({ key, contentType, expiresIn: 300 });
       return NextResponse.json({ type: "bunny-s3", ...direct });
     } catch (err) {
       console.error("[upload-url/bunny-s3]", err);
+      return NextResponse.json({ error: "Photo storage service unavailable" }, { status: 503 });
     }
   }
 
+  // Historical/self-hosted installation compatibility only. Guestcam production
+  // selects S3 and therefore never reaches this raw-byte serverless gateway.
   if (isBunnyStorageConfigured()) {
     return NextResponse.json({ type: "bunny-storage", key });
   }
