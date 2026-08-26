@@ -2,25 +2,21 @@
  * GET /api/cron/expire-albums
  *
  * Vercel Cron Job — runs daily at 03:00 UTC.
- * Finds albums whose expiresAt has passed, deletes all photos/videos
- * from Bunny Storage/Stream, then removes them from the DB.
- *
- * Protected with CRON_SECRET env var (set in Vercel dashboard).
- * Vercel automatically sends `Authorization: Bearer <CRON_SECRET>` on cron calls.
+ * Finds albums whose expiresAt has passed and removes their external media.
+ * A photos-table row is deleted only after its physical object was successfully
+ * deleted (or confirmed already gone) so failed cleanup remains retryable.
  */
 
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { albums, photos } from "@/lib/db/schema";
-import { eq, sql } from "drizzle-orm";
-import { deleteBunnyFile, deleteBunnyStreamVideo } from "@/lib/storage/bunny";
+import { eq, inArray, sql } from "drizzle-orm";
+import { deleteStoredMedia } from "@/lib/storage/delete-media";
 
 export const runtime = "nodejs";
-export const maxDuration = 300; // 5 min — enough for large albums
+export const maxDuration = 300;
 
 export async function GET(req: NextRequest) {
-  // Verify cron secret — fail closed if CRON_SECRET is not configured.
-  // This endpoint deletes photos, so it must never run unauthenticated.
   const authHeader = req.headers.get("authorization");
   const secret = process.env.CRON_SECRET;
   if (!secret) {
@@ -31,15 +27,14 @@ export async function GET(req: NextRequest) {
   }
 
   const now = new Date();
-
-  // Find all expired albums that still have photos
   const expiredAlbums = await db
-    .select({ id: albums.id, slug: albums.slug, photoCount: albums.photoCount })
+    .select({
+      id: albums.id,
+      slug: albums.slug,
+      coverImageUrl: albums.coverImageUrl,
+    })
     .from(albums)
-    .where(
-      // expiresAt IS NOT NULL AND expiresAt <= now
-      sql`${albums.expiresAt} IS NOT NULL AND ${albums.expiresAt} <= ${now}`,
-    );
+    .where(sql`${albums.expiresAt} IS NOT NULL AND ${albums.expiresAt} <= ${now}`);
 
   if (expiredAlbums.length === 0) {
     return NextResponse.json({ message: "No expired albums", processed: 0 });
@@ -47,47 +42,88 @@ export async function GET(req: NextRequest) {
 
   let totalDeleted = 0;
   const results: { slug: string; deleted: number; errors: number }[] = [];
+  const batchSize = 10;
 
   for (const album of expiredAlbums) {
-    if ((album.photoCount ?? 0) === 0) continue;
-
-    // Load all photos for this album
     const albumPhotos = await db
-      .select()
+      .select({
+        id: photos.id,
+        blobUrl: photos.blobUrl,
+        streamVideoId: photos.cfStreamVideoId,
+        status: photos.status,
+      })
       .from(photos)
       .where(eq(photos.albumId, album.id));
 
     let deleted = 0;
     let errors = 0;
+    const failedRows: typeof albumPhotos = [];
 
-    for (const photo of albumPhotos) {
-      try {
-        if (photo.cfStreamVideoId) {
-          // Bunny Stream video
-          await deleteBunnyStreamVideo(photo.cfStreamVideoId);
-        } else if (photo.blobUrl) {
-          // Bunny Storage file
-          await deleteBunnyFile(photo.blobUrl);
+    for (let i = 0; i < albumPhotos.length; i += batchSize) {
+      const batch = albumPhotos.slice(i, i + batchSize);
+      const outcomes = await Promise.allSettled(
+        batch.map((photo) =>
+          deleteStoredMedia({
+            blobUrl: photo.blobUrl,
+            streamVideoId: photo.streamVideoId,
+          }),
+        ),
+      );
+
+      const successfulIds: string[] = [];
+      outcomes.forEach((outcome, index) => {
+        const photo = batch[index];
+        if (!photo) return;
+        if (outcome.status === "fulfilled") {
+          successfulIds.push(photo.id);
+          deleted++;
+        } else {
+          failedRows.push(photo);
+          errors++;
+          console.error(
+            `[expire-albums] Failed to delete external media for photo ${photo.id}:`,
+            outcome.reason,
+          );
         }
-        deleted++;
-      } catch (err) {
-        console.error(`[expire-albums] Failed to delete file for photo ${photo.id}:`, err);
-        errors++;
+      });
+
+      if (successfulIds.length > 0) {
+        await db.delete(photos).where(inArray(photos.id, successfulIds));
       }
     }
 
-    // Delete all photos from DB for this album
-    await db.delete(photos).where(eq(photos.albumId, album.id));
+    let coverDeleted = !album.coverImageUrl;
+    if (album.coverImageUrl) {
+      try {
+        await deleteStoredMedia({ blobUrl: album.coverImageUrl });
+        coverDeleted = true;
+        deleted++;
+      } catch (err) {
+        errors++;
+        console.error(`[expire-albums] Failed to delete cover for ${album.slug}:`, err);
+      }
+    }
 
-    // Reset album photo/pending counts
+    // Only rows whose external cleanup failed remain. Keep counters aligned with
+    // those retryable records instead of reporting zero while media still exists.
+    const remainingPublished = failedRows.filter((row) => row.status === "published").length;
+    const remainingPending = failedRows.filter((row) => row.status === "pending").length;
+
     await db
       .update(albums)
-      .set({ photoCount: 0, pendingCount: 0 })
+      .set({
+        photoCount: remainingPublished,
+        pendingCount: remainingPending,
+        ...(coverDeleted ? { coverImageUrl: null } : {}),
+        updatedAt: new Date(),
+      })
       .where(eq(albums.id, album.id));
 
     totalDeleted += deleted;
     results.push({ slug: album.slug, deleted, errors });
-    console.log(`[expire-albums] Album "${album.slug}": deleted ${deleted} files, ${errors} errors`);
+    console.log(
+      `[expire-albums] Album "${album.slug}": deleted ${deleted} external object(s), ${errors} error(s)`,
+    );
   }
 
   return NextResponse.json({
