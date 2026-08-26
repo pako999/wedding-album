@@ -64,32 +64,29 @@ export default async function NewAlbumPage({ searchParams }: { searchParams: Pro
     "sl";
   const t = GALLERY_LIMIT_COPY[lang];
 
-  // If a logged-in user lands here with `?plan=` from a homepage pricing
-  // card AND already has at least one album, skip the wizard and send
-  // them straight to the upgrade page for their most recent album with
-  // that plan pre-selected. The upgrade page then takes them to the Paddle
-  // checkout on a single click. Skipping the wizard avoids forcing
-  // returning customers to create a duplicate gallery just to pay.
   const existing = await db.query.albums.findFirst({
     where: eq(albums.ownerClerkId, userId),
     orderBy: [desc(albums.createdAt)],
   });
 
-  if (initialPlan && existing) {
-    redirect(`/dashboard/${existing.slug}/upgrade?plan=${initialPlan}`);
+  // Each package belongs to one event. If the account currently has an
+  // active Free event and the visitor clicked a paid pricing card, upgrade
+  // THAT event. If all existing events are already paid, do not reuse their
+  // entitlement — show the wizard and create a new event that will purchase
+  // its own selected package.
+  const gate = await getAlbumCreationGate(userId);
+  if (initialPlan && !gate.allowed) {
+    redirect(`/dashboard/${gate.mostRecentSlug}/upgrade?plan=${initialPlan}&lang=${lang}`);
   }
 
   // A brand-new user has no galleries yet — /dashboard would just bounce
   // straight back here (it redirects to /dashboard/new when the list is
-  // empty), so the "back" link would loop. Only show it once they have
-  // a real gallery to return to.
+  // empty), so the "back" link would loop. Only show it once they have a
+  // real gallery to return to.
   const hasGalleries = !!existing;
 
-  // Free and Basic accounts are capped at one gallery. Once they already
-  // have a gallery and haven't upgraded it to Plus/Premium, don't show the
-  // creation wizard — send them to upgrade their existing gallery instead.
-  const gate = await getAlbumCreationGate(userId);
-
+  // Free includes one active event. Once that event is upgraded, another
+  // event may be created; it starts on Free and gets its own package.
   if (!gate.allowed) {
     return (
       <div className="min-h-screen" style={{ background: "#F4F6FB" }}>
