@@ -206,3 +206,33 @@ html, body {
 @media (prefers-reduced-motion: reduce) {
   .gc-rise, .gc-rise-late { animation: none; opacity: 1; transform: none; }
 }
+
+/* ── Guest upload sheet: narrow-iPhone overflow guard ────────────────
+   The event lead form uses a two-column first/last-name grid on larger
+   screens. Native input intrinsic widths can make those 1fr tracks wider
+   than the visual viewport on small Safari screens, creating a sideways
+   scroll offset that clips the whole modal. Keep the sheet and its form
+   controls shrinkable, and stack the two fields on phones. */
+@media (max-width: 639px) {
+  .fixed.inset-0.z-50 > .absolute.inset-0 + .relative {
+    width: 100%;
+    max-width: 100vw;
+    min-width: 0;
+    margin-left: 0;
+    margin-right: 0;
+    box-sizing: border-box;
+    overflow-x: hidden;
+  }
+
+  .fixed.inset-0.z-50 > .absolute.inset-0 + .relative input,
+  .fixed.inset-0.z-50 > .absolute.inset-0 + .relative select,
+  .fixed.inset-0.z-50 > .absolute.inset-0 + .relative textarea {
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .fixed.inset-0.z-50 > .absolute.inset-0 + .relative .grid.grid-cols-2.gap-2 {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
