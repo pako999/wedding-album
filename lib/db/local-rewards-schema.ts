@@ -117,6 +117,9 @@ export const localCoupons = pgTable(
     sourceId: text("source_id").references(() => localQrSources.id, { onDelete: "set null" }),
     photoId: text("photo_id").references(() => photos.id, { onDelete: "set null" }),
 
+    // Stable per-device/per-QR claim id. Multiple photos from one upload batch
+    // share the same token, so they still unlock exactly one reward.
+    claimToken: varchar("claim_token", { length: 80 }).notNull().unique(),
     code: varchar("code", { length: 24 }).notNull().unique(),
     status: text("status", {
       enum: ["issued", "redeemed", "expired", "void"],
@@ -146,6 +149,8 @@ export const localCoupons = pgTable(
     index("local_coupons_status_idx").on(t.campaignId, t.status),
     index("local_coupons_email_idx").on(t.guestEmail),
     unique("local_coupons_code_unique").on(t.code),
+    unique("local_coupons_claim_unique").on(t.claimToken),
+    unique("local_coupons_photo_unique").on(t.photoId),
   ],
 );
 
