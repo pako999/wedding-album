@@ -7,26 +7,31 @@ import { verifyAlbumPassword } from "@/lib/album-password";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-function bunnyPlayer2Url(rawUrl: string): string | null {
+/**
+ * The existing Guestcam Bunny Stream library is still on Bunny's legacy
+ * player. Bunny explicitly keeps existing libraries on that player until the
+ * library is migrated, so forcing player.mediadelivery.net breaks playback.
+ * Normalize both stored URL variants back to the compatible iframe endpoint.
+ */
+function bunnyCompatiblePlayerUrl(rawUrl: string): string | null {
   try {
     const url = new URL(rawUrl);
 
-    if (url.hostname === "iframe.mediadelivery.net") {
-      url.hostname = "player.mediadelivery.net";
+    if (url.hostname === "player.mediadelivery.net") {
+      url.hostname = "iframe.mediadelivery.net";
     }
 
-    if (url.hostname !== "player.mediadelivery.net" || !url.pathname.includes("/embed/")) {
+    if (url.hostname !== "iframe.mediadelivery.net" || !url.pathname.includes("/embed/")) {
       return null;
     }
 
-    // Bunny Stream Player 2 officially supports these iOS-specific options.
-    // Keep autoplay disabled so Safari starts playback only after a user tap,
-    // force inline playback, and disable the native iOS player handoff so the
-    // same Bunny Player 2 implementation is used on iPhone as on desktop.
     url.searchParams.set("autoplay", "false");
     url.searchParams.set("preload", "true");
     url.searchParams.set("playsinline", "true");
-    url.searchParams.set("disableIosPlayer", "true");
+
+    // disableIosPlayer belongs to Bunny Player 2 and must not be sent to the
+    // legacy player used by this library.
+    url.searchParams.delete("disableIosPlayer");
 
     return url.toString();
   } catch {
@@ -67,7 +72,7 @@ export async function GET(
     return NextResponse.json({ error: "Video not found" }, { status: 404 });
   }
 
-  const url = bunnyPlayer2Url(photo.blobUrl);
+  const url = bunnyCompatiblePlayerUrl(photo.blobUrl);
   if (!url) {
     return NextResponse.json({ error: "Bunny Player URL unavailable" }, { status: 502 });
   }
