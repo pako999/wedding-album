@@ -29,6 +29,47 @@ const STEP_IMAGES = [
   "/how/guestcam-step-3-qr.webp?v=6",
 ] as const;
 
+/** Mirrors lib/gallery-limits.ts for the public pricing cards. The server
+ * remains the authority; these strings only explain the entitlement. */
+const PRICING_GALLERY_COPY: Record<Lang, [string, string, string, string]> = {
+  sl: [
+    "1 dogodek · do 2 galerij",
+    "1 dogodek · 1 galerija",
+    "1 dogodek · do 3 galerij",
+    "1 dogodek · do 5 galerij",
+  ],
+  hr: [
+    "1 događaj · do 2 galerije",
+    "1 događaj · 1 galerija",
+    "1 događaj · do 3 galerije",
+    "1 događaj · do 5 galerija",
+  ],
+  sr: [
+    "1 događaj · do 2 galerije",
+    "1 događaj · 1 galerija",
+    "1 događaj · do 3 galerije",
+    "1 događaj · do 5 galerija",
+  ],
+  de: [
+    "1 Event · bis zu 2 Galerien",
+    "1 Event · 1 Galerie",
+    "1 Event · bis zu 3 Galerien",
+    "1 Event · bis zu 5 Galerien",
+  ],
+  en: [
+    "1 event · up to 2 galleries",
+    "1 event · 1 gallery",
+    "1 event · up to 3 galleries",
+    "1 event · up to 5 galleries",
+  ],
+  es: [
+    "1 evento · hasta 2 galerías",
+    "1 evento · 1 galería",
+    "1 evento · hasta 3 galerías",
+    "1 evento · hasta 5 galerías",
+  ],
+};
+
 const COPY: Record<Lang, Copy> = {
   sl: {
     label: "Kako deluje",
@@ -63,7 +104,7 @@ const COPY: Record<Lang, Copy> = {
     steps: [
       { no: "1", title: "Izaberite događaj", text: "Izaberite vrstu događaja za koji pravite galeriju.", src: STEP_IMAGES[0], alt: "Guestcam izbor vrste događaja pri pravljenju nove galerije" },
       { no: "2", title: "Unesite podatke", text: "Unesite osnovne podatke i galerija će biti spremna za manje od dva minuta.", src: STEP_IMAGES[1], alt: "Guestcam unos podataka za galeriju događaja" },
-      { no: "3", title: "Podelite QR kod", text: "Gosti skeniraju QR kod — bez aplikacije i prijave — i odmah počinju da dele fotografije.", src: STEP_IMAGES[2], alt: "Guestcam QR kod koji gosti skeniraju za otpremanje fotografija" },
+      { no: "3", title: "Podelite QR kod", text: "Gosti skeniraju QR kod — bez aplikacije in prijave — i odmah počinju da dele fotografije.", src: STEP_IMAGES[2], alt: "Guestcam QR kod koji gosti skeniraju za otpremanje fotografija" },
     ],
   },
   de: {
@@ -122,6 +163,25 @@ export function GuestcamProcessHowOverride() {
     if (!detected) return;
     setLang(detected);
     setTarget(document.getElementById("how"));
+
+    // The public pricing cards are server-rendered by two different home
+    // components (Slovenian + localized V3). Add the same entitlement line
+    // to both without duplicating six large pricing dictionaries.
+    const inserted: HTMLLIElement[] = [];
+    const cards = Array.from(document.querySelectorAll<HTMLElement>("#pricing article"));
+    const labels = PRICING_GALLERY_COPY[detected];
+    cards.slice(0, 4).forEach((card, index) => {
+      const list = card.querySelector("ul");
+      if (!list || list.querySelector("[data-gallery-plan-limit]")) return;
+      const item = document.createElement("li");
+      item.setAttribute("data-gallery-plan-limit", "true");
+      item.className = "font-bold";
+      item.textContent = `✓ ${labels[index]}`;
+      list.prepend(item);
+      inserted.push(item);
+    });
+
+    return () => inserted.forEach((item) => item.remove());
   }, [pathname]);
 
   const copy = useMemo(() => COPY[lang], [lang]);
