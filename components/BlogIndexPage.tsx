@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { BlogHeader } from "@/components/BlogHeader";
+import { SiteHeader } from "@/components/SiteHeader";
 import { SeoFooter } from "@/components/SeoFooter";
 import type { BlogPost, BlogCategory } from "@/lib/blog";
 import { SITE_URL } from "@/lib/urls";
@@ -71,7 +71,7 @@ export function BlogIndexPage({ posts, lang }: { posts: BlogPost[]; lang: LangCo
       headline: post.title,
       url: `${SITE_URL}${blogUrl(lang, post.slug)}`,
       datePublished: post.publishedAt,
-      ...(post.updatedAt ? { dateModified: post.updatedAt } : {}),
+      dateModified: post.updatedAt,
       description: post.description,
       author: { "@type": "Organization", name: "Guestcam" },
       publisher: { "@type": "Organization", name: "Guestcam", url: SITE_URL },
@@ -81,7 +81,7 @@ export function BlogIndexPage({ posts, lang }: { posts: BlogPost[]; lang: LangCo
   return (
     <div className="min-h-screen bg-[#F2F4F8] text-[#0F1729]">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(itemList) }} />
-      <BlogHeader lang={lang} />
+      <SiteHeader lang={lang} />
       <main className="max-w-6xl mx-auto px-6 py-14">
         <header className="text-center mb-12">
           <p className="text-xs font-bold uppercase tracking-widest text-[#8C6218] mb-3">Blog</p>
@@ -97,12 +97,14 @@ export function BlogIndexPage({ posts, lang }: { posts: BlogPost[]; lang: LangCo
               <div className="p-8 sm:p-10 order-2 md:order-1">
                 <p className="text-[10px] font-bold uppercase tracking-widest text-[#8C6218] mb-3">{t.featured}</p>
                 <h2 className="font-serif text-3xl font-bold text-[#0F1729] mb-4 leading-tight">{featured.title}</h2>
-                <p className="text-gray-500 mb-5 line-clamp-3">{featured.description}</p>
+                <p className="text-gray-500 mb-5 line-clamp-3">{featured.tldr}</p>
                 <span className="text-sm font-bold text-[#8C6218]">{t.readMore} →</span>
               </div>
-              {featured.heroImage && (
+              {featured.coverImage ? (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img src={featured.heroImage} alt={featured.heroAlt ?? featured.title} className="w-full h-56 md:h-full object-cover order-1 md:order-2" />
+                <img src={featured.coverImage} alt={featured.coverAlt ?? featured.title} className="w-full h-56 md:h-full object-cover order-1 md:order-2" />
+              ) : (
+                <div className="hidden md:block order-1 md:order-2 bg-[#FFF9EC]" />
               )}
             </div>
           </Link>
@@ -111,19 +113,19 @@ export function BlogIndexPage({ posts, lang }: { posts: BlogPost[]; lang: LangCo
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {rest.map((p) => (
             <Link key={p.slug} href={blogUrl(lang, p.slug)} className="block bg-white border border-gray-200 rounded-2xl overflow-hidden hover:border-[#FFC94D] hover:shadow-md transition-all">
-              {p.heroImage && (
+              {p.coverImage && (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img src={p.heroImage} alt={p.heroAlt ?? p.title} className="w-full h-40 object-cover" loading="lazy" />
+                <img src={p.coverImage} alt={p.coverAlt ?? p.title} className="w-full h-40 object-cover" loading="lazy" />
               )}
               <div className="p-6">
                 <span className={`inline-block text-[10px] uppercase font-bold tracking-wide px-2 py-0.5 rounded border ${CATEGORY_COLOR[p.category]}`}>
                   {CATEGORY_LABEL[lang][p.category]}
                 </span>
                 <h3 className="font-serif text-xl font-bold text-[#0F1729] mt-4 mb-2 leading-snug">{p.title}</h3>
-                <p className="text-sm text-gray-500 line-clamp-3 mb-4">{p.description}</p>
+                <p className="text-sm text-gray-500 line-clamp-3 mb-4">{p.tldr}</p>
                 <div className="flex items-center justify-between text-xs text-gray-500">
                   <time dateTime={p.publishedAt}>{formatDate(p.publishedAt, lang)}</time>
-                  <span>{p.readingMinutes} min</span>
+                  <span>{p.readingTime} min</span>
                 </div>
               </div>
             </Link>
