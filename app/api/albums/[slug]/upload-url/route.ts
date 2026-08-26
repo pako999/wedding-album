@@ -1,15 +1,15 @@
 /**
  * POST /api/albums/:slug/upload-url
  *
- * Returns the upload strategy. Large media bytes should bypass Vercel:
+ * Returns the upload strategy used by the browser:
  *   • videos -> Bunny Stream tus (direct browser -> Bunny)
- *   • photos -> Cloudflare R2 presigned PUT when configured
- *   • photos -> Vercel Blob client upload when R2 is unavailable but Blob is configured
- *   • Bunny Storage proxy is legacy fallback only
+ *   • photos -> Bunny Storage key, uploaded through the streaming Bunny gateway
  *
- * The request itself is intentionally tiny (metadata only), so the endpoint can
- * safely serve a large event without proxying hundreds of image bodies through
- * serverless memory.
+ * Guestcam intentionally stays on Bunny for event media. We do NOT expose the
+ * Bunny Storage API key to the browser: Storage API writes require the zone
+ * password/API key, so the browser receives only an album-scoped random object
+ * key. /bunny-upload re-validates the album, password, MIME type and key before
+ * streaming the request body to Bunny Storage.
  */
 
 import { NextRequest, NextResponse } from "next/server";
@@ -21,7 +21,6 @@ import {
   isBunnyStreamConfigured,
   createBunnyStreamUpload,
 } from "@/lib/storage/bunny";
-import { isR2Configured, createR2PresignedUrl } from "@/lib/storage/r2";
 import { hashAlbumPassword, needsRehash, verifyAlbumPassword } from "@/lib/album-password";
 import { checkRateLimit } from "@/lib/rate-limit";
 
@@ -42,13 +41,11 @@ const MAX_VIDEO_BYTES = 500 * 1024 * 1024;
 /**
  * Venue-safe coarse abuse cap.
  *
- * Hundreds of guests at a venue often share ONE public NAT/Wi-Fi IP. The old
- * 30/minute per-IP limit treated a whole wedding/concert as one user and could
- * reject legitimate uploads. This endpoint only performs small DB reads and
- * signs a destination URL, so 2,000/minute per public IP leaves headroom for a
- * 500-person burst while still putting a ceiling on a single-source script.
- * Plan limits, file caps, key scoping and save-upload validation remain the
- * authoritative abuse controls.
+ * Hundreds of guests at a venue often share one public NAT/Wi-Fi IP. A tiny
+ * per-IP limit therefore blocks legitimate guests. This endpoint only handles
+ * small metadata requests and issues album-scoped random keys; file bytes do
+ * not pass through it. 2,000/min is enough for a 500-person first burst while
+ * still putting a ceiling on obvious single-source abuse.
  */
 const VENUE_REQUESTS_PER_MINUTE = 2_000;
 
@@ -142,45 +139,40 @@ export async function POST(
     }
   }
 
-  // Videos: direct tus upload to Bunny Stream. The video body never reaches Vercel.
-  if (isVideo && isBunnyStreamConfigured()) {
+  // Videos upload directly from the guest device to Bunny Stream using tus.
+  // No video bytes pass through a Vercel function.
+  if (isVideo) {
+    if (!isBunnyStreamConfigured()) {
+      return NextResponse.json(
+        { error: "Video uploads are temporarily unavailable" },
+        { status: 503 },
+      );
+    }
     try {
       const creds = await createBunnyStreamUpload(filename);
       return NextResponse.json({ type: "bunny-stream", ...creds });
     } catch (err) {
       console.error("[upload-url/bunny-stream]", err);
+      return NextResponse.json(
+        { error: "Video upload service unavailable" },
+        { status: 503 },
+      );
     }
   }
 
-  const ext = (filename.split(".").pop() ?? "bin").toLowerCase().replace(/[^a-z0-9]/g, "").slice(0, 5) || "bin";
+  // Photos stay on Bunny Storage. The key is random and pinned to this album;
+  // the separate gateway re-validates it before forwarding bytes to Bunny.
+  if (!isBunnyStorageConfigured()) {
+    return NextResponse.json(
+      { error: "Photo storage is temporarily unavailable" },
+      { status: 503 },
+    );
+  }
+
+  const ext = (filename.split(".").pop() ?? "bin")
+    .toLowerCase()
+    .replace(/[^a-z0-9]/g, "")
+    .slice(0, 5) || "bin";
   const key = `albums/${album.id}/${crypto.randomUUID()}.${ext}`;
-
-  // Preferred image path for large events: browser -> Cloudflare R2 directly.
-  // Vercel only signs a short-lived URL; it never buffers the photo bytes.
-  if (isImage && isR2Configured()) {
-    try {
-      const signed = await createR2PresignedUrl({ key, contentType, expiresIn: 300 });
-      return NextResponse.json({ type: "r2", ...signed });
-    } catch (err) {
-      console.error("[upload-url/r2]", err);
-      // Gracefully fall through to another direct provider.
-    }
-  }
-
-  // Vercel Blob client uploads are also direct/multipart; prefer them to the
-  // legacy Bunny byte proxy when a Blob token is available.
-  if (process.env.BLOB_READ_WRITE_TOKEN) {
-    return NextResponse.json({ type: "vercel-blob" });
-  }
-
-  // Legacy fallback only. This route proxies bytes through a Node function and
-  // therefore is not the recommended path for a 500+ person simultaneous burst.
-  if (isBunnyStorageConfigured()) {
-    return NextResponse.json({ type: "bunny-storage", key });
-  }
-
-  return NextResponse.json(
-    { error: "No upload storage provider configured" },
-    { status: 503 },
-  );
+  return NextResponse.json({ type: "bunny-storage", key });
 }
