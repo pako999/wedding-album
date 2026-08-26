@@ -1,4 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
+import { db } from "@/lib/db";
+import { albums } from "@/lib/db/schema";
+import { eq } from "drizzle-orm";
+import { hasAlbumRequestAccess } from "@/lib/album-request-access";
+import { checkAlbumOwnership } from "@/lib/album-ownership";
 import {
   createBunnyS3PresignedRead,
   isBunnyS3Configured,
@@ -16,19 +21,25 @@ function validKey(key: string): boolean {
   );
 }
 
+/** New S3 keys are always albums/{albumId}/{random-file}. */
+function albumIdFromKey(key: string): string | null {
+  const parts = key.split("/");
+  return parts.length >= 3 && parts[0] === "albums" && parts[1]
+    ? parts[1]
+    : null;
+}
+
 /**
  * Stable read URL for objects stored in the NEW Bunny S3 zone.
  *
- * Legacy Guestcam photos keep using BUNNY_CDN_URL and the old storage zone.
- * New S3 photos use this route so the two zones can coexist without rebasing
- * a new object's key onto the old pull zone.
- *
- * If BUNNY_S3_CDN_URL is configured, the browser is redirected to that pull
- * zone. Otherwise we fall back to a short-lived signed S3 GET URL. The image
- * bytes never pass through Vercel in either case.
+ * Open, published link-only albums keep the fast public CDN redirect.
+ * Password-protected albums are authorized through the same HttpOnly album
+ * access cookie used by the gallery and receive a short-lived signed S3 URL
+ * instead, so Guestcam does not expose the public pull-zone URL in normal use.
+ * Unpublished albums are owner-only.
  */
 export async function GET(
-  _req: NextRequest,
+  req: NextRequest,
   { params }: { params: Promise<{ key: string[] }> },
 ) {
   const { key: segments } = await params;
@@ -36,6 +47,30 @@ export async function GET(
 
   if (!validKey(key)) {
     return NextResponse.json({ error: "Invalid storage key" }, { status: 400 });
+  }
+
+  const albumId = albumIdFromKey(key);
+  if (!albumId) {
+    return NextResponse.json({ error: "Invalid storage key" }, { status: 400 });
+  }
+
+  const album = await db.query.albums
+    .findFirst({ where: eq(albums.id, albumId) })
+    .catch(() => null);
+  if (!album) {
+    return NextResponse.json({ error: "Not found" }, { status: 404 });
+  }
+
+  if (!album.isPublished) {
+    const owner = await checkAlbumOwnership(album);
+    if (!owner.ok) {
+      return NextResponse.json({ error: "Not found" }, { status: 404 });
+    }
+  } else if (album.password) {
+    const allowed = await hasAlbumRequestAccess(req, album.slug, album);
+    if (!allowed) {
+      return NextResponse.json({ error: "Album access required" }, { status: 403 });
+    }
   }
 
   if (!isBunnyS3Configured()) {
@@ -47,16 +82,19 @@ export async function GET(
     .replace(/\/+$/, "");
 
   try {
-    if (s3Cdn) {
+    // For open published albums, retain the fast cacheable pull-zone redirect.
+    if (s3Cdn && album.isPublished && !album.password) {
       const target = `${s3Cdn}/${key}`;
       const response = NextResponse.redirect(target, 307);
       response.headers.set("Cache-Control", "public, max-age=300, s-maxage=300");
       return response;
     }
 
+    // Protected/unpublished media gets a short-lived private S3 URL instead.
     const signed = await createBunnyS3PresignedRead(key, 300);
     const response = NextResponse.redirect(signed, 307);
     response.headers.set("Cache-Control", "private, no-store");
+    response.headers.set("Referrer-Policy", "no-referrer");
     return response;
   } catch (err) {
     console.error("[bunny-s3-file]", err);
