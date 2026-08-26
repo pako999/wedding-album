@@ -113,8 +113,9 @@ export function HomeMobileMenu({ signedIn = false, lang, links, labels }: HomeMo
               </div>
               {menuLinks.map((l) => {
                 const isAnchor = l.href.startsWith("#");
+                const isBlog = /\/blog(?:\/|$)/.test(l.href);
                 const className = "px-3 py-3 rounded-lg text-base font-semibold text-[#0F1729] hover:bg-[#FFF9EC] transition-colors";
-                return isAnchor ? (
+                return isAnchor || isBlog ? (
                   <a key={l.href} href={l.href} role="menuitem" onClick={() => setOpen(false)} className={className}>
                     {l.label}
                   </a>
