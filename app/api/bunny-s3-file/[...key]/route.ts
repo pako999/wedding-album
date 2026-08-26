@@ -33,10 +33,10 @@ function albumIdFromKey(key: string): string | null {
  * Stable read URL for objects stored in the NEW Bunny S3 zone.
  *
  * Open, published link-only albums keep the fast public CDN redirect.
- * Password-protected albums are authorized through the same HttpOnly album
- * access cookie used by the gallery and receive a short-lived signed S3 URL
- * instead, so Guestcam does not expose the public pull-zone URL in normal use.
- * Unpublished albums are owner-only.
+ * Password-protected albums are authorized through either owner auth or the
+ * same HttpOnly album access cookie used by the guest gallery. Protected and
+ * unpublished reads receive a short-lived signed S3 URL rather than a public
+ * pull-zone redirect.
  */
 export async function GET(
   req: NextRequest,
@@ -67,9 +67,14 @@ export async function GET(
       return NextResponse.json({ error: "Not found" }, { status: 404 });
     }
   } else if (album.password) {
-    const allowed = await hasAlbumRequestAccess(req, album.slug, album);
-    if (!allowed) {
-      return NextResponse.json({ error: "Album access required" }, { status: 403 });
+    // A signed-in owner must always be able to manage/download their own
+    // protected media from the dashboard without entering the guest password.
+    const owner = await checkAlbumOwnership(album);
+    if (!owner.ok) {
+      const allowed = await hasAlbumRequestAccess(req, album.slug, album);
+      if (!allowed) {
+        return NextResponse.json({ error: "Album access required" }, { status: 403 });
+      }
     }
   }
 
