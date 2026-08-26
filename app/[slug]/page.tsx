@@ -19,7 +19,7 @@ export const dynamic = "force-dynamic";
 
 interface Props {
   params: Promise<{ slug: string }>;
-  searchParams: Promise<{ pw?: string; lang?: string; event?: string }>;
+  searchParams: Promise<{ lang?: string; event?: string }>;
 }
 
 // Per-event-type share copy. We render this in the share preview when
@@ -150,7 +150,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function AlbumPage({ params, searchParams }: Props) {
   const { slug } = await params;
-  const { pw, lang: langParam, event } = await searchParams;
+  const { lang: langParam, event } = await searchParams;
 
   const album = await withSchemaHealing(() =>
     db.query.albums.findFirst({ where: eq(albums.slug, slug) }),
@@ -196,15 +196,21 @@ export default async function AlbumPage({ params, searchParams }: Props) {
     }
   } catch { /* viewer is anonymous — that's fine */ }
 
+  const requestHeaders = await headers();
+  // proxy.ts decrypts the HttpOnly album-access cookie and exposes the raw
+  // password only through this server-internal request header. It is never
+  // placed back into a URL and is never passed to a Client Component.
+  const internalAlbumPassword = requestHeaders.get("x-album-access-password") ?? "";
+
   // Password gate (server-side check). Owners always bypass. Verifies
   // against scrypt-hashed OR legacy plaintext (see lib/album-password.ts)
   // and silently upgrades legacy rows on the first correct entry.
   const passwordRequired = !!album.password && !isOwner;
   let passwordCorrect = isOwner || !album.password;
   if (!passwordCorrect && album.password) {
-    passwordCorrect = await verifyAlbumPassword(pw ?? "", album.password);
+    passwordCorrect = await verifyAlbumPassword(internalAlbumPassword, album.password);
     if (passwordCorrect && needsRehash(album.password)) {
-      const upgraded = await hashAlbumPassword(pw ?? "");
+      const upgraded = await hashAlbumPassword(internalAlbumPassword);
       await db
         .update(albums)
         .set({ password: upgraded })
@@ -224,7 +230,6 @@ export default async function AlbumPage({ params, searchParams }: Props) {
       })
     : [];
 
-  const requestHeaders = await headers();
   const userAgent = requestHeaders.get("user-agent") ?? "";
   const safari = isSafariUserAgent(userAgent);
   const iosSafari = isIosSafariUserAgent(userAgent);
@@ -305,7 +310,6 @@ export default async function AlbumPage({ params, searchParams }: Props) {
         moments={albumMoments}
         passwordRequired={passwordRequired}
         passwordCorrect={passwordCorrect}
-        providedPassword={pw}
         initialLang={lang}
         isOwner={isOwner}
         requireGuestData={requireEventGuestData}
