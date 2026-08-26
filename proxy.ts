@@ -15,8 +15,6 @@ import {
   normalizedHostname,
 } from "@/lib/site-domains";
 
-const isProtectedRoute = createRouteMatcher(["/dashboard(.*)"]);
-
 /**
  * Single-segment paths that are PUBLIC marketing/content (not album guest
  * pages). Anything else with a one-segment path of the form /<slug> is
@@ -93,7 +91,7 @@ function isOwnDomain(hostname: string) {
 }
 
 export default clerkMiddleware(
-  async (auth, req) => {
+  async (_auth, req) => {
   const hostCandidates = requestHostCandidates(req);
   const hostname = requestHostname(req);
   const pathname = req.nextUrl.pathname;
@@ -138,10 +136,11 @@ export default clerkMiddleware(
     return NextResponse.next();
   }
 
-  // ── Dashboard requires Clerk auth ──────────────────────────────────────────
-  if (isProtectedRoute(req)) {
-    await auth.protect();
-  }
+  // Dashboard authentication intentionally lives in app/dashboard/layout.tsx.
+  // Clerk's middleware auth.protect() can issue an internal protect rewrite;
+  // with our root /[slug] album route that rewrite was being interpreted as an
+  // album slug and /dashboard returned a 404. Server-side layout auth keeps the
+  // entire dashboard private without rewriting its pathname.
 
   // ── Expose pathname for Server Components ─────────────────────────────────
   // Server Components read REQUEST headers via next/headers `headers()`.
