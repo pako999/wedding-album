@@ -21,7 +21,7 @@ import {
   isBunnyS3Selected,
   createBunnyS3PresignedUpload,
 } from "@/lib/storage/bunny-s3";
-import { hashAlbumPassword, needsRehash, verifyAlbumPassword } from "@/lib/album-password";
+import { hasAlbumRequestAccess } from "@/lib/album-request-access";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { getAlbumFlags } from "@/lib/album-flags";
 
@@ -78,14 +78,11 @@ export async function POST(
     return NextResponse.json({ error: "Album not found" }, { status: 404 });
   }
 
-  if (album.password) {
-    const provided = req.headers.get("x-album-password") ?? "";
-    const ok = await verifyAlbumPassword(provided, album.password);
-    if (!ok) return NextResponse.json({ error: "Wrong album password" }, { status: 403 });
-    if (needsRehash(album.password)) {
-      const upgraded = await hashAlbumPassword(provided);
-      await db.update(albums).set({ password: upgraded }).where(eq(albums.id, album.id)).catch(() => {});
-    }
+  // Open/link-only albums pass automatically. Protected albums accept the
+  // encrypted HttpOnly album-access cookie (or the legacy header for backwards
+  // compatibility), so the browser never needs the raw password in client props.
+  if (!(await hasAlbumRequestAccess(req, slug, album))) {
+    return NextResponse.json({ error: "Wrong album password" }, { status: 403 });
   }
 
   const isVideo = ALLOWED_VIDEO_TYPES.has(contentType);
