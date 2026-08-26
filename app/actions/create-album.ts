@@ -2,7 +2,7 @@
 
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
-import { and, desc, eq, gt, ne } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { albums, userPlanOverrides } from "@/lib/db/schema";
 import { sendWelcomeEmail, sendOrganizerAgreementEmail } from "@/lib/email/notifications";
@@ -33,23 +33,24 @@ export async function createAlbum(formData: FormData) {
   }
   if (!userId) redirect("/sign-in");
 
-  // Server-side backstop for the one-gallery cap on Free/Basic accounts.
-  // The /dashboard/new page already hides the wizard in this case; this
-  // guard just stops a direct form POST from bypassing it.
+  // Server-side backstop: every package is tied to one event. Paid albums
+  // do not unlock extra paid events, while Free is limited to one active
+  // event at a time. A new event created after a paid one starts on Free
+  // and can be upgraded separately.
   const gate = await getAlbumCreationGate(userId);
   if (!gate.allowed) {
     redirect(`/dashboard/${gate.mostRecentSlug}/upgrade`);
   }
 
   const eventType  = (formData.get("eventType")   as string ?? "wedding").trim();
-  const coupleName = (formData.get("coupleName")   as string ?? "").trim();
-  const eventDate  = (formData.get("eventDate")    as string ?? "").trim();
-  const location   = (formData.get("location")     as string ?? "").trim() || null;
-  const password   = (formData.get("password")     as string ?? "").trim() || null;
+  const coupleName = (formData.get("coupleName")  as string ?? "").trim();
+  const eventDate  = (formData.get("eventDate")   as string ?? "").trim();
+  const location   = (formData.get("location")    as string ?? "").trim() || null;
+  const password   = (formData.get("password")    as string ?? "").trim() || null;
   // Optional: when the owner came from a pricing card (homepage → wizard),
   // remember which paid plan they picked so we can route them straight to
-  // the Paddle checkout step after the onboarding wizard.
-  const planRaw    = (formData.get("plan")         as string ?? "").trim();
+  // checkout for THIS event after the onboarding wizard.
+  const planRaw    = (formData.get("plan")        as string ?? "").trim();
   const plan       = (planRaw === "basic" || planRaw === "plus" || planRaw === "premium") ? planRaw : null;
 
   if (!coupleName || !eventDate) {
@@ -67,36 +68,20 @@ export async function createAlbum(formData: FormData) {
   const suffix = Math.random().toString(36).slice(2, 6);
   const slug   = `${slugify(coupleName)}-${suffix}`;
 
-  // Inherit the active paid plan from any existing album owned by this user.
-  // If the user already paid for basic/plus/premium, every new gallery they
-  // create gets the same plan, limits, and expiry — no extra payment needed.
-  const activePaidAlbum = await db.query.albums.findFirst({
-    where: and(
-      eq(albums.ownerClerkId, userId),
-      ne(albums.plan, "free"),
-      gt(albums.expiresAt, new Date()),
-    ),
-    orderBy: [desc(albums.expiresAt)],
-  });
-
-  let inheritedPlan: "free" | "basic" | "plus" | "premium" =
-    activePaidAlbum?.plan ?? "free";
-  let inheritedMax    = activePaidAlbum?.maxPhotos ?? 20;
-  let inheritedFilm: "free" | "pro" | "premium" =
-    activePaidAlbum?.filmTier ?? "free";
-  let inheritedExpiry: Date | null = activePaidAlbum
-    ? activePaidAlbum.expiresAt
-    : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // free = 30 days
-  let inheritedSessionId: string | undefined = activePaidAlbum
-    ? `inherit:${activePaidAlbum.slug}`
-    : undefined;
+  // Every newly created event starts with its own Free entitlement. A paid
+  // plan on another event is deliberately NOT inherited: Basic/Plus/Premium
+  // are one-time purchases for one event only.
+  let inheritedPlan: "free" | "basic" | "plus" | "premium" = "free";
+  let inheritedMax = 20;
+  let inheritedFilm: "free" | "pro" | "premium" = "free";
+  let inheritedExpiry: Date | null = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+  let inheritedSessionId: string | undefined;
 
   // Admin-set override (writes by /api/admin/users/:clerkId/upgrade for
-  // users who hadn't created any album yet). Wins over the album-inherit
-  // path so a freshly-promoted free user gets the chosen plan applied to
-  // their first gallery. One-shot: deleted after consumption.
-  // Try/catch keeps album creation alive on a fresh DB where the
-  // migration hasn't run yet (table doesn't exist).
+  // users who hadn't created any album yet). Wins over the normal Free
+  // start so a freshly-promoted user gets the chosen plan on this event.
+  // One-shot: deleted after consumption. Try/catch keeps album creation
+  // alive on a fresh DB where the migration hasn't run yet.
   try {
     const override = await db.query.userPlanOverrides.findFirst({
       where: eq(userPlanOverrides.clerkId, userId),
