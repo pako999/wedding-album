@@ -19,7 +19,7 @@ export const dynamic = "force-dynamic";
 
 interface Props {
   params: Promise<{ slug: string }>;
-  searchParams: Promise<{ pw?: string; lang?: string }>;
+  searchParams: Promise<{ pw?: string; lang?: string; event?: string }>;
 }
 
 // Per-event-type share copy. We render this in the share preview when
@@ -150,7 +150,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function AlbumPage({ params, searchParams }: Props) {
   const { slug } = await params;
-  const { pw, lang: langParam } = await searchParams;
+  const { pw, lang: langParam, event } = await searchParams;
 
   const album = await withSchemaHealing(() =>
     db.query.albums.findFirst({ where: eq(albums.slug, slug) }),
@@ -276,6 +276,13 @@ export default async function AlbumPage({ params, searchParams }: Props) {
   const flags = await getAlbumFlags(album.id);
   const appearance = await getAlbumAppearance(album.id);
 
+  // Guest contact capture is an EVENT/PHOTO-WALL flow, not a normal album
+  // upload requirement. The owner may keep the event flag enabled, but the
+  // name + surname + email form is only activated on the dedicated event
+  // upload URL generated for the Photo Wall (?event=1). The ordinary album
+  // URL/QR therefore keeps the classic simple guest-name upload flow.
+  const requireEventGuestData = flags.guestDataCapture && event === "1";
+
   // Fetch the album's moments (named sub-galleries)
   const albumMoments = await db.query.moments.findMany({
     where: eq(moments.albumId, album.id),
@@ -301,7 +308,7 @@ export default async function AlbumPage({ params, searchParams }: Props) {
         providedPassword={pw}
         initialLang={lang}
         isOwner={isOwner}
-        requireGuestData={flags.guestDataCapture}
+        requireGuestData={requireEventGuestData}
         eventFlags={flags}
         appearance={appearance ? {
           logoUrl: appearance.logoUrl,
