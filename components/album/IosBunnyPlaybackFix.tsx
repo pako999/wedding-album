@@ -64,12 +64,10 @@ function makeNativeVideo(src: string, fallbackIframeSrc?: string): HTMLVideoElem
 /**
  * Normalise Bunny Stream playback in public galleries.
  *
- * The old component only altered iOS playback. Production diagnostics proved
- * that the affected legacy video streams correctly through Guestcam's existing
- * Range-aware MP4 proxy while Bunny's iframe can remain black on desktop.
- * Therefore every browser now prefers the same-origin proxy. Videos that do
- * not have an MP4 fallback automatically retain/restore their original Bunny
- * playback element.
+ * Existing and newly uploaded Bunny Stream videos prefer Guestcam's
+ * same-origin Range-aware MP4 proxy on every browser. Password-protected
+ * albums are authorized by the HttpOnly album-access cookie; no album
+ * password is copied into fetch URLs or browser history.
  */
 export function IosBunnyPlaybackFix() {
   useEffect(() => {
@@ -77,7 +75,6 @@ export function IosBunnyPlaybackFix() {
     if (pathParts.length !== 1) return;
 
     const slug = decodeURIComponent(pathParts[0]);
-    const albumPassword = new URLSearchParams(window.location.search).get("pw") ?? "";
 
     const upgradeElement = async (element: HTMLIFrameElement | HTMLVideoElement) => {
       if (element.dataset.bunnyPlaybackChecked === "1") return;
@@ -97,8 +94,6 @@ export function IosBunnyPlaybackFix() {
 
       try {
         const qs = new URLSearchParams({ vid });
-        if (albumPassword) qs.set("pw", albumPassword);
-
         const response = await fetch(
           `/api/albums/${encodeURIComponent(slug)}/video-playback-url?${qs.toString()}`,
           { cache: "no-store", credentials: "same-origin" },
