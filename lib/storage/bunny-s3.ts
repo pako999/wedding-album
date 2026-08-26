@@ -1,4 +1,4 @@
-import { GetObjectCommand, PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import { DeleteObjectCommand, GetObjectCommand, PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 let client: S3Client | null = null;
@@ -89,6 +89,16 @@ function getClient(): S3Client {
   return client;
 }
 
+function validObjectKey(key: string): boolean {
+  return (
+    key.startsWith("albums/") &&
+    !key.includes("..") &&
+    !key.includes("\\") &&
+    !key.includes("//") &&
+    key.length <= 1024
+  );
+}
+
 function publicReadPath(key: string): string {
   const encoded = key
     .split("/")
@@ -108,6 +118,9 @@ export async function createBunnyS3PresignedUpload({
 }): Promise<{ presignedUrl: string; publicUrl: string; key: string }> {
   if (!isBunnyS3Configured()) {
     throw new Error("Bunny S3 direct uploads are not configured");
+  }
+  if (!validObjectKey(key)) {
+    throw new Error("Invalid Bunny S3 object key");
   }
   const command = new PutObjectCommand({
     Bucket: s3Bucket(),
@@ -132,6 +145,29 @@ export async function createBunnyS3PresignedRead(
   if (!isBunnyS3Configured()) {
     throw new Error("Bunny S3 direct reads are not configured");
   }
+  if (!validObjectKey(key)) {
+    throw new Error("Invalid Bunny S3 object key");
+  }
   const command = new GetObjectCommand({ Bucket: s3Bucket(), Key: key });
   return getSignedUrl(getClient(), command, { expiresIn });
+}
+
+/**
+ * Permanently delete one object from the NEW Bunny S3 zone.
+ * S3 DELETE is idempotent, so retrying cleanup after a partial failure is safe.
+ */
+export async function deleteBunnyS3Object(key: string): Promise<void> {
+  if (!isBunnyS3Configured()) {
+    throw new Error("Bunny S3 deletes are not configured");
+  }
+  if (!validObjectKey(key)) {
+    throw new Error("Invalid Bunny S3 object key");
+  }
+
+  await getClient().send(
+    new DeleteObjectCommand({
+      Bucket: s3Bucket(),
+      Key: key,
+    }),
+  );
 }
