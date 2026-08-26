@@ -3,45 +3,129 @@ import { auth } from "@clerk/nextjs/server";
 import { db } from "@/lib/db";
 import { albums, photos } from "@/lib/db/schema";
 import { eq, and } from "drizzle-orm";
-import { exchangeCode, createFolder, uploadToDrive, extForMime } from "@/lib/google-drive";
+import {
+  exchangeCode,
+  createFolder,
+  uploadResponseToDrive,
+  extForMime,
+  verifyDriveState,
+} from "@/lib/google-drive";
+import { createBunnyS3PresignedRead } from "@/lib/storage/bunny-s3";
+import {
+  getBunnyStreamVideo,
+  pickBestMp4Url,
+  signBunnyStreamUrl,
+} from "@/lib/storage/bunny";
+import { checkAlbumOwnership } from "@/lib/album-ownership";
 
 export const runtime = "nodejs";
-export const maxDuration = 60;
+export const maxDuration = 300;
 
-const UPLOAD_BATCH = 4;
+const STREAM_RES_ORDER = ["1080p", "720p", "480p", "360p", "240p"];
+
+function s3KeyFromInternalUrl(blobUrl: string): string | null {
+  if (!blobUrl.startsWith("/api/bunny-s3-file/")) return null;
+  try {
+    const parsed = new URL(blobUrl, "https://guestcam.internal");
+    const prefix = "/api/bunny-s3-file/";
+    const raw = parsed.pathname.slice(prefix.length);
+    const key = raw.split("/").map((segment) => decodeURIComponent(segment)).join("/");
+    if (!key.startsWith("albums/") || key.includes("..") || key.includes("\\") || key.includes("//")) {
+      return null;
+    }
+    return key;
+  } catch {
+    return null;
+  }
+}
+
+async function fetchPhotoSource(blobUrl: string): Promise<Response> {
+  const s3Key = s3KeyFromInternalUrl(blobUrl);
+  const sourceUrl = s3Key
+    ? await createBunnyS3PresignedRead(s3Key, 15 * 60)
+    : blobUrl;
+
+  if (!/^https:\/\//i.test(sourceUrl)) {
+    throw new Error("Unsupported relative media URL");
+  }
+
+  const response = await fetch(sourceUrl, { cache: "no-store" });
+  if (!response.ok || !response.body) {
+    throw new Error(`Fetch media failed: ${response.status}`);
+  }
+  return response;
+}
+
+/**
+ * Bunny metadata can occasionally list an MP4 resolution whose file has not
+ * actually materialised on the CDN. Try every advertised resolution before
+ * declaring the export failed, highest quality first.
+ */
+async function fetchBunnyVideoSource(videoId: string): Promise<Response> {
+  const meta = await getBunnyStreamVideo(videoId);
+  if (!meta || meta.status !== 4) {
+    throw new Error("Bunny video is not ready");
+  }
+
+  const first = pickBestMp4Url(videoId, meta.availableResolutions);
+  if (!first) throw new Error("Bunny MP4 fallback is unavailable");
+
+  const available = new Set(
+    meta.availableResolutions.split(",").map((r) => r.trim()).filter(Boolean),
+  );
+  const baseUrl = first.url.replace(/\/play_[^/]+\.mp4(?:\?.*)?$/i, "");
+  const candidates = STREAM_RES_ORDER.filter((res) => available.has(res));
+
+  let lastStatus = 0;
+  for (const resolution of candidates) {
+    const unsigned = `${baseUrl}/play_${resolution}.mp4`;
+    const signed = await signBunnyStreamUrl(unsigned, 15 * 60);
+    const response = await fetch(signed, { cache: "no-store" });
+    lastStatus = response.status;
+    if (response.ok && response.body) return response;
+    // Drain/cancel before trying another candidate so sockets are released.
+    await response.body?.cancel().catch(() => {});
+  }
+
+  throw new Error(`Bunny MP4 fetch failed (${lastStatus || "no candidate"})`);
+}
 
 /**
  * GET /api/google-drive/callback
- *
- * Google redirects here after consent. Exchanges the code for a token,
- * creates a folder in the owner's Drive and uploads every published
- * photo/video of the album. Redirects back to the dashboard with a
- * `drive=ok|partial|denied|error` result.
+ * Verifies signed OAuth state, creates a Drive folder and streams each
+ * published original directly from its storage provider into Google Drive.
  */
 export async function GET(req: NextRequest) {
   const params = req.nextUrl.searchParams;
-  const slug = params.get("state");
+  const rawState = params.get("state") ?? "";
+  const state = verifyDriveState(rawState);
   const code = params.get("code");
   const oauthError = params.get("error");
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? req.nextUrl.origin;
 
-  if (!slug) {
-    return NextResponse.json({ error: "Missing state" }, { status: 400 });
+  if (!state) {
+    return NextResponse.json({ error: "Invalid or expired OAuth state" }, { status: 400 });
   }
-  const back = (result: string, extra = "") =>
-    NextResponse.redirect(new URL(`/dashboard/${slug}?tab=gallery&drive=${result}${extra}`, appUrl));
 
-  // User declined on Google's consent screen.
+  const slug = state.slug;
+  const back = (result: string, extra = "") =>
+    NextResponse.redirect(
+      new URL(`/dashboard/${encodeURIComponent(slug)}?tab=gallery&drive=${result}${extra}`, appUrl),
+    );
+
   if (oauthError || !code) return back("denied");
 
   let userId: string | null = null;
   try { userId = (await auth()).userId; } catch { /* */ }
-  if (!userId) return back("error");
+  if (!userId || userId !== state.userId) return back("error");
 
   const album = await db.query.albums
     .findFirst({ where: eq(albums.slug, slug) })
     .catch(() => null);
-  if (!album || album.ownerClerkId !== userId) return back("error");
+  if (!album) return back("error");
+
+  const owner = await checkAlbumOwnership(album);
+  if (!owner.ok || owner.userId !== userId) return back("error");
 
   try {
     const redirectUri = `${appUrl}/api/google-drive/callback`;
@@ -56,27 +140,33 @@ export async function GET(req: NextRequest) {
     const folderName = `Guestcam – ${album.coupleName || slug}`;
     const folderId = await createFolder(token, folderName);
 
-    // Upload in small parallel batches to stay within the function timeout.
+    // Stream sequentially. This is intentionally slower than buffering four
+    // complete originals at once, but keeps serverless memory bounded for
+    // 250 MB photos / 500 MB videos and makes large exports reliable.
     let uploaded = 0;
     let failed = 0;
-    for (let i = 0; i < albumPhotos.length; i += UPLOAD_BATCH) {
-      const batch = albumPhotos.slice(i, i + UPLOAD_BATCH);
-      const results = await Promise.allSettled(
-        batch.map(async (p, j) => {
-          const res = await fetch(p.blobUrl);
-          if (!res.ok) throw new Error(`Fetch photo failed: ${res.status}`);
-          const bytes = await res.arrayBuffer();
-          const ext = extForMime(p.mimeType);
-          const idx = String(i + j + 1).padStart(3, "0");
-          const name = p.originalFilename
-            ? `${idx}_${p.originalFilename}`
-            : `${idx}_guestcam.${ext}`;
-          await uploadToDrive(token, folderId, name, bytes, p.mimeType ?? "image/jpeg");
-        }),
-      );
-      for (const r of results) {
-        if (r.status === "fulfilled") uploaded++;
-        else { failed++; console.error("[google-drive] upload error:", r.reason); }
+
+    for (let i = 0; i < albumPhotos.length; i++) {
+      const p = albumPhotos[i];
+      try {
+        const streamVideo = Boolean(p.cfStreamVideoId);
+        const source = streamVideo
+          ? await fetchBunnyVideoSource(p.cfStreamVideoId!)
+          : await fetchPhotoSource(p.blobUrl);
+
+        const mimeType = streamVideo ? "video/mp4" : (p.mimeType ?? "image/jpeg");
+        const ext = streamVideo ? "mp4" : extForMime(mimeType);
+        const idx = String(i + 1).padStart(3, "0");
+        const originalBase = p.originalFilename
+          ? p.originalFilename.replace(/\.[^.]+$/, "")
+          : "guestcam";
+        const name = `${idx}_${originalBase}.${ext}`;
+
+        await uploadResponseToDrive(token, folderId, name, source, mimeType);
+        uploaded++;
+      } catch (err) {
+        failed++;
+        console.error(`[google-drive] media ${p.id} export failed:`, err);
       }
     }
 

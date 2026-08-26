@@ -1,26 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
-import { checkRateLimit } from "@/lib/rate-limit";
+import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
+import { verifyTurnstileToken } from "@/lib/turnstile";
 
 export const dynamic = "force-dynamic";
 
-/**
- * Receives the Contact page form, verifies the Cloudflare Turnstile
- * token (anti-bot), and emails the message to info@guestcam.si via
- * Resend. Replies are routed by setting Resend's `reply_to` so the
- * recipient can hit "Reply" directly to the visitor.
- *
- * Body (JSON):
- *   name, email, subject, message — all strings
- *   turnstileToken — the cf-turnstile-response from the widget
- *
- * Returns: { ok: true } on success, { error } with appropriate status on failure.
- */
 export async function POST(req: NextRequest) {
-  // Rate limit — belt-and-suspenders on top of Turnstile. Stops the case
-  // where a Turnstile token is stolen or reused before its 5-min expiry
-  // from being weaponised into a Resend billing attack. 3 messages per
-  // 10 min per IP covers legitimate multi-topic follow-ups.
   const rl = await checkRateLimit("contact", 3, 10 * 60_000);
   if (!rl.ok) return rl.response;
 
@@ -41,7 +26,7 @@ export async function POST(req: NextRequest) {
   const email   = String(payload.email ?? "").trim().slice(0, 200);
   const subject = String(payload.subject ?? "").trim().slice(0, 200) || "Guestcam — kontakt";
   const message = String(payload.message ?? "").trim().slice(0, 5000);
-  const token   = String(payload.turnstileToken ?? "");
+  const token   = typeof payload.turnstileToken === "string" ? payload.turnstileToken : undefined;
 
   if (!name || !email || !message) {
     return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
@@ -50,44 +35,14 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Invalid email" }, { status: 400 });
   }
 
-  // ─── Turnstile verification ────────────────────────────────────────────
-  const turnstileSecret = process.env.TURNSTILE_SECRET_KEY;
-  if (turnstileSecret) {
-    if (!token) {
-      return NextResponse.json({ error: "Missing Turnstile token" }, { status: 400 });
-    }
-    try {
-      const verifyRes = await fetch(
-        "https://challenges.cloudflare.com/turnstile/v0/siteverify",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/x-www-form-urlencoded" },
-          body: new URLSearchParams({
-            secret: turnstileSecret,
-            response: token,
-            // Optional but recommended: include the IP for risk scoring.
-            remoteip:
-              req.headers.get("cf-connecting-ip") ??
-              req.headers.get("x-forwarded-for")?.split(",")[0].trim() ??
-              "",
-          }).toString(),
-        },
-      );
-      const verify = (await verifyRes.json()) as { success?: boolean; "error-codes"?: string[] };
-      if (!verify.success) {
-        console.warn("[contact] turnstile failed:", verify["error-codes"]);
-        return NextResponse.json({ error: "Captcha failed" }, { status: 403 });
-      }
-    } catch (err) {
-      console.error("[contact] turnstile verify error:", err);
-      return NextResponse.json({ error: "Captcha verification error" }, { status: 502 });
-    }
+  const verification = await verifyTurnstileToken(token, await getClientIp());
+  if (!verification.ok) {
+    return NextResponse.json(
+      { error: verification.error ?? "Verification failed" },
+      { status: verification.status },
+    );
   }
-  // If TURNSTILE_SECRET_KEY isn't set yet (dev/preview), we deliberately
-  // skip verification rather than block submissions. Production should
-  // always have it configured.
 
-  // ─── Send the email ────────────────────────────────────────────────────
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) {
     console.error("[contact] RESEND_API_KEY not set");

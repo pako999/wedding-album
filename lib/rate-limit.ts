@@ -1,35 +1,16 @@
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 
-/**
- * Simple per-IP sliding-window rate limiter.
- *
- * Implementation is in-memory (Map keyed by IP), so limits are enforced
- * PER SERVERLESS INSTANCE. With Vercel's cold starts and horizontal
- * scaling a determined attacker who can hit multiple instances gets a
- * higher effective rate. That's acceptable: casual abuse (single bot,
- * single script) is fully blocked, and adding a shared store
- * (Upstash Redis via @upstash/ratelimit or Vercel KV) is a drop-in swap
- * — just replace `hit()` with the redis-backed variant.
- *
- * Usage in a route handler:
- *
- *   const rl = await checkRateLimit("contact", 3, 60_000); // 3 per minute
- *   if (!rl.ok) return rl.response;
- */
-
 interface Bucket {
-  /** Timestamps (ms epoch) of recent hits, oldest first. */
   hits: number[];
 }
 
 const buckets = new Map<string, Bucket>();
-
-// GC old buckets so the Map doesn't grow forever. Runs on any hit
-// after this many entries pile up — cheap for our scale (~10k IPs/day).
 const MAX_BUCKETS = 10_000;
+let warnedMissingShared = false;
+let warnedSharedFailureAt = 0;
 
-function evictIfLarge(now: number, keepAfter: number) {
+function evictIfLarge(keepAfter: number) {
   if (buckets.size <= MAX_BUCKETS) return;
   for (const [k, b] of buckets) {
     const lastHit = b.hits[b.hits.length - 1];
@@ -40,8 +21,7 @@ function evictIfLarge(now: number, keepAfter: number) {
   }
 }
 
-/** Pull the real client IP. Prefer Vercel's stripped-and-verified header
- *  when present so a client-sent x-forwarded-for can't spoof. */
+/** Pull the real client IP. Prefer Vercel's platform-controlled header. */
 export async function getClientIp(): Promise<string> {
   const h = await headers();
   const vercel = h.get("x-vercel-forwarded-for");
@@ -53,21 +33,99 @@ export async function getClientIp(): Promise<string> {
   return "unknown";
 }
 
-export interface RateLimitResult {
-  ok: boolean;
-  /** For a failed check, a ready-to-return NextResponse with 429. */
-  response: NextResponse;
-  /** Seconds until the next allowed hit (approximate). */
-  retryAfter: number;
+async function sha256Short(value: string): Promise<string> {
+  const bytes = new TextEncoder().encode(value);
+  const digest = await crypto.subtle.digest("SHA-256", bytes);
+  return Array.from(new Uint8Array(digest))
+    .slice(0, 16)
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
+}
+
+function sharedRedisConfig(): { url: string; token: string } | null {
+  const url =
+    process.env.RATE_LIMIT_REDIS_URL ??
+    process.env.UPSTASH_REDIS_REST_URL ??
+    process.env.KV_REST_API_URL;
+  const token =
+    process.env.RATE_LIMIT_REDIS_TOKEN ??
+    process.env.UPSTASH_REDIS_REST_TOKEN ??
+    process.env.KV_REST_API_TOKEN;
+  if (!url || !token) return null;
+  return { url: url.replace(/\/+$/, ""), token };
 }
 
 /**
- * Sliding-window check.
- *
- * @param key        Namespace + IP (or user id). Choose a stable key so
- *                   different endpoints don't share buckets.
- * @param limit      Max hits within the window.
- * @param windowMs   Window duration in milliseconds.
+ * Atomic Redis counter + TTL using one Lua command. Upstash/Vercel KV REST
+ * accepts Redis commands as a JSON array POST to the REST endpoint.
+ */
+async function sharedHit(
+  namespace: string,
+  clientKey: string,
+  windowMs: number,
+): Promise<{ count: number; ttlMs: number } | null> {
+  const config = sharedRedisConfig();
+  if (!config) return null;
+
+  const key = `guestcam:rl:${namespace}:${clientKey}`;
+  const script =
+    "local n=redis.call('INCR',KEYS[1]); " +
+    "if n==1 then redis.call('PEXPIRE',KEYS[1],ARGV[1]) end; " +
+    "local ttl=redis.call('PTTL',KEYS[1]); return {n,ttl}";
+
+  try {
+    const response = await fetch(config.url, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${config.token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(["EVAL", script, "1", key, String(windowMs)]),
+      cache: "no-store",
+    });
+    if (!response.ok) throw new Error(`Redis REST ${response.status}`);
+    const json = await response.json() as { result?: unknown };
+    if (!Array.isArray(json.result) || json.result.length < 2) {
+      throw new Error("Unexpected Redis rate-limit response");
+    }
+    const count = Number(json.result[0]);
+    const ttlMs = Number(json.result[1]);
+    if (!Number.isFinite(count) || !Number.isFinite(ttlMs)) {
+      throw new Error("Invalid Redis rate-limit result");
+    }
+    return { count, ttlMs: Math.max(0, ttlMs) };
+  } catch (err) {
+    // Do not take a live event down because the rate-limit store had a brief
+    // outage. Fall back locally, but keep the degradation visible in logs.
+    if (Date.now() - warnedSharedFailureAt > 60_000) {
+      warnedSharedFailureAt = Date.now();
+      console.error("[rate-limit] shared store unavailable; using local fallback", err);
+    }
+    return null;
+  }
+}
+
+export interface RateLimitResult {
+  ok: boolean;
+  response: NextResponse;
+  retryAfter: number;
+}
+
+function blocked(retryAfter: number): RateLimitResult {
+  return {
+    ok: false,
+    retryAfter,
+    response: NextResponse.json(
+      { error: "Too many requests, slow down.", retryAfter },
+      { status: 429, headers: { "Retry-After": String(retryAfter) } },
+    ),
+  };
+}
+
+/**
+ * Distributed sliding-window-like limiter when Redis REST is configured;
+ * per-instance fallback otherwise. Venue upload routes intentionally use very
+ * high limits because hundreds of phones can share one public NAT address.
  */
 export async function checkRateLimit(
   namespace: string,
@@ -75,35 +133,45 @@ export async function checkRateLimit(
   windowMs: number,
 ): Promise<RateLimitResult> {
   const ip = await getClientIp();
-  const key = `${namespace}:${ip}`;
+  const hashedIp = await sha256Short(ip);
+
+  const shared = await sharedHit(namespace, hashedIp, windowMs);
+  if (shared) {
+    if (shared.count > limit) {
+      return blocked(Math.max(1, Math.ceil(shared.ttlMs / 1000)));
+    }
+    return {
+      ok: true,
+      retryAfter: 0,
+      response: NextResponse.json({}, { status: 200 }),
+    };
+  }
+
+  if (process.env.NODE_ENV === "production" && !sharedRedisConfig() && !warnedMissingShared) {
+    warnedMissingShared = true;
+    console.warn(
+      "[rate-limit] no shared Redis REST config; set RATE_LIMIT_REDIS_URL/TOKEN (or Upstash/Vercel KV equivalents)",
+    );
+  }
+
+  const key = `${namespace}:${hashedIp}`;
   const now = Date.now();
   const cutoff = now - windowMs;
-
   const bucket = buckets.get(key) ?? { hits: [] };
-  // Drop expired hits
   bucket.hits = bucket.hits.filter((t) => t > cutoff);
 
   if (bucket.hits.length >= limit) {
     const oldest = bucket.hits[0]!;
-    const retryAfterMs = Math.max(0, windowMs - (now - oldest));
-    const retryAfter = Math.ceil(retryAfterMs / 1000);
-    return {
-      ok: false,
-      retryAfter,
-      response: NextResponse.json(
-        { error: "Too many requests, slow down.", retryAfter },
-        { status: 429, headers: { "Retry-After": String(retryAfter) } },
-      ),
-    };
+    return blocked(Math.max(1, Math.ceil((windowMs - (now - oldest)) / 1000)));
   }
 
   bucket.hits.push(now);
   buckets.set(key, bucket);
-  evictIfLarge(now, cutoff);
+  evictIfLarge(cutoff);
 
   return {
     ok: true,
     retryAfter: 0,
-    response: NextResponse.json({}, { status: 200 }), // caller ignores this
+    response: NextResponse.json({}, { status: 200 }),
   };
 }

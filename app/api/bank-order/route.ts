@@ -11,53 +11,93 @@ import { sendBankOrderConfirmation, sendAdminBankOrderEmail } from "@/lib/email/
 import { notifyTelegram, htmlEscape } from "@/lib/telegram";
 import { validateDiscount, incrementDiscountUsage } from "@/lib/discount";
 import { recordStandOrder } from "@/lib/stand-orders";
+import { checkAlbumOwnership } from "@/lib/album-ownership";
 
 export const runtime = "nodejs";
 
-const PLAN_LABELS: Record<string, { name: string; price: number }> = {
+const PLAN_LABELS = {
   basic:   { name: "Basic",   price: 39 },
   plus:    { name: "Plus",    price: 49 },
   premium: { name: "Premium", price: 99 },
-};
+} as const;
+
+type BankPlanId = keyof typeof PLAN_LABELS;
+const isBankPlanId = (value: unknown): value is BankPlanId =>
+  typeof value === "string" && Object.prototype.hasOwnProperty.call(PLAN_LABELS, value);
 
 interface BillingDetails {
   name: string;
   companyName?: string;
   email?: string;
-  /** Both only arrive when stands are in the order — a courier needs a
-   *  phone number and a postcode, and a digital-only invoice needs
-   *  neither, so the form asks for them conditionally. */
   phone?: string;
   postalCode?: string;
   address: string;
   city: string;
   taxId?: string;
-  /** ISO-3166 alpha-2 — drives the shipping rate for printed stands. */
   country?: string;
 }
 
+function cleanText(value: unknown, max: number): string {
+  return typeof value === "string" ? value.trim().slice(0, max) : "";
+}
+
 export async function POST(req: NextRequest) {
-  const { planId, albumSlug, billing, discountCode, tableStands, standsQty, standsVariant } = await req.json() as {
+  const body = await req.json().catch(() => null) as {
     tableStands?: boolean;
     standsQty?: number;
     standsVariant?: StandVariant;
-    planId: string;
-    albumSlug: string;
+    planId?: unknown;
+    albumSlug?: unknown;
     billing?: BillingDetails;
     discountCode?: string;
-  };
+  } | null;
 
-  if (!planId || !albumSlug) {
-    return NextResponse.json({ error: "planId and albumSlug required" }, { status: 400 });
+  if (!body) return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
+
+  const albumSlug = cleanText(body.albumSlug, 120);
+  if (!isBankPlanId(body.planId) || !albumSlug) {
+    return NextResponse.json({ error: "Invalid planId or albumSlug" }, { status: 400 });
   }
+  const planId = body.planId;
+  const billing = body.billing;
+  const discountCode = cleanText(body.discountCode, 64) || undefined;
+  const tableStands = body.tableStands === true;
+  const standsQty = body.standsQty;
+  const standsVariant = body.standsVariant;
 
   const album = await db.query.albums
     .findFirst({ where: eq(albums.slug, albumSlug) })
     .catch(() => null);
-
   if (!album) return NextResponse.json({ error: "Album not found" }, { status: 404 });
 
-  // Resolve email: album notifyEmail → album ownerEmail → Clerk current user
+  const owner = await checkAlbumOwnership(album);
+  if (!owner.ok) {
+    return NextResponse.json({ error: owner.error }, { status: owner.status });
+  }
+
+  if (billing) {
+    billing.name = cleanText(billing.name, 120);
+    billing.companyName = cleanText(billing.companyName, 160) || undefined;
+    billing.email = cleanText(billing.email, 160) || undefined;
+    billing.phone = cleanText(billing.phone, 40) || undefined;
+    billing.postalCode = cleanText(billing.postalCode, 24) || undefined;
+    billing.address = cleanText(billing.address, 200);
+    billing.city = cleanText(billing.city, 120);
+    billing.taxId = cleanText(billing.taxId, 60) || undefined;
+    billing.country = cleanText(billing.country, 2).toUpperCase() || undefined;
+    if (!billing.name || !billing.address || !billing.city) {
+      return NextResponse.json({ error: "Invalid billing details" }, { status: 400 });
+    }
+  }
+
+  const standsCents = addOnTotalCents(tableStands, billing?.country, standsQty, standsVariant);
+  if (standsCents === null) {
+    return NextResponse.json({ error: "shipping_unavailable" }, { status: 400 });
+  }
+  const standsQuote = tableStands ? quoteShipping(billing?.country) : null;
+  const standsQ = standsQty ?? DEFAULT_STAND_QTY;
+  const standsV = standsVariant ?? DEFAULT_STAND_VARIANT;
+
   let email = album.notifyEmail ?? album.ownerEmail ?? null;
   if (!email) {
     try {
@@ -65,7 +105,6 @@ export async function POST(req: NextRequest) {
       email = user?.emailAddresses?.[0]?.emailAddress ?? null;
     } catch { /* Clerk unavailable */ }
   }
-
   if (!email) {
     return NextResponse.json(
       { error: "Ni e-poštnega naslova za ta album. Pišite nam na info@guestcam.si" },
@@ -73,8 +112,8 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const planBase = PLAN_LABELS[planId] ?? { name: planId, price: 0 };
-  let finalPrice = planBase.price;
+  const planBase = PLAN_LABELS[planId];
+  let finalPrice: number = planBase.price;
   let discountCodeId: string | undefined;
   let discountPercent: number | undefined;
 
@@ -86,10 +125,8 @@ export async function POST(req: NextRequest) {
       discountPercent = disc.percentOff;
     }
   }
-
   const plan = { name: planBase.name, price: finalPrice };
 
-  // Persist the order so admin can see it and issue an invoice
   await db.insert(bankOrders).values({
     albumSlug,
     email,
@@ -102,7 +139,7 @@ export async function POST(req: NextRequest) {
     billingAddress: billing?.address ?? null,
     billingCity: billing?.city ?? null,
     billingTaxId: billing?.taxId ?? null,
-  }).catch((err) => console.error("[bank-order] DB insert failed:", err));
+  });
 
   await sendBankOrderConfirmation({
     to: email,
@@ -113,25 +150,10 @@ export async function POST(req: NextRequest) {
     billing,
   });
 
-  // Telegram notification — all billing details included for invoice creation
-  // Physical add-on. Priced server-side exactly as on the card path, so
-  // an invoice order can't be talked into free shipping. An unshippable
-  // country is rejected rather than quietly invoiced without postage.
-  const standsCents = addOnTotalCents(!!tableStands, billing?.country, standsQty, standsVariant);
-  if (standsCents === null) {
-    return NextResponse.json({ error: "shipping_unavailable" }, { status: 400 });
-  }
-  const standsQuote = tableStands ? quoteShipping(billing?.country) : null;
-  const standsQ = standsQty ?? DEFAULT_STAND_QTY;
-  const standsV = standsVariant ?? DEFAULT_STAND_VARIANT;
-  // Whoever raises the proforma has to know a parcel is owed — without
-  // this the customer pays and nothing ever ships.
   const standsLines = tableStands && standsQuote
     ? `\n📦 <b>Podstavki za mize:</b> ${standsQ}× ${standsV === "gold" ? "zlati" : "leseni"} — ${((standsPriceCents(standsQ, standsV) ?? 0) / 100).toFixed(2)} € + poštnina ${(standsQuote.cents / 100).toFixed(2)} € (${htmlEscape(standsQuote.carrier)})\nDržava dostave: ${htmlEscape((billing?.country ?? "").toUpperCase())}${standsQuote.customs ? "\n⚠️ Izven EU — potrebna carinska (komercialna) faktura" : ""}`
     : "";
 
-  // Physical fulfilment record — until now an invoice order's stands
-  // existed only inside a Telegram message, which nothing can query.
   if (tableStands && standsQuote) {
     const clean = (v?: string) => (v?.trim() ? v.trim() : null);
     const goods = standsPriceCents(standsQ, standsV) ?? 0;
@@ -165,12 +187,10 @@ export async function POST(req: NextRequest) {
     ? `\n👤 <b>Podatki za predračun:</b>\nIme: ${htmlEscape(billing.name)}${billing.companyName ? `\nPodjetje: ${htmlEscape(billing.companyName)}` : ""}${billing.email ? `\nEmail za račun: ${htmlEscape(billing.email)}` : ""}\nNaslov: ${htmlEscape(billing.address)}\nKraj: ${htmlEscape(billing.city)}${billing.taxId ? `\nDavčna: ${htmlEscape(billing.taxId)}` : ""}`
     : "";
 
-  // Increment discount usage immediately (invoice is committed)
   if (discountCodeId) {
     await incrementDiscountUsage(discountCodeId).catch(() => {});
   }
 
-  // Admin email — contains all billing details needed to issue an invoice
   await sendAdminBankOrderEmail({
     albumSlug,
     planName: plan.name,
@@ -194,9 +214,6 @@ export async function POST(req: NextRequest) {
     `\nDatum: ${new Date().toLocaleString("sl-SI")}`,
   );
 
-  if (!sent) {
-    console.error("[bank-order] Telegram notification failed for", albumSlug);
-  }
-
+  if (!sent) console.error("[bank-order] Telegram notification failed for", albumSlug);
   return NextResponse.json({ success: true });
 }

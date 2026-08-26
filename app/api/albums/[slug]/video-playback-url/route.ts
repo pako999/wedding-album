@@ -2,50 +2,28 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { albums, photos } from "@/lib/db/schema";
 import { and, eq } from "drizzle-orm";
-import { verifyAlbumPassword } from "@/lib/album-password";
+import { hasAlbumRequestAccess } from "@/lib/album-request-access";
+import { createVideoPlaybackToken } from "@/lib/video-playback-token";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 /**
- * The existing Guestcam Bunny Stream library is still on Bunny's legacy
- * player. Bunny explicitly keeps existing libraries on that player until the
- * library is migrated, so forcing player.mediadelivery.net breaks playback.
- * Normalize both stored URL variants back to the compatible iframe endpoint.
+ * Return a short-lived same-origin Guestcam playback URL for a Bunny Stream
+ * video that belongs to this published album.
+ *
+ * Existing and newly uploaded Bunny Stream videos use the same reliable
+ * Guestcam MP4/Range proxy. Link-only albums need no password. Protected
+ * albums are authorized through the encrypted HttpOnly album-access cookie
+ * (or the legacy x-album-password header for backwards compatibility), so the
+ * password never needs to appear in the browser URL.
  */
-function bunnyCompatiblePlayerUrl(rawUrl: string): string | null {
-  try {
-    const url = new URL(rawUrl);
-
-    if (url.hostname === "player.mediadelivery.net") {
-      url.hostname = "iframe.mediadelivery.net";
-    }
-
-    if (url.hostname !== "iframe.mediadelivery.net" || !url.pathname.includes("/embed/")) {
-      return null;
-    }
-
-    url.searchParams.set("autoplay", "false");
-    url.searchParams.set("preload", "true");
-    url.searchParams.set("playsinline", "true");
-
-    // disableIosPlayer belongs to Bunny Player 2 and must not be sent to the
-    // legacy player used by this library.
-    url.searchParams.delete("disableIosPlayer");
-
-    return url.toString();
-  } catch {
-    return null;
-  }
-}
-
 export async function GET(
   req: NextRequest,
   { params }: { params: Promise<{ slug: string }> },
 ) {
   const { slug } = await params;
   const vid = req.nextUrl.searchParams.get("vid") ?? "";
-  const pw = req.nextUrl.searchParams.get("pw") ?? "";
 
   if (!vid) {
     return NextResponse.json({ error: "Missing vid" }, { status: 400 });
@@ -56,7 +34,7 @@ export async function GET(
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
 
-  if (album.password && !(await verifyAlbumPassword(pw, album.password))) {
+  if (!(await hasAlbumRequestAccess(req, slug, album))) {
     return NextResponse.json({ error: "Password required" }, { status: 403 });
   }
 
@@ -72,13 +50,24 @@ export async function GET(
     return NextResponse.json({ error: "Video not found" }, { status: 404 });
   }
 
-  const url = bunnyCompatiblePlayerUrl(photo.blobUrl);
-  if (!url) {
-    return NextResponse.json({ error: "Bunny Player URL unavailable" }, { status: 502 });
+  const expiresAt = Math.floor(Date.now() / 1000) + 2 * 60 * 60;
+  const sig = createVideoPlaybackToken(slug, vid, expiresAt);
+  if (!sig) {
+    return NextResponse.json({ error: "Playback signing unavailable" }, { status: 503 });
   }
 
+  const qs = new URLSearchParams({
+    vid,
+    play: "1",
+    exp: String(expiresAt),
+    sig,
+  });
+
   return NextResponse.json(
-    { url },
+    {
+      url: `/api/albums/${encodeURIComponent(slug)}/video-download?${qs.toString()}`,
+      expiresAt,
+    },
     { headers: { "Cache-Control": "private, no-store, max-age=0" } },
   );
 }

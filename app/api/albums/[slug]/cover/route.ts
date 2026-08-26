@@ -2,15 +2,7 @@
  * PUT /api/albums/:slug/cover
  *
  * Uploads a new cover photo for the album and persists the public URL on
- * `albums.coverImageUrl`. Owner-only + plan-gated (Plus / Premium / film
- * Pro / film Premium — anything paid above Basic).
- *
- * Body: raw image bytes. The caller sets Content-Type to image/jpeg etc.
- * Returns: { publicUrl: string }
- *
- * The bytes are PUT to Bunny Storage under
- *   albums/<album.id>/cover-<uuid>.<ext>
- * so we don't collide with the photo-upload tree (albums/<id>/<uuid>.<ext>).
+ * `albums.coverImageUrl`. Owner-only + plan-gated (Plus / Premium).
  */
 
 import { NextRequest, NextResponse } from "next/server";
@@ -19,6 +11,7 @@ import { albums } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { isBunnyStorageConfigured } from "@/lib/storage/bunny";
 import { checkAlbumOwnership } from "@/lib/album-ownership";
+import { deleteStoredMedia } from "@/lib/storage/delete-media";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -51,7 +44,6 @@ export async function PUT(
     return NextResponse.json({ error: owner.error }, { status: owner.status });
   }
 
-  // Plan gate — only Plus / Premium can upload a custom cover photo.
   if (!PLANS_WITH_COVER_UPLOAD.has(album.plan)) {
     return NextResponse.json(
       { error: "plan_required", requiredPlan: "plus" },
@@ -75,7 +67,6 @@ export async function PUT(
   if (buffer.byteLength === 0) {
     return NextResponse.json({ error: "Empty file body" }, { status: 400 });
   }
-  // Hard cap — covers should be a single hero image, not a multi-MB raw.
   if (buffer.byteLength > 15 * 1024 * 1024) {
     return NextResponse.json({ error: "Cover image too large (max 15 MB)" }, { status: 413 });
   }
@@ -128,6 +119,18 @@ export async function DELETE(
   const owner = await checkAlbumOwnership(album);
   if (!owner.ok) {
     return NextResponse.json({ error: owner.error }, { status: owner.status });
+  }
+
+  if (album.coverImageUrl) {
+    try {
+      await deleteStoredMedia({ blobUrl: album.coverImageUrl });
+    } catch (err) {
+      console.error(`[cover-delete] External cleanup failed for ${slug}:`, err);
+      return NextResponse.json(
+        { error: "Cover cleanup failed; cover was not removed", code: "media_cleanup_failed" },
+        { status: 502 },
+      );
+    }
   }
 
   await db

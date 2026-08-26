@@ -70,20 +70,29 @@ export async function createStreamDirectUpload(opts?: {
   };
 }
 
-/** Delete a video from Cloudflare Stream. */
+/** Delete a video from Cloudflare Stream. Missing videos are treated as deleted. */
 export async function deleteStreamVideo(videoId: string): Promise<void> {
+  if (!isStreamConfigured()) {
+    throw new Error("Cloudflare Stream deletion is not configured");
+  }
+
   const accountId = process.env.CLOUDFLARE_ACCOUNT_ID!;
   const token = process.env.CLOUDFLARE_STREAM_TOKEN!;
 
-  await fetch(`${CF_API}/accounts/${accountId}/stream/${videoId}`, {
+  const res = await fetch(`${CF_API}/accounts/${accountId}/stream/${videoId}`, {
     method: "DELETE",
     headers: { Authorization: `Bearer ${token}` },
   });
+
+  if (!res.ok && res.status !== 404) {
+    const body = await res.text().catch(() => res.statusText);
+    throw new Error(`Cloudflare Stream delete failed (${res.status}): ${body}`);
+  }
 }
 
 // ── URL helpers ───────────────────────────────────────────────────────────────
 
-/** Thumbnail image URL for a Stream video (auto-generated at first frame). */
+/** Thumbnail image URL (auto-generated at first frame). */
 export function streamThumbnailUrl(videoId: string, time = "1s"): string {
   return `https://videodelivery.net/${videoId}/thumbnails/thumbnail.jpg?time=${time}&height=400`;
 }

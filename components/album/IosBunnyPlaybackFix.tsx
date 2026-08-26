@@ -2,16 +2,6 @@
 
 import { useEffect } from "react";
 
-function isIosDevice(): boolean {
-  const ua = navigator.userAgent || "";
-  const platform = navigator.platform || "";
-
-  if (/iPhone|iPad|iPod/i.test(ua)) return true;
-
-  // iPadOS can identify as Macintosh when requesting a desktop site.
-  return /Mac/i.test(platform + " " + ua) && navigator.maxTouchPoints > 1;
-}
-
 function bunnyVideoIdFromUrl(src: string): string | null {
   try {
     const url = new URL(src, window.location.href);
@@ -32,36 +22,85 @@ function bunnyVideoIdFromUrl(src: string): string | null {
   }
 }
 
+function makeNativeVideo(src: string, fallbackIframeSrc?: string): HTMLVideoElement {
+  const video = document.createElement("video");
+  video.src = src;
+  video.controls = true;
+  video.playsInline = true;
+  video.preload = "metadata";
+  video.setAttribute("playsinline", "");
+  video.setAttribute("webkit-playsinline", "");
+  video.dataset.bunnyPlaybackChecked = "1";
+  video.style.display = "block";
+  video.style.width = "100%";
+  video.style.aspectRatio = "16 / 9";
+  video.style.objectFit = "contain";
+  video.style.background = "#000";
+
+  // Some Bunny videos were uploaded before MP4 fallback was fully available.
+  // If the same-origin MP4 proxy fails for one of those, restore the original
+  // Bunny iframe rather than leaving a broken/black native player.
+  if (fallbackIframeSrc) {
+    video.addEventListener("error", () => {
+      if (!video.isConnected) return;
+      const iframe = document.createElement("iframe");
+      iframe.src = fallbackIframeSrc;
+      iframe.allow = "accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture";
+      iframe.allowFullscreen = true;
+      iframe.setAttribute("frameborder", "0");
+      iframe.dataset.bunnyPlaybackChecked = "1";
+      iframe.style.display = "block";
+      iframe.style.width = "100%";
+      iframe.style.aspectRatio = "16 / 9";
+      iframe.style.border = "0";
+      iframe.style.background = "#000";
+      video.replaceWith(iframe);
+    }, { once: true });
+  }
+
+  return video;
+}
+
+/**
+ * Normalise Bunny Stream playback in public galleries.
+ *
+ * Existing and newly uploaded Bunny Stream videos prefer Guestcam's
+ * same-origin Range-aware MP4 proxy on every browser. Password-protected
+ * albums are authorized by the HttpOnly album-access cookie; no album
+ * password is copied into fetch URLs or browser history.
+ */
 export function IosBunnyPlaybackFix() {
   useEffect(() => {
-    if (!isIosDevice()) return;
-
     const pathParts = window.location.pathname.split("/").filter(Boolean);
     if (pathParts.length !== 1) return;
 
     const slug = decodeURIComponent(pathParts[0]);
-    const albumPassword = new URLSearchParams(window.location.search).get("pw") ?? "";
 
     const upgradeElement = async (element: HTMLIFrameElement | HTMLVideoElement) => {
-      if (element.dataset.iosPlaybackChecked === "1") return;
+      if (element.dataset.bunnyPlaybackChecked === "1") return;
 
       const src = element.getAttribute("src") ?? "";
+
+      // Server-rendered signed Guestcam proxy videos are already on the desired
+      // playback path. Mark them and leave them alone.
+      if (element instanceof HTMLVideoElement && src.includes("/video-download?") && src.includes("play=1")) {
+        element.dataset.bunnyPlaybackChecked = "1";
+        return;
+      }
+
       const vid = bunnyVideoIdFromUrl(src);
       if (!vid) return;
-
-      element.dataset.iosPlaybackChecked = "1";
+      element.dataset.bunnyPlaybackChecked = "1";
 
       try {
         const qs = new URLSearchParams({ vid });
-        if (albumPassword) qs.set("pw", albumPassword);
-
         const response = await fetch(
           `/api/albums/${encodeURIComponent(slug)}/video-playback-url?${qs.toString()}`,
           { cache: "no-store", credentials: "same-origin" },
         );
 
         if (!response.ok) {
-          console.warn("[ios-video] Bunny Player 2 URL request failed", response.status);
+          console.warn("[video-playback] signed URL request failed", response.status);
           return;
         }
 
@@ -69,36 +108,34 @@ export function IosBunnyPlaybackFix() {
         if (!data.url || !element.isConnected) return;
 
         if (element instanceof HTMLIFrameElement) {
-          element.src = data.url;
-          element.allow = "accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture";
-          element.allowFullscreen = true;
+          const fallback = src;
+          element.replaceWith(makeNativeVideo(data.url, fallback));
           return;
         }
 
-        // Server-side Safari fallbacks from earlier versions may already have
-        // rendered a native <video>. On iOS replace that with Bunny Player 2
-        // so the browser uses Bunny's officially supported iOS playback path.
-        const iframe = document.createElement("iframe");
-        iframe.src = data.url;
-        iframe.allow = "accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture";
-        iframe.allowFullscreen = true;
-        iframe.setAttribute("frameborder", "0");
-        iframe.style.display = "block";
-        iframe.style.width = "100%";
-        iframe.style.aspectRatio = "16 / 9";
-        iframe.style.border = "0";
-        iframe.style.background = "#000";
-
-        element.replaceWith(iframe);
+        // Direct Bunny HLS/MP4 rendered by older Safari-specific server logic:
+        // prefer the same-origin proxy but keep the direct source as a fallback.
+        const fallbackSrc = src;
+        element.src = data.url;
+        element.controls = true;
+        element.playsInline = true;
+        element.preload = "metadata";
+        element.dataset.bunnyPlaybackChecked = "1";
+        element.addEventListener("error", () => {
+          if (!element.isConnected || element.src === fallbackSrc) return;
+          element.src = fallbackSrc;
+          element.load();
+        }, { once: true });
+        element.load();
       } catch (error) {
-        console.warn("[ios-video] failed to switch to Bunny Player 2", error);
+        console.warn("[video-playback] failed to switch to Guestcam proxy", error);
       }
     };
 
     const scan = (root: ParentNode = document) => {
       root
         .querySelectorAll<HTMLIFrameElement | HTMLVideoElement>(
-          'iframe[src*="mediadelivery.net/embed/"], video[src*="/video-download?"], video[src*="playlist.m3u8"], video[src*="/play_"]',
+          'iframe[src*="mediadelivery.net/embed/"], video[src*="playlist.m3u8"], video[src*="/play_"], video[src*="/video-download?"]',
         )
         .forEach((element) => { void upgradeElement(element); });
     };

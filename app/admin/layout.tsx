@@ -1,6 +1,7 @@
 import { headers } from "next/headers";
 import { notFound, redirect } from "next/navigation";
 import { auth } from "@clerk/nextjs/server";
+import type { Metadata } from "next";
 import { requireAdmin, requireAdminEmail, hasValidAdminCookie } from "@/lib/admin";
 import { AdminShell } from "@/components/admin/AdminShell";
 // Shared cold-start bootstrap (also used by guest album pages via
@@ -9,6 +10,14 @@ import { ensureMigrations } from "@/lib/db/bootstrap";
 import { HideCookiebot } from "@/components/HideCookiebot";
 
 export const dynamic = "force-dynamic";
+export const metadata: Metadata = {
+  robots: {
+    index: false,
+    follow: false,
+    nocache: true,
+    googleBot: { index: false, follow: false, noimageindex: true },
+  },
+};
 
 const NAV = [
   { href: "/admin",            label: "Pregled",       icon: "📊" },
