@@ -48,8 +48,8 @@ function configuredR2Host(): string | null {
 
 /**
  * Only accept media URLs that point at one of our configured storage providers.
- * R2 may use either an r2.dev hostname or a custom CDN domain, so it is matched
- * against CLOUDFLARE_R2_PUBLIC_URL exactly rather than allowing arbitrary R2 URLs.
+ * Bunny S3 direct uploads resolve to the normal Bunny CDN hostname, so the
+ * .b-cdn.net rule accepts them while keeping arbitrary external URLs blocked.
  */
 function isAllowedBlobUrl(u: string): boolean {
   let parsed: URL;
@@ -72,10 +72,7 @@ export async function POST(
 
   // A venue can put hundreds of phones behind one NAT/public IP. The old
   // 60/min per-IP cap caused successful direct uploads to fail at the final
-  // metadata-save step. This route only writes small JSON/DB records, so a
-  // 2,000/min coarse venue cap supports a 500-person burst while still putting
-  // a ceiling on a single-source script. Album/file/duplicate checks below are
-  // the authoritative data controls.
+  // metadata-save step. This route only writes small JSON/DB records.
   const rl = await checkRateLimit("save-upload-venue", VENUE_SAVES_PER_MINUTE, 60_000);
   if (!rl.ok) return rl.response;
 
@@ -120,7 +117,9 @@ export async function POST(
 
   if (typeof sizeBytes === "number") {
     const isVideo = mimeType.startsWith("video/");
-    const cap = isVideo ? 500 * 1024 * 1024 : 60 * 1024 * 1024;
+    // Safety ceiling only. Original phone photos are intentionally not
+    // recompressed; 20 MB, 30 MB, 50 MB, etc. remain their original size.
+    const cap = isVideo ? 500 * 1024 * 1024 : 250 * 1024 * 1024;
     if (!Number.isFinite(sizeBytes) || sizeBytes < 0 || sizeBytes > cap) {
       const mb = Math.floor(cap / (1024 * 1024));
       return NextResponse.json(
