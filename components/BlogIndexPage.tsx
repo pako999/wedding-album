@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SeoFooter } from "@/components/SeoFooter";
 import type { BlogPost, BlogCategory } from "@/lib/blog";
@@ -92,7 +91,7 @@ export function BlogIndexPage({ posts, lang }: { posts: BlogPost[]; lang: LangCo
         {posts.length === 0 && <p className="text-center text-black/50 py-20">{t.empty}</p>}
 
         {featured && (
-          <Link href={blogUrl(lang, featured.slug)} className="block bg-white border border-black/10 rounded-[28px] overflow-hidden mb-12 hover:border-[#F4B400] hover:shadow-lg transition-all">
+          <a href={blogUrl(lang, featured.slug)} className="block bg-white border border-black/10 rounded-[28px] overflow-hidden mb-12 hover:border-[#F4B400] hover:shadow-lg transition-all">
             <div className="grid md:grid-cols-2">
               <div className="p-7 sm:p-10 order-2 md:order-1">
                 <p className="text-[10px] font-black uppercase tracking-[.16em] text-[#8F6900] mb-3">{t.featured}</p>
@@ -107,12 +106,12 @@ export function BlogIndexPage({ posts, lang }: { posts: BlogPost[]; lang: LangCo
                 <div className="hidden md:block order-1 md:order-2 bg-[#FFF6CE]" />
               )}
             </div>
-          </Link>
+          </a>
         )}
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {rest.map((p) => (
-            <Link key={p.slug} href={blogUrl(lang, p.slug)} className="block bg-white border border-black/10 rounded-[22px] overflow-hidden hover:border-[#F4B400] hover:shadow-md transition-all">
+            <a key={p.slug} href={blogUrl(lang, p.slug)} className="block bg-white border border-black/10 rounded-[22px] overflow-hidden hover:border-[#F4B400] hover:shadow-md transition-all">
               {p.coverImage && (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img src={p.coverImage} alt={p.coverAlt ?? p.title} className="w-full h-44 object-cover" loading="lazy" />
@@ -128,7 +127,7 @@ export function BlogIndexPage({ posts, lang }: { posts: BlogPost[]; lang: LangCo
                   <span>{p.readingTime} min</span>
                 </div>
               </div>
-            </Link>
+            </a>
           ))}
         </div>
       </main>
