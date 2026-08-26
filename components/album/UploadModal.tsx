@@ -54,115 +54,19 @@ interface UploadFile {
 const ACCEPTED_IMAGES = ["image/jpeg", "image/jpg", "image/png", "image/webp", "image/heic", "image/heif", "image/gif"];
 const ACCEPTED_VIDEOS = ["video/mp4", "video/quicktime", "video/mov", "video/webm", "video/mpeg", "video/3gpp", "video/avi"];
 const ALL_ACCEPTED = [...ACCEPTED_IMAGES, ...ACCEPTED_VIDEOS];
-const MAX_IMAGE_MB = 50;
+
+// This is only an anti-abuse safety ceiling. We do NOT resize/re-encode normal
+// phone photos before upload. A 20 MB, 30 MB or 50 MB image is uploaded to
+// Bunny as the exact original file. The gallery uses Bunny Image Optimizer for
+// smaller display variants; ZIP downloads use the original Bunny object.
+const MAX_IMAGE_MB = 250;
 const MAX_VIDEO_MB = 500;
-
-// Vercel's serverless proxy hard-caps request bodies at 4.5 MB regardless of
-// runtime config, and the bunny-upload Node route is the bottleneck. We have
-// to keep the OUTPUT under ~4.2 MB (with a safety margin for HTTP overhead).
-//
-// Strategy:
-//   • Don't touch anything ≤ TARGET_OUTPUT_BYTES — already small enough.
-//   • Above that, resize to MAX_PX on the long edge and re-encode JPEG at
-//     QUALITY_HIGH (0.95). For most iPhone shots this lands at 2.5–4 MB —
-//     visually indistinguishable from the original.
-//   • If the high-quality re-encode is still over the cap (very high-megapixel
-//     phones, e.g. Samsung 200 MP), step down to QUALITY_FALLBACK (0.85)
-//     rather than 413ing the whole upload.
-//
-// 4096 px on the long edge is the max useful resolution for screen viewing
-// AND for printing up to ~13" wide at 300 dpi (standard photobook size).
-// Anything above that is invisible detail on every realistic output.
-const TARGET_OUTPUT_BYTES = 3.8 * 1024 * 1024; // 3.8 MB — well under the 4.5 MB Vercel cap
-const COMPRESS_MAX_PX     = 4096;              // 4 K (was 3840) — slightly higher ceiling
-const QUALITY_HIGH        = 0.95;              // visually indistinguishable (was 0.88)
-const QUALITY_FALLBACK    = 0.85;              // used only if HIGH still over cap
-
-/**
- * Resize + re-encode a large image using canvas before it's uploaded.
- * Returns the original file if:
- *  - it's already small enough
- *  - it's a video / GIF
- *  - the browser can't decode it (e.g. HEIC on non-Safari — caught and ignored)
- */
-async function maybeCompress(file: File): Promise<File> {
-  if (file.size <= TARGET_OUTPUT_BYTES) return file;
-  if (file.type.startsWith("video/") || file.type === "image/gif") return file;
-
-  return new Promise<File>((resolve) => {
-    const img = new Image();
-    const objectUrl = URL.createObjectURL(file);
-
-    img.onload = () => {
-      URL.revokeObjectURL(objectUrl);
-
-      // Scale down to COMPRESS_MAX_PX on the longest edge, preserve aspect ratio
-      let { width, height } = img;
-      if (width > COMPRESS_MAX_PX || height > COMPRESS_MAX_PX) {
-        if (width >= height) {
-          height = Math.round((height * COMPRESS_MAX_PX) / width);
-          width = COMPRESS_MAX_PX;
-        } else {
-          width = Math.round((width * COMPRESS_MAX_PX) / height);
-          height = COMPRESS_MAX_PX;
-        }
-      }
-
-      const canvas = document.createElement("canvas");
-      canvas.width  = width;
-      canvas.height = height;
-      const ctx = canvas.getContext("2d")!;
-      ctx.drawImage(img, 0, 0, width, height);
-
-      const toFile = (blob: Blob | null, q: number) => {
-        if (!blob) return null;
-        const name = file.name.replace(/\.[^.]+$/, "") + ".jpg";
-        const f = new File([blob], name, { type: "image/jpeg", lastModified: file.lastModified });
-        // Tag with the quality used — handy for debugging "why is this so big/small"
-        // via the browser dev tools without re-running the encode.
-        Object.defineProperty(f, "__compressQuality", { value: q, enumerable: false });
-        return f;
-      };
-
-      // Try high quality first. If it lands over the Vercel cap, re-encode at
-      // the fallback quality. Two passes is cheap on the same canvas.
-      canvas.toBlob(
-        (blob) => {
-          const high = toFile(blob, QUALITY_HIGH);
-          if (!high) { resolve(file); return; }
-          if (high.size <= TARGET_OUTPUT_BYTES) { resolve(high); return; }
-
-          canvas.toBlob(
-            (b2) => {
-              const fb = toFile(b2, QUALITY_FALLBACK);
-              resolve(fb ?? high);
-            },
-            "image/jpeg",
-            QUALITY_FALLBACK,
-          );
-        },
-        "image/jpeg",
-        QUALITY_HIGH,
-      );
-    };
-
-    img.onerror = () => {
-      URL.revokeObjectURL(objectUrl);
-      resolve(file); // can't decode (e.g. HEIC on Chrome) — upload original, let server return 413 with clear msg
-    };
-
-    img.src = objectUrl;
-  });
-}
 
 function fmt(bytes: number) { return (bytes / 1024 / 1024).toFixed(1) + " MB"; }
 
-/** Pixel dimensions of an image file, or null when they can't be read
- *  (HEIC on some browsers, corrupt file …). Measured on the file we
- *  actually upload — i.e. AFTER maybeCompress, which can resize — so the
- *  stored numbers match the stored bytes. The lightbox uses these to
- *  fit portrait photos correctly; without them it used to assume
- *  landscape for everything. */
+/** Pixel dimensions of the original image file, or null when they can't be read
+ *  (HEIC on some browsers, corrupt file …). These dimensions describe the same
+ *  original bytes that are stored in Bunny. */
 async function readImageDims(file: File): Promise<{ width: number; height: number } | null> {
   if (!file.type.startsWith("image/")) return null;
   try {
@@ -191,11 +95,11 @@ async function uploadFile(
   albumPassword: string,
   momentId: string | null,
 ): Promise<"uploaded" | "duplicate"> {
-  // 0. Compress if the image is too large for Vercel's 4.5 MB proxy limit
-  const file = await maybeCompress(rawFile);
+  // Preserve the original bytes. No browser-side resize or JPEG re-encode.
+  const file = rawFile;
   const dims = await readImageDims(file);
 
-  // 1. Ask server which upload path to use
+  // Ask the server which upload path to use.
   const urlRes = await fetch(`/api/albums/${albumSlug}/upload-url`, {
     method: "POST",
     headers: { "Content-Type": "application/json", "x-album-password": albumPassword },
@@ -210,6 +114,7 @@ async function uploadFile(
 
   type UrlData =
     | { type: "bunny-stream";  uploadUrl: string; videoId: string; signature: string; expiration: number; libraryId: string }
+    | { type: "bunny-s3";      presignedUrl: string; publicUrl: string; key: string }
     | { type: "bunny-storage"; key: string }
     | { type: "r2";            presignedUrl: string; publicUrl: string; key: string }
     | { type: "stream";        uploadUrl: string; videoId: string }
@@ -236,12 +141,34 @@ async function uploadFile(
     return "uploaded";
   }
 
-  // ── Bunny Storage (XHR proxy — real byte-level progress) ────────────────────
+  // ── Bunny Storage S3: original browser file → Bunny directly ──────────────
+  if (urlData.type === "bunny-s3") {
+    onProgress(8);
+    const put = await fetch(urlData.presignedUrl, {
+      method: "PUT",
+      body: file,
+      headers: { "Content-Type": file.type },
+    });
+    if (!put.ok) throw new Error(`Bunny direct upload failed: ${put.status}`);
+    onProgress(92);
+    await saveUpload(albumSlug, {
+      blobUrl: urlData.publicUrl,
+      ...(dims ?? {}),
+      mimeType: file.type,
+      originalFilename: file.name,
+      sizeBytes: file.size,
+      uploaderName,
+      momentId,
+    }, albumPassword);
+    onProgress(100);
+    return "uploaded";
+  }
+
+  // ── Bunny Storage legacy proxy fallback ────────────────────────────────────
   if (urlData.type === "bunny-storage") {
     const publicUrl = await retryingXhrUpload(
       `/api/albums/${albumSlug}/bunny-upload?key=${encodeURIComponent(urlData.key)}`,
       file,
-      // Scale to 0-90 % so the final save step fills the last 10 %
       pct => onProgress(Math.round(pct * 0.9)),
       albumPassword,
     );
@@ -259,7 +186,7 @@ async function uploadFile(
     return "uploaded";
   }
 
-  // ── Cloudflare R2 (presigned PUT) ─────────────────────────────────────────
+  // ── Cloudflare R2 legacy compatibility ─────────────────────────────────────
   if (urlData.type === "r2") {
     onProgress(10);
     const put = await fetch(urlData.presignedUrl, {
@@ -282,7 +209,7 @@ async function uploadFile(
     return "uploaded";
   }
 
-  // ── Cloudflare Stream (tus) ───────────────────────────────────────────────
+  // ── Cloudflare Stream (legacy / fallback) ─────────────────────────────────
   if (urlData.type === "stream") {
     await uploadViaCFStream(file, urlData.uploadUrl, onProgress);
     await saveUpload(albumSlug, {
@@ -336,7 +263,7 @@ async function uploadViaBunnyStream(
   return new Promise((resolve, reject) => {
     const tus = new Upload(file, {
       endpoint: creds.uploadUrl,
-      chunkSize: 50 * 1024 * 1024, // 50 MB chunks
+      chunkSize: 50 * 1024 * 1024,
       retryDelays: [0, 2000, 5000],
       headers: {
         AuthorizationSignature: creds.signature,
@@ -385,44 +312,17 @@ async function uploadViaCFStream(
  *
  * Stall detection: if no upload progress is reported for STALL_MS milliseconds
  * (e.g. because the phone was locked or backgrounded), the XHR is aborted and
- * the promise rejects with a retriable error.  The component's visibility-change
+ * the promise rejects with a retriable error. The component's visibility-change
  * handler will then automatically retry failed files when the user returns.
  */
-const STALL_MS = 25_000; // 25 s — typical iOS background grace period is ~30 s
+const STALL_MS = 25_000;
 
 interface UploadHttpError extends Error { status?: number; retryAfterMs?: number }
 
-/**
- * Statuses worth retrying. 429 and 503 are Bunny's documented
- * back-pressure responses; 502/504 and status 0 are transient transport
- * failures. Everything else (400 wrong type, 401 password, 413 too big)
- * is permanent — retrying only wastes the guest's battery.
- */
 const RETRIABLE = new Set([0, 429, 500, 502, 503, 504]);
-
-/** 2s, 5s, 10s, 20s — then give up and let the guest retry by hand. */
 const BACKOFF_MS = [2_000, 5_000, 10_000, 20_000];
-
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
-/**
- * Photo upload with back-pressure handling.
- *
- * At a 1000-guest event the storage backend WILL push back: Bunny caps
- * concurrent connections per storage zone and answers 429 / 503 SlowDown
- * beyond it, and a venue where everyone shares one Wi-Fi looks to it like
- * a single IP. Without this wrapper the guest just saw a red error and a
- * photo that never arrived.
- *
- * Honours Retry-After when the server sends it, otherwise exponential
- * backoff. Each delay gets up to 1s of random jitter so a room full of
- * phones that failed together does not retry in lockstep and cause the
- * next thundering herd.
- *
- * STALL is deliberately NOT retried here — it means the phone was locked
- * or backgrounded, and the visibility-change handler already owns that
- * case.
- */
 async function retryingXhrUpload(
   url: string,
   file: File,
@@ -442,7 +342,7 @@ async function retryingXhrUpload(
       if (attempt === BACKOFF_MS.length) break;
       const base = e.retryAfterMs ?? BACKOFF_MS[attempt];
       await sleep(base + Math.random() * 1000);
-      onProgress(0); // restarting this file — don't leave a stale bar
+      onProgress(0);
     }
   }
   throw lastErr;
@@ -457,19 +357,18 @@ function xhrUpload(
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
 
-    // Stall timer — reset on every progress tick; fires if transfer freezes
     let stallTimer: ReturnType<typeof setTimeout> | null = null;
     const resetStall = () => {
       if (stallTimer) clearTimeout(stallTimer);
       stallTimer = setTimeout(() => {
         xhr.abort();
-        reject(new Error("STALL")); // special code so caller can retry silently
+        reject(new Error("STALL"));
       }, STALL_MS);
     };
     const clearStall = () => { if (stallTimer) clearTimeout(stallTimer); stallTimer = null; };
 
     xhr.upload.addEventListener("progress", (e) => {
-      resetStall(); // any progress resets the stall clock
+      resetStall();
       if (e.lengthComputable) {
         onProgress(Math.round((e.loaded / e.total) * 100));
       }
@@ -489,8 +388,6 @@ function xhrUpload(
           reject(new Error("Invalid response from storage proxy"));
         }
       } else {
-        // Attach the status + Retry-After so retryingXhrUpload can tell a
-        // transient "server is busy" apart from a permanent rejection.
         const err = new Error(`Upload failed (${xhr.status}): ${xhr.responseText.slice(0, 200)}`) as UploadHttpError;
         err.status = xhr.status;
         const ra = xhr.getResponseHeader("Retry-After");
@@ -505,26 +402,21 @@ function xhrUpload(
     xhr.addEventListener("error", () => {
       clearStall();
       const err = new Error("Network error during upload") as UploadHttpError;
-      err.status = 0;                       // 0 = transport failure, retriable
+      err.status = 0;
       reject(err);
     });
     xhr.addEventListener("abort", () => { clearStall(); reject(new Error("STALL")); });
 
     xhr.open("PUT", url);
     xhr.setRequestHeader("Content-Type", file.type);
-    // Password-protected albums gate the storage proxy too — forward the
-    // guest's album password (empty string for open albums, which the
-    // server ignores).
     if (albumPassword) xhr.setRequestHeader("x-album-password", albumPassword);
-    resetStall(); // start the stall clock immediately on send
+    resetStall();
     xhr.send(file);
   });
 }
 
 async function saveUpload(slug: string, body: object, albumPassword = "") {
   const headers: Record<string, string> = { "Content-Type": "application/json" };
-  // Password-protected albums gate save-upload too — forward the album
-  // password (empty for open albums, which the server ignores).
   if (albumPassword) headers["x-album-password"] = albumPassword;
   const res = await fetch(`/api/albums/${slug}/save-upload`, {
     method: "POST",
@@ -540,20 +432,12 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
   const t = translations[lang];
   const lead = LEAD_COPY[lang];
 
-  // ── Guest data capture (events package) ─────────────────────────────
-  // Remembered per album so a guest who uploads again later in the night
-  // isn't asked for their details a second time.
   const leadStorageKey = `gc_lead_${albumSlug}`;
-  // Lazy initializer, not an effect: the modal only ever mounts in the
-  // browser (behind `uploadOpen &&` in AlbumGuestView), so localStorage
-  // is safe to read here and there is no SSR pass to mismatch against.
   const [leadDone, setLeadDone] = useState(() => {
     if (!requireGuestData) return true;
     try {
       return localStorage.getItem(leadStorageKey) === "1";
     } catch {
-      // Private mode / storage blocked — ask once this session rather
-      // than locking the guest out of uploading entirely.
       return false;
     }
   });
@@ -583,8 +467,6 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
           lastName: leadLast.trim(),
           email: leadEmail.trim(),
           marketingConsent: leadConsent,
-          // Store the exact wording agreed to, so the organiser can
-          // evidence the consent later even if this copy changes.
           consentText: leadConsent ? lead.consentLabel(organiserName || "organizator") : undefined,
           locale: lang,
         }),
@@ -616,9 +498,8 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
     typeof navigator !== "undefined" ? !navigator.onLine : false
   );
 
-  // Keep a ref so async callbacks always see latest values
   const uploadingRef = useRef(false);
-  const filesRef     = useRef(files);
+  const filesRef = useRef(files);
   useEffect(() => { uploadingRef.current = uploading; }, [uploading]);
   useEffect(() => { filesRef.current = files; }, [files]);
 
@@ -637,15 +518,9 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
     setFiles(p => [...p, ...toAdd]);
   }, [files.length, remaining]);
 
-  // Pre-load files captured before the modal opened (camera snap / pre-
-  // selected files). This must be an effect, not state initialisation:
-  // addFiles allocates object URLs, which is a side effect that needs
-  // the effect lifecycle. The synchronous setState inside is one
-  // intentional mount-time pass.
-  // eslint-disable-next-line react-hooks/exhaustive-deps, react-hooks/set-state-in-effect -- mount-once ingest; see comment
+  // eslint-disable-next-line react-hooks/exhaustive-deps, react-hooks/set-state-in-effect -- mount-once ingest
   useEffect(() => { if (initialFiles?.length) addFiles(initialFiles); }, []);
 
-  // Block accidental tab/window close while uploading
   useEffect(() => {
     if (!uploading) return;
     const handler = (e: BeforeUnloadEvent) => {
@@ -656,9 +531,6 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
     return () => window.removeEventListener("beforeunload", handler);
   }, [uploading]);
 
-  // ── Wake Lock — keep screen on while uploading ────────────────────────────
-  // Prevents the phone from auto-locking during an upload session.
-  // Supported on Chrome/Edge/Android; silently ignored on iOS Safari.
   const wakeLockRef = useRef<WakeLockSentinel | null>(null);
   useEffect(() => {
     if (!uploading) {
@@ -670,14 +542,10 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
       (navigator as Navigator & { wakeLock: { request(t: string): Promise<WakeLockSentinel> } })
         .wakeLock.request("screen")
         .then((lock) => { wakeLockRef.current = lock; })
-        .catch(() => {}); // silently ignore — not critical
+        .catch(() => {});
     }
   }, [uploading]);
 
-  // ── Offline / online detection ────────────────────────────────────────────
-  // When the device loses connectivity, newly queued files are held in
-  // "queued" state. When the connection returns the `online` event resets
-  // them to "idle" and the auto-start effect picks them up automatically.
   useEffect(() => {
     const goOffline = () => setIsOffline(true);
     const goOnline = () => {
@@ -698,23 +566,16 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
     };
   }, []);
 
-  // ── Visibility-change auto-retry ─────────────────────────────────────────
-  // When the user switches back to the browser (after phone lock or app switch),
-  // any uploads that stalled get an "error" status (from the 25 s stall timeout).
-  // This handler resets those error files and restarts the upload automatically.
   const retryRef = useRef<(() => void) | null>(null);
   useEffect(() => {
     const handler = () => {
       if (document.hidden) return;
-      // Only act if we're not already uploading (stall timeout already fired)
       if (uploadingRef.current) return;
       const stalled = filesRef.current.filter(f => f.status === "error");
       if (stalled.length === 0) return;
-      // Reset stalled files to idle so uploadAll() will retry them
       setFiles(prev =>
         prev.map(f => f.status === "error" ? { ...f, status: "idle", progress: 0, error: undefined } : f),
       );
-      // Trigger retry via ref (avoids stale closure)
       retryRef.current?.();
     };
     document.addEventListener("visibilitychange", handler);
@@ -737,10 +598,8 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
     for (const f of files) {
       if (f.status === "done" || f.status === "skipped") continue;
 
-      // Show "Optimizira…" if this image is large enough to need compression
-      const needsCompress = !f.isVideo && f.file.size > TARGET_OUTPUT_BYTES;
-      if (needsCompress) updateFile(f.id, { status: "compressing", progress: 0 });
-      else updateFile(f.id, { status: "uploading", progress: 5 });
+      // Originals are uploaded as-is; there is no pre-upload optimization step.
+      updateFile(f.id, { status: "uploading", progress: 5 });
 
       try {
         const result = await uploadFile(
@@ -752,8 +611,6 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
         updateFile(f.id, { status: result === "duplicate" ? "skipped" : "done", progress: 100 });
       } catch (err) {
         const msg = err instanceof Error ? err.message : t.genericError;
-        // STALL = phone was locked/backgrounded — don't show red error text,
-        // visibility-change handler will auto-retry when user returns
         const isStall = msg === "STALL";
         updateFile(f.id, {
           status: "error",
@@ -767,12 +624,8 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
     setAllDone(filesRef.current.some(f => f.status === "done"));
   };
 
-  // Keep retry ref up to date so the visibility handler can call latest uploadAll
   useEffect(() => { retryRef.current = uploadAll; });
 
-  // Auto-start the upload as soon as files are added — no "Naloži" button needed.
-  // If the device is offline, mark files as "queued" instead; the online
-  // handler above will flip them back to "idle" and this effect fires again.
   useEffect(() => {
     if (!uploading && files.some(f => f.status === "idle")) {
       if (!navigator.onLine) {
@@ -806,7 +659,6 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
         }),
       });
       setSaveLinkSent(true);
-      // Fire GA event for guest email capture (referral engine funnel).
       if (typeof window !== "undefined") {
         const gtag = (window as unknown as { gtag?: (...args: unknown[]) => void }).gtag;
         if (typeof gtag === "function") {
@@ -830,10 +682,6 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
       <div className="relative w-full max-w-[100vw] sm:max-w-lg bg-white rounded-t-3xl sm:rounded-2xl shadow-xl max-h-[92vh] flex flex-col overflow-hidden"
         style={{ maxHeight: "92dvh", paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
       >
-        {/* Header — title + close on the first row, size chips wrap onto
-            their own row below so they can never push the header wider
-            than the screen (which was clipping the title/close off the
-            edges on narrow phones). */}
         <div className="px-4 sm:px-6 py-4 border-b border-gray-100 shrink-0 overflow-hidden">
           <div className="flex items-center justify-between gap-2 min-w-0">
             <h2 className="min-w-0 flex-1 text-xl font-extrabold tracking-tight text-[#0F1729] truncate">{t.uploadModalTitle}</h2>
@@ -871,10 +719,6 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
 
         <div className="flex-1 overflow-y-auto overflow-x-hidden p-4 sm:p-6 space-y-4">
           {!leadDone ? (
-            /* Events package: collect the guest's details before they can
-               upload. The marketing tickbox below is deliberately NOT
-               required — GDPR Art. 7(4): consent conditioned on receiving
-               a service isn't freely given, so it can never gate upload. */
             <div className="space-y-3 min-w-0">
               <div>
                 <p className="text-lg font-extrabold tracking-tight text-[#0F1729]">{lead.title}</p>
@@ -937,7 +781,6 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
               </div>
               <p className="text-xl font-extrabold tracking-tight text-[#0F1729] mb-1 break-words">{t.successTitle(success)}</p>
               <p className="font-sans text-sm text-[#0F1729]/60 mb-3 break-words">{t.successDesc}</p>
-              {/* Approval note — demo albums show a "not public" notice instead */}
               <p className="font-sans text-xs text-[#0F1729]/45 bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 mb-6 leading-relaxed break-words">
                 {isDemo ? t.demoUploadNote : t.approvalNote}
               </p>
@@ -951,7 +794,6 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
                 {t.closeWindow}
               </button>
 
-              {/* Save album link to email — so guest can find it tomorrow without QR */}
               <div className="mt-5 pt-4 border-t border-gray-100 text-left">
                 <p className="text-xs font-semibold text-[#0F1729]/70 mb-1">📧 {t.saveLinkTitle}</p>
                 <p className="text-xs text-[#0F1729]/40 mb-3">{t.saveLinkDesc}</p>
@@ -979,7 +821,6 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
                         {saveLinkSending ? "…" : t.saveLinkSend}
                       </button>
                     </div>
-                    {/* GDPR marketing consent — unchecked by default. */}
                     <label className="mt-2 flex items-start gap-2 cursor-pointer">
                       <input
                         type="checkbox"
@@ -995,8 +836,6 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
                 )}
               </div>
 
-              {/* Guest referral CTA — invite this guest to plan their own
-                  event. Renders only for albums with a code (post-migration). */}
               <GuestReferralCta
                 referralCode={referralCode}
                 lang={lang}
@@ -1005,7 +844,6 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
             </div>
           ) : (
             <>
-              {/* Moment selector */}
               {moments.length > 0 && (
                 <div>
                   <label className="block text-xs font-semibold text-[#0F1729]/60 mb-1.5">{t.momentLabel}</label>
@@ -1023,7 +861,6 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
                 </div>
               )}
 
-              {/* Drop zone */}
               {files.length < remaining && (
                 <div
                   onDrop={e => { e.preventDefault(); setDragOver(false); addFiles(e.dataTransfer.files); }}
@@ -1050,7 +887,6 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
                 </div>
               )}
 
-              {/* File list */}
               {files.map(f => (
                 <div key={f.id} className="flex items-center gap-3 p-3 bg-white rounded-2xl border border-gray-200">
                   <div className="w-12 h-12 rounded-xl overflow-hidden shrink-0 flex items-center justify-center" style={{ background: `${accent}1A` }}>
@@ -1098,7 +934,6 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
 
         {!allDone && (
           <div className="px-4 sm:px-6 py-4 border-t border-gray-100 shrink-0 space-y-3">
-            {/* Overall progress bar — visible only while uploading */}
             {uploading && (() => {
               const total = files.length;
               const done = files.filter(f => f.status === "done").length;
@@ -1119,7 +954,6 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
                       style={{ width: `${avgPct}%`, background: accent }}
                     />
                   </div>
-                  {/* Keep-screen-on warning */}
                   <div className="flex items-center gap-1.5 text-[10px] text-amber-600 bg-amber-50 rounded-lg px-2.5 py-1.5">
                     <svg className="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
@@ -1130,8 +964,6 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
               );
             })()}
 
-            {/* Single action — uploading starts automatically, so the footer
-                only needs a clear, visible close button. */}
             <button
               onClick={hasUploaded ? () => onSuccess({ emailCaptured: saveLinkSent }) : onClose}
               disabled={uploading}
