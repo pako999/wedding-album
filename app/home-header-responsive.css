@@ -1,0 +1,21 @@
+/* Guestcam marketing homepage header
+   Localized labels (especially DE/ES/HR/SR) are wider than Slovenian/English.
+   Between laptop and wide-desktop widths the full nav + auth/CTA cannot fit
+   safely on one row, so use the existing mobile menu until 1536px. */
+@media (min-width: 1024px) and (max-width: 1535px) {
+  main > header.sticky > nav > div:nth-of-type(1),
+  main > header.sticky > nav > div:nth-of-type(2) {
+    display: none !important;
+  }
+
+  main > header.sticky > nav > div:nth-of-type(3) {
+    display: block !important;
+    margin-left: auto !important;
+  }
+
+  /* HomeMobileMenu's trigger normally carries md:hidden because its wrapper
+     is lg:hidden. We intentionally keep the hamburger active longer here. */
+  main > header.sticky > nav > div:nth-of-type(3) > button {
+    display: inline-flex !important;
+  }
+}
