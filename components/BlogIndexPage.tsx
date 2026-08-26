@@ -3,7 +3,7 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { SeoFooter } from "@/components/SeoFooter";
 import type { BlogPost, BlogCategory } from "@/lib/blog";
 import { SITE_URL } from "@/lib/urls";
-import type { LangCode } from "@/components/LanguageSwitcher";
+import { BLOG_HREFLANG, type LangCode } from "@/components/LanguageSwitcher";
 
 const CATEGORY_COLOR: Record<BlogCategory, string> = {
   vodnik: "bg-amber-100 text-amber-800 border-amber-300",
@@ -79,32 +79,32 @@ export function BlogIndexPage({ posts, lang }: { posts: BlogPost[]; lang: LangCo
   };
 
   return (
-    <div className="min-h-screen bg-[#F2F4F8] text-[#0F1729]">
+    <div className="min-h-screen bg-[#FFFDF8] text-[#111111]">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(itemList) }} />
-      <SiteHeader lang={lang} />
-      <main className="max-w-6xl mx-auto px-6 py-14">
+      <SiteHeader lang={lang} hreflang={BLOG_HREFLANG} />
+      <main className="max-w-6xl mx-auto px-5 sm:px-8 py-12 sm:py-16">
         <header className="text-center mb-12">
-          <p className="text-xs font-bold uppercase tracking-widest text-[#8C6218] mb-3">Blog</p>
-          <h1 className="font-serif text-4xl sm:text-5xl font-bold text-[#0F1729] leading-tight mb-3">{t.h1}</h1>
-          <p className="text-base text-gray-600 max-w-xl mx-auto">{t.lead}</p>
+          <p className="text-xs font-black uppercase tracking-[.18em] text-[#8F6900] mb-3">Blog</p>
+          <h1 className="text-4xl sm:text-6xl font-black tracking-[-.05em] leading-[1.03] mb-4">{t.h1}</h1>
+          <p className="text-base sm:text-lg text-black/55 max-w-2xl mx-auto">{t.lead}</p>
         </header>
 
-        {posts.length === 0 && <p className="text-center text-gray-500 py-20">{t.empty}</p>}
+        {posts.length === 0 && <p className="text-center text-black/50 py-20">{t.empty}</p>}
 
         {featured && (
-          <Link href={blogUrl(lang, featured.slug)} className="block bg-white border border-gray-200 rounded-3xl overflow-hidden mb-12 hover:border-[#FFC94D] hover:shadow-lg transition-all">
+          <Link href={blogUrl(lang, featured.slug)} className="block bg-white border border-black/10 rounded-[28px] overflow-hidden mb-12 hover:border-[#F4B400] hover:shadow-lg transition-all">
             <div className="grid md:grid-cols-2">
-              <div className="p-8 sm:p-10 order-2 md:order-1">
-                <p className="text-[10px] font-bold uppercase tracking-widest text-[#8C6218] mb-3">{t.featured}</p>
-                <h2 className="font-serif text-3xl font-bold text-[#0F1729] mb-4 leading-tight">{featured.title}</h2>
-                <p className="text-gray-500 mb-5 line-clamp-3">{featured.tldr}</p>
-                <span className="text-sm font-bold text-[#8C6218]">{t.readMore} →</span>
+              <div className="p-7 sm:p-10 order-2 md:order-1">
+                <p className="text-[10px] font-black uppercase tracking-[.16em] text-[#8F6900] mb-3">{t.featured}</p>
+                <h2 className="text-3xl font-black tracking-[-.04em] mb-4 leading-tight">{featured.title}</h2>
+                <p className="text-black/55 mb-5 line-clamp-3">{featured.tldr}</p>
+                <span className="text-sm font-black text-[#8F6900]">{t.readMore} →</span>
               </div>
               {featured.coverImage ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img src={featured.coverImage} alt={featured.coverAlt ?? featured.title} className="w-full h-56 md:h-full object-cover order-1 md:order-2" />
               ) : (
-                <div className="hidden md:block order-1 md:order-2 bg-[#FFF9EC]" />
+                <div className="hidden md:block order-1 md:order-2 bg-[#FFF6CE]" />
               )}
             </div>
           </Link>
@@ -112,18 +112,18 @@ export function BlogIndexPage({ posts, lang }: { posts: BlogPost[]; lang: LangCo
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {rest.map((p) => (
-            <Link key={p.slug} href={blogUrl(lang, p.slug)} className="block bg-white border border-gray-200 rounded-2xl overflow-hidden hover:border-[#FFC94D] hover:shadow-md transition-all">
+            <Link key={p.slug} href={blogUrl(lang, p.slug)} className="block bg-white border border-black/10 rounded-[22px] overflow-hidden hover:border-[#F4B400] hover:shadow-md transition-all">
               {p.coverImage && (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img src={p.coverImage} alt={p.coverAlt ?? p.title} className="w-full h-40 object-cover" loading="lazy" />
+                <img src={p.coverImage} alt={p.coverAlt ?? p.title} className="w-full h-44 object-cover" loading="lazy" />
               )}
               <div className="p-6">
                 <span className={`inline-block text-[10px] uppercase font-bold tracking-wide px-2 py-0.5 rounded border ${CATEGORY_COLOR[p.category]}`}>
                   {CATEGORY_LABEL[lang][p.category]}
                 </span>
-                <h3 className="font-serif text-xl font-bold text-[#0F1729] mt-4 mb-2 leading-snug">{p.title}</h3>
-                <p className="text-sm text-gray-500 line-clamp-3 mb-4">{p.tldr}</p>
-                <div className="flex items-center justify-between text-xs text-gray-500">
+                <h3 className="text-xl font-black tracking-[-.025em] mt-4 mb-2 leading-snug">{p.title}</h3>
+                <p className="text-sm text-black/50 line-clamp-3 mb-4">{p.tldr}</p>
+                <div className="flex items-center justify-between text-xs text-black/45">
                   <time dateTime={p.publishedAt}>{formatDate(p.publishedAt, lang)}</time>
                   <span>{p.readingTime} min</span>
                 </div>
