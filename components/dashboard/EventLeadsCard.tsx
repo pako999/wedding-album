@@ -3,8 +3,12 @@
 /**
  * Event lead capture — dashboard panel for the events/business package.
  *
- * Turning this on makes guests enter name, surname and email before they
- * can upload. The marketing tickbox in that form is separate and always
+ * IMPORTANT: this does NOT change the ordinary album upload flow. The
+ * name + surname + email form is shown only when a guest enters through
+ * the dedicated Event / Photo Wall upload URL (`?event=1`). The normal
+ * album link and its printed QR keep the classic simple name-only flow.
+ *
+ * The marketing tickbox in the event form is separate and always
  * optional: GDPR Art. 7(4) says consent isn't freely given if it's a
  * condition of the service, so it can never gate uploading.
  */
@@ -52,6 +56,7 @@ export function EventLeadsCard({ albumSlug, initialEnabled }: Props) {
   };
 
   const consented = leads.filter((l) => l.marketingConsent).length;
+  const eventUploadPath = `/${albumSlug}?event=1`;
 
   return (
     <div className="bg-white rounded-2xl border border-gray-100 p-5">
@@ -59,7 +64,8 @@ export function EventLeadsCard({ albumSlug, initialEnabled }: Props) {
         <div>
           <h3 className="font-semibold text-gray-900 text-sm">🎟 Zbiranje podatkov gostov</h3>
           <p className="text-xs text-gray-400 mt-0.5 max-w-lg">
-            Za poslovne dogodke: gost pred nalaganjem vpiše ime, priimek in e-pošto.
+            Samo za Event / Photo Wall povezavo: gost pred nalaganjem vpiše ime, priimek in e-pošto.
+            Običajna galerija in njen QR ostaneta brez e-pošte — samo ime gosta.
             Privolitev za trženje je ločena in neobvezna.
           </p>
         </div>
@@ -79,14 +85,24 @@ export function EventLeadsCard({ albumSlug, initialEnabled }: Props) {
       </div>
 
       {enabled && (
-        <p
-          className="text-[11px] rounded-lg px-3 py-2 mt-3 leading-relaxed"
-          style={{ background: "#FFF9EC", color: "#92600A" }}
-        >
-          Podatke zbirate vi kot organizator dogodka — vi ste upravljavec teh osebnih podatkov.
-          Poskrbite, da imate ustrezno pravno podlago in politiko zasebnosti. Guestcam podatke
-          zgolj hrani in vam jih da na voljo za izvoz.
-        </p>
+        <div className="mt-3 space-y-2">
+          <p
+            className="text-[11px] rounded-lg px-3 py-2 leading-relaxed"
+            style={{ background: "#FFF9EC", color: "#92600A" }}
+          >
+            Podatke zbirate vi kot organizator dogodka — vi ste upravljavec teh osebnih podatkov.
+            Poskrbite, da imate ustrezno pravno podlago in politiko zasebnosti. Guestcam podatke
+            zgolj hrani in vam jih da na voljo za izvoz.
+          </p>
+          <a
+            href={eventUploadPath}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center gap-1.5 rounded-lg border border-[#FFE08A] bg-[#FFF9EC] px-3 py-2 text-xs font-semibold text-[#92600A] hover:brightness-[0.98]"
+          >
+            Odpri Event upload povezavo →
+          </a>
+        </div>
       )}
 
       {loaded && leads.length > 0 && (
