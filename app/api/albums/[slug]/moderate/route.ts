@@ -3,6 +3,7 @@ import { db } from "@/lib/db";
 import { albums, photos } from "@/lib/db/schema";
 import { eq, and, sql } from "drizzle-orm";
 import { checkAlbumOwnership } from "@/lib/album-ownership";
+import { deleteStoredMedia } from "@/lib/storage/delete-media";
 
 export async function POST(
   req: NextRequest,
@@ -15,7 +16,6 @@ export async function POST(
   if (!owner.ok) {
     return NextResponse.json({ error: owner.error }, { status: owner.status });
   }
-  // From here `album` is guaranteed non-null (checkAlbumOwnership rejects null).
   if (!album) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
   const { photoId, action } = await req.json();
@@ -28,7 +28,6 @@ export async function POST(
 
   if (action === "approve") {
     await db.update(photos).set({ status: "published" }).where(eq(photos.id, photoId));
-    // Update counts
     await db.update(albums).set({
       photoCount: sql`${albums.photoCount} + 1`,
       pendingCount: sql`GREATEST(${albums.pendingCount} - 1, 0)`,
@@ -43,6 +42,21 @@ export async function POST(
       updatedAt: new Date(),
     }).where(eq(albums.id, album.id));
   } else if (action === "delete") {
+    // Never remove the DB row until the physical object is gone. The row is the
+    // only durable pointer we can use to retry cleanup after a provider outage.
+    try {
+      await deleteStoredMedia({
+        blobUrl: photo.blobUrl,
+        streamVideoId: photo.cfStreamVideoId,
+      });
+    } catch (err) {
+      console.error(`[moderate] External cleanup failed for photo ${photo.id}:`, err);
+      return NextResponse.json(
+        { error: "Media cleanup failed; photo was not deleted", code: "media_cleanup_failed" },
+        { status: 502 },
+      );
+    }
+
     const wasPublished = photo.status === "published";
     const wasPending = photo.status === "pending";
     await db.delete(photos).where(eq(photos.id, photoId));
