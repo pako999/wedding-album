@@ -91,6 +91,7 @@ async function main() {
       album_id TEXT NOT NULL REFERENCES albums(id) ON DELETE CASCADE,
       source_id TEXT REFERENCES local_qr_sources(id) ON DELETE SET NULL,
       photo_id TEXT REFERENCES photos(id) ON DELETE SET NULL,
+      claim_token VARCHAR(80) NOT NULL UNIQUE,
       code VARCHAR(24) NOT NULL UNIQUE,
       status TEXT NOT NULL DEFAULT 'issued',
       guest_name TEXT,
@@ -112,6 +113,12 @@ async function main() {
     )
   `;
 
+  // Safe forward-compatible additions in case an early Local preview migration
+  // was ever run before the claim-token columns existed.
+  await sql`ALTER TABLE local_coupons ADD COLUMN IF NOT EXISTS claim_token VARCHAR(80)`;
+  await sql`UPDATE local_coupons SET claim_token = gen_random_uuid()::text WHERE claim_token IS NULL`;
+  await sql`ALTER TABLE local_coupons ALTER COLUMN claim_token SET NOT NULL`;
+
   await sql`CREATE INDEX IF NOT EXISTS local_campaigns_album_idx ON local_reward_campaigns(album_id)`;
   await sql`CREATE INDEX IF NOT EXISTS local_campaigns_owner_idx ON local_reward_campaigns(owner_clerk_id)`;
   await sql`CREATE INDEX IF NOT EXISTS local_campaigns_active_idx ON local_reward_campaigns(is_active)`;
@@ -122,6 +129,8 @@ async function main() {
   await sql`CREATE INDEX IF NOT EXISTS local_coupons_album_idx ON local_coupons(album_id)`;
   await sql`CREATE INDEX IF NOT EXISTS local_coupons_status_idx ON local_coupons(campaign_id, status)`;
   await sql`CREATE INDEX IF NOT EXISTS local_coupons_email_idx ON local_coupons(guest_email)`;
+  await sql`CREATE UNIQUE INDEX IF NOT EXISTS local_coupons_claim_unique ON local_coupons(claim_token)`;
+  await sql`CREATE UNIQUE INDEX IF NOT EXISTS local_coupons_photo_unique ON local_coupons(photo_id) WHERE photo_id IS NOT NULL`;
 
   console.log("✅ Guestcam Local / Rewards tables ready");
 }
