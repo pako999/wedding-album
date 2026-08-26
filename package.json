@@ -10,6 +10,7 @@
     "db:generate": "drizzle-kit generate",
     "db:push": "drizzle-kit push --force",
     "db:setup": "tsx scripts/setup-db.ts",
+    "db:migrate-local": "tsx scripts/migrate-local-rewards.ts",
     "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
