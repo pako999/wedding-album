@@ -3,6 +3,7 @@ import { db } from "@/lib/db";
 import { albums, moments } from "@/lib/db/schema";
 import { eq, and, sql } from "drizzle-orm";
 import { checkAlbumOwnership } from "@/lib/album-ownership";
+import { galleryLimitForPlan } from "@/lib/gallery-limits";
 
 const MAX_NAME_LEN = 60;
 
@@ -35,7 +36,11 @@ export async function GET(
     orderBy: (m, { asc }) => [asc(m.sortOrder), asc(m.createdAt)],
   });
 
-  return NextResponse.json({ moments: rows });
+  return NextResponse.json({
+    moments: rows,
+    limit: galleryLimitForPlan(album.plan),
+    plan: album.plan,
+  });
 }
 
 // ─── Create ───────────────────────────────────────────────────────────────────
@@ -54,18 +59,36 @@ export async function POST(
     return NextResponse.json({ error: "Name required" }, { status: 400 });
   }
 
-  // Append to the end
-  const [{ max }] = await db
-    .select({ max: sql<number>`COALESCE(MAX(${moments.sortOrder}), -1)` })
+  // A package belongs to one event and includes a fixed number of named
+  // galleries inside that event. Enforce this on the server so the limit
+  // cannot be bypassed by calling the endpoint directly.
+  const limit = galleryLimitForPlan(album.plan);
+  const [{ count, max }] = await db
+    .select({
+      count: sql<number>`COUNT(*)::int`,
+      max: sql<number>`COALESCE(MAX(${moments.sortOrder}), -1)`,
+    })
     .from(moments)
     .where(eq(moments.albumId, album.id));
+
+  if (Number(count ?? 0) >= limit) {
+    return NextResponse.json(
+      {
+        error: `Gallery limit reached for ${album.plan} plan`,
+        code: "gallery_limit_reached",
+        plan: album.plan,
+        limit,
+      },
+      { status: 409 },
+    );
+  }
 
   const [moment] = await db
     .insert(moments)
     .values({ albumId: album.id, name, sortOrder: (max ?? -1) + 1 })
     .returning();
 
-  return NextResponse.json({ moment });
+  return NextResponse.json({ moment, limit });
 }
 
 // ─── Rename / Reorder ──────────────────────────────────────────────────────────
