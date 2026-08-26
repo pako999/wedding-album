@@ -236,3 +236,181 @@ html, body {
     grid-template-columns: minmax(0, 1fr);
   }
 }
+
+/* ── Guest upload sheet: Nordic / Guestcam visual language ───────────
+   Keep the uploader visually connected to the public marketing site:
+   warm paper, ink typography and honey accents. Inline album accents are
+   intentionally overridden inside the upload sheet so the critical upload
+   flow stays consistent and readable across every event theme. */
+.fixed.inset-0.z-50 > .absolute.inset-0 + .relative {
+  background: var(--paper) !important;
+  color: var(--ink);
+  font-family: var(--font-dm-sans), ui-sans-serif, system-ui, -apple-system, sans-serif;
+  border: 1px solid var(--hairline);
+  box-shadow: 0 24px 70px rgba(20, 24, 31, 0.20);
+}
+
+.fixed.inset-0.z-50 > .absolute.inset-0 + .relative > div:first-of-type {
+  background: rgba(247, 246, 242, 0.96);
+  border-color: var(--hairline) !important;
+}
+
+.fixed.inset-0.z-50 > .absolute.inset-0 + .relative h2 {
+  color: var(--ink) !important;
+  font-size: clamp(1.45rem, 6vw, 1.8rem) !important;
+  line-height: 1.05 !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.035em !important;
+}
+
+/* Header chips: quieter neutral shells + one brand-quality badge. */
+.fixed.inset-0.z-50 > .absolute.inset-0 + .relative h2 + button,
+.fixed.inset-0.z-50 > .absolute.inset-0 + .relative button {
+  font-family: inherit;
+}
+
+.fixed.inset-0.z-50 > .absolute.inset-0 + .relative .text-green-600.font-medium.whitespace-nowrap {
+  color: var(--honey) !important;
+  font-size: 0.78rem !important;
+  font-weight: 700 !important;
+}
+
+.fixed.inset-0.z-50 > .absolute.inset-0 + .relative .rounded-full.font-medium.whitespace-nowrap {
+  background: #EEEAE1 !important;
+  color: var(--muted) !important;
+  font-size: 0.75rem !important;
+}
+
+/* Main scroll area and cards. */
+.fixed.inset-0.z-50 > .absolute.inset-0 + .relative > .flex-1 {
+  background: var(--paper);
+}
+
+.fixed.inset-0.z-50 > .absolute.inset-0 + .relative .bg-white.rounded-2xl.border {
+  background: #FFFFFF !important;
+  border-color: var(--hairline) !important;
+  box-shadow: 0 1px 0 rgba(20, 24, 31, 0.02);
+}
+
+.fixed.inset-0.z-50 > .absolute.inset-0 + .relative .border-dashed {
+  border-color: #B99148 !important;
+  background: #FFF9EC !important;
+}
+
+.fixed.inset-0.z-50 > .absolute.inset-0 + .relative .border-dashed svg {
+  color: var(--honey) !important;
+}
+
+.fixed.inset-0.z-50 > .absolute.inset-0 + .relative .text-sm {
+  font-size: 1rem !important;
+  line-height: 1.45 !important;
+}
+
+.fixed.inset-0.z-50 > .absolute.inset-0 + .relative .text-xs {
+  font-size: 0.875rem !important;
+  line-height: 1.45 !important;
+}
+
+.fixed.inset-0.z-50 > .absolute.inset-0 + .relative .text-\[10px\] {
+  font-size: 0.78rem !important;
+}
+
+/* Honey progress instead of legacy blue/event accent. */
+.fixed.inset-0.z-50 > .absolute.inset-0 + .relative .h-1\.5 > div,
+.fixed.inset-0.z-50 > .absolute.inset-0 + .relative .h-2 > div {
+  background: var(--honey) !important;
+}
+
+.fixed.inset-0.z-50 > .absolute.inset-0 + .relative span[style*="color"] {
+  color: var(--honey) !important;
+}
+
+/* Bottom action area: ink CTA and paper/hairline framing. */
+.fixed.inset-0.z-50 > .absolute.inset-0 + .relative .border-t.border-gray-100 {
+  border-color: var(--hairline) !important;
+  background: rgba(247, 246, 242, 0.98);
+}
+
+.fixed.inset-0.z-50 > .absolute.inset-0 + .relative .border-t.border-gray-100 > button:not(:disabled) {
+  background: var(--ink) !important;
+  color: var(--paper) !important;
+}
+
+.fixed.inset-0.z-50 > .absolute.inset-0 + .relative .border-t.border-gray-100 > button:disabled {
+  background: #DEDCD5 !important;
+  color: #777B82 !important;
+}
+
+/* Explain why full-quality uploads can take longer. This sits directly
+   above the existing keep-window-open warning while files are uploading. */
+.fixed.inset-0.z-50 > .absolute.inset-0 + .relative .border-t.border-gray-100.shrink-0.space-y-3 > .space-y-2::before {
+  display: block;
+  padding: 0.75rem 0.85rem;
+  border: 1px solid #E7D5AA;
+  border-radius: 0.85rem;
+  background: #FFF9EC;
+  color: var(--ink);
+  font-size: 0.84rem;
+  line-height: 1.45;
+  font-weight: 600;
+}
+
+html[lang="sl"] .fixed.inset-0.z-50 > .absolute.inset-0 + .relative .border-t.border-gray-100.shrink-0.space-y-3 > .space-y-2::before {
+  content: "Polna kakovost: fotografije nalagamo v originalni velikosti, brez zmanjševanja ali stiskanja. Zato lahko nalaganje večjih datotek traja nekoliko dlje.";
+}
+html[lang="en"] .fixed.inset-0.z-50 > .absolute.inset-0 + .relative .border-t.border-gray-100.shrink-0.space-y-3 > .space-y-2::before {
+  content: "Full quality: photos are uploaded at their original size, without resizing or compression. Larger files may therefore take a little longer to upload.";
+}
+html[lang="de"] .fixed.inset-0.z-50 > .absolute.inset-0 + .relative .border-t.border-gray-100.shrink-0.space-y-3 > .space-y-2::before {
+  content: "Volle Qualität: Fotos werden in Originalgröße ohne Verkleinerung oder Komprimierung hochgeladen. Größere Dateien können daher etwas länger dauern.";
+}
+html[lang="hr"] .fixed.inset-0.z-50 > .absolute.inset-0 + .relative .border-t.border-gray-100.shrink-0.space-y-3 > .space-y-2::before {
+  content: "Puna kvaliteta: fotografije se prenose u izvornoj veličini, bez smanjivanja ili kompresije. Zato prijenos većih datoteka može trajati malo dulje.";
+}
+html[lang="sr"] .fixed.inset-0.z-50 > .absolute.inset-0 + .relative .border-t.border-gray-100.shrink-0.space-y-3 > .space-y-2::before {
+  content: "Pun kvalitet: fotografije se otpremaju u originalnoj veličini, bez smanjivanja ili kompresije. Zato otpremanje većih datoteka može trajati malo duže.";
+}
+html[lang="es"] .fixed.inset-0.z-50 > .absolute.inset-0 + .relative .border-t.border-gray-100.shrink-0.space-y-3 > .space-y-2::before {
+  content: "Calidad completa: las fotos se suben en su tamaño original, sin reducción ni compresión. Por eso los archivos grandes pueden tardar un poco más en cargarse.";
+}
+
+/* Replace the old warning copy with cleaner grammar while preserving its icon. */
+.fixed.inset-0.z-50 > .absolute.inset-0 + .relative .border-t.border-gray-100.shrink-0.space-y-3 > .space-y-2 > div:last-child > span {
+  font-size: 0 !important;
+}
+.fixed.inset-0.z-50 > .absolute.inset-0 + .relative .border-t.border-gray-100.shrink-0.space-y-3 > .space-y-2 > div:last-child > span::after {
+  font-size: 0.82rem;
+  line-height: 1.4;
+  font-weight: 600;
+}
+html[lang="sl"] .fixed.inset-0.z-50 > .absolute.inset-0 + .relative .border-t.border-gray-100.shrink-0.space-y-3 > .space-y-2 > div:last-child > span::after {
+  content: "Med nalaganjem ne zaprite okna in ne preklapljajte v drugo aplikacijo.";
+}
+html[lang="en"] .fixed.inset-0.z-50 > .absolute.inset-0 + .relative .border-t.border-gray-100.shrink-0.space-y-3 > .space-y-2 > div:last-child > span::after {
+  content: "Keep this window open and stay in the app until the upload is complete.";
+}
+html[lang="de"] .fixed.inset-0.z-50 > .absolute.inset-0 + .relative .border-t.border-gray-100.shrink-0.space-y-3 > .space-y-2 > div:last-child > span::after {
+  content: "Lassen Sie dieses Fenster geöffnet und wechseln Sie während des Uploads nicht in eine andere App.";
+}
+html[lang="hr"] .fixed.inset-0.z-50 > .absolute.inset-0 + .relative .border-t.border-gray-100.shrink-0.space-y-3 > .space-y-2 > div:last-child > span::after {
+  content: "Tijekom prijenosa nemojte zatvarati prozor niti prelaziti u drugu aplikaciju.";
+}
+html[lang="sr"] .fixed.inset-0.z-50 > .absolute.inset-0 + .relative .border-t.border-gray-100.shrink-0.space-y-3 > .space-y-2 > div:last-child > span::after {
+  content: "Tokom otpremanja nemojte zatvarati prozor niti prelaziti u drugu aplikaciju.";
+}
+html[lang="es"] .fixed.inset-0.z-50 > .absolute.inset-0 + .relative .border-t.border-gray-100.shrink-0.space-y-3 > .space-y-2 > div:last-child > span::after {
+  content: "Mantén esta ventana abierta y no cambies de aplicación mientras se cargan los archivos.";
+}
+
+@media (max-width: 639px) {
+  .fixed.inset-0.z-50 > .absolute.inset-0 + .relative {
+    border-left: 0;
+    border-right: 0;
+    border-bottom: 0;
+  }
+
+  .fixed.inset-0.z-50 > .absolute.inset-0 + .relative > .flex-1 {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+}
