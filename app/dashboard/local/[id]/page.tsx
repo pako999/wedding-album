@@ -76,19 +76,48 @@ export default async function LocalCampaignDetailPage({ params }: { params: Prom
 
             <div className="mt-6 grid lg:grid-cols-[1fr_.8fr] gap-5">
               <section className="rounded-2xl border border-[color:var(--hairline)] bg-white p-5 sm:p-6">
-                <h2 className="text-lg font-semibold">QR lokacije</h2>
-                <p className="mt-1 text-xs text-[color:var(--muted)]">Vsaka miza ali lokacija ima svoj source code in svojo statistiko.</p>
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <h2 className="text-lg font-semibold">QR lokacije</h2>
+                    <p className="mt-1 text-xs text-[color:var(--muted)]">Vsaka miza ali lokacija ima svoj QR, source code in statistiko.</p>
+                  </div>
+                  <span className="rounded-full bg-[color:var(--paper)] px-2.5 py-1 text-[11px] font-semibold text-[color:var(--muted)]">{sources.length} QR</span>
+                </div>
                 <div className="mt-4 space-y-3">
                   {sources.map((source) => (
                     <div key={source.id} className="rounded-xl border border-[color:var(--hairline)] bg-[color:var(--paper)] p-4">
-                      <div className="flex items-center justify-between gap-3">
-                        <div>
-                          <p className="font-semibold">{source.label}</p>
-                          <p className="mt-1 text-xs text-[color:var(--muted)]">{source.tableNumber ? `Miza ${source.tableNumber} · ` : ""}{source.scanCount} skenov</p>
+                      <div className="flex gap-4">
+                        <img
+                          src={`/api/local/sources/${encodeURIComponent(source.code)}/qr`}
+                          alt={`QR ${source.label}`}
+                          className="h-20 w-20 shrink-0 rounded-xl border border-[color:var(--hairline)] bg-white p-1.5"
+                        />
+                        <div className="min-w-0 flex-1">
+                          <div className="flex items-start justify-between gap-3">
+                            <div>
+                              <p className="font-semibold">{source.label}</p>
+                              <p className="mt-1 text-xs text-[color:var(--muted)]">{source.tableNumber ? `Miza ${source.tableNumber} · ` : ""}{source.scanCount} skenov</p>
+                            </div>
+                            <span className="hidden sm:inline rounded-lg bg-white px-2.5 py-1 font-mono text-[10px]">{source.code}</span>
+                          </div>
+                          <div className="mt-2 truncate rounded-lg bg-white px-3 py-2 text-[11px] text-[color:var(--muted)]">/local/{source.code}</div>
+                          <div className="mt-2 flex flex-wrap gap-2">
+                            <Link
+                              href={`/dashboard/local/qr/${encodeURIComponent(source.code)}`}
+                              className="rounded-lg bg-[color:var(--ink)] px-3 py-2 text-[11px] font-semibold text-[color:var(--paper)]"
+                            >
+                              🖨️ Natisni QR
+                            </Link>
+                            <Link
+                              href={`/local/${encodeURIComponent(source.code)}`}
+                              target="_blank"
+                              className="rounded-lg border border-[color:var(--hairline)] bg-white px-3 py-2 text-[11px] font-semibold"
+                            >
+                              👁 Predogled gosta
+                            </Link>
+                          </div>
                         </div>
-                        <span className="rounded-lg bg-white px-2.5 py-1 font-mono text-xs">{source.code}</span>
                       </div>
-                      <div className="mt-3 rounded-lg bg-white px-3 py-2 text-xs break-all text-[color:var(--muted)]">/local/{source.code}</div>
                     </div>
                   ))}
                   {!sources.length && <p className="text-sm text-[color:var(--muted)]">Še ni QR lokacij.</p>}
