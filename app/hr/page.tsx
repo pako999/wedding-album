@@ -1,6 +1,6 @@
 import { SITE_URL } from "@/lib/urls";
 import type { Metadata } from "next";
-import { LocalizedHomePage } from "@/components/LocalizedHomePage";
+import { LocalizedGuestcamHomePageV3 } from "@/components/LocalizedGuestcamHomePageV3";
 
 export const metadata: Metadata = {
   title: { absolute: "QR kod za vjenčanje · Fotografije gostiju uživo | Guestcam" },
@@ -10,4 +10,4 @@ export const metadata: Metadata = {
   twitter: { card: "summary_large_image", title: "QR kod za vjenčanje · Fotografije gostiju uživo | Guestcam", description: "Skupite sve fotografije i videozapise gostiju s vjenčanja preko QR koda u privatnoj galeriji. Bez aplikacije, puna kvaliteta, besplatno za isprobati.", images: [`${SITE_URL}/og-image.png?v=2`] },
 };
 
-export default function HrHomePage() { return <LocalizedHomePage lang="hr" />; }
+export default function HrHomePage() { return <LocalizedGuestcamHomePageV3 lang="hr" />; }
