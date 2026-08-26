@@ -1,6 +1,6 @@
 import { SITE_URL } from "@/lib/urls";
 import type { Metadata } from "next";
-import { LocalizedHomePage } from "@/components/LocalizedHomePage";
+import { LocalizedGuestcamHomePageV3 } from "@/components/LocalizedGuestcamHomePageV3";
 
 export const metadata: Metadata = {
   title: { absolute: "Código QR para fotos de boda · Sin app · Gratis | Guestcam" },
@@ -10,4 +10,4 @@ export const metadata: Metadata = {
   twitter: { card: "summary_large_image", title: "Código QR para fotos de boda · Sin app · Gratis | Guestcam", description: "Reúne todas las fotos y vídeos de tus invitados con un código QR en una galería privada. Sin app, calidad completa, gratis para empezar.", images: [`${SITE_URL}/og-image.png?v=2`] },
 };
 
-export default function EsHomePage() { return <LocalizedHomePage lang="es" />; }
+export default function EsHomePage() { return <LocalizedGuestcamHomePageV3 lang="es" />; }
