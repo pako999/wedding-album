@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --port 3001",
-    "build": "next build",
+    "build": "npm run test:regression && next build",
     "start": "next start --port 3001",
     "lint": "eslint",
     "test": "npm run test:regression",
