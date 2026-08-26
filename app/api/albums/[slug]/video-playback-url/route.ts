@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { albums, photos } from "@/lib/db/schema";
 import { and, eq } from "drizzle-orm";
-import { verifyAlbumPassword } from "@/lib/album-password";
+import { hasAlbumRequestAccess } from "@/lib/album-request-access";
 import { createVideoPlaybackToken } from "@/lib/video-playback-token";
 
 export const runtime = "nodejs";
@@ -12,15 +12,11 @@ export const dynamic = "force-dynamic";
  * Return a short-lived same-origin Guestcam playback URL for a Bunny Stream
  * video that belongs to this published album.
  *
- * Why proxy playback instead of returning Bunny's iframe URL?
- * Existing Guestcam libraries contain videos that render a black Bunny iframe
- * in some browsers even though their MP4 fallback is healthy. The existing
- * /video-download route already proxies those MP4 bytes correctly with Range
- * support, so all gallery browsers can use the same reliable media path.
- *
- * The URL is signed server-side and valid for two hours. It contains no Bunny
- * API credential. Password-protected albums are still verified before a token
- * is issued; link-only albums require no password.
+ * Existing and newly uploaded Bunny Stream videos use the same reliable
+ * Guestcam MP4/Range proxy. Link-only albums need no password. Protected
+ * albums are authorized through the encrypted HttpOnly album-access cookie
+ * (or the legacy x-album-password header for backwards compatibility), so the
+ * password never needs to appear in the browser URL.
  */
 export async function GET(
   req: NextRequest,
@@ -28,7 +24,6 @@ export async function GET(
 ) {
   const { slug } = await params;
   const vid = req.nextUrl.searchParams.get("vid") ?? "";
-  const pw = req.nextUrl.searchParams.get("pw") ?? "";
 
   if (!vid) {
     return NextResponse.json({ error: "Missing vid" }, { status: 400 });
@@ -39,7 +34,7 @@ export async function GET(
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
 
-  if (album.password && !(await verifyAlbumPassword(pw, album.password))) {
+  if (!(await hasAlbumRequestAccess(req, slug, album))) {
     return NextResponse.json({ error: "Password required" }, { status: 403 });
   }
 
