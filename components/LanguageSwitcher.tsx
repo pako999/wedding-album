@@ -1,7 +1,6 @@
 "use client";
 
 import { SITE_URL } from "@/lib/urls";
-import Link from "next/link";
 import { useState, useEffect, useRef } from "react";
 
 export type LangCode = "sl" | "hr" | "sr" | "en" | "de" | "es";
@@ -69,7 +68,7 @@ export function LanguageSwitcher({ current, languages, ariaLabel }: Props) {
             if (!url) return null;
             const isCurrent = lang === current;
             return (
-              <Link
+              <a
                 key={lang}
                 href={url}
                 role="menuitem"
@@ -83,7 +82,7 @@ export function LanguageSwitcher({ current, languages, ariaLabel }: Props) {
                     <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                   </svg>
                 )}
-              </Link>
+              </a>
             );
           })}
         </div>
