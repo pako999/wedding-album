@@ -75,12 +75,15 @@ export async function SiteHeader({
           >
             {copy.home}
           </Link>
-          <Link
+          {/* Blog is intentionally a normal anchor. Content routes should do a
+              full document load so an open tab cannot reuse stale RSC/chunks
+              after a new production deployment. */}
+          <a
             href={lang === "sl" ? "/blog" : `/${lang}/blog`}
             className="hidden sm:inline text-sm font-medium text-gray-600 hover:text-[#0F1729] transition-colors"
           >
             {copy.blog}
-          </Link>
+          </a>
           <HeaderAuthButtons lang={lang} />
           {!signedIn && (
             <Link
