@@ -59,6 +59,21 @@ export async function claimWebhookEvent(provider: string, eventId: string): Prom
 }
 
 /**
+ * Release a claim after a retryable side effect fails. This keeps concurrency
+ * safe (only one delivery works at a time) while allowing the provider's next
+ * retry to claim the operation again instead of turning a temporary outage
+ * into a permanently skipped action.
+ */
+export async function releaseWebhookEvent(provider: string, eventId: string): Promise<void> {
+  await ensureTable();
+  const sql = sqlClient();
+  await sql`
+    DELETE FROM webhook_receipts
+    WHERE provider = ${provider} AND event_id = ${eventId}
+  `;
+}
+
+/**
  * Best-effort cleanup for receipts older than 90 days. Kept probabilistic so
  * normal webhook traffic never pays a DELETE on every request.
  */
