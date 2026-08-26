@@ -48,10 +48,28 @@ function configuredR2Host(): string | null {
 
 /**
  * Only accept media URLs that point at one of our configured storage providers.
- * Bunny S3 direct uploads resolve to the normal Bunny CDN hostname, so the
- * .b-cdn.net rule accepts them while keeping arbitrary external URLs blocked.
+ *
+ * New Bunny S3 uploads are stored as an internal app URL
+ * (/api/bunny-s3-file/albums/...) which redirects to the new S3 pull zone.
+ * Legacy Bunny CDN, Vercel Blob and configured R2 URLs remain supported.
  */
 function isAllowedBlobUrl(u: string): boolean {
+  if (u.startsWith("/api/bunny-s3-file/")) {
+    try {
+      const parsed = new URL(u, "https://guestcam.internal");
+      const decodedPath = decodeURIComponent(parsed.pathname);
+      return (
+        parsed.origin === "https://guestcam.internal" &&
+        decodedPath.startsWith("/api/bunny-s3-file/albums/") &&
+        !decodedPath.includes("..") &&
+        !decodedPath.includes("\\") &&
+        !decodedPath.includes("//")
+      );
+    } catch {
+      return false;
+    }
+  }
+
   let parsed: URL;
   try { parsed = new URL(u); } catch { return false; }
   if (parsed.protocol !== "https:") return false;
