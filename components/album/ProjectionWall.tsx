@@ -5,13 +5,14 @@
  *
  * Features:
  *  • Full-screen dark overlay with animated gradient blobs
- *  • Latest 13 photos/videos in a grid — newest photo featured (2×2)
- *  • Rose glow border + "NOVO" badge on the newest item
+ *  • Latest photos/videos in a scrollable grid — newest photo featured (2×2)
+ *  • Gold glow border + "NOVO" badge on the newest item
  *  • Staggered entrance animations
  *  • Uploader name + time on every tile
  *  • Live clock in header
  *  • Stats: photo count · video count · guest count
  *  • One-click browser fullscreen toggle
+ *  • Per-device setting to show/hide the event title
  *  • Keyboard Esc closes (when not in browser fullscreen)
  */
 
@@ -37,9 +38,9 @@ function buildStreamProjectionSrc(blobUrl: string): string {
   try {
     const u = new URL(blobUrl);
     u.searchParams.set("autoplay", "true");
-    u.searchParams.set("loop",     "true");
-    u.searchParams.set("muted",    "true");
-    u.searchParams.set("preload",  "true");
+    u.searchParams.set("loop", "true");
+    u.searchParams.set("muted", "true");
+    u.searchParams.set("preload", "true");
     u.searchParams.set("responsive", "true");
     return u.toString();
   } catch {
@@ -72,13 +73,13 @@ function fmtTime(d: Date | string | null | undefined): string {
 
 function evtIcon(eventType: string): string {
   switch (eventType) {
-    case "wedding":     return "💍";
-    case "birthday":    return "🎂";
+    case "wedding": return "💍";
+    case "birthday": return "🎂";
     case "anniversary": return "🥂";
-    case "party":       return "🎉";
-    case "baptism":     return "🕊️";
-    case "graduation":  return "🎓";
-    default:            return "📸";
+    case "party": return "🎉";
+    case "baptism": return "🕊️";
+    case "graduation": return "🎓";
+    default: return "📸";
   }
 }
 
@@ -89,9 +90,35 @@ interface Props {
 }
 
 export function ProjectionWall({ album, photos, onClose }: Props) {
-  const [now, setNow]   = useState(new Date());
+  const [now, setNow] = useState(new Date());
   const [isFS, setIsFS] = useState(false);
-  const rootRef         = useRef<HTMLDivElement>(null);
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [showTitle, setShowTitle] = useState(true);
+  const rootRef = useRef<HTMLDivElement>(null);
+  const settingsRef = useRef<HTMLDivElement>(null);
+
+  const titlePreferenceKey = `guestcam:photo-wall:show-title:${album.id}`;
+
+  // Remember this display preference on the device running the wall.
+  // The dedicated /wall/<token> screen still has its URL-based title
+  // setting; this makes the in-gallery Foto zid equally configurable.
+  useEffect(() => {
+    try {
+      const stored = window.localStorage.getItem(titlePreferenceKey);
+      if (stored === "0" || stored === "1") setShowTitle(stored === "1");
+    } catch {
+      // Storage can be unavailable in private/restricted browser modes.
+    }
+  }, [titlePreferenceKey]);
+
+  const updateShowTitle = (value: boolean) => {
+    setShowTitle(value);
+    try {
+      window.localStorage.setItem(titlePreferenceKey, value ? "1" : "0");
+    } catch {
+      // Keep the in-memory setting working even if localStorage is blocked.
+    }
+  };
 
   // Clock tick
   useEffect(() => {
@@ -106,14 +133,31 @@ export function ProjectionWall({ album, photos, onClose }: Props) {
     return () => document.removeEventListener("fullscreenchange", h);
   }, []);
 
+  // Close the settings popover when clicking elsewhere.
+  useEffect(() => {
+    if (!settingsOpen) return;
+    const h = (e: MouseEvent) => {
+      if (settingsRef.current && !settingsRef.current.contains(e.target as Node)) {
+        setSettingsOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", h);
+    return () => document.removeEventListener("mousedown", h);
+  }, [settingsOpen]);
+
   // Keyboard
   useEffect(() => {
     const h = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && !document.fullscreenElement) onClose();
+      if (e.key !== "Escape") return;
+      if (settingsOpen) {
+        setSettingsOpen(false);
+        return;
+      }
+      if (!document.fullscreenElement) onClose();
     };
     window.addEventListener("keydown", h);
     return () => window.removeEventListener("keydown", h);
-  }, [onClose]);
+  }, [onClose, settingsOpen]);
 
   const toggleFS = async () => {
     try {
@@ -126,8 +170,7 @@ export function ProjectionWall({ album, photos, onClose }: Props) {
   };
 
   // Sort newest-first; show ALL items. The grid below is vertically
-  // scrollable so even 200+ items work. Previously this was capped at
-  // 13 — users couldn't see the rest of the gallery from the wall.
+  // scrollable so even 200+ items work.
   const display = [...photos].sort((a, b) =>
     new Date(b.uploadedAt ?? 0).getTime() - new Date(a.uploadedAt ?? 0).getTime()
   );
@@ -147,20 +190,20 @@ export function ProjectionWall({ album, photos, onClose }: Props) {
   useEffect(() => {
     if (lightboxIdx === null) return;
     const h = (e: KeyboardEvent) => {
-      if (e.key === "ArrowLeft")  lightboxPrev();
+      if (e.key === "ArrowLeft") lightboxPrev();
       if (e.key === "ArrowRight") lightboxNext();
-      if (e.key === "Escape")     closeLightbox();
+      if (e.key === "Escape") closeLightbox();
     };
     window.addEventListener("keydown", h);
     return () => window.removeEventListener("keydown", h);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [lightboxIdx]);
 
-  const photoCount     = photos.filter(p => !p.mimeType?.startsWith("video/")).length;
-  const videoCount     = photos.filter(p =>  p.mimeType?.startsWith("video/")).length;
-  const guestCount     = new Set(photos.map(p => p.uploaderName).filter(Boolean)).size;
-  const timeStr        = now.toLocaleTimeString("sl-SI", { hour: "2-digit", minute: "2-digit" });
-  const dateStr        = now.toLocaleDateString("sl-SI", { weekday: "long", day: "numeric", month: "long" });
+  const photoCount = photos.filter(p => !p.mimeType?.startsWith("video/")).length;
+  const videoCount = photos.filter(p => p.mimeType?.startsWith("video/")).length;
+  const guestCount = new Set(photos.map(p => p.uploaderName).filter(Boolean)).size;
+  const timeStr = now.toLocaleTimeString("sl-SI", { hour: "2-digit", minute: "2-digit" });
+  const dateStr = now.toLocaleDateString("sl-SI", { weekday: "long", day: "numeric", month: "long" });
 
   return (
     <div
@@ -188,7 +231,7 @@ export function ProjectionWall({ album, photos, onClose }: Props) {
         }
         @keyframes pwIn {
           from { opacity: 0; transform: translateY(18px) scale(0.93); }
-          to   { opacity: 1; transform: translateY(0)   scale(1); }
+          to   { opacity: 1; transform: translateY(0) scale(1); }
         }
         @keyframes pwLiveDot {
           0%,100% { opacity: 1; }
@@ -201,8 +244,16 @@ export function ProjectionWall({ album, photos, onClose }: Props) {
         }
       `}</style>
 
-      {/* ── Animated background ─────────────────────────────────────────────── */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      {/* ── Animated background ───────────────────────────────────────────────
+          Deliberately use inline position/inset instead of Tailwind's
+          `absolute inset-0` class pair. The guest-upload modal has legacy
+          global selectors that target `.fixed.inset-0.z-50 > .absolute.inset-0
+          + .relative`; the old wall matched that selector and its dark header
+          was accidentally restyled as a light upload sheet. */}
+      <div
+        className="overflow-hidden pointer-events-none"
+        style={{ position: "absolute", inset: 0 }}
+      >
         {/* Colour blobs */}
         <div style={{
           position:"absolute", width:"600px", height:"600px", borderRadius:"50%",
@@ -232,46 +283,111 @@ export function ProjectionWall({ album, photos, onClose }: Props) {
       </div>
 
       {/* ── Header ──────────────────────────────────────────────────────────── */}
-      <header className="relative z-10 flex items-center justify-between px-6 py-4 shrink-0"
-        style={{ borderBottom:"1px solid rgba(255,255,255,0.06)" }}>
-
+      <header
+        className="relative z-20 flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4 shrink-0"
+        style={{
+          background: "rgba(6,8,15,0.96)",
+          borderBottom: "1px solid rgba(255,255,255,0.08)",
+          boxShadow: "0 8px 24px rgba(0,0,0,0.18)",
+        }}
+      >
         {/* Left: event identity */}
-        <div className="flex items-center gap-3">
-          <span className="text-3xl">{evtIcon(album.eventType ?? "other")}</span>
-          <div>
-            <h1 className="text-white font-bold text-xl leading-tight tracking-tight">{album.coupleName}</h1>
-            <p className="text-white/35 text-xs mt-0.5">
+        <div className="flex items-center gap-3 min-w-0">
+          <span className="text-2xl sm:text-3xl shrink-0">{evtIcon(album.eventType ?? "other")}</span>
+          <div className="min-w-0">
+            {showTitle && (
+              <h1 className="text-white font-bold text-base sm:text-xl leading-tight tracking-tight truncate">
+                {album.coupleName}
+              </h1>
+            )}
+            <p className={`text-xs truncate ${showTitle ? "text-white/45 mt-0.5" : "text-white/70"}`}>
               {fmtEventDate(album.weddingDate)}{album.location ? ` · ${album.location}` : ""}
             </p>
           </div>
         </div>
 
         {/* Right: badges + controls */}
-        <div className="flex items-center gap-5">
-
+        <div className="flex items-center gap-2 sm:gap-4 lg:gap-5 shrink-0">
           {/* Stats */}
-          <div className="hidden sm:flex items-center gap-4 text-white/40 text-sm tabular-nums">
-            {photoCount > 0 && <span><strong className="text-white/70">{photoCount}</strong> foto</span>}
-            {videoCount > 0 && <span><strong className="text-white/70">{videoCount}</strong> video</span>}
-            {guestCount > 0 && <span><strong className="text-white/70">{guestCount}</strong> gostov</span>}
+          <div className="hidden sm:flex items-center gap-3 lg:gap-4 text-white/55 text-sm tabular-nums">
+            {photoCount > 0 && <span><strong className="text-white/85">{photoCount}</strong> foto</span>}
+            {videoCount > 0 && <span><strong className="text-white/85">{videoCount}</strong> video</span>}
+            {guestCount > 0 && <span><strong className="text-white/85">{guestCount}</strong> gostov</span>}
           </div>
 
           {/* LIVE badge */}
-          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full"
-            style={{ background:"rgba(255,201,77,0.12)", border:"1px solid rgba(255,201,77,0.35)" }}>
-            <span className="w-2 h-2 rounded-full shrink-0"
-              style={{ background:"#C9820A", animation:"pwLiveDot 1.4s ease-in-out infinite" }}/>
-            <span className="text-xs font-bold tracking-widest" style={{ color:"#C9820A" }}>V ŽIVO</span>
+          <div
+            className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-full"
+            style={{ background:"rgba(255,201,77,0.12)", border:"1px solid rgba(255,201,77,0.35)" }}
+          >
+            <span
+              className="w-2 h-2 rounded-full shrink-0"
+              style={{ background:"#FFC94D", animation:"pwLiveDot 1.4s ease-in-out infinite" }}
+            />
+            <span className="text-xs font-bold tracking-widest" style={{ color:"#FFC94D" }}>V ŽIVO</span>
           </div>
 
           {/* Clock */}
-          <div className="font-mono text-white/50 text-sm tabular-nums hidden md:block">
+          <div className="font-mono text-white/65 text-sm tabular-nums hidden md:block">
             {timeStr}
           </div>
 
+          {/* Wall settings */}
+          <div ref={settingsRef} className="relative">
+            <button
+              type="button"
+              onClick={() => setSettingsOpen((open) => !open)}
+              title="Nastavitve Foto zidu"
+              aria-label="Nastavitve Foto zidu"
+              aria-expanded={settingsOpen}
+              className="w-9 h-9 rounded-lg flex items-center justify-center text-white/55 hover:text-white hover:bg-white/10 transition-all"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.8}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.592c.55 0 1.02.398 1.11.94l.213 1.28a1.125 1.125 0 00.642.84l.112.05a1.125 1.125 0 001.037-.05l1.137-.63a1.125 1.125 0 011.37.215l1.833 1.833c.39.39.464.997.215 1.37l-.63 1.137a1.125 1.125 0 00-.05 1.037l.05.112c.151.337.462.575.84.642l1.28.213c.542.09.94.56.94 1.11v2.592c0 .55-.398 1.02-.94 1.11l-1.28.213a1.125 1.125 0 00-.84.642l-.05.112a1.125 1.125 0 00.05 1.037l.63 1.137c.249.373.175.98-.215 1.37l-1.833 1.833a1.125 1.125 0 01-1.37.215l-1.137-.63a1.125 1.125 0 00-1.037-.05l-.112.05a1.125 1.125 0 00-.642.84l-.213 1.28c-.09.542-.56.94-1.11.94h-2.592c-.55 0-1.02-.398-1.11-.94l-.213-1.28a1.125 1.125 0 00-.642-.84l-.112-.05a1.125 1.125 0 00-1.037.05l-1.137.63a1.125 1.125 0 01-1.37-.215L3.35 19.522a1.125 1.125 0 01-.215-1.37l.63-1.137a1.125 1.125 0 00.05-1.037l-.05-.112a1.125 1.125 0 00-.84-.642l-1.28-.213a1.125 1.125 0 01-.94-1.11v-2.592c0-.55.398-1.02.94-1.11l1.28-.213a1.125 1.125 0 00.84-.642l.05-.112a1.125 1.125 0 00-.05-1.037l-.63-1.137a1.125 1.125 0 01.215-1.37l1.833-1.833a1.125 1.125 0 011.37-.215l1.137.63a1.125 1.125 0 001.037.05l.112-.05a1.125 1.125 0 00.642-.84l.213-1.28z" />
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+            </button>
+
+            {settingsOpen && (
+              <div
+                className="absolute right-0 top-full mt-2 w-72 rounded-2xl p-4 text-left"
+                style={{
+                  background: "#111827",
+                  border: "1px solid rgba(255,255,255,0.14)",
+                  boxShadow: "0 18px 50px rgba(0,0,0,0.45)",
+                }}
+              >
+                <p className="text-white text-sm font-bold">Nastavitve Foto zidu</p>
+                <p className="text-white/45 text-xs mt-0.5 mb-4">Nastavitev ostane shranjena na tem zaslonu.</p>
+                <div className="flex items-center justify-between gap-4">
+                  <div className="min-w-0">
+                    <p className="text-white/90 text-sm font-medium">Ime / naslov dogodka</p>
+                    <p className="text-white/45 text-xs mt-0.5">Prikaži ali skrij ime v zgornji vrstici.</p>
+                  </div>
+                  <button
+                    type="button"
+                    role="switch"
+                    aria-checked={showTitle}
+                    aria-label="Prikaži ime dogodka na Foto zidu"
+                    onClick={() => updateShowTitle(!showTitle)}
+                    className="relative w-11 h-6 rounded-full shrink-0 transition-colors"
+                    style={{ background: showTitle ? "#FFC94D" : "rgba(255,255,255,0.18)" }}
+                  >
+                    <span
+                      className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform ${showTitle ? "translate-x-5" : "translate-x-0"}`}
+                    />
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+
           {/* Fullscreen */}
-          <button onClick={toggleFS} title={isFS ? "Zapusti celozaslonski način" : "Celozaslonski način"}
-            className="w-9 h-9 rounded-lg flex items-center justify-center text-white/35 hover:text-white hover:bg-white/10 transition-all">
+          <button
+            onClick={toggleFS}
+            title={isFS ? "Zapusti celozaslonski način" : "Celozaslonski način"}
+            className="w-9 h-9 rounded-lg flex items-center justify-center text-white/55 hover:text-white hover:bg-white/10 transition-all"
+          >
             {isFS ? (
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.8}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 9V4.5M9 9H4.5M9 9L3.75 3.75M9 15v4.5M9 15H4.5M9 15l-5.25 5.25M15 9h4.5M15 9V4.5M15 9l5.25-5.25M15 15h4.5M15 15v4.5M15 15l5.25 5.25" />
@@ -284,8 +400,11 @@ export function ProjectionWall({ album, photos, onClose }: Props) {
           </button>
 
           {/* Close */}
-          <button onClick={onClose}
-            className="w-9 h-9 rounded-lg flex items-center justify-center text-white/35 hover:text-white hover:bg-white/10 transition-all">
+          <button
+            onClick={onClose}
+            aria-label="Zapri Foto zid"
+            className="w-9 h-9 rounded-lg flex items-center justify-center text-white/55 hover:text-white hover:bg-white/10 transition-all"
+          >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
             </svg>
@@ -313,8 +432,8 @@ export function ProjectionWall({ album, photos, onClose }: Props) {
             }}
           >
             {display.map((photo, i) => {
-              const isNewest      = i === 0;
-              const isVideo       = photo.mimeType?.startsWith("video/") || !!photo.cfStreamVideoId;
+              const isNewest = i === 0;
+              const isVideo = photo.mimeType?.startsWith("video/") || !!photo.cfStreamVideoId;
               const isStreamVideo = !!photo.cfStreamVideoId;
               // For Bunny Stream videos the `blobUrl` is an iframe embed URL
               // (https://iframe.mediadelivery.net/embed/<lib>/<id>?…), NOT a
@@ -338,8 +457,8 @@ export function ProjectionWall({ album, photos, onClose }: Props) {
                   className="relative overflow-hidden rounded-xl bg-black/40 cursor-pointer group"
                   style={{
                     gridColumn: isNewest ? "span 2" : undefined,
-                    gridRow:    isNewest ? "span 2" : undefined,
-                    animation:  `pwIn 0.5s cubic-bezier(.4,0,.2,1) ${animationDelay} both`,
+                    gridRow: isNewest ? "span 2" : undefined,
+                    animation: `pwIn 0.5s cubic-bezier(.4,0,.2,1) ${animationDelay} both`,
                   }}
                 >
                   {/* Media */}
@@ -355,7 +474,10 @@ export function ProjectionWall({ album, photos, onClose }: Props) {
                   ) : isVideo ? (
                     <video
                       src={photo.blobUrl}
-                      muted loop autoPlay playsInline
+                      muted
+                      loop
+                      autoPlay
+                      playsInline
                       className="absolute inset-0 w-full h-full object-cover pointer-events-none"
                       preload={i < EAGER_TILE_COUNT ? "auto" : "metadata"}
                     />
@@ -374,9 +496,10 @@ export function ProjectionWall({ album, photos, onClose }: Props) {
                   )}
 
                   {/* Gradient overlay */}
-                  <div className="absolute inset-0" style={{
-                    background: "linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.1) 45%, transparent 100%)"
-                  }}/>
+                  <div
+                    className="absolute inset-0"
+                    style={{ background: "linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.1) 45%, transparent 100%)" }}
+                  />
 
                   {/* Uploader strip */}
                   <div className="absolute bottom-0 inset-x-0 flex items-center gap-2 px-3 py-2.5">
@@ -384,9 +507,9 @@ export function ProjectionWall({ album, photos, onClose }: Props) {
                       <div
                         className="rounded-full flex items-center justify-center text-white font-bold shrink-0"
                         style={{
-                          width:      isNewest ? "28px" : "20px",
-                          height:     isNewest ? "28px" : "20px",
-                          fontSize:   isNewest ? "11px" : "8px",
+                          width: isNewest ? "28px" : "20px",
+                          height: isNewest ? "28px" : "20px",
+                          fontSize: isNewest ? "11px" : "8px",
                           background: "#FFC94D",
                         }}
                       >
@@ -395,8 +518,10 @@ export function ProjectionWall({ album, photos, onClose }: Props) {
                     )}
                     <div className="min-w-0 flex-1">
                       {photo.uploaderName && (
-                        <p className="text-white font-semibold truncate leading-tight"
-                          style={{ fontSize: isNewest ? "14px" : "10px", textShadow: "0 1px 4px rgba(0,0,0,0.9)" }}>
+                        <p
+                          className="text-white font-semibold truncate leading-tight"
+                          style={{ fontSize: isNewest ? "14px" : "10px", textShadow: "0 1px 4px rgba(0,0,0,0.9)" }}
+                        >
                           {photo.uploaderName}
                         </p>
                       )}
@@ -421,14 +546,18 @@ export function ProjectionWall({ album, photos, onClose }: Props) {
 
                   {/* Glow border for newest */}
                   {isNewest && (
-                    <div className="absolute inset-0 rounded-xl pointer-events-none"
-                      style={{ border: "2px solid rgba(255,201,77,0.7)" }}/>
+                    <div
+                      className="absolute inset-0 rounded-xl pointer-events-none"
+                      style={{ border: "2px solid rgba(255,201,77,0.7)" }}
+                    />
                   )}
 
                   {/* Subtle inner border for all others */}
                   {!isNewest && (
-                    <div className="absolute inset-0 rounded-xl pointer-events-none"
-                      style={{ border: "1px solid rgba(255,255,255,0.05)" }}/>
+                    <div
+                      className="absolute inset-0 rounded-xl pointer-events-none"
+                      style={{ border: "1px solid rgba(255,255,255,0.05)" }}
+                    />
                   )}
                 </div>
               );
@@ -442,8 +571,10 @@ export function ProjectionWall({ album, photos, onClose }: Props) {
           with the album's referral code + tp=live_display so any guest
           taking a photo of the projected screen and typing the URL later
           still lands in the referral engine (P2 touchpoint). */}
-      <footer className="relative z-10 flex items-center justify-between px-6 py-2.5 shrink-0 text-xs"
-        style={{ borderTop:"1px solid rgba(255,255,255,0.04)", color:"rgba(255,255,255,0.35)" }}>
+      <footer
+        className="relative z-10 flex items-center justify-between px-6 py-2.5 shrink-0 text-xs"
+        style={{ borderTop:"1px solid rgba(255,255,255,0.04)", color:"rgba(255,255,255,0.35)" }}
+      >
         <a
           href={
             album.referralCode
@@ -509,7 +640,10 @@ export function ProjectionWall({ album, photos, onClose }: Props) {
           )}
 
           {/* The media itself */}
-          <div className="relative max-w-[92vw] max-h-[88vh] w-full h-full flex flex-col items-center justify-center" onClick={(e) => e.stopPropagation()}>
+          <div
+            className="relative max-w-[92vw] max-h-[88vh] w-full h-full flex flex-col items-center justify-center"
+            onClick={(e) => e.stopPropagation()}
+          >
             {lightboxPhoto.cfStreamVideoId ? (
               <div className="w-full max-w-[88vw]" style={{ aspectRatio: "16/9" }}>
                 <iframe
