@@ -3,42 +3,25 @@ import { db } from "@/lib/db";
 import { albums, photos } from "@/lib/db/schema";
 import { and, eq } from "drizzle-orm";
 import { verifyAlbumPassword } from "@/lib/album-password";
+import { createVideoPlaybackToken } from "@/lib/video-playback-token";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 /**
- * The existing Guestcam Bunny Stream library is still on Bunny's legacy
- * player. Bunny explicitly keeps existing libraries on that player until the
- * library is migrated, so forcing player.mediadelivery.net breaks playback.
- * Normalize both stored URL variants back to the compatible iframe endpoint.
+ * Return a short-lived same-origin Guestcam playback URL for a Bunny Stream
+ * video that belongs to this published album.
+ *
+ * Why proxy playback instead of returning Bunny's iframe URL?
+ * Existing Guestcam libraries contain videos that render a black Bunny iframe
+ * in some browsers even though their MP4 fallback is healthy. The existing
+ * /video-download route already proxies those MP4 bytes correctly with Range
+ * support, so all gallery browsers can use the same reliable media path.
+ *
+ * The URL is signed server-side and valid for two hours. It contains no Bunny
+ * API credential. Password-protected albums are still verified before a token
+ * is issued; link-only albums require no password.
  */
-function bunnyCompatiblePlayerUrl(rawUrl: string): string | null {
-  try {
-    const url = new URL(rawUrl);
-
-    if (url.hostname === "player.mediadelivery.net") {
-      url.hostname = "iframe.mediadelivery.net";
-    }
-
-    if (url.hostname !== "iframe.mediadelivery.net" || !url.pathname.includes("/embed/")) {
-      return null;
-    }
-
-    url.searchParams.set("autoplay", "false");
-    url.searchParams.set("preload", "true");
-    url.searchParams.set("playsinline", "true");
-
-    // disableIosPlayer belongs to Bunny Player 2 and must not be sent to the
-    // legacy player used by this library.
-    url.searchParams.delete("disableIosPlayer");
-
-    return url.toString();
-  } catch {
-    return null;
-  }
-}
-
 export async function GET(
   req: NextRequest,
   { params }: { params: Promise<{ slug: string }> },
@@ -72,13 +55,24 @@ export async function GET(
     return NextResponse.json({ error: "Video not found" }, { status: 404 });
   }
 
-  const url = bunnyCompatiblePlayerUrl(photo.blobUrl);
-  if (!url) {
-    return NextResponse.json({ error: "Bunny Player URL unavailable" }, { status: 502 });
+  const expiresAt = Math.floor(Date.now() / 1000) + 2 * 60 * 60;
+  const sig = createVideoPlaybackToken(slug, vid, expiresAt);
+  if (!sig) {
+    return NextResponse.json({ error: "Playback signing unavailable" }, { status: 503 });
   }
 
+  const qs = new URLSearchParams({
+    vid,
+    play: "1",
+    exp: String(expiresAt),
+    sig,
+  });
+
   return NextResponse.json(
-    { url },
+    {
+      url: `/api/albums/${encodeURIComponent(slug)}/video-download?${qs.toString()}`,
+      expiresAt,
+    },
     { headers: { "Cache-Control": "private, no-store, max-age=0" } },
   );
 }
