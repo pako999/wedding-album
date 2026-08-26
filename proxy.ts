@@ -97,11 +97,9 @@ export default clerkMiddleware(
   }
 
   // ── Album password URL hygiene ──────────────────────────────────────────────
-  // Existing protected-album forms historically navigated to /slug?pw=secret.
-  // Capture that value once, encrypt it into an HttpOnly cookie and immediately
-  // redirect to the same clean URL. On subsequent requests we internally
-  // rewrite the password back into the Server Component query only; it never
-  // appears in browser history, copied links, analytics or Referer headers.
+  // Existing protected-album forms navigate once to /slug?pw=secret. Capture
+  // that value, encrypt it into an HttpOnly cookie and immediately redirect to
+  // the clean URL. The raw password is never restored into a URL afterwards.
   const albumSlug = isAlbumGuestPath(pathname)
     ? decodeURIComponent(pathname.split("/").filter(Boolean)[0] ?? "")
     : null;
@@ -159,17 +157,21 @@ export default clerkMiddleware(
 
   // Dashboard authentication intentionally lives in app/dashboard/layout.tsx.
 
-  // ── Expose pathname for Server Components ─────────────────────────────────
+  // ── Expose trusted request metadata for Server Components ─────────────────
   const requestHeaders = new Headers(req.headers);
   requestHeaders.set("x-pathname", effectivePathname);
+
+  // Never trust a browser-supplied value for this internal header. Only the
+  // password decrypted from Guestcam's HttpOnly cookie may populate it.
+  requestHeaders.delete("x-album-access-password");
+  if (albumSlug && internalAlbumPassword) {
+    requestHeaders.set("x-album-access-password", internalAlbumPassword);
+  }
+
   let res: NextResponse;
   if (spanishRequest && pathname === "/") {
     const target = req.nextUrl.clone();
     target.pathname = "/es";
-    res = NextResponse.rewrite(target, { request: { headers: requestHeaders } });
-  } else if (albumSlug && internalAlbumPassword) {
-    const target = req.nextUrl.clone();
-    target.searchParams.set("pw", internalAlbumPassword);
     res = NextResponse.rewrite(target, { request: { headers: requestHeaders } });
   } else {
     res = NextResponse.next({ request: { headers: requestHeaders } });
