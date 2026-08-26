@@ -23,7 +23,12 @@ function requireAbsent(name, text, pattern, hint) {
 
 const files = {
   legacyUpload: await read("app/api/albums/[slug]/upload/route.ts"),
+  uploadUrl: await read("app/api/albums/[slug]/upload-url/route.ts"),
+  saveUpload: await read("app/api/albums/[slug]/save-upload/route.ts"),
+  legacyGateway: await read("app/api/albums/[slug]/bunny-upload/route.ts"),
   legacyDownload: await read("app/api/albums/[slug]/download/route.ts"),
+  albumPage: await read("app/[slug]/page.tsx"),
+  proxy: await read("proxy.ts"),
   s3: await read("lib/storage/bunny-s3.ts"),
   s3Read: await read("app/api/bunny-s3-file/[...key]/route.ts"),
   legacyRead: await read("app/api/img/route.ts"),
@@ -125,6 +130,48 @@ requireMatch(
   files.legacyRead,
   /checkAlbumOwnership/,
   "album owners must still be able to manage historical protected media",
+);
+
+requireMatch(
+  "upload URL issuance uses HttpOnly album access",
+  files.uploadUrl,
+  /hasAlbumRequestAccess/,
+  "upload-url must accept the protected album cookie instead of requiring raw client password props",
+);
+
+requireMatch(
+  "upload finalization uses HttpOnly album access",
+  files.saveUpload,
+  /hasAlbumRequestAccess/,
+  "save-upload must accept the protected album cookie instead of requiring raw client password props",
+);
+
+requireMatch(
+  "legacy upload gateway uses HttpOnly album access",
+  files.legacyGateway,
+  /hasAlbumRequestAccess/,
+  "legacy-compatible upload gateway must follow the same album access model",
+);
+
+requireAbsent(
+  "album page does not serialize raw passwords to client props",
+  files.albumPage,
+  /providedPassword\s*=|\{\s*pw\s*,/,
+  "the Server Component must never pass a raw album password into AlbumGuestView",
+);
+
+requireAbsent(
+  "proxy never rewrites raw password back into query string",
+  files.proxy,
+  /searchParams\.set\(["']pw["']/,
+  "decrypted album passwords must stay in a server-only request header",
+);
+
+requireMatch(
+  "proxy strips untrusted internal password header",
+  files.proxy,
+  /delete\(["']x-album-access-password["']\)/,
+  "browser-supplied internal password headers must be overwritten/removed",
 );
 
 requireMatch(
