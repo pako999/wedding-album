@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import { albums, photoLikes, photoComments } from "@/lib/db/schema";
-import { eq } from "drizzle-orm";
+import { albums, photos, photoLikes, photoComments } from "@/lib/db/schema";
+import { and, eq, inArray } from "drizzle-orm";
 import { hasAlbumRequestAccess } from "@/lib/album-request-access";
 
 export const runtime = "nodejs";
@@ -9,10 +9,9 @@ export const runtime = "nodejs";
 /**
  * GET /api/albums/[slug]/reactions
  *
- * Returns all likes and comments for every photo in this album in one round-trip.
- * Open link/QR albums work without a password. Protected albums use the same
- * HttpOnly access cookie as the gallery, so raw passwords never need to live in
- * Client Component props or request URLs.
+ * Returns likes/comments only for media that is currently published in the
+ * album. Open link/QR albums work without a password; protected albums use the
+ * same HttpOnly access cookie as the guest gallery.
  */
 export async function GET(
   req: NextRequest,
@@ -32,13 +31,32 @@ export async function GET(
     return NextResponse.json({ likes: {}, comments: {} });
   }
 
+  const published = await db
+    .select({ id: photos.id })
+    .from(photos)
+    .where(and(eq(photos.albumId, album.id), eq(photos.status, "published")))
+    .catch(() => []);
+  const publishedIds = published.map((photo) => photo.id);
+
+  if (publishedIds.length === 0) {
+    return NextResponse.json({ likes: {}, comments: {} });
+  }
+
   const [likes, comments] = await Promise.all([
     db.query.photoLikes
-      .findMany({ where: eq(photoLikes.albumId, album.id) })
+      .findMany({
+        where: and(
+          eq(photoLikes.albumId, album.id),
+          inArray(photoLikes.photoId, publishedIds),
+        ),
+      })
       .catch(() => []),
     db.query.photoComments
       .findMany({
-        where: eq(photoComments.albumId, album.id),
+        where: and(
+          eq(photoComments.albumId, album.id),
+          inArray(photoComments.photoId, publishedIds),
+        ),
         orderBy: (c, { asc }) => [asc(c.createdAt)],
       })
       .catch(() => []),
