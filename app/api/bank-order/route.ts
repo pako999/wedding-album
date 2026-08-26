@@ -70,8 +70,6 @@ export async function POST(req: NextRequest) {
     .catch(() => null);
   if (!album) return NextResponse.json({ error: "Album not found" }, { status: 404 });
 
-  // Bank-transfer orders are an owner/admin action. A public album slug must
-  // never be enough to create an invoice order, send emails or consume a code.
   const owner = await checkAlbumOwnership(album);
   if (!owner.ok) {
     return NextResponse.json({ error: owner.error }, { status: owner.status });
@@ -92,7 +90,6 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  // Validate physical shipping BEFORE creating any order/email side effects.
   const standsCents = addOnTotalCents(tableStands, billing?.country, standsQty, standsVariant);
   if (standsCents === null) {
     return NextResponse.json({ error: "shipping_unavailable" }, { status: 400 });
@@ -116,7 +113,7 @@ export async function POST(req: NextRequest) {
   }
 
   const planBase = PLAN_LABELS[planId];
-  let finalPrice = planBase.price;
+  let finalPrice: number = planBase.price;
   let discountCodeId: string | undefined;
   let discountPercent: number | undefined;
 
