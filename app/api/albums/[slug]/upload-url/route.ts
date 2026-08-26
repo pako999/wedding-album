@@ -3,13 +3,12 @@
  *
  * Returns the upload strategy used by the browser:
  *   • videos -> Bunny Stream tus (direct browser -> Bunny)
- *   • photos -> Bunny Storage key, uploaded through the streaming Bunny gateway
+ *   • photos -> Bunny S3 presigned PUT (direct browser -> Bunny) when enabled
+ *   • legacy Bunny Storage gateway is kept only as a fallback
  *
- * Guestcam intentionally stays on Bunny for event media. We do NOT expose the
- * Bunny Storage API key to the browser: Storage API writes require the zone
- * password/API key, so the browser receives only an album-scoped random object
- * key. /bunny-upload re-validates the album, password, MIME type and key before
- * streaming the request body to Bunny Storage.
+ * The preferred photo path preserves the exact original bytes from the phone.
+ * A 30 MB photo is stored as the same 30 MB object; gallery optimization is
+ * applied later only when displaying the image.
  */
 
 import { NextRequest, NextResponse } from "next/server";
@@ -21,6 +20,10 @@ import {
   isBunnyStreamConfigured,
   createBunnyStreamUpload,
 } from "@/lib/storage/bunny";
+import {
+  isBunnyS3Configured,
+  createBunnyS3PresignedUpload,
+} from "@/lib/storage/bunny-s3";
 import { hashAlbumPassword, needsRehash, verifyAlbumPassword } from "@/lib/album-password";
 import { checkRateLimit } from "@/lib/rate-limit";
 
@@ -35,17 +38,32 @@ const ALLOWED_VIDEO_TYPES = new Set([
   "video/webm", "video/mpeg", "video/3gpp", "video/avi",
 ]);
 
-const MAX_IMAGE_BYTES = 60 * 1024 * 1024;
+const EXTENSION_BY_MIME: Record<string, string> = {
+  "image/jpeg": "jpg",
+  "image/jpg": "jpg",
+  "image/png": "png",
+  "image/webp": "webp",
+  "image/heic": "heic",
+  "image/heif": "heif",
+  "image/gif": "gif",
+  "video/mp4": "mp4",
+  "video/quicktime": "mov",
+  "video/mov": "mov",
+  "video/webm": "webm",
+  "video/mpeg": "mpeg",
+  "video/3gpp": "3gp",
+  "video/avi": "avi",
+};
+
+// Safety ceiling only — not a normal phone-photo limit. This intentionally
+// allows 20 MB, 30 MB, 50 MB and much larger originals without recompression.
+const MAX_IMAGE_BYTES = 250 * 1024 * 1024;
 const MAX_VIDEO_BYTES = 500 * 1024 * 1024;
 
 /**
  * Venue-safe coarse abuse cap.
- *
- * Hundreds of guests at a venue often share one public NAT/Wi-Fi IP. A tiny
- * per-IP limit therefore blocks legitimate guests. This endpoint only handles
- * small metadata requests and issues album-scoped random keys; file bytes do
- * not pass through it. 2,000/min is enough for a 500-person first burst while
- * still putting a ceiling on obvious single-source abuse.
+ * Hundreds of guests often share one public NAT/Wi-Fi IP, so a tiny per-IP
+ * limiter would block legitimate event traffic.
  */
 const VENUE_REQUESTS_PER_MINUTE = 2_000;
 
@@ -65,12 +83,12 @@ export async function POST(
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
   }
 
-  const filename = typeof body.filename === "string" ? body.filename : "";
+  const filename = typeof body.filename === "string" ? body.filename.trim() : "";
   const contentType = typeof body.contentType === "string"
     ? body.contentType.split(";")[0].trim().toLowerCase()
     : "";
 
-  if (!filename || !contentType) {
+  if (!filename || !contentType || filename.length > 255) {
     return NextResponse.json({ error: "filename and contentType required" }, { status: 400 });
   }
 
@@ -117,7 +135,7 @@ export async function POST(
   }
 
   const cap = isVideo ? MAX_VIDEO_BYTES : MAX_IMAGE_BYTES;
-  if (typeof body.size === "number" && (!Number.isFinite(body.size) || body.size < 0 || body.size > cap)) {
+  if (typeof body.size !== "number" || !Number.isFinite(body.size) || body.size < 0 || body.size > cap) {
     const mb = Math.floor(cap / (1024 * 1024));
     return NextResponse.json(
       { error: `File too large (max ${mb} MB per ${isVideo ? "video" : "photo"})` },
@@ -140,7 +158,6 @@ export async function POST(
   }
 
   // Videos upload directly from the guest device to Bunny Stream using tus.
-  // No video bytes pass through a Vercel function.
   if (isVideo) {
     if (!isBunnyStreamConfigured()) {
       return NextResponse.json(
@@ -160,19 +177,34 @@ export async function POST(
     }
   }
 
-  // Photos stay on Bunny Storage. The key is random and pinned to this album;
-  // the separate gateway re-validates it before forwarding bytes to Bunny.
-  if (!isBunnyStorageConfigured()) {
-    return NextResponse.json(
-      { error: "Photo storage is temporarily unavailable" },
-      { status: 503 },
-    );
+  const ext = EXTENSION_BY_MIME[contentType] ?? "bin";
+  const key = `albums/${album.id}/${crypto.randomUUID()}.${ext}`;
+
+  // Preferred photo path: original file goes directly from the guest device to
+  // Bunny S3. Vercel only signs the short-lived URL and never sees the bytes.
+  if (isImage && isBunnyS3Configured()) {
+    try {
+      const direct = await createBunnyS3PresignedUpload({
+        key,
+        contentType,
+        expiresIn: 300,
+      });
+      return NextResponse.json({ type: "bunny-s3", ...direct });
+    } catch (err) {
+      console.error("[upload-url/bunny-s3]", err);
+    }
   }
 
-  const ext = (filename.split(".").pop() ?? "bin")
-    .toLowerCase()
-    .replace(/[^a-z0-9]/g, "")
-    .slice(0, 5) || "bin";
-  const key = `albums/${album.id}/${crypto.randomUUID()}.${ext}`;
-  return NextResponse.json({ type: "bunny-storage", key });
+  // Legacy fallback for installations where Bunny S3 has not yet been enabled.
+  // This is not the desired path for large originals because it traverses the
+  // Vercel upload gateway. Once the CamLove S3 envs are present in Guestcam,
+  // normal photo uploads never reach this branch.
+  if (isBunnyStorageConfigured()) {
+    return NextResponse.json({ type: "bunny-storage", key });
+  }
+
+  return NextResponse.json(
+    { error: "Photo storage is temporarily unavailable" },
+    { status: 503 },
+  );
 }
