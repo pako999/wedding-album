@@ -1,115 +1,135 @@
 import Link from "next/link";
-import { SiteHeader } from "@/components/SiteHeader";
+import { BlogHeader } from "@/components/BlogHeader";
 import { SeoFooter } from "@/components/SeoFooter";
+import type { BlogPost, BlogCategory } from "@/lib/blog";
+import { SITE_URL } from "@/lib/urls";
 import type { LangCode } from "@/components/LanguageSwitcher";
-import type { BlogPost } from "@/lib/blog";
-import { blogUrl } from "@/lib/blog";
 
-const CATEGORY_COLOR: Record<string, string> = {
-  vodnik:             "bg-amber-100 text-amber-800 border-amber-300",
-  primerjava:         "bg-violet-100 text-violet-800 border-violet-300",
-  nasvet:             "bg-emerald-100 text-emerald-800 border-emerald-300",
+const CATEGORY_COLOR: Record<BlogCategory, string> = {
+  vodnik: "bg-amber-100 text-amber-800 border-amber-300",
+  primerjava: "bg-violet-100 text-violet-800 border-violet-300",
+  nasvet: "bg-emerald-100 text-emerald-800 border-emerald-300",
   "kontrolni-seznam": "bg-sky-100 text-sky-800 border-sky-300",
-  novice:             "bg-gray-100 text-gray-700 border-gray-300",
+  novice: "bg-rose-100 text-rose-800 border-rose-300",
 };
 
-const COPY: Record<LangCode, { h1: string; lead: string; empty: string; readMore: string; featured: string }> = {
-  sl: { h1: "Guestcam Blog — Nasveti za poročne fotografije", lead: "Vodniki, primerjave in nasveti za zbiranje fotografij gostov.", empty: "Še nimamo objav v tem jeziku. Poglejte angleško verzijo.", readMore: "Preberi →", featured: "Najnovejše" },
-  hr: { h1: "Guestcam Blog — Savjeti za fotografije s vjenčanja", lead: "Vodiči, usporedbe i savjeti za prikupljanje fotografija gostiju.", empty: "Još nemamo objava na ovom jeziku. Pogledajte englesku verziju.", readMore: "Pročitaj →", featured: "Najnovije" },
-  sr: { h1: "Guestcam Blog — Saveti za fotografije sa venčanja", lead: "Vodiči, poređenja i saveti za prikupljanje fotografija gostiju.", empty: "Još nemamo objava na ovom jeziku. Pogledajte englesku verziju.", readMore: "Pročitaj →", featured: "Najnovije" },
-  de: { h1: "Guestcam Blog — Tipps für Hochzeitsfotos",          lead: "Anleitungen, Vergleiche und Tipps zum Sammeln von Gästefotos.", empty: "Noch keine Beiträge in dieser Sprache. Schauen Sie sich die englische Version an.", readMore: "Lesen →", featured: "Neuester Beitrag" },
-  en: { h1: "Guestcam Blog — Wedding Photo Tips & Guides",       lead: "Guides, comparisons and tips for collecting guest photos.",       empty: "No posts in this language yet. Check the English version.", readMore: "Read more →", featured: "Latest" },
-  es: { h1: "Guestcam Blog — Consejos sobre fotos de boda",     lead: "Guías, comparativas y consejos para recopilar fotos de los invitados.", empty: "Aún no hay entradas en este idioma. Consulta la versión en inglés.", readMore: "Leer más →", featured: "Lo más reciente" },
+const CATEGORY_LABEL: Record<LangCode, Record<BlogCategory, string>> = {
+  sl: { vodnik: "Vodnik", primerjava: "Primerjava", nasvet: "Nasvet", "kontrolni-seznam": "Kontrolni seznam", novice: "Novice" },
+  hr: { vodnik: "Vodič", primerjava: "Usporedba", nasvet: "Savjet", "kontrolni-seznam": "Kontrolni popis", novice: "Novosti" },
+  sr: { vodnik: "Vodič", primerjava: "Poređenje", nasvet: "Savet", "kontrolni-seznam": "Kontrolna lista", novice: "Novosti" },
+  de: { vodnik: "Ratgeber", primerjava: "Vergleich", nasvet: "Tipp", "kontrolni-seznam": "Checkliste", novice: "Neuigkeiten" },
+  en: { vodnik: "Guide", primerjava: "Comparison", nasvet: "Tip", "kontrolni-seznam": "Checklist", novice: "News" },
+  es: { vodnik: "Guía", primerjava: "Comparativa", nasvet: "Consejo", "kontrolni-seznam": "Lista de control", novice: "Noticias" },
 };
 
-interface Props {
-  posts: BlogPost[];
-  lang: LangCode;
+const COPY: Record<LangCode, {
+  h1: string;
+  lead: string;
+  empty: string;
+  readMore: string;
+  featured: string;
+}> = {
+  sl: { h1: "Guestcam Blog — Nasveti za poročne fotografije", lead: "Vodniki, primerjave in nasveti za zbiranje fotografij gostov.", empty: "Objave kmalu prihajajo.", readMore: "Preberi", featured: "Najnovejše" },
+  hr: { h1: "Guestcam Blog — Savjeti za fotografije s vjenčanja", lead: "Vodiči, usporedbe i savjeti za prikupljanje fotografija gostiju.", empty: "Objave uskoro stižu.", readMore: "Pročitaj", featured: "Najnovije" },
+  sr: { h1: "Guestcam Blog — Saveti za fotografije sa venčanja", lead: "Vodiči, poređenja i saveti za prikupljanje fotografija gostiju.", empty: "Objave uskoro stižu.", readMore: "Pročitaj", featured: "Najnovije" },
+  de: { h1: "Guestcam Blog — Tipps für Hochzeitsfotos", lead: "Ratgeber, Vergleiche und Tipps zum Sammeln von Gästefotos.", empty: "Beiträge folgen in Kürze.", readMore: "Lesen", featured: "Neueste" },
+  en: { h1: "Guestcam Blog — Wedding Photo Tips & Guides", lead: "Guides, comparisons and tips for collecting guest photos.", empty: "New articles are coming soon.", readMore: "Read more", featured: "Latest" },
+  es: { h1: "Guestcam Blog — Consejos para fotos de boda", lead: "Guías, comparativas y consejos para recopilar fotos de los invitados.", empty: "Próximamente publicaremos nuevos artículos.", readMore: "Leer", featured: "Último" },
+};
+
+function blogUrl(lang: LangCode, slug: string) {
+  return lang === "sl" ? `/blog/${slug}` : `/${lang}/blog/${slug}`;
 }
 
-export function BlogIndexPage({ posts, lang }: Props) {
+function indexUrl(lang: LangCode) {
+  return lang === "sl" ? "/blog" : `/${lang}/blog`;
+}
+
+function formatDate(date: string, lang: LangCode) {
+  const locales: Record<LangCode, string> = {
+    sl: "sl-SI", hr: "hr-HR", sr: "sr-RS", de: "de-DE", en: "en-GB", es: "es-ES",
+  };
+  return new Date(date).toLocaleDateString(locales[lang], { year: "numeric", month: "short", day: "numeric" });
+}
+
+export function BlogIndexPage({ posts, lang }: { posts: BlogPost[]; lang: LangCode }) {
   const t = COPY[lang];
   const featured = posts[0];
   const rest = posts.slice(1);
+  const absoluteIndex = `${SITE_URL}${indexUrl(lang)}`;
+
+  const itemList = {
+    "@context": "https://schema.org",
+    "@type": "Blog",
+    "@id": `${absoluteIndex}#blog`,
+    url: absoluteIndex,
+    name: t.h1,
+    description: t.lead,
+    inLanguage: lang,
+    blogPost: posts.slice(0, 20).map((post) => ({
+      "@type": "BlogPosting",
+      headline: post.title,
+      url: `${SITE_URL}${blogUrl(lang, post.slug)}`,
+      datePublished: post.publishedAt,
+      ...(post.updatedAt ? { dateModified: post.updatedAt } : {}),
+      description: post.description,
+      author: { "@type": "Organization", name: "Guestcam" },
+      publisher: { "@type": "Organization", name: "Guestcam", url: SITE_URL },
+    })),
+  };
 
   return (
     <div className="min-h-screen bg-[#F2F4F8] text-[#0F1729]">
-      <SiteHeader lang={lang} />
-
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(itemList) }} />
+      <BlogHeader lang={lang} />
       <main className="max-w-6xl mx-auto px-6 py-14">
-        {/* Hero */}
         <header className="text-center mb-12">
           <p className="text-xs font-bold uppercase tracking-widest text-[#8C6218] mb-3">Blog</p>
           <h1 className="font-serif text-4xl sm:text-5xl font-bold text-[#0F1729] leading-tight mb-3">{t.h1}</h1>
           <p className="text-base text-gray-600 max-w-xl mx-auto">{t.lead}</p>
         </header>
 
-        {posts.length === 0 && (
-          <p className="text-center text-gray-500 text-sm">{t.empty}</p>
-        )}
+        {posts.length === 0 && <p className="text-center text-gray-500 py-20">{t.empty}</p>}
 
-        {/* Featured */}
         {featured && (
-          <Link
-            href={blogUrl(featured.lang, featured.slug)}
-            className="block bg-white border border-gray-200 rounded-3xl overflow-hidden mb-12 hover:border-[#FFC94D] hover:shadow-lg transition-all"
-          >
+          <Link href={blogUrl(lang, featured.slug)} className="block bg-white border border-gray-200 rounded-3xl overflow-hidden mb-12 hover:border-[#FFC94D] hover:shadow-lg transition-all">
             <div className="grid md:grid-cols-2">
               <div className="p-8 sm:p-10 order-2 md:order-1">
                 <p className="text-[10px] font-bold uppercase tracking-widest text-[#8C6218] mb-3">{t.featured}</p>
                 <h2 className="font-serif text-3xl font-bold text-[#0F1729] mb-4 leading-tight">{featured.title}</h2>
-                <p className="text-gray-500 mb-5 line-clamp-3">{featured.tldr}</p>
-                <span className="text-sm font-bold text-[#8C6218]">{t.readMore}</span>
+                <p className="text-gray-500 mb-5 line-clamp-3">{featured.description}</p>
+                <span className="text-sm font-bold text-[#8C6218]">{t.readMore} →</span>
               </div>
-              {featured.coverImage ? (
+              {featured.heroImage && (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={featured.coverImage}
-                  alt={featured.coverAlt ?? featured.title}
-                  className="w-full h-56 md:h-full object-cover order-1 md:order-2"
-                />
-              ) : (
-                <div className="hidden md:block order-1 md:order-2" style={{ background: "linear-gradient(135deg, #FFF9EC 0%, #FFC94D 100%)" }} />
+                <img src={featured.heroImage} alt={featured.heroAlt ?? featured.title} className="w-full h-56 md:h-full object-cover order-1 md:order-2" />
               )}
             </div>
           </Link>
         )}
 
-        {/* Grid */}
-        {rest.length > 0 && (
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {rest.map((p) => (
-              <Link
-                key={p.slug}
-                href={blogUrl(p.lang, p.slug)}
-                className="block bg-white border border-gray-200 rounded-2xl overflow-hidden hover:border-[#FFC94D] hover:shadow-md transition-all"
-              >
-                {p.coverImage && (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={p.coverImage}
-                    alt={p.coverAlt ?? p.title}
-                    className="w-full h-40 object-cover"
-                    loading="lazy"
-                  />
-                )}
-                <div className="p-6">
-                  <span className={`inline-block text-[10px] uppercase font-bold tracking-wide px-2 py-0.5 rounded border ${CATEGORY_COLOR[p.category] ?? CATEGORY_COLOR.novice}`}>
-                    {p.category}
-                  </span>
-                  <h3 className="font-serif text-xl font-bold text-[#0F1729] mt-4 mb-2 leading-snug">{p.title}</h3>
-                  <p className="text-sm text-gray-500 line-clamp-3 mb-4">{p.tldr}</p>
-                  <div className="flex items-center justify-between text-xs text-gray-500">
-                    <time dateTime={p.publishedAt}>{new Date(p.publishedAt).toLocaleDateString(p.lang)}</time>
-                    <span>{p.readingTime} min</span>
-                  </div>
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          {rest.map((p) => (
+            <Link key={p.slug} href={blogUrl(lang, p.slug)} className="block bg-white border border-gray-200 rounded-2xl overflow-hidden hover:border-[#FFC94D] hover:shadow-md transition-all">
+              {p.heroImage && (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={p.heroImage} alt={p.heroAlt ?? p.title} className="w-full h-40 object-cover" loading="lazy" />
+              )}
+              <div className="p-6">
+                <span className={`inline-block text-[10px] uppercase font-bold tracking-wide px-2 py-0.5 rounded border ${CATEGORY_COLOR[p.category]}`}>
+                  {CATEGORY_LABEL[lang][p.category]}
+                </span>
+                <h3 className="font-serif text-xl font-bold text-[#0F1729] mt-4 mb-2 leading-snug">{p.title}</h3>
+                <p className="text-sm text-gray-500 line-clamp-3 mb-4">{p.description}</p>
+                <div className="flex items-center justify-between text-xs text-gray-500">
+                  <time dateTime={p.publishedAt}>{formatDate(p.publishedAt, lang)}</time>
+                  <span>{p.readingMinutes} min</span>
                 </div>
-              </Link>
-            ))}
-          </div>
-        )}
+              </div>
+            </Link>
+          ))}
+        </div>
       </main>
-
       <SeoFooter lang={lang} />
     </div>
   );
