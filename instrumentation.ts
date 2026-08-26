@@ -1,11 +1,10 @@
 /**
- * Next.js instrumentation hook — runs once per server instance on startup.
- * Used to apply DB migrations so the schema is always up to date.
+ * Next.js instrumentation hook.
+ *
+ * Production schema changes must run as an explicit deployment/admin migration,
+ * never from a serverless cold start. Running DDL here caused Neon connection
+ * spikes and made ordinary page requests responsible for mutating the schema.
  */
 export async function register() {
-  // Only run in the Node.js runtime (not edge), and only on the server
-  if (process.env.NEXT_RUNTIME === "nodejs") {
-    const { runMigrations } = await import("./lib/db/migrations");
-    await runMigrations();
-  }
+  // Intentionally no database DDL here.
 }
