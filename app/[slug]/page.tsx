@@ -47,15 +47,15 @@ const EVENT_LABEL_SL: Record<string, string> = {
 };
 
 /**
- * Bunny's 2026 player is served from player.mediadelivery.net. Existing
- * uploads in Guestcam still store the legacy iframe.mediadelivery.net URL,
- * so normalize at read-time instead of forcing guests to re-upload videos.
- * Non-Bunny URLs are returned untouched.
+ * Existing Guestcam videos belong to a Bunny Stream library that still uses
+ * Bunny's legacy iframe player. Do not force those videos onto Player 2;
+ * normalize any newer hostname back to the compatible legacy endpoint at
+ * read time without changing the stored database row.
  */
-function modernBunnyPlayerUrl(url: string): string {
+function compatibleBunnyPlayerUrl(url: string): string {
   return url.replace(
-    "https://iframe.mediadelivery.net/embed/",
     "https://player.mediadelivery.net/embed/",
+    "https://iframe.mediadelivery.net/embed/",
   );
 }
 
@@ -232,8 +232,8 @@ export default async function AlbumPage({ params, searchParams }: Props) {
 
   // Browser-specific playback:
   //   • iPhone/iPad Safari → same-origin signed MP4 proxy with Range support.
-  //   • macOS Safari       → native Bunny HLS (confirmed working).
-  //   • Chrome/Edge/etc.   → modern Bunny iframe player.
+  //   • macOS Safari       → native Bunny HLS.
+  //   • Chrome/Edge/etc.   → Bunny legacy iframe player used by this library.
   //
   // In the native branches cfStreamVideoId is intentionally nulled so
   // VideoCard renders <video controls playsInline> instead of an iframe.
@@ -268,7 +268,7 @@ export default async function AlbumPage({ params, searchParams }: Props) {
       }
     }
 
-    return { ...photo, blobUrl: modernBunnyPlayerUrl(photo.blobUrl) };
+    return { ...photo, blobUrl: compatibleBunnyPlayerUrl(photo.blobUrl) };
   });
 
   // Events/business package flag. getAlbumFlags never throws — if the
