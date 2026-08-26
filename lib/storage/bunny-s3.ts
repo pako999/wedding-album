@@ -1,4 +1,4 @@
-import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import { GetObjectCommand, PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 let client: S3Client | null = null;
@@ -14,7 +14,6 @@ const s3SecretKey = () =>
   process.env.BUNNY_S3_SECRET_KEY ??
   process.env.BUNNY_S3_SECRET_ACCESS_KEY ??
   legacyStorageKey();
-const cdnBase = () => (process.env.BUNNY_CDN_URL ?? "").replace(/\/$/, "");
 
 /**
  * Resolve the AWS signing region Bunny expects.
@@ -22,10 +21,9 @@ const cdnBase = () => (process.env.BUNNY_CDN_URL ?? "").replace(/\/$/, "");
  * Bunny S3 endpoints include the region in the hostname, for example:
  *   https://de-s3.storage.bunnycdn.com -> de
  *
- * A production env was accidentally configured with that full endpoint URL in
- * BUNNY_S3_REGION. The AWS SDK rejects URLs as region names before it can even
- * create a presigned URL. Accept a normal region token when supplied, otherwise
- * infer it from BUNNY_S3_ENDPOINT and fall back to us-east-1 for compatibility.
+ * Accept a normal region token when supplied. If BUNNY_S3_REGION was
+ * accidentally populated with the endpoint URL, infer the region from the
+ * endpoint instead of letting the AWS SDK reject the configuration.
  */
 function s3Region(): string {
   const configured = (process.env.BUNNY_S3_REGION ?? "").trim();
@@ -46,25 +44,29 @@ function s3Region(): string {
 }
 
 /**
- * Bunny S3 compatibility is opt-in. Normal Bunny Storage API credentials do
- * not automatically enable direct browser uploads; an explicit S3 endpoint is
- * required.
+ * Bunny S3 is intentionally separate from the legacy Bunny Storage zone.
+ * BUNNY_CDN_URL belongs to the legacy zone and MUST NOT be reused for newly
+ * uploaded S3 objects, otherwise the database contains a valid photo row that
+ * points at an object which does not exist in the old pull zone.
  *
- * Preferred env names:
+ * Required envs:
  * - BUNNY_S3_ENDPOINT      (example: https://de-s3.storage.bunnycdn.com)
  * - BUNNY_S3_BUCKET
  * - BUNNY_S3_ACCESS_KEY
  * - BUNNY_S3_SECRET_KEY
  * - BUNNY_S3_REGION        (optional; example: de)
- * - BUNNY_CDN_URL
+ *
+ * Optional:
+ * - BUNNY_S3_CDN_URL       pull-zone URL connected to the NEW S3 storage zone.
+ *                           If omitted, reads safely redirect to a short-lived
+ *                           signed S3 GET URL instead.
  */
 export function isBunnyS3Configured(): boolean {
   return !!(
     process.env.BUNNY_S3_ENDPOINT &&
     s3Bucket() &&
     s3AccessKey() &&
-    s3SecretKey() &&
-    cdnBase()
+    s3SecretKey()
   );
 }
 
@@ -87,6 +89,14 @@ function getClient(): S3Client {
   return client;
 }
 
+function publicReadPath(key: string): string {
+  const encoded = key
+    .split("/")
+    .map((segment) => encodeURIComponent(segment))
+    .join("/");
+  return `/api/bunny-s3-file/${encoded}`;
+}
+
 export async function createBunnyS3PresignedUpload({
   key,
   contentType,
@@ -107,7 +117,21 @@ export async function createBunnyS3PresignedUpload({
   const presignedUrl = await getSignedUrl(getClient(), command, { expiresIn });
   return {
     presignedUrl,
-    publicUrl: `${cdnBase()}/${key}`,
+    // Do not use BUNNY_CDN_URL here: it belongs to the old storage zone.
+    // This stable app URL redirects either to the new S3 pull zone or to a
+    // short-lived signed GET URL, so both old and new storage can coexist.
+    publicUrl: publicReadPath(key),
     key,
   };
+}
+
+export async function createBunnyS3PresignedRead(
+  key: string,
+  expiresIn = 300,
+): Promise<string> {
+  if (!isBunnyS3Configured()) {
+    throw new Error("Bunny S3 direct reads are not configured");
+  }
+  const command = new GetObjectCommand({ Bucket: s3Bucket(), Key: key });
+  return getSignedUrl(getClient(), command, { expiresIn });
 }
