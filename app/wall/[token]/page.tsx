@@ -161,10 +161,14 @@ export default async function PhotoWallPage({ params, searchParams }: Props) {
     .filter((p) => !p.mimeType?.startsWith("video/"))
     .reverse(); // oldest of the batch first, so the wall plays forward in time
 
-  // The QR on the wall always points at the main gallery (for uploads),
-  // not at this wall page — that link is deliberately the album's own
-  // slug-based URL, separate from the wall's token-based one.
-  const albumUrl = absoluteUrl(`/${album.slug}${pw ? `?pw=${encodeURIComponent(pw)}` : ""}`);
+  // The QR on the wall uses a dedicated EVENT upload URL. This is the only
+  // normal guest-facing link that activates optional lead/contact capture.
+  // The ordinary album URL and the printed album QR stay simple: guest name
+  // only, with no surname/email form. The server still checks that the album's
+  // guestDataCapture event flag is enabled before showing the extra fields.
+  const uploadParams = new URLSearchParams({ event: "1" });
+  if (pw) uploadParams.set("pw", pw);
+  const albumUrl = absoluteUrl(`/${album.slug}?${uploadParams.toString()}`);
 
   // Sponsor slides. getSponsors never throws — if the table isn't there
   // yet the wall simply runs without them.
