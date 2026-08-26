@@ -25,6 +25,8 @@ const files = {
   legacyUpload: await read("app/api/albums/[slug]/upload/route.ts"),
   legacyDownload: await read("app/api/albums/[slug]/download/route.ts"),
   s3: await read("lib/storage/bunny-s3.ts"),
+  s3Read: await read("app/api/bunny-s3-file/[...key]/route.ts"),
+  legacyRead: await read("app/api/img/route.ts"),
   deleteMedia: await read("lib/storage/delete-media.ts"),
   instrumentation: await read("instrumentation.ts"),
   bankOrder: await read("app/api/bank-order/route.ts"),
@@ -95,6 +97,34 @@ requireAbsent(
   files.videoClient,
   /\.set\(["']pw["']/,
   "client video requests must not put album passwords into query parameters",
+);
+
+requireMatch(
+  "new S3 media checks protected album guest access",
+  files.s3Read,
+  /hasAlbumRequestAccess/,
+  "password-protected S3 reads must use the shared album access gate",
+);
+
+requireMatch(
+  "new S3 media preserves owner access",
+  files.s3Read,
+  /checkAlbumOwnership/,
+  "album owners must still be able to manage protected S3 media",
+);
+
+requireMatch(
+  "legacy Bunny media checks protected album access",
+  files.legacyRead,
+  /hasAlbumRequestAccess/,
+  "historical Bunny media must use the same protected album access model",
+);
+
+requireMatch(
+  "legacy Bunny media preserves owner access",
+  files.legacyRead,
+  /checkAlbumOwnership/,
+  "album owners must still be able to manage historical protected media",
 );
 
 requireMatch(
