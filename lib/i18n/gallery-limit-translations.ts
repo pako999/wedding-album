@@ -1,9 +1,8 @@
 import type { Lang } from "./translations";
 
-/** Copy for the "upgrade to create another gallery" screen shown at
- *  /dashboard/new when a Free/Basic account already owns a gallery.
- *  Kept in its own file for the same reason as upgrade-translations.ts —
- *  only that one route needs it. */
+/** Copy for the "finish or upgrade your active Free event" screen shown at
+ * /dashboard/new. Every paid package is attached to one event; after that
+ * event is paid, the owner may create another event with its own package. */
 export interface GalleryLimitCopy {
   back: string;
   title: string;
@@ -14,38 +13,38 @@ export interface GalleryLimitCopy {
 export const GALLERY_LIMIT_COPY: Record<Lang, GalleryLimitCopy> = {
   sl: {
     back: "Nazaj na nadzorno ploščo",
-    title: "Za več galerij nadgradite paket",
-    body: "Brezplačni in Basic paket omogočata eno galerijo na račun. Za dodatne galerije nadgradite obstoječo galerijo na paket Plus ali Premium — nato lahko ustvarite neomejeno novih galerij.",
-    cta: "Nadgradi paket →",
+    title: "Free paket vključuje 1 dogodek",
+    body: "Trenutno že imate aktiven brezplačni dogodek. Najprej nadgradite ta dogodek; vsak Basic, Plus ali Premium paket velja za en dogodek. Nato lahko ustvarite nov dogodek z novim paketom.",
+    cta: "Nadgradi ta dogodek →",
   },
   hr: {
     back: "Natrag na nadzornu ploču",
-    title: "Za više galerija nadogradite paket",
-    body: "Besplatni i Basic paket omogućuju jednu galeriju po računu. Za dodatne galerije nadogradite postojeću galeriju na paket Plus ili Premium — zatim možete kreirati neograničen broj novih galerija.",
-    cta: "Nadogradi paket →",
+    title: "Free paket uključuje 1 događaj",
+    body: "Već imate aktivan besplatni događaj. Najprije nadogradite taj događaj; svaki Basic, Plus ili Premium paket vrijedi za jedan događaj. Nakon toga možete kreirati novi događaj s novim paketom.",
+    cta: "Nadogradi ovaj događaj →",
   },
   sr: {
     back: "Nazad na kontrolnu tablu",
-    title: "Za više galerija nadogradite paket",
-    body: "Besplatni i Basic paket omogućavaju jednu galeriju po nalogu. Za dodatne galerije nadogradite postojeću galeriju na paket Plus ili Premium — zatim možete kreirati neograničen broj novih galerija.",
-    cta: "Nadogradi paket →",
+    title: "Free paket uključuje 1 događaj",
+    body: "Već imate aktivan besplatan događaj. Najpre nadogradite taj događaj; svaki Basic, Plus ili Premium paket važi za jedan događaj. Zatim možete napraviti novi događaj sa novim paketom.",
+    cta: "Nadogradi ovaj događaj →",
   },
   de: {
     back: "Zurück zur Übersicht",
-    title: "Für weitere Galerien Paket upgraden",
-    body: "Das kostenlose und das Basic-Paket erlauben eine Galerie pro Konto. Für weitere Galerien upgraden Sie eine bestehende Galerie auf Plus oder Premium — danach können Sie unbegrenzt neue Galerien erstellen.",
-    cta: "Paket upgraden →",
+    title: "Free enthält 1 Event",
+    body: "Sie haben bereits ein aktives kostenloses Event. Upgraden Sie zuerst dieses Event; jedes Basic-, Plus- oder Premium-Paket gilt für genau ein Event. Danach können Sie ein neues Event mit einem neuen Paket erstellen.",
+    cta: "Dieses Event upgraden →",
   },
   en: {
     back: "Back to dashboard",
-    title: "Upgrade your plan for more galleries",
-    body: "The Free and Basic plans allow one gallery per account. To create more, upgrade an existing gallery to Plus or Premium — then you can create unlimited new galleries.",
-    cta: "Upgrade plan →",
+    title: "Free includes 1 event",
+    body: "You already have an active Free event. Upgrade that event first; each Basic, Plus or Premium package is valid for one event. You can then create another event with its own package.",
+    cta: "Upgrade this event →",
   },
   es: {
     back: "Volver al panel",
-    title: "Actualiza tu plan para más galerías",
-    body: "Los planes Gratis y Basic permiten una galería por cuenta. Para crear más, actualiza una galería existente a Plus o Premium — después podrás crear galerías nuevas sin límite.",
-    cta: "Actualizar plan →",
+    title: "Free incluye 1 evento",
+    body: "Ya tienes un evento gratuito activo. Primero actualiza ese evento; cada paquete Basic, Plus o Premium es válido para un solo evento. Después podrás crear otro evento con su propio paquete.",
+    cta: "Actualizar este evento →",
   },
 };
