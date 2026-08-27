@@ -296,14 +296,22 @@ export default async function AlbumPage({ params, searchParams }: Props) {
 
   return (
     <>
-      {/* Hide Cookiebot's persistent floating widget (the round "CO"
-          badge, bottom-left) on guest galleries — it sits on top of the
-          couple's photos and confuses guests. Only the WIDGET is hidden:
-          the initial consent dialog still appears (required — GA + Meta
-          Pixel load site-wide), and consent can be managed any time via
-          the cookie link on the marketing pages. The <style> tag only
-          exists while a gallery route is mounted. */}
-      <style>{`#CookiebotWidget { display: none !important; }`}</style>
+      {/* Gallery-only surface fixes. Cookiebot's floating widget is hidden on
+          guest albums, and native Safari/iOS video players are allowed to use
+          their full intrinsic width. The old 360px max-height forced portrait
+          videos to shrink horizontally, leaving a tiny player in the middle of
+          an otherwise full-size card. */}
+      <style>{`
+        #CookiebotWidget { display: none !important; }
+        video[controls][preload="metadata"] {
+          display: block !important;
+          width: 100% !important;
+          max-width: 100% !important;
+          height: auto !important;
+          max-height: none !important;
+          object-fit: cover;
+        }
+      `}</style>
       <AlbumGuestView
         album={toPublicAlbum(album)}
         photos={playbackPhotos}
