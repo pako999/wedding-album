@@ -1,16 +1,10 @@
+import Link from "next/link";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SeoFooter } from "@/components/SeoFooter";
 import type { BlogPost, BlogCategory } from "@/lib/blog";
 import { SITE_URL } from "@/lib/urls";
 import { BLOG_HREFLANG, type LangCode } from "@/components/LanguageSwitcher";
-
-const CATEGORY_COLOR: Record<BlogCategory, string> = {
-  vodnik: "bg-amber-100 text-amber-800 border-amber-300",
-  primerjava: "bg-violet-100 text-violet-800 border-violet-300",
-  nasvet: "bg-emerald-100 text-emerald-800 border-emerald-300",
-  "kontrolni-seznam": "bg-sky-100 text-sky-800 border-sky-300",
-  novice: "bg-rose-100 text-rose-800 border-rose-300",
-};
+import { safeJsonLd } from "@/lib/seo/jsonld-safe";
 
 const CATEGORY_LABEL: Record<LangCode, Record<BlogCategory, string>> = {
   sl: { vodnik: "Vodnik", primerjava: "Primerjava", nasvet: "Nasvet", "kontrolni-seznam": "Kontrolni seznam", novice: "Novice" },
@@ -21,19 +15,55 @@ const CATEGORY_LABEL: Record<LangCode, Record<BlogCategory, string>> = {
   es: { vodnik: "Guía", primerjava: "Comparativa", nasvet: "Consejo", "kontrolni-seznam": "Lista de control", novice: "Noticias" },
 };
 
-const COPY: Record<LangCode, {
+type Copy = {
+  eyebrow: string;
   h1: string;
+  accent: string;
   lead: string;
   empty: string;
   readMore: string;
   featured: string;
-}> = {
-  sl: { h1: "Guestcam Blog — Nasveti za poročne fotografije", lead: "Vodniki, primerjave in nasveti za zbiranje fotografij gostov.", empty: "Objave kmalu prihajajo.", readMore: "Preberi", featured: "Najnovejše" },
-  hr: { h1: "Guestcam Blog — Savjeti za fotografije s vjenčanja", lead: "Vodiči, usporedbe i savjeti za prikupljanje fotografija gostiju.", empty: "Objave uskoro stižu.", readMore: "Pročitaj", featured: "Najnovije" },
-  sr: { h1: "Guestcam Blog — Saveti za fotografije sa venčanja", lead: "Vodiči, poređenja i saveti za prikupljanje fotografija gostiju.", empty: "Objave uskoro stižu.", readMore: "Pročitaj", featured: "Najnovije" },
-  de: { h1: "Guestcam Blog — Tipps für Hochzeitsfotos", lead: "Ratgeber, Vergleiche und Tipps zum Sammeln von Gästefotos.", empty: "Beiträge folgen in Kürze.", readMore: "Lesen", featured: "Neueste" },
-  en: { h1: "Guestcam Blog — Wedding Photo Tips & Guides", lead: "Guides, comparisons and tips for collecting guest photos.", empty: "New articles are coming soon.", readMore: "Read more", featured: "Latest" },
-  es: { h1: "Guestcam Blog — Consejos para fotos de boda", lead: "Guías, comparativas y consejos para recopilar fotos de los invitados.", empty: "Próximamente publicaremos nuevos artículos.", readMore: "Leer", featured: "Último" },
+  latest: string;
+  latestLead: string;
+  ctaTitle: string;
+  ctaBody: string;
+  ctaButton: string;
+};
+
+const COPY: Record<LangCode, Copy> = {
+  sl: {
+    eyebrow: "Guestcam vodiči",
+    h1: "Ideje za več fotografij.",
+    accent: "Manj lovljenja po WhatsAppu.",
+    lead: "Praktični vodiči za QR kode, zbiranje fotografij in videov gostov, zasebne galerije ter dogodke — brez aplikacije in kompliciranja.",
+    empty: "Novi vodiči prihajajo kmalu.",
+    readMore: "Preberi vodič",
+    featured: "Izbrani vodič",
+    latest: "Najnovejši vodiči",
+    latestLead: "Kratki, uporabni odgovori za organizatorje, pare in ekipe na dogodkih.",
+    ctaTitle: "Vse fotografije gostov. En sam album.",
+    ctaBody: "Ustvarite zasebno Guestcam galerijo, dobite QR kodo in pustite gostom, da nalagajo brez aplikacije.",
+    ctaButton: "Začni brezplačno →",
+  },
+  hr: {
+    eyebrow: "Guestcam vodiči",
+    h1: "Više fotografija gostiju.",
+    accent: "Manje traženja po WhatsAppu.",
+    lead: "Praktični vodiči za QR kodove, prikupljanje fotografija i videa gostiju, privatne galerije i događaje — bez aplikacije i kompliciranja.",
+    empty: "Novi vodiči stižu uskoro.", readMore: "Pročitaj vodič", featured: "Izdvojeni vodič", latest: "Najnoviji vodiči", latestLead: "Kratki i korisni odgovori za organizatore, parove i event timove.", ctaTitle: "Sve fotografije gostiju. Jedan album.", ctaBody: "Napravite privatnu Guestcam galeriju, preuzmite QR kod i omogućite gostima prijenos bez aplikacije.", ctaButton: "Počni besplatno →",
+  },
+  sr: {
+    eyebrow: "Guestcam vodiči", h1: "Više fotografija gostiju.", accent: "Manje traženja po WhatsAppu.", lead: "Praktični vodiči za QR kodove, prikupljanje fotografija i videa gostiju, privatne galerije i događaje — bez aplikacije i komplikovanja.", empty: "Novi vodiči stižu uskoro.", readMore: "Pročitaj vodič", featured: "Izdvojeni vodič", latest: "Najnoviji vodiči", latestLead: "Kratki i korisni odgovori za organizatore, parove i event timove.", ctaTitle: "Sve fotografije gostiju. Jedan album.", ctaBody: "Napravite privatnu Guestcam galeriju, dobijte QR kod i omogućite gostima otpremanje bez aplikacije.", ctaButton: "Počni besplatno →",
+  },
+  de: {
+    eyebrow: "Guestcam Ratgeber", h1: "Mehr Gästefotos.", accent: "Weniger WhatsApp-Chaos.", lead: "Praktische Ratgeber zu QR-Codes, Gästefotos und -videos, privaten Galerien und Events — ohne App und ohne komplizierte Einrichtung.", empty: "Neue Ratgeber folgen in Kürze.", readMore: "Ratgeber lesen", featured: "Ausgewählter Ratgeber", latest: "Neueste Ratgeber", latestLead: "Kurze, praktische Antworten für Paare, Veranstalter und Event-Teams.", ctaTitle: "Alle Gästefotos. Ein Album.", ctaBody: "Erstelle eine private Guestcam-Galerie, erhalte deinen QR-Code und lass Gäste ohne App hochladen.", ctaButton: "Kostenlos starten →",
+  },
+  en: {
+    eyebrow: "Guestcam guides", h1: "More guest photos.", accent: "Less WhatsApp chasing.", lead: "Practical guides to QR codes, collecting guest photos and videos, private galleries and events — no app and no complicated setup.", empty: "New guides are coming soon.", readMore: "Read guide", featured: "Featured guide", latest: "Latest guides", latestLead: "Short, useful answers for couples, organisers and event teams.", ctaTitle: "Every guest photo. One album.", ctaBody: "Create a private Guestcam gallery, get your QR code and let guests upload without an app.", ctaButton: "Start free →",
+  },
+  es: {
+    eyebrow: "Guías Guestcam", h1: "Más fotos de invitados.", accent: "Menos búsquedas por WhatsApp.", lead: "Guías prácticas sobre códigos QR, fotos y vídeos de invitados, galerías privadas y eventos — sin app y sin configuraciones complicadas.", empty: "Pronto publicaremos nuevas guías.", readMore: "Leer guía", featured: "Guía destacada", latest: "Guías más recientes", latestLead: "Respuestas breves y útiles para parejas, organizadores y equipos de eventos.", ctaTitle: "Todas las fotos de tus invitados. Un álbum.", ctaBody: "Crea una galería privada de Guestcam, obtén tu QR y deja que los invitados suban fotos sin app.", ctaButton: "Empieza gratis →",
+  },
 };
 
 function blogUrl(lang: LangCode, slug: string) {
@@ -45,10 +75,16 @@ function indexUrl(lang: LangCode) {
 }
 
 function formatDate(date: string, lang: LangCode) {
-  const locales: Record<LangCode, string> = {
-    sl: "sl-SI", hr: "hr-HR", sr: "sr-RS", de: "de-DE", en: "en-GB", es: "es-ES",
-  };
+  const locales: Record<LangCode, string> = { sl: "sl-SI", hr: "hr-HR", sr: "sr-RS", de: "de-DE", en: "en-GB", es: "es-ES" };
   return new Date(date).toLocaleDateString(locales[lang], { year: "numeric", month: "short", day: "numeric" });
+}
+
+function CategoryPill({ category, lang, inverted = false }: { category: BlogCategory; lang: LangCode; inverted?: boolean }) {
+  return (
+    <span className={`inline-flex rounded-full px-3 py-1 text-[10px] font-black uppercase tracking-[.14em] ${inverted ? "bg-[#F4B400] text-black" : "bg-[#FFF1B8] text-[#6F5000]"}`}>
+      {CATEGORY_LABEL[lang][category]}
+    </span>
+  );
 }
 
 export function BlogIndexPage({ posts, lang }: { posts: BlogPost[]; lang: LangCode }) {
@@ -62,9 +98,10 @@ export function BlogIndexPage({ posts, lang }: { posts: BlogPost[]; lang: LangCo
     "@type": "Blog",
     "@id": `${absoluteIndex}#blog`,
     url: absoluteIndex,
-    name: t.h1,
+    name: `${t.h1} ${t.accent}`,
     description: t.lead,
     inLanguage: lang,
+    publisher: { "@type": "Organization", "@id": `${SITE_URL}/#organization`, name: "Guestcam", url: SITE_URL },
     blogPost: posts.slice(0, 20).map((post) => ({
       "@type": "BlogPosting",
       headline: post.title,
@@ -72,65 +109,106 @@ export function BlogIndexPage({ posts, lang }: { posts: BlogPost[]; lang: LangCo
       datePublished: post.publishedAt,
       dateModified: post.updatedAt,
       description: post.description,
-      author: { "@type": "Organization", name: "Guestcam" },
-      publisher: { "@type": "Organization", name: "Guestcam", url: SITE_URL },
+      ...(post.coverImage ? { image: post.coverImage } : {}),
+      author: { "@type": "Organization", name: "Guestcam Team" },
+      publisher: { "@id": `${SITE_URL}/#organization` },
     })),
   };
 
   return (
     <div className="min-h-screen bg-[#FFFDF8] text-[#111111]">
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(itemList) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: safeJsonLd(itemList) }} />
       <SiteHeader lang={lang} hreflang={BLOG_HREFLANG} />
-      <main className="max-w-6xl mx-auto px-5 sm:px-8 py-12 sm:py-16">
-        <header className="text-center mb-12">
-          <p className="text-xs font-black uppercase tracking-[.18em] text-[#8F6900] mb-3">Blog</p>
-          <h1 className="text-4xl sm:text-6xl font-black tracking-[-.05em] leading-[1.03] mb-4">{t.h1}</h1>
-          <p className="text-base sm:text-lg text-black/55 max-w-2xl mx-auto">{t.lead}</p>
-        </header>
 
-        {posts.length === 0 && <p className="text-center text-black/50 py-20">{t.empty}</p>}
+      <main>
+        <section className="border-b border-black/10">
+          <div className="max-w-6xl mx-auto px-5 sm:px-8 py-16 sm:py-24">
+            <p className="text-xs font-black uppercase tracking-[.2em] text-[#8F6900] mb-5">{t.eyebrow}</p>
+            <h1 className="max-w-5xl text-[clamp(2.8rem,7vw,6.5rem)] font-black tracking-[-.065em] leading-[.92]">
+              {t.h1}<br />
+              <span className="text-[#B88700]">{t.accent}</span>
+            </h1>
+            <p className="mt-7 max-w-2xl text-base sm:text-xl leading-relaxed text-black/60">{t.lead}</p>
+          </div>
+        </section>
 
-        {featured && (
-          <a href={blogUrl(lang, featured.slug)} className="block bg-white border border-black/10 rounded-[28px] overflow-hidden mb-12 hover:border-[#F4B400] hover:shadow-lg transition-all">
-            <div className="grid md:grid-cols-2">
-              <div className="p-7 sm:p-10 order-2 md:order-1">
-                <p className="text-[10px] font-black uppercase tracking-[.16em] text-[#8F6900] mb-3">{t.featured}</p>
-                <h2 className="text-3xl font-black tracking-[-.04em] mb-4 leading-tight">{featured.title}</h2>
-                <p className="text-black/55 mb-5 line-clamp-3">{featured.tldr}</p>
-                <span className="text-sm font-black text-[#8F6900]">{t.readMore} →</span>
-              </div>
-              {featured.coverImage ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={featured.coverImage} alt={featured.coverAlt ?? featured.title} className="w-full h-56 md:h-full object-cover order-1 md:order-2" />
-              ) : (
-                <div className="hidden md:block order-1 md:order-2 bg-[#FFF6CE]" />
-              )}
-            </div>
-          </a>
-        )}
+        <section className="max-w-6xl mx-auto px-5 sm:px-8 py-12 sm:py-16">
+          {posts.length === 0 && <p className="text-center text-black/50 py-20">{t.empty}</p>}
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {rest.map((p) => (
-            <a key={p.slug} href={blogUrl(lang, p.slug)} className="block bg-white border border-black/10 rounded-[22px] overflow-hidden hover:border-[#F4B400] hover:shadow-md transition-all">
-              {p.coverImage && (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={p.coverImage} alt={p.coverAlt ?? p.title} className="w-full h-44 object-cover" loading="lazy" />
-              )}
-              <div className="p-6">
-                <span className={`inline-block text-[10px] uppercase font-bold tracking-wide px-2 py-0.5 rounded border ${CATEGORY_COLOR[p.category]}`}>
-                  {CATEGORY_LABEL[lang][p.category]}
-                </span>
-                <h3 className="text-xl font-black tracking-[-.025em] mt-4 mb-2 leading-snug">{p.title}</h3>
-                <p className="text-sm text-black/50 line-clamp-3 mb-4">{p.tldr}</p>
-                <div className="flex items-center justify-between text-xs text-black/45">
-                  <time dateTime={p.publishedAt}>{formatDate(p.publishedAt, lang)}</time>
-                  <span>{p.readingTime} min</span>
+          {featured && (
+            <Link href={blogUrl(lang, featured.slug)} className="group block overflow-hidden rounded-[32px] bg-[#111111] text-white shadow-[0_24px_70px_rgba(17,17,17,.14)]">
+              <div className="grid lg:grid-cols-[1.05fr_.95fr] min-h-[420px]">
+                <div className="p-7 sm:p-11 lg:p-14 flex flex-col justify-between order-2 lg:order-1">
+                  <div>
+                    <div className="flex flex-wrap items-center gap-3 mb-7">
+                      <span className="text-[10px] font-black uppercase tracking-[.18em] text-[#F4B400]">{t.featured}</span>
+                      <CategoryPill category={featured.category} lang={lang} inverted />
+                    </div>
+                    <h2 className="text-3xl sm:text-5xl font-black tracking-[-.05em] leading-[1.02] max-w-xl">{featured.title}</h2>
+                    <p className="mt-5 text-white/65 text-base sm:text-lg leading-relaxed max-w-xl">{featured.tldr}</p>
+                  </div>
+                  <div className="mt-9 flex items-center justify-between gap-4">
+                    <span className="inline-flex items-center rounded-full bg-[#F4B400] px-5 py-3 text-sm font-black text-black transition-transform group-hover:translate-x-1">{t.readMore} →</span>
+                    <time className="text-xs text-white/45" dateTime={featured.publishedAt}>{formatDate(featured.publishedAt, lang)}</time>
+                  </div>
+                </div>
+                <div className="order-1 lg:order-2 bg-[#F4B400] min-h-[250px] lg:min-h-full">
+                  {featured.coverImage ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={featured.coverImage} alt={featured.coverAlt ?? featured.title} className="w-full h-full object-cover" fetchPriority="high" />
+                  ) : (
+                    <div className="w-full h-full min-h-[280px] flex items-center justify-center text-8xl">📸</div>
+                  )}
                 </div>
               </div>
-            </a>
-          ))}
-        </div>
+            </Link>
+          )}
+        </section>
+
+        {rest.length > 0 && (
+          <section className="bg-[#F4B400] border-y border-black/10">
+            <div className="max-w-6xl mx-auto px-5 sm:px-8 py-14 sm:py-20">
+              <div className="mb-9 sm:flex items-end justify-between gap-8">
+                <h2 className="text-3xl sm:text-5xl font-black tracking-[-.05em]">{t.latest}</h2>
+                <p className="mt-3 sm:mt-0 max-w-lg text-sm sm:text-base text-black/65">{t.latestLead}</p>
+              </div>
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                {rest.map((p) => (
+                  <Link key={p.slug} href={blogUrl(lang, p.slug)} className="group flex flex-col overflow-hidden rounded-[26px] border border-black/10 bg-[#FFFDF8] transition-all hover:-translate-y-1 hover:shadow-[0_18px_45px_rgba(0,0,0,.12)]">
+                    {p.coverImage ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={p.coverImage} alt={p.coverAlt ?? p.title} className="w-full h-48 object-cover" loading="lazy" decoding="async" />
+                    ) : <div className="h-8 bg-[#111111]" />}
+                    <div className="p-6 flex flex-1 flex-col">
+                      <CategoryPill category={p.category} lang={lang} />
+                      <h3 className="text-xl sm:text-2xl font-black tracking-[-.035em] mt-4 leading-[1.08]">{p.title}</h3>
+                      <p className="text-sm text-black/55 line-clamp-3 mt-3 leading-relaxed">{p.tldr}</p>
+                      <div className="mt-auto pt-6 flex items-center justify-between gap-3 text-xs text-black/45">
+                        <time dateTime={p.publishedAt}>{formatDate(p.publishedAt, lang)}</time>
+                        <span className="font-bold text-black/65">{p.readingTime} min</span>
+                      </div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+
+        <section className="max-w-6xl mx-auto px-5 sm:px-8 py-16 sm:py-24">
+          <div className="rounded-[34px] bg-[#111111] px-7 py-10 sm:px-12 sm:py-14 text-white sm:flex items-center justify-between gap-10">
+            <div className="max-w-2xl">
+              <p className="text-xs font-black uppercase tracking-[.18em] text-[#F4B400] mb-3">Guestcam</p>
+              <h2 className="text-3xl sm:text-5xl font-black tracking-[-.05em] leading-[1]">{t.ctaTitle}</h2>
+              <p className="mt-4 text-white/65 leading-relaxed">{t.ctaBody}</p>
+            </div>
+            <Link href="/dashboard/new" className="mt-7 sm:mt-0 inline-flex shrink-0 items-center rounded-full bg-[#F4B400] px-6 py-3.5 text-sm font-black text-black hover:scale-[1.03] transition-transform">
+              {t.ctaButton}
+            </Link>
+          </div>
+        </section>
       </main>
+
       <SeoFooter lang={lang} />
     </div>
   );
