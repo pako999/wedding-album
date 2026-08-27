@@ -6,19 +6,12 @@ import { getAllPosts } from "@/lib/blog";
 import type { LangCode } from "@/components/LanguageSwitcher";
 import { OG_IMAGE_URL, ogImage } from "@/lib/og";
 
-// Per-request dynamic so the root layout's detectLang() can read the
-// middleware-supplied x-pathname header. Otherwise `force-static`
-// prerenders this with empty headers and the root layout defaults
-// every /<lang>/blog/* page to lang='sl' — wrong html lang + Slovenian
-// cookie banner served to English/German/Spanish/Croatian/Serbian
-// visitors. ISR cache still applies via `revalidate`.
 export const revalidate = 3600;
 
 const VALID: LangCode[] = ["hr", "sr", "de", "en", "es"];
 const ALL_LANGS: LangCode[] = ["sl", "hr", "sr", "de", "en", "es"];
+const OG_LOCALE: Record<LangCode, string> = { sl: "sl_SI", hr: "hr_HR", sr: "sr_RS", de: "de_DE", en: "en_GB", es: "es_ES" };
 
-// Outer dynamic segment is named `[slug]` because it's shared with the
-// album route at /<slug>; here it's interpreted as a language code.
 export async function generateStaticParams() {
   return VALID.map((slug) => ({ slug }));
 }
@@ -28,48 +21,43 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   if (!(VALID as string[]).includes(lang)) return {};
   const langCode = lang as LangCode;
 
-  // Page-name only: the layout title template appends "| Guestcam", so a
-  // brand here rendered doubled ("Blog — Guestcam | Guestcam").
   const titles: Record<LangCode, string> = {
-    sl: "Blog: QR kode in fotografije z dogodkov",
-    hr: "Blog: QR kodovi i fotografije s događaja",
-    sr: "Blog: QR kodovi i fotografije sa događaja",
-    de: "Blog: QR-Codes und Eventfotos",
-    en: "Blog: QR codes and event photos",
-    es: "Blog: códigos QR y fotos de eventos",
+    sl: "QR kode, fotografije gostov in ideje za dogodke",
+    hr: "QR kodovi, fotografije gostiju i ideje za događaje",
+    sr: "QR kodovi, fotografije gostiju i ideje za događaje",
+    de: "QR-Codes, Gästefotos und Ideen für Events",
+    en: "QR codes, guest photos and event ideas",
+    es: "Códigos QR, fotos de invitados e ideas para eventos",
   };
   const descriptions: Record<LangCode, string> = {
-    sl: "Nasveti in vodniki za zbiranje fotografij gostov.",
-    hr: "Savjeti i vodiči za prikupljanje fotografija gostiju.",
-    sr: "Saveti i vodiči za prikupljanje fotografija gostiju.",
-    de: "Tipps und Anleitungen zum Sammeln von Gästefotos auf Hochzeiten.",
-    en: "Tips and guides for collecting wedding guest photos.",
-    es: "Consejos y guías para recopilar fotos de los invitados.",
+    sl: "Praktični vodiči za QR kode, fotografije gostov in dogodke brez aplikacije.",
+    hr: "Praktični vodiči za QR kodove, fotografije i videozapise gostiju, privatne galerije i događaje — bez aplikacije.",
+    sr: "Praktični vodiči za QR kodove, fotografije i video snimke gostiju, privatne galerije i događaje — bez aplikacije.",
+    de: "Praktische Ratgeber zu QR-Codes, Gästefotos und -videos, privaten Galerien und Events — ohne App.",
+    en: "Practical guides to QR codes, collecting guest photos and videos, private galleries and events — no app required.",
+    es: "Guías prácticas sobre códigos QR, fotos y vídeos de invitados, galerías privadas y eventos — sin app.",
   };
+
+  const languageAlternates = Object.fromEntries(
+    ALL_LANGS.map((l) => [l, l === "sl" ? `${SITE_URL}/blog` : `${SITE_URL}/${l}/blog`]),
+  );
 
   return {
     title: titles[langCode],
     description: descriptions[langCode],
     alternates: {
       canonical: `${SITE_URL}/${langCode}/blog`,
-      languages: Object.fromEntries(
-        ALL_LANGS.map((l) => [l, l === "sl" ? `${SITE_URL}/blog` : `${SITE_URL}/${l}/blog`]),
-      ),
+      languages: { ...languageAlternates, "x-default": `${SITE_URL}/blog` },
     },
     openGraph: {
       url: `${SITE_URL}/${langCode}/blog`,
       type: "website",
-      locale: langCode,
+      locale: OG_LOCALE[langCode],
       title: titles[langCode],
       description: descriptions[langCode],
       images: [ogImage(titles[langCode])],
     },
-    twitter: {
-      card: "summary_large_image",
-      title: titles[langCode],
-      description: descriptions[langCode],
-      images: [OG_IMAGE_URL],
-    },
+    twitter: { card: "summary_large_image", title: titles[langCode], description: descriptions[langCode], images: [OG_IMAGE_URL] },
     robots: { index: true, follow: true },
   };
 }
