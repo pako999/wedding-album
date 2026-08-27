@@ -2,6 +2,7 @@ import Link from "next/link";
 import { auth } from "@clerk/nextjs/server";
 import { UserButton } from "@clerk/nextjs";
 import type { LangCode } from "@/components/LanguageSwitcher";
+import { DemoButton } from "@/components/DemoButton";
 
 const LABELS: Record<LangCode, { login: string; dashboard: string }> = {
   sl: { login: "Prijava",        dashboard: "Nadzorna plošča" },
@@ -39,12 +40,19 @@ export async function HeaderAuthButtons({
     }
   }
 
+  // The current Slovenian homepage keeps its redesigned visual button as a
+  // normal /demo link. This invisible bridge restores the original Guestcam
+  // DemoButton behaviour: clicking that link opens the QR/demo-album modal
+  // in-place instead of navigating away from the homepage.
+  const demoBridge = lang === "sl" ? <DemoButton variant="bridge" /> : null;
+
   if (!signedIn) {
-    return <Link href="/sign-in" className={linkClassName}>{t.login}</Link>;
+    return <>{demoBridge}<Link href="/sign-in" className={linkClassName}>{t.login}</Link></>;
   }
 
   return (
     <>
+      {demoBridge}
       <Link href="/dashboard" className={linkClassName}>{t.dashboard}</Link>
       <UserButton appearance={{ elements: { userButtonAvatarBox: { width: 30, height: 30 } } }} />
     </>
