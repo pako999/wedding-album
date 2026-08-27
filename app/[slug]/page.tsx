@@ -11,6 +11,7 @@ import { hashAlbumPassword, needsRehash, verifyAlbumPassword } from "@/lib/album
 import { verifiedEmails } from "@/lib/album-ownership";
 import { toPublicAlbum } from "@/lib/album-view";
 import { getAlbumFlags } from "@/lib/album-flags";
+import { getAlbumHeaderSettings } from "@/lib/album-header-settings";
 import { getAlbumAppearance, WELCOME_FONT_STACKS, type WelcomeFont } from "@/lib/album-appearance";
 import { createVideoPlaybackToken } from "@/lib/video-playback-token";
 import type { Metadata } from "next";
@@ -34,7 +35,6 @@ const EVENT_LABEL_SL: Record<string, string> = {
   other:       "Album dogodka za",
 };
 
-/** Legacy Bunny iframe fallback if signed same-origin playback is unavailable. */
 function compatibleBunnyPlayerUrl(url: string): string {
   return url.replace(
     "https://player.mediadelivery.net/embed/",
@@ -42,7 +42,6 @@ function compatibleBunnyPlayerUrl(url: string): string {
   );
 }
 
-/** Safari HLS fallback if the signed MP4 playback token cannot be created. */
 function bunnyHlsUrl(thumbnailUrl: string | null | undefined, videoId: string): string | null {
   if (!thumbnailUrl || !videoId) return null;
   try {
@@ -174,10 +173,6 @@ export default async function AlbumPage({ params, searchParams }: Props) {
   const safari = isSafariUserAgent(userAgent);
   const playbackExpiresAt = Math.floor(Date.now() / 1000) + 2 * 60 * 60;
 
-  // Use Guestcam's same-origin signed MP4 proxy for every browser. This keeps
-  // portrait videos in the native <video> element, so they can use the full
-  // card width instead of being letterboxed inside Bunny's fixed 16:9 iframe.
-  // HLS/iframe remain fallbacks only if a playback token cannot be created.
   const playbackPhotos = albumPhotos.map((photo) => {
     if (!photo.cfStreamVideoId) return photo;
 
@@ -210,9 +205,8 @@ export default async function AlbumPage({ params, searchParams }: Props) {
     return { ...photo, blobUrl: compatibleBunnyPlayerUrl(photo.blobUrl) };
   });
 
-  // Event/Photo Wall branding belongs only to the dedicated event surface.
-  // Ordinary album URLs stay standard even when event branding is configured.
   const flags = await getAlbumFlags(album.id);
+  const headerSettings = await getAlbumHeaderSettings(album.id);
   const isEventSurface = event === "1";
   const appearance = isEventSurface ? await getAlbumAppearance(album.id) : null;
   const requireEventGuestData = flags.guestDataCapture && isEventSurface;
@@ -222,10 +216,16 @@ export default async function AlbumPage({ params, searchParams }: Props) {
     orderBy: (m, { asc }) => [asc(m.sortOrder), asc(m.createdAt)],
   });
 
+  const publicAlbum = toPublicAlbum(album);
+  const albumForGuest = headerSettings.showLocation
+    ? publicAlbum
+    : { ...publicAlbum, location: null };
+
   return (
-    <>
+    <div className={headerSettings.showEventName ? undefined : "gc-hide-event-name"}>
       <style>{`
         #CookiebotWidget { display: none !important; }
+        .gc-hide-event-name > .min-h-screen > .relative h1 { display: none !important; }
         video[controls] {
           display: block !important;
           width: 100% !important;
@@ -238,7 +238,7 @@ export default async function AlbumPage({ params, searchParams }: Props) {
         }
       `}</style>
       <AlbumGuestView
-        album={toPublicAlbum(album)}
+        album={albumForGuest}
         photos={playbackPhotos}
         moments={albumMoments}
         passwordRequired={passwordRequired}
@@ -259,6 +259,6 @@ export default async function AlbumPage({ params, searchParams }: Props) {
           welcomeFontStack: WELCOME_FONT_STACKS[(appearance.welcomeFont as WelcomeFont)] ?? WELCOME_FONT_STACKS.elegant,
         } : undefined}
       />
-    </>
+    </div>
   );
 }
