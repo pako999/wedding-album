@@ -21,7 +21,7 @@ export async function PATCH(
   if (!album) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
   const body = await req.json();
-  const { coupleName, location, notifyEmail, password, moderationEnabled, isPublished, coverImageUrl, eventType, theme, guestDataCapture, allowPhotos, allowVideos, albumPermission, disableDownload, disableLikes } = body;
+  const { coupleName, location, notifyEmail, password, moderationEnabled, isPublished, coverImageUrl, eventType, defaultLang, theme, guestDataCapture, allowPhotos, allowVideos, albumPermission, disableDownload, disableLikes } = body;
 
   const ALLOWED_EVENT_TYPES = [
     "wedding",
@@ -38,6 +38,12 @@ export async function PATCH(
     typeof eventType === "string" && ALLOWED_EVENT_TYPES.includes(eventType)
       ? eventType
       : album.eventType;
+
+  const ALLOWED_LANGS = ["sl", "hr", "sr", "de", "en", "es"];
+  const validDefaultLang =
+    typeof defaultLang === "string" && ALLOWED_LANGS.includes(defaultLang)
+      ? defaultLang
+      : album.defaultLang;
 
   const validTheme =
     typeof theme === "string" && ALBUM_THEMES.some((t) => t.id === theme)
@@ -70,6 +76,7 @@ export async function PATCH(
       isPublished: isPublished !== undefined ? isPublished : album.isPublished,
       coverImageUrl: coverImageUrl !== undefined ? (coverImageUrl || null) : album.coverImageUrl,
       eventType: validEventType,
+      defaultLang: validDefaultLang,
       theme: validTheme,
       updatedAt: new Date(),
     })

@@ -42,6 +42,8 @@ const files = {
   homePage: await read("app/page.tsx"),
   homeComponent: await read("components/GuestcamHomePage.tsx"),
   localizedHomeComponent: await read("components/LocalizedGuestcamHomePageV3.tsx"),
+  albumAdminPanel: await read("components/dashboard/AlbumAdminPanel.tsx"),
+  albumSettingsRoute: await read("app/api/albums/[slug]/settings/route.ts"),
   seoFooter: await read("components/SeoFooter.tsx"),
   sitemap: await read("app/sitemap.ts"),
 };
@@ -205,6 +207,20 @@ requireMatch(
   files.homeComponent,
   /<\/section>\s*<PromoVideo\s*\/>\s*<section className="bg-\[#FFFDF8\] px-4 py-8/,
   "the promo video must stay in the React tree immediately after the hero section",
+);
+
+requireMatch(
+  "album settings expose the default guest language",
+  files.albumAdminPanel,
+  /Privzeti jezik galerije[\s\S]*value=\{defaultLang\}[\s\S]*setDefaultLang/,
+  "the owner must be able to choose the album and Photo Wall language",
+);
+
+requireMatch(
+  "album settings save the default guest language",
+  files.albumSettingsRoute,
+  /defaultLang:\s*validDefaultLang/,
+  "the settings PATCH route must persist the validated default language",
 );
 
 requireMatch(

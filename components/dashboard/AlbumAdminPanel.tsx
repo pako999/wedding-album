@@ -1594,6 +1594,7 @@ function AlbumSettingsForm({ album, children, wallToken, hasPassword }: { album:
   const [moderationEnabled, setModerationEnabled] = useState(album.moderationEnabled);
   const [isPublished, setIsPublished]         = useState(album.isPublished);
   const [eventType, setEventType]             = useState(album.eventType ?? "wedding");
+  const [defaultLang, setDefaultLang]         = useState(album.defaultLang ?? "sl");
   const [theme, setTheme]                     = useState(album.theme ?? "navy");
 
   // NOTE: the password hash itself is deliberately NOT sent to this client
@@ -1621,6 +1622,7 @@ function AlbumSettingsForm({ album, children, wallToken, hasPassword }: { album:
       moderationEnabled,
       isPublished,
       eventType,
+      defaultLang,
       theme,
     };
     const newPassword = passwordDraft.trim();
@@ -1687,6 +1689,25 @@ function AlbumSettingsForm({ album, children, wallToken, hasPassword }: { album:
           <option value="baby_shower">Baby Shower</option>
           <option value="business">Poslovni dogodek</option>
           <option value="other">Drugo</option>
+        </select>
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Privzeti jezik galerije</label>
+        <p className="text-xs text-gray-400 mb-2">
+          V tem jeziku se galerija in Photo Wall prvič odpreta gostom. Gost lahko jezik pozneje spremeni.
+        </p>
+        <select
+          value={defaultLang}
+          onChange={(e) => setDefaultLang(e.target.value)}
+          className={inputClass}
+        >
+          <option value="sl">Slovenščina</option>
+          <option value="hr">Hrvatski</option>
+          <option value="sr">Srpski</option>
+          <option value="de">Deutsch</option>
+          <option value="en">English</option>
+          <option value="es">Español</option>
         </select>
       </div>
 
@@ -2374,4 +2395,3 @@ function DnsRow({ label, value }: { label: string; value: string }) {
     </div>
   );
 }
-
