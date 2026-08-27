@@ -1,4 +1,4 @@
-import { listPayments, mollieConfigured, isPaidStatus, type MolliePayment } from "@/lib/mollie";
+import { listAllPayments, mollieConfigured, isPaidStatus, type MolliePayment } from "@/lib/mollie";
 import { db } from "@/lib/db";
 import { albums, cardBilling } from "@/lib/db/schema";
 import { inArray } from "drizzle-orm";
@@ -18,7 +18,7 @@ interface EnrichedPayment extends MolliePayment {
 async function safeList(): Promise<MolliePayment[]> {
   if (!mollieConfigured()) return [];
   try {
-    return await listPayments(50);
+    return await listAllPayments();
   } catch (err) {
     console.error("[admin payments] mollie list failed:", err);
     return [];
@@ -107,7 +107,7 @@ export default async function AdminPayments() {
         <div>
           <h1 className="text-3xl font-extrabold tracking-tight text-[#0F1729]">Plačila</h1>
           <p className="text-sm text-gray-500 mt-1">
-            Zadnjih {enriched.length} transakcij iz Mollie · skupaj plačano {totalEur.toFixed(2)}€
+            Vseh {enriched.length} transakcij iz Mollie · skupaj plačano {totalEur.toFixed(2)}€
           </p>
         </div>
         {/* One-click repair for the "paid but still FREE" bug — re-checks

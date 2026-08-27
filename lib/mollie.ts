@@ -126,3 +126,33 @@ export async function listPayments(limit = 50): Promise<MolliePayment[]> {
     return [];
   }
 }
+
+/**
+ * Retrieve the complete Mollie history for financial admin totals. Mollie's
+ * endpoint returns at most 250 rows per page, so follow its `from` cursor until
+ * no next page remains. A hard page cap prevents an unexpected API loop.
+ */
+export async function listAllPayments(maxPages = 100): Promise<MolliePayment[]> {
+  if (!mollieConfigured()) return [];
+
+  const payments: MolliePayment[] = [];
+  let from: string | null = null;
+  for (let page = 0; page < maxPages; page++) {
+    const query = new URLSearchParams({ limit: "250", sort: "desc" });
+    if (from) query.set("from", from);
+
+    const result = await mollieFetch<{
+      _embedded?: { payments?: MolliePayment[] };
+      _links?: { next?: { href?: string } };
+    }>(`/payments?${query.toString()}`);
+    payments.push(...(result._embedded?.payments ?? []));
+
+    const nextHref = result._links?.next?.href;
+    if (!nextHref) break;
+    const nextFrom = new URL(nextHref).searchParams.get("from");
+    if (!nextFrom || nextFrom === from) break;
+    from = nextFrom;
+  }
+
+  return payments;
+}

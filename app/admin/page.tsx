@@ -1,48 +1,54 @@
 import { db } from "@/lib/db";
-import { albums, photos, referralConversions, guestEmails } from "@/lib/db/schema";
-import { sql, desc, and, ne, count, eq, isNotNull, gt, or, like, isNull } from "drizzle-orm";
+import { albums, photos, referralConversions, guestEmails, bankOrders } from "@/lib/db/schema";
+import { sql, desc, count, eq, isNotNull } from "drizzle-orm";
+import { listAllPayments, mollieConfigured, type MolliePayment } from "@/lib/mollie";
+import { summarizePaidPlanSales, type PaidPlanId } from "@/lib/admin-sales";
 
 export const dynamic = "force-dynamic";
 
-const PLAN_PRICES: Record<string, number> = { basic: 39, plus: 49, premium: 99 };
+function eur(cents: number): string {
+  return new Intl.NumberFormat("sl-SI", {
+    style: "currency",
+    currency: "EUR",
+    minimumFractionDigits: 2,
+  }).format(cents / 100);
+}
 
 export default async function AdminOverview() {
-  // "Paid" means: plan != free AND a real payment reference is attached —
-  // a Paddle transaction (txn_…) or a historical Stripe session (cs_…) —
-  // AND the access window hasn't expired. Excludes manually-flipped test
-  // rows (stripeSessionId starts with "manual_" / "comp:") and expired paid
-  // plans. Keeps the dashboard honest.
-  const now = new Date();
-  const realPaidWhere = and(
-    ne(albums.plan, "free"),
-    or(like(albums.stripeSessionId, "txn_%"), like(albums.stripeSessionId, "cs_%")),
-    or(isNull(albums.expiresAt), gt(albums.expiresAt, now)),
-  );
+  // Payment records — not the album plan column — are the financial source of
+  // truth. The previous implementation only recognized historical Stripe /
+  // Paddle IDs, so every Mollie sale and paid bank order incorrectly showed 0.
+  const configured = mollieConfigured();
+  let mollieLoadFailed = false;
+  const molliePaymentsPromise: Promise<MolliePayment[]> = configured
+    ? listAllPayments().catch((err) => {
+        mollieLoadFailed = true;
+        console.error("[admin overview] Mollie payment history failed:", err);
+        return [];
+      })
+    : Promise.resolve([]);
 
   // Headline numbers
-  const [{ totalAlbums }] = await db.select({ totalAlbums: count() }).from(albums);
-  const [{ paidAlbums }]  = await db
-    .select({ paidAlbums: count() })
-    .from(albums)
-    .where(realPaidWhere);
-  const [{ totalPhotos }] = await db.select({ totalPhotos: count() }).from(photos);
-  const [{ totalUsers }]  = await db
-    .select({ totalUsers: sql<number>`COUNT(DISTINCT ${albums.ownerClerkId})` })
-    .from(albums);
-
-  // Plan breakdown counts every album by its plan column (for visibility),
-  // but the revenue calc below applies the same realPaidWhere filter so
-  // manual fixes don't inflate revenue.
-  const planBreakdown = await db
-    .select({ plan: albums.plan, n: count() })
-    .from(albums)
-    .groupBy(albums.plan);
-
-  const paidByPlanRaw = await db
-    .select({ plan: albums.plan, n: count() })
-    .from(albums)
-    .where(realPaidWhere)
-    .groupBy(albums.plan);
+  const [
+    [{ totalAlbums }],
+    [{ totalPhotos }],
+    [{ totalUsers }],
+    planBreakdown,
+    paidBankOrders,
+    molliePayments,
+  ] = await Promise.all([
+    db.select({ totalAlbums: count() }).from(albums),
+    db.select({ totalPhotos: count() }).from(photos),
+    db.select({ totalUsers: sql<number>`COUNT(DISTINCT ${albums.ownerClerkId})` }).from(albums),
+    db.select({ plan: albums.plan, n: count() }).from(albums).groupBy(albums.plan),
+    db
+      .select({ planId: bankOrders.planId, planPrice: bankOrders.planPrice, status: bankOrders.status })
+      .from(bankOrders)
+      .where(eq(bankOrders.status, "paid")),
+    molliePaymentsPromise,
+  ]);
+  const sales = summarizePaidPlanSales(molliePayments, paidBankOrders);
+  const paidAlbums = sales.totalCount;
 
   const recent = await db.query.albums.findMany({
     orderBy: [desc(albums.createdAt)],
@@ -88,17 +94,6 @@ export default async function AdminOverview() {
   // A K of 1.0 = every paid event yields exactly one new paid event.
   const kFactor = paidAlbums > 0 ? referralPaid / paidAlbums : 0;
 
-  // Rough lifetime revenue — derived from REAL paid albums only
-  // (Stripe-anchored, non-expired). Manual DB flips and expired plans
-  // are excluded so the dashboard total doesn't drift from Stripe.
-  const revenueByPlan = paidByPlanRaw.map((row) => ({
-    plan: row.plan,
-    count: row.n,
-    revenue: row.n * (PLAN_PRICES[row.plan] ?? 0),
-  }));
-  const totalRevenue = revenueByPlan.reduce((a, b) => a + b.revenue, 0);
-  const paidByPlanMap = Object.fromEntries(paidByPlanRaw.map((r) => [r.plan, r.n]));
-
   return (
     <div className="space-y-8">
       <header>
@@ -115,12 +110,17 @@ export default async function AdminOverview() {
 
       <section className="bg-white rounded-2xl border border-gray-200 p-6">
         <h2 className="font-semibold text-[#0F1729] mb-4">Paketi</h2>
+        {(!configured || mollieLoadFailed) && (
+          <div className="mb-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-xs text-amber-800">
+            Mollie podatkov trenutno ni bilo mogoče prebrati. Prikaz vključuje samo plačane predračune in zato ni popoln.
+          </div>
+        )}
         <div className="space-y-2">
           {planBreakdown.map((row) => {
-            // For paid plans, show the count of REAL paid albums next to
-            // the total (Real / Total) so the dashboard makes clear which
-            // are Stripe-anchored vs manually flipped / expired.
-            const real = paidByPlanMap[row.plan] ?? 0;
+            const paid = row.plan in sales.byPlan
+              ? sales.byPlan[row.plan as PaidPlanId]
+              : null;
+            const real = paid?.count ?? 0;
             return (
               <div key={row.plan} className="flex items-center justify-between gap-2 text-sm flex-wrap">
                 <span className="font-medium capitalize text-gray-700">{row.plan}</span>
@@ -130,7 +130,7 @@ export default async function AdminOverview() {
                     <>
                       <span className="text-[10px] text-gray-400 whitespace-nowrap">({real} plačanih)</span>{" "}
                       <span className="ml-1 text-[#C9820A] font-semibold whitespace-nowrap">
-                        {real * (PLAN_PRICES[row.plan] ?? 0)}€
+                        {eur(paid?.revenueCents ?? 0)}
                       </span>
                     </>
                   )}
@@ -139,8 +139,18 @@ export default async function AdminOverview() {
             );
           })}
           <div className="pt-3 mt-3 border-t border-gray-100 flex justify-between text-sm font-semibold">
-            <span>Skupni prihodek (ocena)</span>
-            <span className="text-[#C9820A]">{totalRevenue}€</span>
+            <span>Skupni prihodek paketov</span>
+            <span className="text-[#C9820A]">{eur(sales.totalRevenueCents)}</span>
+          </div>
+          <div className="grid grid-cols-1 gap-2 pt-2 text-xs text-gray-500 sm:grid-cols-2">
+            <div className="flex items-center justify-between rounded-lg bg-gray-50 px-3 py-2">
+              <span>Mollie ({sales.mollieCount})</span>
+              <span className="font-semibold text-gray-700">{eur(sales.mollieRevenueCents)}</span>
+            </div>
+            <div className="flex items-center justify-between rounded-lg bg-gray-50 px-3 py-2">
+              <span>Predračuni ({sales.bankCount})</span>
+              <span className="font-semibold text-gray-700">{eur(sales.bankRevenueCents)}</span>
+            </div>
           </div>
         </div>
       </section>

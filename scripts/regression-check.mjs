@@ -38,6 +38,10 @@ const files = {
   deleteMedia: await read("lib/storage/delete-media.ts"),
   instrumentation: await read("instrumentation.ts"),
   bankOrder: await read("app/api/bank-order/route.ts"),
+  adminOverview: await read("app/admin/page.tsx"),
+  adminPayments: await read("app/admin/payments/page.tsx"),
+  adminSales: await read("lib/admin-sales.ts"),
+  mollie: await read("lib/mollie.ts"),
   videoPlayback: await read("app/api/albums/[slug]/video-playback-url/route.ts"),
   videoClient: await read("components/album/IosBunnyPlaybackFix.tsx"),
   filmStatus: await read("app/api/albums/[slug]/film/status/route.ts"),
@@ -91,6 +95,48 @@ requireMatch(
   files.bankOrder,
   /checkAlbumOwnership/,
   "bank-order route must verify album owner/admin access",
+);
+
+requireMatch(
+  "admin revenue uses actual Mollie and paid bank records",
+  files.adminOverview,
+  /listAllPayments\(\)[\s\S]*bankOrders\.status, "paid"[\s\S]*summarizePaidPlanSales/,
+  "the overview must derive paid packages from successful payment sources, not legacy processor IDs",
+);
+
+requireAbsent(
+  "admin revenue no longer filters only legacy Stripe or Paddle IDs",
+  files.adminOverview,
+  /like\(albums\.stripeSessionId, "(?:txn|cs)_/,
+  "Mollie tr_ payments and paid bank orders must not be excluded",
+);
+
+requireMatch(
+  "admin overview separates Mollie and invoice revenue",
+  files.adminOverview,
+  /Mollie \(\{sales\.mollieCount\}\)[\s\S]*Predračuni \(\{sales\.bankCount\}\)/,
+  "the owner must see how much revenue came from each payment source",
+);
+
+requireMatch(
+  "Mollie admin reads the complete paginated payment history",
+  files.mollie,
+  /listAllPayments[\s\S]*limit: "250"[\s\S]*searchParams\.get\("from"\)/,
+  "financial totals must not stop at the latest 50 Mollie transactions",
+);
+
+requireMatch(
+  "package revenue excludes refunds and physical add-ons",
+  files.adminSales,
+  /amountRefunded[\s\S]*standsCents[\s\S]*shipCents[\s\S]*netCents - addOnCents/,
+  "the package total must use the actual net package portion of each payment",
+);
+
+requireMatch(
+  "Mollie payments screen shows complete history",
+  files.adminPayments,
+  /listAllPayments\(\)[\s\S]*Vseh \{enriched\.length\} transakcij iz Mollie/,
+  "the payments screen must match the complete history used by the overview",
 );
 
 requireMatch(
