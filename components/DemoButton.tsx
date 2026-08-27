@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useSyncExternalStore } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
 
 /**
@@ -9,10 +9,12 @@ import { createPortal } from "react-dom";
  */
 const DEMO_SLUG = "ana-marko-13ka";
 
+type DemoVariant = "hero" | "nav" | "heroDark" | "bridge";
+
 /** The origin never changes during a page's lifetime — nothing to subscribe to. */
 function emptySubscribe() { return () => {}; }
 
-export function DemoButton({ variant = "hero" }: { variant?: "hero" | "nav" | "heroDark" }) {
+export function DemoButton({ variant = "hero" }: { variant?: DemoVariant }) {
   const [open, setOpen] = useState(false);
 
   const origin = useSyncExternalStore(
@@ -20,6 +22,49 @@ export function DemoButton({ variant = "hero" }: { variant?: "hero" | "nav" | "h
     () => window.location.origin,
     () => "",
   );
+
+  /*
+   * Compatibility bridge for the redesigned homepage.
+   *
+   * The original Guestcam homepage used <DemoButton variant="hero" />, which
+   * opened this QR modal. The redesigned homepage temporarily replaced it with
+   * a plain <Link href="/demo">. When the bridge is mounted we intercept that
+   * same marketing link before Next.js navigation and restore the historical
+   * popup behaviour without changing the current homepage styling.
+   *
+   * /demo itself redirects to /?demo=1, so bookmarked / typed demo URLs also
+   * arrive here and open the same popup instead of failing on a redirect into
+   * an album route.
+   */
+  useEffect(() => {
+    if (variant !== "bridge") return;
+
+    const current = new URL(window.location.href);
+    if (current.searchParams.get("demo") === "1") {
+      setOpen(true);
+      current.searchParams.delete("demo");
+      const cleanUrl = `${current.pathname}${current.search}${current.hash}`;
+      window.history.replaceState(window.history.state, "", cleanUrl || "/");
+    }
+
+    const onDocumentClick = (event: MouseEvent) => {
+      if (!(event.target instanceof Element)) return;
+      const anchor = event.target.closest<HTMLAnchorElement>("a[href]");
+      if (!anchor) return;
+
+      const url = new URL(anchor.href, window.location.href);
+      if (url.origin !== window.location.origin || url.pathname !== "/demo") return;
+
+      // Capture phase runs before Next/React's delegated click handler, so the
+      // router never navigates away from the homepage.
+      event.preventDefault();
+      event.stopPropagation();
+      setOpen(true);
+    };
+
+    document.addEventListener("click", onDocumentClick, true);
+    return () => document.removeEventListener("click", onDocumentClick, true);
+  }, [variant]);
 
   const demoUrl = `${origin}/${DEMO_SLUG}`;
   const qrSrc = origin
@@ -29,7 +74,7 @@ export function DemoButton({ variant = "hero" }: { variant?: "hero" | "nav" | "h
 
   return (
     <>
-      {variant === "heroDark" ? (
+      {variant === "bridge" ? null : variant === "heroDark" ? (
         <button
           type="button"
           onClick={() => setOpen(true)}
