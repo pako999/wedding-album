@@ -18,8 +18,8 @@ const TICKETS_URL =
   "https://www.eventim.si/event/nina-badric-terasa-kino-centra-maribox-21971077/";
 
 const IMAGE = "/events/nina-badric-maribox.webp";
-/** Real dimensions of the converted banner (1600x619 WebP, 73 KB). */
-const ASPECT = { w: 1600, h: 619 };
+/** Real dimensions of the optimized banner. */
+const ASPECT = { w: 1600, h: 768 };
 
 export function EventSpotlight() {
   return (
@@ -49,7 +49,7 @@ export function EventSpotlight() {
         <span className="block overflow-hidden rounded-[24px] shadow-xl transition-transform duration-200 group-hover:scale-[1.01] sm:rounded-[32px]">
           <Image
             src={IMAGE}
-            alt="Nina Badrič, 18. 9. ob 20. uri, terasa Kino centra Maribox: Guestcam bo z vami na dogodku"
+            alt="Nina Badrić v Mariboxu 18. septembra 2026 z Guestcam zbiranjem fotografij gostov"
             width={ASPECT.w}
             height={ASPECT.h}
             sizes="(max-width: 1024px) 100vw, 1024px"
