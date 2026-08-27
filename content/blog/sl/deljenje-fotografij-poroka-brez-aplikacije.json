@@ -5,7 +5,7 @@
   "description": "Kako lahko gostje delijo fotografije z vaše poroke brez prenosa aplikacije? QR koda + brskalnik = preprosto za vse generacije.",
   "translationKey": "wedding-photo-sharing-no-app",
   "publishedAt": "2026-06-21",
-  "updatedAt": "2026-06-21",
+  "updatedAt": "2026-08-27",
   "author": "Guestcam Team",
   "category": "vodnik",
   "readingTime": 7,
@@ -17,8 +17,8 @@
     "Guestcam"
   ],
   "tldr": "Gostje skenirajo QR kodo s kamero telefona in fotografije naložijo neposredno v brskalniku — brez prenosa aplikacije, brez registracije.",
-  "coverImage": "https://images.unsplash.com/photo-1606216794074-735e91aa2c92?w=1600&h=900&fit=crop&q=80&auto=format",
-  "coverAlt": "Gostje na poroki fotografirajo s telefoni in delijo spomine",
+  "coverImage": "/blog/porocne-fotografije-brez-aplikacije-guestcam.webp",
+  "coverAlt": "Mladoporočenca pred poročnim prizoriščem – deljenje poročnih fotografij brez aplikacije",
   "content": [
     {
       "type": "p",
