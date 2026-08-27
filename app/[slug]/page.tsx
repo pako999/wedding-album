@@ -11,6 +11,7 @@ import { hashAlbumPassword, needsRehash, verifyAlbumPassword } from "@/lib/album
 import { verifiedEmails } from "@/lib/album-ownership";
 import { toPublicAlbum } from "@/lib/album-view";
 import { getAlbumFlags } from "@/lib/album-flags";
+import { getAlbumHeaderSettings } from "@/lib/album-header-settings";
 import { getAlbumAppearance, WELCOME_FONT_STACKS, type WelcomeFont } from "@/lib/album-appearance";
 import { createVideoPlaybackToken } from "@/lib/video-playback-token";
 import type { Metadata } from "next";
@@ -212,7 +213,10 @@ export default async function AlbumPage({ params, searchParams }: Props) {
 
   // Event/Photo Wall branding belongs only to the dedicated event surface.
   // Ordinary album URLs stay standard even when event branding is configured.
-  const flags = await getAlbumFlags(album.id);
+  const [flags, headerSettings] = await Promise.all([
+    getAlbumFlags(album.id),
+    getAlbumHeaderSettings(album.id),
+  ]);
   const isEventSurface = event === "1";
   const appearance = isEventSurface ? await getAlbumAppearance(album.id) : null;
   const requireEventGuestData = flags.guestDataCapture && isEventSurface;
@@ -247,6 +251,7 @@ export default async function AlbumPage({ params, searchParams }: Props) {
         isOwner={isOwner}
         requireGuestData={requireEventGuestData}
         eventFlags={flags}
+        headerVisibility={headerSettings}
         appearance={appearance ? {
           logoUrl: appearance.logoUrl,
           accentColor: appearance.accentColor,

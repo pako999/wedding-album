@@ -689,6 +689,26 @@ export async function runMigrations() {
     )
   `);
 
+  // ── Public gallery header visibility ─────────────────────────────────────
+  await run("create album_header_settings", (q) => q`
+    CREATE TABLE IF NOT EXISTS album_header_settings (
+      album_id          TEXT PRIMARY KEY REFERENCES albums(id) ON DELETE CASCADE,
+      show_event_name   BOOLEAN NOT NULL DEFAULT TRUE,
+      show_event_type   BOOLEAN NOT NULL DEFAULT TRUE,
+      show_event_date   BOOLEAN NOT NULL DEFAULT TRUE,
+      updated_at        TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )
+  `);
+  await run("album_header_settings.show_event_name", (q) => q`
+    ALTER TABLE album_header_settings ADD COLUMN IF NOT EXISTS show_event_name BOOLEAN NOT NULL DEFAULT TRUE
+  `);
+  await run("album_header_settings.show_event_type", (q) => q`
+    ALTER TABLE album_header_settings ADD COLUMN IF NOT EXISTS show_event_type BOOLEAN NOT NULL DEFAULT TRUE
+  `);
+  await run("album_header_settings.show_event_date", (q) => q`
+    ALTER TABLE album_header_settings ADD COLUMN IF NOT EXISTS show_event_date BOOLEAN NOT NULL DEFAULT TRUE
+  `);
+
   // ── Event lead capture ────────────────────────────────────────────────────
   await run("create event_leads", (q) => q`
     CREATE TABLE IF NOT EXISTS event_leads (

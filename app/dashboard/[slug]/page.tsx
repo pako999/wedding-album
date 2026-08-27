@@ -10,6 +10,7 @@ import { verifiedEmails } from "@/lib/album-ownership";
 import { toOwnerAlbum } from "@/lib/album-view";
 import { getOrCreateWallToken } from "@/lib/wall-token";
 import { getAlbumFlags } from "@/lib/album-flags";
+import { getAlbumHeaderSettings } from "@/lib/album-header-settings";
 
 export const dynamic = "force-dynamic";
 
@@ -159,7 +160,11 @@ export default async function AlbumAdminPage({ params, searchParams }: Props) {
     notFound();
   }
 
-  const albumFlags = await getAlbumFlags(album.id);
+  const [albumFlags, headerSettings, resolvedWallToken] = await Promise.all([
+    getAlbumFlags(album.id),
+    getAlbumHeaderSettings(album.id),
+    getOrCreateWallToken(album.id, album.wallToken),
+  ]);
 
 
   // Settings tab shows "you're signed in as …". When admin-impersonating
@@ -188,9 +193,10 @@ export default async function AlbumAdminPage({ params, searchParams }: Props) {
       driveResult={driveResult}
       driveCount={driveCount}
       hasPassword={!!album.password}
-      wallToken={await getOrCreateWallToken(album.id, album.wallToken)}
+      wallToken={resolvedWallToken}
       guestDataCapture={albumFlags.guestDataCapture}
       flags={albumFlags}
+      headerSettings={headerSettings}
     />
   );
 }

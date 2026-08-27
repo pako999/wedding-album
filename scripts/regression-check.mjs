@@ -28,6 +28,9 @@ const files = {
   legacyGateway: await read("app/api/albums/[slug]/bunny-upload/route.ts"),
   legacyDownload: await read("app/api/albums/[slug]/download/route.ts"),
   albumPage: await read("app/[slug]/page.tsx"),
+  albumDashboardPage: await read("app/dashboard/[slug]/page.tsx"),
+  albumGuestView: await read("components/album/AlbumGuestView.tsx"),
+  albumHeaderSettings: await read("lib/album-header-settings.ts"),
   proxy: await read("proxy.ts"),
   s3: await read("lib/storage/bunny-s3.ts"),
   s3Read: await read("app/api/bunny-s3-file/[...key]/route.ts"),
@@ -221,6 +224,62 @@ requireMatch(
   files.albumSettingsRoute,
   /defaultLang:\s*validDefaultLang/,
   "the settings PATCH route must persist the validated default language",
+);
+
+requireMatch(
+  "album settings auto-save ordinary changes",
+  files.albumAdminPanel,
+  /setTimeout\(\(\) => \{[\s\S]*setAutoSaveStatus\("saving"\)[\s\S]*fetch\(`\/api\/albums\/\$\{album\.slug\}\/settings`[\s\S]*Samodejno shranjevanje vključeno/,
+  "ordinary settings must auto-save and expose a visible save status",
+);
+
+requireMatch(
+  "album settings expose all gallery header controls",
+  files.albumAdminPanel,
+  /Prikaz v glavi galerije[\s\S]*checked=\{showTitle\}[\s\S]*checked=\{showEventType\}[\s\S]*checked=\{showEventDate\}/,
+  "owners must be able to toggle the title, event type and event date separately",
+);
+
+requireMatch(
+  "album settings persist event date changes",
+  files.albumSettingsRoute,
+  /weddingDate:\s*validWeddingDate/,
+  "the settings PATCH route must write the validated event date",
+);
+
+requireMatch(
+  "album settings persist gallery header controls",
+  files.albumSettingsRoute,
+  /setAlbumHeaderSettings\(album\.id,[\s\S]*showTitle[\s\S]*showEventType[\s\S]*showEventDate/,
+  "the settings PATCH route must persist all three header visibility flags",
+);
+
+requireMatch(
+  "gallery header settings are durable",
+  files.albumHeaderSettings,
+  /show_event_name[\s\S]*show_event_type[\s\S]*show_event_date[\s\S]*ON CONFLICT \(album_id\) DO UPDATE/,
+  "header visibility flags must be stored per album with safe defaults",
+);
+
+requireMatch(
+  "public album receives gallery header settings",
+  files.albumPage,
+  /getAlbumHeaderSettings\(album\.id\)[\s\S]*headerVisibility=\{headerSettings\}/,
+  "the public gallery must receive the saved header settings",
+);
+
+requireMatch(
+  "dashboard receives current gallery header settings",
+  files.albumDashboardPage,
+  /getAlbumHeaderSettings\(album\.id\)[\s\S]*headerSettings=\{headerSettings\}/,
+  "the owner controls must initialize from persisted values",
+);
+
+requireMatch(
+  "public gallery honors all header visibility controls",
+  files.albumGuestView,
+  /headerVisibility\?\.showTitle !== false[\s\S]*headerVisibility\?\.showEventType !== false[\s\S]*headerVisibility\?\.showEventDate !== false[\s\S]*showEventDate && \([\s\S]*CountdownTimer/,
+  "the public gallery must hide the selected title, type and date content",
 );
 
 requireMatch(

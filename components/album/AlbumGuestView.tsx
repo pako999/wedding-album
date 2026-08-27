@@ -56,6 +56,12 @@ interface Props {
     disableDownload: boolean;
     disableLikes: boolean;
   };
+  /** Owner-selected visibility for the public gallery header. */
+  headerVisibility?: {
+    showTitle: boolean;
+    showEventType: boolean;
+    showEventDate: boolean;
+  };
 }
 
 type FilterTab = "all" | "photos" | "videos";
@@ -150,13 +156,16 @@ function AvatarBubble({ name, size = 5, accent = BRAND.accent }: { name: string;
   );
 }
 
-export function AlbumGuestView({ album, photos, moments, passwordRequired, passwordCorrect, providedPassword, initialLang, isOwner = false, requireGuestData = false, eventFlags, appearance }: Props) {
+export function AlbumGuestView({ album, photos, moments, passwordRequired, passwordCorrect, providedPassword, initialLang, isOwner = false, requireGuestData = false, eventFlags, appearance, headerVisibility }: Props) {
   // Event permission gates. UI-side only — the real doors are in the
   // upload and like APIs; this keeps the guest page honest about them.
   const canUpload = eventFlags?.albumPermission !== "view_only";
   const canView = eventFlags?.albumPermission !== "upload_only";
   const likesOn = !eventFlags?.disableLikes;
   const downloadOn = !eventFlags?.disableDownload;
+  const showTitle = headerVisibility?.showTitle !== false;
+  const showEventType = headerVisibility?.showEventType !== false;
+  const showEventDate = headerVisibility?.showEventDate !== false;
   const uploadAccept = [
     eventFlags?.allowPhotos === false ? null : "image/*",
     eventFlags?.allowVideos === false ? null : "video/*",
@@ -643,9 +652,15 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
         <div className="flex-1 flex items-center justify-center p-6">
           <div className="w-full max-w-sm">
             <div className="text-center mb-8">
-              <div className="text-5xl mb-3">{evtIcon}</div>
-              <h1 className="text-2xl font-bold" style={{ color: BRAND.dark }}>{album.coupleName}</h1>
-              <p className="text-sm mt-1" style={{ color: BRAND.muted }}>{formatEventDate(album.weddingDate)}{album.location ? ` · ${album.location}` : ""}</p>
+              {showEventType && <div className="text-5xl mb-3">{evtIcon}</div>}
+              {showTitle && <h1 className="text-2xl font-bold" style={{ color: BRAND.dark }}>{album.coupleName}</h1>}
+              {(showEventDate || album.location) && (
+                <p className="text-sm mt-1" style={{ color: BRAND.muted }}>
+                  {showEventDate && formatEventDate(album.weddingDate)}
+                  {showEventDate && album.location ? " · " : ""}
+                  {album.location}
+                </p>
+              )}
             </div>
             <div className="bg-white rounded-2xl border p-8" style={{ borderColor: BRAND.border }}>
               <div className="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-4" style={{ background: accentTint }}>
@@ -735,10 +750,12 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
             <Image src={headerCover} alt={album.coupleName} fill className="object-cover" priority />
             <div className="absolute inset-0" style={{ background: "rgba(0,0,0,0.45)" }} />
             <div className="absolute top-0 inset-x-0 flex items-center justify-between px-6 pt-5">
-              <div className="flex items-center gap-2 text-white/80 text-sm font-medium">
-                <span>{evtIcon}</span>
-                <span>{t.eventLabel(album.eventType ?? "other")}</span>
-              </div>
+              {showEventType ? (
+                <div className="flex items-center gap-2 text-white/80 text-sm font-medium">
+                  <span>{evtIcon}</span>
+                  <span>{t.eventLabel(album.eventType ?? "other")}</span>
+                </div>
+              ) : <div />}
               <div className="flex items-center gap-1">
                 {LANGS.map((l) => (
                   <button key={l.code} onClick={() => switchLang(l.code)} className="px-1.5 py-1 rounded-lg text-sm transition-all hover:bg-white/20"
@@ -747,11 +764,11 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
               </div>
             </div>
             <div className="absolute bottom-0 inset-x-0 px-6 pb-8 sm:px-10">
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-2 leading-tight">{album.coupleName}</h1>
+              {showTitle && <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-2 leading-tight">{album.coupleName}</h1>}
               <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-white/70 text-sm">
-                <span>{formatEventDate(album.weddingDate)}</span>
-                {album.location && <><span>·</span><span>{album.location}</span></>}
-                <span>·</span>
+                {showEventDate && <span>{formatEventDate(album.weddingDate)}</span>}
+                {album.location && <>{showEventDate && <span>·</span>}<span>{album.location}</span></>}
+                {(showEventDate || album.location) && <span>·</span>}
                 <span>{t.photoCount(photoCount)}{videoCount > 0 ? ` · ${t.videoCount(videoCount)}` : ""}</span>
                 {photos.length > 0 && (
                   <span className="flex items-center gap-1 text-white/80">
@@ -765,10 +782,12 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
         ) : (
           <div className="relative pt-14 pb-14 sm:pt-16 sm:pb-20 px-6 text-center overflow-hidden" style={{ background: theme.heroBg }}>
             <div className="absolute top-0 inset-x-0 flex items-center justify-between px-6 pt-4">
-              <div className="flex items-center gap-2 text-white/70 text-xs font-medium uppercase tracking-[0.18em]">
-                <span className="text-sm">{evtIcon}</span>
-                <span>{t.eventLabel(album.eventType ?? "other")}</span>
-              </div>
+              {showEventType ? (
+                <div className="flex items-center gap-2 text-white/70 text-xs font-medium uppercase tracking-[0.18em]">
+                  <span className="text-sm">{evtIcon}</span>
+                  <span>{t.eventLabel(album.eventType ?? "other")}</span>
+                </div>
+              ) : <div />}
               <div className="flex items-center gap-1">
                 {LANGS.map((l) => (
                   <button key={l.code} onClick={() => switchLang(l.code)} className="px-1.5 py-1 rounded-lg text-sm transition-all hover:bg-white/10"
@@ -778,32 +797,40 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
             </div>
             <div className="relative max-w-2xl mx-auto pt-6">
               {/* Event emoji in a refined ring */}
-              <div className="mx-auto mb-7 w-20 h-20 sm:w-[88px] sm:h-[88px] rounded-full flex items-center justify-center text-4xl sm:text-5xl"
-                style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.12)" }}>
-                {evtIcon}
-              </div>
-              <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-5 leading-[1.1] tracking-tight">
-                {album.coupleName}
-              </h1>
-              {/* Date · location row, framed by thin dividers */}
-              <div className="flex items-center justify-center gap-3 sm:gap-4 mb-6">
-                <span className="h-px w-8 sm:w-12" style={{ background: "rgba(255,255,255,0.3)" }} />
-                <div className="flex flex-wrap items-center justify-center gap-x-2.5 gap-y-0.5 text-white/75 text-xs sm:text-sm uppercase tracking-[0.14em]">
-                  <span>{formatEventDate(album.weddingDate)}</span>
-                  {album.location && <><span className="text-white/40">·</span><span>{album.location}</span></>}
+              {showEventType && (
+                <div className="mx-auto mb-7 w-20 h-20 sm:w-[88px] sm:h-[88px] rounded-full flex items-center justify-center text-4xl sm:text-5xl"
+                  style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.12)" }}>
+                  {evtIcon}
                 </div>
-                <span className="h-px w-8 sm:w-12" style={{ background: "rgba(255,255,255,0.3)" }} />
-              </div>
+              )}
+              {showTitle && (
+                <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-5 leading-[1.1] tracking-tight">
+                  {album.coupleName}
+                </h1>
+              )}
+              {/* Date · location row, framed by thin dividers */}
+              {(showEventDate || album.location) && (
+                <div className="flex items-center justify-center gap-3 sm:gap-4 mb-6">
+                  <span className="h-px w-8 sm:w-12" style={{ background: "rgba(255,255,255,0.3)" }} />
+                  <div className="flex flex-wrap items-center justify-center gap-x-2.5 gap-y-0.5 text-white/75 text-xs sm:text-sm uppercase tracking-[0.14em]">
+                    {showEventDate && <span>{formatEventDate(album.weddingDate)}</span>}
+                    {album.location && <>{showEventDate && <span className="text-white/40">·</span>}<span>{album.location}</span></>}
+                  </div>
+                  <span className="h-px w-8 sm:w-12" style={{ background: "rgba(255,255,255,0.3)" }} />
+                </div>
+              )}
               {photos.length > 0 && (
                 <p className="text-white/65 text-xs tracking-wide mb-6">
                   {t.photoCount(photoCount)}{videoCount > 0 ? ` · ${t.videoCount(videoCount)}` : ""}
                 </p>
               )}
               {/* Countdown as a tasteful pill — translucent white on the navy hero */}
-              <div className="inline-flex items-center rounded-full px-5 py-2"
-                style={{ background: "rgba(255,255,255,0.12)", border: "1px solid rgba(255,255,255,0.25)" }}>
-                <CountdownTimer targetDate={album.weddingDate} translations={t} accent="#FFFFFF" />
-              </div>
+              {showEventDate && (
+                <div className="inline-flex items-center rounded-full px-5 py-2"
+                  style={{ background: "rgba(255,255,255,0.12)", border: "1px solid rgba(255,255,255,0.25)" }}>
+                  <CountdownTimer targetDate={album.weddingDate} translations={t} accent="#FFFFFF" />
+                </div>
+              )}
             </div>
           </div>
         )}
@@ -1686,9 +1713,11 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
                   ? <AvatarBubble name={lightboxPhoto.uploaderName} size={9} accent={theme.accent} />
                   : <div className="w-9 h-9 rounded-full shrink-0" style={{ background: BRAND.bg }} />}
                 <div className="min-w-0 flex-1">
-                  <p className="text-[10px] font-semibold uppercase tracking-widest" style={{ color: theme.accent }}>
-                    {t.eventLabel(album.eventType ?? "other")}
-                  </p>
+                  {showEventType && (
+                    <p className="text-[10px] font-semibold uppercase tracking-widest" style={{ color: theme.accent }}>
+                      {t.eventLabel(album.eventType ?? "other")}
+                    </p>
+                  )}
                   {lightboxPhoto.uploaderName && (
                     <p className="text-sm font-bold leading-tight truncate" style={{ color: BRAND.dark }}>
                       {lightboxPhoto.uploaderName}

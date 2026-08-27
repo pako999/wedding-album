@@ -1,7 +1,7 @@
 "use client";
 
 import { SITE_URL } from "@/lib/urls";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { SignOutButton } from "@clerk/nextjs";
@@ -15,6 +15,7 @@ import { FilmStudio } from "@/components/dashboard/FilmStudio";
 import { PhotoWallCard } from "@/components/dashboard/PhotoWallCard";
 import { STAND_VARIANTS, eur } from "@/lib/print-service";
 import type { AlbumFlags } from "@/lib/album-flags";
+import type { AlbumHeaderSettings } from "@/lib/album-header-settings";
 import { EventModerationCard } from "@/components/dashboard/EventModerationCard";
 import { WallCollaboratorsCard } from "@/components/dashboard/WallCollaboratorsCard";
 import { EventAppearanceCard } from "@/components/dashboard/EventAppearanceCard";
@@ -81,6 +82,8 @@ interface Props {
   guestDataCapture?: boolean;
   /** Event flags (moderation & permissions), read once server-side. */
   flags?: AlbumFlags;
+  /** Controls which event details guests see in the public gallery header. */
+  headerSettings: AlbumHeaderSettings;
 }
 
 /** Copy + tone for the one-time Google Drive result banner. */
@@ -299,7 +302,7 @@ function NewAlbumSuccess({ album, paidPlan }: { album: Album; paidPlan?: "basic"
 
 // ─── Main Panel ───────────────────────────────────────────────────────────────
 
-export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activeTab, isNew, isUpgraded, paidAmount, paidPlan, ownerEmail, viewingAsAdmin, driveResult, driveCount, hasPassword, wallToken, guestDataCapture = false, flags }: Props) {
+export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activeTab, isNew, isUpgraded, paidAmount, paidPlan, ownerEmail, viewingAsAdmin, driveResult, driveCount, hasPassword, wallToken, guestDataCapture = false, flags, headerSettings }: Props) {
   const router = useRouter();
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? SITE_URL;
   const albumUrl = `${appUrl}/${album.slug}`;
@@ -803,7 +806,7 @@ export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activ
           {activeTab === "settings" && (
             <div className="max-w-lg space-y-6">
               <AccountInfoCard ownerEmail={ownerEmail ?? null} />
-              <AlbumSettingsForm album={album} wallToken={wallToken} hasPassword={!!hasPassword}>
+              <AlbumSettingsForm album={album} wallToken={wallToken} hasPassword={!!hasPassword} headerSettings={headerSettings}>
                 {/* Cover-photo picker injected into the settings form so it
                     sits inside the same card chrome, between the password
                     field and the theme picker. */}
@@ -1580,12 +1583,47 @@ function AccountInfoCard({ ownerEmail }: { ownerEmail: string | null }) {
   );
 }
 
-function AlbumSettingsForm({ album, children, wallToken, hasPassword }: { album: Album; children?: React.ReactNode; wallToken: string; hasPassword: boolean }) {
+function SettingsToggle({
+  checked,
+  onChange,
+  label,
+  description,
+}: {
+  checked: boolean;
+  onChange: (checked: boolean) => void;
+  label: string;
+  description: string;
+}) {
+  return (
+    <div className="flex items-center justify-between gap-4 rounded-xl border border-gray-100 bg-gray-50/70 px-4 py-3">
+      <div>
+        <p className="text-sm font-medium text-gray-800">{label}</p>
+        <p className="mt-0.5 text-xs text-gray-400">{description}</p>
+      </div>
+      <button
+        type="button"
+        role="switch"
+        aria-checked={checked}
+        aria-label={label}
+        onClick={() => onChange(!checked)}
+        className={`relative h-6 w-11 shrink-0 rounded-full transition-colors ${checked ? "bg-[#FFC94D]" : "bg-gray-200"}`}
+      >
+        <span className={`absolute left-0.5 top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform ${checked ? "translate-x-5" : "translate-x-0"}`} />
+      </button>
+    </div>
+  );
+}
+
+type AutoSaveStatus = "idle" | "pending" | "saving" | "saved" | "error";
+
+function AlbumSettingsForm({ album, children, wallToken, hasPassword, headerSettings }: { album: Album; children?: React.ReactNode; wallToken: string; hasPassword: boolean; headerSettings: AlbumHeaderSettings }) {
   const wallAppUrl = process.env.NEXT_PUBLIC_APP_URL ?? SITE_URL;
   const wallUrl = `${wallAppUrl}/wall/${wallToken}`;
   const router = useRouter();
-  const [saving, setSaving] = useState(false);
-  const [saved, setSaved] = useState(false);
+  const [autoSaveStatus, setAutoSaveStatus] = useState<AutoSaveStatus>("idle");
+  const [autoSaveRetry, setAutoSaveRetry] = useState(0);
+  const [passwordSaving, setPasswordSaving] = useState(false);
+  const [passwordSaveStatus, setPasswordSaveStatus] = useState<"idle" | "saved" | "error">("idle");
 
   const [coupleName, setCoupleName]           = useState(album.coupleName);
   const [weddingDate, setWeddingDate]         = useState(album.weddingDate);
@@ -1596,6 +1634,85 @@ function AlbumSettingsForm({ album, children, wallToken, hasPassword }: { album:
   const [eventType, setEventType]             = useState(album.eventType ?? "wedding");
   const [defaultLang, setDefaultLang]         = useState(album.defaultLang ?? "sl");
   const [theme, setTheme]                     = useState(album.theme ?? "navy");
+  const [showTitle, setShowTitle]              = useState(headerSettings.showTitle);
+  const [showEventType, setShowEventType]      = useState(headerSettings.showEventType);
+  const [showEventDate, setShowEventDate]      = useState(headerSettings.showEventDate);
+
+  const lastQueuedSnapshot = useRef(JSON.stringify({
+    coupleName: album.coupleName,
+    weddingDate: album.weddingDate,
+    location: album.location ?? "",
+    notifyEmail: album.notifyEmail ?? "",
+    moderationEnabled: album.moderationEnabled,
+    isPublished: album.isPublished,
+    eventType: album.eventType ?? "wedding",
+    defaultLang: album.defaultLang ?? "sl",
+    theme: album.theme ?? "navy",
+    showTitle: headerSettings.showTitle,
+    showEventType: headerSettings.showEventType,
+    showEventDate: headerSettings.showEventDate,
+  }));
+  const saveQueue = useRef<Promise<void>>(Promise.resolve());
+  const latestRevision = useRef(0);
+  const saveNoticeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const updateSetting = <T,>(setter: (value: T) => void, value: T) => {
+    if (saveNoticeTimer.current) clearTimeout(saveNoticeTimer.current);
+    setAutoSaveStatus("pending");
+    setter(value);
+  };
+
+  useEffect(() => () => {
+    if (saveNoticeTimer.current) clearTimeout(saveNoticeTimer.current);
+  }, []);
+
+  useEffect(() => {
+    const body = {
+      coupleName,
+      weddingDate,
+      location,
+      notifyEmail,
+      moderationEnabled,
+      isPublished,
+      eventType,
+      defaultLang,
+      theme,
+      showTitle,
+      showEventType,
+      showEventDate,
+    };
+    const snapshot = JSON.stringify(body);
+    if (snapshot === lastQueuedSnapshot.current) return;
+
+    lastQueuedSnapshot.current = snapshot;
+    const revision = ++latestRevision.current;
+    const timeoutId = window.setTimeout(() => {
+      setAutoSaveStatus("saving");
+      saveQueue.current = saveQueue.current
+        .catch(() => undefined)
+        .then(async () => {
+          const response = await fetch(`/api/albums/${album.slug}/settings`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(body),
+          });
+          if (!response.ok) throw new Error("Settings save failed");
+          if (latestRevision.current === revision) {
+            setAutoSaveStatus("saved");
+            if (saveNoticeTimer.current) clearTimeout(saveNoticeTimer.current);
+            saveNoticeTimer.current = setTimeout(() => setAutoSaveStatus("idle"), 2500);
+          }
+        })
+        .catch(() => {
+          if (latestRevision.current === revision) {
+            lastQueuedSnapshot.current = "";
+            setAutoSaveStatus("error");
+          }
+        });
+    }, 600);
+
+    return () => window.clearTimeout(timeoutId);
+  }, [album.slug, autoSaveRetry, coupleName, defaultLang, eventType, isPublished, location, moderationEnabled, notifyEmail, showEventDate, showEventType, showTitle, theme, weddingDate]);
 
   // NOTE: the password hash itself is deliberately NOT sent to this client
   // component (see lib/album-view.ts → toOwnerAlbum) — only the boolean
@@ -1612,55 +1729,104 @@ function AlbumSettingsForm({ album, children, wallToken, hasPassword }: { album:
   // exists anywhere, since the owner just typed it themselves.
   const [justSetPassword, setJustSetPassword] = useState<string | null>(null);
 
-  const save = async () => {
-    setSaving(true);
-    const body: Record<string, unknown> = {
-      coupleName,
-      weddingDate,
-      location,
-      notifyEmail,
-      moderationEnabled,
-      isPublished,
-      eventType,
-      defaultLang,
-      theme,
-    };
+  const savePassword = async () => {
     const newPassword = passwordDraft.trim();
+    if (!removePassword && !newPassword) return;
+
+    setPasswordSaving(true);
+    setPasswordSaveStatus("idle");
+    const body: Record<string, unknown> = {};
     if (removePassword) {
       body.password = ""; // PATCH route treats empty string as "clear"
     } else if (newPassword) {
       body.password = newPassword;
-    } // else: omit `password` entirely → PATCH route leaves it unchanged
-    await fetch(`/api/albums/${album.slug}/settings`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
-    });
-    if (removePassword) {
-      setHasPasswordNow(false);
-      setRemovePassword(false);
-      setJustSetPassword(null);
-    } else if (newPassword) {
-      setHasPasswordNow(true);
-      setJustSetPassword(newPassword);
-      setPasswordDraft("");
     }
-    setSaving(false);
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2000);
-    router.refresh();
+
+    try {
+      const response = await fetch(`/api/albums/${album.slug}/settings`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+      if (!response.ok) throw new Error("Password save failed");
+
+      if (removePassword) {
+        setHasPasswordNow(false);
+        setRemovePassword(false);
+        setJustSetPassword(null);
+      } else {
+        setHasPasswordNow(true);
+        setJustSetPassword(newPassword);
+        setPasswordDraft("");
+      }
+      setPasswordSaveStatus("saved");
+      router.refresh();
+    } catch {
+      setPasswordSaveStatus("error");
+    } finally {
+      setPasswordSaving(false);
+    }
   };
 
   const inputClass =
     "w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm text-gray-800 bg-white outline-none focus:border-[#FFC94D] transition-colors";
+  const autoSaveLabel =
+    autoSaveStatus === "pending" ? "Čakam na shranjevanje…" :
+    autoSaveStatus === "saving" ? "Shranjujem…" :
+    autoSaveStatus === "saved" ? "✓ Spremembe shranjene" :
+    autoSaveStatus === "error" ? "⚠ Shranjevanje ni uspelo" :
+    "Samodejno shranjevanje vključeno";
 
   return (
     <div className="bg-white rounded-2xl border border-gray-100 p-6 space-y-5">
-      <h3 className="font-semibold text-gray-900">Nastavitve galerije</h3>
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <h3 className="font-semibold text-gray-900">Nastavitve galerije</h3>
+        <div className="flex items-center gap-2" role="status" aria-live="polite">
+          <span className={`text-xs font-medium ${
+            autoSaveStatus === "error"
+              ? "text-red-600"
+              : autoSaveStatus === "saved"
+                ? "text-green-600"
+                : "text-gray-400"
+          }`}>
+            {autoSaveLabel}
+          </span>
+          {autoSaveStatus === "error" && (
+            <button
+              type="button"
+              onClick={() => setAutoSaveRetry((value) => value + 1)}
+              className="text-xs font-semibold text-[#C9820A] underline underline-offset-2"
+            >
+              Poskusi znova
+            </button>
+          )}
+        </div>
+      </div>
+
+      {autoSaveStatus !== "idle" && (
+        <div
+          className={`fixed bottom-5 right-5 z-[70] flex items-center gap-3 rounded-xl border bg-white px-4 py-3 text-sm font-semibold shadow-lg ${
+            autoSaveStatus === "error" ? "border-red-200 text-red-600" : "border-gray-200 text-gray-700"
+          }`}
+          role={autoSaveStatus === "error" ? "alert" : "status"}
+          aria-live="polite"
+        >
+          <span>{autoSaveLabel}</span>
+          {autoSaveStatus === "error" && (
+            <button
+              type="button"
+              onClick={() => setAutoSaveRetry((value) => value + 1)}
+              className="text-xs font-semibold underline underline-offset-2"
+            >
+              Poskusi znova
+            </button>
+          )}
+        </div>
+      )}
 
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">Ime galerije</label>
-        <input value={coupleName} onChange={(e) => setCoupleName(e.target.value)} className={inputClass} />
+        <input value={coupleName} onChange={(e) => updateSetting(setCoupleName, e.target.value)} className={inputClass} />
       </div>
 
       <div>
@@ -1668,7 +1834,7 @@ function AlbumSettingsForm({ album, children, wallToken, hasPassword }: { album:
         <input
           type="date"
           value={weddingDate}
-          onChange={(e) => setWeddingDate(e.target.value)}
+          onChange={(e) => updateSetting(setWeddingDate, e.target.value)}
           className={inputClass}
         />
       </div>
@@ -1677,7 +1843,7 @@ function AlbumSettingsForm({ album, children, wallToken, hasPassword }: { album:
         <label className="block text-sm font-medium text-gray-700 mb-1">Vrsta dogodka</label>
         <select
           value={eventType}
-          onChange={(e) => setEventType(e.target.value)}
+          onChange={(e) => updateSetting(setEventType, e.target.value)}
           className={inputClass}
         >
           <option value="wedding">Poroka</option>
@@ -1699,7 +1865,7 @@ function AlbumSettingsForm({ album, children, wallToken, hasPassword }: { album:
         </p>
         <select
           value={defaultLang}
-          onChange={(e) => setDefaultLang(e.target.value)}
+          onChange={(e) => updateSetting(setDefaultLang, e.target.value)}
           className={inputClass}
         >
           <option value="sl">Slovenščina</option>
@@ -1712,10 +1878,37 @@ function AlbumSettingsForm({ album, children, wallToken, hasPassword }: { album:
       </div>
 
       <div>
+        <h4 className="text-sm font-semibold text-gray-800">Prikaz v glavi galerije</h4>
+        <p className="mb-3 mt-1 text-xs text-gray-400">
+          Izberite, kateri podatki so vidni gostom na vrhu galerije.
+        </p>
+        <div className="space-y-2">
+          <SettingsToggle
+            checked={showTitle}
+            onChange={(value) => updateSetting(setShowTitle, value)}
+            label="Ime galerije"
+            description="Prikaže glavni naslov galerije."
+          />
+          <SettingsToggle
+            checked={showEventType}
+            onChange={(value) => updateSetting(setShowEventType, value)}
+            label="Vrsta dogodka"
+            description="Prikaže oznako in ikono dogodka."
+          />
+          <SettingsToggle
+            checked={showEventDate}
+            onChange={(value) => updateSetting(setShowEventDate, value)}
+            label="Datum dogodka"
+            description="Prikaže datum in odštevanje do dogodka."
+          />
+        </div>
+      </div>
+
+      <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">Lokacija</label>
         <input
           value={location}
-          onChange={(e) => setLocation(e.target.value)}
+          onChange={(e) => updateSetting(setLocation, e.target.value)}
           placeholder="Ljubljana"
           className={inputClass}
         />
@@ -1725,7 +1918,7 @@ function AlbumSettingsForm({ album, children, wallToken, hasPassword }: { album:
         <label className="block text-sm font-medium text-gray-700 mb-1">Pozdravno sporočilo za goste</label>
         <textarea
           value={notifyEmail}
-          onChange={(e) => setNotifyEmail(e.target.value)}
+          onChange={(e) => updateSetting(setNotifyEmail, e.target.value)}
           rows={3}
           placeholder="Dobrodošli! Naložite svoje fotografije in delite spomine."
           className={`${inputClass} resize-none`}
@@ -1743,7 +1936,10 @@ function AlbumSettingsForm({ album, children, wallToken, hasPassword }: { album:
           <input
             type="password"
             value={passwordDraft}
-            onChange={(e) => setPasswordDraft(e.target.value)}
+            onChange={(e) => {
+              setPasswordDraft(e.target.value);
+              setPasswordSaveStatus("idle");
+            }}
             placeholder={hasPasswordNow ? "Novo geslo (pustite prazno, če ne spreminjate)" : "Nastavite geslo (neobvezno)"}
             className={inputClass}
             autoComplete="new-password"
@@ -1756,12 +1952,16 @@ function AlbumSettingsForm({ album, children, wallToken, hasPassword }: { album:
               checked={removePassword}
               onChange={(e) => {
                 setRemovePassword(e.target.checked);
+                setPasswordSaveStatus("idle");
                 if (e.target.checked) setPasswordDraft("");
               }}
             />
             Odstrani geslo — galerija bo dostopna vsakomur s povezavo
           </label>
         )}
+        <p className="mt-2 text-xs text-gray-400">
+          Geslo se zaradi varnosti shrani šele s potrditvijo spodaj.
+        </p>
         {justSetPassword && (
           <div className="mt-3 rounded-xl border p-3" style={{ background: "#f0fdf4", borderColor: "#86efac" }}>
             <p className="text-xs font-medium mb-1.5" style={{ color: "#15803d" }}>
@@ -1800,7 +2000,7 @@ function AlbumSettingsForm({ album, children, wallToken, hasPassword }: { album:
               <button
                 key={tm.id}
                 type="button"
-                onClick={() => setTheme(tm.id)}
+                onClick={() => updateSetting(setTheme, tm.id)}
                 aria-pressed={selected}
                 title={tm.name}
                 className={`group flex flex-col items-center gap-1.5 rounded-xl p-1.5 transition-all ${
@@ -1868,7 +2068,7 @@ function AlbumSettingsForm({ album, children, wallToken, hasPassword }: { album:
           <button
             role="switch"
             aria-checked={isPublished}
-            onClick={() => setIsPublished(!isPublished)}
+            onClick={() => updateSetting(setIsPublished, !isPublished)}
             className={`relative w-10 h-5 rounded-full transition-colors ${isPublished ? "bg-[#FFC94D]" : "bg-gray-200"}`}
           >
             <span className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white shadow transition-transform ${isPublished ? "translate-x-5" : "translate-x-0"}`} />
@@ -1881,7 +2081,7 @@ function AlbumSettingsForm({ album, children, wallToken, hasPassword }: { album:
             <button
               role="switch"
               aria-checked={moderationEnabled}
-              onClick={() => setModerationEnabled(!moderationEnabled)}
+              onClick={() => updateSetting(setModerationEnabled, !moderationEnabled)}
               className={`relative w-10 h-5 rounded-full transition-colors ${moderationEnabled ? "bg-[#FFC94D]" : "bg-gray-200"}`}
             >
               <span className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white shadow transition-transform ${moderationEnabled ? "translate-x-5" : "translate-x-0"}`} />
@@ -1892,12 +2092,22 @@ function AlbumSettingsForm({ album, children, wallToken, hasPassword }: { album:
       </div>
 
       <button
-        onClick={save}
-        disabled={saving}
+        type="button"
+        onClick={savePassword}
+        disabled={passwordSaving || (!removePassword && !passwordDraft.trim())}
         className="w-full py-3 rounded-xl text-white text-sm font-semibold disabled:opacity-50 transition-colors bg-[#FFC94D] hover:bg-[#F0B429]"
       >
-        {saving ? "Shranjevanje…" : saved ? "✓ Shranjeno" : "Shrani spremembe"}
+        {passwordSaving
+          ? "Shranjujem geslo…"
+          : passwordSaveStatus === "saved"
+            ? "✓ Geslo shranjeno"
+            : "Shrani spremembo gesla"}
       </button>
+      {passwordSaveStatus === "error" && (
+        <p className="text-center text-xs font-medium text-red-600" role="alert">
+          Gesla ni bilo mogoče shraniti. Poskusite znova.
+        </p>
+      )}
     </div>
   );
 }

@@ -6,6 +6,7 @@ import { ALBUM_THEMES } from "@/lib/album-themes";
 import { checkAlbumOwnership } from "@/lib/album-ownership";
 import { hashAlbumPassword, isHashed } from "@/lib/album-password";
 import { setAlbumFlags } from "@/lib/album-flags";
+import { setAlbumHeaderSettings } from "@/lib/album-header-settings";
 
 export async function PATCH(
   req: NextRequest,
@@ -21,7 +22,7 @@ export async function PATCH(
   if (!album) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
   const body = await req.json();
-  const { coupleName, location, notifyEmail, password, moderationEnabled, isPublished, coverImageUrl, eventType, defaultLang, theme, guestDataCapture, allowPhotos, allowVideos, albumPermission, disableDownload, disableLikes } = body;
+  const { coupleName, weddingDate, location, notifyEmail, password, moderationEnabled, isPublished, coverImageUrl, eventType, defaultLang, theme, guestDataCapture, allowPhotos, allowVideos, albumPermission, disableDownload, disableLikes, showTitle, showEventType, showEventDate } = body;
 
   const ALLOWED_EVENT_TYPES = [
     "wedding",
@@ -44,6 +45,11 @@ export async function PATCH(
     typeof defaultLang === "string" && ALLOWED_LANGS.includes(defaultLang)
       ? defaultLang
       : album.defaultLang;
+
+  const validWeddingDate =
+    typeof weddingDate === "string" && /^\d{4}-\d{2}-\d{2}$/.test(weddingDate)
+      ? weddingDate
+      : album.weddingDate;
 
   const validTheme =
     typeof theme === "string" && ALBUM_THEMES.some((t) => t.id === theme)
@@ -69,6 +75,7 @@ export async function PATCH(
     .update(albums)
     .set({
       coupleName: coupleName ?? album.coupleName,
+      weddingDate: validWeddingDate,
       location: location !== undefined ? (location || null) : album.location,
       notifyEmail: notifyEmail !== undefined ? (notifyEmail || null) : album.notifyEmail,
       password: nextPassword !== undefined ? nextPassword : album.password,
@@ -95,6 +102,22 @@ export async function PATCH(
     ...(typeof disableLikes === "boolean" ? { disableLikes } : {}),
     ...(typeof albumPermission === "string" ? { albumPermission: albumPermission as never } : {}),
   });
+
+  const headerSettingsRequested =
+    typeof showTitle === "boolean" ||
+    typeof showEventType === "boolean" ||
+    typeof showEventDate === "boolean";
+  const headerSettingsSaved = await setAlbumHeaderSettings(album.id, {
+    ...(typeof showTitle === "boolean" ? { showTitle } : {}),
+    ...(typeof showEventType === "boolean" ? { showEventType } : {}),
+    ...(typeof showEventDate === "boolean" ? { showEventDate } : {}),
+  });
+  if (headerSettingsRequested && !headerSettingsSaved) {
+    return NextResponse.json(
+      { error: "Nastavitev prikaza galerije ni bilo mogoče shraniti." },
+      { status: 500 },
+    );
+  }
 
   return NextResponse.json({ ok: true });
 }
