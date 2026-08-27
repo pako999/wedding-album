@@ -39,6 +39,8 @@ const files = {
   videoClient: await read("components/album/IosBunnyPlaybackFix.tsx"),
   filmStatus: await read("app/api/albums/[slug]/film/status/route.ts"),
   envExample: await read(".env.example"),
+  homePage: await read("app/page.tsx"),
+  homeComponent: await read("components/GuestcamHomePage.tsx"),
 };
 
 requireMatch(
@@ -186,6 +188,20 @@ requireMatch(
   files.envExample,
   /BUNNY_CDN_URL=https:\/\/frfr1\.b-cdn\.net[\s\S]*BUNNY_S3_CDN_URL=https:\/\/guestcam-media\.b-cdn\.net/,
   "legacy and S3 pull zones must remain separate",
+);
+
+requireAbsent(
+  "homepage does not reparent React-owned DOM",
+  files.homePage,
+  /MoveAfterHero/,
+  "imperatively moving rendered nodes breaks every client-side navigation away from the homepage",
+);
+
+requireMatch(
+  "homepage video is rendered directly after the hero",
+  files.homeComponent,
+  /<\/section>\s*<PromoVideo\s*\/>\s*<section className="bg-\[#FFFDF8\] px-4 py-8/,
+  "the promo video must stay in the React tree immediately after the hero section",
 );
 
 console.log("\nAll Guestcam critical regression checks passed.");

@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import { SITE_URL } from "@/lib/urls";
 import { GuestcamHomePage, HOME_FAQS } from "@/components/GuestcamHomePage";
-import { PromoVideo } from "@/components/PromoVideo";
-import { MoveAfterHero } from "@/components/MoveAfterHero";
 
 export const metadata: Metadata = {
   title: "QR koda za poroko • Fotografije gostov v enem albumu | Guestcam",
@@ -51,5 +49,5 @@ const jsonLd = {
 };
 
 export default function Page() {
-  return <><script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} /><GuestcamHomePage /><MoveAfterHero><PromoVideo /></MoveAfterHero></>;
+  return <><script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} /><GuestcamHomePage /></>;
 }
