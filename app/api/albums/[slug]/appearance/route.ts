@@ -5,6 +5,7 @@ import { eq } from "drizzle-orm";
 import { checkAlbumOwnership } from "@/lib/album-ownership";
 import { getAlbumAppearance, setAlbumAppearance } from "@/lib/album-appearance";
 import { isBunnyStorageConfigured } from "@/lib/storage/bunny";
+import { deleteStoredMedia } from "@/lib/storage/delete-media";
 
 export const runtime = "nodejs";
 
@@ -95,4 +96,39 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ slug
     );
   }
   return NextResponse.json({ url, appearance: await getAlbumAppearance(res.album.id) });
+}
+
+/** Remove one uploaded appearance image and its external storage object. */
+export async function DELETE(req: NextRequest, { params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const res = await requireOwnedAlbum(slug);
+  if (res.error) return res.error;
+
+  const kind = req.nextUrl.searchParams.get("kind") as keyof typeof KINDS | null;
+  if (!kind || !(kind in KINDS)) {
+    return NextResponse.json({ error: "kind must be logo|background|welcome" }, { status: 400 });
+  }
+
+  const appearance = await getAlbumAppearance(res.album.id);
+  const currentUrl = kind === "logo"
+    ? appearance?.logoUrl
+    : kind === "background"
+      ? appearance?.backgroundUrl
+      : appearance?.welcomeBgUrl;
+
+  if (currentUrl) {
+    try {
+      await deleteStoredMedia({ blobUrl: currentUrl });
+    } catch (error) {
+      console.error("[appearance] failed to delete stored asset", { slug, kind, error });
+      return NextResponse.json({ error: "Could not delete stored image" }, { status: 502 });
+    }
+  }
+
+  const stored = await setAlbumAppearance(res.album.id, { [KINDS[kind]]: null });
+  if (!stored) {
+    return NextResponse.json({ error: "Could not clear appearance setting" }, { status: 503 });
+  }
+
+  return NextResponse.json({ appearance: await getAlbumAppearance(res.album.id) });
 }
