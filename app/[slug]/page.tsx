@@ -276,17 +276,19 @@ export default async function AlbumPage({ params, searchParams }: Props) {
     return { ...photo, blobUrl: compatibleBunnyPlayerUrl(photo.blobUrl) };
   });
 
-  // Events/business package flag. getAlbumFlags never throws — if the
-  // table isn't there yet the feature simply reads as off.
+  // Event/Photo Wall branding belongs only to the dedicated event surface.
+  // The ordinary album URL/QR must stay a clean standard Guestcam gallery,
+  // even when the owner configured a logo, event background or welcome screen.
   const flags = await getAlbumFlags(album.id);
-  const appearance = await getAlbumAppearance(album.id);
+  const isEventSurface = event === "1";
+  const appearance = isEventSurface ? await getAlbumAppearance(album.id) : null;
 
   // Guest contact capture is an EVENT/PHOTO-WALL flow, not a normal album
   // upload requirement. The owner may keep the event flag enabled, but the
   // name + surname + email form is only activated on the dedicated event
   // upload URL generated for the Photo Wall (?event=1). The ordinary album
   // URL/QR therefore keeps the classic simple guest-name upload flow.
-  const requireEventGuestData = flags.guestDataCapture && event === "1";
+  const requireEventGuestData = flags.guestDataCapture && isEventSurface;
 
   // Fetch the album's moments (named sub-galleries)
   const albumMoments = await db.query.moments.findMany({
