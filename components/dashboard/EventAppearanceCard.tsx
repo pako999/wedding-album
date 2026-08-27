@@ -6,9 +6,9 @@ import { optimizeAppearanceImage, type AppearanceKind } from "@/lib/optimize-ima
 
 /**
  * Appearance & welcome-screen editor with a live phone preview — the
- * host sees exactly what a guest's first visit will look like while
- * they type. Saves through the owner-gated /appearance API; server-side
- * validation is the gate, this card is the convenience.
+ * host sees exactly what a guest's Event / Photo Wall entry surface will
+ * look like while they type. Saves through the owner-gated /appearance API;
+ * server-side validation is the gate, this card is the convenience.
  */
 
 interface Appearance {
@@ -41,26 +41,37 @@ const FONTS: { id: WelcomeFont; label: string }[] = [
  *  bigger is a mis-pick (video, RAW). */
 const MAX_SOURCE_MB = 25;
 
-/** Hoisted to module scope so it is a stable component: defined inside
- *  EventAppearanceCard it was recreated on every render, which both
- *  tripped react-hooks/static-components and remounted the file input on
- *  each keystroke of the welcome form. */
-function FileBtn({ kind, label, current, onPick }: {
+/** Stable upload/remove control shared by all appearance image slots. */
+function FileBtn({ kind, label, current, onPick, onRemove }: {
   kind: AppearanceKind;
   label: string;
   current: string | null;
   onPick: (kind: AppearanceKind, file: File) => void;
+  onRemove: (kind: AppearanceKind) => void;
 }) {
   return (
-    <label className="flex items-center gap-3 cursor-pointer">
-      {current
-        // eslint-disable-next-line @next/next/no-img-element
-        ? <img src={current} alt="" className="w-12 h-12 rounded-lg object-contain bg-gray-50 p-0.5 border border-gray-200" />
-        : <span className="w-12 h-12 rounded-lg border border-dashed border-gray-300 flex items-center justify-center text-gray-300 text-xl">+</span>}
-      <span className="text-xs font-semibold text-[#C9820A] underline underline-offset-2">{label}</span>
-      <input type="file" accept="image/jpeg,image/png,image/webp" className="hidden"
-        onChange={(e) => { const f = e.target.files?.[0]; if (f) onPick(kind, f); e.target.value = ""; }} />
-    </label>
+    <div className="flex flex-wrap items-center gap-3">
+      <label className="flex items-center gap-3 cursor-pointer">
+        {current
+          // eslint-disable-next-line @next/next/no-img-element
+          ? <img src={current} alt="" className="w-12 h-12 rounded-lg object-contain bg-gray-50 p-0.5 border border-gray-200" />
+          : <span className="w-12 h-12 rounded-lg border border-dashed border-gray-300 flex items-center justify-center text-gray-300 text-xl">+</span>}
+        <span className="text-xs font-semibold text-[#C9820A] underline underline-offset-2">
+          {current ? "Zamenjaj" : label}
+        </span>
+        <input type="file" accept="image/jpeg,image/png,image/webp" className="hidden"
+          onChange={(e) => { const f = e.target.files?.[0]; if (f) onPick(kind, f); e.target.value = ""; }} />
+      </label>
+      {current && (
+        <button
+          type="button"
+          onClick={() => onRemove(kind)}
+          className="text-xs font-semibold text-red-600 hover:text-red-700 underline underline-offset-2"
+        >
+          Odstrani
+        </button>
+      )}
+    </div>
   );
 }
 
@@ -118,8 +129,6 @@ export function EventAppearanceCard({ albumSlug, coupleName }: { albumSlug: stri
       if (res.ok && d?.appearance) {
         setA({ ...EMPTY, ...d.appearance });
       } else {
-        // The old version swallowed failures silently — an oversized or
-        // unsupported file looked like "I uploaded and nothing happened".
         setUploadError(d?.error === "Unsupported file type"
           ? "Ta vrsta datoteke ni podprta. Uporabite JPG, PNG ali WebP."
           : `Nalaganje ni uspelo${d?.error ? `: ${d.error}` : ""}. Poskusite znova.`);
@@ -127,6 +136,24 @@ export function EventAppearanceCard({ albumSlug, coupleName }: { albumSlug: stri
     } catch {
       setUploadError("Nalaganje ni uspelo. Preverite povezavo in poskusite znova.");
     } finally { setSaving(false); }
+  }
+
+  async function removeAsset(kind: AppearanceKind) {
+    setUploadError(null);
+    setSaving(true);
+    try {
+      const res = await fetch(`/api/albums/${albumSlug}/appearance?kind=${kind}`, { method: "DELETE" });
+      const d = await res.json().catch(() => null);
+      if (res.ok && d?.appearance) {
+        setA({ ...EMPTY, ...d.appearance });
+      } else {
+        setUploadError(`Brisanje ni uspelo${d?.error ? `: ${d.error}` : ""}. Poskusite znova.`);
+      }
+    } catch {
+      setUploadError("Brisanje ni uspelo. Preverite povezavo in poskusite znova.");
+    } finally {
+      setSaving(false);
+    }
   }
 
   const accent = a.accentColor ?? "#FFC94D";
@@ -140,7 +167,12 @@ export function EventAppearanceCard({ albumSlug, coupleName }: { albumSlug: stri
         <h3 className="font-bold text-gray-900">🎨 Videz in pozdravni zaslon</h3>
         {saving && <span className="text-xs text-gray-400">Shranjujem…</span>}
       </div>
-      <p className="text-xs text-gray-500 mb-5">Logotip, barva in pozdravni zaslon, ki ga gost vidi ob prvem obisku.</p>
+      <p className="text-xs text-gray-500 mb-3">
+        Nastavitve veljajo samo za Event / Photo Wall povezavo in Foto zid. Običajna galerija ostane standardna.
+      </p>
+      <div className="mb-5 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-[11px] leading-relaxed text-amber-800">
+        Event povezava: <strong>/{albumSlug}?event=1</strong>. Tu lahko vsak element kadarkoli dodate, zamenjate ali odstranite.
+      </div>
       {uploadError && (
         <p className="mb-4 rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-xs font-semibold text-red-700">
           {uploadError}
@@ -151,13 +183,13 @@ export function EventAppearanceCard({ albumSlug, coupleName }: { albumSlug: stri
         <div className="space-y-5">
           <div>
             <p className="text-sm font-semibold text-gray-900 mb-1">Logotip eventa</p>
-            <p className="text-xs text-gray-500 mb-2">Poljubno razmerje — širok ali kvadraten. Prikazan v galeriji in na foto steni.</p>
-            <FileBtn kind="logo" label="Naloži logotip" current={a.logoUrl} onPick={upload} />
+            <p className="text-xs text-gray-500 mb-2">Poljubno razmerje — širok ali kvadraten. Prikazan na Event povezavi in Foto zidu.</p>
+            <FileBtn kind="logo" label="Naloži logotip" current={a.logoUrl} onPick={upload} onRemove={removeAsset} />
           </div>
 
           <div>
             <p className="text-sm font-semibold text-gray-900 mb-1">Barva blagovne znamke</p>
-            <p className="text-xs text-gray-500 mb-2">Uporabljena za gumbe in poudarke na javnih straneh.</p>
+            <p className="text-xs text-gray-500 mb-2">Uporabljena za gumbe in poudarke na Event / Photo Wall površinah.</p>
             <div className="flex items-center gap-3">
               <input type="color" value={accent}
                 onChange={(e) => update({ accentColor: e.target.value })}
@@ -172,16 +204,16 @@ export function EventAppearanceCard({ albumSlug, coupleName }: { albumSlug: stri
           </div>
 
           <div>
-            <p className="text-sm font-semibold text-gray-900 mb-1">Ozadje albuma</p>
-            <p className="text-xs text-gray-500 mb-2">Slika v ozadju galerije; privzeto čista svetla podlaga.</p>
-            <FileBtn kind="background" label="Naloži ozadje" current={a.backgroundUrl} onPick={upload} />
+            <p className="text-sm font-semibold text-gray-900 mb-1">Ozadje event galerije</p>
+            <p className="text-xs text-gray-500 mb-2">Slika v ozadju samo na Event povezavi; običajna galerija ostane svetla.</p>
+            <FileBtn kind="background" label="Naloži ozadje" current={a.backgroundUrl} onPick={upload} onRemove={removeAsset} />
           </div>
 
           <div className="pt-4 border-t border-gray-100">
             <label className="flex items-center justify-between gap-4 mb-3 cursor-pointer">
               <span>
                 <span className="block text-sm font-semibold text-gray-900">Pozdravni zaslon</span>
-                <span className="block text-xs text-gray-500">Prikaže se enkrat, ob gostovem prvem obisku.</span>
+                <span className="block text-xs text-gray-500">Prikaže se samo na Event povezavi, ob gostovem prvem obisku.</span>
               </span>
               <button type="button" role="switch" aria-checked={a.welcomeEnabled}
                 onClick={() => update({ welcomeEnabled: !a.welcomeEnabled })}
@@ -207,7 +239,7 @@ export function EventAppearanceCard({ albumSlug, coupleName }: { albumSlug: stri
                     {FONTS.map((f) => <option key={f.id} value={f.id}>{f.label}</option>)}
                   </select>
                 </div>
-                <FileBtn kind="welcome" label="Ozadje pozdravnega zaslona" current={a.welcomeBgUrl} onPick={upload} />
+                <FileBtn kind="welcome" label="Ozadje pozdravnega zaslona" current={a.welcomeBgUrl} onPick={upload} onRemove={removeAsset} />
               </div>
             )}
           </div>
