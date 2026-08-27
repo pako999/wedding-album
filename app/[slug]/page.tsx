@@ -22,18 +22,6 @@ interface Props {
   searchParams: Promise<{ lang?: string; event?: string }>;
 }
 
-// Per-event-type share copy. We render this in the share preview when
-// a guest pastes the album link in WhatsApp / iMessage / Slack.
-// Previously every album defaulted to "Poročni album za …" regardless
-// of event type — a baby shower link said "Wedding album for Kim's
-// Baby shower", which is wrong and confusing.
-//
-// Keys MUST match the eventType values the server actually persists
-// (see ALLOWED_EVENT_TYPES in app/api/albums/[slug]/settings/route.ts):
-// wedding / birthday / anniversary / party / baptism / graduation /
-// baby_shower / business / other. Earlier this map used `babyshower`
-// without the underscore — that key never matched and every baby
-// shower fell through to the generic fallback.
 const EVENT_LABEL_SL: Record<string, string> = {
   wedding:     "Poročni album za",
   birthday:    "Album rojstnega dne za",
@@ -46,12 +34,7 @@ const EVENT_LABEL_SL: Record<string, string> = {
   other:       "Album dogodka za",
 };
 
-/**
- * Existing Guestcam videos belong to a Bunny Stream library that still uses
- * Bunny's legacy iframe player. Do not force those videos onto Player 2;
- * normalize any newer hostname back to the compatible legacy endpoint at
- * read time without changing the stored database row.
- */
+/** Legacy Bunny iframe fallback if signed same-origin playback is unavailable. */
 function compatibleBunnyPlayerUrl(url: string): string {
   return url.replace(
     "https://player.mediadelivery.net/embed/",
@@ -59,12 +42,7 @@ function compatibleBunnyPlayerUrl(url: string): string {
   );
 }
 
-/**
- * macOS Safari works reliably with Bunny's native HLS stream. iPhone/iPad
- * Safari is handled separately below through the same-origin Guestcam MP4
- * proxy because Apple's mobile player can reject direct Bunny media requests
- * when Stream security/referrer protection is enabled.
- */
+/** Safari HLS fallback if the signed MP4 playback token cannot be created. */
 function bunnyHlsUrl(thumbnailUrl: string | null | undefined, videoId: string): string | null {
   if (!thumbnailUrl || !videoId) return null;
   try {
@@ -85,19 +63,8 @@ function isSafariUserAgent(userAgent: string): boolean {
   return hasSafari && !isOtherWebKitBrowser;
 }
 
-function isIosSafariUserAgent(userAgent: string): boolean {
-  if (!isSafariUserAgent(userAgent)) return false;
-  // iPadOS can request desktop websites and identify as Macintosh, but still
-  // includes Mobile/<build>. Cover both classic iOS and desktop-style iPad UA.
-  return /iPhone|iPad|iPod/i.test(userAgent) ||
-    (/Macintosh/i.test(userAgent) && /Mobile\//i.test(userAgent));
-}
-
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  // withSchemaHealing: if the schema is stale (new column deployed but
-  // migration not yet run on this DB), run migrations + retry instead of
-  // 500ing every gallery until someone opens /admin.
   const album = await withSchemaHealing(() =>
     db.query.albums.findFirst({ where: eq(albums.slug, slug) }),
   );
@@ -109,12 +76,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: `${album.coupleName} — Guestcam`,
     description,
-    // Every album guest page is private (link-only). Maximum-strength
-    // robots directives so search engines, image search, AI scrapers,
-    // and archive bots all stay out — even if some choose to ignore
-    // one signal we cover the others. Middleware also sets the
-    // X-Robots-Tag HTTP header for an additional layer that crawlers
-    // honour before they ever parse the HTML.
     robots: {
       index: false,
       follow: false,
@@ -129,9 +90,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       },
     },
     other: {
-      // Belt-and-braces: emit a consolidated robots meta with archive
-      // + snippet + image-index + AI-training opt-outs that the typed
-      // Metadata.robots shape doesn't expose as top-level keys.
       robots:
         "noindex, nofollow, noarchive, nosnippet, noimageindex, notranslate, noai, noimageai",
     },
@@ -160,10 +118,6 @@ export default async function AlbumPage({ params, searchParams }: Props) {
     notFound();
   }
 
-  // Album language: explicit ?lang= wins; otherwise the album's own
-  // default (inferred from the event location at creation — a Croatian
-  // wedding opens in Croatian, not Slovenian). Guests can still switch
-  // via the in-gallery language picker.
   const VALID_LANGS: readonly Lang[] = ["sl", "hr", "sr", "de", "en", "es"];
   const isValidLang = (v: string | undefined | null): v is Lang =>
     !!v && (VALID_LANGS as readonly string[]).includes(v);
@@ -173,9 +127,6 @@ export default async function AlbumPage({ params, searchParams }: Props) {
       ? album.defaultLang
       : "sl";
 
-  // Is the signed-in viewer the album owner? Two checks:
-  //   1. Clerk userId matches `ownerClerkId` (normal case).
-  //   2. Email matches `ownerEmail` (cross-Clerk WedFlow integration case).
   let isOwner = false;
   try {
     const session = await auth();
@@ -183,10 +134,6 @@ export default async function AlbumPage({ params, searchParams }: Props) {
       if (session.userId === album.ownerClerkId) {
         isOwner = true;
       } else if (album.ownerEmail) {
-        // VERIFIED emails only — Clerk keeps unverified addresses on the
-        // user object, so matching all of them would let an attacker claim
-        // owner status (and the password bypass) by adding the owner's
-        // email unverified. Mirrors lib/album-ownership.ts.
         const user = await currentUser();
         const wanted = album.ownerEmail.toLowerCase();
         if (verifiedEmails(user).includes(wanted)) {
@@ -194,17 +141,11 @@ export default async function AlbumPage({ params, searchParams }: Props) {
         }
       }
     }
-  } catch { /* viewer is anonymous — that's fine */ }
+  } catch { /* viewer is anonymous */ }
 
   const requestHeaders = await headers();
-  // proxy.ts decrypts the HttpOnly album-access cookie and exposes the raw
-  // password only through this server-internal request header. It is never
-  // placed back into a URL and is never passed to a Client Component.
   const internalAlbumPassword = requestHeaders.get("x-album-access-password") ?? "";
 
-  // Password gate (server-side check). Owners always bypass. Verifies
-  // against scrypt-hashed OR legacy plaintext (see lib/album-password.ts)
-  // and silently upgrades legacy rows on the first correct entry.
   const passwordRequired = !!album.password && !isOwner;
   let passwordCorrect = isOwner || !album.password;
   if (!passwordCorrect && album.password) {
@@ -219,7 +160,6 @@ export default async function AlbumPage({ params, searchParams }: Props) {
     }
   }
 
-  // Fetch published photos
   const albumPhotos = passwordCorrect
     ? await db.query.photos.findMany({
         where: and(
@@ -232,34 +172,28 @@ export default async function AlbumPage({ params, searchParams }: Props) {
 
   const userAgent = requestHeaders.get("user-agent") ?? "";
   const safari = isSafariUserAgent(userAgent);
-  const iosSafari = isIosSafariUserAgent(userAgent);
   const playbackExpiresAt = Math.floor(Date.now() / 1000) + 2 * 60 * 60;
 
-  // Browser-specific playback:
-  //   • iPhone/iPad Safari → same-origin signed MP4 proxy with Range support.
-  //   • macOS Safari       → native Bunny HLS.
-  //   • Chrome/Edge/etc.   → Bunny legacy iframe player used by this library.
-  //
-  // In the native branches cfStreamVideoId is intentionally nulled so
-  // VideoCard renders <video controls playsInline> instead of an iframe.
+  // Use Guestcam's same-origin signed MP4 proxy for every browser. This keeps
+  // portrait videos in the native <video> element, so they can use the full
+  // card width instead of being letterboxed inside Bunny's fixed 16:9 iframe.
+  // HLS/iframe remain fallbacks only if a playback token cannot be created.
   const playbackPhotos = albumPhotos.map((photo) => {
     if (!photo.cfStreamVideoId) return photo;
 
-    if (iosSafari) {
-      const sig = createVideoPlaybackToken(slug, photo.cfStreamVideoId, playbackExpiresAt);
-      if (sig) {
-        const qs = new URLSearchParams({
-          vid: photo.cfStreamVideoId,
-          play: "1",
-          exp: String(playbackExpiresAt),
-          sig,
-        });
-        return {
-          ...photo,
-          blobUrl: `/api/albums/${encodeURIComponent(slug)}/video-download?${qs.toString()}`,
-          cfStreamVideoId: null,
-        };
-      }
+    const sig = createVideoPlaybackToken(slug, photo.cfStreamVideoId, playbackExpiresAt);
+    if (sig) {
+      const qs = new URLSearchParams({
+        vid: photo.cfStreamVideoId,
+        play: "1",
+        exp: String(playbackExpiresAt),
+        sig,
+      });
+      return {
+        ...photo,
+        blobUrl: `/api/albums/${encodeURIComponent(slug)}/video-download?${qs.toString()}`,
+        cfStreamVideoId: null,
+      };
     }
 
     if (safari) {
@@ -277,20 +211,12 @@ export default async function AlbumPage({ params, searchParams }: Props) {
   });
 
   // Event/Photo Wall branding belongs only to the dedicated event surface.
-  // The ordinary album URL/QR must stay a clean standard Guestcam gallery,
-  // even when the owner configured a logo, event background or welcome screen.
+  // Ordinary album URLs stay standard even when event branding is configured.
   const flags = await getAlbumFlags(album.id);
   const isEventSurface = event === "1";
   const appearance = isEventSurface ? await getAlbumAppearance(album.id) : null;
-
-  // Guest contact capture is an EVENT/PHOTO-WALL flow, not a normal album
-  // upload requirement. The owner may keep the event flag enabled, but the
-  // name + surname + email form is only activated on the dedicated event
-  // upload URL generated for the Photo Wall (?event=1). The ordinary album
-  // URL/QR therefore keeps the classic simple guest-name upload flow.
   const requireEventGuestData = flags.guestDataCapture && isEventSurface;
 
-  // Fetch the album's moments (named sub-galleries)
   const albumMoments = await db.query.moments.findMany({
     where: eq(moments.albumId, album.id),
     orderBy: (m, { asc }) => [asc(m.sortOrder), asc(m.createdAt)],
@@ -298,20 +224,17 @@ export default async function AlbumPage({ params, searchParams }: Props) {
 
   return (
     <>
-      {/* Gallery-only surface fixes. Cookiebot's floating widget is hidden on
-          guest albums, and native Safari/iOS video players are allowed to use
-          their full intrinsic width. The old 360px max-height forced portrait
-          videos to shrink horizontally, leaving a tiny player in the middle of
-          an otherwise full-size card. */}
       <style>{`
         #CookiebotWidget { display: none !important; }
-        video[controls][preload="metadata"] {
+        video[controls] {
           display: block !important;
           width: 100% !important;
+          min-width: 100% !important;
           max-width: 100% !important;
           height: auto !important;
           max-height: none !important;
-          object-fit: cover;
+          object-fit: contain !important;
+          background: #000;
         }
       `}</style>
       <AlbumGuestView
