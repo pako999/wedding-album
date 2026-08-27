@@ -41,8 +41,11 @@ export async function setAlbumAppearance(
   patch: Partial<Omit<AlbumAppearance, "albumId" | "updatedAt">>,
 ): Promise<boolean> {
   const clean: Record<string, unknown> = {};
+  // Explicit null is meaningful for removable appearance assets: it clears
+  // the persisted value. Previously null became undefined, so Drizzle omitted
+  // the column from the UPDATE and the old logo/background stayed in the DB.
   const str = (v: unknown, max: number) =>
-    typeof v === "string" ? v.trim().slice(0, max) || null : undefined;
+    v === null ? null : typeof v === "string" ? v.trim().slice(0, max) || null : undefined;
   if ("logoUrl" in patch) clean.logoUrl = str(patch.logoUrl, 500);
   if ("backgroundUrl" in patch) clean.backgroundUrl = str(patch.backgroundUrl, 500);
   if ("welcomeBgUrl" in patch) clean.welcomeBgUrl = str(patch.welcomeBgUrl, 500);
