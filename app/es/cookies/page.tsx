@@ -1,10 +1,11 @@
 import { SITE_URL } from "@/lib/urls";
 import type { Metadata } from "next";
 import { LegalPage } from "@/components/LegalPage";
+import { legalAlternates } from "@/lib/seo/legal-alternates";
 
 export const metadata: Metadata = {
   title: "Política de cookies",
-  alternates: { canonical: `${SITE_URL}/es/cookies` },
+  alternates: { canonical: `${SITE_URL}/es/cookies`, languages: legalAlternates("cookies") },
   openGraph: { url: `${SITE_URL}/es/cookies`, title: "Política de cookies", images: ["/og-image.png?v=2"] },
   robots: { index: true, follow: true },
 };

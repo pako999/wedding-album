@@ -41,6 +41,9 @@ const files = {
   envExample: await read(".env.example"),
   homePage: await read("app/page.tsx"),
   homeComponent: await read("components/GuestcamHomePage.tsx"),
+  localizedHomeComponent: await read("components/LocalizedGuestcamHomePageV3.tsx"),
+  seoFooter: await read("components/SeoFooter.tsx"),
+  sitemap: await read("app/sitemap.ts"),
 };
 
 requireMatch(
@@ -203,5 +206,45 @@ requireMatch(
   /<\/section>\s*<PromoVideo\s*\/>\s*<section className="bg-\[#FFFDF8\] px-4 py-8/,
   "the promo video must stay in the React tree immediately after the hero section",
 );
+
+requireMatch(
+  "localized feature footer anchors have a target",
+  files.localizedHomeComponent,
+  /<section id="features"/,
+  "localized homepages must expose the #features section used by every localized footer",
+);
+
+requireMatch(
+  "localized FAQ footer anchors have a target",
+  files.localizedHomeComponent,
+  /<section id="faq"/,
+  "localized homepages must expose the #faq section used by every localized footer",
+);
+
+requireMatch(
+  "affiliate applications have crawlable localized inlinks",
+  files.seoFooter,
+  /lang === "sl" \? "\/affiliate\/apply" : `\/\$\{lang\}\/affiliate\/apply`/,
+  "the footer must link to the application page in the current language",
+);
+
+requireMatch(
+  "homepage sitemap date reflects the latest meaningful edit",
+  files.sitemap,
+  /homepage:\s*"2026-08-27"/,
+  "do not leave the homepage lastmod stale after a meaningful homepage update",
+);
+
+for (const lang of ["hr", "sr", "de", "en", "es"]) {
+  for (const document of ["privacy", "terms", "gdpr", "cookies", "refund"]) {
+    const legalPage = await read(`app/${lang}/${document}/page.tsx`);
+    requireMatch(
+      `${lang}/${document} has reciprocal hreflang metadata`,
+      legalPage,
+      new RegExp(`languages:\\s*legalAlternates\\("${document}"\\)`),
+      "every translated legal page must publish the same reciprocal cluster as the sitemap",
+    );
+  }
+}
 
 console.log("\nAll Guestcam critical regression checks passed.");

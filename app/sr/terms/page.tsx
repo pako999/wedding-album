@@ -1,10 +1,11 @@
 import { SITE_URL } from "@/lib/urls";
 import type { Metadata } from "next";
 import { LegalPage } from "@/components/LegalPage";
+import { legalAlternates } from "@/lib/seo/legal-alternates";
 
 export const metadata: Metadata = {
   title: "Uslovi korišćenja",
-  alternates: { canonical: `${SITE_URL}/sr/terms` },
+  alternates: { canonical: `${SITE_URL}/sr/terms`, languages: legalAlternates("terms") },
   openGraph: { url: `${SITE_URL}/sr/terms`, title: "Uslovi korišćenja", images: ["/og-image.png?v=2"] },
   robots: { index: true, follow: true },
 };

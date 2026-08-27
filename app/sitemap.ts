@@ -3,6 +3,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { SITE_URL } from "@/lib/urls";
 import { getEventTopic, localesForTopic, type EventTopicKey } from "@/lib/seo/event-topics";
+import { LEGAL_DOCUMENTS, legalAlternates } from "@/lib/seo/legal-alternates";
 
 type ChangeFreq = "always" | "hourly" | "daily" | "weekly" | "monthly" | "yearly" | "never";
 type Locale = "sl" | "hr" | "sr" | "de" | "en" | "es";
@@ -21,7 +22,7 @@ const LOCALES: Locale[] = ["sl", "hr", "sr", "de", "en", "es"];
 /** Stable dates only. Never replace an unknown lastmod with `new Date()`:
  * doing so tells crawlers every page changed on every sitemap generation. */
 const LAST_EDITED = {
-  homepage: "2026-07-01",
+  homepage: "2026-08-27",
   seoLandings: "2026-07-01",
   alternatives: "2026-07-01",
   legalSl: "2026-07-01",
@@ -61,13 +62,6 @@ const AFFILIATE_APPLY_CLUSTER = clusterLinks({
 const BLOG_INDEX_CLUSTER = clusterLinks({
   sl: "/blog", hr: "/hr/blog", sr: "/sr/blog", de: "/de/blog", en: "/en/blog", es: "/es/blog",
 });
-
-function legalCluster(doc: string): Record<string, string> {
-  return clusterLinks({
-    sl: `/${doc}`, hr: `/hr/${doc}`, sr: `/sr/${doc}`,
-    de: `/de/${doc}`, en: `/en/${doc}`, es: `/es/${doc}`,
-  });
-}
 
 async function blogEntries(): Promise<PageEntry[]> {
   const blogDir = path.join(process.cwd(), "content", "blog");
@@ -178,8 +172,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { path: "/en/alternatives", priority: 0.7, changeFrequency: "monthly", lastModified: LAST_EDITED.alternatives, alternates: ALTERNATIVES_CLUSTER },
     { path: "/es/alternativas", priority: 0.7, changeFrequency: "monthly", lastModified: LAST_EDITED.alternatives, alternates: ALTERNATIVES_CLUSTER },
 
-    ...["privacy", "terms", "gdpr", "cookies", "refund"].map((doc) => ({ path: `/${doc}`, priority: 0.3, changeFrequency: "yearly" as ChangeFreq, lastModified: LAST_EDITED.legalSl, alternates: legalCluster(doc) })),
-    ...(["hr", "sr", "de", "en", "es"] as Locale[]).flatMap((lang) => ["privacy", "terms", "gdpr", "cookies", "refund"].map((doc) => ({ path: `/${lang}/${doc}`, priority: 0.25, changeFrequency: "yearly" as ChangeFreq, lastModified: LAST_EDITED.legalIntl, alternates: legalCluster(doc) }))),
+    ...LEGAL_DOCUMENTS.map((doc) => ({ path: `/${doc}`, priority: 0.3, changeFrequency: "yearly" as ChangeFreq, lastModified: LAST_EDITED.legalSl, alternates: legalAlternates(doc) })),
+    ...(["hr", "sr", "de", "en", "es"] as Locale[]).flatMap((lang) => LEGAL_DOCUMENTS.map((doc) => ({ path: `/${lang}/${doc}`, priority: 0.25, changeFrequency: "yearly" as ChangeFreq, lastModified: LAST_EDITED.legalIntl, alternates: legalAlternates(doc) }))),
 
     { path: "/affiliate/apply", priority: 0.55, changeFrequency: "monthly", alternates: AFFILIATE_APPLY_CLUSTER },
     ...(["hr", "sr", "de", "en", "es"] as Locale[]).map((lang) => ({ path: `/${lang}/affiliate/apply`, priority: 0.5, changeFrequency: "monthly" as ChangeFreq, alternates: AFFILIATE_APPLY_CLUSTER })),

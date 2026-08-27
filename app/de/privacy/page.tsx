@@ -1,10 +1,11 @@
 import { SITE_URL } from "@/lib/urls";
 import type { Metadata } from "next";
 import { LegalPage } from "@/components/LegalPage";
+import { legalAlternates } from "@/lib/seo/legal-alternates";
 
 export const metadata: Metadata = {
   title: "Datenschutzerklärung",
-  alternates: { canonical: `${SITE_URL}/de/privacy` },
+  alternates: { canonical: `${SITE_URL}/de/privacy`, languages: legalAlternates("privacy") },
   openGraph: { url: `${SITE_URL}/de/privacy`, title: "Datenschutzerklärung", images: ["/og-image.png?v=2"] },
   robots: { index: true, follow: true },
 };
