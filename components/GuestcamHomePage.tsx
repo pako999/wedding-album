@@ -17,7 +17,7 @@ export const HOME_FAQS = [
   ["V kakšni kakovosti se shranjujejo fotografije?", "Fotografije se shranjujejo v originalni kakovosti, brez zmanjševanja ločljivosti."],
   ["Ali Guestcam podpira videe?", "Da. Guestcam podpira fotografije in videe. Razpoložljiva količina je odvisna od izbranega paketa."],
   ["Kaj se zgodi po dogodku?", "Organizator lahko fotografije in videe prenese ter jih varno arhivira. Čas dostopa določa izbrani paket."],
-  ["Kaj če je internet na dogodku počasen?", "Hitrost nalaganja je odvisna od povezave gosta. Pri večjih dogodkih priporočamo stabilen Wi‑Fi ali mobilni signal."],
+  ["Kaj če je internet na dogodku počasen?", "Brez skrbi. Fotografije in videe lahko naložite tudi pozneje, ko imate boljšo internetno povezavo. Shranite si povezavo do albuma ali v albumu vpišite svoj e-poštni naslov. Guestcam vam bo povezavo poslal na e-pošto, zato lahko album kadar koli ponovno odprete in dodate svoje fotografije ali videe."],
   ["Ali lahko Guestcam pripravi QR kartice in podstavke?", "Da. Ob paketu lahko naročite fizične QR kartice z lesenimi ali zlatimi namiznimi podstavki."],
 ] as const;
 
