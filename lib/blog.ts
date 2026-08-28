@@ -2,6 +2,7 @@ import { absoluteUrl } from "@/lib/urls";
 import fs from "node:fs/promises";
 import path from "node:path";
 import type { LangCode } from "@/components/LanguageSwitcher";
+import { withRegionalHreflang } from "@/lib/seo/hreflang";
 
 /**
  * JSON-driven blog. Each post is a single file under
@@ -109,7 +110,7 @@ export async function getAllSlugs(lang: LangCode): Promise<string[]> {
 }
 
 /** Across all languages, find the URL a given translationKey resolves to. */
-export async function getTranslationMap(translationKey: string): Promise<Partial<Record<LangCode, string>>> {
+export async function getTranslationMap(translationKey: string): Promise<Record<string, string>> {
   const langs: LangCode[] = ["sl", "hr", "sr", "de", "en", "es"];
   const out: Partial<Record<LangCode, string>> = {};
   for (const lang of langs) {
@@ -124,7 +125,7 @@ export async function getTranslationMap(translationKey: string): Promise<Partial
       out[lang] = absoluteUrl(path);
     }
   }
-  return out;
+  return withRegionalHreflang(out);
 }
 
 /** Up to N related posts in the same language (same category preferred). */

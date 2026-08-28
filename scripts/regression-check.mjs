@@ -55,7 +55,24 @@ const files = {
   albumAdminPanel: await read("components/dashboard/AlbumAdminPanel.tsx"),
   albumSettingsRoute: await read("app/api/albums/[slug]/settings/route.ts"),
   seoFooter: await read("components/SeoFooter.tsx"),
+  discountBanner: await read("components/DiscountBanner.tsx"),
   sitemap: await read("app/sitemap.ts"),
+  hreflang: await read("lib/seo/hreflang.ts"),
+  eventTopics: await read("lib/seo/event-topics.ts"),
+  nextConfig: await read("next.config.ts"),
+  hrGuide: await read("app/hr/qr-kod-vjencanje/page.tsx"),
+  srGuide: await read("app/sr/qr-kod-vencanje/page.tsx"),
+  hrAlternatives: await read("app/hr/alternativne-aplikacije/page.tsx"),
+  srAlternatives: await read("app/sr/alternativne-aplikacije/page.tsx"),
+  regionalBlogContent: (
+    await Promise.all((await Promise.all(
+      ["hr", "sr"].map(async (lang) =>
+        (await fs.readdir(path.join(root, "content", "blog", lang)))
+          .filter((name) => name.endsWith(".json"))
+          .map((name) => `content/blog/${lang}/${name}`),
+      ),
+    )).flat().map(read))
+  ).join("\n"),
 };
 
 requireMatch(
@@ -376,9 +393,87 @@ requireMatch(
 requireMatch(
   "homepage sitemap date reflects the latest meaningful edit",
   files.sitemap,
-  /homepage:\s*"2026-08-27"/,
+  /homepage:\s*"2026-08-28"/,
   "do not leave the homepage lastmod stale after a meaningful homepage update",
 );
+
+requireMatch(
+  "Croatian and Serbian pages publish regional hreflang aliases",
+  files.hreflang,
+  /languages\.hr[\s\S]*localized\["hr-HR"\][\s\S]*languages\.sr[\s\S]*localized\["sr-RS"\]/,
+  "search engines should receive both language and language-region hreflang codes",
+);
+
+requireMatch(
+  "duplicate Croatian QR guide redirects permanently",
+  files.nextConfig,
+  /source:\s*"\/hr\/qr-kod-za-vjencanje-kako"[\s\S]*destination:\s*"\/hr\/qr-kod-vjencanje"[\s\S]*permanent:\s*true/,
+  "the duplicate Croatian guide must consolidate ranking signals into one canonical URL",
+);
+
+requireMatch(
+  "duplicate Serbian QR guide redirects permanently",
+  files.nextConfig,
+  /source:\s*"\/sr\/qr-kod-za-vencanje-kako"[\s\S]*destination:\s*"\/sr\/qr-kod-vencanje"[\s\S]*permanent:\s*true/,
+  "the duplicate Serbian guide must consolidate ranking signals into one canonical URL",
+);
+
+requireMatch(
+  "duplicate regional guides stay out of SEO clusters",
+  files.eventTopics,
+  /key === "qr-koda-za-poroko" && \(loc === "hr" \|\| loc === "sr"\)/,
+  "sitemap and hreflang clusters must not include URLs that redirect",
+);
+
+requireAbsent(
+  "regional SEO copy contains no unsupported internal statistics",
+  `${files.eventTopics}\n${files.regionalBlogContent}`,
+  /(?:Guestcam interni podaci|interna Guestcam analiza|67\s*%|95\s*%|65[–-]80\s*%|15[–-]25\s*%|50[–-]70\s*%|5[–-]10\s*%|11×|3×)/i,
+  "unpublished statistics and fabricated case-study numbers must not be presented as facts",
+);
+
+requireAbsent(
+  "regional content contains no known language defects",
+  `${files.localizedHomeComponent}\n${files.hrGuide}\n${files.srGuide}\n${files.hrAlternatives}\n${files.srAlternatives}\n${files.regionalBlogContent}`,
+  /(?:punoj kvalitetu|hrvaski|slovenaçki|njemçaki|besplatno zauvek|na voljo|postavitve|povezavo pa lahko)/i,
+  "Croatian and Serbian pages must not leak Slovenian or malformed translations",
+);
+
+requireMatch(
+  "regional homepage business copy is localized",
+  files.localizedHomeComponent,
+  /vlastiti vizualni identitet[\s\S]*prikupljanje kontakata uz privolu[\s\S]*sopstveni vizuelni identitet[\s\S]*prikupljanje kontakata uz saglasnost/,
+  "Croatian and Serbian homepages must not expose English marketing jargon",
+);
+
+requireMatch(
+  "footer attribution is localized",
+  files.seoFooter,
+  /madeIn[\s\S]*\{t\.madeIn\}[\s\S]*Futurecode\.si/,
+  "the footer must not show Slovenian attribution on every locale",
+);
+
+requireAbsent(
+  "discount copy action is not hardcoded in English",
+  files.discountBanner,
+  />copy</,
+  "the discount banner action must use localized copy",
+);
+
+for (const guide of [files.hrGuide, files.srGuide]) {
+  requireMatch(
+    "regional guide states the exact Free plan limits",
+    guide,
+    /1 događaj[\s\S]*1 galerij/,
+    "Free must mean one event and one gallery in regional SEO content",
+  );
+  requireMatch(
+    "regional guide has a current modification date",
+    guide,
+    /2026-08-28/,
+    "structured article metadata must expose the current modification date",
+  );
+}
 
 for (const lang of ["hr", "sr", "de", "en", "es"]) {
   for (const document of ["privacy", "terms", "gdpr", "cookies", "refund"]) {
@@ -389,6 +484,14 @@ for (const lang of ["hr", "sr", "de", "en", "es"]) {
       new RegExp(`languages:\\s*legalAlternates\\("${document}"\\)`),
       "every translated legal page must publish the same reciprocal cluster as the sitemap",
     );
+    if (lang === "hr" || lang === "sr") {
+      requireMatch(
+        `${lang}/${document} has a localized metadata description`,
+        legalPage,
+        /description:\s*"[^"\n]+"[\s\S]*openGraph:\s*\{[\s\S]*description:\s*"[^"\n]+"/,
+        "regional legal pages must not inherit Slovenian search-result descriptions",
+      );
+    }
   }
 }
 

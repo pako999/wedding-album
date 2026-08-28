@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { BlogIndexPage } from "@/components/BlogIndexPage";
 import { getAllPosts } from "@/lib/blog";
 import { OG_IMAGE_URL, ogImage } from "@/lib/og";
+import { withRegionalHreflang } from "@/lib/seo/hreflang";
 
 export const revalidate = 3600;
 
@@ -14,11 +15,11 @@ export const metadata: Metadata = {
   description,
   alternates: {
     canonical: `${SITE_URL}/blog`,
-    languages: {
+    languages: withRegionalHreflang({
       sl: `${SITE_URL}/blog`, hr: `${SITE_URL}/hr/blog`, sr: `${SITE_URL}/sr/blog`,
       de: `${SITE_URL}/de/blog`, en: `${SITE_URL}/en/blog`, es: `${SITE_URL}/es/blog`,
       "x-default": `${SITE_URL}/blog`,
-    },
+    }),
   },
   openGraph: {
     url: `${SITE_URL}/blog`, type: "website", locale: "sl_SI",

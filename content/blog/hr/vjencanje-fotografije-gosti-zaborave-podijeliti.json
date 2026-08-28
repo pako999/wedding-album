@@ -5,7 +5,7 @@
   "description": "Gosti zaborave jer ne postoji jednostavan način. QR kod na svakom stolu uklanja sve prepreke — fotografije pristižu tijekom događaja.",
   "translationKey": "guests-forget-to-share",
   "publishedAt": "2026-05-22",
-  "updatedAt": "2026-05-25",
+  "updatedAt": "2026-08-28",
   "author": "Guestcam Team",
   "category": "nasvet",
   "readingTime": 6,
@@ -22,13 +22,13 @@
     },
     {
       "type": "p",
-      "text": "Zabava je gotova. Soba je tiha. U svojem telefonu imate 80 fotografija, fotograf će ih poslati za tri tjedna. Ali večeras je u prostoriji bilo 200 mobitela i svaki je uhvatio drugačiji kut, drugačiji trenutak, drugačiji smijeh. Gdje su?"
+      "text": "Zabava je gotova, a mnoge spontane fotografije još su na mobitelima gostiju. Svaki je gost uhvatio drugačiji kut, trenutak ili osmijeh. Kako te snimke jednostavno prikupiti na jednom mjestu?"
     },
     {
       "type": "image",
       "src": "https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?w=1200&h=720&fit=crop&q=82&auto=format",
       "alt": "Gosti za stolom na vjenčanju s mobitelima u rukama",
-      "caption": "Gosti fotografiraju — ali 95 % snimki ostane na njihovim mobitelima.",
+      "caption": "Gosti fotografiraju iz kutova koje službeni fotograf ne može uvijek obuhvatiti.",
       "credit": "Foto: Unsplash"
     },
     {
@@ -60,7 +60,7 @@
     },
     {
       "type": "p",
-      "text": "Svaka dodatna prepreka (klik, odabir, slanje, čekanje) smanjuje vjerojatnost akcije za otprilike 30%. Tri prepreke = 70% manje fotografija. To je razlog zašto 90% gostiju nikad ne pošalje one prekrasne plesne snimke."
+      "text": "Svaka dodatna prepreka — traženje kontakta, instalacija aplikacije, prijava ili ručno slanje — povećava mogućnost da gost zadatak odgodi. Zato postupak treba biti jasan i kratak."
     },
     {
       "type": "h2",
@@ -68,15 +68,15 @@
     },
     {
       "type": "p",
-      "text": "S QR kodom između gosta i galerije nema prepreka: skeniraj, odaberi, učitaj. Tri sekunde od kraja snimka do galerije. Zato parovi s Guestcamom dobivaju u prosjeku 340 fotografija — naspram 30 s tradicionalnim metodama."
+      "text": "S QR kodom gost otvori galeriju, odabere fotografije i učita ih bez aplikacije ili registracije. Manje koraka olakšava dijeljenje tijekom događaja i kasnije kod kuće."
     },
     {
       "type": "h2",
-      "text": "Stvarna priča: Ana & Marko"
+      "text": "Primjer dobre postavke na događaju"
     },
     {
       "type": "p",
-      "text": "Ana i Marko vjenčali su se u srpnju 2025. na slovenskoj obali. Postavili su QR kod na svaki stol s jednostavnom porukom: »Podijelite naše zajedničke uspomene«. Kraj večeri: 340 fotografija i 28 videozapisa od 78 gostiju. Bez WhatsApp grupe, bez izgubljenih poruka. Sve u jednoj galeriji koju su pola godine kasnije sa suzama u očima pregledavali s roditeljima."
+      "text": "Postavite QR kod na svaki stol i dodajte kratku poruku poput »Podijelite naše zajedničke uspomene«. DJ ili voditelj može galeriju spomenuti tijekom večeri, a poveznicu možete poslati gostima i sljedeći dan. Tako fotografije ostaju u jednoj privatnoj galeriji umjesto u više odvojenih razgovora."
     },
     {
       "type": "cta",
@@ -86,12 +86,12 @@
     {
       "type": "faq",
       "q": "Što ako moji gosti ne znaju skenirati QR kod?",
-      "a": "Suvremeni mobiteli (od 2018.) imaju QR skener ugrađen u kameru. Samo usmjere kameru u kod i dodirnu obavijest. Za vrlo starije goste možete dodati i izravnu poveznicu (kratki link)."
+      "a": "Većina suvremenih mobitela prepoznaje QR kod izravno u kameri. Gost usmjeri kameru prema kodu i dodirne obavijest. Na karticu možete dodati i kratku poveznicu za ručni unos."
     },
     {
       "type": "faq",
       "q": "Kako znam da će dovoljno gostiju sudjelovati?",
-      "a": "Prema našim podacima sudjeluje u prosjeku 65–80% gostiju kada je QR kod na svakom stolu. To je 3× više nego u WhatsApp grupi, gdje sudjeluje samo 15–25%."
+      "a": "Ne postoji zajamčeni udio sudjelovanja. Pomaže ako je QR kod vidljiv na svakom stolu, ako ga voditelj kratko spomene i ako gostima nakon događaja pošaljete izravnu poveznicu."
     },
     {
       "type": "faq",

@@ -8,35 +8,41 @@ import type { LangCode } from "@/components/LanguageSwitcher";
 const DISCOUNT_CODE = "WELCOME15";
 const STORAGE_KEY = "gc_banner_closed";
 
-const COPY: Record<LangCode, { text: string; cta: string; copied: string }> = {
+const COPY: Record<LangCode, { text: string; cta: string; copy: string; copied: string }> = {
   sl: {
     text: "🎉 Samo zdaj: 15 % popust na prvi paket — koda",
     cta: "Vzamem popust →",
+    copy: "kopiraj",
     copied: "Kopirano ✓",
   },
   hr: {
     text: "🎉 Samo sada: 15 % popusta na prvi paket — kod",
     cta: "Uzimam popust →",
+    copy: "kopiraj",
     copied: "Kopirano ✓",
   },
   sr: {
     text: "🎉 Samo sada: 15 % popusta na prvi paket — kod",
     cta: "Uzimam popust →",
+    copy: "kopiraj",
     copied: "Kopirano ✓",
   },
   de: {
     text: "🎉 Nur jetzt: 15 % Rabatt auf das erste Paket — Code",
     cta: "Rabatt sichern →",
+    copy: "kopieren",
     copied: "Kopiert ✓",
   },
   en: {
     text: "🎉 Only now: 15% off your first plan — code",
     cta: "Get discount →",
+    copy: "copy",
     copied: "Copied ✓",
   },
   es: {
     text: "🎉 Solo ahora: 15 % en tu primer plan — código",
     cta: "Quiero el descuento →",
+    copy: "copiar",
     copied: "¡Copiado ✓",
   },
 };
@@ -101,7 +107,7 @@ export function DiscountBanner({ lang }: { lang: LangCode }) {
         >
           {DISCOUNT_CODE}
           <span className="text-[10px] font-sans font-semibold opacity-70">
-            {copied ? t.copied : "copy"}
+            {copied ? t.copied : t.copy}
           </span>
         </button>
       </span>

@@ -12,6 +12,7 @@ import {
 } from "@/lib/seo/event-topics";
 import { SITE_URL } from "@/lib/urls";
 import { safeJsonLd } from "@/lib/seo/jsonld-safe";
+import { withRegionalHreflang } from "@/lib/seo/hreflang";
 
 /** Build metadata for a topic + locale. Handles canonical + hreflang. */
 export function eventTopicMetadata(
@@ -41,7 +42,7 @@ export function eventTopicMetadata(
     description: entry.description,
     alternates: {
       canonical: `${SITE_URL}${localePath}`,
-      languages: { ...languages, "x-default": xDefault },
+      languages: withRegionalHreflang({ ...languages, "x-default": xDefault }),
     },
     openGraph: {
       type: "article",
@@ -78,6 +79,14 @@ export function EventTopicPage({ locale, topicKey }: Props) {
   const ALL_LOCALES = ["sl", "hr", "sr", "de", "en", "es"] as const;
   const translated = new Set(localesForTopic(topicKey));
   const hreflang = ALL_LOCALES.reduce((acc, loc) => {
+    if (topicKey === "qr-koda-za-poroko" && loc === "hr") {
+      acc[loc] = "/hr/qr-kod-vjencanje";
+      return acc;
+    }
+    if (topicKey === "qr-koda-za-poroko" && loc === "sr") {
+      acc[loc] = "/sr/qr-kod-vencanje";
+      return acc;
+    }
     if (translated.has(loc)) {
       const e = getEventTopic(loc, topicKey)!;
       acc[loc] = `/${loc}/${e.slug}`;
@@ -96,7 +105,7 @@ export function EventTopicPage({ locale, topicKey }: Props) {
     description: entry.description,
     // Bare BCP-47 language code — schema.org accepts it, and deriving a
     // region by doubling the code produced invalid tags (en-EN, sl-SL).
-    inLanguage: locale,
+    inLanguage: locale === "hr" ? "hr-HR" : locale === "sr" ? "sr-RS" : locale,
     author: { "@type": "Organization", name: "Guestcam" },
     publisher: {
       "@type": "Organization",

@@ -5,7 +5,7 @@
   "description": "Korak po korak — od izbora alata do preuzimanja svih fotografija posle venčanja. Bez Google Photos drame, bez izgubljenih datoteka.",
   "translationKey": "private-wedding-gallery",
   "publishedAt": "2026-05-22",
-  "updatedAt": "2026-05-25",
+  "updatedAt": "2026-08-28",
   "author": "Guestcam Team",
   "category": "vodnik",
   "readingTime": 5,
@@ -15,7 +15,7 @@
     "DIY",
     "Guestcam"
   ],
-  "tldr": "Najbolja besplatna opcija je Guestcam: napravite galeriju, dobijete QR kod, gosti skeniraju i otpremaju — sve privatno, bez aplikacije.",
+  "tldr": "Guestcam omogućava da napravite privatnu galeriju i QR kod, a gosti otpremaju fotografije bez aplikacije ili registracije.",
   "content": [
     {
       "type": "h2",
@@ -63,7 +63,7 @@
         [
           "WhatsApp grupa",
           "Svi već znaju",
-          "Kompresuje na 50%, haotično."
+          "Kvalitet zavisi od načina slanja; sadržaj ostaje u razgovoru."
         ],
         [
           "Guestcam",
@@ -134,13 +134,13 @@
     },
     {
       "type": "faq",
-      "q": "Šta ako gost otpremi video veći od 50 MB?",
-      "a": "Plus i Premium paket podržavaju pune HD video zapise. U besplatnom paketu videi su ograničeni na 30 sekundi / 50 MB."
+      "q": "Mogu li gosti da otpremaju video zapise?",
+      "a": "Da. Broj podržanih video zapisa zavisi od paketa: Free uključuje jedan, Basic do 10, a Plus i Premium do 100 video zapisa."
     },
     {
       "type": "faq",
       "q": "Koliko dugo fotografije ostaju?",
-      "a": "Besplatno: 30 dana. Basic: 3 meseca. Plus i Premium: 1 godina. Sve fotografije možete u bilo kom trenutku preuzeti u ZIP-u."
+      "a": "Free: 30 dana. Basic: 3 meseca. Plus: 1 godina. Premium: 2 godine. Sve fotografije možete u bilo kom trenutku preuzeti u ZIP-u."
     },
     {
       "type": "faq",

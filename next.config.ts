@@ -23,6 +23,10 @@ const nextConfig: NextConfig = {
       { source: "/zasebnost", destination: "/privacy", permanent: false },
       { source: "/piskotki", destination: "/cookies", permanent: false },
       { source: "/vracilo", destination: "/refund", permanent: false },
+      // Consolidate duplicate HR/SR wedding-QR guides into one commercial
+      // landing page per market so both URLs do not compete in search.
+      { source: "/hr/qr-kod-za-vjencanje-kako", destination: "/hr/qr-kod-vjencanje", permanent: true },
+      { source: "/sr/qr-kod-za-vencanje-kako", destination: "/sr/qr-kod-vencanje", permanent: true },
     ];
   },
   images: {

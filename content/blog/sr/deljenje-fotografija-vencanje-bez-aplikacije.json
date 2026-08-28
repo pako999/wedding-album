@@ -5,7 +5,7 @@
   "description": "Kako gosti mogu da podele fotografije sa vašeg venčanja bez preuzimanja aplikacije? QR kod + pregledač = jednostavno za sve generacije.",
   "translationKey": "wedding-photo-sharing-no-app",
   "publishedAt": "2026-06-21",
-  "updatedAt": "2026-06-21",
+  "updatedAt": "2026-08-28",
   "author": "Guestcam Team",
   "category": "vodnik",
   "readingTime": 7,
@@ -22,13 +22,11 @@
   "content": [
     {
       "type": "p",
-      "text": "Zamislite ovo: fotografisali ste 200 trenutaka na venčanju prijatelja. Domaćin zamoli da podelite slike. Vidite link ka nekoj aplikaciji, shvatite da morate da je instalirate, registrujete se, odobrite pristup kameri... i odustanete. Upravo to se dešava na svakom venčanju gde prikupljanje fotografija zahteva preuzimanje aplikacije."
+      "text": "Zamislite ovo: tokom venčanja snimili ste mnogo lepih trenutaka. Domaćin zamoli da podelite slike. Vidite link ka nekoj aplikaciji, shvatite da morate da je instalirate, registrujete se i odobrite pristup kameri — pa to odložite ili odustanete. Zato je jednostavan postupak deljenja toliko važan."
     },
     {
-      "type": "stat",
-      "value": "67 %",
-      "label": "gostiju koji odustanu od deljenja fotografija ako je potrebno preuzeti aplikaciju",
-      "source": "Guestcam interni podaci, 2025"
+      "type": "callout",
+      "text": "Što je manje koraka do otpremanja, gostima je lakše da podele fotografije dok događaj još traje."
     },
     {
       "type": "h2",
@@ -40,7 +38,7 @@
     },
     {
       "type": "callout",
-      "text": "Svaki korak u procesu deljenja smanjuje udeo gostiju koji će ga završiti. Aplikacija koja zahteva instalaciju obično izgubi 50–70 % potencijalnih učesnika pre nego što ikada vide galeriju."
+      "text": "Svaki dodatni korak stvara novu priliku da gost odustane. Otvaranje galerije direktno iz QR koda uklanja instalaciju i registraciju iz tog postupka."
     },
     {
       "type": "p",
@@ -95,14 +93,14 @@
       ],
       "rows": [
         [
-          "Prosečan udeo učesnika",
-          "30–50 %",
-          "75–90 %"
+          "Učešće gostiju",
+          "Više prepreka",
+          "Jednostavniji pristup"
         ],
         [
-          "Koraci do otpremljene fotografije",
-          "5–8",
-          "2–3"
+          "Put do otpremanja fotografije",
+          "Instalacija i moguća registracija",
+          "Skeniranje QR koda i izbor fotografija"
         ],
         [
           "Kompatibilnost (stariji telefoni)",
@@ -126,8 +124,8 @@
         ],
         [
           "Radi na iPhone-u i Android-u",
-          "Uglavnom da",
-          "Uvek da"
+          "Zavisi od aplikacije",
+          "Da, u podržanom pregledaču"
         ]
       ]
     },
@@ -137,7 +135,7 @@
     },
     {
       "type": "p",
-      "text": "Prosečno venčanje okuplja 80–120 gostiju iz tri ili četiri generacije istovremeno. Mladi par za stolom fotografiše svaki trenutak; baka i deka sede dva stola dalje. Svi imaju telefon u džepu — razlikuje se samo spremnost da na njega instaliraju nešto novo."
+      "text": "Venčanja često okupljaju više generacija, od prijatelja koji često koriste mobilne aplikacije do starijih članova porodice. Jedan postupak koji radi u pregledaču olakšava učešće svima, bez obzira na uređaj ili tehničko iskustvo."
     },
     {
       "type": "p",
@@ -162,9 +160,8 @@
       ]
     },
     {
-      "type": "quote",
-      "text": "Nisam verovala da će funkcionisati. Moja svekrva od 74 godine skenirala je QR kod i otpremila slike bez ikakve pomoći. Na kraju smo imali 340 fotografija.",
-      "cite": "Ana P., mlada iz Beograda, jun 2025."
+      "type": "callout",
+      "text": "Pre događaja testirajte QR kod na jednom iPhone i jednom Android telefonu. Tako ćete potvrditi da kartica, link i galerija rade kako očekujete."
     },
     {
       "type": "h2",
@@ -186,7 +183,7 @@
     },
     {
       "type": "callout",
-      "text": "Prema našim podacima, venčanja koja imaju QR kod na svakom stolu I DJ-a odnosno voditelja koji ga najavljuje skupljaju prosečno 3× više fotografija od onih sa jednim kodom na ulazu."
+      "text": "QR kod postavite na mesta na kojima ga gosti zaista vide i zamolite DJ-a ili voditelja da kratko pomene galeriju tokom večeri."
     },
     {
       "type": "h2",
@@ -199,10 +196,10 @@
     {
       "type": "ul",
       "items": [
-        "Neograničen broj fotografija i videa",
+        "Neograničen broj fotografija i do 100 video zapisa",
         "Živu galeriju za projekciju na ekranu tokom večeri",
         "ZIP preuzimanje svih sadržaja jednim klikom",
-        "Čuvanje do 1 godine",
+        "Pristup galeriji do 2 godine",
         "Moderaciju — vi odobravate koje fotografije su vidljive svima"
       ]
     },
@@ -228,7 +225,7 @@
     {
       "type": "faq",
       "q": "Koliko fotografija mogu da skupim?",
-      "a": "Besplatni plan podržava do 20 fotografija. Premium plan nema ograničenja — idealno za venčanja sa 100+ gostiju."
+      "a": "Besplatan plan uključuje jedan događaj, jednu galeriju, do 20 fotografija i jedan video zapis uz pristup 30 dana. Premium podržava neograničen broj fotografija i do 100 video zapisa."
     },
     {
       "type": "faq",

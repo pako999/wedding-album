@@ -242,7 +242,7 @@ const COPY: Record<Lang, Copy> = {
     switcherAria: "Promeni jezik", navHome: "Početna", navCta: "Napravi galeriju",
     navBlog: "Blog", navContact: "Kontakt", navSignIn: "Prijava", navDashboard: "Kontrolna tabla",
     navLanguage: "Jezik", navOpenMenu: "Otvori meni", navCloseMenu: "Zatvori meni",
-    announce: "Napravite galeriju danas — besplatno zauvek! 🎉", announceLink: "Započni odmah →",
+    announce: "Napravite galeriju danas — besplatno za probu! 🎉", announceLink: "Započni odmah →",
     heroEyebrow: "QR kod za venčanja · rođendane · godišnjice · baby tuš",
     heroHead: { lead: "Fotografije sa venčanja koje", accent: "inače nikada ne biste videli", trail: "." },
     heroLead: "Sakupite sve fotografije i video snimke svojih gostiju u jednoj privatnoj galeriji. Gosti samo skeniraju QR kod i za nekoliko sekundi dele svoje trenutke.",

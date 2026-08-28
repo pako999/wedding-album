@@ -2,10 +2,10 @@
   "slug": "guestcam-vs-whatsapp-vencanje-fotografije",
   "lang": "sr",
   "title": "Guestcam vs WhatsApp za fotografije sa venčanja: poštena uporedba",
-  "description": "WhatsApp kompresuje fotografije na 50% kvaliteta i grupa postaje haotična. Guestcam zadržava pun kvalitet u jednoj privatnoj galeriji.",
+  "description": "Uporedite deljenje fotografija putem WhatsAppa i Guestcama: kvalitet datoteka, privatnost, prikupljanje, preuzimanje i trajanje galerije.",
   "translationKey": "guestcam-vs-whatsapp",
   "publishedAt": "2026-05-22",
-  "updatedAt": "2026-05-25",
+  "updatedAt": "2026-08-28",
   "author": "Guestcam Team",
   "category": "primerjava",
   "readingTime": 5,
@@ -15,7 +15,7 @@
     "QR kod",
     "Guestcam"
   ],
-  "tldr": "WhatsApp kompresuje fotografije na 50% kvaliteta i grupa postaje haotična. Guestcam zadržava pun kvalitet u jednoj privatnoj galeriji.",
+  "tldr": "WhatsApp je praktičan za razgovor, dok Guestcam prikuplja originalne datoteke u jednoj privatnoj galeriji povezanoj sa događajem.",
   "content": [
     {
       "type": "h2",
@@ -29,7 +29,7 @@
       "type": "image",
       "src": "https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?w=1200&h=720&fit=crop&q=82&auto=format",
       "alt": "Pametni telefon sa aplikacijom za poruke na svadbenom stolu",
-      "caption": "WhatsApp komprimuje fotografije i do 70 %. Guestcam čuva pun kvalitet.",
+      "caption": "Kvalitet fotografije u aplikaciji za poruke zavisi od načina slanja. Guestcam prikuplja originalnu datoteku.",
       "credit": "Foto: Unsplash"
     },
     {
@@ -46,13 +46,13 @@
       "rows": [
         [
           "Kvalitet fotografija",
-          "~50% (kompresovano)",
-          "100% (original)"
+          "Zavisi od načina slanja",
+          "Originalna datoteka"
         ],
         [
           "Video zapisi",
-          "Limit 16 MB",
-          "Pun kvalitet"
+          "Zavisi od načina slanja",
+          "Prema ograničenju paketa"
         ],
         [
           "Privatnost",
@@ -62,7 +62,7 @@
         [
           "Sortiranje",
           "Hronološki i haotično",
-          "Po događaju, po osobi"
+          "U galeriji događaja"
         ],
         [
           "Preuzimanje svih fotografija",
@@ -77,7 +77,7 @@
         [
           "Trajanje čuvanja",
           "Može da se izgubi u istoriji",
-          "Galerija traje 30 dana do 1 godine"
+          "Galerija traje od 30 dana do 2 godine"
         ]
       ]
     },
@@ -118,7 +118,7 @@
     {
       "type": "faq",
       "q": "Da li WhatsApp zaista kompresuje fotografije?",
-      "a": "Da. Po podrazumevanim podešavanjima WhatsApp kompresuje fotografije na oko 50% originalnog kvaliteta radi uštede podataka. Opcija »Pošalji kao dokument« zaobilazi kompresiju, ali za nju malo ko zna."
+      "a": "Kvalitet zavisi od podešavanja i načina slanja u WhatsAppu. Slanje kao dokument može da sačuva originalnu datoteku, dok Guestcam fotografije prikuplja direktno u galeriju događaja."
     },
     {
       "type": "faq",
@@ -133,12 +133,12 @@
     {
       "type": "faq",
       "q": "Da li Guestcam košta više od WhatsAppa?",
-      "a": "Besplatan paket je dovoljan za male događaje. Za celo venčanje preporučujemo Plus (49€) ili Premium (79€) — manje od prosečnog venčanog buketa."
+      "a": "Besplatan paket uključuje jednu galeriju i do 20 fotografija. Za veće događaje dostupni su Basic (39 €), Plus (49 €) i Premium (99 €), svaki kao jednokratno plaćanje za jedan događaj."
     },
     {
       "type": "faq",
       "q": "Šta se dešava sa WhatsApp grupom posle venčanja?",
-      "a": "Postaje spomenik — poruke se gube, fotografije se brišu kada neko očisti telefon. Guestcam galerija ostaje dostupna do 1 godine i možete je trajno preuzeti."
+      "a": "Poruke i fotografije ostaju deo istorije razgovora. Guestcam galerija ostaje dostupna prema izabranom paketu, od 30 dana do 2 godine, a sadržaj možete preuzeti pre isteka."
     }
   ],
   "coverImage": "https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?w=1600&h=900&fit=crop&q=80&auto=format",

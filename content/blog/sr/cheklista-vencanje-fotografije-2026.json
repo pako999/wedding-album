@@ -5,7 +5,7 @@
   "description": "Kompletan kontrolni spisak fotografija za venčanje 2026 — od priprema do zabave. Šta fotograf i QR kod moraju da uhvate.",
   "translationKey": "wedding-photo-checklist-2026",
   "publishedAt": "2026-05-22",
-  "updatedAt": "2026-05-25",
+  "updatedAt": "2026-08-28",
   "author": "Guestcam Team",
   "category": "kontrolni-seznam",
   "readingTime": 6,
@@ -112,12 +112,12 @@
     {
       "type": "faq",
       "q": "Koliko fotografija da očekujem od fotografa?",
-      "a": "Prosečno 300-600 obrađenih fotografija za 8-satno venčanje. Uz Guestcam dobijate još 200-400 fotografija od gostiju."
+      "a": "Broj obrađenih fotografija zavisi od fotografa, trajanja događaja i dogovorenog paketa. Guestcam može da doda spontane snimke gostiju, ali njihov broj zavisi od učešća."
     },
     {
       "type": "faq",
       "q": "Da li fotograf i Guestcam rade zajedno?",
-      "a": "Da. Premium paket omogućava fotografu da otpremi sve svoje sirove snimke u istu galeriju (uz dogovor sa parom). Sve uspomene na jednom mestu."
+      "a": "Da. Par može fotografu da pošalje link galerije kako bi, uz prethodni dogovor, dodao odabrane fotografije na isto mesto."
     },
     {
       "type": "faq",

@@ -5,6 +5,7 @@ import { BlogIndexPage } from "@/components/BlogIndexPage";
 import { getAllPosts } from "@/lib/blog";
 import type { LangCode } from "@/components/LanguageSwitcher";
 import { OG_IMAGE_URL, ogImage } from "@/lib/og";
+import { withRegionalHreflang } from "@/lib/seo/hreflang";
 
 export const revalidate = 3600;
 
@@ -47,7 +48,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     description: descriptions[langCode],
     alternates: {
       canonical: `${SITE_URL}/${langCode}/blog`,
-      languages: { ...languageAlternates, "x-default": `${SITE_URL}/blog` },
+      languages: withRegionalHreflang({ ...languageAlternates, "x-default": `${SITE_URL}/blog` }),
     },
     openGraph: {
       url: `${SITE_URL}/${langCode}/blog`,

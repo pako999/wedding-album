@@ -1,13 +1,14 @@
 import { SITE_URL } from "@/lib/urls";
 import type { Metadata } from "next";
 import { ContactPage } from "@/components/ContactPage";
+import { withRegionalHreflang } from "@/lib/seo/hreflang";
 
 export const metadata: Metadata = {
   title: "Kontakt",
   description: "Pišite nam — email, WhatsApp, Premium podrška za vašu venčanu galeriju.",
   alternates: {
     canonical: `${SITE_URL}/sr/contact`,
-    languages: {
+    languages: withRegionalHreflang({
       sl: `${SITE_URL}/contact`,
       hr: `${SITE_URL}/hr/contact`,
       sr: `${SITE_URL}/sr/contact`,
@@ -15,7 +16,7 @@ export const metadata: Metadata = {
       en: `${SITE_URL}/en/contact`,
       es: `${SITE_URL}/es/contact`,
       "x-default": `${SITE_URL}/contact`,
-    },
+    }),
   },
   openGraph: {
     url: `${SITE_URL}/sr/contact`,

@@ -2,10 +2,10 @@
   "slug": "guestcam-vs-whatsapp-vjencanje-fotografije",
   "lang": "hr",
   "title": "Guestcam vs WhatsApp za fotografije s vjenčanja: poštena usporedba",
-  "description": "WhatsApp komprimira fotografije na 50% kvalitete i grupa postaje kaotična. Guestcam zadržava punu kvalitetu u jednoj privatnoj galeriji.",
+  "description": "Usporedite dijeljenje fotografija putem WhatsAppa i Guestcama: kvaliteta datoteka, privatnost, prikupljanje, preuzimanje i trajanje galerije.",
   "translationKey": "guestcam-vs-whatsapp",
   "publishedAt": "2026-05-22",
-  "updatedAt": "2026-05-25",
+  "updatedAt": "2026-08-28",
   "author": "Guestcam Team",
   "category": "primerjava",
   "readingTime": 5,
@@ -15,7 +15,7 @@
     "QR kod",
     "Guestcam"
   ],
-  "tldr": "WhatsApp komprimira fotografije na 50% kvalitete i grupa postaje kaotična. Guestcam zadržava punu kvalitetu u jednoj privatnoj galeriji.",
+  "tldr": "WhatsApp je praktičan za razgovor, dok Guestcam prikuplja izvorne datoteke u jednoj privatnoj galeriji povezanoj s događajem.",
   "content": [
     {
       "type": "h2",
@@ -29,7 +29,7 @@
       "type": "image",
       "src": "https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?w=1200&h=720&fit=crop&q=82&auto=format",
       "alt": "Pametni telefon s aplikacijom za poruke na svadbenom stolu",
-      "caption": "WhatsApp komprimira fotografije i do 70 %. Guestcam čuva punu kvalitetu.",
+      "caption": "Kvaliteta fotografije u aplikaciji za poruke ovisi o načinu slanja. Guestcam prikuplja izvornu datoteku.",
       "credit": "Foto: Unsplash"
     },
     {
@@ -46,13 +46,13 @@
       "rows": [
         [
           "Kvaliteta fotografija",
-          "~50% (komprimirano)",
-          "100% (original)"
+          "Ovisi o načinu slanja",
+          "Izvorna datoteka"
         ],
         [
           "Videozapisi",
-          "Limit 16 MB",
-          "Puna kvaliteta"
+          "Ovisi o načinu slanja",
+          "Prema ograničenju paketa"
         ],
         [
           "Privatnost",
@@ -62,7 +62,7 @@
         [
           "Sortiranje",
           "Kronološko i kaotično",
-          "Po događaju, po osobi"
+          "U galeriji događaja"
         ],
         [
           "Preuzimanje svih fotografija",
@@ -77,7 +77,7 @@
         [
           "Trajanje pohrane",
           "Može se izgubiti u povijesti",
-          "Galerija traje 30 dana do 1 godine"
+          "Galerija traje od 30 dana do 2 godine"
         ]
       ]
     },
@@ -118,7 +118,7 @@
     {
       "type": "faq",
       "q": "Komprimira li WhatsApp doista fotografije?",
-      "a": "Da. Prema zadanim postavkama WhatsApp komprimira fotografije na otprilike 50% izvorne kvalitete radi uštede podataka. Opcija »Pošalji kao dokument« zaobilazi kompresiju, ali za nju malo tko zna."
+      "a": "Kvaliteta ovisi o postavkama i načinu slanja u WhatsAppu. Slanje kao dokument može sačuvati izvornu datoteku, dok Guestcam fotografije prikuplja izravno u galeriju događaja."
     },
     {
       "type": "faq",
@@ -133,12 +133,12 @@
     {
       "type": "faq",
       "q": "Košta li Guestcam više od WhatsAppa?",
-      "a": "Besplatan paket je dovoljan za male događaje. Za cijelo vjenčanje preporučujemo Plus (49€) ili Premium (79€) — manje od prosječnog vjenčanog buketa."
+      "a": "Besplatni paket uključuje jednu galeriju i do 20 fotografija. Za veće događaje dostupni su Basic (39 €), Plus (49 €) i Premium (99 €), svaki kao jednokratno plaćanje za jedan događaj."
     },
     {
       "type": "faq",
       "q": "Što se događa s WhatsApp grupom nakon vjenčanja?",
-      "a": "Postaje spomenik — poruke se gube, fotografije se brišu kada netko očisti mobitel. Guestcam galerija ostaje dostupna do 1 godine i možete je trajno preuzeti."
+      "a": "Poruke i fotografije ostanu dio povijesti razgovora. Guestcam galerija ostaje dostupna prema odabranom paketu, od 30 dana do 2 godine, a sadržaj možete preuzeti prije isteka."
     }
   ],
   "coverImage": "https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?w=1600&h=900&fit=crop&q=80&auto=format",

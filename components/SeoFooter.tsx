@@ -36,6 +36,7 @@ interface FooterCopy {
   gdpr: string;
   refund: string;
   contact: string;
+  madeIn: string;
 }
 
 const COPY: Record<Lang, FooterCopy> = {
@@ -54,7 +55,7 @@ const COPY: Record<Lang, FooterCopy> = {
       { label: "Baby shower slike",      url: "/sl/baby-shower-slike" },
       { label: "QR koda za poslovne dogodke", url: "/sl/qr-koda-za-poslovne-dogodke" },
     ],
-    legal: "Pravno", privacy: "Zasebnost", terms: "Pogoji uporabe", cookies: "Piškotki", gdpr: "GDPR", refund: "Vračilo denarja", contact: "Kontakt",
+    legal: "Pravno", privacy: "Zasebnost", terms: "Pogoji uporabe", cookies: "Piškotki", gdpr: "GDPR", refund: "Vračilo denarja", contact: "Kontakt", madeIn: "Narejeno v Sloveniji",
   },
   hr: {
     brandDesc: "Vjenčana galerija s QR kodom — bez aplikacije. Gosti fotografiraju, vi skupljate uspomene.",
@@ -64,13 +65,12 @@ const COPY: Record<Lang, FooterCopy> = {
     altLabel: "Usporedba aplikacija", altUrl: "/hr/alternativne-aplikacije",
     extraGuides: [
       { label: "Fotografije s vjenčanja",       url: "/hr/fotografije-s-vjencanja" },
-      { label: "QR kod za vjenčanje (vodič)",   url: "/hr/qr-kod-za-vjencanje-kako" },
       { label: "Vjenčani album",                url: "/hr/vjencani-album" },
       { label: "Skupljanje fotografija",        url: "/hr/skupljanje-fotografija-vjencanje" },
       { label: "Fotografije s rođendana",       url: "/hr/fotografije-s-rodjendana" },
       { label: "Baby shower fotografije",       url: "/hr/baby-shower-fotografije" },
     ],
-    legal: "Pravno", privacy: "Privatnost", terms: "Uvjeti", cookies: "Kolačići", gdpr: "GDPR", refund: "Povrat novca", contact: "Kontakt",
+    legal: "Pravno", privacy: "Privatnost", terms: "Uvjeti", cookies: "Kolačići", gdpr: "GDPR", refund: "Povrat novca", contact: "Kontakt", madeIn: "Izrađeno u Sloveniji",
   },
   sr: {
     brandDesc: "Galerija sa venčanja sa QR kodom — bez aplikacije. Gosti fotografišu, vi skupljate uspomene.",
@@ -80,13 +80,12 @@ const COPY: Record<Lang, FooterCopy> = {
     altLabel: "Poređenje aplikacija", altUrl: "/sr/alternativne-aplikacije",
     extraGuides: [
       { label: "Slike sa venčanja",         url: "/sr/slike-sa-vencanja" },
-      { label: "QR kod za venčanje (vodič)", url: "/sr/qr-kod-za-vencanje-kako" },
       { label: "Venčani album",             url: "/sr/vencani-album" },
       { label: "Skupljanje fotografija",    url: "/sr/skupljanje-fotografija-vencanje" },
       { label: "Slike sa rođendana",        url: "/sr/slike-sa-rodjendana" },
       { label: "Baby shower fotografije",   url: "/sr/baby-shower-fotografije" },
     ],
-    legal: "Pravno", privacy: "Privatnost", terms: "Uslovi", cookies: "Kolačići", gdpr: "GDPR", refund: "Povraćaj novca", contact: "Kontakt",
+    legal: "Pravno", privacy: "Privatnost", terms: "Uslovi", cookies: "Kolačići", gdpr: "GDPR", refund: "Povraćaj novca", contact: "Kontakt", madeIn: "Napravljeno u Sloveniji",
   },
   de: {
     brandDesc: "Hochzeitsgalerie mit QR-Code — keine App nötig. Gäste fotografieren, Sie sammeln Erinnerungen.",
@@ -102,7 +101,7 @@ const COPY: Record<Lang, FooterCopy> = {
       { label: "Geburtstagsfotos sammeln",         url: "/de/geburtstagsfotos-sammeln" },
       { label: "Babyparty Fotos",                  url: "/de/babyparty-fotos" },
     ],
-    legal: "Rechtliches", privacy: "Datenschutz", terms: "AGB", cookies: "Cookies", gdpr: "DSGVO", refund: "Rückerstattung", contact: "Kontakt",
+    legal: "Rechtliches", privacy: "Datenschutz", terms: "AGB", cookies: "Cookies", gdpr: "DSGVO", refund: "Rückerstattung", contact: "Kontakt", madeIn: "Hergestellt in Slowenien",
   },
   en: {
     brandDesc: "Wedding gallery with a QR code — no app required. Guests snap, you collect the memories.",
@@ -118,7 +117,7 @@ const COPY: Record<Lang, FooterCopy> = {
       { label: "Birthday photos from guests",  url: "/en/birthday-photos-guests" },
       { label: "Baby shower photos",           url: "/en/baby-shower-photos-guests" },
     ],
-    legal: "Legal", privacy: "Privacy", terms: "Terms", cookies: "Cookies", gdpr: "GDPR", refund: "Refunds", contact: "Contact",
+    legal: "Legal", privacy: "Privacy", terms: "Terms", cookies: "Cookies", gdpr: "GDPR", refund: "Refunds", contact: "Contact", madeIn: "Made in Slovenia",
   },
   es: {
     brandDesc: "Galería de boda con código QR — sin app. Los invitados fotografían, tú recopilas los recuerdos.",
@@ -134,7 +133,7 @@ const COPY: Record<Lang, FooterCopy> = {
       { label: "Fotos de cumpleaños",         url: "/es/fotos-cumpleanos-invitados" },
       { label: "Fotos de baby shower",        url: "/es/fotos-baby-shower" },
     ],
-    legal: "Legal", privacy: "Privacidad", terms: "Términos", cookies: "Cookies", gdpr: "RGPD", refund: "Reembolsos", contact: "Contacto",
+    legal: "Legal", privacy: "Privacidad", terms: "Términos", cookies: "Cookies", gdpr: "RGPD", refund: "Reembolsos", contact: "Contacto", madeIn: "Hecho en Eslovenia",
   },
 };
 
@@ -217,7 +216,7 @@ export function SeoFooter({ lang }: { lang: Lang }) {
           <p>© 2026 Sport group d.o.o. · SI72133449</p>
           <div className="flex items-center gap-4">
             <p>
-              Narejeno v Sloveniji by{" "}
+              {t.madeIn} ·{" "}
               <a
                 href="https://www.futurecode.si"
                 target="_blank"

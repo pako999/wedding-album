@@ -420,13 +420,13 @@ export const EVENT_TOPICS: Partial<Record<EventLocale, Record<EventTopicKey, Eve
       description: "Kako skupiti sve fotografije s vjenčanja od gostiju — bez izgubljenih uspomena i bez aplikacije. Usporedba QR koda, WhatsAppa i Google Photosa.",
       h1: "Fotografije s vjenčanja: kako skupiti sve fotografije gostiju",
       intro:
-        "Na vjenčanju gosti snime 500–2000 fotografija svojim mobitelima — vi ih dobijete tek dvadesetak. Ostatak ostane na memorijskim karticama i u zaboravljenim WhatsApp grupama. Ovaj vodič pokazuje pet praktičnih načina kako dobiti sve fotografije s vjenčanja od gostiju — i koja metoda zaista funkcionira.",
+        "Na vjenčanju gosti snime mnogo spontanih fotografija svojim mobitelima, ali velik dio ostane na njihovim uređajima ili u nepreglednim grupnim razgovorima. Ovaj vodič pokazuje pet praktičnih načina kako prikupiti fotografije gostiju — i koja metoda uklanja najviše prepreka.",
       sections: [
         { h2: "Zašto vam gosti ne šalju fotografije",
           paragraphs: ["Razloga je pet, i svaki od njih se može otkloniti pravom metodom:"],
           bullets: [
             "Zaborave — nakon vjenčanja prođu dani, tjedni, mjeseci.",
-            "WhatsApp stisne fotografije na ~50 % kvalitete — dobijete zamućene inačice.",
+            "Kvaliteta fotografija u WhatsAppu ovisi o odabranom načinu slanja.",
             "Google Photos traži račun kojeg stariji gosti često nemaju.",
             "USB ključ znači da svaki gost mora osobno doći do vas.",
             "E-pošta je naporna za obje strane.",
@@ -442,19 +442,19 @@ export const EVENT_TOPICS: Partial<Record<EventLocale, Record<EventTopicKey, Eve
           ] },
         { h2: "QR kod: metoda koja skuplja najviše fotografija",
           paragraphs: [
-            "QR kod djeluje jer uklanja svaku prepreku. Gost skenira kod kamerom mobitela, odabere fotografije i pošalje ih — bez aplikacije, bez računa, bez prijave. Jer traje 20 sekundi, pošalje više ljudi.",
-            "U praksi skupite 5–10× više fotografija nego s WhatsAppom. I sve dolaze u punoj originalnoj rezoluciji, prikladnoj za tisak i foto knjigu.",
+            "QR kod djeluje jer uklanja nepotrebne korake. Gost skenira kod kamerom mobitela, odabere fotografije i pošalje ih — bez aplikacije, računa i prijave.",
+            "Jednostavniji postupak potiče više gostiju da sudjeluju, a Guestcam datoteke čuva u originalnoj rezoluciji, prikladnoj za tisak i foto knjigu.",
           ] },
         { h2: "Koliko fotografija gosti stvarno učitaju",
-          paragraphs: ["Iz naših anonimnih statistika: prosječno vjenčanje s 80 gostiju skupi između 800 i 1400 fotografija putem Guestcam QR koda. Vrhunac je večernji ples (najviše učitavanja nakon ponoći)."] },
+          paragraphs: ["Broj učitanih fotografija ovisi o broju gostiju i vidljivosti QR koda. Kartice na stolovima, kratka najava voditelja i podsjetnik nakon događaja pomažu da se prikupi više različitih trenutaka."] },
       ],
       faq: [
         { q: "Kako od gostiju dobiti sve fotografije s vjenčanja?",
-          a: "Koristite QR kod na svakom stolu. Gosti skeniraju, šalju fotografije preko preglednika, bez aplikacije. To je najjednostavniji način i skupi najveći postotak fotografija." },
+          a: "Postavite QR kod na stolove i podijelite izravnu poveznicu. Gosti fotografije šalju kroz preglednik, bez aplikacije, pa je postupak kratak i dostupan različitim generacijama." },
         { q: "Stisne li WhatsApp fotografije s vjenčanja?",
-          a: "Da, WhatsApp automatski stisne fotografije na otprilike polovinu originalne veličine. Za punu kvalitetu trebate drugu metodu (QR kod ili Google Photos zajedničku galeriju)." },
+          a: "Kvaliteta u WhatsAppu ovisi o načinu slanja i postavkama. Ako želite dosljedno sačuvati izvorne datoteke, upotrijebite galeriju koja ih ne smanjuje." },
         { q: "Koliko vremena treba za postavljanje QR koda za fotografije s vjenčanja?",
-          a: "S Guestcamom manje od 2 minute. Upišete imena para i datum, preuzmete QR kod u PDF-u, isprintate kartice za stolove." },
+          a: "S Guestcamom manje od 2 minute. Upišete imena para i datum, preuzmete QR kod u PDF-u te ispišete kartice za stolove." },
         { q: "Moraju li gosti preuzeti aplikaciju?",
           a: "Ne. Guestcam radi u pregledniku. Gost skenira QR kod kamerom mobitela i odmah učitava fotografije." },
       ],
@@ -470,10 +470,10 @@ export const EVENT_TOPICS: Partial<Record<EventLocale, Record<EventTopicKey, Eve
       description: "Kako napraviti QR kod za vjenčanje koji skupi sve fotografije od gostiju. Bez aplikacije, bez računa. Predlošci za tiskanje kartica za stolove.",
       h1: "QR kod za vjenčanje: kako ga napraviti i postaviti",
       intro:
-        "QR kod za vjenčanje danas je najbrži način da vaši gosti pošalju fotografije u istu galeriju. U koracima ispod pokazujemo kako QR kod stvoriti, isprintati i postaviti — uključujući usporedbu koja usluga najbolje pristaje.",
+        "QR kod za vjenčanje jednostavan je način da vaši gosti pošalju fotografije u istu galeriju. U koracima ispod pokazujemo kako QR kod izraditi, ispisati i postaviti.",
       sections: [
         { h2: "Što trebate za QR kod na vjenčanju",
-          paragraphs: ["Za pravi QR kod za vjenčanje trebate tri stvari: adresu na koju stižu fotografije (privatna galerija), lijepo isprintanu karticu za stolove i kratke upute za goste."],
+          paragraphs: ["Za QR kod za vjenčanje trebate tri stvari: adresu na koju stižu fotografije (privatna galerija), lijepo ispisanu karticu za stolove i kratke upute za goste."],
           bullets: [
             "Privatna galerija na koju gosti učitavaju fotografije.",
             "PDF s QR kodom, spreman za tisak (papir 300 g/m²).",
@@ -485,11 +485,11 @@ export const EVENT_TOPICS: Partial<Record<EventLocale, Record<EventTopicKey, Eve
             "1. Otvorite guestcam.si i kliknite »Kreiraj galeriju«.",
             "2. Upišite imena para (npr. »Ana i Marko«) i datum vjenčanja.",
             "3. Preuzmite QR kod (PDF s 8 elegantnih predložaka).",
-            "4. Isprintajte kartice za stolove — preporučena veličina A6.",
+            "4. Ispišite kartice za stolove — preporučena veličina A6.",
             "5. Postavite jednu karticu na svaki stol. To je sve.",
           ] },
         { h2: "Gdje postaviti QR kod za maksimalan odaziv",
-          paragraphs: ["Iz analize više stotina vjenčanja preporučujemo tri mjesta odjednom — više točaka povećava postotak gostiju koji zaista učitaju fotografije:"],
+          paragraphs: ["Preporučujemo tri vidljiva mjesta odjednom — više dodirnih točaka olakšava gostima da primijete QR kod i učitaju fotografije:"],
           bullets: [
             "Na svakom stolu (središnja postavka, vidljiva svima).",
             "Kod ulaza — velika kartica ili plakat.",
@@ -522,22 +522,22 @@ export const EVENT_TOPICS: Partial<Record<EventLocale, Record<EventTopicKey, Eve
         "Vjenčani album je manje-više obvezan dio svakog vjenčanja — no oblik se posljednjih godina promijenio. Danas većina parova kombinira klasični tiskani album s digitalnom galerijom u koju gosti sami dodaju fotografije. Ovaj vodič uspoređuje tri glavna pristupa i objašnjava kada koji bolje funkcionira.",
       sections: [
         { h2: "Klasični vjenčani album: kada ga uzeti",
-          paragraphs: ["Tiskani album izvrsna je uspomena, ali košta 300–1200 € i sadrži samo fotografova kadre — ništa od onoga što su snimili gosti. Ako želite samo vrhunske profesionalne snimke u elegantnoj formi, tiskani album pokriva vaše potrebe."] },
+          paragraphs: ["Tiskani album izvrsna je uspomena, ali u pravilu sadrži odabrane fotografove kadrove — ne i sve spontane trenutke koje su snimili gosti. Ako želite profesionalne snimke u elegantnoj fizičkoj formi, tiskani album pokriva taj dio priče."] },
         { h2: "Digitalni vjenčani album: prednosti i mane",
-          paragraphs: ["Digitalna galerija skuplja fotografije svih gostiju, ne samo fotografa. To znači 500–2000 dodatnih fotografija koje biste inače izgubili. Nedostatak: nema ništa fizičko dok sami ne isprintate izbor."],
+          paragraphs: ["Digitalna galerija skuplja fotografije svih gostiju, ne samo fotografa, pa dobivate više perspektiva događaja. Nedostatak je što nema fizičkog primjerka dok sami ne ispišete odabrane fotografije."],
           bullets: [
-            "Neograničen broj fotografija.",
+            "Broj fotografija prilagođen odabranom paketu.",
             "Svi gosti pristupaju preko poveznice ili QR koda.",
             "Preuzimanje svih fotografija u ZIP-u za tisak kad god.",
             "Cijena: besplatno do 20 fotografija, Plus 49€.",
           ] },
         { h2: "Hibridni pristup: naša preporuka",
-          paragraphs: ["Najbolji rezultat postižete kad spojite oba: fotograf snima klasične portrete i ključne trenutke, a gosti dodaju perspektive koje fotograf ne može uhvatiti — spontane zagrljaje, dječje fotografije, ples nakon ponoći. Iz skupljenih fotografija onda isprintate 30–50 najboljih u foto knjizi."] },
+          paragraphs: ["Najbolji rezultat postižete kad spojite oba: fotograf snima klasične portrete i ključne trenutke, a gosti dodaju perspektive koje fotograf ne može uhvatiti — spontane zagrljaje, dječje fotografije i ples nakon ponoći. Iz skupljenih fotografija zatim ispišete izbor za foto knjigu."] },
         { h2: "Kako pokrenuti digitalni vjenčani album",
           paragraphs: ["S Guestcamom galerija se postavlja za manje od 2 minute:"],
           bullets: [
             "1. Imena para, datum, mjesto — to je sve što je obvezno.",
-            "2. Preuzmete QR kod — isprintate kartice.",
+            "2. Preuzmete QR kod — ispišete kartice.",
             "3. Podijelite i poveznicu preko WhatsAppa — za goste koji QR ne skeniraju.",
             "4. Nakon vjenčanja preuzmete sve u ZIP i odaberete fotografije za foto knjigu.",
           ] },
@@ -558,30 +558,30 @@ export const EVENT_TOPICS: Partial<Record<EventLocale, Record<EventTopicKey, Eve
       cluster: "zbiranje-slik-s-poroke",
       slug: "skupljanje-fotografija-vjencanje",
       category: "wedding",
-      title: "Skupljanje fotografija s vjenčanja — 5 metoda usporedba",
+      title: "Skupljanje fotografija s vjenčanja — usporedba 5 metoda",
       description: "Skupljanje fotografija s vjenčanja od gostiju: usporedba WhatsAppa, Google Photosa i QR koda. Koja metoda skuplja najviše fotografija u punoj kvaliteti.",
       h1: "Skupljanje fotografija s vjenčanja: kako dobiti sve od gostiju",
       intro:
-        "Skupljanje fotografija s vjenčanja nije tehnički zahtjevno — no često je slabo organizirano. Rezultat: od potencijalnih 1500 fotografija dobijete samo 30 zamućenih iz WhatsApp razgovora. Ovaj vodič pokazuje gdje se gubi većina fotografija i kako to spriječiti.",
+        "Skupljanje fotografija s vjenčanja nije tehnički zahtjevno, ali je često slabo organizirano. Fotografije zato ostanu na telefonima gostiju ili se izgube u grupnim razgovorima. Ovaj vodič pokazuje gdje nastaju prepreke i kako ih ukloniti.",
       sections: [
         { h2: "Gdje se gubi većina fotografija gostiju",
-          paragraphs: ["Iz analize više stotina vjenčanja: 82 % fotografija nikad ne dođe do para. Razlozi su uvijek isti — zaboravljivost, aplikacije koje stisnu kvalitetu i metode koje traže previše koraka."] },
+          paragraphs: ["Mnoge fotografije nikad ne dođu do para jer ih gosti zaborave poslati, izgube se u razgovorima ili postupak zahtijeva previše koraka."] },
         { h2: "Usporedba pet metoda skupljanja",
           paragraphs: ["Svaka metoda ima svoj profil. Ispod brza usporedba:"],
           bullets: [
-            "WhatsApp grupa — brzo, ali 50 % kvalitete; fotografije razbacane u razgovorima.",
+            "WhatsApp grupa — brzo, ali kvaliteta ovisi o načinu slanja, a fotografije ostaju razbacane u razgovorima.",
             "Google Photos zajednička galerija — puna kvaliteta, ali traži Google račun.",
-            "AirDrop — samo iPhone gosti, otpadne pola sudionika.",
+            "AirDrop — praktičan samo za goste s kompatibilnim Apple uređajima.",
             "USB ključ na izlazu — samo šačica ljudi ga zaista ispuni.",
-            "QR kod + web galerija — najveći postotak gostiju, puna kvaliteta.",
+            "QR kod + web galerija — bez prijave gostiju, puna kvaliteta.",
           ] },
         { h2: "Koja metoda zaista funkcionira",
-          paragraphs: ["U praksi QR kod skupi 5–10× više fotografija nego WhatsApp grupa. Razlog: gost treba samo kameru mobitela i 20 sekundi, bez aplikacije i bez računa. Jer je jednostavno, zaista sudjeluje većina gostiju."] },
+          paragraphs: ["QR kod uklanja prijavu i instalaciju aplikacije: gost treba samo kameru mobitela i preglednik. Manje koraka znači manje prilika da odustane prije slanja fotografija."] },
         { h2: "Kako pripremiti skupljanje prije vjenčanja",
           paragraphs: ["Pripremite se tjedan dana ranije:"],
           bullets: [
             "Postavite Guestcam galeriju i testirajte QR kod.",
-            "Isprintajte kartice za stolove i jednu veću za ulaz.",
+            "Ispišite kartice za stolove i jednu veću za ulaz.",
             "Pripremite kratki natpis za DJ-a: »Skenirajte QR kod na stolovima i podijelite fotografije«.",
             "Dodajte poveznicu galerije u potpis svake e-pošte koju šaljete gostima.",
             "Nakon vjenčanja: pošaljite WhatsApp podsjetnik s poveznicom do galerije.",
@@ -593,7 +593,7 @@ export const EVENT_TOPICS: Partial<Record<EventLocale, Record<EventTopicKey, Eve
         { q: "Trebaju li gosti internet za učitavanje fotografija?",
           a: "Da — Wi-Fi ili mobilne podatke. Preporučujemo da za goste osigurate Wi-Fi na lokaciji ili da skupite fotografije nakon događaja, kad su gosti kod kuće." },
         { q: "Što ako se gosti ne odazovu?",
-          a: "Pošaljite QR kod i nakon vjenčanja, preko WhatsAppa ili e-pošte. Većina fotografija dolazi u prvih 7 dana nakon događaja." },
+          a: "Pošaljite QR kod i nakon vjenčanja, preko WhatsAppa ili e-pošte. Gosti tada mogu učitati fotografije kad imaju više vremena i bolju internetsku vezu." },
       ],
       ctaHeading: "Započnite skupljanje fotografija s vjenčanja danas",
       ctaBody: "Kreirajte galeriju bez kartice — QR kod, 8 predložaka kartica i pristup fotografijama u punoj kvaliteti.",
@@ -607,15 +607,15 @@ export const EVENT_TOPICS: Partial<Record<EventLocale, Record<EventTopicKey, Eve
       description: "Kako skupiti fotografije s rođendana od svih gostiju u jednu galeriju. QR kod, bez aplikacije, prikladno za djecu i odrasle.",
       h1: "Fotografije s rođendana: kako napraviti zajedničku galeriju",
       intro:
-        "Rođendan je još više razbacan po mobitelima gostiju nego vjenčanje — svatko snimi 20 fotografija i sve ostaju kod njega. Ako ste jubilarni slavljenik ili roditelj koji organizira dječji rođendan, zajednička galerija je najjednostavniji način da sve skupite na jedno mjesto.",
+        "Fotografije s rođendana često ostanu razbacane po mobitelima gostiju. Ako ste slavljenik ili roditelj koji organizira dječji rođendan, zajednička galerija jednostavan je način da ih prikupite na jednom mjestu.",
       sections: [
         { h2: "Zašto se fotografije s rođendana gube",
-          paragraphs: ["Rođendan nije fotografiran profesionalcem — svaki gost ima svoj mobitel i svoj album. Fotografije ostaju razbacane po 20–40 uređaja iz kojih ih nikada više ne dobijete. Rješenje je zajednička galerija u koju svi mogu poslati priloge."] },
+          paragraphs: ["Na rođendanu svaki gost ima svoj mobitel i vlastiti album. Fotografije zato ostaju na različitim uređajima. Rješenje je zajednička galerija u koju svi mogu poslati svoje snimke."] },
         { h2: "Kako QR kod funkcionira za rođendan",
           paragraphs: ["Postavite karticu s QR kodom na stol. Gosti skeniraju, biraju fotografije i videozapise iz galerije mobitela, šalju. Fotografije se pojave u vašoj privatnoj web galeriji u realnom vremenu."],
           bullets: [
             "Bez aplikacije — radi u svakom pregledniku.",
-            "Djeca od 8 godina bez problema skeniraju QR kod.",
+            "Postupak je dovoljno kratak i za mlađe goste uz pomoć odrasle osobe.",
             "Video zapisi podržani (do 100 zapisa u Plus paketu).",
             "Fotografije se pojave odmah, i na projekciji ako želite.",
           ] },
@@ -630,7 +630,7 @@ export const EVENT_TOPICS: Partial<Record<EventLocale, Record<EventTopicKey, Eve
       ],
       faq: [
         { q: "Mogu li djeca učitati fotografije s rođendana?",
-          a: "Da, djeca od 8 godina bez problema skeniraju QR kod s roditeljskim mobitelom. Učitavanje je jednostavno — odaberu fotografije, pritisnu »Pošalji«." },
+          a: "Da, uz pomoć odrasle osobe. Učitavanje je jednostavno — odaberu fotografije i pritisnu »Pošalji«." },
         { q: "Možemo li rođendansku galeriju prikazati na TV-u tijekom slavlja?",
           a: "Da, Guestcam Premium omogućuje Live prikaz na velikom ekranu. Fotografije se pojave odmah kad ih gosti pošalju." },
         { q: "Koliko dugo fotografije ostaju dostupne?",
@@ -651,7 +651,7 @@ export const EVENT_TOPICS: Partial<Record<EventLocale, Record<EventTopicKey, Eve
         "Baby shower je intiman događaj — često s manje gostiju od vjenčanja, ali s više emotivnih trenutaka koje želite sačuvati. Zajednička galerija omogućuje da sve fotografije svih gostiju dođu na jedno mjesto, i one iz kutova koje niste vidjeli.",
       sections: [
         { h2: "Zašto zajednička galerija za baby shower",
-          paragraphs: ["Baby shower fotografiranje je razbacano — 10–20 gostiju, svatko sa svojim mobitelom. Ako nema zajedničke galerije, dobijete samo one fotografije koje vam gosti pošalju naknadno — u praksi manje od polovine."] },
+          paragraphs: ["Na baby showeru svaki gost fotografira vlastitim mobitelom. Bez zajedničke galerije dobijete samo fotografije koje vam se gosti sjete poslati nakon događaja."] },
         { h2: "Kako postaviti galeriju za baby shower",
           paragraphs: ["Postupak s Guestcamom:"],
           bullets: [
@@ -697,13 +697,13 @@ export const EVENT_TOPICS: Partial<Record<EventLocale, Record<EventTopicKey, Eve
       description: "Kako sakupiti sve slike sa venčanja od gostiju — bez izgubljenih uspomena i bez aplikacije. Poređenje QR koda, WhatsAppa i Google Photosa.",
       h1: "Slike sa venčanja: kako sakupiti sve slike gostiju",
       intro:
-        "Na venčanju gosti snime 500–2000 slika svojim telefonima — vi ih dobijete tek dvadesetak. Ostatak ostane na memorijskim karticama i u zaboravljenim WhatsApp grupama. Ovaj vodič prikazuje pet praktičnih načina kako dobiti sve slike sa venčanja od gostiju — i koja metoda zaista funkcioniše.",
+        "Na venčanju gosti snime mnogo spontanih fotografija svojim telefonima, ali veliki deo ostane na njihovim uređajima ili u nepreglednim grupnim razgovorima. Ovaj vodič prikazuje pet praktičnih načina da sakupite fotografije gostiju — i koja metoda uklanja najviše prepreka.",
       sections: [
         { h2: "Zašto vam gosti ne šalju slike",
           paragraphs: ["Razloga je pet, i svaki od njih se može otkloniti pravom metodom:"],
           bullets: [
             "Zaborave — posle venčanja prođu dani, nedelje, meseci.",
-            "WhatsApp stisne slike na ~50 % kvaliteta — dobijete zamućene verzije.",
+            "Kvalitet fotografija u WhatsAppu zavisi od izabranog načina slanja.",
             "Google Photos traži nalog koji stariji gosti često nemaju.",
             "USB ključ znači da svaki gost mora lično da vam dođe.",
             "E-pošta je naporna za obe strane.",
@@ -715,28 +715,28 @@ export const EVENT_TOPICS: Partial<Record<EventLocale, Record<EventTopicKey, Eve
             "Google Photos zajednička galerija — puna kvaliteta, ali traži prijavu.",
             "USB / SD ključevi na izlazu — visoka kvaliteta, samo šačica gostiju to napravi.",
             "Sakupljanje putem e-pošte — imate kontrolu, ali gubitak vremena je ogroman.",
-            "QR kod na stolovima — bez aplikacije, bez prijave, u punoj kvalitetu.",
+            "QR kod na stolovima — bez aplikacije, bez prijave, u punom kvalitetu.",
           ] },
         { h2: "QR kod: metoda koja sakuplja najviše slika",
           paragraphs: [
-            "QR kod radi jer uklanja svaku prepreku. Gost skenira kod kamerom telefona, izabere slike i pošalje ih — bez aplikacije, bez naloga, bez prijave. Jer traje 20 sekundi, pošalje više ljudi.",
-            "U praksi sakupite 5–10× više slika nego sa WhatsAppom. I sve dolaze u punoj originalnoj rezoluciji, pogodnoj za štampu i foto knjigu.",
+            "QR kod radi jer uklanja nepotrebne korake. Gost skenira kod kamerom telefona, izabere slike i pošalje ih — bez aplikacije, naloga i prijave.",
+            "Jednostavniji postupak podstiče više gostiju da učestvuju, a Guestcam čuva datoteke u originalnoj rezoluciji, pogodnoj za štampu i foto knjigu.",
           ] },
         { h2: "Koliko slika gosti stvarno otpreme",
-          paragraphs: ["Iz naših anonimnih statistika: prosečno venčanje sa 80 gostiju sakupi između 800 i 1400 slika preko Guestcam QR koda. Vrhunac je večernji ples (najviše otpremanja posle ponoći)."] },
+          paragraphs: ["Broj otpremljenih fotografija zavisi od broja gostiju i vidljivosti QR koda. Kartice na stolovima, kratka najava voditelja i podsetnik posle događaja pomažu da se sakupi više različitih trenutaka."] },
       ],
       faq: [
         { q: "Kako od gostiju dobiti sve slike sa venčanja?",
-          a: "Koristite QR kod na svakom stolu. Gosti skeniraju, šalju slike preko pretraživača, bez aplikacije. To je najjednostavniji način i sakupi najveći procenat slika." },
+          a: "Postavite QR kod na stolove i podelite direktan link. Gosti fotografije šalju kroz pretraživač, bez aplikacije, pa je postupak kratak i dostupan različitim generacijama." },
         { q: "Da li WhatsApp stisne slike sa venčanja?",
-          a: "Da, WhatsApp automatski stisne slike na otprilike pola originalne veličine. Za punu kvalitetu treba vam druga metoda (QR kod ili Google Photos zajednička galerija)." },
+          a: "Kvalitet u WhatsAppu zavisi od načina slanja i podešavanja. Ako želite dosledno da sačuvate izvorne datoteke, koristite galeriju koja ih ne smanjuje." },
         { q: "Koliko vremena treba za postavljanje QR koda za slike sa venčanja?",
           a: "Sa Guestcamom manje od 2 minuta. Upišete imena para i datum, preuzmete QR kod u PDF-u, odštampate kartice za stolove." },
         { q: "Moraju li gosti da preuzmu aplikaciju?",
           a: "Ne. Guestcam radi u pretraživaču. Gost skenira QR kod kamerom telefona i odmah otprema slike." },
       ],
       ctaHeading: "Pripremite galeriju za venčanje za 2 minuta",
-      ctaBody: "Bez aplikacije. Bez kartice. Imena para, datum, QR kod — vaši gosti šalju slike u punoj kvalitetu iste večeri.",
+      ctaBody: "Bez aplikacije. Bez kartice. Imena para, datum, QR kod — vaši gosti šalju slike u punom kvalitetu iste večeri.",
       ctaButton: "Napravi besplatnu galeriju",
     },
     "qr-koda-za-poroko": {
@@ -766,7 +766,7 @@ export const EVENT_TOPICS: Partial<Record<EventLocale, Record<EventTopicKey, Eve
             "5. Postavite jednu karticu na svaki sto. To je sve.",
           ] },
         { h2: "Gde postaviti QR kod za maksimalan odziv",
-          paragraphs: ["Iz analize više stotina venčanja preporučujemo tri mesta istovremeno — više tačaka povećava procenat gostiju koji zaista otpreme slike:"],
+          paragraphs: ["Preporučujemo tri vidljiva mesta istovremeno — više dodirnih tačaka olakšava gostima da primete QR kod i otpreme fotografije:"],
           bullets: [
             "Na svakom stolu (centralna postavka, vidljiva svima).",
             "Kod ulaza — velika kartica ili plakat.",
@@ -774,7 +774,7 @@ export const EVENT_TOPICS: Partial<Record<EventLocale, Record<EventTopicKey, Eve
           ] },
         { h2: "Šta napisati uz QR kod",
           paragraphs: ["Kratak natpis koji gostu odmah kaže šta da uradi:",
-            "»Skenirajte QR kod i podelite slike sa nama. Sve dolaze u punoj kvalitetu — bez aplikacije.«"] },
+            "»Skenirajte QR kod i podelite slike sa nama. Sve dolaze u punom kvalitetu — bez aplikacije.«"] },
       ],
       faq: [
         { q: "Da li je QR kod za venčanje besplatan?",
@@ -799,11 +799,11 @@ export const EVENT_TOPICS: Partial<Record<EventLocale, Record<EventTopicKey, Eve
         "Venčani album je manje-više obavezan deo svakog venčanja — ali se oblik u poslednjim godinama promenio. Danas većina parova kombinuje klasičan štampani album sa digitalnom galerijom u koju gosti sami dodaju slike. Ovaj vodič poredi tri glavna pristupa i objašnjava kada koji bolje radi.",
       sections: [
         { h2: "Klasičan venčani album: kada ga uzeti",
-          paragraphs: ["Štampani album izvrsna je uspomena, ali košta 300–1200 € i sadrži samo fotografova kadre — ništa od onoga što su snimili gosti. Ako želite samo vrhunske profesionalne snimke u elegantnoj formi, štampani album pokriva vaše potrebe."] },
+          paragraphs: ["Štampani album je odlična uspomena, ali uglavnom sadrži odabrane fotografove kadrove — ne i sve spontane trenutke koje su snimili gosti. Ako želite profesionalne snimke u elegantnoj fizičkoj formi, štampani album pokriva taj deo priče."] },
         { h2: "Digitalni venčani album: prednosti i mane",
-          paragraphs: ["Digitalna galerija sakuplja slike svih gostiju, ne samo fotografa. To znači 500–2000 dodatnih slika koje biste inače izgubili. Nedostatak: nema ničega fizičkog dok sami ne odštampate izbor."],
+          paragraphs: ["Digitalna galerija sakuplja slike svih gostiju, ne samo fotografa, pa dobijate više perspektiva događaja. Nedostatak je što nema fizičkog primerka dok sami ne odštampate izabrane fotografije."],
           bullets: [
-            "Neograničen broj slika.",
+            "Broj fotografija prilagođen izabranom paketu.",
             "Svi gosti pristupaju preko linka ili QR koda.",
             "Preuzimanje svih slika u ZIP-u za štampu kad god.",
             "Cena: besplatno do 20 slika, Plus 49€.",
@@ -835,25 +835,25 @@ export const EVENT_TOPICS: Partial<Record<EventLocale, Record<EventTopicKey, Eve
       cluster: "zbiranje-slik-s-poroke",
       slug: "skupljanje-fotografija-vencanje",
       category: "wedding",
-      title: "Skupljanje fotografija sa venčanja — 5 metoda poređenje",
-      description: "Skupljanje fotografija sa venčanja od gostiju: poređenje WhatsAppa, Google Photosa i QR koda. Koja metoda sakuplja najviše fotografija u punoj kvalitetu.",
+      title: "Skupljanje fotografija sa venčanja — poređenje 5 metoda",
+      description: "Skupljanje fotografija sa venčanja od gostiju: poređenje WhatsAppa, Google Photosa i QR koda. Koja metoda najlakše čuva fotografije u punom kvalitetu.",
       h1: "Skupljanje fotografija sa venčanja: kako dobiti sve od gostiju",
       intro:
-        "Skupljanje fotografija sa venčanja nije tehnički zahtevno — ali je često slabo organizovano. Rezultat: od potencijalnih 1500 fotografija dobijete samo 30 zamućenih iz WhatsApp razgovora. Ovaj vodič prikazuje gde se gubi većina fotografija i kako to sprečiti.",
+        "Skupljanje fotografija sa venčanja nije tehnički zahtevno, ali je često slabo organizovano. Fotografije zato ostanu na telefonima gostiju ili se izgube u grupnim razgovorima. Ovaj vodič prikazuje gde nastaju prepreke i kako ih ukloniti.",
       sections: [
         { h2: "Gde se gubi većina fotografija gostiju",
-          paragraphs: ["Iz analize više stotina venčanja: 82 % fotografija nikad ne stigne do para. Razlozi su uvek isti — zaboravnost, aplikacije koje stisnu kvalitet i metode koje traže previše koraka."] },
+          paragraphs: ["Mnoge fotografije nikad ne stignu do para jer gosti zaborave da ih pošalju, izgube se u razgovorima ili postupak traži previše koraka."] },
         { h2: "Poređenje pet metoda skupljanja",
           paragraphs: ["Svaka metoda ima svoj profil. Ispod brzo poređenje:"],
           bullets: [
-            "WhatsApp grupa — brzo, ali 50 % kvaliteta; fotografije razbacane u razgovorima.",
+            "WhatsApp grupa — brzo, ali kvalitet zavisi od načina slanja, a fotografije ostaju razbacane u razgovorima.",
             "Google Photos zajednička galerija — puna kvaliteta, ali traži Google nalog.",
-            "AirDrop — samo iPhone gosti, otpadne pola učesnika.",
+            "AirDrop — praktičan samo za goste sa kompatibilnim Apple uređajima.",
             "USB ključ na izlazu — samo šačica ljudi ga zaista popuni.",
-            "QR kod + web galerija — najveći procenat gostiju, puna kvaliteta.",
+            "QR kod + web galerija — bez prijave gostiju, pun kvalitet.",
           ] },
         { h2: "Koja metoda zaista radi",
-          paragraphs: ["U praksi QR kod sakuplja 5–10× više fotografija nego WhatsApp grupa. Razlog: gost treba samo kameru telefona i 20 sekundi, bez aplikacije i bez naloga. Jer je jednostavno, zaista učestvuje većina gostiju."] },
+          paragraphs: ["QR kod uklanja prijavu i instalaciju aplikacije: gostu su potrebni samo kamera telefona i pretraživač. Manje koraka znači manje prilika da odustane pre slanja fotografija."] },
         { h2: "Kako pripremiti skupljanje pre venčanja",
           paragraphs: ["Pripremite se nedelju dana ranije:"],
           bullets: [
@@ -870,10 +870,10 @@ export const EVENT_TOPICS: Partial<Record<EventLocale, Record<EventTopicKey, Eve
         { q: "Trebaju li gosti internet za otpremanje fotografija?",
           a: "Da — Wi-Fi ili mobilni podaci. Preporučujemo da za goste obezbedite Wi-Fi na lokaciji ili da sakupite fotografije posle događaja, kad su gosti kod kuće." },
         { q: "Šta ako se gosti ne odazovu?",
-          a: "Pošaljite QR kod i posle venčanja, preko WhatsAppa ili e-pošte. Većina fotografija dolazi u prvih 7 dana posle događaja." },
+          a: "Pošaljite QR kod i posle venčanja, preko WhatsAppa ili e-pošte. Gosti tada mogu da otpreme fotografije kada imaju više vremena i bolju internet vezu." },
       ],
       ctaHeading: "Počnite skupljanje fotografija sa venčanja danas",
-      ctaBody: "Napravite galeriju bez kartice — QR kod, 8 šablona kartica i pristup fotografijama u punoj kvalitetu.",
+      ctaBody: "Napravite galeriju bez kartice — QR kod, 8 šablona kartica i pristup fotografijama u punom kvalitetu.",
       ctaButton: "Napravi galeriju",
     },
     "slike-z-rojstnega-dne": {
@@ -884,15 +884,15 @@ export const EVENT_TOPICS: Partial<Record<EventLocale, Record<EventTopicKey, Eve
       description: "Kako sakupiti slike sa rođendana od svih gostiju u jednu galeriju. QR kod, bez aplikacije, prikladno za decu i odrasle.",
       h1: "Slike sa rođendana: kako napraviti zajedničku galeriju",
       intro:
-        "Rođendan je još više razbacan po telefonima gostiju nego venčanje — svako snimi 20 slika i sve ostaju kod njega. Ako ste jubilarni slavljenik ili roditelj koji organizuje dečji rođendan, zajednička galerija je najjednostavniji način da sve sakupite na jedno mesto.",
+        "Fotografije sa rođendana često ostanu razbacane po telefonima gostiju. Ako ste slavljenik ili roditelj koji organizuje dečji rođendan, zajednička galerija je jednostavan način da ih sakupite na jednom mestu.",
       sections: [
         { h2: "Zašto se slike sa rođendana gube",
-          paragraphs: ["Rođendan nije fotografisan profesionalcem — svaki gost ima svoj telefon i svoj album. Slike ostaju razbacane po 20–40 uređaja iz kojih ih više nikad ne dobijete. Rešenje je zajednička galerija u koju svi mogu da pošalju priloge."] },
+          paragraphs: ["Na rođendanu svaki gost ima svoj telefon i svoj album. Fotografije zato ostaju na različitim uređajima. Rešenje je zajednička galerija u koju svi mogu da pošalju svoje snimke."] },
         { h2: "Kako QR kod funkcioniše za rođendan",
           paragraphs: ["Postavite karticu sa QR kodom na sto. Gosti skeniraju, biraju slike i video snimke iz galerije telefona, šalju. Slike se pojave u vašoj privatnoj web galeriji u realnom vremenu."],
           bullets: [
             "Bez aplikacije — radi u svakom pretraživaču.",
-            "Deca od 8 godina bez problema skeniraju QR kod.",
+            "Postupak je dovoljno kratak i za mlađe goste uz pomoć odrasle osobe.",
             "Video snimci podržani (do 100 snimaka u Plus paketu).",
             "Slike se pojave odmah, i na projekciji ako želite.",
           ] },
@@ -907,7 +907,7 @@ export const EVENT_TOPICS: Partial<Record<EventLocale, Record<EventTopicKey, Eve
       ],
       faq: [
         { q: "Da li deca mogu da otpreme slike sa rođendana?",
-          a: "Da, deca od 8 godina bez problema skeniraju QR kod sa roditeljskim telefonom. Otpremanje je jednostavno — izaberu slike, pritisnu »Pošalji«." },
+          a: "Da, uz pomoć odrasle osobe. Otpremanje je jednostavno — izaberu slike i pritisnu »Pošalji«." },
         { q: "Možemo li rođendansku galeriju da prikažemo na TV-u tokom slavlja?",
           a: "Da, Guestcam Premium omogućava Live prikaz na velikom ekranu. Slike se pojave odmah kad ih gosti pošalju." },
         { q: "Koliko dugo slike ostaju dostupne?",
@@ -928,7 +928,7 @@ export const EVENT_TOPICS: Partial<Record<EventLocale, Record<EventTopicKey, Eve
         "Baby shower je intiman događaj — često sa manje gostiju od venčanja, ali sa više emotivnih trenutaka koje želite da sačuvate. Zajednička galerija omogućava da sve fotografije svih gostiju dođu na jedno mesto, i one iz uglova koje niste videli.",
       sections: [
         { h2: "Zašto zajednička galerija za baby shower",
-          paragraphs: ["Baby shower fotografisanje je razbacano — 10–20 gostiju, svako sa svojim telefonom. Ako nema zajedničke galerije, dobijete samo one fotografije koje vam gosti pošalju naknadno — u praksi manje od polovine."] },
+          paragraphs: ["Na baby showeru svaki gost fotografiše svojim telefonom. Bez zajedničke galerije dobijete samo fotografije kojih se gosti sete da pošalju posle događaja."] },
         { h2: "Kako postaviti galeriju za baby shower",
           paragraphs: ["Postupak sa Guestcamom:"],
           bullets: [
@@ -1805,6 +1805,10 @@ export function getEventTopic(locale: EventLocale, key: EventTopicKey): EventTop
 export function localesForTopic(key: EventTopicKey): EventLocale[] {
   const out: EventLocale[] = [];
   for (const loc of ["sl", "hr", "sr", "de", "en", "es"] as EventLocale[]) {
+    // HR/SR each have a stronger, older primary wedding-QR landing. Their
+    // near-duplicate how-to URLs permanently redirect there, so they must not
+    // remain in sitemap or hreflang clusters.
+    if (key === "qr-koda-za-poroko" && (loc === "hr" || loc === "sr")) continue;
     if (EVENT_TOPICS[loc]?.[key]) out.push(loc);
   }
   return out;

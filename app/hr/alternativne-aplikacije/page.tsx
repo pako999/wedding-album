@@ -1,12 +1,12 @@
 import { SITE_URL } from "@/lib/urls";
 import Link from "next/link";
 import type { Metadata } from "next";
-import { ALTERNATIVES_HREFLANG, LanguageSwitcher } from "@/components/LanguageSwitcher";
-import { GuestcamLogo } from "@/components/GuestcamLogo";
+import { ALTERNATIVES_HREFLANG } from "@/components/LanguageSwitcher";
 import { SeoFooter } from "@/components/SeoFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { OG_IMAGE_URL, ogImage } from "@/lib/og";
 import { safeJsonLd } from "@/lib/seo/jsonld-safe";
+import { withRegionalHreflang } from "@/lib/seo/hreflang";
 
 export const metadata: Metadata = {
   title: "Najbolje aplikacije za vjenčane fotografije 2026",
@@ -18,6 +18,7 @@ export const metadata: Metadata = {
     description:
       "Iskrena usporedba rješenja za skupljanje vjenčanih fotografija. Kvaliteta, privatnost, cijena — sve na jednom mjestu.",
     type: "article",
+    locale: "hr_HR",
     images: [ogImage("Najbolje aplikacije za dijeljenje vjenčanih fotografija")],
   },
   twitter: {
@@ -28,7 +29,7 @@ export const metadata: Metadata = {
   },
   alternates: {
     canonical: `${SITE_URL}/hr/alternativne-aplikacije`,
-    languages: {
+    languages: withRegionalHreflang({
       "sl": `${SITE_URL}/sl/alternative-aplikacije`,
       "hr": `${SITE_URL}/hr/alternativne-aplikacije`,
       "sr": `${SITE_URL}/sr/alternativne-aplikacije`,
@@ -36,7 +37,7 @@ export const metadata: Metadata = {
       "en": `${SITE_URL}/en/alternatives`,
       "es": `${SITE_URL}/es/alternativas`,
       "x-default": `${SITE_URL}/sl/alternative-aplikacije`,
-    },
+    }),
   },
 };
 
@@ -47,6 +48,7 @@ const articleSchema = {
   description:
     "Usporedba: Guestcam vs Google Photos vs WhatsApp vs Dropbox. Koja je aplikacija najbolja za skupljanje fotografija s vjenčanja?",
   inLanguage: "hr-HR",
+  dateModified: "2026-08-28",
   author: { "@type": "Organization", name: "Guestcam" },
   publisher: {
     "@type": "Organization",
@@ -56,22 +58,6 @@ const articleSchema = {
   mainEntityOfPage: `${SITE_URL}/hr/alternativne-aplikacije`,
 };
 
-
-function SiteFooter() {
-  return (
-    <footer className="bg-[#0F1729] text-white py-8 mt-20">
-      <div className="max-w-5xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-gray-400">
-        <p>© 2025 Sport group d.o.o. · SI72133449</p>
-        <div className="flex items-center gap-5">
-          <Link href="/privacy" className="hover:text-white transition-colors">Privatnost</Link>
-          <Link href="/terms" className="hover:text-white transition-colors">Uvjeti</Link>
-          <Link href="/cookies" className="hover:text-white transition-colors">Kolačići</Link>
-          <a href="mailto:info@guestcam.si" className="hover:text-white transition-colors">Kontakt</a>
-        </div>
-      </div>
-    </footer>
-  );
-}
 
 function Check() {
   return (
@@ -108,7 +94,7 @@ export default function AlternativneAplikacijePage() {
         {/* Hero */}
         <div className="mb-12">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold mb-5 uppercase tracking-widest bg-[#FFF3CC] text-[#C9820A]">
-            Usporedba · Hrvatska · 2025
+            Usporedba · Hrvatska · 2026
           </div>
           <h1 className="font-serif text-4xl md:text-5xl font-bold text-[#0F1729] leading-tight mb-5">
             Najbolje aplikacije za dijeljenje vjenčanih fotografija
@@ -131,7 +117,7 @@ export default function AlternativneAplikacijePage() {
               <svg className="w-4 h-4 text-[#C9820A]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75M16.5 6.108c1.131.094 1.976 1.057 1.976 2.192V18A2.25 2.25 0 0116.226 20.25H7.5A2.25 2.25 0 015.25 18V8.3c0-1.135.844-2.098 1.976-2.192" />
               </svg>
-              Ažurirano: siječanj 2025
+              Ažurirano: kolovoz 2026
             </span>
           </div>
         </div>
@@ -189,8 +175,8 @@ export default function AlternativneAplikacijePage() {
                 </thead>
                 <tbody>
                   {[
-                    { feature: "Bez aplikacije za goste", wa: true, gp: false, wp: false, db: false, gpNote: "Račun potreban", wpNote: "Aplikacija potrebna", dbNote: "Aplikacija potrebna" },
-                    { feature: "Puna originalna kvaliteta", wa: true, gp: "partial", wp: false, db: true, wpNote: "70 % kompresija", gpNote: "Stisnuto po zadanom" },
+                    { feature: "Bez aplikacije za goste", wa: true, gp: false, wp: false, db: "partial", gpNote: "Račun potreban", wpNote: "Aplikacija potrebna", dbNote: "Račun može biti potreban" },
+                    { feature: "Puna originalna kvaliteta", wa: true, gp: "partial", wp: "partial", db: true, wpNote: "Ovisi o načinu slanja", gpNote: "Ovisi o postavkama" },
                     { feature: "QR kod za brzi pristup", wa: true, gp: false, wp: false, db: false },
                     { feature: "Privatno (bez indeksiranja)", wa: true, gp: "partial", wp: true, db: true, gpNote: "Ovisno o postavkama" },
                     { feature: "Radi bez prijave gostiju", wa: true, gp: false, wp: false, db: false },
@@ -212,7 +198,7 @@ export default function AlternativneAplikacijePage() {
               </table>
             </div>
             <p className="text-xs text-gray-400 mt-3 text-center">
-              Podaci se temelje na javno dostupnim značajkama u siječnju 2025. »Djelomično« znači da značajka postoji, ali sa značajnim ograničenjima za vjenčanja.
+              Podaci se temelje na javno dostupnim značajkama u kolovozu 2026. »Djelomično« znači da značajka ovisi o postavkama, računu ili načinu slanja.
             </p>
           </div>
         </section>
@@ -397,7 +383,7 @@ export default function AlternativneAplikacijePage() {
                 <p className="font-semibold text-red-600 text-sm mb-2">Ograničenja</p>
                 <ul className="space-y-1.5 text-sm text-gray-600">
                   {[
-                    "Fotografije stisnute do 70 % — bez visoke kvalitete",
+                    "Kvaliteta fotografija ovisi o odabranom načinu slanja",
                     "Grupa od 100+ ljudi postaje kaos",
                     "Preuzimanje slika jedna po jedna — bez masovnog preuzimanja",
                     "Brojevi telefona gostiju vidljivi su svima",
@@ -505,7 +491,7 @@ export default function AlternativneAplikacijePage() {
           </p>
           <div className="grid gap-3 mb-6">
             {[
-              { name: "WhatsApp", problem: "Uništava kvalitetu fotografija kompresijom." },
+              { name: "WhatsApp", problem: "Kvaliteta fotografija ovisi o postavkama i načinu slanja." },
               { name: "Google Photos", problem: "Zahtijeva Google račun — prepreka za mnoge goste." },
               { name: "Dropbox", problem: "Prekomplicirano za netehničke goste." },
               { name: "iCloud zajednički album", problem: "Samo za iPhone — Android gosti su isključeni." },

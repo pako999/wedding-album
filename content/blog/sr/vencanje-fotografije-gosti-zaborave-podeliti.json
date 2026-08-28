@@ -2,10 +2,10 @@
   "slug": "vencanje-fotografije-gosti-zaborave-podeliti",
   "lang": "sr",
   "title": "Zašto gosti nikada ne dele fotografije sa venčanja (i kako to popraviti)",
-  "description": "Gosti snime stotine fotografija, a par dobije šačicu. Razlog nije lenjost — nego prepreke. Evo psihologije iza toga i rešenja koje radi u 3 sekunde.",
+  "description": "Gosti snime mnogo fotografija, ali ih često ne podele. Saznajte kako QR kod i jednostavna privatna galerija uklanjaju nepotrebne prepreke.",
   "translationKey": "guests-forget-to-share",
   "publishedAt": "2026-05-22",
-  "updatedAt": "2026-07-07",
+  "updatedAt": "2026-08-28",
   "author": "Guestcam Team",
   "category": "nasvet",
   "readingTime": 8,
@@ -14,7 +14,7 @@
     "deljenje fotografija",
     "venčani saveti"
   ],
-  "tldr": "Gosti ne dele fotografije jer svaka prepreka (otvori aplikaciju, izaberi, pošalji) smanji verovatnoću za ~30 %. QR kod na stolu spušta broj prepreka na nulu — zato parovi sa QR galerijom dobiju u proseku 340 fotografija umesto 30.",
+  "tldr": "Gosti često odlože deljenje kada postupak ima previše koraka. QR kod otvara privatnu galeriju u pregledaču, bez aplikacije i registracije.",
   "content": [
     {
       "type": "h2",
@@ -22,17 +22,15 @@
     },
     {
       "type": "p",
-      "text": "Zabava je gotova. Sala je tiha. U svom telefonu imate 80 fotografija, fotograf će svoje poslati za tri nedelje. Ali te večeri je u sali bilo 200 mobilnih telefona — i svaki je uhvatio drugačiji ugao, drugačiji trenutak, drugačiji smeh. Prva suza vašeg oca. Baka koja pleše. Drugarice u fotobudci. Gde su te fotografije danas?"
+      "text": "Zabava je gotova, a mnoge spontane fotografije i dalje su na telefonima gostiju. Svaki gost je uhvatio drugačiji ugao, trenutak ili osmeh. Kako te snimke jednostavno sakupiti na jednom mestu?"
     },
     {
       "type": "p",
       "text": "Na telefonima vaših gostiju. I po svemu sudeći, tamo će i ostati."
     },
     {
-      "type": "stat",
-      "value": "95 %",
-      "label": "fotografija koje gosti snime na venčanju nikada ne stigne do mladenaca",
-      "source": "interna Guestcam analiza, 2025"
+      "type": "callout",
+      "text": "Problem najčešće nije nedostatak volje, već to što gosti ne znaju gde i kako da pošalju fotografije."
     },
     {
       "type": "image",
@@ -67,13 +65,14 @@
     },
     {
       "type": "p",
-      "text": "U dizajnu proizvoda postoji poznato pravilo: svaki dodatni korak (klik, izbor, čekanje) smanji verovatnoću da korisnik završi radnju za otprilike 30 %. Tri koraka = 66 % manje završenih radnji. A tradicionalno deljenje fotografija sa venčanja ima najmanje tri prepreke — plus najveću od svih: zaboravnost."
+      "text": "Svaka dodatna prepreka — traženje kontakta, instalacija aplikacije, prijava ili ručno slanje — povećava mogućnost da gost zadatak odloži. Zato postupak treba da bude jasan i kratak."
     },
     {
       "type": "image",
-      "src": "/blog/sr/prepreke-levak.svg",
-      "alt": "Grafikon: svaka prepreka smanji broj podeljenih fotografija za oko 30 procenata — od 200 snimljenih, posle tri prepreke ostane 69, u praksi stigne oko 30",
-      "caption": "Levak prepreka: zašto od 200 snimljenih fotografija do para stigne samo šačica."
+      "src": "https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?w=1200&h=720&fit=crop&q=82&auto=format",
+      "alt": "Gosti na venčanju fotografišu telefonom",
+      "caption": "Jasan put od QR koda do galerije olakšava gostima da podele fotografije.",
+      "credit": "Foto: Unsplash"
     },
     {
       "type": "h2",
@@ -83,18 +82,19 @@
       "type": "table",
       "headers": ["Metoda", "Učešće gostiju", "Prepreke", "Kvalitet"],
       "rows": [
-        ["QR kod na svakom stolu", "65–80 %", "0 — skeniraj i otpremi", "Pun original"],
-        ["WhatsApp grupa", "15–25 %", "3+ (nađi grupu, izaberi, pošalji)", "Kompresovano −70 %"],
-        ["Google Photos album", "10–20 %", "3+ (nalog, pozivnica, upload)", "Pun original"],
-        ["E-mail posle venčanja", "< 10 %", "4+ (podsetnik, prilog, limit)", "Pun original"],
-        ["»Pošaljite nam nekad«", "≈ 0 %", "∞", "—"]
+        ["QR kod na svakom stolu", "Jednostavan pristup", "Skeniranje i otpremanje", "Originalna datoteka"],
+        ["WhatsApp grupa", "Zahteva članstvo u grupi", "Pronalaženje grupe i slanje", "Zavisi od načina slanja"],
+        ["Google Photos album", "Može zahtevati nalog", "Pozivnica, prijava i otpremanje", "Originalna datoteka"],
+        ["E-mail posle venčanja", "Ručni podsetnik", "Prilozi i ograničenja veličine", "Originalna datoteka"],
+        ["»Pošaljite nam nekad«", "Bez jasnog odredišta", "Gost mora kasnije da se seti", "—"]
       ]
     },
     {
       "type": "image",
-      "src": "/blog/sr/ucesce-gostiju.svg",
-      "alt": "Grafikon: sa QR kodom na svakom stolu učestvuje 65 do 80 procenata gostiju, u WhatsApp grupi samo 15 do 25 procenata",
-      "caption": "Ista svadba, isti gosti — tri puta više učesnika kada je galerija na jedan sken."
+      "src": "https://images.unsplash.com/photo-1525772764200-be829a350797?w=1200&h=720&fit=crop&q=82&auto=format",
+      "alt": "Gosti dele spontane fotografije sa venčanja",
+      "caption": "Vidljiv QR kod i kratko objašnjenje pomažu gostima da znaju gde da pošalju snimke.",
+      "credit": "Foto: Unsplash"
     },
     {
       "type": "h2",
@@ -102,13 +102,14 @@
     },
     {
       "type": "p",
-      "text": "Sa QR kodom između gosta i galerije ne stoji ništa: uperi kameru, dodirni obaveštenje, izaberi snimke. Tri sekunde od trenutka do galerije — bez aplikacije, bez naloga, bez razmišljanja kome poslati. Zato je razlika u broju sakupljenih uspomena ovako drastična:"
+      "text": "Sa QR kodom gost otvara galeriju, bira fotografije i otprema ih bez aplikacije ili registracije. Manje koraka olakšava deljenje tokom događaja i kasnije kod kuće."
     },
     {
       "type": "image",
-      "src": "/blog/sr/prosek-fotografija.svg",
-      "alt": "Grafikon: parovi sa QR galerijom dobiju u proseku 340 fotografija, sa tradicionalnim metodama samo 30",
-      "caption": "11× više fotografija — ne zato što su gosti drugačiji, nego zato što je put kraći."
+      "src": "https://images.unsplash.com/photo-1531058020387-3be344556be6?w=1200&h=720&fit=crop&q=82&auto=format",
+      "alt": "QR kod vodi goste do privatne galerije događaja",
+      "caption": "Jedan QR kod vodi sve goste u istu privatnu galeriju.",
+      "credit": "Foto: Unsplash"
     },
     {
       "type": "h2",
@@ -122,21 +123,16 @@
         "Zamolite voditelja ili DJ-a da galeriju pomene dva puta: posle večere i pre prvog plesa.",
         "Testirajte kod pre venčanja — sami skenirajte i otpremite probnu fotografiju.",
         "Uključite live prikaz (foto zid) — kada gosti vide da se fotografije pojavljuju na platnu, i ostali požele da učestvuju.",
-        "Dan posle venčanja pošaljite gostima link — Guestcam to uradi automatski."
+        "Dan posle venčanja pošaljite gostima link kao podsetnik."
       ]
     },
     {
       "type": "h2",
-      "text": "Stvarna priča: Ana & Marko"
+      "text": "Primer dobre postavke na događaju"
     },
     {
       "type": "p",
-      "text": "Ana i Marko su se venčali u julu 2025. na slovenačkoj obali. Na svaki sto su postavili QR karticu sa porukom »Podelite naše zajedničke uspomene«. Rezultat na kraju večeri: 340 fotografija i 28 video zapisa od 78 gostiju. Bez WhatsApp grupe, bez izgubljenih poruka, bez molbi. Pola godine kasnije su celu galeriju pregledali sa roditeljima — i pronašli trenutke za koje nisu ni znali da postoje."
-    },
-    {
-      "type": "quote",
-      "text": "Najlepša fotografija sa našeg venčanja nije od fotografa. Snimila ju je Markova tetka telefonom — tren pre prvog poljupca, iz ugla koji niko drugi nije imao.",
-      "cite": "Ana, jul 2025"
+      "text": "Postavite QR kod na svaki sto i dodajte kratku poruku poput »Podelite naše zajedničke uspomene«. DJ ili voditelj može da pomene galeriju tokom večeri, a link možete poslati gostima i sledećeg dana. Tako fotografije ostaju u jednoj privatnoj galeriji umesto u više odvojenih razgovora."
     },
     {
       "type": "cta",
@@ -146,12 +142,12 @@
     {
       "type": "faq",
       "q": "Šta ako moji gosti ne znaju da skeniraju QR kod?",
-      "a": "Svi telefoni od 2018. godine imaju QR skener ugrađen u kameru — gost samo uperi kameru ka kodu i dodirne obaveštenje. Za najstarije goste na karticu možete dodati i kratak link koji se ukuca ručno."
+      "a": "Većina savremenih telefona prepoznaje QR kod direktno u kameri. Gost usmeri kameru ka kodu i dodirne obaveštenje. Na karticu možete dodati i kratak link za ručni unos."
     },
     {
       "type": "faq",
       "q": "Kako da znam da će dovoljno gostiju učestvovati?",
-      "a": "Prema našim podacima učestvuje 65–80 % gostiju kada je QR kod na svakom stolu i kada ga voditelj pomene tokom večeri. To je 3× više nego u WhatsApp grupi, gde učestvuje samo 15–25 %."
+      "a": "Ne postoji garantovan udeo učesnika. Pomaže ako je QR kod vidljiv na svakom stolu, ako ga voditelj kratko pomene i ako gostima posle događaja pošaljete direktan link."
     },
     {
       "type": "faq",
@@ -171,7 +167,7 @@
     {
       "type": "faq",
       "q": "Da li fotografije gube na kvalitetu?",
-      "a": "Ne. Za razliku od WhatsAppa, koji fotografije kompresuje i do 70 %, Guestcam čuva pun original — i fotografije i video zapise. Posle venčanja sve preuzmete u ZIP arhivi jednim klikom."
+      "a": "Guestcam čuva originalnu datoteku fotografije. Kod aplikacija za poruke kvalitet zavisi od podešavanja i načina slanja. Posle venčanja sadržaj možete preuzeti u ZIP arhivi."
     }
   ],
   "coverImage": "https://images.unsplash.com/photo-1519741497674-611481863552?w=1600&h=900&fit=crop&q=80&auto=format",

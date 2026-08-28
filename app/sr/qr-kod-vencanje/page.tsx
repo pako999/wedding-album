@@ -1,12 +1,12 @@
 import { SITE_URL } from "@/lib/urls";
 import Link from "next/link";
 import type { Metadata } from "next";
-import { GUIDE_HREFLANG, LanguageSwitcher } from "@/components/LanguageSwitcher";
-import { GuestcamLogo } from "@/components/GuestcamLogo";
+import { GUIDE_HREFLANG } from "@/components/LanguageSwitcher";
 import { SeoFooter } from "@/components/SeoFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { OG_IMAGE_URL, ogImage } from "@/lib/og";
 import { safeJsonLd } from "@/lib/seo/jsonld-safe";
+import { withRegionalHreflang } from "@/lib/seo/hreflang";
 
 export const metadata: Metadata = {
   title: "QR kod za venčanje i svadbu — slike gostiju 2026",
@@ -18,6 +18,7 @@ export const metadata: Metadata = {
     description:
       "Sakupite sve slike i fotografije sa svadbe i venčanja jednim QR kodom. Bez aplikacije, u punom kvalitetu.",
     type: "article",
+    locale: "sr_RS",
     images: [ogImage("QR kod za venčanje i svadbu")],
   },
   twitter: {
@@ -28,7 +29,7 @@ export const metadata: Metadata = {
   },
   alternates: {
     canonical: `${SITE_URL}/sr/qr-kod-vencanje`,
-    languages: {
+    languages: withRegionalHreflang({
       "sl": `${SITE_URL}/sl/qr-koda-poroka`,
       "hr": `${SITE_URL}/hr/qr-kod-vjencanje`,
       "sr": `${SITE_URL}/sr/qr-kod-vencanje`,
@@ -36,17 +37,18 @@ export const metadata: Metadata = {
       "en": `${SITE_URL}/en/wedding-photo-sharing`,
       "es": `${SITE_URL}/es/fotos-boda-qr`,
       "x-default": `${SITE_URL}/sl/qr-koda-poroka`,
-    },
+    }),
   },
 };
 
 const articleSchema = {
   "@context": "https://schema.org",
   "@type": "Article",
-  headline: "QR kod za venčanje — Potpuni vodič 2025",
+  headline: "QR kod za venčanje — potpuni vodič 2026",
   description:
     "Sve što treba da znate o QR kodu za venčanje: kako funkcioniše, zašto vam treba i kako ga za 2 minuta postavite sa Guestcam.",
   inLanguage: "sr-RS",
+  dateModified: "2026-08-28",
   author: { "@type": "Organization", name: "Guestcam" },
   publisher: {
     "@type": "Organization",
@@ -56,23 +58,6 @@ const articleSchema = {
   mainEntityOfPage: `${SITE_URL}/sr/qr-kod-vencanje`,
 };
 
-
-function SiteFooter() {
-  return (
-    <footer className="bg-[#0F1729] text-white py-8 mt-20">
-      <div className="max-w-5xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-gray-400">
-        <p>© 2025 Sport group d.o.o. · SI72133449</p>
-        <div className="flex items-center gap-5">
-          <Link href="/privacy" className="hover:text-white transition-colors">Privatnost</Link>
-          <Link href="/terms" className="hover:text-white transition-colors">Uslovi</Link>
-          <Link href="/cookies" className="hover:text-white transition-colors">Kolačići</Link>
-          <a href="mailto:info@guestcam.si" className="hover:text-white transition-colors">Kontakt</a>
-        </div>
-      </div>
-    </footer>
-  );
-}
-
 function CtaBox() {
   return (
     <div className="rounded-3xl p-8 my-12 text-center bg-[#FFF9EC] border border-[#FFE08A]">
@@ -80,7 +65,8 @@ function CtaBox() {
         Spremite QR kod za vaše venčanje
       </p>
       <p className="text-gray-600 mb-6 max-w-md mx-auto">
-        Napravite personalizovanu galeriju za 2 minuta. Besplatno zauvek — bez kreditne kartice.
+        Napravite personalizovanu galeriju za 2 minuta. Free paket uključuje
+        1 događaj, 1 galeriju i do 20 fotografija — bez kreditne kartice.
       </p>
       <Link
         href="/dashboard/new"
@@ -105,7 +91,7 @@ export default function QrKodVencanjePage() {
         {/* Hero */}
         <div className="mb-12">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold mb-5 uppercase tracking-widest bg-[#FFF3CC] text-[#C9820A]">
-            Vodič · Srbija · 2025
+            Vodič · Srbija · 2026
           </div>
           <h1 className="font-serif text-4xl md:text-5xl font-bold text-[#0F1729] leading-tight mb-5">
             QR kod za venčanje i svadbu — sakupite sve slike gostiju
@@ -128,7 +114,7 @@ export default function QrKodVencanjePage() {
               <svg className="w-4 h-4 text-[#C9820A]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75M16.5 6.108c1.131.094 1.976 1.057 1.976 2.192V18A2.25 2.25 0 0116.226 20.25H7.5A2.25 2.25 0 015.25 18V8.3c0-1.135.844-2.098 1.976-2.192" />
               </svg>
-              Ažurirano: januar 2025
+              Ažurirano: avgust 2026
             </span>
           </div>
         </div>
@@ -139,18 +125,17 @@ export default function QrKodVencanjePage() {
             Šta je QR kod za svadbu i venčanje?
           </h2>
           <p className="text-gray-600 leading-relaxed mb-4">
-            QR kod za svadbu (ili venčanje — sve je isto) je posebna koda koju
-            štampate na stolove, pozivnice ili stalke na svadbenom mestu. Kada
-            je gost skenira pametnim telefonom, telefon ga automatski preusmerava
+            QR kod za svadbu ili venčanje je kod koji odštampate na karticama za
+            stolove, pozivnicama ili stalcima u sali. Kada ga gost skenira
+            pametnim telefonom, uređaj ga automatski preusmerava
             u vašu ličnu galeriju, gde se otpremljena slika sa svadbe ili video
             snimak odmah pojavljuje u vašoj zbirci.
           </p>
           <p className="text-gray-600 leading-relaxed">
             Za razliku od grupa na WhatsAppu, Vajberu ili Mesendžeru — ili platformi
-            poput Google Photos — QR kod za venčanje besprekorno radi svim gostima.
-            Od bake sa osnovnim telefonom do tehno-entuzijaste sa najnovijim modelom:
-            ne treba im nikakva aplikacija, registracija ni lozinka. Skenirao —
-            otpremio. Toliko.
+            poput Google Photos, QR kod za venčanje jednostavan je za različite
+            generacije gostiju. Nije potrebna aplikacija, registracija ni lozinka:
+            gost skenira kod, izabere fotografije i pošalje ih.
           </p>
         </section>
 
@@ -163,9 +148,9 @@ export default function QrKodVencanjePage() {
               Zašto QR kod na venčanju zaista funkcioniše
             </h2>
             <p className="text-gray-600 leading-relaxed mb-6">
-              Statistika je jasna: na prosečnom venčanju sa 100 zvanica, svaki gost
-              snimi najmanje 15–30 fotografija. To je 1.500 do 3.000 slika koje nikada
-              ne stignu do mladenaca. Razlozi su uvek isti:
+              Gosti tokom venčanja snime mnogo spontanih trenutaka koji često
+              ostanu na njihovim telefonima. Najčešći razlozi su dodatni koraci,
+              zaboravljanje i nepregledne grupne poruke:
             </p>
             <div className="grid gap-4 mb-6">
               {[
@@ -175,15 +160,15 @@ export default function QrKodVencanjePage() {
                 },
                 {
                   title: "Kompresija u aplikacijama",
-                  desc: "WhatsApp i drugi mesendžeri smanje sliku i do 70%. Dobićete samo kompresovane fajlove koje ne možete kvalitetno odštampati.",
+                  desc: "Aplikacije za dopisivanje mogu da smanje datoteke, u zavisnosti od načina slanja, pa fotografije nisu uvek pogodne za kvalitetnu štampu.",
                 },
                 {
                   title: "Haos sa imejlovima",
-                  desc: "Skupljati imejl adrese od 100 ljudi i čekati da vam svako pošalje fotografije je logistička noćna mora.",
+                  desc: "Skupljanje imejl adresa i čekanje da svaki gost posebno pošalje fotografije stvara nepotreban posao.",
                 },
                 {
                   title: "Tehničke prepreke",
-                  desc: "Google Photos i Dropbox traže nalog, dovoljno prostora i instalaciju aplikacije. Stariji gosti to često ne mogu.",
+                  desc: "Deljeni folderi i servisi u oblaku mogu da traže nalog, dodatne dozvole ili druge korake koji goste odvrate od slanja.",
                 },
               ].map(({ title, desc }) => (
                 <div key={title} className="flex gap-4 p-4 rounded-2xl bg-white border border-gray-100 shadow-sm">
@@ -298,7 +283,7 @@ export default function QrKodVencanjePage() {
             {[
               {
                 q: "Da li je QR kod za venčanje zaista besplatan?",
-                a: "Sa Guestcam-om je pravljenje galerije i QR koda besplatno zauvek (do određenih ograničenja). Za veća venčanja postoje plaćeni paketi sa više fotografija i naprednim funkcijama.",
+                a: "Da. Free paket uključuje 1 događaj, 1 galeriju, do 20 fotografija, 1 video i 30 dana pristupa. Za veća venčanja postoje plaćeni paketi sa više prostora i dodatnim funkcijama.",
               },
               {
                 q: "Da li gosti moraju da preuzmu aplikaciju?",

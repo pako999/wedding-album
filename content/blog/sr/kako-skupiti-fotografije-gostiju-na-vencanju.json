@@ -5,7 +5,7 @@
   "description": "5 proverenih načina kako gosti dele fotografije sa vama. Bez aplikacija, bez izgubljenih uspomena.",
   "translationKey": "how-to-collect-wedding-photos",
   "publishedAt": "2026-05-22",
-  "updatedAt": "2026-05-25",
+  "updatedAt": "2026-08-28",
   "author": "Guestcam Team",
   "category": "vodnik",
   "readingTime": 7,
@@ -23,13 +23,11 @@
     },
     {
       "type": "p",
-      "text": "Posle venčanja imate uspomene fotografa — ali šta sa 200 mobilnih telefona koji su bili tu? Iz iskustva, gosti dele samo 5–10 % snimaka. Razlog je jednostavan: slanje je zamorno. U nastavku je 5 načina kako olakšati stvar — od najgoreg do najboljeg."
+      "text": "Posle venčanja imate uspomene fotografa — ali šta je sa fotografijama koje su snimili gosti? Mnoge ostanu na njihovim telefonima jer se deljenje odlaže ili zahteva previše koraka. U nastavku upoređujemo pet načina kako da olakšate prikupljanje."
     },
     {
-      "type": "stat",
-      "value": "340",
-      "label": "prosečno fotografija po venčanju (Guestcam podaci 2025)",
-      "source": "Guestcam interni podaci, 2025"
+      "type": "callout",
+      "text": "Najbolja metoda je ona koju gosti odmah razumeju i mogu da koriste bez instalacije ili novog naloga."
     },
     {
       "type": "image",
@@ -57,33 +55,33 @@
       "rows": [
         [
           "WhatsApp grupa",
-          "50% (kompresovano)",
+          "Zavisi od načina slanja",
           "Srednja",
           "Pomešani datumi, haos"
         ],
         [
           "Zajednički Google Photos folder",
-          "100%",
+          "Originalna datoteka",
           "Teško",
-          "Gosti trebaju nalog"
+          "Može da zahteva nalog"
         ],
         [
           "USB ključ kod izlaza",
-          "100%",
+          "Originalna datoteka",
           "Nisko učešće",
-          "Samo 1-2 gosta učestvuju"
+          "Nepraktično tokom događaja"
         ],
         [
           "Email svakome",
-          "100%",
+          "Originalna datoteka",
           "Ručni rad",
           "Veliki prilozi"
         ],
         [
           "QR kod + Guestcam",
-          "100%",
-          "1 sken",
-          "Bez rizika"
+          "Originalna datoteka",
+          "Skeniranje QR koda",
+          "Zavisi od vidljivosti QR koda"
         ]
       ]
     },
@@ -91,7 +89,7 @@
       "type": "image",
       "src": "https://images.unsplash.com/photo-1531058020387-3be344556be6?w=1200&h=720&fit=crop&q=82&auto=format",
       "alt": "Gošća fotografiše mladence telefonom",
-      "caption": "200 telefona, 200 uglova — sa jednim QR kodom završe u jednoj galeriji.",
+      "caption": "Različiti uglovi gostiju mogu da završe u jednoj galeriji povezanoj sa QR kodom.",
       "credit": "Foto: Unsplash"
     },
     {
@@ -118,7 +116,7 @@
     },
     {
       "type": "p",
-      "text": "Iz analize 500+ venčanja izvukli smo 5 saveta koji povećavaju učešće:"
+      "text": "Ovih pet praktičnih saveta gostima olakšava učešće:"
     },
     {
       "type": "ul",
@@ -143,7 +141,7 @@
     {
       "type": "faq",
       "q": "Da li su fotografije u punom kvalitetu?",
-      "a": "Da. Guestcam zadržava originalnu rezoluciju i metapodatke. WhatsApp u poređenju kompresuje na ~50 % kvaliteta."
+      "a": "Da. Guestcam zadržava originalnu rezoluciju i metapodatke. Kod aplikacija za poruke kvalitet zavisi od podešavanja i načina slanja."
     },
     {
       "type": "faq",
@@ -158,7 +156,7 @@
     {
       "type": "faq",
       "q": "Šta se dešava sa galerijom posle venčanja?",
-      "a": "Sadržaj ostaje dostupan prema vašem paketu — od 30 dana (Besplatno) do 1 godine (Premium). Sve fotografije preuzimate u ZIP-u."
+      "a": "Sadržaj ostaje dostupan prema vašem paketu — od 30 dana u besplatnom paketu do 2 godine u paketu Premium. Sve fotografije možete da preuzmete u ZIP-u."
     }
   ],
   "coverImage": "https://images.unsplash.com/photo-1519741497674-611481863552?w=1600&h=900&fit=crop&q=80&auto=format",

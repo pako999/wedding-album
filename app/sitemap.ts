@@ -4,6 +4,7 @@ import path from "node:path";
 import { SITE_URL } from "@/lib/urls";
 import { getEventTopic, localesForTopic, type EventTopicKey } from "@/lib/seo/event-topics";
 import { LEGAL_DOCUMENTS, legalAlternates } from "@/lib/seo/legal-alternates";
+import { withRegionalHreflang } from "@/lib/seo/hreflang";
 
 type ChangeFreq = "always" | "hourly" | "daily" | "weekly" | "monthly" | "yearly" | "never";
 type Locale = "sl" | "hr" | "sr" | "de" | "en" | "es";
@@ -22,11 +23,11 @@ const LOCALES: Locale[] = ["sl", "hr", "sr", "de", "en", "es"];
 /** Stable dates only. Never replace an unknown lastmod with `new Date()`:
  * doing so tells crawlers every page changed on every sitemap generation. */
 const LAST_EDITED = {
-  homepage: "2026-08-27",
-  seoLandings: "2026-07-01",
-  alternatives: "2026-07-01",
+  homepage: "2026-08-28",
+  seoLandings: "2026-08-28",
+  alternatives: "2026-08-28",
   legalSl: "2026-07-01",
-  legalIntl: "2026-07-01",
+  legalIntl: "2026-08-28",
   contact: "2026-07-01",
   corporateLandings: "2026-08-11",
   blogIndex: "2026-08-27",
@@ -36,7 +37,7 @@ function clusterLinks(paths: Record<Locale, string>): Record<string, string> {
   const out: Record<string, string> = {};
   for (const lang of LOCALES) out[lang] = `${SITE_URL}${paths[lang]}`;
   out["x-default"] = out.sl;
-  return out;
+  return withRegionalHreflang(out);
 }
 
 const HOMEPAGE_CLUSTER = clusterLinks({ sl: "", hr: "/hr", sr: "/sr", de: "/de", en: "/en", es: "/es" });
@@ -115,7 +116,9 @@ async function blogEntries(): Promise<PageEntry[]> {
       priority: 0.6,
       changeFrequency: "monthly",
       lastModified: p.updated,
-      alternates: p.translationKey ? clustersByKey.get(p.translationKey) : undefined,
+      alternates: p.translationKey && clustersByKey.get(p.translationKey)
+        ? withRegionalHreflang(clustersByKey.get(p.translationKey)!)
+        : undefined,
     });
   }
   return out;
@@ -135,6 +138,7 @@ function eventTopicEntries(): PageEntry[] {
     const cluster: Record<string, string> = {};
     for (const loc of locales) cluster[loc] = `${SITE_URL}/${loc}/${getEventTopic(loc, key)!.slug}`;
     cluster["x-default"] = cluster.sl ?? cluster.en ?? Object.values(cluster)[0];
+    const regionalCluster = withRegionalHreflang(cluster);
     const minor = MINOR_EVENT_TOPICS.has(key);
     for (const loc of locales) {
       out.push({
@@ -142,7 +146,7 @@ function eventTopicEntries(): PageEntry[] {
         priority: loc === "sl" ? (minor ? 0.7 : 0.75) : (minor ? 0.65 : 0.7),
         changeFrequency: "monthly",
         lastModified: LAST_EDITED.seoLandings,
-        alternates: cluster,
+        alternates: regionalCluster,
       });
     }
   }
