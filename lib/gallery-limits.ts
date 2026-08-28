@@ -8,7 +8,7 @@ export type GalleryPlan = "free" | "basic" | "plus" | "premium";
  * the same numbers for customers.
  */
 export const GALLERY_LIMIT_BY_PLAN: Record<GalleryPlan, number> = {
-  free: 2,
+  free: 1,
   basic: 1,
   plus: 3,
   premium: 5,

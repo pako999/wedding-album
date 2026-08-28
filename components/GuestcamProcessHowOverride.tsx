@@ -33,37 +33,37 @@ const STEP_IMAGES = [
  * remains the authority; these strings only explain the entitlement. */
 const PRICING_GALLERY_COPY: Record<Lang, [string, string, string, string]> = {
   sl: [
-    "1 dogodek · do 2 galerij",
+    "1 dogodek · 1 galerija",
     "1 dogodek · 1 galerija",
     "1 dogodek · do 3 galerij",
     "1 dogodek · do 5 galerij",
   ],
   hr: [
-    "1 događaj · do 2 galerije",
+    "1 događaj · 1 galerija",
     "1 događaj · 1 galerija",
     "1 događaj · do 3 galerije",
     "1 događaj · do 5 galerija",
   ],
   sr: [
-    "1 događaj · do 2 galerije",
+    "1 događaj · 1 galerija",
     "1 događaj · 1 galerija",
     "1 događaj · do 3 galerije",
     "1 događaj · do 5 galerija",
   ],
   de: [
-    "1 Event · bis zu 2 Galerien",
+    "1 Event · 1 Galerie",
     "1 Event · 1 Galerie",
     "1 Event · bis zu 3 Galerien",
     "1 Event · bis zu 5 Galerien",
   ],
   en: [
-    "1 event · up to 2 galleries",
+    "1 event · 1 gallery",
     "1 event · 1 gallery",
     "1 event · up to 3 galleries",
     "1 event · up to 5 galleries",
   ],
   es: [
-    "1 evento · hasta 2 galerías",
+    "1 evento · 1 galería",
     "1 evento · 1 galería",
     "1 evento · hasta 3 galerías",
     "1 evento · hasta 5 galerías",

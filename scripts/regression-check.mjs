@@ -42,6 +42,9 @@ const files = {
   adminPayments: await read("app/admin/payments/page.tsx"),
   adminSales: await read("lib/admin-sales.ts"),
   mollie: await read("lib/mollie.ts"),
+  albumLimits: await read("lib/album-limits.ts"),
+  galleryLimits: await read("lib/gallery-limits.ts"),
+  processOverride: await read("components/GuestcamProcessHowOverride.tsx"),
   videoPlayback: await read("app/api/albums/[slug]/video-playback-url/route.ts"),
   videoClient: await read("components/album/IosBunnyPlaybackFix.tsx"),
   filmStatus: await read("app/api/albums/[slug]/film/status/route.ts"),
@@ -95,6 +98,27 @@ requireMatch(
   files.bankOrder,
   /checkAlbumOwnership/,
   "bank-order route must verify album owner/admin access",
+);
+
+requireMatch(
+  "Free accounts allow only one active event",
+  files.albumLimits,
+  /activeFreeAlbum[\s\S]*allowed: false/,
+  "creating albums must remain blocked while an active Free event exists",
+);
+
+requireMatch(
+  "Free events allow only one gallery",
+  files.galleryLimits,
+  /free:\s*1,/,
+  "the server-side named-gallery limit for Free must be exactly one",
+);
+
+requireAbsent(
+  "Free pricing no longer advertises two galleries",
+  files.processOverride,
+  /(?:do 2 galerij|do 2 galerije|bis zu 2 Galerien|up to 2 galleries|hasta 2 galerías)/,
+  "all localized Free pricing cards must say one event and one gallery",
 );
 
 requireMatch(
