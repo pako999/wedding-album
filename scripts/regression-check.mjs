@@ -47,6 +47,7 @@ const files = {
   adminPayments: await read("app/admin/payments/page.tsx"),
   adminSales: await read("lib/admin-sales.ts"),
   mollie: await read("lib/mollie.ts"),
+  checkout: await read("app/api/checkout/route.ts"),
   albumLimits: await read("lib/album-limits.ts"),
   galleryLimits: await read("lib/gallery-limits.ts"),
   processOverride: await read("components/GuestcamProcessHowOverride.tsx"),
@@ -533,6 +534,27 @@ requireMatch(
   files.localizedHomeComponent,
   /vlastiti vizualni identitet[\s\S]*prikupljanje kontakata uz privolu[\s\S]*sopstveni vizuelni identitet[\s\S]*prikupljanje kontakata uz saglasnost/,
   "Croatian and Serbian homepages must not expose English marketing jargon",
+);
+
+requireMatch(
+  "Serbian pricing shows informative RSD equivalents",
+  files.localizedHomeComponent,
+  /39 €[\s\S]*≈ 4\.580 RSD[\s\S]*49 €[\s\S]*≈ 5\.750 RSD[\s\S]*99 €[\s\S]*≈ 11\.620 RSD[\s\S]*Plaćanje se obračunava u EUR preko Mollie/,
+  "the .rs pricing grid must show local context without presenting RSD as the charged currency",
+);
+
+requireMatch(
+  "Mollie checkout remains denominated in EUR",
+  `${files.mollie}\n${files.checkout}`,
+  /const currency = opts\.currency \?\? "EUR"[\s\S]*createPayment\(\{[\s\S]*amountCents: totalCents/,
+  "RSD equivalents are informative only; Mollie, invoices and refunds must remain in EUR",
+);
+
+requireAbsent(
+  "checkout never submits Serbian dinars to Mollie",
+  files.checkout,
+  /currency:\s*["']RSD["']/,
+  "Mollie does not support RSD for this checkout",
 );
 
 requireMatch(

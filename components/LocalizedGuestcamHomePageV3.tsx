@@ -12,7 +12,15 @@ import { localePublicPath } from "@/lib/urls";
 
 type Lang = "en" | "de" | "hr" | "sr" | "es";
 type Tuple2 = [string, string];
-type Plan = { name: string; price: string; tag: string; cta: string; features: string[]; popular?: string };
+type Plan = {
+  name: string;
+  price: string;
+  localPrice?: string;
+  tag: string;
+  cta: string;
+  features: string[];
+  popular?: string;
+};
 
 type LocaleCopy = {
   nav: [string, string, string, string, string, string, string];
@@ -62,6 +70,7 @@ type LocaleCopy = {
   pricingEyebrow: string;
   pricingTitle: string;
   pricingLead: string;
+  currencyNote?: string;
   plans: Plan[];
   businessBadge: string;
   businessTitle: string;
@@ -177,10 +186,11 @@ const COPY: Record<Lang, LocaleCopy> = {
     wallEyebrow: "Foto zid uživo", wallTitle: "Fotografije gostiju odmah na velikom ekranu.", wallLead: "Otvorite Guestcam na TV-u ili projektoru. Nove fotografije se pojavljuju za nekoliko sekundi.", wallBullets: ["siguran link samo za prikaz", "QR kod na velikom ekranu", "nove fotografije dolaze u prvi plan", "idealno za venčanja i poslovne događaje"],
     pricingEyebrow: "Jednokratno plaćanje · bez pretplate", pricingTitle: "Jednostavni paketi za svaki događaj.", pricingLead: "Počnite besplatno. Platite tek kada vam treba više prostora i funkcija.", plans: [
       { name: "Free", price: "0 €", tag: "Probajte bez rizika", cta: "Počni besplatno", features: ["Jedinstveni QR kod", "Učitavanje fotografija u punom kvalitetu", "Do 20 fotografija", "1 video", "Pristup 30 dana", "Bez rezervne kopije"] },
-      { name: "Basic", price: "39 €", tag: "Za manje događaje", cta: "Izaberi Basic", features: ["Jedinstveni QR kod", "Učitavanje fotografija u punom kvalitetu", "Do 1.000 fotografija", "Do 10 video snimaka", "Pristup galeriji 3 meseca", "Preuzimanje svih fotografija (ZIP)"] },
-      { name: "Plus", price: "49 €", tag: "Za venčanja i veće događaje", cta: "Izaberi Plus", popular: "Najpopularnije", features: ["Jedinstveni QR kod", "Učitavanje fotografija u punom kvalitetu", "Neograničen broj gostiju", "Do 5.000 fotografija", "Do 100 video snimaka", "Pristup galeriji 1 godinu", "Preuzimanje svih fotografija (ZIP)", "Live galerija / projekcija", "Personalizovana stranica sa imenima", "E-mail obaveštenja za par"] },
-      { name: "Premium", price: "99 €", tag: "Za one koji žele sve", cta: "Izaberi Premium", features: ["Jedinstveni QR kod", "Učitavanje fotografija u punom kvalitetu", "Neograničen broj gostiju", "Neograničeno fotografija", "Do 100 video snimaka", "Pristup galeriji 2 godine", "Preuzimanje svih fotografija (ZIP)", "Live galerija / projekcija", "Personalizovana stranica sa imenima", "Foto zid za TV / projektor", "Sopstveni domen", "Premium dizajn predlošci", "Prioritetna podrška"] },
+      { name: "Basic", price: "39 €", localPrice: "≈ 4.580 RSD", tag: "Za manje događaje", cta: "Izaberi Basic", features: ["Jedinstveni QR kod", "Učitavanje fotografija u punom kvalitetu", "Do 1.000 fotografija", "Do 10 video snimaka", "Pristup galeriji 3 meseca", "Preuzimanje svih fotografija (ZIP)"] },
+      { name: "Plus", price: "49 €", localPrice: "≈ 5.750 RSD", tag: "Za venčanja i veće događaje", cta: "Izaberi Plus", popular: "Najpopularnije", features: ["Jedinstveni QR kod", "Učitavanje fotografija u punom kvalitetu", "Neograničen broj gostiju", "Do 5.000 fotografija", "Do 100 video snimaka", "Pristup galeriji 1 godinu", "Preuzimanje svih fotografija (ZIP)", "Live galerija / projekcija", "Personalizovana stranica sa imenima", "E-mail obaveštenja za par"] },
+      { name: "Premium", price: "99 €", localPrice: "≈ 11.620 RSD", tag: "Za one koji žele sve", cta: "Izaberi Premium", features: ["Jedinstveni QR kod", "Učitavanje fotografija u punom kvalitetu", "Neograničen broj gostiju", "Neograničeno fotografija", "Do 100 video snimaka", "Pristup galeriji 2 godine", "Preuzimanje svih fotografija (ZIP)", "Live galerija / projekcija", "Personalizovana stranica sa imenima", "Foto zid za TV / projektor", "Sopstveni domen", "Premium dizajn predlošci", "Prioritetna podrška"] },
     ],
+    currencyNote: "Plaćanje se obračunava u EUR preko Mollie. Iznosi u RSD su informativni i zavise od kursa vaše banke.",
     businessBadge: "Guestcam za firme", businessTitle: "Neka učesnici stvaraju sadržaj za vaš događaj.", businessLead: "Za konferencije, promocije, sajmove, sportske događaje i agencije. Učitavanje putem QR koda, a sadržaj može odmah da se prikaže na ekranu.", businessBullets: ["sopstveni vizuelni identitet", "foto zid uživo", "prikupljanje kontakata uz saglasnost", "sponzorski prikazi", "učitavanje putem QR koda bez aplikacije", "preuzimanje svega"], businessCta: "Ponuda za firme →",
     faqEyebrow: "Česta pitanja", faqTitle: "Sve što želite da znate pre događaja.", faqs: [["Da li gosti moraju da instaliraju aplikaciju?", "Ne. Skeniraju QR kod i učitavaju direktno iz pregledača."], ["Da li su fotografije privatne?", "Da. Galerija se deli privatnim linkom ili QR kodom i može biti zaštićena lozinkom."], ["Da li ostaje pun kvalitet?", "Guestcam čuva visokokvalitetne fajlove za pregled i kasniju štampu."], ["Šta se dešava posle događaja?", "Galerija ostaje aktivna prema paketu, a sve možete preuzeti kao ZIP."]],
     finalEyebrow: "Svaka kamera. Jedna priča.", finalTitle: "Doživite svoj događaj očima svih gostiju.", finalLead: "Sve fotografije i video snimci na jednom mestu. Bez aplikacije i izgubljenih uspomena.", finalCta: "Napravi besplatnu galeriju →",
@@ -242,7 +252,32 @@ export async function LocalizedGuestcamHomePageV3({ lang }: { lang: Lang }) {
 
     <section id="wall" className="bg-[#F4B400] py-24 sm:py-32"><div className="mx-auto grid max-w-[1320px] gap-12 px-5 sm:px-8 lg:grid-cols-[.72fr_1.28fr] lg:items-center"><div><p className="text-xs font-black uppercase tracking-[.18em] text-black/55">{t.wallEyebrow}</p><h2 className="mt-4 text-4xl font-black leading-[1.03] tracking-[-.05em] sm:text-6xl">{t.wallTitle}</h2><p className="mt-6 text-lg leading-8 text-black/62">{t.wallLead}</p><ul className="mt-7 space-y-3 font-bold text-black/65">{t.wallBullets.map((bullet) => <li key={bullet}>✓ {bullet}</li>)}</ul></div><div className="rounded-[34px] bg-black/12 p-3 shadow-2xl sm:p-5"><WallMiniDemo label="GUESTCAM LIVE" /></div></div></section>
 
-    <section id="pricing" className="py-24 sm:py-32"><div className="mx-auto max-w-[1320px] px-5 sm:px-8"><div className="mx-auto max-w-3xl text-center"><SectionTitle eyebrow={t.pricingEyebrow} title={t.pricingTitle} text={t.pricingLead} /></div><div className="mt-14 grid gap-4 md:grid-cols-2 xl:grid-cols-4">{t.plans.map((plan) => <article key={plan.name} className={`relative flex min-h-[560px] flex-col rounded-[30px] p-7 ${plan.name === "Plus" ? "bg-black text-white ring-4 ring-[#F4B400] shadow-2xl" : "border border-black/10 bg-white shadow-sm"}`}>{plan.popular ? <span className="absolute -top-3 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-[#F4B400] px-4 py-1.5 text-[11px] font-black uppercase text-black">{plan.popular}</span> : null}<p className="text-sm font-black uppercase tracking-[.15em]">{plan.name}</p><p className="mt-2 text-sm opacity-50">{plan.tag}</p><p className="mt-6 text-5xl font-black">{plan.price}</p><ul className="mt-8 flex flex-1 flex-col gap-3 text-sm opacity-75">{plan.features.map((feature) => <li key={feature}>✓ {feature}</li>)}</ul><Link href={plan.name === "Free" ? "/dashboard/new" : `/dashboard/new?plan=${plan.name.toLowerCase()}`} className={`mt-8 rounded-full px-5 py-3.5 text-center font-black ${plan.name === "Plus" ? "bg-[#F4B400] text-black" : "bg-black text-white"}`}>{plan.cta}</Link></article>)}</div></div></section>
+    <section id="pricing" className="py-24 sm:py-32">
+      <div className="mx-auto max-w-[1320px] px-5 sm:px-8">
+        <div className="mx-auto max-w-3xl text-center">
+          <SectionTitle eyebrow={t.pricingEyebrow} title={t.pricingTitle} text={t.pricingLead} />
+        </div>
+        <div className="mt-14 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+          {t.plans.map((plan) => (
+            <article
+              key={plan.name}
+              className={`relative flex min-h-[560px] flex-col rounded-[30px] p-7 ${plan.name === "Plus" ? "bg-black text-white ring-4 ring-[#F4B400] shadow-2xl" : "border border-black/10 bg-white shadow-sm"}`}
+            >
+              {plan.popular ? <span className="absolute -top-3 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-[#F4B400] px-4 py-1.5 text-[11px] font-black uppercase text-black">{plan.popular}</span> : null}
+              <p className="text-sm font-black uppercase tracking-[.15em]">{plan.name}</p>
+              <p className="mt-2 text-sm opacity-50">{plan.tag}</p>
+              <p className="mt-6 text-5xl font-black">{plan.price}</p>
+              {plan.localPrice ? <p className="mt-2 text-sm font-bold opacity-65">{plan.localPrice}</p> : null}
+              <ul className="mt-8 flex flex-1 flex-col gap-3 text-sm opacity-75">
+                {plan.features.map((feature) => <li key={feature}>✓ {feature}</li>)}
+              </ul>
+              <Link href={plan.name === "Free" ? "/dashboard/new" : `/dashboard/new?plan=${plan.name.toLowerCase()}`} className={`mt-8 rounded-full px-5 py-3.5 text-center font-black ${plan.name === "Plus" ? "bg-[#F4B400] text-black" : "bg-black text-white"}`}>{plan.cta}</Link>
+            </article>
+          ))}
+        </div>
+        {t.currencyNote ? <p className="mx-auto mt-6 max-w-3xl text-center text-xs leading-relaxed text-black/55">{t.currencyNote}</p> : null}
+      </div>
+    </section>
 
     <section id="business" className="bg-[#171717] py-24 text-white sm:py-32"><div className="mx-auto grid max-w-[1320px] gap-12 px-5 sm:px-8 lg:grid-cols-2 lg:items-center"><div className="relative min-h-[560px] overflow-hidden rounded-[34px]"><Image src="/events/organizacija-dogodkov-dogodek.webp" alt="Guestcam business event" fill sizes="50vw" className="object-cover" /></div><div><span className="inline-flex rounded-full bg-[#F4B400] px-4 py-2 text-xs font-black uppercase tracking-[.15em] text-black">{t.businessBadge}</span><h2 className="mt-6 text-4xl font-black leading-[1.04] tracking-[-.045em] sm:text-6xl">{t.businessTitle}</h2><p className="mt-6 text-lg leading-8 text-white/58">{t.businessLead}</p><div className="mt-9 grid gap-3 text-sm font-semibold text-white/70 sm:grid-cols-2">{t.businessBullets.map((bullet) => <span key={bullet}>✓ {bullet}</span>)}</div><Link href={contactPath} className="mt-9 inline-flex rounded-full bg-[#F4B400] px-8 py-4 font-black text-black">{t.businessCta}</Link></div></div></section>
 
