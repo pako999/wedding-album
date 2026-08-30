@@ -1,12 +1,12 @@
-import { SITE_URL } from "@/lib/urls";
+import { spanishGuestcamUrl } from "@/lib/site-domains";
 import type { Metadata } from "next";
 import { LegalPage } from "@/components/LegalPage";
 import { legalAlternates } from "@/lib/seo/legal-alternates";
 
 export const metadata: Metadata = {
   title: "Política de cookies",
-  alternates: { canonical: `${SITE_URL}/es/cookies`, languages: legalAlternates("cookies") },
-  openGraph: { url: `${SITE_URL}/es/cookies`, title: "Política de cookies", images: ["/og-image.png?v=2"] },
+  alternates: { canonical: spanishGuestcamUrl("/es/cookies"), languages: legalAlternates("cookies") },
+  openGraph: { url: spanishGuestcamUrl("/es/cookies"), title: "Política de cookies", images: ["/og-image.png?v=2"] },
   robots: { index: true, follow: true },
 };
 

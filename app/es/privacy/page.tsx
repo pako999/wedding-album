@@ -1,12 +1,12 @@
-import { SITE_URL } from "@/lib/urls";
+import { spanishGuestcamUrl } from "@/lib/site-domains";
 import type { Metadata } from "next";
 import { LegalPage } from "@/components/LegalPage";
 import { legalAlternates } from "@/lib/seo/legal-alternates";
 
 export const metadata: Metadata = {
   title: "Política de privacidad",
-  alternates: { canonical: `${SITE_URL}/es/privacy`, languages: legalAlternates("privacy") },
-  openGraph: { url: `${SITE_URL}/es/privacy`, title: "Política de privacidad", images: ["/og-image.png?v=2"] },
+  alternates: { canonical: spanishGuestcamUrl("/es/privacy"), languages: legalAlternates("privacy") },
+  openGraph: { url: spanishGuestcamUrl("/es/privacy"), title: "Política de privacidad", images: ["/og-image.png?v=2"] },
   robots: { index: true, follow: true },
 };
 

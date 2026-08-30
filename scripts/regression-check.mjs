@@ -33,6 +33,7 @@ const files = {
   albumHeaderSettings: await read("lib/album-header-settings.ts"),
   proxy: await read("proxy.ts"),
   siteDomains: await read("lib/site-domains.ts"),
+  urls: await read("lib/urls.ts"),
   clerkProvider: await read("components/GuestcamClerkProvider.tsx"),
   languageSwitcher: await read("components/LanguageSwitcher.tsx"),
   robots: await read("app/robots.ts"),
@@ -282,32 +283,67 @@ requireMatch(
   "the Serbian country domain must not fall through to custom album-domain resolution",
 );
 
+requireMatch(
+  "guestcam.es is an official Spanish routing host",
+  files.siteDomains,
+  /SPANISH_GUESTCAM_ORIGIN\s*=\s*"https:\/\/guestcam\.es"[\s\S]*SPANISH_ROUTING_HOSTS[\s\S]*guestcam\.es[\s\S]*www\.guestcam\.es/,
+  "the Spanish country domain must never fall through to custom album-domain resolution",
+);
+
 requireAbsent(
-  "guestcam.rs is not a Clerk satellite domain",
+  "country marketing domains are not Clerk satellites",
   `${files.siteDomains}\n${files.proxy}\n${files.clerkProvider}`,
-  /isSerbianGuestcamSatelliteHost|domain=["']guestcam\.rs["']|domain:\s*["']guestcam\.rs["']/,
-  "Serbian marketing pages must use Clerk only after redirecting to www.guestcam.si",
+  /isSpanishGuestcamSatelliteHost|isSerbianGuestcamSatelliteHost|\bisSatellite\b|satelliteAutoSync|domain=["']guestcam\.(?:rs|es)["']|domain:\s*["']guestcam\.(?:rs|es)["']/,
+  "Serbian and Spanish marketing pages must use Clerk only after redirecting to www.guestcam.si",
 );
 
 requireMatch(
-  "guestcam.rs create CTAs open primary Clerk sign-up",
+  "country-domain create CTAs open primary Clerk sign-up",
   files.proxy,
-  /pathname === "\/dashboard\/new"[\s\S]*new URL\("\/sign-up", PRIMARY_GUESTCAM_ORIGIN\)[\s\S]*redirect_url[\s\S]*serbianRequest && isPrimaryAccountPath\(pathname\)/,
-  "create-album clicks from .rs must open the existing Clerk sign-up on www.guestcam.si",
+  /pathname === "\/dashboard\/new"[\s\S]*new URL\("\/sign-up", PRIMARY_GUESTCAM_ORIGIN\)[\s\S]*redirect_url[\s\S]*countryLocale && isPrimaryAccountPath\(pathname\)/,
+  "create-album clicks from .rs and .es must open the existing Clerk sign-up on www.guestcam.si",
 );
 
 requireMatch(
-  "guestcam.rs does not boot Clerk in the browser",
+  "country marketing domains do not boot Clerk in the browser",
   files.clerkProvider,
-  /isSerbianGuestcamHost\(host\)[\s\S]*return <>\{children\}<\/>/,
-  "the Serbian marketing origin must render without a local Clerk frontend instance",
+  /isCountryMarketingHost\(host\)[\s\S]*return <>\{children\}<\/>/,
+  "the Serbian and Spanish origins must render without a local Clerk frontend instance",
 );
 
 requireMatch(
-  "Serbian language links use guestcam.rs",
+  "country language links use clean ccTLD URLs",
   files.languageSwitcher,
-  /sr:\s*`\$\{SERBIAN_GUESTCAM_ORIGIN\}\//,
-  "language switchers must send Serbian visitors to the country domain",
+  /sr:\s*`\$\{SERBIAN_GUESTCAM_ORIGIN\}\/`[\s\S]*es:\s*`\$\{SPANISH_GUESTCAM_ORIGIN\}\/`[\s\S]*SERBIAN_GUESTCAM_ORIGIN\}\/blog[\s\S]*SPANISH_GUESTCAM_ORIGIN\}\/blog/,
+  "language switchers must send Serbian and Spanish visitors to clean country-domain paths",
+);
+
+requireMatch(
+  "legacy locale prefixes permanently consolidate onto country domains",
+  files.proxy,
+  /pathname === "\/sr"[\s\S]*permanentCountryRedirect\(req, "sr"\)[\s\S]*pathname === "\/es"[\s\S]*permanentCountryRedirect\(req, "es"\)/,
+  "old .si/sr, .si/es, .rs/sr and .es/es URLs must transfer signals with a 308",
+);
+
+requireMatch(
+  "clean country URLs rewrite to internal locale routes",
+  files.proxy,
+  /internalCountryPath[\s\S]*`\/\$\{locale\}`[\s\S]*`\/\$\{locale\}\$\{pathname\}`[\s\S]*NextResponse\.rewrite/,
+  "public country-domain paths must stay clean while reusing the localized App Router tree",
+);
+
+requireMatch(
+  "country domains preserve public static asset paths",
+  files.proxy,
+  /isCountryRoutePassthrough[\s\S]*test\(pathname\)[\s\S]*internalCountryPath/,
+  "images, fonts and other public files must not be rewritten under /sr or /es",
+);
+
+requireMatch(
+  "Spanish and Serbian canonicals use their country domains",
+  files.urls,
+  /locale === "sr"[\s\S]*serbianGuestcamUrl[\s\S]*locale === "es"[\s\S]*spanishGuestcamUrl/,
+  "locale canonical builders must not point Serbian or Spanish pages back to .si",
 );
 
 requireMatch(
@@ -425,7 +461,7 @@ requireMatch(
 requireMatch(
   "affiliate applications have crawlable localized inlinks",
   files.seoFooter,
-  /lang === "sl" \? "\/affiliate\/apply" : `\/\$\{lang\}\/affiliate\/apply`/,
+  /localePublicPath\(lang, lang === "sl" \? "\/affiliate\/apply" : `\/\$\{lang\}\/affiliate\/apply`\)/,
   "the footer must link to the application page in the current language",
 );
 
@@ -439,22 +475,22 @@ requireMatch(
 requireMatch(
   "each production host exposes only its own sitemap URLs",
   files.sitemap,
-  /serbianSitemap[\s\S]*serbianPath[\s\S]*return serbianSitemap \? serbianPath : !serbianPath/,
-  ".si and .rs must not publish duplicate Serbian URLs in the same sitemap",
+  /countryLocale[\s\S]*serbianPath[\s\S]*spanishPath[\s\S]*countryLocale === "sr"[\s\S]*countryLocale === "es"[\s\S]*!serbianPath && !spanishPath/,
+  ".si, .rs and .es must each publish only their own canonical URLs",
 );
 
 requireMatch(
-  "guestcam.rs robots points to the Serbian sitemap",
+  "country robots files point to their own sitemap",
   files.robots,
-  /isSerbianGuestcamHost\(requestHost\)[\s\S]*SERBIAN_GUESTCAM_ORIGIN[\s\S]*sitemap: `\$\{publicOrigin\}\/sitemap\.xml`/,
-  "search crawlers on .rs must discover the .rs sitemap, not the .si sitemap",
+  /isSerbianGuestcamHost\(requestHost\)[\s\S]*SERBIAN_GUESTCAM_ORIGIN[\s\S]*isSpanishGuestcamHost\(requestHost\)[\s\S]*SPANISH_GUESTCAM_ORIGIN[\s\S]*sitemap: `\$\{publicOrigin\}\/sitemap\.xml`/,
+  "search crawlers on .rs and .es must discover the matching country sitemap",
 );
 
 requireMatch(
-  "Croatian and Serbian pages publish regional hreflang aliases",
+  "Croatian, Serbian and Spanish pages publish regional hreflang aliases",
   files.hreflang,
-  /languages\.hr[\s\S]*localized\["hr-HR"\][\s\S]*languages\.sr[\s\S]*localized\["sr-RS"\]/,
-  "search engines should receive both language and language-region hreflang codes",
+  /languages\.hr[\s\S]*localized\["hr-HR"\][\s\S]*languages\.sr[\s\S]*localized\["sr-RS"\][\s\S]*languages\.es[\s\S]*localized\["es-ES"\]/,
+  "search engines should receive generic and language-region hreflang codes",
 );
 
 requireMatch(

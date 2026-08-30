@@ -1,4 +1,8 @@
-import { serbianGuestcamUrl } from "@/lib/site-domains";
+import {
+  countryPublicPath,
+  serbianGuestcamUrl,
+  spanishGuestcamUrl,
+} from "@/lib/site-domains";
 
 /**
  * Canonical URL constants.
@@ -32,8 +36,18 @@ export function absoluteUrl(path: string = "/"): string {
   return `${SITE_URL}${p}`;
 }
 
-/** Build the canonical public URL for a localized route. Serbian marketing
- * pages live on guestcam.rs; every account/app route still lives on .si. */
+/** Remove internal /sr or /es route prefixes from country-domain public URLs. */
+export function localePublicPath(locale: string, path: string = "/"): string {
+  if (locale === "sr" || locale === "es") {
+    return countryPublicPath(locale, path);
+  }
+  return path.startsWith("/") ? path : `/${path}`;
+}
+
+/** Build the canonical public URL for a localized route. Serbian and Spanish
+ * marketing pages live on their ccTLDs; every account/app route stays on .si. */
 export function localeAbsoluteUrl(locale: string, path: string = "/"): string {
-  return locale === "sr" ? serbianGuestcamUrl(path) : absoluteUrl(path);
+  if (locale === "sr") return serbianGuestcamUrl(path);
+  if (locale === "es") return spanishGuestcamUrl(path);
+  return absoluteUrl(path);
 }

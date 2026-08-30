@@ -1,4 +1,5 @@
 import { SITE_URL } from "@/lib/urls";
+import { spanishGuestcamUrl } from "@/lib/site-domains";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { GUIDE_HREFLANG, LanguageSwitcher } from "@/components/LanguageSwitcher";
@@ -6,13 +7,14 @@ import { GuestcamLogo } from "@/components/GuestcamLogo";
 import { SeoFooter } from "@/components/SeoFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { OG_IMAGE_URL, ogImage } from "@/lib/og";
+import { withRegionalHreflang } from "@/lib/seo/hreflang";
 
 export const metadata: Metadata = {
   title: "Código QR para boda: fotos de tus invitados 2026",
   description:
     "App para fotos de boda con código QR: los invitados escanean, tú recibes todas las fotos en calidad original. Sin instalar nada. Configura en 2 minutos.",
   openGraph: {
-    url: `${SITE_URL}/es/fotos-boda-qr`,
+    url: spanishGuestcamUrl("/es/fotos-boda-qr"),
     title: "Código QR para boda: fotos de tus invitados 2026",
     description:
       "Recopila todas las fotos de tus invitados con un código QR. Sin app, resolución completa, privado y seguro.",
@@ -26,8 +28,8 @@ export const metadata: Metadata = {
     images: [OG_IMAGE_URL],
   },
   alternates: {
-    canonical: `${SITE_URL}/es/fotos-boda-qr`,
-    languages: {
+    canonical: spanishGuestcamUrl("/es/fotos-boda-qr"),
+    languages: withRegionalHreflang({
       "sl": `${SITE_URL}/sl/qr-koda-poroka`,
       "hr": `${SITE_URL}/hr/qr-kod-vjencanje`,
       "sr": `${SITE_URL}/sr/qr-kod-vencanje`,
@@ -35,7 +37,7 @@ export const metadata: Metadata = {
       "en": `${SITE_URL}/en/wedding-photo-sharing`,
       "es": `${SITE_URL}/es/fotos-boda-qr`,
       "x-default": `${SITE_URL}/sl/qr-koda-poroka`,
-    },
+    }),
   },
 };
 

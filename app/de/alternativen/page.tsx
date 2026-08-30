@@ -1,4 +1,5 @@
 import { SITE_URL } from "@/lib/urls";
+import { withRegionalHreflang } from "@/lib/seo/hreflang";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { ALTERNATIVES_HREFLANG, LanguageSwitcher } from "@/components/LanguageSwitcher";
@@ -28,7 +29,7 @@ export const metadata: Metadata = {
   },
   alternates: {
     canonical: `${SITE_URL}/de/alternativen`,
-    languages: {
+    languages: withRegionalHreflang({
       "sl": `${SITE_URL}/sl/alternative-aplikacije`,
       "hr": `${SITE_URL}/hr/alternativne-aplikacije`,
       "sr": `${SITE_URL}/sr/alternativne-aplikacije`,
@@ -36,7 +37,7 @@ export const metadata: Metadata = {
       "en": `${SITE_URL}/en/alternatives`,
       "es": `${SITE_URL}/es/alternativas`,
       "x-default": `${SITE_URL}/sl/alternative-aplikacije`,
-    },
+    }),
   },
 };
 

@@ -1,4 +1,4 @@
-import { SITE_URL } from "@/lib/urls";
+import { localeAbsoluteUrl, SITE_URL } from "@/lib/urls";
 
 type Lang = "en" | "de" | "hr" | "sr" | "es";
 
@@ -56,7 +56,7 @@ const COPY: Record<Lang, SchemaCopy> = {
 
 export function LocalizedHomeSchema({ lang }: { lang: Lang }) {
   const t = COPY[lang];
-  const url = `${SITE_URL}/${lang}`;
+  const url = localeAbsoluteUrl(lang, `/${lang}`);
   const jsonLd = {
     "@context": "https://schema.org",
     "@graph": [

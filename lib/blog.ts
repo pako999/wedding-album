@@ -1,4 +1,4 @@
-import { absoluteUrl } from "@/lib/urls";
+import { localeAbsoluteUrl, localePublicPath } from "@/lib/urls";
 import fs from "node:fs/promises";
 import path from "node:path";
 import type { LangCode } from "@/components/LanguageSwitcher";
@@ -122,7 +122,7 @@ export async function getTranslationMap(translationKey: string): Promise<Record<
       // alternates, which AGENTS.md calls out by name. It also lets a
       // preview deploy canonicalise to itself via NEXT_PUBLIC_APP_URL
       // instead of pointing every alternate at production.
-      out[lang] = absoluteUrl(path);
+      out[lang] = localeAbsoluteUrl(lang, path);
     }
   }
   return withRegionalHreflang(out);
@@ -151,5 +151,5 @@ export function headingId(text: string): string {
 /** Public URL builder. */
 export function blogUrl(lang: LangCode, slug?: string): string {
   const prefix = lang === "sl" ? "/blog" : `/${lang}/blog`;
-  return slug ? `${prefix}/${slug}` : prefix;
+  return localePublicPath(lang, slug ? `${prefix}/${slug}` : prefix);
 }

@@ -1,4 +1,5 @@
 import { SITE_URL } from "@/lib/urls";
+import { withRegionalHreflang } from "@/lib/seo/hreflang";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { HOME_HREFLANG } from "@/components/LanguageSwitcher";
@@ -34,10 +35,10 @@ export const metadata: Metadata = {
   },
   alternates: {
     canonical: `${SITE_URL}/sl/qr-koda-za-poslovne-dogodke`,
-    languages: {
+    languages: withRegionalHreflang({
       "sl": `${SITE_URL}/sl/qr-koda-za-poslovne-dogodke`,
       "x-default": `${SITE_URL}/sl/qr-koda-za-poslovne-dogodke`,
-    },
+    }),
   },
 };
 

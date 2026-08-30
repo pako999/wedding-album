@@ -13,6 +13,7 @@ import { WallMiniDemo } from "@/components/WallMiniDemo";
 import { NordicHero } from "@/components/NordicHero";
 import { WALL_COPY } from "@/lib/i18n/wall-translations";
 import { STAND_VARIANTS, eur } from "@/lib/print-service";
+import { localePublicPath } from "@/lib/urls";
 
 type Lang = Exclude<LangCode, "sl">;
 
@@ -675,6 +676,9 @@ const HERO_IMAGE: Partial<Record<Lang, {
 export async function LocalizedHomePage({ lang }: { lang: Lang }) {
   const t = COPY[lang];
   const heroImage = HERO_IMAGE[lang];
+  const homePath = localePublicPath(lang, `/${lang}`);
+  const blogPath = localePublicPath(lang, `/${lang}/blog`);
+  const contactPath = localePublicPath(lang, `/${lang}/contact`);
   // Hide the "create gallery" CTA for signed-in visitors — they already
   // have galleries; Nadzorna plošča + avatar are their entry points.
   let signedIn = false;
@@ -699,7 +703,7 @@ export async function LocalizedHomePage({ lang }: { lang: Lang }) {
       {/* Navbar */}
       <header className="sticky top-0 z-40 border-b border-[color:var(--hairline)] bg-white/80 backdrop-blur-md">
         <nav className="max-w-7xl mx-auto px-6 sm:px-8 h-16 flex items-center justify-between">
-          <Link href={`/${lang}`} className="flex items-center transition-transform duration-200 hover:scale-[1.03]">
+          <Link href={homePath} className="flex items-center transition-transform duration-200 hover:scale-[1.03]">
             <GuestcamLogo size="sm" showMark={true} />
           </Link>
           <div className="flex items-center gap-3 sm:gap-5">
@@ -707,7 +711,7 @@ export async function LocalizedHomePage({ lang }: { lang: Lang }) {
             <a href="#business" className="hidden md:block text-sm font-medium text-gray-600 hover:text-[color:var(--ink)] transition-colors">
               {NAV_BUSINESS[lang]}
             </a>
-            <Link href={`/${lang}/blog`} className="hidden sm:block text-sm font-medium text-gray-600 hover:text-[color:var(--ink)] transition-colors">
+            <Link href={blogPath} className="hidden sm:block text-sm font-medium text-gray-600 hover:text-[color:var(--ink)] transition-colors">
               Blog
             </Link>
             <HeaderAuthButtons lang={lang} />
@@ -723,8 +727,8 @@ export async function LocalizedHomePage({ lang }: { lang: Lang }) {
               lang={lang}
               links={[
                 { href: "#business", label: NAV_BUSINESS[lang] },
-                { href: `/${lang}/blog`, label: t.navBlog },
-                { href: `/${lang}/contact`, label: t.navContact },
+                { href: blogPath, label: t.navBlog },
+                { href: contactPath, label: t.navContact },
               ]}
               labels={{
                 open: t.navOpenMenu,
@@ -950,7 +954,7 @@ export async function LocalizedHomePage({ lang }: { lang: Lang }) {
             </div>
             <div className="shrink-0 sm:text-right">
               <p className="text-sm font-semibold text-gray-500 mb-2.5">{t.eventsTeaser.price}</p>
-              <Link href={`/${lang}/contact`}
+              <Link href={contactPath}
                 className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl font-bold text-sm text-[color:var(--ink)] hover:brightness-95 transition-all"
                 style={{ background: "linear-gradient(135deg,#FFD966,#FFC94D 60%,#F0B429)" }}>
                 {t.eventsTeaser.cta}
@@ -982,7 +986,7 @@ export async function LocalizedHomePage({ lang }: { lang: Lang }) {
       {/* FAQ */}
       <PrintShowroom copy={PRINT_COPY[lang]} />
 
-      <BusinessSection copy={BUSINESS_COPY[lang]} contactHref={`/${lang}/contact`} />
+      <BusinessSection copy={BUSINESS_COPY[lang]} contactHref={contactPath} />
 
       <section id="faq" className="py-24" style={{ background: "var(--paper)" }}>
         <div className="max-w-2xl mx-auto px-6">

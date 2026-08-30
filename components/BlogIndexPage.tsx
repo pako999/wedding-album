@@ -2,7 +2,7 @@ import Link from "next/link";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SeoFooter } from "@/components/SeoFooter";
 import type { BlogPost, BlogCategory } from "@/lib/blog";
-import { localeAbsoluteUrl, SITE_URL } from "@/lib/urls";
+import { localeAbsoluteUrl, localePublicPath, SITE_URL } from "@/lib/urls";
 import { BLOG_HREFLANG, type LangCode } from "@/components/LanguageSwitcher";
 import { safeJsonLd } from "@/lib/seo/jsonld-safe";
 
@@ -67,11 +67,11 @@ const COPY: Record<LangCode, Copy> = {
 };
 
 function blogUrl(lang: LangCode, slug: string) {
-  return lang === "sl" ? `/blog/${slug}` : `/${lang}/blog/${slug}`;
+  return localePublicPath(lang, lang === "sl" ? `/blog/${slug}` : `/${lang}/blog/${slug}`);
 }
 
 function indexUrl(lang: LangCode) {
-  return lang === "sl" ? "/blog" : `/${lang}/blog`;
+  return localePublicPath(lang, lang === "sl" ? "/blog" : `/${lang}/blog`);
 }
 
 function formatDate(date: string, lang: LangCode) {

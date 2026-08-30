@@ -1,4 +1,4 @@
-import { localeAbsoluteUrl, SITE_URL } from "@/lib/urls";
+import { localeAbsoluteUrl, localePublicPath, SITE_URL } from "@/lib/urls";
 import type { Metadata } from "next";
 import { ApplyForm } from "./ApplyForm";
 import { affiliateTranslations, type AffiliateLang } from "@/lib/i18n/affiliate-translations";
@@ -51,7 +51,10 @@ export function AffiliateApplyView({ lang }: { lang: AffiliateLang }) {
 
 export function affiliateApplyMetadata(lang: AffiliateLang): Metadata {
   const t = affiliateTranslations[lang].apply;
-  const localizedPath = lang === "sl" ? "/affiliate/apply" : `/${lang}/affiliate/apply`;
+  const localizedPath = localePublicPath(
+    lang,
+    lang === "sl" ? "/affiliate/apply" : `/${lang}/affiliate/apply`,
+  );
   const pageUrl = localeAbsoluteUrl(lang, localizedPath);
   return {
     title: t.pageTitle,

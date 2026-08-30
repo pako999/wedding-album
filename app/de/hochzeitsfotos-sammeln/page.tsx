@@ -1,4 +1,5 @@
 import { SITE_URL } from "@/lib/urls";
+import { withRegionalHreflang } from "@/lib/seo/hreflang";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { GUIDE_HREFLANG, LanguageSwitcher } from "@/components/LanguageSwitcher";
@@ -27,7 +28,7 @@ export const metadata: Metadata = {
   },
   alternates: {
     canonical: `${SITE_URL}/de/hochzeitsfotos-sammeln`,
-    languages: {
+    languages: withRegionalHreflang({
       "sl": `${SITE_URL}/sl/qr-koda-poroka`,
       "hr": `${SITE_URL}/hr/qr-kod-vjencanje`,
       "sr": `${SITE_URL}/sr/qr-kod-vencanje`,
@@ -35,7 +36,7 @@ export const metadata: Metadata = {
       "en": `${SITE_URL}/en/wedding-photo-sharing`,
       "es": `${SITE_URL}/es/fotos-boda-qr`,
       "x-default": `${SITE_URL}/sl/qr-koda-poroka`,
-    },
+    }),
   },
 };
 

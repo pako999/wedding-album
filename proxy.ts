@@ -9,10 +9,12 @@ import {
 } from "@/lib/attribution/signup";
 import {
   PRIMARY_GUESTCAM_ORIGIN,
+  SERBIAN_GUESTCAM_ORIGIN,
   SPANISH_GUESTCAM_ORIGIN,
+  countryPublicPath,
+  isPrimaryGuestcamHost,
   isSerbianGuestcamHost,
   isSpanishGuestcamHost,
-  isSpanishGuestcamSatelliteHost,
   normalizedHostname,
 } from "@/lib/site-domains";
 import {
@@ -92,11 +94,48 @@ function isPrimaryAccountPath(pathname: string): boolean {
   );
 }
 
+const COUNTRY_ROUTE_PASSTHROUGH = [
+  "/api",
+  "/_next",
+  "/.well-known",
+  "/robots.txt",
+  "/sitemap.xml",
+  "/favicon.ico",
+  "/icon",
+  "/apple-icon",
+  "/manifest.json",
+  "/opengraph-image",
+  "/twitter-image",
+  "/llms.txt",
+];
+
+function isCountryRoutePassthrough(pathname: string): boolean {
+  return (
+    COUNTRY_ROUTE_PASSTHROUGH.some(
+      (path) => pathname === path || pathname.startsWith(`${path}/`),
+    ) || /\.[a-z0-9]{2,8}$/i.test(pathname)
+  );
+}
+
+function internalCountryPath(locale: "sr" | "es", pathname: string): string {
+  if (isCountryRoutePassthrough(pathname)) return pathname;
+  return pathname === "/" ? `/${locale}` : `/${locale}${pathname}`;
+}
+
+function permanentCountryRedirect(
+  req: NextRequest,
+  locale: "sr" | "es",
+): NextResponse {
+  const origin = locale === "sr" ? SERBIAN_GUESTCAM_ORIGIN : SPANISH_GUESTCAM_ORIGIN;
+  const target = new URL(countryPublicPath(locale, req.nextUrl.pathname), origin);
+  target.search = req.nextUrl.search;
+  return NextResponse.redirect(target, 308);
+}
+
 /**
  * Keep Clerk and every authenticated surface on www.guestcam.si. The Serbian
- * country domain is intentionally marketing-only and is never configured as a
- * Clerk satellite. Create-album CTAs open the primary Clerk sign-up directly;
- * signed-in users are handled by Clerk on the primary domain.
+ * and Spanish country domains are marketing-only and are never configured as
+ * Clerk satellites. Create-album CTAs open the primary Clerk sign-up directly.
  */
 function primaryAccountRedirect(req: NextRequest): NextResponse {
   const { pathname, search } = req.nextUrl;
@@ -121,10 +160,15 @@ export default clerkMiddleware(
   const pathname = req.nextUrl.pathname;
   const spanishRequest = hostCandidates.some((host) => isSpanishGuestcamHost(host));
   const serbianRequest = hostCandidates.some((host) => isSerbianGuestcamHost(host));
-  const effectivePathname =
-    spanishRequest && pathname === "/" ? "/es" :
-    serbianRequest && pathname === "/" ? "/sr" :
-    pathname;
+  const primaryRequest = hostCandidates.some((host) => isPrimaryGuestcamHost(host));
+  const countryLocale: "sr" | "es" | null = serbianRequest
+    ? "sr"
+    : spanishRequest
+      ? "es"
+      : null;
+  const effectivePathname = countryLocale
+    ? internalCountryPath(countryLocale, pathname)
+    : pathname;
 
   // ── Normalize malformed paths with backslashes ─────────────────────────────
   if (pathname.includes("\\") || pathname.includes("%5C") || pathname.includes("%5c")) {
@@ -134,7 +178,24 @@ export default clerkMiddleware(
     return NextResponse.redirect(target, 308);
   }
 
-  if (serbianRequest && isPrimaryAccountPath(pathname)) {
+  // Consolidate old language-prefix URLs onto the clean country-domain paths.
+  // This also moves the former .si/sr and .si/es pages one-to-one without
+  // losing their path or query string.
+  const officialMarketingRequest = primaryRequest || serbianRequest || spanishRequest;
+  if (
+    officialMarketingRequest &&
+    (pathname === "/sr" || pathname.startsWith("/sr/"))
+  ) {
+    return permanentCountryRedirect(req, "sr");
+  }
+  if (
+    officialMarketingRequest &&
+    (pathname === "/es" || pathname.startsWith("/es/"))
+  ) {
+    return permanentCountryRedirect(req, "es");
+  }
+
+  if (countryLocale && isPrimaryAccountPath(pathname)) {
     return primaryAccountRedirect(req);
   }
 
@@ -142,7 +203,7 @@ export default clerkMiddleware(
   // Existing protected-album forms navigate once to /slug?pw=secret. Capture
   // that value, encrypt it into an HttpOnly cookie and immediately redirect to
   // the clean URL. The raw password is never restored into a URL afterwards.
-  const albumSlug = isAlbumGuestPath(pathname)
+  const albumSlug = !countryLocale && isAlbumGuestPath(pathname)
     ? decodeURIComponent(pathname.split("/").filter(Boolean)[0] ?? "")
     : null;
 
@@ -211,13 +272,9 @@ export default clerkMiddleware(
   }
 
   let res: NextResponse;
-  if (spanishRequest && pathname === "/") {
+  if (countryLocale && effectivePathname !== pathname) {
     const target = req.nextUrl.clone();
-    target.pathname = "/es";
-    res = NextResponse.rewrite(target, { request: { headers: requestHeaders } });
-  } else if (serbianRequest && pathname === "/") {
-    const target = req.nextUrl.clone();
-    target.pathname = "/sr";
+    target.pathname = effectivePathname;
     res = NextResponse.rewrite(target, { request: { headers: requestHeaders } });
   } else {
     res = NextResponse.next({ request: { headers: requestHeaders } });
@@ -297,7 +354,7 @@ export default clerkMiddleware(
   }
 
   // ── Block crawlers from album guest pages via HTTP header ────────────────
-  if (isAlbumGuestPath(pathname)) {
+  if (!countryLocale && isAlbumGuestPath(pathname)) {
     res.headers.set(
       "X-Robots-Tag",
       "noindex, nofollow, noarchive, nosnippet, noimageindex, notranslate, noai, noimageai",
@@ -307,25 +364,7 @@ export default clerkMiddleware(
 
   return res;
   },
-  (req) => {
-    const hostCandidates = requestHostCandidates(req);
-    const satelliteHost = hostCandidates.find((host) => isSpanishGuestcamSatelliteHost(host));
-    if (satelliteHost) {
-      return {
-        isSatellite: true,
-        domain: "guestcam.es",
-        signInUrl: `${PRIMARY_GUESTCAM_ORIGIN}/sign-in`,
-        signUpUrl: `${PRIMARY_GUESTCAM_ORIGIN}/sign-up`,
-        satelliteAutoSync: true,
-        authorizedParties: [PRIMARY_GUESTCAM_ORIGIN, SPANISH_GUESTCAM_ORIGIN],
-      };
-    }
-    // guestcam.rs is intentionally absent here. It is a public Serbian
-    // marketing host, not a paid Clerk satellite domain.
-    return {
-      authorizedParties: [PRIMARY_GUESTCAM_ORIGIN, SPANISH_GUESTCAM_ORIGIN],
-    };
-  },
+  () => ({ authorizedParties: [PRIMARY_GUESTCAM_ORIGIN] }),
 );
 
 export const config = {

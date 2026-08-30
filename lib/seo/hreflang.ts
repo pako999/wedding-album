@@ -1,9 +1,13 @@
-import { serbianGuestcamUrl } from "@/lib/site-domains";
+import {
+  serbianGuestcamUrl,
+  spanishGuestcamUrl,
+} from "@/lib/site-domains";
 
 /**
- * Add country-specific aliases for the two Balkan markets we actively serve.
- * The generic language tags stay in place for Croatian/Serbian speakers outside
- * Croatia and Serbia, while hr-HR and sr-RS give Google a clearer local signal.
+ * Add country-specific aliases for the markets we actively serve. Generic
+ * language tags stay in place, while language-region pairs give Google a
+ * clearer local signal. Serbian and Spanish URLs are consolidated onto their
+ * country domains here so every metadata cluster stays consistent.
  */
 export function withRegionalHreflang(
   languages: Record<string, string | undefined>,
@@ -24,6 +28,18 @@ export function withRegionalHreflang(
     }
     localized.sr = serbianUrl;
     localized["sr-RS"] = serbianUrl;
+  }
+
+  if (languages.es) {
+    let spanishUrl = languages.es;
+    try {
+      const parsed = new URL(languages.es);
+      spanishUrl = spanishGuestcamUrl(`${parsed.pathname}${parsed.search}${parsed.hash}`);
+    } catch {
+      // Preserve a relative/non-standard value rather than dropping it.
+    }
+    localized.es = spanishUrl;
+    localized["es-ES"] = spanishUrl;
   }
 
   return localized;

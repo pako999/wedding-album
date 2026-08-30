@@ -3,7 +3,9 @@ import type { MetadataRoute } from "next";
 import { headers } from "next/headers";
 import {
   isSerbianGuestcamHost,
+  isSpanishGuestcamHost,
   SERBIAN_GUESTCAM_ORIGIN,
+  SPANISH_GUESTCAM_ORIGIN,
 } from "@/lib/site-domains";
 
 /**
@@ -23,9 +25,13 @@ export default async function robots(): Promise<MetadataRoute.Robots> {
   const requestHost = (
     requestHeaders.get("x-forwarded-host") ?? requestHeaders.get("host") ?? ""
   ).split(",")[0];
+  const countryMarketingHost =
+    isSerbianGuestcamHost(requestHost) || isSpanishGuestcamHost(requestHost);
   const publicOrigin = isSerbianGuestcamHost(requestHost)
     ? SERBIAN_GUESTCAM_ORIGIN
-    : SITE_URL;
+    : isSpanishGuestcamHost(requestHost)
+      ? SPANISH_GUESTCAM_ORIGIN
+      : SITE_URL;
 
   return {
     rules: [
@@ -74,14 +80,18 @@ export default async function robots(): Promise<MetadataRoute.Robots> {
           // — they're the "cite this instead" files these bots look for
           // before deciding whether to quote us. Also allow the localised
           // homepages + blog + contact so we're citeable in every language.
-          allow: [
-            "/llms.txt",
-            "/.well-known/",
-            "/blog",
-            "/sl/", "/hr/", "/sr/", "/de/", "/en/", "/es/",
-            "/contact",
-          ],
-          disallow: ["/"],
+          allow: countryMarketingHost
+            ? ["/"]
+            : [
+                "/llms.txt",
+                "/.well-known/",
+                "/blog",
+                "/sl/", "/hr/", "/de/", "/en/",
+                "/contact",
+              ],
+          disallow: countryMarketingHost
+            ? ["/dashboard", "/admin", "/api/", "/sign-in", "/sign-up"]
+            : ["/"],
         }),
       ),
     ],

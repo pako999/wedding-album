@@ -3,7 +3,10 @@ import { headers } from "next/headers";
 import fs from "node:fs/promises";
 import path from "node:path";
 import { localeAbsoluteUrl, SITE_URL } from "@/lib/urls";
-import { isSerbianGuestcamHost } from "@/lib/site-domains";
+import {
+  isSerbianGuestcamHost,
+  isSpanishGuestcamHost,
+} from "@/lib/site-domains";
 import { getEventTopic, localesForTopic, type EventTopicKey } from "@/lib/seo/event-topics";
 import { LEGAL_DOCUMENTS, legalAlternates } from "@/lib/seo/legal-alternates";
 import { withRegionalHreflang } from "@/lib/seo/hreflang";
@@ -162,7 +165,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const requestHost = (
     requestHeaders.get("x-forwarded-host") ?? requestHeaders.get("host") ?? ""
   ).split(",")[0];
-  const serbianSitemap = isSerbianGuestcamHost(requestHost);
+  const countryLocale: "sr" | "es" | null = isSerbianGuestcamHost(requestHost)
+    ? "sr"
+    : isSpanishGuestcamHost(requestHost)
+      ? "es"
+      : null;
   const blog = await blogEntries();
   const pages: PageEntry[] = [
     { path: "", priority: 1, changeFrequency: "weekly", lastModified: LAST_EDITED.homepage, alternates: HOMEPAGE_CLUSTER },
@@ -199,11 +206,21 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const pagesForHost = pages.filter(({ path }) => {
     const serbianPath = path === "/sr" || path.startsWith("/sr/");
-    return serbianSitemap ? serbianPath : !serbianPath;
+    const spanishPath = path === "/es" || path.startsWith("/es/");
+    if (countryLocale === "sr") return serbianPath;
+    if (countryLocale === "es") return spanishPath;
+    return !serbianPath && !spanishPath;
   });
 
   return pagesForHost.map(({ path, priority, changeFrequency, lastModified, alternates }) => ({
-    url: localeAbsoluteUrl(path === "/sr" || path.startsWith("/sr/") ? "sr" : "sl", path),
+    url: localeAbsoluteUrl(
+      path === "/sr" || path.startsWith("/sr/")
+        ? "sr"
+        : path === "/es" || path.startsWith("/es/")
+          ? "es"
+          : "sl",
+      path,
+    ),
     ...(lastModified ? { lastModified: new Date(lastModified) } : {}),
     changeFrequency,
     priority,

@@ -1,4 +1,6 @@
 import { SITE_URL } from "@/lib/urls";
+import { spanishGuestcamUrl } from "@/lib/site-domains";
+import { withRegionalHreflang } from "@/lib/seo/hreflang";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { ALTERNATIVES_HREFLANG, LanguageSwitcher } from "@/components/LanguageSwitcher";
@@ -13,7 +15,7 @@ export const metadata: Metadata = {
   description:
     "Comparativa: Guestcam vs Google Photos vs WhatsApp vs Dropbox. ¿Cuál es la mejor app para recopilar fotos de boda? Análisis honesto de pros y contras.",
   openGraph: {
-    url: `${SITE_URL}/es/alternativas`,
+    url: spanishGuestcamUrl("/es/alternativas"),
     title: "Mejores Apps para Compartir Fotos de Boda 2025",
     description:
       "Comparativa honesta de soluciones para recopilar fotos de boda. Calidad, privacidad, precio — todo en un solo lugar.",
@@ -27,8 +29,8 @@ export const metadata: Metadata = {
     images: [OG_IMAGE_URL],
   },
   alternates: {
-    canonical: `${SITE_URL}/es/alternativas`,
-    languages: {
+    canonical: spanishGuestcamUrl("/es/alternativas"),
+    languages: withRegionalHreflang({
       "sl": `${SITE_URL}/sl/alternative-aplikacije`,
       "hr": `${SITE_URL}/hr/alternativne-aplikacije`,
       "sr": `${SITE_URL}/sr/alternativne-aplikacije`,
@@ -36,7 +38,7 @@ export const metadata: Metadata = {
       "en": `${SITE_URL}/en/alternatives`,
       "es": `${SITE_URL}/es/alternativas`,
       "x-default": `${SITE_URL}/sl/alternative-aplikacije`,
-    },
+    }),
   },
 };
 
@@ -53,7 +55,7 @@ const articleSchema = {
     name: "Guestcam",
     logo: `${SITE_URL}/icon-512.png`,
   },
-  mainEntityOfPage: `${SITE_URL}/es/alternativas`,
+  mainEntityOfPage: spanishGuestcamUrl("/es/alternativas"),
 };
 
 

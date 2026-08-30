@@ -7,6 +7,7 @@ import {
   type LangCode,
 } from "@/components/LanguageSwitcher";
 import { HeaderAuthButtons } from "@/components/HeaderAuthButtons";
+import { localePublicPath } from "@/lib/urls";
 
 interface NavLinkSet {
   home: string;          // label for the "back to home" link
@@ -48,7 +49,7 @@ export async function SiteHeader({
   homeHref?: string;
 }) {
   const copy = NAV_COPY[lang];
-  const resolvedHome = homeHref ?? (lang === "sl" ? "/" : `/${lang}`);
+  const resolvedHome = homeHref ?? localePublicPath(lang, lang === "sl" ? "/" : `/${lang}`);
   // Hide the "Create gallery" CTA for signed-in visitors — repeated
   // CTAs on every page are noise once they're already a customer.
   let signedIn = false;
@@ -79,7 +80,7 @@ export async function SiteHeader({
               full document load so an open tab cannot reuse stale RSC/chunks
               after a new production deployment. */}
           <a
-            href={lang === "sl" ? "/blog" : `/${lang}/blog`}
+            href={localePublicPath(lang, lang === "sl" ? "/blog" : `/${lang}/blog`)}
             className="hidden sm:inline text-sm font-medium text-gray-600 hover:text-[#0F1729] transition-colors"
           >
             {copy.blog}
