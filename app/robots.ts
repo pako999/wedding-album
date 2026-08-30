@@ -1,5 +1,10 @@
 import { SITE_URL } from "@/lib/urls";
 import type { MetadataRoute } from "next";
+import { headers } from "next/headers";
+import {
+  isSerbianGuestcamHost,
+  SERBIAN_GUESTCAM_ORIGIN,
+} from "@/lib/site-domains";
 
 /**
  * Production robots.txt.
@@ -13,7 +18,15 @@ import type { MetadataRoute } from "next";
  * That mechanism is per-page, so we don't list a wildcard here — adding
  * "Disallow: /" would block /blog, /contact, etc. by accident.
  */
-export default function robots(): MetadataRoute.Robots {
+export default async function robots(): Promise<MetadataRoute.Robots> {
+  const requestHeaders = await headers();
+  const requestHost = (
+    requestHeaders.get("x-forwarded-host") ?? requestHeaders.get("host") ?? ""
+  ).split(",")[0];
+  const publicOrigin = isSerbianGuestcamHost(requestHost)
+    ? SERBIAN_GUESTCAM_ORIGIN
+    : SITE_URL;
+
   return {
     rules: [
       // Default rule for every crawler — Google, Bing, Perplexity, ChatGPT,
@@ -72,7 +85,7 @@ export default function robots(): MetadataRoute.Robots {
         }),
       ),
     ],
-    sitemap: `${SITE_URL}/sitemap.xml`,
-    host: SITE_URL,
+    sitemap: `${publicOrigin}/sitemap.xml`,
+    host: publicOrigin,
   };
 }

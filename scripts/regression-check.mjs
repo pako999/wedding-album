@@ -32,6 +32,10 @@ const files = {
   albumGuestView: await read("components/album/AlbumGuestView.tsx"),
   albumHeaderSettings: await read("lib/album-header-settings.ts"),
   proxy: await read("proxy.ts"),
+  siteDomains: await read("lib/site-domains.ts"),
+  clerkProvider: await read("components/GuestcamClerkProvider.tsx"),
+  languageSwitcher: await read("components/LanguageSwitcher.tsx"),
+  robots: await read("app/robots.ts"),
   s3: await read("lib/storage/bunny-s3.ts"),
   s3Read: await read("app/api/bunny-s3-file/[...key]/route.ts"),
   legacyRead: await read("app/api/img/route.ts"),
@@ -272,6 +276,41 @@ requireMatch(
 );
 
 requireMatch(
+  "guestcam.rs is an official Serbian routing host",
+  files.siteDomains,
+  /SERBIAN_GUESTCAM_ORIGIN\s*=\s*"https:\/\/www\.guestcam\.rs"[\s\S]*SERBIAN_ROUTING_HOSTS[\s\S]*guestcam\.rs[\s\S]*www\.guestcam\.rs/,
+  "the Serbian country domain must not fall through to custom album-domain resolution",
+);
+
+requireAbsent(
+  "guestcam.rs is not a Clerk satellite domain",
+  `${files.siteDomains}\n${files.proxy}\n${files.clerkProvider}`,
+  /isSerbianGuestcamSatelliteHost|domain=["']guestcam\.rs["']|domain:\s*["']guestcam\.rs["']/,
+  "Serbian marketing pages must use Clerk only after redirecting to www.guestcam.si",
+);
+
+requireMatch(
+  "guestcam.rs create CTAs open primary Clerk sign-up",
+  files.proxy,
+  /pathname === "\/dashboard\/new"[\s\S]*new URL\("\/sign-up", PRIMARY_GUESTCAM_ORIGIN\)[\s\S]*redirect_url[\s\S]*serbianRequest && isPrimaryAccountPath\(pathname\)/,
+  "create-album clicks from .rs must open the existing Clerk sign-up on www.guestcam.si",
+);
+
+requireMatch(
+  "guestcam.rs does not boot Clerk in the browser",
+  files.clerkProvider,
+  /isSerbianGuestcamHost\(host\)[\s\S]*return <>\{children\}<\/>/,
+  "the Serbian marketing origin must render without a local Clerk frontend instance",
+);
+
+requireMatch(
+  "Serbian language links use guestcam.rs",
+  files.languageSwitcher,
+  /sr:\s*`\$\{SERBIAN_GUESTCAM_ORIGIN\}\//,
+  "language switchers must send Serbian visitors to the country domain",
+);
+
+requireMatch(
   "film no-generation state is a normal response",
   files.filmStatus,
   /generation:\s*null/,
@@ -393,8 +432,22 @@ requireMatch(
 requireMatch(
   "homepage sitemap date reflects the latest meaningful edit",
   files.sitemap,
-  /homepage:\s*"2026-08-28"/,
+  /homepage:\s*"2026-08-30"/,
   "do not leave the homepage lastmod stale after a meaningful homepage update",
+);
+
+requireMatch(
+  "each production host exposes only its own sitemap URLs",
+  files.sitemap,
+  /serbianSitemap[\s\S]*serbianPath[\s\S]*return serbianSitemap \? serbianPath : !serbianPath/,
+  ".si and .rs must not publish duplicate Serbian URLs in the same sitemap",
+);
+
+requireMatch(
+  "guestcam.rs robots points to the Serbian sitemap",
+  files.robots,
+  /isSerbianGuestcamHost\(requestHost\)[\s\S]*SERBIAN_GUESTCAM_ORIGIN[\s\S]*sitemap: `\$\{publicOrigin\}\/sitemap\.xml`/,
+  "search crawlers on .rs must discover the .rs sitemap, not the .si sitemap",
 );
 
 requireMatch(

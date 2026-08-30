@@ -10,6 +10,7 @@ import {
 import {
   PRIMARY_GUESTCAM_ORIGIN,
   SPANISH_GUESTCAM_ORIGIN,
+  isSerbianGuestcamHost,
   isSpanishGuestcamHost,
   isSpanishGuestcamSatelliteHost,
   normalizedHostname,
@@ -73,11 +74,44 @@ function isOwnDomain(hostname: string) {
     bare === APP_HOSTNAME ||
     bare === `www.${APP_HOSTNAME}` ||
     isSpanishGuestcamHost(bare) ||
+    isSerbianGuestcamHost(bare) ||
     bare.endsWith(".vercel.app") ||
     bare.endsWith(".localhost") ||
     bare === "localhost" ||
     /^\d{1,3}(\.\d{1,3}){3}$/.test(bare)
   );
+}
+
+function isPrimaryAccountPath(pathname: string): boolean {
+  return (
+    pathname === "/sign-in" || pathname.startsWith("/sign-in/") ||
+    pathname === "/sign-up" || pathname.startsWith("/sign-up/") ||
+    pathname === "/dashboard" || pathname.startsWith("/dashboard/") ||
+    pathname === "/admin" || pathname.startsWith("/admin/") ||
+    pathname === "/affiliate/dashboard" || pathname.startsWith("/affiliate/dashboard/")
+  );
+}
+
+/**
+ * Keep Clerk and every authenticated surface on www.guestcam.si. The Serbian
+ * country domain is intentionally marketing-only and is never configured as a
+ * Clerk satellite. Create-album CTAs open the primary Clerk sign-up directly;
+ * signed-in users are handled by Clerk on the primary domain.
+ */
+function primaryAccountRedirect(req: NextRequest): NextResponse {
+  const { pathname, search } = req.nextUrl;
+
+  if (pathname === "/dashboard/new") {
+    const target = new URL("/sign-up", PRIMARY_GUESTCAM_ORIGIN);
+    for (const [key, value] of req.nextUrl.searchParams) {
+      target.searchParams.append(key, value);
+    }
+    target.searchParams.set("redirect_url", `${pathname}${search}`);
+    return NextResponse.redirect(target, 307);
+  }
+
+  const target = new URL(`${pathname}${search}`, PRIMARY_GUESTCAM_ORIGIN);
+  return NextResponse.redirect(target, 307);
 }
 
 export default clerkMiddleware(
@@ -86,7 +120,11 @@ export default clerkMiddleware(
   const hostname = requestHostname(req);
   const pathname = req.nextUrl.pathname;
   const spanishRequest = hostCandidates.some((host) => isSpanishGuestcamHost(host));
-  const effectivePathname = spanishRequest && pathname === "/" ? "/es" : pathname;
+  const serbianRequest = hostCandidates.some((host) => isSerbianGuestcamHost(host));
+  const effectivePathname =
+    spanishRequest && pathname === "/" ? "/es" :
+    serbianRequest && pathname === "/" ? "/sr" :
+    pathname;
 
   // ── Normalize malformed paths with backslashes ─────────────────────────────
   if (pathname.includes("\\") || pathname.includes("%5C") || pathname.includes("%5c")) {
@@ -94,6 +132,10 @@ export default clerkMiddleware(
     const target = req.nextUrl.clone();
     target.pathname = cleanPath;
     return NextResponse.redirect(target, 308);
+  }
+
+  if (serbianRequest && isPrimaryAccountPath(pathname)) {
+    return primaryAccountRedirect(req);
   }
 
   // ── Album password URL hygiene ──────────────────────────────────────────────
@@ -135,7 +177,7 @@ export default clerkMiddleware(
   }
 
   // ── Custom domain routing ──────────────────────────────────────────────────
-  if (!spanishRequest && !isOwnDomain(hostname) && !isInternalApi(req)) {
+  if (!spanishRequest && !serbianRequest && !isOwnDomain(hostname) && !isInternalApi(req)) {
     const bareHost = normalizedHostname(hostname);
 
     if (!pathname.startsWith("/api") && !pathname.startsWith("/_next")) {
@@ -172,6 +214,10 @@ export default clerkMiddleware(
   if (spanishRequest && pathname === "/") {
     const target = req.nextUrl.clone();
     target.pathname = "/es";
+    res = NextResponse.rewrite(target, { request: { headers: requestHeaders } });
+  } else if (serbianRequest && pathname === "/") {
+    const target = req.nextUrl.clone();
+    target.pathname = "/sr";
     res = NextResponse.rewrite(target, { request: { headers: requestHeaders } });
   } else {
     res = NextResponse.next({ request: { headers: requestHeaders } });
@@ -274,6 +320,8 @@ export default clerkMiddleware(
         authorizedParties: [PRIMARY_GUESTCAM_ORIGIN, SPANISH_GUESTCAM_ORIGIN],
       };
     }
+    // guestcam.rs is intentionally absent here. It is a public Serbian
+    // marketing host, not a paid Clerk satellite domain.
     return {
       authorizedParties: [PRIMARY_GUESTCAM_ORIGIN, SPANISH_GUESTCAM_ORIGIN],
     };

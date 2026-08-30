@@ -1,21 +1,14 @@
 import { SITE_URL } from "@/lib/urls";
 import type { Metadata } from "next";
 import { LegalPage } from "@/components/LegalPage";
+import { legalAlternates } from "@/lib/seo/legal-alternates";
 
 export const metadata: Metadata = {
   title: "Pogoji uporabe",
   description: "Pogoji uporabe storitve Guestcam — paketi, plačila, pravice in obveznosti uporabnikov.",
   alternates: {
     canonical: `${SITE_URL}/terms`,
-    languages: {
-      sl: `${SITE_URL}/terms`,
-      hr: `${SITE_URL}/hr/terms`,
-      sr: `${SITE_URL}/sr/terms`,
-      de: `${SITE_URL}/de/terms`,
-      en: `${SITE_URL}/en/terms`,
-      es: `${SITE_URL}/es/terms`,
-      "x-default": `${SITE_URL}/terms`,
-    },
+    languages: legalAlternates("terms"),
   },
   openGraph: {
     url: `${SITE_URL}/terms`,

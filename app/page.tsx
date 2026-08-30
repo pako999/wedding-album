@@ -1,15 +1,16 @@
 import type { Metadata } from "next";
 import { SITE_URL } from "@/lib/urls";
 import { GuestcamHomePage, HOME_FAQS } from "@/components/GuestcamHomePage";
+import { withRegionalHreflang } from "@/lib/seo/hreflang";
 
 export const metadata: Metadata = {
   title: "QR koda za poroko • Fotografije gostov v enem albumu | Guestcam",
   description: "Z Guestcam QR kodo zberite fotografije in videe gostov v zasebni galeriji. Brez aplikacije in registracije, v originalni kakovosti. Za poroke in dogodke.",
   alternates: {
     canonical: SITE_URL,
-    languages: {
+    languages: withRegionalHreflang({
       sl: `${SITE_URL}/`, hr: `${SITE_URL}/hr`, sr: `${SITE_URL}/sr`, de: `${SITE_URL}/de`, en: `${SITE_URL}/en`, es: `${SITE_URL}/es`, "x-default": `${SITE_URL}/`,
-    },
+    }),
   },
   openGraph: {
     type: "website", url: SITE_URL, siteName: "Guestcam", locale: "sl_SI",

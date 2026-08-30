@@ -7,13 +7,14 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { OG_IMAGE_URL, ogImage } from "@/lib/og";
 import { safeJsonLd } from "@/lib/seo/jsonld-safe";
 import { withRegionalHreflang } from "@/lib/seo/hreflang";
+import { serbianGuestcamUrl } from "@/lib/site-domains";
 
 export const metadata: Metadata = {
   title: "Najbolje aplikacije za venčane fotografije 2026",
   description:
     "Guestcam vs Google Photos vs WhatsApp vs Dropbox. Koja aplikacija najbolje sakuplja fotografije sa venčanja? Iskreno poređenje prednosti i mana.",
   openGraph: {
-    url: `${SITE_URL}/sr/alternativne-aplikacije`,
+    url: serbianGuestcamUrl("/sr/alternativne-aplikacije"),
     title: "Najbolje aplikacije za venčane fotografije 2026",
     description:
       "Iskreno poređenje rešenja za sakupljanje fotografija sa venčanja. Kvalitet, privatnost, cena — sve na jednom mestu.",
@@ -28,7 +29,7 @@ export const metadata: Metadata = {
     images: [OG_IMAGE_URL],
   },
   alternates: {
-    canonical: `${SITE_URL}/sr/alternativne-aplikacije`,
+    canonical: serbianGuestcamUrl("/sr/alternativne-aplikacije"),
     languages: withRegionalHreflang({
       "sl": `${SITE_URL}/sl/alternative-aplikacije`,
       "hr": `${SITE_URL}/hr/alternativne-aplikacije`,
@@ -55,7 +56,7 @@ const articleSchema = {
     name: "Guestcam",
     logo: `${SITE_URL}/icon-512.png`,
   },
-  mainEntityOfPage: `${SITE_URL}/sr/alternativne-aplikacije`,
+  mainEntityOfPage: serbianGuestcamUrl("/sr/alternativne-aplikacije"),
 };
 
 

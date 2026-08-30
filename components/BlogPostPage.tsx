@@ -1,4 +1,4 @@
-import { SITE_URL } from "@/lib/urls";
+import { localeAbsoluteUrl, SITE_URL } from "@/lib/urls";
 import Link from "next/link";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SeoFooter } from "@/components/SeoFooter";
@@ -54,7 +54,8 @@ export async function BlogPostPage({ post }: Props) {
   const langMap = await getTranslationMap(post.translationKey);
   const faqs = post.content.filter((b): b is Extract<BlogBlock, { type: "faq" }> => b.type === "faq");
   const tocEntries = post.content.filter((b): b is Extract<BlogBlock, { type: "h2" }> => b.type === "h2").map((h) => ({ id: h.id ?? headingId(h.text), text: h.text }));
-  const canonical = `${SITE_URL}${blogUrl(post.lang, post.slug)}`;
+  const canonical = localeAbsoluteUrl(post.lang, blogUrl(post.lang, post.slug));
+  const absoluteBlogIndex = localeAbsoluteUrl(post.lang, blogUrl(post.lang));
 
   const jsonLd: Record<string, unknown>[] = [
     {
@@ -70,7 +71,7 @@ export async function BlogPostPage({ post }: Props) {
       "@context": "https://schema.org", "@type": "BreadcrumbList",
       itemListElement: [
         { "@type": "ListItem", position: 1, name: "Guestcam", item: SITE_URL },
-        { "@type": "ListItem", position: 2, name: "Blog", item: `${SITE_URL}${blogUrl(post.lang)}` },
+        { "@type": "ListItem", position: 2, name: "Blog", item: absoluteBlogIndex },
         { "@type": "ListItem", position: 3, name: post.title, item: canonical },
       ],
     },

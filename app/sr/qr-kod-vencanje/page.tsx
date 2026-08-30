@@ -7,13 +7,14 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { OG_IMAGE_URL, ogImage } from "@/lib/og";
 import { safeJsonLd } from "@/lib/seo/jsonld-safe";
 import { withRegionalHreflang } from "@/lib/seo/hreflang";
+import { serbianGuestcamUrl } from "@/lib/site-domains";
 
 export const metadata: Metadata = {
   title: "QR kod za venčanje i svadbu — slike gostiju 2026",
   description:
     "QR kod za svadbu i venčanje: sakupite sve slike i fotografije gostiju jednim skeniranjem. Bez aplikacije, u punom kvalitetu. Postavite za 2 minuta.",
   openGraph: {
-    url: `${SITE_URL}/sr/qr-kod-vencanje`,
+    url: serbianGuestcamUrl("/sr/qr-kod-vencanje"),
     title: "QR kod za venčanje i svadbu — slike gostiju 2026",
     description:
       "Sakupite sve slike i fotografije sa svadbe i venčanja jednim QR kodom. Bez aplikacije, u punom kvalitetu.",
@@ -28,7 +29,7 @@ export const metadata: Metadata = {
     images: [OG_IMAGE_URL],
   },
   alternates: {
-    canonical: `${SITE_URL}/sr/qr-kod-vencanje`,
+    canonical: serbianGuestcamUrl("/sr/qr-kod-vencanje"),
     languages: withRegionalHreflang({
       "sl": `${SITE_URL}/sl/qr-koda-poroka`,
       "hr": `${SITE_URL}/hr/qr-kod-vjencanje`,
@@ -55,7 +56,7 @@ const articleSchema = {
     name: "Guestcam",
     logo: `${SITE_URL}/icon-512.png`,
   },
-  mainEntityOfPage: `${SITE_URL}/sr/qr-kod-vencanje`,
+  mainEntityOfPage: serbianGuestcamUrl("/sr/qr-kod-vencanje"),
 };
 
 function CtaBox() {

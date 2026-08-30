@@ -1,6 +1,7 @@
 "use client";
 
 import { SITE_URL } from "@/lib/urls";
+import { SERBIAN_GUESTCAM_ORIGIN } from "@/lib/site-domains";
 import { useState, useEffect, useRef } from "react";
 
 export type LangCode = "sl" | "hr" | "sr" | "en" | "de" | "es";
@@ -94,7 +95,7 @@ export function LanguageSwitcher({ current, languages, ariaLabel }: Props) {
 export const HOME_HREFLANG: Record<LangCode, string> = {
   sl: `${SITE_URL}/`,
   hr: `${SITE_URL}/hr`,
-  sr: `${SITE_URL}/sr`,
+  sr: `${SERBIAN_GUESTCAM_ORIGIN}/`,
   de: `${SITE_URL}/de`,
   en: `${SITE_URL}/en`,
   es: `${SITE_URL}/es`,
@@ -103,7 +104,7 @@ export const HOME_HREFLANG: Record<LangCode, string> = {
 export const BLOG_HREFLANG: Record<LangCode, string> = {
   sl: `${SITE_URL}/blog`,
   hr: `${SITE_URL}/hr/blog`,
-  sr: `${SITE_URL}/sr/blog`,
+  sr: `${SERBIAN_GUESTCAM_ORIGIN}/sr/blog`,
   de: `${SITE_URL}/de/blog`,
   en: `${SITE_URL}/en/blog`,
   es: `${SITE_URL}/es/blog`,
@@ -112,7 +113,7 @@ export const BLOG_HREFLANG: Record<LangCode, string> = {
 export const GUIDE_HREFLANG: Record<LangCode, string> = {
   sl: `${SITE_URL}/sl/qr-koda-poroka`,
   hr: `${SITE_URL}/hr/qr-kod-vjencanje`,
-  sr: `${SITE_URL}/sr/qr-kod-vencanje`,
+  sr: `${SERBIAN_GUESTCAM_ORIGIN}/sr/qr-kod-vencanje`,
   de: `${SITE_URL}/de/hochzeitsfotos-sammeln`,
   en: `${SITE_URL}/en/wedding-photo-sharing`,
   es: `${SITE_URL}/es/fotos-boda-qr`,
@@ -121,7 +122,7 @@ export const GUIDE_HREFLANG: Record<LangCode, string> = {
 export const ALTERNATIVES_HREFLANG: Record<LangCode, string> = {
   sl: `${SITE_URL}/sl/alternative-aplikacije`,
   hr: `${SITE_URL}/hr/alternativne-aplikacije`,
-  sr: `${SITE_URL}/sr/alternativne-aplikacije`,
+  sr: `${SERBIAN_GUESTCAM_ORIGIN}/sr/alternativne-aplikacije`,
   de: `${SITE_URL}/de/alternativen`,
   en: `${SITE_URL}/en/alternatives`,
   es: `${SITE_URL}/es/alternativas`,

@@ -4,6 +4,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import {
   PRIMARY_GUESTCAM_ORIGIN,
   SPANISH_GUESTCAM_ORIGIN,
+  isSerbianGuestcamHost,
   isSpanishGuestcamSatelliteHost,
   normalizedHostname,
 } from "@/lib/site-domains";
@@ -22,6 +23,13 @@ export async function GuestcamClerkProvider({
     h.get("x-forwarded-host") ?? h.get("host") ?? "www.guestcam.si",
   );
   const satellite = isSpanishGuestcamSatelliteHost(host);
+
+  // guestcam.rs is marketing-only. Do not boot Clerk on that origin and do
+  // not register it as a satellite domain; its auth/account links are
+  // redirected by proxy.ts to the existing www.guestcam.si Clerk flow.
+  if (isSerbianGuestcamHost(host)) {
+    return <>{children}</>;
+  }
 
   if (satellite) {
     return (

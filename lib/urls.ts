@@ -1,3 +1,5 @@
+import { serbianGuestcamUrl } from "@/lib/site-domains";
+
 /**
  * Canonical URL constants.
  *
@@ -28,4 +30,10 @@ export const SITE_HOST: string = new URL(SITE_URL).host;
 export function absoluteUrl(path: string = "/"): string {
   const p = path.startsWith("/") ? path : `/${path}`;
   return `${SITE_URL}${p}`;
+}
+
+/** Build the canonical public URL for a localized route. Serbian marketing
+ * pages live on guestcam.rs; every account/app route still lives on .si. */
+export function localeAbsoluteUrl(locale: string, path: string = "/"): string {
+  return locale === "sr" ? serbianGuestcamUrl(path) : absoluteUrl(path);
 }

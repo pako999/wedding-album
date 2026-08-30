@@ -10,7 +10,8 @@ import {
   getEventTopic,
   localesForTopic,
 } from "@/lib/seo/event-topics";
-import { SITE_URL } from "@/lib/urls";
+import { localeAbsoluteUrl, SITE_URL } from "@/lib/urls";
+import { serbianGuestcamUrl } from "@/lib/site-domains";
 import { safeJsonLd } from "@/lib/seo/jsonld-safe";
 import { withRegionalHreflang } from "@/lib/seo/hreflang";
 
@@ -27,13 +28,14 @@ export function eventTopicMetadata(
   // album slugs — Ahrefs flagged 6 broken canonicals, 8 404s and 40+
   // hreflang-to-broken-page errors from exactly this line.
   const localePath = `/${locale}/${entry.slug}`;
+  const canonicalUrl = localeAbsoluteUrl(locale, localePath);
 
   // Assemble hreflang alternates only for locales that ACTUALLY have this
   // topic — Google doesn't like alternates pointing at 404s.
   const languages: Record<string, string> = {};
   for (const loc of localesForTopic(key)) {
     const e = getEventTopic(loc, key)!;
-    languages[loc] = `${SITE_URL}/${loc}/${e.slug}`;
+    languages[loc] = localeAbsoluteUrl(loc, `/${loc}/${e.slug}`);
   }
   const xDefault = languages.sl ?? languages.en ?? Object.values(languages)[0];
 
@@ -41,12 +43,12 @@ export function eventTopicMetadata(
     title: entry.title,
     description: entry.description,
     alternates: {
-      canonical: `${SITE_URL}${localePath}`,
+      canonical: canonicalUrl,
       languages: withRegionalHreflang({ ...languages, "x-default": xDefault }),
     },
     openGraph: {
       type: "article",
-      url: `${SITE_URL}${localePath}`,
+      url: canonicalUrl,
       title: entry.title,
       description: entry.description,
       images: [ogImage(entry.title)],
@@ -84,14 +86,18 @@ export function EventTopicPage({ locale, topicKey }: Props) {
       return acc;
     }
     if (topicKey === "qr-koda-za-poroko" && loc === "sr") {
-      acc[loc] = "/sr/qr-kod-vencanje";
+      acc[loc] = serbianGuestcamUrl("/sr/qr-kod-vencanje");
       return acc;
     }
     if (translated.has(loc)) {
       const e = getEventTopic(loc, topicKey)!;
-      acc[loc] = `/${loc}/${e.slug}`;
+      acc[loc] = loc === "sr"
+        ? serbianGuestcamUrl(`/sr/${e.slug}`)
+        : `/${loc}/${e.slug}`;
     } else {
-      acc[loc] = loc === "sl" ? "/" : `/${loc}`;
+      acc[loc] = loc === "sr"
+        ? serbianGuestcamUrl("/sr")
+        : loc === "sl" ? "/" : `/${loc}`;
     }
     return acc;
   }, {} as Record<(typeof ALL_LOCALES)[number], string>);
@@ -114,7 +120,7 @@ export function EventTopicPage({ locale, topicKey }: Props) {
     },
     // Must match the canonical (every locale lives under its prefix,
     // including /sl — the old no-prefix SL URL 404s as an album slug).
-    mainEntityOfPage: `${SITE_URL}/${locale}/${entry.slug}`,
+    mainEntityOfPage: localeAbsoluteUrl(locale, `/${locale}/${entry.slug}`),
   };
   const faqSchema = {
     "@context": "https://schema.org",

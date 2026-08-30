@@ -1,7 +1,8 @@
-import { SITE_URL } from "@/lib/urls";
+import { localeAbsoluteUrl, SITE_URL } from "@/lib/urls";
 import type { Metadata } from "next";
 import { ApplyForm } from "./ApplyForm";
 import { affiliateTranslations, type AffiliateLang } from "@/lib/i18n/affiliate-translations";
+import { withRegionalHreflang } from "@/lib/seo/hreflang";
 
 /** Shared renderer used by /affiliate/apply (SL master) and the 5
  *  localized variants (/{lang}/affiliate/apply). Pass the lang in;
@@ -51,13 +52,13 @@ export function AffiliateApplyView({ lang }: { lang: AffiliateLang }) {
 export function affiliateApplyMetadata(lang: AffiliateLang): Metadata {
   const t = affiliateTranslations[lang].apply;
   const localizedPath = lang === "sl" ? "/affiliate/apply" : `/${lang}/affiliate/apply`;
-  const pageUrl = `${SITE_URL}${localizedPath}`;
+  const pageUrl = localeAbsoluteUrl(lang, localizedPath);
   return {
     title: t.pageTitle,
     description: t.metaDescription,
     alternates: {
       canonical: pageUrl,
-      languages: {
+      languages: withRegionalHreflang({
         sl: `${SITE_URL}/affiliate/apply`,
         hr: `${SITE_URL}/hr/affiliate/apply`,
         sr: `${SITE_URL}/sr/affiliate/apply`,
@@ -65,7 +66,7 @@ export function affiliateApplyMetadata(lang: AffiliateLang): Metadata {
         en: `${SITE_URL}/en/affiliate/apply`,
         es: `${SITE_URL}/es/affiliate/apply`,
         "x-default": `${SITE_URL}/affiliate/apply`,
-      },
+      }),
     },
     // CRITICAL: this page must carry its OWN og:url. Without it, the root
     // layout's openGraph (url = homepage) is inherited — and Facebook

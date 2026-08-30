@@ -1,4 +1,4 @@
-import { SITE_URL } from "@/lib/urls";
+import { localeAbsoluteUrl, SITE_URL } from "@/lib/urls";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { BlogIndexPage } from "@/components/BlogIndexPage";
@@ -42,16 +42,17 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const languageAlternates = Object.fromEntries(
     ALL_LANGS.map((l) => [l, l === "sl" ? `${SITE_URL}/blog` : `${SITE_URL}/${l}/blog`]),
   );
+  const canonical = localeAbsoluteUrl(langCode, `/${langCode}/blog`);
 
   return {
     title: titles[langCode],
     description: descriptions[langCode],
     alternates: {
-      canonical: `${SITE_URL}/${langCode}/blog`,
+      canonical,
       languages: withRegionalHreflang({ ...languageAlternates, "x-default": `${SITE_URL}/blog` }),
     },
     openGraph: {
-      url: `${SITE_URL}/${langCode}/blog`,
+      url: canonical,
       type: "website",
       locale: OG_LOCALE[langCode],
       title: titles[langCode],

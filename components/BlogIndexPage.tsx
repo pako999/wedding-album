@@ -2,7 +2,7 @@ import Link from "next/link";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SeoFooter } from "@/components/SeoFooter";
 import type { BlogPost, BlogCategory } from "@/lib/blog";
-import { SITE_URL } from "@/lib/urls";
+import { localeAbsoluteUrl, SITE_URL } from "@/lib/urls";
 import { BLOG_HREFLANG, type LangCode } from "@/components/LanguageSwitcher";
 import { safeJsonLd } from "@/lib/seo/jsonld-safe";
 
@@ -91,7 +91,7 @@ export function BlogIndexPage({ posts, lang }: { posts: BlogPost[]; lang: LangCo
   const t = COPY[lang];
   const featured = posts[0];
   const rest = posts.slice(1);
-  const absoluteIndex = `${SITE_URL}${indexUrl(lang)}`;
+  const absoluteIndex = localeAbsoluteUrl(lang, indexUrl(lang));
 
   const itemList = {
     "@context": "https://schema.org",
@@ -105,7 +105,7 @@ export function BlogIndexPage({ posts, lang }: { posts: BlogPost[]; lang: LangCo
     blogPost: posts.slice(0, 20).map((post) => ({
       "@type": "BlogPosting",
       headline: post.title,
-      url: `${SITE_URL}${blogUrl(lang, post.slug)}`,
+      url: localeAbsoluteUrl(lang, blogUrl(lang, post.slug)),
       datePublished: post.publishedAt,
       dateModified: post.updatedAt,
       description: post.description,

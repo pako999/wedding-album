@@ -4,7 +4,7 @@ import { BlogPostPage } from "@/components/BlogPostPage";
 import { getAllSlugs, getPost, getTranslationMap, blogUrl } from "@/lib/blog";
 import type { LangCode } from "@/components/LanguageSwitcher";
 import { OG_IMAGE_URL, ogImage } from "@/lib/og";
-import { absoluteUrl } from "@/lib/urls";
+import { localeAbsoluteUrl } from "@/lib/urls";
 
 export const revalidate = 3600;
 
@@ -27,7 +27,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const post = await getPost(langCode, postSlug);
   if (!post) return {};
   const languages = await getTranslationMap(post.translationKey);
-  const canonical = absoluteUrl(blogUrl(langCode, post.slug));
+  const canonical = localeAbsoluteUrl(langCode, blogUrl(langCode, post.slug));
   return {
     title: post.title,
     description: post.description,

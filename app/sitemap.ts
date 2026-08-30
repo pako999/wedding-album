@@ -1,7 +1,9 @@
 import type { MetadataRoute } from "next";
+import { headers } from "next/headers";
 import fs from "node:fs/promises";
 import path from "node:path";
-import { SITE_URL } from "@/lib/urls";
+import { localeAbsoluteUrl, SITE_URL } from "@/lib/urls";
+import { isSerbianGuestcamHost } from "@/lib/site-domains";
 import { getEventTopic, localesForTopic, type EventTopicKey } from "@/lib/seo/event-topics";
 import { LEGAL_DOCUMENTS, legalAlternates } from "@/lib/seo/legal-alternates";
 import { withRegionalHreflang } from "@/lib/seo/hreflang";
@@ -23,8 +25,8 @@ const LOCALES: Locale[] = ["sl", "hr", "sr", "de", "en", "es"];
 /** Stable dates only. Never replace an unknown lastmod with `new Date()`:
  * doing so tells crawlers every page changed on every sitemap generation. */
 const LAST_EDITED = {
-  homepage: "2026-08-28",
-  seoLandings: "2026-08-28",
+  homepage: "2026-08-30",
+  seoLandings: "2026-08-30",
   alternatives: "2026-08-28",
   legalSl: "2026-07-01",
   legalIntl: "2026-08-28",
@@ -35,7 +37,7 @@ const LAST_EDITED = {
 
 function clusterLinks(paths: Record<Locale, string>): Record<string, string> {
   const out: Record<string, string> = {};
-  for (const lang of LOCALES) out[lang] = `${SITE_URL}${paths[lang]}`;
+  for (const lang of LOCALES) out[lang] = localeAbsoluteUrl(lang, paths[lang]);
   out["x-default"] = out.sl;
   return withRegionalHreflang(out);
 }
@@ -102,7 +104,7 @@ async function blogEntries(): Promise<PageEntry[]> {
   for (const p of allPosts) {
     if (!p.translationKey) continue;
     const cluster = clustersByKey.get(p.translationKey) ?? {};
-    cluster[p.lang] = `${SITE_URL}${p.url}`;
+    cluster[p.lang] = localeAbsoluteUrl(p.lang, p.url);
     clustersByKey.set(p.translationKey, cluster);
   }
   for (const [key, langs] of clustersByKey) {
@@ -136,7 +138,9 @@ function eventTopicEntries(): PageEntry[] {
     const locales = localesForTopic(key) as Locale[];
     if (!locales.length) continue;
     const cluster: Record<string, string> = {};
-    for (const loc of locales) cluster[loc] = `${SITE_URL}/${loc}/${getEventTopic(loc, key)!.slug}`;
+    for (const loc of locales) {
+      cluster[loc] = localeAbsoluteUrl(loc, `/${loc}/${getEventTopic(loc, key)!.slug}`);
+    }
     cluster["x-default"] = cluster.sl ?? cluster.en ?? Object.values(cluster)[0];
     const regionalCluster = withRegionalHreflang(cluster);
     const minor = MINOR_EVENT_TOPICS.has(key);
@@ -154,6 +158,11 @@ function eventTopicEntries(): PageEntry[] {
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const requestHeaders = await headers();
+  const requestHost = (
+    requestHeaders.get("x-forwarded-host") ?? requestHeaders.get("host") ?? ""
+  ).split(",")[0];
+  const serbianSitemap = isSerbianGuestcamHost(requestHost);
   const blog = await blogEntries();
   const pages: PageEntry[] = [
     { path: "", priority: 1, changeFrequency: "weekly", lastModified: LAST_EDITED.homepage, alternates: HOMEPAGE_CLUSTER },
@@ -188,8 +197,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...blog,
   ];
 
-  return pages.map(({ path, priority, changeFrequency, lastModified, alternates }) => ({
-    url: `${SITE_URL}${path}`,
+  const pagesForHost = pages.filter(({ path }) => {
+    const serbianPath = path === "/sr" || path.startsWith("/sr/");
+    return serbianSitemap ? serbianPath : !serbianPath;
+  });
+
+  return pagesForHost.map(({ path, priority, changeFrequency, lastModified, alternates }) => ({
+    url: localeAbsoluteUrl(path === "/sr" || path.startsWith("/sr/") ? "sr" : "sl", path),
     ...(lastModified ? { lastModified: new Date(lastModified) } : {}),
     changeFrequency,
     priority,

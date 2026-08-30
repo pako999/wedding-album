@@ -2,12 +2,13 @@ import { SITE_URL } from "@/lib/urls";
 import type { Metadata } from "next";
 import { ContactPage } from "@/components/ContactPage";
 import { withRegionalHreflang } from "@/lib/seo/hreflang";
+import { serbianGuestcamUrl } from "@/lib/site-domains";
 
 export const metadata: Metadata = {
   title: "Kontakt",
   description: "Pišite nam — email, WhatsApp, Premium podrška za vašu venčanu galeriju.",
   alternates: {
-    canonical: `${SITE_URL}/sr/contact`,
+    canonical: serbianGuestcamUrl("/sr/contact"),
     languages: withRegionalHreflang({
       sl: `${SITE_URL}/contact`,
       hr: `${SITE_URL}/hr/contact`,
@@ -19,7 +20,7 @@ export const metadata: Metadata = {
     }),
   },
   openGraph: {
-    url: `${SITE_URL}/sr/contact`,
+    url: serbianGuestcamUrl("/sr/contact"),
     title: "Kontakt",
     description: "Pišite nam — email, WhatsApp, Premium podrška za vašu venčanu galeriju.",
     images: ["/og-image.png?v=2"],

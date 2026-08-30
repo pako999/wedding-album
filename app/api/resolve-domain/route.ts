@@ -2,7 +2,11 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { albums } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
-import { isSpanishGuestcamHost, normalizedHostname } from "@/lib/site-domains";
+import {
+  isSerbianGuestcamHost,
+  isSpanishGuestcamHost,
+  normalizedHostname,
+} from "@/lib/site-domains";
 
 export const dynamic = "force-dynamic";
 
@@ -52,6 +56,15 @@ export async function GET(req: NextRequest) {
     const url = req.nextUrl.clone();
     url.searchParams.delete("domain");
     url.pathname = "/es";
+    return NextResponse.rewrite(url, { headers: { "Cache-Control": "no-store" } });
+  }
+
+  // Final safety net: guestcam.rs is an official Serbian marketing host and
+  // must never fall through to the customer custom-domain lookup.
+  if (isSerbianGuestcamHost(domain)) {
+    const url = req.nextUrl.clone();
+    url.searchParams.delete("domain");
+    url.pathname = "/sr";
     return NextResponse.rewrite(url, { headers: { "Cache-Control": "no-store" } });
   }
 

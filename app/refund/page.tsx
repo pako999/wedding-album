@@ -1,21 +1,14 @@
 import { SITE_URL } from "@/lib/urls";
 import type { Metadata } from "next";
 import { LegalPage } from "@/components/LegalPage";
+import { legalAlternates } from "@/lib/seo/legal-alternates";
 
 export const metadata: Metadata = {
   title: "Politika vračila denarja",
   description: "Politika vračila denarja Guestcam — 30-dnevna garancija vračila, pogoji, postopek in roki.",
   alternates: {
     canonical: `${SITE_URL}/refund`,
-    languages: {
-      sl: `${SITE_URL}/refund`,
-      hr: `${SITE_URL}/hr/refund`,
-      sr: `${SITE_URL}/sr/refund`,
-      de: `${SITE_URL}/de/refund`,
-      en: `${SITE_URL}/en/refund`,
-      es: `${SITE_URL}/es/refund`,
-      "x-default": `${SITE_URL}/refund`,
-    },
+    languages: legalAlternates("refund"),
   },
   openGraph: {
     url: `${SITE_URL}/refund`,
