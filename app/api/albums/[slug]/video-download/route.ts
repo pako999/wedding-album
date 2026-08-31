@@ -30,6 +30,32 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 export const maxDuration = 300;
 
+const MP4_RES_ORDER = ["1080p", "720p", "480p", "360p", "240p"];
+
+function buildMp4Candidates(
+  best: { url: string; res: string },
+  availableResolutions: string,
+): Array<{ url: string; res: string }> {
+  const present = new Set(
+    availableResolutions.split(",").map((s) => s.trim()).filter(Boolean),
+  );
+  const base = best.url.replace(/\/play_[^/]+\.mp4$/, "");
+  const ordered = MP4_RES_ORDER.filter((res) => present.has(res));
+
+  // Keep the picker result first even if Bunny returns an unexpected resolution
+  // string, then try progressively smaller renditions on upstream 404s.
+  const candidates = [
+    best,
+    ...ordered
+      .filter((res) => res !== best.res)
+      .map((res) => ({ url: `${base}/play_${res}.mp4`, res })),
+  ];
+
+  return candidates.filter(
+    (candidate, index, all) => all.findIndex((item) => item.url === candidate.url) === index,
+  );
+}
+
 export async function GET(
   req: NextRequest,
   { params }: { params: Promise<{ slug: string }> },
@@ -118,50 +144,88 @@ export async function GET(
       );
     }
 
-    const fetchUrl = await signBunnyStreamUrl(best.url);
+    const candidates = buildMp4Candidates(best, meta.availableResolutions);
+    const upstreamHeaders: Record<string, string> = {};
+    if (requestedRange) upstreamHeaders.range = requestedRange;
 
-    let upstream: Response;
-    try {
-      const upstreamHeaders: Record<string, string> = {};
-      if (requestedRange) upstreamHeaders.range = requestedRange;
-      upstream = await fetch(fetchUrl, {
-        headers: upstreamHeaders,
-        cache: "no-store",
-      });
-    } catch (err) {
-      const detail = err instanceof Error ? err.message : String(err);
-      console.error(`[video-download] upstream fetch threw for ${best.url}:`, detail);
-      return NextResponse.json(
-        { error: `Bunny CDN fetch failed: ${detail.slice(0, 200)}`, url: best.url },
-        { status: 502 },
-      );
+    let upstream: Response | null = null;
+    let selected = best;
+    let lastStatus = 0;
+    let lastBody = "";
+
+    for (const candidate of candidates) {
+      const fetchUrl = await signBunnyStreamUrl(candidate.url);
+      let response: Response;
+
+      try {
+        response = await fetch(fetchUrl, {
+          headers: upstreamHeaders,
+          cache: "no-store",
+        });
+      } catch (err) {
+        const detail = err instanceof Error ? err.message : String(err);
+        console.error(`[video-download] upstream fetch threw for ${candidate.url}:`, detail);
+        return NextResponse.json(
+          { error: `Bunny CDN fetch failed: ${detail.slice(0, 200)}`, url: candidate.url },
+          { status: 502 },
+        );
+      }
+
+      if (response.ok || response.status === 206) {
+        upstream = response;
+        selected = candidate;
+        break;
+      }
+
+      lastStatus = response.status;
+      lastBody = await response.text().catch(() => "");
+      selected = candidate;
+
+      if (response.status === 404) {
+        const hasNext = candidate !== candidates[candidates.length - 1];
+        if (hasNext) {
+          console.warn(
+            `[video-download] Bunny CDN 404 for ${candidate.res}; trying lower MP4 rendition`,
+            { video: vid.slice(0, 8) },
+          );
+          continue;
+        }
+      }
+
+      // Authentication, range, and upstream server errors are not resolution-specific.
+      // Do not mask them by trying every rendition.
+      break;
     }
 
-    if (playbackMode) {
-      console.info("[video-playback] upstream", {
-        video: vid.slice(0, 8),
-        status: upstream.status,
-        rangeRequested: requestedRange ?? "none",
-        contentType: upstream.headers.get("content-type") ?? "none",
-        contentRange: upstream.headers.get("content-range") ?? "none",
-        contentLength: upstream.headers.get("content-length") ?? "none",
-      });
-    }
+    if (!upstream) {
+      if (lastStatus === 404) {
+        console.warn("[video-download] no generated Bunny MP4 rendition available", {
+          video: vid.slice(0, 8),
+          attemptedResolutions: candidates.map((candidate) => candidate.res),
+        });
+        return NextResponse.json(
+          {
+            error:
+              "No generated MP4 rendition is currently available for this video. " +
+              "Bunny MP4 Fallback may still be processing or may be disabled.",
+            attemptedResolutions: candidates.map((candidate) => candidate.res),
+          },
+          { status: 404 },
+        );
+      }
 
-    if (!upstream.ok && upstream.status !== 206) {
-      const body = await upstream.text().catch(() => "");
       console.error(
-        `[video-download] Bunny CDN ${upstream.status} for ${best.url} — body:`,
-        body.slice(0, 200),
+        `[video-download] Bunny CDN ${lastStatus} for ${selected.url} — body:`,
+        lastBody.slice(0, 200),
       );
       let hint =
         "Most common cause: MP4 Fallback is OFF in the Bunny Stream library settings.";
       try {
-        const host = new URL(best.url).hostname;
+        const host = new URL(selected.url).hostname;
         if (!host.startsWith("vz-")) {
           hint =
             `BUNNY_STREAM_CDN_URL appears to be set to "${host}" — expected the Stream CDN hostname starting with vz-.`;
-        } else if (upstream.status === 403) {
+        } else if (lastStatus === 403) {
           if (!process.env.BUNNY_STREAM_SECURITY_KEY) {
             hint =
               "Token Authentication is ON in Bunny Stream but BUNNY_STREAM_SECURITY_KEY is not configured in Vercel.";
@@ -173,17 +237,29 @@ export async function GET(
       } catch { /* keep default hint */ }
       return NextResponse.json(
         {
-          error: `Bunny CDN returned ${upstream.status} for ${best.res} MP4. ${hint}`,
-          url: best.url,
-          upstreamBody: body.slice(0, 200),
+          error: `Bunny CDN returned ${lastStatus} for ${selected.res} MP4. ${hint}`,
+          url: selected.url,
+          upstreamBody: lastBody.slice(0, 200),
         },
         { status: 502 },
       );
     }
 
+    if (playbackMode) {
+      console.info("[video-playback] upstream", {
+        video: vid.slice(0, 8),
+        status: upstream.status,
+        selectedResolution: selected.res,
+        rangeRequested: requestedRange ?? "none",
+        contentType: upstream.headers.get("content-type") ?? "none",
+        contentRange: upstream.headers.get("content-range") ?? "none",
+        contentLength: upstream.headers.get("content-length") ?? "none",
+      });
+    }
+
     if (!upstream.body) {
       return NextResponse.json(
-        { error: "Bunny CDN returned a response with no body", url: best.url },
+        { error: "Bunny CDN returned a response with no body", url: selected.url },
         { status: 502 },
       );
     }
