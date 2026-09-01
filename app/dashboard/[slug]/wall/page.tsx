@@ -53,7 +53,7 @@ export default async function WallAdminPage({ params }: { params: Promise<{ slug
         </div>
       </header>
       <main className="max-w-3xl mx-auto px-4 py-8">
-        <h1 className="text-xl font-bold text-gray-900 mb-1">Foto stena — {album.coupleName}</h1>
+        <h1 className="gc-admin-page-title text-gray-900 mb-1">Foto stena — {album.coupleName}</h1>
         <p className="text-sm text-gray-500 mb-6">
           Nastavitve žive foto stene in sponzorskih slik za ta dogodek.
         </p>

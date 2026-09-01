@@ -144,7 +144,7 @@ export default async function AlbumAdminPage({ params, searchParams }: Props) {
       <div className="min-h-screen flex items-center justify-center" style={{ background: "#F4F6FB" }}>
         <div className="bg-white rounded-2xl border border-amber-200 p-8 max-w-md text-center shadow">
           <div className="text-4xl mb-4">⚠️</div>
-          <h1 className="font-serif text-2xl text-[#0F1729] mb-2">Napaka pri nalaganju</h1>
+          <h1 className="gc-admin-page-title text-[#0F1729] mb-2">Napaka pri nalaganju</h1>
           <p className="text-sm text-gray-500 mb-4">
             Prišlo je do napake z bazo podatkov. Poskusite znova čez trenutek.
           </p>

@@ -97,7 +97,7 @@ export default async function AdminOverview() {
   return (
     <div className="space-y-8">
       <header>
-        <h1 className="text-3xl font-extrabold tracking-tight text-[#0F1729]">Pregled</h1>
+        <h1 className="gc-admin-page-title text-[#0F1729]">Pregled</h1>
         <p className="text-sm text-gray-500 mt-1">Stanje platforme v realnem času.</p>
       </header>
 

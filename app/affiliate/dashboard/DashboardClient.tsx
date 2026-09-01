@@ -48,14 +48,14 @@ export function DashboardClient({ affiliate, commissions, analytics }: Props) {
   }
 
   return (
-    <div className="min-h-screen bg-[#F5F5F7] py-10 px-4">
+    <div className="gc-admin-ui min-h-screen bg-[#F5F5F7] py-10 px-4">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="mb-6">
           <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#C9820A] mb-1.5">
             🤝 Partnerski program
           </p>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-[#0F1729]">
+          <h1 className="gc-admin-page-title text-[#0F1729]">
             Pozdravljeni, {affiliate.name}!
           </h1>
         </div>

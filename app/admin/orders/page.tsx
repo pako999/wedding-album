@@ -54,7 +54,7 @@ export default async function AdminOrdersPage() {
   return (
     <div>
       <div className="flex items-baseline justify-between gap-4 mb-1 flex-wrap">
-        <h1 className="text-2xl font-bold text-gray-900">Naročila podstavkov</h1>
+        <h1 className="gc-admin-page-title text-gray-900">Naročila podstavkov</h1>
         <span className="text-sm text-gray-400">{orders.length} naročil</span>
       </div>
       <p className="text-sm text-gray-500 mb-6">

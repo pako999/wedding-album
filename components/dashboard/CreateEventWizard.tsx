@@ -176,7 +176,7 @@ export function CreateEventWizard({ initialPlan }: { initialPlan?: PaidPlanId } 
               <span className="text-xl">📸</span>
             </div>
             <div>
-              <h1 className="text-2xl font-bold tracking-tight text-[#0F1729]">Nova galerija</h1>
+              <h1 className="gc-admin-page-title text-[#0F1729]">Nova galerija</h1>
               <p className="text-xs text-gray-400">Korak 1 od 2 · Izberi vrsto dogodka</p>
             </div>
           </div>
@@ -223,7 +223,7 @@ export function CreateEventWizard({ initialPlan }: { initialPlan?: PaidPlanId } 
             <EventIcon id={eventInfo.id} className="w-6 h-6" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold tracking-tight text-[#0F1729]">{eventInfo.label}</h1>
+            <h1 className="gc-admin-page-title text-[#0F1729]">{eventInfo.label}</h1>
             <p className="text-xs text-gray-400">Korak 2 od 2 · Podatki o dogodku</p>
           </div>
         </div>

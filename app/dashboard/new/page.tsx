@@ -106,7 +106,7 @@ export default async function NewAlbumPage({ searchParams }: { searchParams: Pro
                 <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
               </svg>
             </div>
-            <h1 className="font-serif text-2xl font-light text-[#0F1729] mb-2">{t.title}</h1>
+            <h1 className="gc-admin-page-title text-[#0F1729] mb-2">{t.title}</h1>
             <p className="text-sm text-[#0F1729]/50 max-w-sm mx-auto mb-8">{t.body}</p>
             <Link
               href={`/dashboard/${gate.mostRecentSlug}/upgrade?lang=${lang}`}

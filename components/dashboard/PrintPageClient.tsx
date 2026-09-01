@@ -321,7 +321,7 @@ export function PrintPageClient({ slug, coupleName, weddingDate, location, qrUrl
       <main className="no-print max-w-5xl mx-auto px-4 sm:px-6 py-10">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="font-serif text-3xl font-light text-[#0F1729] mb-1">{coupleName}</h1>
+          <h1 className="gc-admin-page-title text-[#0F1729] mb-1">{coupleName}</h1>
           <p className="text-sm text-gray-400">
             {weddingDate}{location ? ` · ${location}` : ""} — Predloge za tisk
           </p>

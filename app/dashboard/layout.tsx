@@ -26,9 +26,9 @@ export default async function DashboardLayout({ children }: { children: React.Re
   if (!userId) redirect("/sign-in");
 
   return (
-    <>
+    <div className="gc-admin-ui min-h-screen">
       <HideCookiebot />
       {children}
-    </>
+    </div>
   );
 }

@@ -23,7 +23,7 @@ export default async function AdminDiscounts() {
     <div className="space-y-6">
       <header className="flex items-start justify-between gap-4 flex-wrap">
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight text-[#0F1729]">Kode za popust</h1>
+          <h1 className="gc-admin-page-title text-[#0F1729]">Kode za popust</h1>
           <p className="text-sm text-gray-500 mt-1">
             {codes.length} kod · {active} aktivnih
           </p>

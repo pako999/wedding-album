@@ -7,6 +7,17 @@ async function read(file) {
   return fs.readFile(path.join(root, file), "utf8");
 }
 
+async function readTsxTree(directory) {
+  const absolute = path.join(root, directory);
+  const entries = await fs.readdir(absolute, { withFileTypes: true });
+  const chunks = await Promise.all(entries.map(async (entry) => {
+    const relative = path.join(directory, entry.name);
+    if (entry.isDirectory()) return readTsxTree(relative);
+    return entry.name.endsWith(".tsx") ? read(relative) : "";
+  }));
+  return chunks.join("\n");
+}
+
 function requireMatch(name, text, pattern, hint) {
   if (!pattern.test(text)) {
     throw new Error(`FAIL: ${name} — ${hint}`);
@@ -79,7 +90,40 @@ const files = {
       ),
     )).flat().map(read))
   ).join("\n"),
+  globalStyles: await read("app/globals.css"),
+  dashboardLayout: await read("app/dashboard/layout.tsx"),
+  adminLayout: await read("app/admin/layout.tsx"),
+  authenticatedUi: (
+    await Promise.all([
+      "app/dashboard",
+      "app/admin",
+      "app/affiliate/dashboard",
+      "components/dashboard",
+      "components/admin",
+    ].map(readTsxTree))
+  ).join("\n"),
 };
+
+requireMatch(
+  "authenticated screens use the shared onboarding font scope",
+  `${files.dashboardLayout}\n${files.adminLayout}`,
+  /gc-admin-ui[\s\S]*gc-admin-ui/,
+  "dashboard and internal admin layouts must both inherit the onboarding typography system",
+);
+
+requireMatch(
+  "authenticated typography uses the DM Sans UI family and onboarding title scale",
+  files.globalStyles,
+  /\.gc-admin-ui\s*\{[\s\S]*font-family:\s*var\(--font-dm-sans\)[\s\S]*\.gc-admin-page-title\s*\{[\s\S]*font-size:\s*1\.5rem[\s\S]*font-weight:\s*700/,
+  "the shared product typography tokens must stay aligned with onboarding",
+);
+
+requireAbsent(
+  "authenticated page titles do not reintroduce one-off fonts or sizes",
+  files.authenticatedUi,
+  /<h1\b(?![^>]*\bgc-admin-page-title\b)[^>]*>/,
+  "every dashboard, onboarding, partner and internal-admin h1 must use gc-admin-page-title",
+);
 
 requireMatch(
   "legacy upload endpoint stays retired",

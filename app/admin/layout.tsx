@@ -64,7 +64,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     // the password prompt.
     const allowed = await requireAdminEmail();
     if (!allowed) notFound();
-    return <>{children}</>;
+    return <div className="gc-admin-ui min-h-screen">{children}</div>;
   }
 
   // Full check: email allowlist AND signed password cookie.
@@ -80,9 +80,11 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   }
 
   return (
-    <AdminShell nav={NAV} adminEmail={admin.email}>
-      <HideCookiebot />
-      {children}
-    </AdminShell>
+    <div className="gc-admin-ui min-h-screen">
+      <AdminShell nav={NAV} adminEmail={admin.email}>
+        <HideCookiebot />
+        {children}
+      </AdminShell>
+    </div>
   );
 }

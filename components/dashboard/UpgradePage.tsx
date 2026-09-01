@@ -205,7 +205,7 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
 
           {/* Page title */}
           <div className="text-center mb-8">
-            <h1 className="text-2xl font-bold text-gray-900 mb-1">{u.title}</h1>
+            <h1 className="gc-admin-page-title text-gray-900 mb-1">{u.title}</h1>
             <p className="text-sm text-gray-500">
               <span className="font-medium text-gray-700">{album.coupleName}</span>
               {" "}· {u.subtitle}

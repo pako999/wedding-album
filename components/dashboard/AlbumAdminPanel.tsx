@@ -174,7 +174,7 @@ function NewAlbumSuccess({ album, paidPlan }: { album: Album; paidPlan?: "basic"
                 <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
               </svg>
             </div>
-            <h1 className="text-[26px] sm:text-[28px] font-bold text-gray-900 mb-2 leading-snug">
+            <h1 className="gc-admin-page-title text-gray-900 mb-2">
               Galerija je ustvarjena! 🎉
             </h1>
             <p className="text-sm text-gray-500 leading-relaxed mb-6">
@@ -651,7 +651,7 @@ export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activ
               </svg>
             </button>
             <div className="min-w-0">
-              <h1 className="text-xl font-bold text-gray-900 truncate">
+              <h1 className="gc-admin-page-title text-gray-900 truncate">
                 {activeTab === "overview"  && "Pregled galerije"}
                 {activeTab === "gallery"   && "Fotografije"}
                 {activeTab === "film"      && "🎬 Film Studio"}

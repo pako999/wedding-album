@@ -36,7 +36,7 @@ export default async function AdminAffiliatesPage() {
   return (
     <div className="space-y-6">
       <header>
-        <h1 className="text-3xl font-extrabold tracking-tight text-[#0F1729]">Partnerji</h1>
+        <h1 className="gc-admin-page-title text-[#0F1729]">Partnerji</h1>
         <p className="text-sm text-gray-500 mt-1">
           {rows.length} skupaj · {counts.pending} v čakanju · {counts.active} aktivnih · {counts.suspended} ustavljenih
         </p>

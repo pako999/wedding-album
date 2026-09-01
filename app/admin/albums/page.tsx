@@ -57,7 +57,7 @@ export default async function AdminAlbums({ searchParams }: PageProps) {
     <div className="space-y-6">
       <header className="flex items-end justify-between">
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight text-[#0F1729]">Galerije</h1>
+          <h1 className="gc-admin-page-title text-[#0F1729]">Galerije</h1>
           <p className="text-sm text-gray-500 mt-1">
             {rows.length} galerij{search ? ` — iskanje "${search}"` : ""}
           </p>

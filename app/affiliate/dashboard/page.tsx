@@ -26,10 +26,10 @@ export default async function AffiliateDashboardPage() {
 
   if (!affiliate) {
     return (
-      <div className="min-h-screen bg-[#F5F5F7] flex items-center justify-center px-4">
+      <div className="gc-admin-ui min-h-screen bg-[#F5F5F7] flex items-center justify-center px-4">
         <div className="max-w-md text-center bg-white rounded-2xl border border-gray-100 p-8">
           <div className="text-4xl mb-3">🤝</div>
-          <h1 className="text-xl font-extrabold text-[#0F1729] mb-2">Še niste partner</h1>
+          <h1 className="gc-admin-page-title text-[#0F1729] mb-2">Še niste partner</h1>
           <p className="text-sm text-gray-500 mb-5">
             Pridružite se GuestCam partnerskemu programu in zaslužite 20% provizije.
           </p>
@@ -47,10 +47,10 @@ export default async function AffiliateDashboardPage() {
 
   if (affiliate.status === "pending") {
     return (
-      <div className="min-h-screen bg-[#F5F5F7] flex items-center justify-center px-4">
+      <div className="gc-admin-ui min-h-screen bg-[#F5F5F7] flex items-center justify-center px-4">
         <div className="max-w-md text-center bg-white rounded-2xl border border-gray-100 p-8">
           <div className="text-4xl mb-3">⏳</div>
-          <h1 className="text-xl font-extrabold text-[#0F1729] mb-2">Prijava v obdelavi</h1>
+          <h1 className="gc-admin-page-title text-[#0F1729] mb-2">Prijava v obdelavi</h1>
           <p className="text-sm text-gray-500">
             Vašo prijavo pregledujemo. Odgovorili vam bomo v 2 delovnih dneh.
           </p>
@@ -61,10 +61,10 @@ export default async function AffiliateDashboardPage() {
 
   if (affiliate.status === "suspended" || affiliate.status === "rejected") {
     return (
-      <div className="min-h-screen bg-[#F5F5F7] flex items-center justify-center px-4">
+      <div className="gc-admin-ui min-h-screen bg-[#F5F5F7] flex items-center justify-center px-4">
         <div className="max-w-md text-center bg-white rounded-2xl border border-gray-100 p-8">
           <div className="text-4xl mb-3">🚫</div>
-          <h1 className="text-xl font-extrabold text-[#0F1729] mb-2">
+          <h1 className="gc-admin-page-title text-[#0F1729] mb-2">
             {affiliate.status === "suspended" ? "Partnerski račun ustavljen" : "Prijava zavrnjena"}
           </h1>
           <p className="text-sm text-gray-500">

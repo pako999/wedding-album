@@ -101,6 +101,34 @@ html, body {
   overflow-x: clip;
 }
 
+/* ── Authenticated product typography ─────────────────────────────────
+   Onboarding is the reference for every dashboard and internal-admin
+   screen: one DM Sans UI family, one page-title size/weight and inherited
+   form-control typography. The scope deliberately stops at authenticated
+   product chrome, so editorial marketing pages and the design-specific
+   type inside printable QR templates keep their own visual language. */
+.gc-admin-ui {
+  font-family: var(--font-dm-sans), ui-sans-serif, system-ui, -apple-system, sans-serif;
+  font-size: 1rem;
+  line-height: 1.5;
+  font-weight: 400;
+}
+
+.gc-admin-ui button,
+.gc-admin-ui input,
+.gc-admin-ui select,
+.gc-admin-ui textarea {
+  font-family: inherit;
+}
+
+.gc-admin-page-title {
+  font-family: inherit;
+  font-size: 1.5rem;
+  line-height: 1.2;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+}
+
 /* Masonry grid for photo albums */
 .masonry-grid {
   columns: 2;
