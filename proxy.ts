@@ -199,6 +199,17 @@ export default clerkMiddleware(
     return primaryAccountRedirect(req);
   }
 
+  // /demo is a real route only on the primary app. Country marketing pages
+  // reuse the in-page demo modal, so bookmarked links should return to the
+  // matching country homepage and open that modal instead of rewriting to the
+  // non-existent /sr/demo or /es/demo route.
+  if (countryLocale && pathname === "/demo") {
+    const target = req.nextUrl.clone();
+    target.pathname = "/";
+    target.searchParams.set("demo", "1");
+    return NextResponse.redirect(target, 307);
+  }
+
   // ── Album password URL hygiene ──────────────────────────────────────────────
   // Existing protected-album forms navigate once to /slug?pw=secret. Capture
   // that value, encrypt it into an HttpOnly cookie and immediately redirect to

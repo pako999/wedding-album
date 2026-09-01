@@ -2,6 +2,11 @@
 
 import { useEffect, useState, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
+import type { LangCode } from "@/components/LanguageSwitcher";
+import {
+  PRIMARY_GUESTCAM_ORIGIN,
+  isCountryMarketingHost,
+} from "@/lib/site-domains";
 
 /**
  * The album the demo QR code / link points at.
@@ -11,11 +16,45 @@ const DEMO_SLUG = "ana-marko-13ka";
 
 type DemoVariant = "hero" | "nav" | "heroDark" | "bridge";
 
+const MODAL_COPY: Record<LangCode, {
+  close: string;
+  eyebrow: string;
+  title: string;
+  body: string;
+  qrAlt: string;
+  open: string;
+  note: string;
+}> = {
+  sl: { close: "Zapri", eyebrow: "Demo v živo", title: "Razišči demo galerijo", body: "Skenirajte QR kodo ali kliknite spodaj — preizkusite, kako preprosto gostje delijo fotografije in videe.", qrAlt: "QR koda za demo galerijo", open: "Odpri demo galerijo", note: "Brez prijave · Brez aplikacije" },
+  hr: { close: "Zatvori", eyebrow: "Demo uživo", title: "Istražite demo galeriju", body: "Skenirajte QR kod ili kliknite ispod — isprobajte koliko jednostavno gosti dijele fotografije i videozapise.", qrAlt: "QR kod za demo galeriju", open: "Otvori demo galeriju", note: "Bez prijave · Bez aplikacije" },
+  sr: { close: "Zatvori", eyebrow: "Demo uživo", title: "Istražite demo galeriju", body: "Skenirajte QR kod ili kliknite ispod — isprobajte koliko jednostavno gosti dele fotografije i video snimke.", qrAlt: "QR kod za demo galeriju", open: "Otvori demo galeriju", note: "Bez prijave · Bez aplikacije" },
+  de: { close: "Schließen", eyebrow: "Live-Demo", title: "Demo-Galerie entdecken", body: "Scannen Sie den QR-Code oder klicken Sie unten und testen Sie, wie einfach Gäste Fotos und Videos teilen.", qrAlt: "QR-Code für die Demo-Galerie", open: "Demo-Galerie öffnen", note: "Ohne Anmeldung · Ohne App" },
+  en: { close: "Close", eyebrow: "Live demo", title: "Explore the demo gallery", body: "Scan the QR code or click below to see how easily guests can share photos and videos.", qrAlt: "QR code for the demo gallery", open: "Open demo gallery", note: "No sign-in · No app" },
+  es: { close: "Cerrar", eyebrow: "Demo en directo", title: "Explora la galería demo", body: "Escanea el código QR o haz clic abajo para probar lo fácil que es compartir fotos y vídeos.", qrAlt: "Código QR de la galería demo", open: "Abrir galería demo", note: "Sin registro · Sin aplicación" },
+};
+
 /** The origin never changes during a page's lifetime — nothing to subscribe to. */
 function emptySubscribe() { return () => {}; }
 
-export function DemoButton({ variant = "hero" }: { variant?: DemoVariant }) {
+function demoRequestedInUrl() {
+  return new URL(window.location.href).searchParams.get("demo") === "1";
+}
+
+export function DemoButton({
+  variant = "hero",
+  lang = "sl",
+}: {
+  variant?: DemoVariant;
+  lang?: LangCode;
+}) {
   const [open, setOpen] = useState(false);
+  const copy = MODAL_COPY[lang];
+
+  const openFromUrl = useSyncExternalStore(
+    emptySubscribe,
+    demoRequestedInUrl,
+    () => false,
+  );
 
   const origin = useSyncExternalStore(
     emptySubscribe,
@@ -41,7 +80,6 @@ export function DemoButton({ variant = "hero" }: { variant?: DemoVariant }) {
 
     const current = new URL(window.location.href);
     if (current.searchParams.get("demo") === "1") {
-      setOpen(true);
       current.searchParams.delete("demo");
       const cleanUrl = `${current.pathname}${current.search}${current.hash}`;
       window.history.replaceState(window.history.state, "", cleanUrl || "/");
@@ -66,8 +104,18 @@ export function DemoButton({ variant = "hero" }: { variant?: DemoVariant }) {
     return () => document.removeEventListener("click", onDocumentClick, true);
   }, [variant]);
 
-  const demoUrl = `${origin}/${DEMO_SLUG}`;
-  const qrSrc = origin
+  let demoOrigin = origin;
+  if (origin) {
+    try {
+      if (isCountryMarketingHost(new URL(origin).hostname)) {
+        demoOrigin = PRIMARY_GUESTCAM_ORIGIN;
+      }
+    } catch {
+      // Keep the current origin if a non-browser test supplies an invalid URL.
+    }
+  }
+  const demoUrl = `${demoOrigin}/${DEMO_SLUG}`;
+  const qrSrc = demoOrigin
     ? `https://api.qrserver.com/v1/create-qr-code/?size=320x320&qzone=2&format=png` +
       `&bgcolor=ffffff&color=2C2825&data=${encodeURIComponent(demoUrl)}`
     : "";
@@ -108,7 +156,7 @@ export function DemoButton({ variant = "hero" }: { variant?: DemoVariant }) {
         </button>
       )}
 
-      {open && createPortal(
+      {(open || openFromUrl) && createPortal(
         <div className="fixed inset-0 z-[60] overflow-y-auto" role="dialog" aria-modal="true">
           <div
             className="fixed inset-0 bg-[#0F1729]/70 backdrop-blur-sm"
@@ -119,7 +167,7 @@ export function DemoButton({ variant = "hero" }: { variant?: DemoVariant }) {
             <button
               type="button"
               onClick={() => setOpen(false)}
-              aria-label="Zapri"
+              aria-label={copy.close}
               className="absolute top-4 right-4 w-9 h-9 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors"
             >
               <svg className="w-4 h-4 text-[#0F1729]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
@@ -127,13 +175,12 @@ export function DemoButton({ variant = "hero" }: { variant?: DemoVariant }) {
               </svg>
             </button>
 
-            <p className="text-xs font-bold uppercase tracking-[0.18em] text-gray-400 mb-2">Demo v živo</p>
+            <p className="text-xs font-bold uppercase tracking-[0.18em] text-gray-400 mb-2">{copy.eyebrow}</p>
             <h2 className="text-2xl font-bold tracking-tight text-[#0F1729] mb-2">
-              Razišči demo galerijo
+              {copy.title}
             </h2>
             <p className="text-sm text-gray-500 leading-relaxed mb-6">
-              Skenirajte QR kodo ali kliknite spodaj — vstopite v gostujočo galerijo
-              in preizkusite, kako preprosto gostje delijo fotografije in videe.
+              {copy.body}
             </p>
 
             <div
@@ -144,7 +191,7 @@ export function DemoButton({ variant = "hero" }: { variant?: DemoVariant }) {
                 /* eslint-disable-next-line @next/next/no-img-element */
                 <img
                   src={qrSrc}
-                  alt="QR koda za demo galerijo"
+                  alt={copy.qrAlt}
                   width={216}
                   height={216}
                   className="rounded-lg"
@@ -161,13 +208,13 @@ export function DemoButton({ variant = "hero" }: { variant?: DemoVariant }) {
               className="mt-6 inline-flex items-center justify-center gap-2 w-full py-3.5 rounded-2xl text-[#0F1729] font-bold transition-all hover:brightness-95"
               style={{ background: "#FFC94D" }}
             >
-              Odpri demo galerijo
+              {copy.open}
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
               </svg>
             </a>
             <p className="mt-4 text-sm font-bold uppercase tracking-wide text-[#C9820A]">
-              Brez prijave · Brez aplikacije
+              {copy.note}
             </p>
           </div>
           </div>

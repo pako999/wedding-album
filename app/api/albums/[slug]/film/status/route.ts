@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { checkAlbumOwnership } from "@/lib/album-ownership";
+import { hasAlbumRequestAccess } from "@/lib/album-request-access";
 import { db } from "@/lib/db";
 import { albums, filmGenerations } from "@/lib/db/schema";
-import { eq, desc } from "drizzle-orm";
+import { and, eq, desc } from "drizzle-orm";
 import { pollMontage } from "@/lib/film/shotstack";
 
 export const runtime = "nodejs";
@@ -15,7 +16,7 @@ export const runtime = "nodejs";
  * The frontend polls this every few seconds while rendering.
  */
 export async function GET(
-  _req: NextRequest,
+  req: NextRequest,
   { params }: { params: Promise<{ slug: string }> }
 ) {
   const { slug } = await params;
@@ -24,11 +25,37 @@ export async function GET(
     .findFirst({ where: eq(albums.slug, slug) })
     .catch(() => null);
 
+  if (!album) return NextResponse.json({ error: "Not found" }, { status: 404 });
+
   const owner = await checkAlbumOwnership(album);
   if (!owner.ok) {
-    return NextResponse.json({ error: "Not found" }, { status: 404 });
+    // The public album view also uses this endpoint to show an organiser's
+    // completed montage. Guests may read only the final public result and must
+    // pass the same open/password access check as the rest of the gallery.
+    if (!album.isPublished || !(await hasAlbumRequestAccess(req, slug, album))) {
+      return NextResponse.json({ error: "Not found" }, { status: 404 });
+    }
+
+    const [completed] = await db
+      .select()
+      .from(filmGenerations)
+      .where(and(
+        eq(filmGenerations.albumId, album.id),
+        eq(filmGenerations.status, "complete"),
+      ))
+      .orderBy(desc(filmGenerations.createdAt))
+      .limit(1)
+      .catch(() => []);
+
+    return NextResponse.json({
+      generation: completed
+        ? {
+            status: "complete",
+            videoUrl: completed.videoUrl,
+          }
+        : null,
+    });
   }
-  if (!album) return NextResponse.json({ error: "Not found" }, { status: 404 });
 
   // Latest generation for this album
   const [generation] = await db

@@ -40,11 +40,10 @@ export async function HeaderAuthButtons({
     }
   }
 
-  // The current Slovenian homepage keeps its redesigned visual button as a
-  // normal /demo link. This invisible bridge restores the original Guestcam
-  // DemoButton behaviour: clicking that link opens the QR/demo-album modal
-  // in-place instead of navigating away from the homepage.
-  const demoBridge = lang === "sl" ? <DemoButton variant="bridge" /> : null;
+  // Every localized homepage keeps its redesigned visual button as a normal
+  // /demo link. This invisible bridge opens the localized QR/demo modal in
+  // place instead of navigating to a locale route that does not exist.
+  const demoBridge = <DemoButton variant="bridge" lang={lang} />;
 
   if (!signedIn) {
     return <>{demoBridge}<Link href="/sign-in" className={linkClassName}>{t.login}</Link></>;

@@ -27,6 +27,9 @@ const nextConfig: NextConfig = {
       // landing page per market so both URLs do not compete in search.
       { source: "/hr/qr-kod-za-vjencanje-kako", destination: "/hr/qr-kod-vjencanje", permanent: true },
       { source: "/sr/qr-kod-za-vencanje-kako", destination: "/sr/qr-kod-vencanje", permanent: true },
+      // Preserve links to the retired Croatian video-guide slug by sending
+      // them to the closest current guide instead of a dead page.
+      { source: "/blog/kako-prikupiti-video-snimke-gostiju-vencanje", destination: "/hr/blog/kako-skupiti-fotografije-gostiju-na-vjencanju", permanent: true },
     ];
   },
   images: {

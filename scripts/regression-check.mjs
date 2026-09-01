@@ -46,6 +46,8 @@ const files = {
   siteDomains: await read("lib/site-domains.ts"),
   urls: await read("lib/urls.ts"),
   clerkProvider: await read("components/GuestcamClerkProvider.tsx"),
+  demoButton: await read("components/DemoButton.tsx"),
+  headerAuthButtons: await read("components/HeaderAuthButtons.tsx"),
   languageSwitcher: await read("components/LanguageSwitcher.tsx"),
   robots: await read("app/robots.ts"),
   s3: await read("lib/storage/bunny-s3.ts"),
@@ -350,6 +352,27 @@ requireMatch(
 );
 
 requireMatch(
+  "country-domain demo links return to the local homepage modal",
+  files.proxy,
+  /countryLocale && pathname === "\/demo"[\s\S]*target\.pathname = "\/"[\s\S]*searchParams\.set\("demo", "1"\)/,
+  "bookmarked .rs and .es demo links must not rewrite to missing locale routes",
+);
+
+requireMatch(
+  "demo bridge is active and localized on every homepage",
+  `${files.headerAuthButtons}\n${files.demoButton}`,
+  /<DemoButton variant="bridge" lang=\{lang\}[\s\S]*MODAL_COPY/,
+  "all languages must open the localized demo modal",
+);
+
+requireMatch(
+  "country-domain demo modal uses the primary demo album",
+  files.demoButton,
+  /PRIMARY_GUESTCAM_ORIGIN[\s\S]*isCountryMarketingHost[\s\S]*demoOrigin = PRIMARY_GUESTCAM_ORIGIN/,
+  "country marketing domains must never resolve the demo album as a locale page",
+);
+
+requireMatch(
   "country marketing domains do not boot Clerk in the browser",
   files.clerkProvider,
   /isCountryMarketingHost\(host\)[\s\S]*return <>\{children\}<\/>/,
@@ -396,6 +419,13 @@ requireMatch(
   files.filmStatus,
   /generation:\s*null/,
   "film status should represent 'no film yet' without an expected 404",
+);
+
+requireMatch(
+  "published album guests can read only completed film output",
+  files.filmStatus,
+  /hasAlbumRequestAccess[\s\S]*album\.isPublished[\s\S]*filmGenerations\.status, "complete"[\s\S]*status: "complete"[\s\S]*videoUrl: completed\.videoUrl/,
+  "the guest gallery must display completed films without exposing owner-only render state",
 );
 
 requireMatch(
@@ -550,6 +580,13 @@ requireMatch(
   files.nextConfig,
   /source:\s*"\/sr\/qr-kod-za-vencanje-kako"[\s\S]*destination:\s*"\/sr\/qr-kod-vencanje"[\s\S]*permanent:\s*true/,
   "the duplicate Serbian guide must consolidate ranking signals into one canonical URL",
+);
+
+requireMatch(
+  "retired Croatian video guide redirects permanently",
+  files.nextConfig,
+  /source:\s*"\/blog\/kako-prikupiti-video-snimke-gostiju-vencanje"[\s\S]*destination:\s*"\/hr\/blog\/kako-skupiti-fotografije-gostiju-na-vjencanju"[\s\S]*permanent:\s*true/,
+  "old indexed Croatian links must resolve to the closest current guide",
 );
 
 requireMatch(
