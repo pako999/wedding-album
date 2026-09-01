@@ -36,6 +36,17 @@ const MODAL_COPY: Record<LangCode, {
 /** The origin never changes during a page's lifetime — nothing to subscribe to. */
 function emptySubscribe() { return () => {}; }
 
+const DEMO_URL_EVENT = "guestcam:demo-url-change";
+
+function subscribeToDemoUrl(callback: () => void) {
+  window.addEventListener("popstate", callback);
+  window.addEventListener(DEMO_URL_EVENT, callback);
+  return () => {
+    window.removeEventListener("popstate", callback);
+    window.removeEventListener(DEMO_URL_EVENT, callback);
+  };
+}
+
 function demoRequestedInUrl() {
   return new URL(window.location.href).searchParams.get("demo") === "1";
 }
@@ -51,7 +62,7 @@ export function DemoButton({
   const copy = MODAL_COPY[lang];
 
   const openFromUrl = useSyncExternalStore(
-    emptySubscribe,
+    subscribeToDemoUrl,
     demoRequestedInUrl,
     () => false,
   );
@@ -77,13 +88,6 @@ export function DemoButton({
    */
   useEffect(() => {
     if (variant !== "bridge") return;
-
-    const current = new URL(window.location.href);
-    if (current.searchParams.get("demo") === "1") {
-      current.searchParams.delete("demo");
-      const cleanUrl = `${current.pathname}${current.search}${current.hash}`;
-      window.history.replaceState(window.history.state, "", cleanUrl || "/");
-    }
 
     const onDocumentClick = (event: MouseEvent) => {
       if (!(event.target instanceof Element)) return;
@@ -119,6 +123,17 @@ export function DemoButton({
     ? `https://api.qrserver.com/v1/create-qr-code/?size=320x320&qzone=2&format=png` +
       `&bgcolor=ffffff&color=2C2825&data=${encodeURIComponent(demoUrl)}`
     : "";
+
+  const closeDemo = () => {
+    setOpen(false);
+    const current = new URL(window.location.href);
+    if (current.searchParams.has("demo")) {
+      current.searchParams.delete("demo");
+      const cleanUrl = `${current.pathname}${current.search}${current.hash}`;
+      window.history.replaceState(window.history.state, "", cleanUrl || "/");
+      window.dispatchEvent(new Event(DEMO_URL_EVENT));
+    }
+  };
 
   return (
     <>
@@ -160,13 +175,13 @@ export function DemoButton({
         <div className="fixed inset-0 z-[60] overflow-y-auto" role="dialog" aria-modal="true">
           <div
             className="fixed inset-0 bg-[#0F1729]/70 backdrop-blur-sm"
-            onClick={() => setOpen(false)}
+            onClick={closeDemo}
           />
           <div className="flex min-h-full items-center justify-center p-4">
           <div className="relative w-full max-w-md bg-white rounded-3xl shadow-xl p-6 sm:p-8 text-center">
             <button
               type="button"
-              onClick={() => setOpen(false)}
+              onClick={closeDemo}
               aria-label={copy.close}
               className="absolute top-4 right-4 w-9 h-9 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors"
             >
