@@ -23,6 +23,9 @@ const nextConfig: NextConfig = {
       { source: "/zasebnost", destination: "/privacy", permanent: false },
       { source: "/piskotki", destination: "/cookies", permanent: false },
       { source: "/vracilo", destination: "/refund", permanent: false },
+      // Preserve the former root-level Slovenian SEO URL and consolidate its
+      // ranking signals into the current canonical language-prefixed page.
+      { source: "/slike-s-poroke", destination: "/sl/slike-s-poroke", permanent: true },
       // Consolidate duplicate HR/SR wedding-QR guides into one commercial
       // landing page per market so both URLs do not compete in search.
       { source: "/hr/qr-kod-za-vjencanje-kako", destination: "/hr/qr-kod-vjencanje", permanent: true },

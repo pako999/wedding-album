@@ -569,6 +569,13 @@ requireMatch(
 );
 
 requireMatch(
+  "former Slovenian wedding-photo URL redirects permanently",
+  files.nextConfig,
+  /source:\s*"\/slike-s-poroke"[\s\S]*destination:\s*"\/sl\/slike-s-poroke"[\s\S]*permanent:\s*true/,
+  "old Slovenian search links must consolidate into the canonical /sl page",
+);
+
+requireMatch(
   "duplicate Croatian QR guide redirects permanently",
   files.nextConfig,
   /source:\s*"\/hr\/qr-kod-za-vjencanje-kako"[\s\S]*destination:\s*"\/hr\/qr-kod-vjencanje"[\s\S]*permanent:\s*true/,
