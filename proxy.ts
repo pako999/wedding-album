@@ -3,9 +3,13 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import {
   SIGNUP_ATTR_COOKIE,
+  SIGNUP_SOURCE_PARAM,
   ATTR_COOKIE_MAX_AGE,
+  buildSignupSourceSnapshot,
   collectAttribution,
+  parseAttr,
   serializeAttr,
+  serializeSignupSourceSnapshot,
 } from "@/lib/attribution/signup";
 import {
   PRIMARY_GUESTCAM_ORIGIN,
@@ -139,17 +143,34 @@ function permanentCountryRedirect(
  */
 function primaryAccountRedirect(req: NextRequest): NextResponse {
   const { pathname, search } = req.nextUrl;
+  const countryHost = requestHostname(req).replace(/^www\./, "");
+  const cookieAttr = parseAttr(req.cookies.get(SIGNUP_ATTR_COOKIE)?.value);
+  const requestAttr = collectAttribution(
+    req.nextUrl.searchParams,
+    req.headers.get("referer"),
+    pathname,
+  );
+  const source = buildSignupSourceSnapshot(cookieAttr ?? requestAttr, {
+    affiliateRef: req.cookies.get("gc_ref")?.value,
+    referralCode: req.cookies.get("gc_gref")?.value,
+    appHost: countryHost,
+    siteHost: countryHost,
+  });
 
   if (pathname === "/dashboard/new") {
     const target = new URL("/sign-up", PRIMARY_GUESTCAM_ORIGIN);
     for (const [key, value] of req.nextUrl.searchParams) {
       target.searchParams.append(key, value);
     }
+    target.searchParams.set(SIGNUP_SOURCE_PARAM, serializeSignupSourceSnapshot(source));
     target.searchParams.set("redirect_url", `${pathname}${search}`);
     return NextResponse.redirect(target, 307);
   }
 
   const target = new URL(`${pathname}${search}`, PRIMARY_GUESTCAM_ORIGIN);
+  if (pathname === "/sign-up" || pathname.startsWith("/sign-up/")) {
+    target.searchParams.set(SIGNUP_SOURCE_PARAM, serializeSignupSourceSnapshot(source));
+  }
   return NextResponse.redirect(target, 307);
 }
 

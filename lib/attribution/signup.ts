@@ -19,6 +19,7 @@
  */
 
 export const SIGNUP_ATTR_COOKIE = "gc_attr";
+export const SIGNUP_SOURCE_PARAM = "gc_source";
 export const ATTR_COOKIE_MAX_AGE = 90 * 24 * 60 * 60; // 90 days
 
 export interface SignupAttribution {
@@ -44,6 +45,46 @@ export type Channel =
   | "referral_web"
   | "campaign"
   | "direct";
+
+/**
+ * Small, non-sensitive attribution snapshot passed to Clerk at sign-up so
+ * the user.created webhook can include the source in its Telegram alert.
+ * Never use these browser-controlled values for authorization or billing.
+ */
+export interface SignupSourceSnapshot {
+  channel: Channel;
+  siteHost?: string;
+  utmSource?: string;
+  utmCampaign?: string;
+  affiliateRef?: string;
+  referralCode?: string;
+  referrerHost?: string;
+  landingPage?: string;
+}
+
+const CHANNELS: readonly Channel[] = [
+  "google_ads",
+  "meta_ads",
+  "affiliate",
+  "referral",
+  "organic_search",
+  "social",
+  "referral_web",
+  "campaign",
+  "direct",
+];
+
+const CHANNEL_LABELS: Record<Channel, string> = {
+  google_ads: "Google Ads",
+  meta_ads: "Meta Ads",
+  affiliate: "Partnerska povezava",
+  referral: "Priporočilo gosta",
+  organic_search: "Organsko iskanje",
+  social: "Družbena omrežja",
+  referral_web: "Zunanja povezava",
+  campaign: "UTM kampanja",
+  direct: "Direktni obisk",
+};
 
 const MAX_FIELD = 300; // clamp each stored field so a crafted URL can't bloat the cookie/row
 
@@ -117,6 +158,13 @@ function hostOf(url: string | undefined): string {
   }
 }
 
+function safeSnapshotText(value: unknown, maxLength = 120): string | undefined {
+  if (typeof value !== "string") return undefined;
+  const trimmed = value.trim();
+  if (!trimmed) return undefined;
+  return trimmed.slice(0, maxLength);
+}
+
 /**
  * Derive the acquisition channel from the captured attribution plus the
  * two existing referral cookies. Order matters: an explicit ad click id or
@@ -155,4 +203,63 @@ export function deriveChannel(
     return "referral_web";
   }
   return "direct";
+}
+
+export function channelLabel(channel: Channel): string {
+  return CHANNEL_LABELS[channel];
+}
+
+/** Build the allow-listed snapshot used only for operational attribution. */
+export function buildSignupSourceSnapshot(
+  attr: SignupAttribution | null,
+  opts: {
+    affiliateRef?: string | null;
+    referralCode?: string | null;
+    appHost?: string;
+    siteHost?: string;
+  },
+): SignupSourceSnapshot {
+  return {
+    channel: deriveChannel(attr, opts),
+    siteHost: safeSnapshotText(opts.siteHost, 100),
+    utmSource: safeSnapshotText(attr?.utmSource),
+    utmCampaign: safeSnapshotText(attr?.utmCampaign),
+    affiliateRef: safeSnapshotText(opts.affiliateRef, 40),
+    referralCode: safeSnapshotText(opts.referralCode, 80),
+    referrerHost: safeSnapshotText(hostOf(attr?.referrerUrl), 100),
+    landingPage: safeSnapshotText(attr?.landingPage, 200),
+  };
+}
+
+/** Strictly validate browser/Clerk metadata before displaying it. */
+export function parseSignupSourceSnapshot(value: unknown): SignupSourceSnapshot | null {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return null;
+  const raw = value as Record<string, unknown>;
+  if (typeof raw.channel !== "string" || !CHANNELS.includes(raw.channel as Channel)) {
+    return null;
+  }
+  return {
+    channel: raw.channel as Channel,
+    siteHost: safeSnapshotText(raw.siteHost, 100),
+    utmSource: safeSnapshotText(raw.utmSource),
+    utmCampaign: safeSnapshotText(raw.utmCampaign),
+    affiliateRef: safeSnapshotText(raw.affiliateRef, 40),
+    referralCode: safeSnapshotText(raw.referralCode, 80),
+    referrerHost: safeSnapshotText(raw.referrerHost, 100),
+    landingPage: safeSnapshotText(raw.landingPage, 200),
+  };
+}
+
+/** URL-safe bridge for country-domain → primary-domain sign-up redirects. */
+export function serializeSignupSourceSnapshot(source: SignupSourceSnapshot): string {
+  return encodeURIComponent(JSON.stringify(source));
+}
+
+export function parseSignupSourceParam(value: string | null | undefined): SignupSourceSnapshot | null {
+  if (!value || value.length > 2_000) return null;
+  try {
+    return parseSignupSourceSnapshot(JSON.parse(decodeURIComponent(value)));
+  } catch {
+    return null;
+  }
 }

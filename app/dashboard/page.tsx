@@ -9,6 +9,11 @@ import { recordUserCountry } from "@/lib/user-country";
 import { recordSignupAttribution } from "@/lib/attribution/record";
 import { htmlEscape, notifyTelegram } from "@/lib/telegram";
 import { sendAdminNewUserEmail } from "@/lib/email/notifications";
+import {
+  parseSignupSourceSnapshot,
+  type SignupSourceSnapshot,
+} from "@/lib/attribution/signup";
+import { signupSourceTelegramLines } from "@/lib/attribution/telegram";
 
 export const dynamic = "force-dynamic";
 
@@ -25,6 +30,7 @@ export default async function DashboardPage() {
   let userId: string | null = null;
   let userEmail: string | null = null;
   let userCreatedAt: number | null = null;
+  let clerkSignupSource: SignupSourceSnapshot | null = null;
   try {
     const session = await auth();
     userId = session.userId;
@@ -32,6 +38,9 @@ export default async function DashboardPage() {
       const user = await currentUser();
       userEmail = user?.emailAddresses?.[0]?.emailAddress ?? null;
       userCreatedAt = user?.createdAt ?? null;
+      clerkSignupSource = parseSignupSourceSnapshot(
+        user?.unsafeMetadata?.guestcamAttribution,
+      );
     }
   } catch {
     redirect("/sign-in");
@@ -51,8 +60,9 @@ export default async function DashboardPage() {
   // existing user's later visit isn't mislabeled from current cookies;
   // the write is first-touch/onConflictDoNothing, so it's safe to re-run.
   const isFreshAccount = isNewerThan(userCreatedAt, 7 * 24 * 60 * 60 * 1000);
+  let signupSource: SignupSourceSnapshot | null = null;
   if (isFreshAccount) {
-    await recordSignupAttribution(userId);
+    signupSource = await recordSignupAttribution(userId, clerkSignupSource);
   }
 
   // Fallback new-user notification. The Clerk webhook is the primary
@@ -74,7 +84,8 @@ export default async function DashboardPage() {
           notifyTelegram(
             `🎉 <b>Nov uporabnik</b> <i>(zaznan ob prvi prijavi — Clerk webhook ga ni javil)</i>\n` +
             `${htmlEscape(name)} — <code>${htmlEscape(email)}</code>\n` +
-            `Clerk ID: <code>${htmlEscape(userId)}</code>`,
+            `Clerk ID: <code>${htmlEscape(userId)}</code>` +
+            signupSourceTelegramLines(signupSource),
           ),
           sendAdminNewUserEmail({ name, email, clerkId: userId }),
         ]);

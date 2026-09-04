@@ -4,8 +4,9 @@ import { db } from "@/lib/db";
 import { userAttribution } from "@/lib/db/schema";
 import {
   SIGNUP_ATTR_COOKIE,
+  buildSignupSourceSnapshot,
   parseAttr,
-  deriveChannel,
+  type SignupSourceSnapshot,
 } from "@/lib/attribution/signup";
 import { AFFILIATE_COOKIE } from "@/lib/affiliate/attribution";
 import { GUEST_REF_COOKIE } from "@/lib/referral/attribution";
@@ -32,38 +33,49 @@ const APP_HOST = (() => {
  *
  * Always best-effort: a failure here must never break the dashboard.
  */
-export async function recordSignupAttribution(clerkId: string): Promise<void> {
+export async function recordSignupAttribution(
+  clerkId: string,
+  clerkSource: SignupSourceSnapshot | null = null,
+): Promise<SignupSourceSnapshot | null> {
   try {
     const jar = await cookies();
     const attr = parseAttr(jar.get(SIGNUP_ATTR_COOKIE)?.value);
     const affiliateRef = jar.get(AFFILIATE_COOKIE)?.value ?? null;
     const referralCode = jar.get(GUEST_REF_COOKIE)?.value ?? null;
 
-    const channel = deriveChannel(attr, {
+    const cookieSource = buildSignupSourceSnapshot(attr, {
       affiliateRef,
       referralCode,
       appHost: APP_HOST,
+      siteHost: APP_HOST,
     });
+    // Country-domain sign-ups carry their source through Clerk metadata,
+    // because .rs/.es cookies are intentionally inaccessible on .si.
+    const source = clerkSource ?? cookieSource;
 
     await db
       .insert(userAttribution)
       .values({
         clerkId,
-        channel,
-        utmSource: attr?.utmSource ?? null,
+        channel: source.channel,
+        utmSource: source.utmSource ?? attr?.utmSource ?? null,
         utmMedium: attr?.utmMedium ?? null,
-        utmCampaign: attr?.utmCampaign ?? null,
+        utmCampaign: source.utmCampaign ?? attr?.utmCampaign ?? null,
         utmTerm: attr?.utmTerm ?? null,
         utmContent: attr?.utmContent ?? null,
         gclid: attr?.gclid ?? null,
         fbclid: attr?.fbclid ?? null,
-        affiliateRef,
-        referralCode,
-        referrerUrl: attr?.referrerUrl ?? null,
-        landingPage: attr?.landingPage ?? null,
+        affiliateRef: source.affiliateRef ?? affiliateRef,
+        referralCode: source.referralCode ?? referralCode,
+        referrerUrl: source.referrerHost
+          ? `https://${source.referrerHost}`
+          : attr?.referrerUrl ?? null,
+        landingPage: source.landingPage ?? attr?.landingPage ?? null,
       })
       .onConflictDoNothing();
+    return source;
   } catch (err) {
     console.warn("[signup-attribution] record failed:", err);
+    return null;
   }
 }

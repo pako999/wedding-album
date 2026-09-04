@@ -6,6 +6,8 @@ import { sendRegistrationWelcomeEmail } from "@/lib/email/registration-welcome";
 import { db } from "@/lib/db";
 import { userMeta } from "@/lib/db/schema";
 import { claimWebhookEvent, maybePruneWebhookReceipts } from "@/lib/webhook-idempotency";
+import { parseSignupSourceSnapshot } from "@/lib/attribution/signup";
+import { signupSourceTelegramLines } from "@/lib/attribution/telegram";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -120,6 +122,7 @@ export async function POST(req: NextRequest) {
       primary_email_address_id?: string | null;
       email_addresses?: Array<{ id?: string; email_address?: string }>;
       created_at?: number;
+      unsafe_metadata?: Record<string, unknown>;
     };
 
     const primaryAddress = u.email_addresses?.find(
@@ -130,6 +133,9 @@ export async function POST(req: NextRequest) {
     ).trim() || null;
     const email = primaryEmail ?? "(no email)";
     const name = [u.first_name, u.last_name].filter(Boolean).join(" ").trim() || "(no name)";
+    const signupSource = parseSignupSourceSnapshot(
+      u.unsafe_metadata?.guestcamAttribution,
+    );
 
     // Register before notifications so a near-simultaneous first dashboard
     // visit does not fire the fallback "webhook missed" notification.
@@ -146,7 +152,8 @@ export async function POST(req: NextRequest) {
     const msg =
       `🎉 <b>Nov uporabnik</b>\n` +
       `${htmlEscape(name)} — <code>${htmlEscape(email)}</code>\n` +
-      `Clerk ID: <code>${htmlEscape(u.id ?? "?")}</code>`;
+      `Clerk ID: <code>${htmlEscape(u.id ?? "?")}</code>` +
+      signupSourceTelegramLines(signupSource);
 
     // A downstream notification provider being unavailable must not cause
     // Clerk to replay the entire event and duplicate the providers that did

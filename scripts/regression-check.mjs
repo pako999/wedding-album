@@ -46,6 +46,12 @@ const files = {
   siteDomains: await read("lib/site-domains.ts"),
   urls: await read("lib/urls.ts"),
   clerkProvider: await read("components/GuestcamClerkProvider.tsx"),
+  clerkWebhook: await read("app/api/webhooks/clerk/route.ts"),
+  signUpPage: await read("app/sign-up/[[...sign-up]]/page.tsx"),
+  signupAttribution: await read("lib/attribution/signup.ts"),
+  signupAttributionRecord: await read("lib/attribution/record.ts"),
+  signupAttributionTelegram: await read("lib/attribution/telegram.ts"),
+  dashboardPage: await read("app/dashboard/page.tsx"),
   demoButton: await read("components/DemoButton.tsx"),
   headerAuthButtons: await read("components/HeaderAuthButtons.tsx"),
   languageSwitcher: await read("components/LanguageSwitcher.tsx"),
@@ -405,6 +411,41 @@ requireMatch(
   files.proxy,
   /pathname === "\/dashboard\/new"[\s\S]*new URL\("\/sign-up", PRIMARY_GUESTCAM_ORIGIN\)[\s\S]*redirect_url[\s\S]*countryLocale && isPrimaryAccountPath\(pathname\)/,
   "create-album clicks from .rs and .es must open the existing Clerk sign-up on www.guestcam.si",
+);
+
+requireMatch(
+  "country-domain sign-up bridges its acquisition source to the primary domain",
+  files.proxy,
+  /buildSignupSourceSnapshot[\s\S]*SIGNUP_SOURCE_PARAM[\s\S]*serializeSignupSourceSnapshot/,
+  ".rs and .es sign-ups must retain their source when Clerk opens on .si",
+);
+
+requireMatch(
+  "Clerk receives the validated signup attribution snapshot",
+  `${files.signUpPage}\n${files.signupAttribution}`,
+  /parseSignupSourceParam[\s\S]*unsafeMetadata=\{\{ guestcamAttribution: signupSource \}\}[\s\S]*parseSignupSourceSnapshot/,
+  "the user.created webhook must have source metadata before the first dashboard visit",
+);
+
+requireMatch(
+  "new-user Telegram alerts include the acquisition source",
+  `${files.clerkWebhook}\n${files.signupAttributionTelegram}\n${files.dashboardPage}`,
+  /signupSourceTelegramLines\(signupSource\)[\s\S]*Vir prijave[\s\S]*signupSourceTelegramLines\(signupSource\)/,
+  "both the Clerk webhook and dashboard fallback must report the signup source",
+);
+
+requireAbsent(
+  "cross-domain signup source excludes advertising click IDs and full referrer URLs",
+  files.signupAttribution.split("export function buildSignupSourceSnapshot")[1] ?? "",
+  /gclid\s*:|fbclid\s*:|referrerUrl\s*:/,
+  "the URL/Clerk bridge should carry only a compact non-sensitive attribution summary",
+);
+
+requireMatch(
+  "country-domain attribution is persisted after first sign-in",
+  `${files.dashboardPage}\n${files.signupAttributionRecord}`,
+  /unsafeMetadata\?\.guestcamAttribution[\s\S]*recordSignupAttribution\(userId, clerkSignupSource\)[\s\S]*clerkSource \?\? cookieSource/,
+  "the admin attribution record must preserve .rs/.es source metadata instead of becoming direct .si",
 );
 
 requireMatch(
