@@ -6,12 +6,13 @@ import { albums } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { UpgradePage } from "@/components/dashboard/UpgradePage";
 import { type Lang } from "@/lib/i18n/translations";
+import { validateDiscount } from "@/lib/discount";
 
 export const dynamic = "force-dynamic";
 
 interface Props {
   params: Promise<{ slug: string }>;
-  searchParams: Promise<{ lang?: string }>;
+  searchParams: Promise<{ lang?: string; plan?: string; discount?: string }>;
 }
 
 export default async function UpgradePageRoute({ params, searchParams }: Props) {
@@ -70,5 +71,15 @@ export default async function UpgradePageRoute({ params, searchParams }: Props) 
 
   if (!album || album.ownerClerkId !== userId) redirect("/dashboard");
 
-  return <UpgradePage album={album} lang={lang} />;
+  const initialPlan = sp.plan === "basic" || sp.plan === "premium" ? sp.plan : "plus";
+  const requestedCode = sp.discount?.trim().toUpperCase();
+  let initialDiscount: { code: string; percentOff: number } | null = null;
+  if (requestedCode) {
+    const result = await validateDiscount(requestedCode, initialPlan);
+    if (result.valid) {
+      initialDiscount = { code: requestedCode, percentOff: result.percentOff };
+    }
+  }
+
+  return <UpgradePage album={album} lang={lang} initialDiscount={initialDiscount} />;
 }

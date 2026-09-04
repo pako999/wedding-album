@@ -25,9 +25,21 @@ async function ensureTable() {
 export async function claimEventUpgradeReminder(albumId: string, email: string): Promise<boolean> {
   await ensureTable();
   const sql = client();
+  // A function interruption between claim and send must not block the
+  // customer forever. The next run may reclaim an unfinished hour-old row.
+  await sql`
+    DELETE FROM event_upgrade_reminders
+    WHERE sent_at IS NULL
+      AND claimed_at < NOW() - INTERVAL '1 hour'
+  `;
   const rows = await sql`
     INSERT INTO event_upgrade_reminders (album_id, email)
-    VALUES (${albumId}, ${email})
+    SELECT ${albumId}, ${email}
+    WHERE NOT EXISTS (
+      SELECT 1
+      FROM event_upgrade_reminders
+      WHERE LOWER(email) = LOWER(${email})
+    )
     ON CONFLICT (album_id) DO NOTHING
     RETURNING album_id
   `;

@@ -37,9 +37,10 @@ const PLANS: PlanMeta[] = [
 interface Props {
   album: Album;
   lang?: Lang;
+  initialDiscount?: { code: string; percentOff: number } | null;
 }
 
-export function UpgradePage({ album, lang = "sl" }: Props) {
+export function UpgradePage({ album, lang = "sl", initialDiscount = null }: Props) {
   const t = translations[lang];
   const u = UPGRADE_COPY[lang];
 
@@ -90,22 +91,19 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
   const standsCents = wantStands ? standsGoodsCents + (shipQuote?.cents ?? 0) : 0;
 
   // Discount code state
-  const [discountInput, setDiscountInput] = useState("");
-  const [discountStatus, setDiscountStatus] = useState<"idle" | "checking" | "valid" | "invalid">("idle");
-  const [discountPercent, setDiscountPercent] = useState<number>(0);
-  const [discountCodeId, setDiscountCodeId] = useState<string>("");
-  const [appliedCode, setAppliedCode] = useState<string>("");
+  const [discountInput, setDiscountInput] = useState(initialDiscount?.code ?? "");
+  const [discountStatus, setDiscountStatus] = useState<"idle" | "checking" | "valid" | "invalid">(
+    initialDiscount ? "valid" : "idle",
+  );
+  const [discountPercent, setDiscountPercent] = useState<number>(initialDiscount?.percentOff ?? 0);
+  const [appliedCode, setAppliedCode] = useState<string>(initialDiscount?.code ?? "");
 
   const chosen = PLANS.find((p) => p.id === selectedPlan)!;
 
-  // Reset discount when plan changes
+  // Discount codes apply to every paid package, so changing the selected
+  // package must not silently remove a valid emailed offer.
   const selectPlan = (id: PlanId) => {
     setSelectedPlan(id);
-    setDiscountStatus("idle");
-    setDiscountPercent(0);
-    setDiscountCodeId("");
-    setAppliedCode("");
-    setDiscountInput("");
   };
 
   const discountedPrice = discountStatus === "valid"
@@ -116,14 +114,16 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
    *  shipping or printed goods, which are at cost. */
   const grandTotalCents = discountedPrice * 100 + standsCents;
 
-  async function applyDiscount() {
-    if (!discountInput.trim()) return;
+  async function applyDiscount(codeOverride?: string) {
+    const candidate = (codeOverride ?? discountInput).trim().toUpperCase();
+    if (!candidate) return;
+    setDiscountInput(candidate);
     setDiscountStatus("checking");
     try {
       const res = await fetch("/api/discount/validate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ code: discountInput.trim(), planId: selectedPlan }),
+        body: JSON.stringify({ code: candidate, planId: selectedPlan }),
       });
       const data = await res.json() as {
         valid: boolean; percentOff?: number; discountCodeId?: string; error?: string;
@@ -131,8 +131,7 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
       if (data.valid && data.percentOff && data.discountCodeId) {
         setDiscountStatus("valid");
         setDiscountPercent(data.percentOff);
-        setDiscountCodeId(data.discountCodeId);
-        setAppliedCode(discountInput.trim().toUpperCase());
+        setAppliedCode(candidate);
       } else {
         setDiscountStatus("invalid");
       }
@@ -377,7 +376,6 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
                   onClick={() => {
                     setDiscountStatus("idle");
                     setDiscountPercent(0);
-                    setDiscountCodeId("");
                     setAppliedCode("");
                     setDiscountInput("");
                   }}
@@ -396,13 +394,13 @@ export function UpgradePage({ album, lang = "sl" }: Props) {
                     setDiscountInput(e.target.value.toUpperCase());
                     if (discountStatus === "invalid") setDiscountStatus("idle");
                   }}
-                  onKeyDown={(e) => e.key === "Enter" && applyDiscount()}
+                  onKeyDown={(e) => { if (e.key === "Enter") void applyDiscount(); }}
                   className="flex-1 px-3 py-2 text-sm border rounded-xl focus:outline-none focus:border-[#FFC94D] font-mono uppercase tracking-wider"
                   style={{ borderColor: discountStatus === "invalid" ? "#ef4444" : "#e5e7eb" }}
                 />
                 <button
                   type="button"
-                  onClick={applyDiscount}
+                  onClick={() => void applyDiscount()}
                   disabled={discountStatus === "checking" || !discountInput.trim()}
                   className="px-4 py-2 rounded-xl bg-gray-100 text-gray-700 text-sm font-semibold hover:bg-gray-200 transition-colors disabled:opacity-50"
                 >

@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { clerkClient } from "@clerk/nextjs/server";
-import { and, eq, gt, isNull, or, sql } from "drizzle-orm";
+import { and, eq, gt, isNull, or } from "drizzle-orm";
 import { db } from "@/lib/db";
-import { albums } from "@/lib/db/schema";
+import { albums, discountCodes } from "@/lib/db/schema";
 import { sendEventUpgradeReminderEmail } from "@/lib/email/event-upgrade-reminder";
 import {
   claimEventUpgradeReminder,
@@ -14,6 +14,9 @@ export const runtime = "nodejs";
 export const maxDuration = 60;
 
 const SEND_CAP = 50;
+const DAYS_BEFORE_EVENT = 10;
+const DISCOUNT_PERCENT = 30;
+const DISCOUNT_VALID_DAYS = 30;
 
 function isoDay(offsetDays: number): string {
   const d = new Date();
@@ -30,8 +33,9 @@ function daysUntil(eventDate: string): number {
 }
 
 /**
- * Daily conversion/service reminder for owners whose event is 1–7 days away
- * while the gallery is still on Free. One email maximum per album.
+ * Daily conversion reminder for owners whose event is exactly 10 days away
+ * while the gallery is still on Free. Each customer receives one unique,
+ * single-use 30% code that expires 30 days after it is issued.
  */
 export async function GET(req: NextRequest) {
   const secret = process.env.CRON_SECRET;
@@ -43,8 +47,7 @@ export async function GET(req: NextRequest) {
   }
 
   const now = new Date();
-  const tomorrow = isoDay(1);
-  const inSevenDays = isoDay(7);
+  const targetDay = isoDay(DAYS_BEFORE_EVENT);
 
   const due = await db
     .select({
@@ -61,8 +64,7 @@ export async function GET(req: NextRequest) {
       and(
         eq(albums.plan, "free"),
         eq(albums.isPublished, true),
-        sql`${albums.weddingDate} >= ${tomorrow}`,
-        sql`${albums.weddingDate} <= ${inSevenDays}`,
+        eq(albums.weddingDate, targetDay),
         or(isNull(albums.expiresAt), gt(albums.expiresAt, now)),
       ),
     )
@@ -72,10 +74,11 @@ export async function GET(req: NextRequest) {
   let skipped = 0;
   let errors = 0;
   const clerk = await clerkClient();
+  const processedOwners = new Set<string>();
 
   for (const album of due) {
     const remaining = daysUntil(album.weddingDate);
-    if (remaining < 1 || remaining > 7) {
+    if (remaining !== DAYS_BEFORE_EVENT || processedOwners.has(album.ownerClerkId)) {
       skipped++;
       continue;
     }
@@ -96,14 +99,37 @@ export async function GET(req: NextRequest) {
       skipped++;
       continue;
     }
+    processedOwners.add(album.ownerClerkId);
 
     let claimed = false;
+    let discountCodeId: string | null = null;
     try {
       claimed = await claimEventUpgradeReminder(album.id, email);
       if (!claimed) {
         skipped++;
         continue;
       }
+
+      const expiresAt = new Date(now.getTime() + DISCOUNT_VALID_DAYS * 86_400_000);
+      let discountCode: string | null = null;
+      for (let attempt = 0; attempt < 5 && !discountCode; attempt++) {
+        const candidate = `GC30-${crypto.randomUUID().replaceAll("-", "").slice(0, 10).toUpperCase()}`;
+        const [created] = await db
+          .insert(discountCodes)
+          .values({
+            code: candidate,
+            percentOff: DISCOUNT_PERCENT,
+            maxUses: 1,
+            expiresAt,
+          })
+          .onConflictDoNothing({ target: discountCodes.code })
+          .returning({ id: discountCodes.id, code: discountCodes.code });
+        if (created) {
+          discountCodeId = created.id;
+          discountCode = created.code;
+        }
+      }
+      if (!discountCode) throw new Error("Could not allocate a unique discount code");
 
       await sendEventUpgradeReminderEmail({
         to: email,
@@ -112,6 +138,9 @@ export async function GET(req: NextRequest) {
         albumSlug: album.slug,
         daysUntil: remaining,
         locale: album.defaultLang,
+        discountCode,
+        discountPercent: DISCOUNT_PERCENT,
+        discountExpiresAt: expiresAt,
       });
       await markEventUpgradeReminderSent(album.id);
       sent++;
@@ -119,6 +148,9 @@ export async function GET(req: NextRequest) {
       console.error(`[event-upgrade-reminder] failed for ${album.slug}:`, err);
       if (claimed) {
         await releaseEventUpgradeReminder(album.id).catch(() => {});
+      }
+      if (discountCodeId) {
+        await db.delete(discountCodes).where(eq(discountCodes.id, discountCodeId)).catch(() => {});
       }
       errors++;
     }
@@ -129,6 +161,11 @@ export async function GET(req: NextRequest) {
     skipped,
     errors,
     examined: due.length,
-    window: { from: tomorrow, to: inSevenDays },
+    targetDay,
+    offer: {
+      percentOff: DISCOUNT_PERCENT,
+      maxUses: 1,
+      validDays: DISCOUNT_VALID_DAYS,
+    },
   });
 }

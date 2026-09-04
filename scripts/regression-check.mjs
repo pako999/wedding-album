@@ -61,6 +61,11 @@ const files = {
   adminSales: await read("lib/admin-sales.ts"),
   mollie: await read("lib/mollie.ts"),
   checkout: await read("app/api/checkout/route.ts"),
+  eventOfferCron: await read("app/api/cron/event-upgrade-reminder/route.ts"),
+  eventOfferEmail: await read("lib/email/event-upgrade-reminder.ts"),
+  eventOfferLog: await read("lib/event-upgrade-reminder-log.ts"),
+  upgradePage: await read("components/dashboard/UpgradePage.tsx"),
+  upgradePageRoute: await read("app/dashboard/[slug]/upgrade/page.tsx"),
   albumLimits: await read("lib/album-limits.ts"),
   galleryLimits: await read("lib/gallery-limits.ts"),
   processOverride: await read("components/GuestcamProcessHowOverride.tsx"),
@@ -105,6 +110,34 @@ const files = {
     ].map(readTsxTree))
   ).join("\n"),
 };
+
+requireMatch(
+  "unpaid event offer runs exactly 10 days before the event",
+  files.eventOfferCron,
+  /DAYS_BEFORE_EVENT\s*=\s*10[\s\S]*eq\(albums\.plan, "free"\)[\s\S]*eq\(albums\.isPublished, true\)[\s\S]*eq\(albums\.weddingDate, targetDay\)/,
+  "the promotion must target only published Free galleries on the exact 10-day date",
+);
+
+requireMatch(
+  "event offer creates a unique single-use 30 percent code valid for 30 days",
+  files.eventOfferCron,
+  /DISCOUNT_PERCENT\s*=\s*30[\s\S]*DISCOUNT_VALID_DAYS\s*=\s*30[\s\S]*GC30-[\s\S]*percentOff:\s*DISCOUNT_PERCENT[\s\S]*maxUses:\s*1[\s\S]*expiresAt/,
+  "each eligible customer must receive a generated one-use code with a fixed expiry",
+);
+
+requireMatch(
+  "event offer is sent at most once per customer",
+  files.eventOfferLog,
+  /WHERE LOWER\(email\) = LOWER\(\$\{email\}\)/,
+  "multiple galleries owned by the same email must not trigger duplicate offers",
+);
+
+requireMatch(
+  "event offer email links carry and auto-apply the generated code",
+  `${files.eventOfferEmail}\n${files.upgradePageRoute}\n${files.upgradePage}`,
+  /discount=\$\{encodeURIComponent\(fields\.discountCode\)\}[\s\S]*sp\.discount[\s\S]*validateDiscount\(requestedCode, initialPlan\)[\s\S]*initialDiscount \? "valid" : "idle"/,
+  "the email CTA must take the customer to checkout with the one-time code applied",
+);
 
 requireMatch(
   "authenticated screens use the shared onboarding font scope",

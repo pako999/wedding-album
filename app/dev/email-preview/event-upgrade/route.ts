@@ -12,8 +12,11 @@ export async function GET() {
     coupleName: "Špela & Andrej",
     eventDate: "2026-08-31",
     albumSlug: "spela-andrej-demo",
-    daysUntil: 7,
+    daysUntil: 10,
     locale: "sl",
+    discountCode: "GC30-POROKA26",
+    discountPercent: 30,
+    discountExpiresAt: new Date("2026-09-30T00:00:00Z"),
   });
 
   return new NextResponse(html, {

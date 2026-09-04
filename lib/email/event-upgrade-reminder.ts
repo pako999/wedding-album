@@ -1,7 +1,7 @@
 import { Resend } from "resend";
 import { SITE_URL } from "@/lib/urls";
 
-const FROM = process.env.RESEND_FROM ?? "noreply@guestcam.si";
+const FROM = process.env.RESEND_FROM ?? "info@guestcam.si";
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? SITE_URL;
 
 type Lang = "sl" | "hr" | "sr" | "de" | "en" | "es";
@@ -14,6 +14,64 @@ function escapeHtml(value: string): string {
 
 const LOCALE_TAG: Record<Lang, string> = {
   sl: "sl-SI", hr: "hr-HR", sr: "sr-Latn", de: "de-DE", en: "en-GB", es: "es-ES",
+};
+
+const OFFER_COPY: Record<Lang, {
+  subject: (event: string, percent: number) => string;
+  title: (percent: number) => string;
+  body: string;
+  codeLabel: string;
+  validUntil: (date: string) => string;
+  singleUse: string;
+}> = {
+  sl: {
+    subject: (event, percent) => `${event}: vaših ${percent} % popusta na GuestCam paket`,
+    title: (percent) => `Za vas smo pripravili ${percent} % popusta`,
+    body: "Posebna ponudba velja za katerikoli GuestCam paket. Koda je že pripravljena samo za vas in se pri plačilu lahko uporabi enkrat.",
+    codeLabel: "VAŠA UNIKATNA KODA",
+    validUntil: (date) => `Koda velja do ${date}.`,
+    singleUse: "Velja za en nakup in je ni mogoče kombinirati z drugimi popusti.",
+  },
+  hr: {
+    subject: (event, percent) => `${event}: vaših ${percent} % popusta na GuestCam paket`,
+    title: (percent) => `Pripremili smo vam ${percent} % popusta`,
+    body: "Posebna ponuda vrijedi za bilo koji GuestCam paket. Kod je pripremljen samo za vas i može se iskoristiti jednom pri plaćanju.",
+    codeLabel: "VAŠ JEDINSTVENI KOD",
+    validUntil: (date) => `Kod vrijedi do ${date}.`,
+    singleUse: "Vrijedi za jednu kupnju i ne može se kombinirati s drugim popustima.",
+  },
+  sr: {
+    subject: (event, percent) => `${event}: vaših ${percent} % popusta na GuestCam paket`,
+    title: (percent) => `Pripremili smo vam ${percent} % popusta`,
+    body: "Posebna ponuda važi za bilo koji GuestCam paket. Kod je pripremljen samo za vas i može da se iskoristi jednom prilikom plaćanja.",
+    codeLabel: "VAŠ JEDINSTVENI KOD",
+    validUntil: (date) => `Kod važi do ${date}.`,
+    singleUse: "Važi za jednu kupovinu i ne može se kombinovati sa drugim popustima.",
+  },
+  de: {
+    subject: (event, percent) => `${event}: Ihr persönlicher ${percent}-%-Rabatt für GuestCam`,
+    title: (percent) => `${percent} % Rabatt für Sie`,
+    body: "Dieses besondere Angebot gilt für jedes GuestCam-Paket. Der Code wurde nur für Sie erstellt und kann einmal beim Bezahlen eingelöst werden.",
+    codeLabel: "IHR PERSÖNLICHER CODE",
+    validUntil: (date) => `Der Code ist bis ${date} gültig.`,
+    singleUse: "Gültig für einen Kauf und nicht mit anderen Rabatten kombinierbar.",
+  },
+  en: {
+    subject: (event, percent) => `${event}: your personal ${percent}% GuestCam discount`,
+    title: (percent) => `We prepared a ${percent}% discount for you`,
+    body: "This special offer applies to any GuestCam package. The code was created just for you and can be redeemed once at checkout.",
+    codeLabel: "YOUR UNIQUE CODE",
+    validUntil: (date) => `The code is valid until ${date}.`,
+    singleUse: "Valid for one purchase and cannot be combined with other discounts.",
+  },
+  es: {
+    subject: (event, percent) => `${event}: tu descuento personal del ${percent} % en GuestCam`,
+    title: (percent) => `Hemos preparado un ${percent} % de descuento para ti`,
+    body: "Esta oferta especial es válida para cualquier paquete GuestCam. El código se ha creado solo para ti y puede utilizarse una vez al pagar.",
+    codeLabel: "TU CÓDIGO ÚNICO",
+    validUntil: (date) => `El código es válido hasta el ${date}.`,
+    singleUse: "Válido para una compra y no acumulable con otros descuentos.",
+  },
 };
 
 interface Copy {
@@ -148,6 +206,9 @@ export interface EventUpgradeReminderFields {
   albumSlug: string;
   daysUntil: number;
   locale?: string | null;
+  discountCode: string;
+  discountPercent: number;
+  discountExpiresAt: Date;
 }
 
 function pickLang(locale?: string | null): Lang {
@@ -157,14 +218,20 @@ function pickLang(locale?: string | null): Lang {
 export function eventUpgradeReminderEmailHtml(fields: EventUpgradeReminderFields): string {
   const lang = pickLang(fields.locale);
   const t = COPY[lang];
+  const offer = OFFER_COPY[lang];
   const eventName = escapeHtml(fields.coupleName);
   const parsedDate = new Date(`${fields.eventDate}T12:00:00Z`);
   const eventDate = Number.isNaN(parsedDate.getTime())
     ? escapeHtml(fields.eventDate)
     : parsedDate.toLocaleDateString(LOCALE_TAG[lang], { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
-  const upgradeUrl = `${APP_URL}/dashboard/${encodeURIComponent(fields.albumSlug)}/upgrade?plan=plus`;
-  const basicUrl = `${APP_URL}/dashboard/${encodeURIComponent(fields.albumSlug)}/upgrade?plan=basic`;
-  const premiumUrl = `${APP_URL}/dashboard/${encodeURIComponent(fields.albumSlug)}/upgrade?plan=premium`;
+  const discountCode = escapeHtml(fields.discountCode);
+  const discountQuery = `&discount=${encodeURIComponent(fields.discountCode)}`;
+  const upgradeUrl = `${APP_URL}/dashboard/${encodeURIComponent(fields.albumSlug)}/upgrade?plan=plus${discountQuery}`;
+  const basicUrl = `${APP_URL}/dashboard/${encodeURIComponent(fields.albumSlug)}/upgrade?plan=basic${discountQuery}`;
+  const premiumUrl = `${APP_URL}/dashboard/${encodeURIComponent(fields.albumSlug)}/upgrade?plan=premium${discountQuery}`;
+  const discountExpiry = fields.discountExpiresAt.toLocaleDateString(LOCALE_TAG[lang], {
+    day: "numeric", month: "long", year: "numeric", timeZone: "UTC",
+  });
   const whatsappUrl = "https://wa.me/38641580250";
 
   const planRow = (name: string, features: string, href: string, highlighted = false) => `
@@ -198,6 +265,17 @@ export function eventUpgradeReminderEmailHtml(fields: EventUpgradeReminderFields
         </td></tr>
         <tr><td style="padding:28px 32px 0;">
           <p style="margin:0;font-size:15px;line-height:1.7;color:#4B5563;">${t.intro(eventName, eventDate)}</p>
+        </td></tr>
+        <tr><td style="padding:22px 32px 0;">
+          <table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="background:#FFF9E8;border:2px solid #FFC94D;border-radius:14px;">
+            <tr><td style="padding:22px;text-align:center;">
+              <h2 style="margin:0 0 9px;font-size:21px;color:#111827;">${offer.title(fields.discountPercent)}</h2>
+              <p style="margin:0 0 18px;font-size:14px;line-height:1.6;color:#4B5563;">${offer.body}</p>
+              <p style="margin:0 0 6px;font-size:10px;font-weight:800;letter-spacing:1.7px;color:#A66A00;">${offer.codeLabel}</p>
+              <p style="margin:0 0 12px;font-family:'Courier New',monospace;font-size:25px;font-weight:800;letter-spacing:2px;color:#111827;">${discountCode}</p>
+              <p style="margin:0;font-size:12px;line-height:1.6;color:#7C5A18;">${offer.validUntil(discountExpiry)}<br />${offer.singleUse}</p>
+            </td></tr>
+          </table>
         </td></tr>
         <tr><td style="padding:22px 32px 0;">
           <table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="background:#FFF4F2;border:1px solid #FFD1CA;border-radius:14px;">
@@ -244,15 +322,16 @@ export function eventUpgradeReminderEmailHtml(fields: EventUpgradeReminderFields
 export async function sendEventUpgradeReminderEmail(params: EventUpgradeReminderFields & { to: string }) {
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) {
-    console.warn("[email] RESEND_API_KEY not set — skipping event upgrade reminder");
-    return;
+    throw new Error("RESEND_API_KEY not configured for event upgrade reminder");
   }
   const lang = pickLang(params.locale);
-  const t = COPY[lang];
   await new Resend(apiKey).emails.send({
     from: `Guestcam <${FROM}>`,
+    replyTo: "info@guestcam.si",
     to: params.to,
-    subject: t.subject(params.daysUntil, params.coupleName),
+    subject: OFFER_COPY[lang].subject(params.coupleName, params.discountPercent),
     html: eventUpgradeReminderEmailHtml(params),
+  }).then(({ error }) => {
+    if (error) throw new Error(`Resend rejected event offer: ${error.message}`);
   });
 }
