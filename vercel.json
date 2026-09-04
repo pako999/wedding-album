@@ -5,12 +5,8 @@
       "schedule": "0 3 * * *"
     },
     {
-      "path": "/api/cron/poll-kling",
-      "schedule": "*/2 * * * *"
-    },
-    {
       "path": "/api/cron/send-reminders",
-      "schedule": "*/15 * * * *"
+      "schedule": "0 * * * *"
     },
     {
       "path": "/api/cron/affiliate-lock",

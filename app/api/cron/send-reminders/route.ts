@@ -1,7 +1,8 @@
 /**
  * GET /api/cron/send-reminders
  *
- * Vercel Cron Job — runs every 15 minutes.
+ * Vercel Cron Job — runs hourly. These guest reminders are intentionally
+ * tolerant of a short delay; hourly delivery lets Neon suspend between jobs.
  * Finds upload reminders whose sendAt has passed and that haven't been sent,
  * emails each guest a reminder to upload their photos, then marks them sent.
  *

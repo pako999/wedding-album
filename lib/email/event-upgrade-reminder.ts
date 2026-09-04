@@ -27,7 +27,7 @@ const OFFER_COPY: Record<Lang, {
   sl: {
     subject: (event, percent) => `${event}: vaših ${percent} % popusta na GuestCam paket`,
     title: (percent) => `Za vas smo pripravili ${percent} % popusta`,
-    body: "Posebna ponudba velja za katerikoli GuestCam paket. Koda je že pripravljena samo za vas in se pri plačilu lahko uporabi enkrat.",
+    body: "Posebna ponudba velja za katerikoli GuestCam paket. Nakup zaključite v naslednjih 24 urah; koda je pripravljena samo za vas in se lahko uporabi enkrat.",
     codeLabel: "VAŠA UNIKATNA KODA",
     validUntil: (date) => `Koda velja do ${date}.`,
     singleUse: "Velja za en nakup in je ni mogoče kombinirati z drugimi popusti.",
@@ -35,7 +35,7 @@ const OFFER_COPY: Record<Lang, {
   hr: {
     subject: (event, percent) => `${event}: vaših ${percent} % popusta na GuestCam paket`,
     title: (percent) => `Pripremili smo vam ${percent} % popusta`,
-    body: "Posebna ponuda vrijedi za bilo koji GuestCam paket. Kod je pripremljen samo za vas i može se iskoristiti jednom pri plaćanju.",
+    body: "Posebna ponuda vrijedi za bilo koji GuestCam paket. Dovršite kupnju u sljedeća 24 sata; kod je pripremljen samo za vas i može se iskoristiti jednom.",
     codeLabel: "VAŠ JEDINSTVENI KOD",
     validUntil: (date) => `Kod vrijedi do ${date}.`,
     singleUse: "Vrijedi za jednu kupnju i ne može se kombinirati s drugim popustima.",
@@ -43,7 +43,7 @@ const OFFER_COPY: Record<Lang, {
   sr: {
     subject: (event, percent) => `${event}: vaših ${percent} % popusta na GuestCam paket`,
     title: (percent) => `Pripremili smo vam ${percent} % popusta`,
-    body: "Posebna ponuda važi za bilo koji GuestCam paket. Kod je pripremljen samo za vas i može da se iskoristi jednom prilikom plaćanja.",
+    body: "Posebna ponuda važi za bilo koji GuestCam paket. Završite kupovinu u naredna 24 sata; kod je pripremljen samo za vas i može da se iskoristi jednom.",
     codeLabel: "VAŠ JEDINSTVENI KOD",
     validUntil: (date) => `Kod važi do ${date}.`,
     singleUse: "Važi za jednu kupovinu i ne može se kombinovati sa drugim popustima.",
@@ -51,7 +51,7 @@ const OFFER_COPY: Record<Lang, {
   de: {
     subject: (event, percent) => `${event}: Ihr persönlicher ${percent}-%-Rabatt für GuestCam`,
     title: (percent) => `${percent} % Rabatt für Sie`,
-    body: "Dieses besondere Angebot gilt für jedes GuestCam-Paket. Der Code wurde nur für Sie erstellt und kann einmal beim Bezahlen eingelöst werden.",
+    body: "Dieses Angebot gilt für jedes GuestCam-Paket. Schließen Sie den Kauf innerhalb der nächsten 24 Stunden ab; der Code wurde nur für Sie erstellt und kann einmal eingelöst werden.",
     codeLabel: "IHR PERSÖNLICHER CODE",
     validUntil: (date) => `Der Code ist bis ${date} gültig.`,
     singleUse: "Gültig für einen Kauf und nicht mit anderen Rabatten kombinierbar.",
@@ -59,7 +59,7 @@ const OFFER_COPY: Record<Lang, {
   en: {
     subject: (event, percent) => `${event}: your personal ${percent}% GuestCam discount`,
     title: (percent) => `We prepared a ${percent}% discount for you`,
-    body: "This special offer applies to any GuestCam package. The code was created just for you and can be redeemed once at checkout.",
+    body: "This offer applies to any GuestCam package. Complete your purchase within the next 24 hours; the code was created just for you and can be redeemed once.",
     codeLabel: "YOUR UNIQUE CODE",
     validUntil: (date) => `The code is valid until ${date}.`,
     singleUse: "Valid for one purchase and cannot be combined with other discounts.",
@@ -67,7 +67,7 @@ const OFFER_COPY: Record<Lang, {
   es: {
     subject: (event, percent) => `${event}: tu descuento personal del ${percent} % en GuestCam`,
     title: (percent) => `Hemos preparado un ${percent} % de descuento para ti`,
-    body: "Esta oferta especial es válida para cualquier paquete GuestCam. El código se ha creado solo para ti y puede utilizarse una vez al pagar.",
+    body: "Esta oferta es válida para cualquier paquete GuestCam. Completa la compra en las próximas 24 horas; el código se ha creado solo para ti y puede utilizarse una vez.",
     codeLabel: "TU CÓDIGO ÚNICO",
     validUntil: (date) => `El código es válido hasta el ${date}.`,
     singleUse: "Válido para una compra y no acumulable con otros descuentos.",
@@ -229,8 +229,8 @@ export function eventUpgradeReminderEmailHtml(fields: EventUpgradeReminderFields
   const upgradeUrl = `${APP_URL}/dashboard/${encodeURIComponent(fields.albumSlug)}/upgrade?plan=plus${discountQuery}`;
   const basicUrl = `${APP_URL}/dashboard/${encodeURIComponent(fields.albumSlug)}/upgrade?plan=basic${discountQuery}`;
   const premiumUrl = `${APP_URL}/dashboard/${encodeURIComponent(fields.albumSlug)}/upgrade?plan=premium${discountQuery}`;
-  const discountExpiry = fields.discountExpiresAt.toLocaleDateString(LOCALE_TAG[lang], {
-    day: "numeric", month: "long", year: "numeric", timeZone: "UTC",
+  const discountExpiry = fields.discountExpiresAt.toLocaleString(LOCALE_TAG[lang], {
+    day: "numeric", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit", timeZone: "Europe/Ljubljana",
   });
   const whatsappUrl = "https://wa.me/38641580250";
 

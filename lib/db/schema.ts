@@ -103,6 +103,7 @@ export const albums = pgTable(
     index("albums_slug_idx").on(t.slug),
     index("albums_referral_code_idx").on(t.referralCode),
     index("albums_wall_token_idx").on(t.wallToken),
+    index("albums_event_offer_due_idx").on(t.plan, t.weddingDate),
   ]
 );
 
@@ -414,6 +415,7 @@ export const filmClips = pgTable(
   (t) => [
     index("film_clips_gen_idx").on(t.generationId),
     index("film_clips_fal_idx").on(t.falRequestId),
+    index("film_clips_status_idx").on(t.status),
   ]
 );
 

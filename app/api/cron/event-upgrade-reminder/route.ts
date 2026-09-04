@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { clerkClient } from "@clerk/nextjs/server";
-import { and, eq, gt, isNull, or } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { albums, discountCodes } from "@/lib/db/schema";
 import { sendEventUpgradeReminderEmail } from "@/lib/email/event-upgrade-reminder";
@@ -14,9 +14,9 @@ export const runtime = "nodejs";
 export const maxDuration = 60;
 
 const SEND_CAP = 50;
-const DAYS_BEFORE_EVENT = 10;
+const DAYS_BEFORE_EVENT = 14;
 const DISCOUNT_PERCENT = 30;
-const DISCOUNT_VALID_DAYS = 30;
+const DISCOUNT_VALID_HOURS = 24;
 
 function isoDay(offsetDays: number): string {
   const d = new Date();
@@ -33,9 +33,10 @@ function daysUntil(eventDate: string): number {
 }
 
 /**
- * Daily conversion reminder for owners whose event is exactly 10 days away
- * while the gallery is still on Free. Each customer receives one unique,
- * single-use 30% code that expires 30 days after it is issued.
+ * Daily conversion reminder for owners whose event is exactly 14 days away
+ * while the gallery is still on Free. The offer does not depend on whether
+ * the owner has published the gallery yet. Each customer receives one unique,
+ * single-use 30% code that expires 24 hours after it is issued.
  */
 export async function GET(req: NextRequest) {
   const secret = process.env.CRON_SECRET;
@@ -63,9 +64,7 @@ export async function GET(req: NextRequest) {
     .where(
       and(
         eq(albums.plan, "free"),
-        eq(albums.isPublished, true),
         eq(albums.weddingDate, targetDay),
-        or(isNull(albums.expiresAt), gt(albums.expiresAt, now)),
       ),
     )
     .limit(SEND_CAP);
@@ -110,7 +109,7 @@ export async function GET(req: NextRequest) {
         continue;
       }
 
-      const expiresAt = new Date(now.getTime() + DISCOUNT_VALID_DAYS * 86_400_000);
+      const expiresAt = new Date(now.getTime() + DISCOUNT_VALID_HOURS * 3_600_000);
       let discountCode: string | null = null;
       for (let attempt = 0; attempt < 5 && !discountCode; attempt++) {
         const candidate = `GC30-${crypto.randomUUID().replaceAll("-", "").slice(0, 10).toUpperCase()}`;
@@ -165,7 +164,7 @@ export async function GET(req: NextRequest) {
     offer: {
       percentOff: DISCOUNT_PERCENT,
       maxUses: 1,
-      validDays: DISCOUNT_VALID_DAYS,
+      validHours: DISCOUNT_VALID_HOURS,
     },
   });
 }

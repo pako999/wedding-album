@@ -11,8 +11,10 @@ export const maxDuration = 60;
  * GET /api/cron/poll-kling
  *
  * Polls Kling AI for all "processing" film clips and updates their status.
- * Called by Vercel Cron every 2 minutes (see vercel.json).
- * Also called client-side by FilmStudio as a fallback.
+ * Legacy Kling polling endpoint, retained for a manual recovery run only.
+ * GuestCam's current Film Studio uses Shotstack and polls its own generation
+ * status while the owner has the Studio open, so a permanent two-minute cron
+ * only kept Neon awake even when there were no Kling jobs.
  */
 export async function GET(req: NextRequest) {
   // Protect: only Vercel Cron or internal calls (Authorization header or secret param)

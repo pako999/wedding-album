@@ -64,6 +64,8 @@ const files = {
   eventOfferCron: await read("app/api/cron/event-upgrade-reminder/route.ts"),
   eventOfferEmail: await read("lib/email/event-upgrade-reminder.ts"),
   eventOfferLog: await read("lib/event-upgrade-reminder-log.ts"),
+  vercelConfig: await read("vercel.json"),
+  dbSchema: await read("lib/db/schema.ts"),
   upgradePage: await read("components/dashboard/UpgradePage.tsx"),
   upgradePageRoute: await read("app/dashboard/[slug]/upgrade/page.tsx"),
   albumLimits: await read("lib/album-limits.ts"),
@@ -112,16 +114,16 @@ const files = {
 };
 
 requireMatch(
-  "unpaid event offer runs exactly 10 days before the event",
+  "unpaid event offer runs exactly 14 days before the event",
   files.eventOfferCron,
-  /DAYS_BEFORE_EVENT\s*=\s*10[\s\S]*eq\(albums\.plan, "free"\)[\s\S]*eq\(albums\.isPublished, true\)[\s\S]*eq\(albums\.weddingDate, targetDay\)/,
-  "the promotion must target only published Free galleries on the exact 10-day date",
+  /DAYS_BEFORE_EVENT\s*=\s*14[\s\S]*eq\(albums\.plan, "free"\)[\s\S]*eq\(albums\.weddingDate, targetDay\)/,
+  "the promotion must target Free galleries on the exact 14-day date",
 );
 
 requireMatch(
-  "event offer creates a unique single-use 30 percent code valid for 30 days",
+  "event offer creates a unique single-use 30 percent code valid for 24 hours",
   files.eventOfferCron,
-  /DISCOUNT_PERCENT\s*=\s*30[\s\S]*DISCOUNT_VALID_DAYS\s*=\s*30[\s\S]*GC30-[\s\S]*percentOff:\s*DISCOUNT_PERCENT[\s\S]*maxUses:\s*1[\s\S]*expiresAt/,
+  /DISCOUNT_PERCENT\s*=\s*30[\s\S]*DISCOUNT_VALID_HOURS\s*=\s*24[\s\S]*GC30-[\s\S]*percentOff:\s*DISCOUNT_PERCENT[\s\S]*maxUses:\s*1[\s\S]*expiresAt/,
   "each eligible customer must receive a generated one-use code with a fixed expiry",
 );
 
@@ -137,6 +139,27 @@ requireMatch(
   `${files.eventOfferEmail}\n${files.upgradePageRoute}\n${files.upgradePage}`,
   /discount=\$\{encodeURIComponent\(fields\.discountCode\)\}[\s\S]*sp\.discount[\s\S]*validateDiscount\(requestedCode, initialPlan\)[\s\S]*initialDiscount \? "valid" : "idle"/,
   "the email CTA must take the customer to checkout with the one-time code applied",
+);
+
+requireAbsent(
+  "unused Kling polling no longer keeps Neon awake",
+  files.vercelConfig,
+  /\/api\/cron\/poll-kling/,
+  "the current Shotstack Film Studio must not retain the legacy two-minute Kling cron",
+);
+
+requireMatch(
+  "guest upload reminders use an hourly database wake-up",
+  files.vercelConfig,
+  /\/api\/cron\/send-reminders[\s\S]*"schedule":\s*"0 \* \* \* \*"/,
+  "reminder delivery can tolerate an hourly window and should allow Neon to suspend",
+);
+
+requireMatch(
+  "event offer lookup has a matching composite index",
+  files.dbSchema,
+  /albums_event_offer_due_idx[\s\S]*t\.plan, t\.weddingDate/,
+  "the daily unpaid-event lookup must not scan the albums table",
 );
 
 requireMatch(

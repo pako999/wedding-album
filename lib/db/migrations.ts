@@ -120,6 +120,7 @@ export async function runMigrations() {
   await run("albums.card_headline",     (q) => q`ALTER TABLE albums ADD COLUMN IF NOT EXISTS card_headline TEXT`);
   await run("albums.card_subtitle",     (q) => q`ALTER TABLE albums ADD COLUMN IF NOT EXISTS card_subtitle TEXT`);
   await run("albums.card_cta",          (q) => q`ALTER TABLE albums ADD COLUMN IF NOT EXISTS card_cta TEXT`);
+  await run("albums event offer idx",   (q) => q`CREATE INDEX IF NOT EXISTS albums_event_offer_due_idx ON albums (plan, wedding_date)`);
 
   // ── Photos ────────────────────────────────────────────────────────────────
   await run("create photos", (q) => q`
@@ -235,6 +236,7 @@ export async function runMigrations() {
   `);
   await run("film_clips gen idx", (q) => q`CREATE INDEX IF NOT EXISTS film_clips_gen_idx ON film_clips (generation_id)`);
   await run("film_clips fal idx", (q) => q`CREATE INDEX IF NOT EXISTS film_clips_fal_idx ON film_clips (fal_request_id)`);
+  await run("film_clips status idx", (q) => q`CREATE INDEX IF NOT EXISTS film_clips_status_idx ON film_clips (status)`);
 
   // ── Upload reminders ──────────────────────────────────────────────────────
   await run("create upload_reminders", (q) => q`
