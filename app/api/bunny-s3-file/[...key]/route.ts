@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import sharp from "sharp";
 import { db } from "@/lib/db";
 import { albums } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
@@ -26,6 +27,46 @@ function normalizedPublicCdn(): string {
   let cdn = (process.env.BUNNY_S3_CDN_URL ?? "").trim().replace(/\/+$/, "");
   if (cdn && !/^https?:\/\//i.test(cdn)) cdn = `https://${cdn}`;
   return cdn;
+}
+
+function optimizerUrl(
+  req: NextRequest,
+  source: URL,
+  width: number,
+  quality: number,
+): URL {
+  const target = new URL("/_next/image", req.nextUrl.origin);
+  target.searchParams.set("url", source.toString());
+  target.searchParams.set("w", String(width));
+  target.searchParams.set("q", String(quality));
+  return target;
+}
+
+async function privateDisplayVariant(
+  source: string,
+  width: number,
+  quality: number,
+): Promise<NextResponse> {
+  const original = await fetch(source, { cache: "no-store" });
+  if (!original.ok) {
+    throw new Error(`Private S3 read failed (${original.status})`);
+  }
+
+  const input = Buffer.from(await original.arrayBuffer());
+  const output = await sharp(input, { animated: true, failOn: "none" })
+    .rotate()
+    .resize({ width, withoutEnlargement: true })
+    .webp({ quality })
+    .toBuffer();
+
+  return new NextResponse(new Uint8Array(output), {
+    headers: {
+      "Cache-Control": "private, no-store",
+      "Content-Type": "image/webp",
+      "Content-Length": String(output.byteLength),
+      "Referrer-Policy": "no-referrer",
+    },
+  });
 }
 
 function validKey(key: string): boolean {
@@ -100,22 +141,30 @@ export async function GET(
   }
 
   const s3Cdn = normalizedPublicCdn();
+  const width = allowedNumber(req.nextUrl.searchParams.get("width"), DISPLAY_WIDTHS);
+  const quality =
+    allowedNumber(req.nextUrl.searchParams.get("quality"), DISPLAY_QUALITIES) ?? 82;
 
   try {
     // For open published albums, retain the fast cacheable pull-zone redirect.
     if (s3Cdn && album.isPublished && !album.password) {
       const target = new URL(`${s3Cdn}/${key}`);
-      const width = allowedNumber(req.nextUrl.searchParams.get("width"), DISPLAY_WIDTHS);
-      const quality = allowedNumber(req.nextUrl.searchParams.get("quality"), DISPLAY_QUALITIES);
-      if (width !== null) target.searchParams.set("width", String(width));
-      if (quality !== null) target.searchParams.set("quality", String(quality));
-      const response = NextResponse.redirect(target, 307);
+      // Bunny's pull-zone Image Optimizer is optional and is not enabled on
+      // every zone. Route display variants through Next's optimizer so the
+      // requested width is guaranteed rather than merely advisory.
+      const destination = width === null
+        ? target
+        : optimizerUrl(req, target, width, quality);
+      const response = NextResponse.redirect(destination, 307);
       response.headers.set("Cache-Control", "public, max-age=300, s-maxage=300");
       return response;
     }
 
     // Protected/unpublished media gets a short-lived private S3 URL instead.
     const signed = await createBunnyS3PresignedRead(key, 300);
+    if (width !== null) {
+      return await privateDisplayVariant(signed, width, quality);
+    }
     const response = NextResponse.redirect(signed, 307);
     response.headers.set("Cache-Control", "private, no-store");
     response.headers.set("Referrer-Policy", "no-referrer");

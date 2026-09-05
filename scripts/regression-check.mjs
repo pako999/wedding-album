@@ -398,8 +398,22 @@ requireMatch(
 requireMatch(
   "new Bunny S3 photos retain responsive display parameters",
   `${files.bunny}\n${files.s3Read}`,
-  /pathname\.startsWith\("\/api\/bunny-s3-file\/"\)[\s\S]*withDisplayParams\(normalized, width, quality\)[\s\S]*DISPLAY_WIDTHS[\s\S]*target\.searchParams\.set\("width"/,
+  /pathname\.startsWith\("\/api\/bunny-s3-file\/"\)[\s\S]*withDisplayParams\(normalized, width, quality\)[\s\S]*DISPLAY_WIDTHS[\s\S]*optimizerUrl\(req, target, width, quality\)/,
   "S3-backed gallery photos must redirect to a resized CDN variant instead of the full original",
+);
+
+requireMatch(
+  "protected Bunny S3 photos are resized without a public cache",
+  files.s3Read,
+  /sharp\(input,[\s\S]*resize\(\{ width, withoutEnlargement: true \}\)[\s\S]*"Cache-Control": "private, no-store"[\s\S]*privateDisplayVariant\(signed, width, quality\)/,
+  "password-protected galleries must not download originals or expose cached private variants",
+);
+
+requireMatch(
+  "Next image optimizer accepts every album variant",
+  files.nextConfig,
+  /deviceSizes:\s*\[320,[\s\S]*2048, 2400, 3840\][\s\S]*qualities:\s*\[30, 75, 78, 80, 82, 90\]/,
+  "the optimizer must accept the responsive widths and qualities emitted by album views",
 );
 
 requireMatch(
