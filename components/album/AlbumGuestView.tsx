@@ -1,11 +1,11 @@
 "use client";
 
 import { WelcomeScreen } from "@/components/album/WelcomeScreen";
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef, useEffect, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import Lightbox from "yet-another-react-lightbox";
+import Lightbox, { type ControllerRef, type SlideImage } from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css";
 import Download from "yet-another-react-lightbox/plugins/download";
 import Counter from "yet-another-react-lightbox/plugins/counter";
@@ -31,6 +31,8 @@ interface Props {
   passwordCorrect: boolean;
   providedPassword?: string;
   initialLang: Lang;
+  /** Stable server timestamp used for hydration-safe upload labels. */
+  renderedAt: string;
   /** True when the signed-in viewer owns this album — shows the back-to-admin bar. */
   isOwner?: boolean;
   /** Events/business package: require name, surname and email before a
@@ -102,22 +104,74 @@ function formatEventDate(raw: string | null | undefined): string {
 }
 
 /** Human-readable relative/absolute upload time, localized via translations */
-function formatUploadTime(date: Date | string | null | undefined, t: Translations): string {
+function formatUploadTime(
+  date: Date | string | null | undefined,
+  t: Translations,
+  renderedAt: string,
+): string {
   if (!date) return "";
   const d = typeof date === "string" ? new Date(date) : date;
   if (isNaN(d.getTime())) return "";
-  const now = new Date();
+  const now = new Date(renderedAt);
   const diffMs = now.getTime() - d.getTime();
   const diffMins = Math.floor(diffMs / 60_000);
   if (diffMins < 1)   return t.justNow;
   if (diffMins < 60)  return t.minutesAgo(diffMins);
-  const hh = d.getHours().toString().padStart(2, "0");
-  const mm = d.getMinutes().toString().padStart(2, "0");
+  // UTC keeps the server render and the first browser render identical.
+  // Previously getHours()/toLocaleDateString() used two different timezones,
+  // causing React hydration error #418 and a full client-side re-render.
+  const hh = d.getUTCHours().toString().padStart(2, "0");
+  const mm = d.getUTCMinutes().toString().padStart(2, "0");
   const diffHours = Math.floor(diffMs / 3_600_000);
   if (diffHours < 24) return t.todayAt(`${hh}:${mm}`);
   const diffDays  = Math.floor(diffMs / 86_400_000);
   if (diffDays === 1) return t.yesterdayAt(`${hh}:${mm}`);
-  return d.toLocaleDateString(undefined, { day: "numeric", month: "short" }) + ` ${hh}:${mm}`;
+  return `${d.getUTCDate()}. ${d.getUTCMonth() + 1}. ${d.getUTCFullYear()} ${hh}:${mm}`;
+}
+
+const LIGHTBOX_WIDTHS = [640, 960, 1280, 1600, 2048] as const;
+const LIGHTBOX_QUALITY = 82;
+
+/**
+ * Build responsive Bunny variants for the lightbox. The largest display file
+ * is capped at 2048 px; the untouched original remains available only through
+ * the explicit download action and in the album ZIP.
+ */
+function lightboxSlide(photo: Photo, downloadOn: boolean): SlideImage & {
+  download?: { url: string; filename: string };
+  description?: string;
+} {
+  const hasDimensions = !!(photo.width && photo.height);
+  const maxWidth = hasDimensions ? Math.min(photo.width!, 2048) : 1600;
+  const maxHeight = hasDimensions
+    ? Math.max(1, Math.round(maxWidth * photo.height! / photo.width!))
+    : undefined;
+  const widths = hasDimensions
+    ? [...new Set([
+        ...LIGHTBOX_WIDTHS.filter((width) => width < maxWidth),
+        maxWidth,
+      ])]
+    : [];
+
+  return {
+    src: bunnyDisplayUrl(photo.blobUrl, maxWidth, LIGHTBOX_QUALITY),
+    ...(hasDimensions ? {
+      width: maxWidth,
+      height: maxHeight,
+      srcSet: widths.map((width) => ({
+        src: bunnyDisplayUrl(photo.blobUrl, width, LIGHTBOX_QUALITY),
+        width,
+        height: Math.max(1, Math.round(width * photo.height! / photo.width!)),
+      })),
+    } : {}),
+    ...(downloadOn ? {
+      download: {
+        url: bunnyOriginalUrl(photo.blobUrl),
+        filename: photo.originalFilename ?? "photo.jpg",
+      },
+    } : {}),
+    description: photo.caption ?? undefined,
+  };
 }
 
 const BRAND = {
@@ -156,7 +210,7 @@ function AvatarBubble({ name, size = 5, accent = BRAND.accent }: { name: string;
   );
 }
 
-export function AlbumGuestView({ album, photos, moments, passwordRequired, passwordCorrect, providedPassword, initialLang, isOwner = false, requireGuestData = false, eventFlags, appearance, headerVisibility }: Props) {
+export function AlbumGuestView({ album, photos, moments, passwordRequired, passwordCorrect, providedPassword, initialLang, renderedAt, isOwner = false, requireGuestData = false, eventFlags, appearance, headerVisibility }: Props) {
   // Event permission gates. UI-side only — the real doors are in the
   // upload and like APIs; this keeps the guest page honest about them.
   const canUpload = eventFlags?.albumPermission !== "view_only";
@@ -201,7 +255,6 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
   const [commentPosting, setCommentPosting]     = useState(false);
   const [turnstileToken, setTurnstileToken]     = useState<string | null>(null);
   // Lightbox info panel (likes + comments for the currently shown photo)
-  const [lightboxViewIndex, setLightboxViewIndex] = useState(0);
   const [lightboxPanelOpen, setLightboxPanelOpen] = useState(false); // mobile bottom sheet
   const [lightboxDesktopPanelOpen, setLightboxDesktopPanelOpen] = useState(true); // desktop side panel
   // When a guest taps "like" in the lightbox without a name yet, highlight the
@@ -233,6 +286,7 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
   const [cameraFiles, setCameraFiles] = useState<FileList | null>(null);
   const turnstileContainerRef = useRef<HTMLDivElement>(null);
   const sortMenuRef = useRef<HTMLDivElement>(null);
+  const lightboxControllerRef = useRef<ControllerRef | null>(null);
 
   const t       = translations[lang];
   const evtIcon = eventIcon(album.eventType ?? "other");
@@ -486,27 +540,35 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
   // ── Filtered collection (type + person + my reactions) ────────────────────
   // upload_only events hide everyone's photos: guests land on the empty
   // gallery state, which is exactly the upload-first screen we want.
-  const visibleSource = canView ? photos : [];
-  const filteredPhotos = visibleSource
-    .filter(p => {
-      if (filter === "photos" &&  p.mimeType?.startsWith("video/")) return false;
-      if (filter === "videos" && !p.mimeType?.startsWith("video/")) return false;
-      if (personFilter && p.uploaderName !== personFilter) return false;
-      if (selectedMomentId && p.momentId !== selectedMomentId) return false;
-      if (reactionsOnly && !myLikes.has(p.id)) return false;
-      return true;
-    })
-    .slice() // copy before sorting — don't mutate the prop array
-    .sort((a, b) => {
-      if (sortMode === "mostLiked") {
-        return (likeCounts[b.id] ?? 0) - (likeCounts[a.id] ?? 0);
-      }
-      const ta = a.uploadedAt ? new Date(a.uploadedAt).getTime() : 0;
-      const tb = b.uploadedAt ? new Date(b.uploadedAt).getTime() : 0;
-      return sortMode === "oldest" ? ta - tb : tb - ta;
-    });
-  const filteredImages = filteredPhotos.filter(p => !p.mimeType?.startsWith("video/"));
-  const filteredVideos = filteredPhotos.filter(p =>  p.mimeType?.startsWith("video/"));
+  const filteredPhotos = useMemo(() => {
+    const visibleSource = canView ? photos : [];
+    return visibleSource
+      .filter(p => {
+        if (filter === "photos" &&  p.mimeType?.startsWith("video/")) return false;
+        if (filter === "videos" && !p.mimeType?.startsWith("video/")) return false;
+        if (personFilter && p.uploaderName !== personFilter) return false;
+        if (selectedMomentId && p.momentId !== selectedMomentId) return false;
+        if (reactionsOnly && !myLikes.has(p.id)) return false;
+        return true;
+      })
+      .slice() // copy before sorting — don't mutate the prop array
+      .sort((a, b) => {
+        if (sortMode === "mostLiked") {
+          return (likeCounts[b.id] ?? 0) - (likeCounts[a.id] ?? 0);
+        }
+        const ta = a.uploadedAt ? new Date(a.uploadedAt).getTime() : 0;
+        const tb = b.uploadedAt ? new Date(b.uploadedAt).getTime() : 0;
+        return sortMode === "oldest" ? ta - tb : tb - ta;
+      });
+  }, [canView, photos, filter, personFilter, selectedMomentId, reactionsOnly, myLikes, sortMode, likeCounts]);
+  const filteredImages = useMemo(
+    () => filteredPhotos.filter(p => !p.mimeType?.startsWith("video/")),
+    [filteredPhotos],
+  );
+  const filteredVideos = useMemo(
+    () => filteredPhotos.filter(p => p.mimeType?.startsWith("video/")),
+    [filteredPhotos],
+  );
 
   // "My uploads" = guest's confirmed name appears among uploaders
   const hasMyUploads = nameConfirmed && uploaders.includes(uploaderName.trim());
@@ -558,24 +620,17 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
   };
 
   // ── Lightbox slides — mirror the currently displayed images (filtered+sorted) ──
-  const lightboxSlides = filteredImages.map(p => ({
-    src: bunnyDisplayUrl(p.blobUrl, 2400, 90),
-    // Real dimensions when the upload recorded them; otherwise none —
-    // the old 2400x1600 fallback told the lightbox every photo was
-    // landscape, which broke fit and zoom maths for portrait shots.
-    ...(p.width && p.height ? { width: p.width, height: p.height } : {}),
-    // Omitted entirely when downloads are disabled — the custom download
-    // button below already renders null for slides without it.
-    ...(downloadOn ? { download: { url: bunnyOriginalUrl(p.blobUrl), filename: p.originalFilename ?? "photo.jpg" } } : {}),
-    description: p.caption ?? undefined,
-  }));
+  const lightboxSlides = useMemo(
+    () => filteredImages.map((photo) => lightboxSlide(photo, downloadOn)),
+    [filteredImages, downloadOn],
+  );
 
   const getLightboxIdx = (photo: Photo): number =>
     filteredImages.findIndex(p => p.id === photo.id);
 
   const lightboxOpen = lightboxIndex >= 0;
   // Photo currently shown in the lightbox (drives the info panel)
-  const lightboxPhoto: Photo | undefined = lightboxOpen ? filteredImages[lightboxViewIndex] : undefined;
+  const lightboxPhoto: Photo | undefined = lightboxOpen ? filteredImages[lightboxIndex] : undefined;
 
   /** Current lightbox zoom level — vertical swipe must not change the
    *  photo while the guest is panning a zoomed-in image. */
@@ -619,8 +674,10 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
       const dx = e.changedTouches[0].clientX - startX;
       const dy = e.changedTouches[0].clientY - startY;
       if (Math.abs(dy) < 70 || Math.abs(dy) < Math.abs(dx) * 1.5) return;
-      // Wrap around, matching the lightbox's own infinite paging.
-      setLightboxIndex((i) => (dy < 0 ? (i + 1) % total : (i - 1 + total) % total));
+      // Use the lightbox controller so vertical paging gets the same smooth
+      // transition and internal state updates as arrows/horizontal swipes.
+      if (dy < 0) lightboxControllerRef.current?.next();
+      else lightboxControllerRef.current?.prev();
     };
 
     document.addEventListener("touchstart", onStart, { passive: true });
@@ -1403,7 +1460,7 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
                   {t.videosSection} · {filteredVideos.length}
                 </h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {filteredVideos.map(photo => <VideoCard key={photo.id} photo={photo} t={t} accent={theme.accent} />)}
+                  {filteredVideos.map(photo => <VideoCard key={photo.id} photo={photo} t={t} renderedAt={renderedAt} accent={theme.accent} />)}
                 </div>
               </div>
             )}
@@ -1411,7 +1468,7 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
             {/* ── Videos-only view ────────────────────────────────────────── */}
             {filter === "videos" && (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {filteredVideos.map(photo => <VideoCard key={photo.id} photo={photo} t={t} accent={theme.accent} />)}
+                {filteredVideos.map(photo => <VideoCard key={photo.id} photo={photo} t={t} renderedAt={renderedAt} accent={theme.accent} />)}
               </div>
             )}
 
@@ -1430,7 +1487,6 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
                       className="masonry-item group cursor-pointer"
                       onClick={() => {
                         const idx = getLightboxIdx(photo);
-                        setLightboxViewIndex(idx);
                         setLightboxPanelOpen(false);
                         setLightboxDesktopPanelOpen(true);
                         setLightboxIndex(idx);
@@ -1440,6 +1496,10 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
                       <div className="relative rounded-xl overflow-hidden bg-gray-100">
                         <img
                           src={bunnyDisplayUrl(photo.thumbnailUrl ?? photo.blobUrl, 800, 82)}
+                          srcSet={[320, 480, 640, 800]
+                            .map((width) => `${bunnyDisplayUrl(photo.thumbnailUrl ?? photo.blobUrl, width, 82)} ${width}w`)
+                            .join(", ")}
+                          sizes="(max-width: 639px) calc(50vw - 12px), (max-width: 1023px) calc(33vw - 16px), (max-width: 1279px) calc(25vw - 18px), 250px"
                           alt={photo.caption ?? ""}
                           className="w-full h-auto block transition-transform duration-500 group-hover:scale-[1.03]"
                           loading="lazy"
@@ -1465,7 +1525,7 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
                             </p>
                           )}
                           <p className="text-[10px] leading-tight" style={{ color: BRAND.muted }}>
-                            {formatUploadTime(photo.uploadedAt, t)}
+                            {formatUploadTime(photo.uploadedAt, t, renderedAt)}
                           </p>
                         </div>
                         {/* Like button */}
@@ -1543,7 +1603,7 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
       <footer className="border-t mt-8 py-6 text-center flex flex-col items-center gap-3" style={{ borderColor: BRAND.border }}>
         <PoweredByBadge referralCode={album.referralCode ?? null} lang={lang} />
         <p className="text-[10px]" style={{ color: BRAND.muted }}>
-          © {new Date().getFullYear()} Guestcam
+          © {new Date(renderedAt).getUTCFullYear()} Guestcam
         </p>
       </footer>
 
@@ -1597,7 +1657,7 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
                     <div className="flex-1 min-w-0">
                       <div className="flex items-baseline gap-1.5">
                         <span className="text-xs font-semibold" style={{ color: BRAND.dark }}>{c.uploaderName}</span>
-                        <span className="text-[10px]" style={{ color: BRAND.muted }}>{formatUploadTime(c.createdAt, t)}</span>
+                        <span className="text-[10px]" style={{ color: BRAND.muted }}>{formatUploadTime(c.createdAt, t, renderedAt)}</span>
                       </div>
                       <p className="text-sm leading-snug mt-0.5" style={{ color: BRAND.dark }}>{c.body}</p>
                     </div>
@@ -1724,7 +1784,7 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
                     </p>
                   )}
                   <p className="text-[11px] leading-tight mt-0.5" style={{ color: BRAND.muted }}>
-                    {formatUploadTime(lightboxPhoto.uploadedAt, t)}
+                    {formatUploadTime(lightboxPhoto.uploadedAt, t, renderedAt)}
                   </p>
                 </div>
                 {/* Desktop collapse / hide control */}
@@ -1795,7 +1855,7 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
                       <div className="flex-1 min-w-0">
                         <div className="flex items-baseline gap-2">
                           <span className="text-xs font-bold truncate" style={{ color: BRAND.dark }}>{c.uploaderName}</span>
-                          <span className="text-[10px] shrink-0" style={{ color: BRAND.muted }}>{formatUploadTime(c.createdAt, t)}</span>
+                          <span className="text-[10px] shrink-0" style={{ color: BRAND.muted }}>{formatUploadTime(c.createdAt, t, renderedAt)}</span>
                         </div>
                         <p className="text-sm leading-snug mt-0.5 break-words" style={{ color: "#374151" }}>{c.body}</p>
                       </div>
@@ -1891,6 +1951,8 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
             index={lightboxIndex}
             slides={lightboxSlides}
             plugins={downloadOn ? [Download, Counter, Zoom] : [Counter, Zoom]}
+            carousel={{ preload: 1, imageProps: { decoding: "async" } }}
+            controller={{ ref: lightboxControllerRef }}
             /* Pinch-to-zoom handled INSIDE the lightbox. Without this,
                a guest's instinctive pinch on a photo hit Safari itself
                and zoomed the whole fixed-position page — leaving the
@@ -1902,7 +1964,7 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
                this, the controlled prop snaps every swipe back to the photo
                the lightbox was opened on. */
             on={{
-              view: ({ index }) => { setLightboxViewIndex(index); setLightboxIndex(index); lightboxZoomRef.current = 1; },
+              view: ({ index }) => { setLightboxIndex(index); lightboxZoomRef.current = 1; },
               zoom: ({ zoom }) => { lightboxZoomRef.current = zoom; },
             }}
             styles={{ container: { backgroundColor: "rgba(0,0,0,0.97)" } }}
@@ -1918,7 +1980,7 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
                  guest report where iOS Safari's default sheet only offered
                  Files + Google Drive. */
               buttonDownload: () => {
-                const slide = lightboxSlides[lightboxViewIndex];
+                const slide = lightboxSlides[lightboxIndex];
                 if (!slide?.download) return null;
                 const { url, filename } = slide.download;
                 return (
@@ -2130,7 +2192,7 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
 }
 
 /* ── VideoCard ────────────────────────────────────────────────────────────── */
-function VideoCard({ photo, t, accent = BRAND.accent }: { photo: Photo; t: Translations; accent?: string }) {
+function VideoCard({ photo, t, renderedAt, accent = BRAND.accent }: { photo: Photo; t: Translations; renderedAt: string; accent?: string }) {
   return (
     <div className="rounded-2xl overflow-hidden bg-gray-950 border border-gray-800 flex flex-col">
       {/* Video player */}
@@ -2154,7 +2216,7 @@ function VideoCard({ photo, t, accent = BRAND.accent }: { photo: Photo; t: Trans
           {photo.uploaderName && (
             <p className="text-xs font-semibold text-gray-100 truncate">{photo.uploaderName}</p>
           )}
-          <p className="text-[10px] text-gray-400">{formatUploadTime(photo.uploadedAt, t)}</p>
+          <p className="text-[10px] text-gray-400">{formatUploadTime(photo.uploadedAt, t, renderedAt)}</p>
         </div>
       </div>
     </div>

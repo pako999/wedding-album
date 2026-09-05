@@ -110,6 +110,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function AlbumPage({ params, searchParams }: Props) {
   const { slug } = await params;
   const { lang: langParam, event } = await searchParams;
+  const renderedAt = new Date().toISOString();
 
   const album = await withSchemaHealing(() =>
     db.query.albums.findFirst({ where: eq(albums.slug, slug) }),
@@ -248,6 +249,7 @@ export default async function AlbumPage({ params, searchParams }: Props) {
         passwordRequired={passwordRequired}
         passwordCorrect={passwordCorrect}
         initialLang={lang}
+        renderedAt={renderedAt}
         isOwner={isOwner}
         requireGuestData={requireEventGuestData}
         eventFlags={flags}

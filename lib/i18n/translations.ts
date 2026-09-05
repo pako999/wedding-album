@@ -61,6 +61,7 @@ export interface Translations {
   closeWindow: string;          // "Close window"
   fileUploaded: string;         // "Uploaded"
   alreadyUploaded: string;      // "Already in album"
+  alreadyUploadedPending: string; // "Already uploaded — awaiting approval"
   fileNetworkError: string;     // "Network error"
   fileQueued: string;           // "Queued — will upload when back online"
   offlineBanner: string;        // "No internet — photos queued, will upload automatically"
@@ -256,6 +257,7 @@ const sl: Translations = {
   closeWindow: "Zapri okno",
   fileUploaded: "Naloženo",
   alreadyUploaded: "Že v albumu",
+  alreadyUploadedPending: "Že naloženo – čaka na odobritev",
   fileNetworkError: "Omrežna napaka",
   fileQueued: "V vrsti — naloži se, ko bo vzpostavljena internet",
   offlineBanner: "Ni interneta — fotografije so v vrsti in se bodo samodejno naložile, ko bo vzpostavljena povezava",
@@ -413,6 +415,7 @@ const hr: Translations = {
   closeWindow: "Zatvori prozor",
   fileUploaded: "Učitano",
   alreadyUploaded: "Već u albumu",
+  alreadyUploadedPending: "Već učitano – čeka odobrenje",
   fileNetworkError: "Mrežna greška",
   fileQueued: "U redu — učitat će se kad bude interneta",
   offlineBanner: "Nema interneta — fotografije su u redu i automatski će se učitati kad se veza uspostavi",
@@ -569,6 +572,7 @@ const sr: Translations = {
   closeWindow: "Zatvori prozor",
   fileUploaded: "Otpremljeno",
   alreadyUploaded: "Već u albumu",
+  alreadyUploadedPending: "Već otpremljeno – čeka odobrenje",
   fileNetworkError: "Mrežna greška",
   fileQueued: "U redu — otpremiće se kad bude interneta",
   offlineBanner: "Nema interneta — fotografije su u redu i automatski će se otpremiti kad se veza uspostavi",
@@ -724,6 +728,7 @@ const en: Translations = {
   closeWindow: "Close window",
   fileUploaded: "Uploaded",
   alreadyUploaded: "Already in album",
+  alreadyUploadedPending: "Already uploaded – awaiting approval",
   fileNetworkError: "Network error",
   fileQueued: "Queued — will upload when back online",
   offlineBanner: "No internet — photos are queued and will upload automatically when your connection returns",
@@ -880,6 +885,7 @@ const de: Translations = {
   closeWindow: "Fenster schließen",
   fileUploaded: "Hochgeladen",
   alreadyUploaded: "Bereits im Album",
+  alreadyUploadedPending: "Bereits hochgeladen – wartet auf Freigabe",
   fileNetworkError: "Netzwerkfehler",
   fileQueued: "In der Warteschlange — wird hochgeladen, sobald Internet verfügbar",
   offlineBanner: "Kein Internet — Fotos sind in der Warteschlange und werden automatisch hochgeladen, sobald die Verbindung wiederhergestellt ist",
@@ -1036,6 +1042,7 @@ const es: Translations = {
   closeWindow: "Cerrar ventana",
   fileUploaded: "Subido",
   alreadyUploaded: "Ya en el álbum",
+  alreadyUploadedPending: "Ya se subió – pendiente de aprobación",
   fileNetworkError: "Error de red",
   fileQueued: "En cola — se subirá cuando haya internet",
   offlineBanner: "Sin internet — las fotos están en cola y se subirán automáticamente cuando vuelva la conexión",

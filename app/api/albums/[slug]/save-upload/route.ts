@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { albums, photos, moments } from "@/lib/db/schema";
-import { eq, and, sql } from "drizzle-orm";
+import { eq, and, ne, sql } from "drizzle-orm";
 import { sendNewPhotoNotification } from "@/lib/email/notifications";
 import { bunnyStreamThumbnailUrl, bunnyStreamIframeUrl } from "@/lib/storage/bunny";
 import { hasAlbumRequestAccess } from "@/lib/album-request-access";
@@ -178,7 +178,7 @@ export async function POST(
       if (existing.albumId !== album.id) {
         return NextResponse.json({ error: "Media already belongs to another album" }, { status: 409 });
       }
-      return NextResponse.json({ success: true, photoId: existing.id, alreadySaved: true });
+      return NextResponse.json({ success: true, photoId: existing.id, alreadySaved: true, status: existing.status });
     }
   }
   if (cfStreamVideoId) {
@@ -187,18 +187,22 @@ export async function POST(
       if (existing.albumId !== album.id) {
         return NextResponse.json({ error: "Video already belongs to another album" }, { status: 409 });
       }
-      return NextResponse.json({ success: true, photoId: existing.id, alreadySaved: true });
+      return NextResponse.json({ success: true, photoId: existing.id, alreadySaved: true, status: existing.status });
     }
   }
   if (originalFilename && typeof sizeBytes === "number") {
     const dup = await db.query.photos.findFirst({
       where: and(
         eq(photos.albumId, album.id),
+        eq(photos.uploaderName, uploaderName),
         eq(photos.originalFilename, originalFilename),
         eq(photos.sizeBytes, sizeBytes),
+        ne(photos.status, "rejected"),
       ),
     }).catch(() => null);
-    if (dup) return NextResponse.json({ success: true, photoId: dup.id, alreadySaved: true });
+    if (dup) {
+      return NextResponse.json({ success: true, photoId: dup.id, alreadySaved: true, status: dup.status });
+    }
   }
 
   if (isVideo && album.plan === "free") {

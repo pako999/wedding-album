@@ -116,7 +116,11 @@ export function Slideshow({ photos, startIndex = 0, onClose }: Props) {
         {/* Main slide image */}
         <img
           key={imgKey}
-          src={bunnyDisplayUrl(photo.blobUrl, 2400, 90)}
+          src={bunnyDisplayUrl(photo.blobUrl, 2048, 82)}
+          srcSet={[640, 960, 1280, 1600, 2048]
+            .map((width) => `${bunnyDisplayUrl(photo.blobUrl, width, 82)} ${width}w`)
+            .join(", ")}
+          sizes="100vw"
           alt={photo.caption ?? ""}
           className="absolute inset-0 w-full h-full object-contain"
           style={{ animation: "ssIn 0.55s cubic-bezier(.4,0,.2,1) forwards" }}

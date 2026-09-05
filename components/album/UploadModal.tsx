@@ -48,8 +48,13 @@ interface UploadFile {
   status: "idle" | "compressing" | "uploading" | "done" | "error" | "skipped" | "queued";
   progress: number;
   error?: string;
+  duplicateStatus?: "pending" | "published";
   isVideo: boolean;
 }
+
+type UploadResult =
+  | { type: "uploaded" }
+  | { type: "duplicate"; status: "pending" | "published" };
 
 const ACCEPTED_IMAGES = ["image/jpeg", "image/jpg", "image/png", "image/webp", "image/heic", "image/heif", "image/gif"];
 const ACCEPTED_VIDEOS = ["video/mp4", "video/quicktime", "video/mov", "video/webm", "video/mpeg", "video/3gpp", "video/avi"];
@@ -94,7 +99,7 @@ async function uploadFile(
   onProgress: (pct: number) => void,
   albumPassword: string,
   momentId: string | null,
-): Promise<"uploaded" | "duplicate"> {
+): Promise<UploadResult> {
   // Preserve the original bytes. No browser-side resize or JPEG re-encode.
   const file = rawFile;
   const dims = await readImageDims(file);
@@ -103,7 +108,12 @@ async function uploadFile(
   const urlRes = await fetch(`/api/albums/${albumSlug}/upload-url`, {
     method: "POST",
     headers: { "Content-Type": "application/json", "x-album-password": albumPassword },
-    body: JSON.stringify({ filename: file.name, contentType: file.type, size: file.size }),
+    body: JSON.stringify({
+      filename: file.name,
+      contentType: file.type,
+      size: file.size,
+      uploaderName,
+    }),
   });
   if (!urlRes.ok) {
     const errBody = await urlRes.text().catch(() => "");
@@ -119,12 +129,14 @@ async function uploadFile(
     | { type: "r2";            presignedUrl: string; publicUrl: string; key: string }
     | { type: "stream";        uploadUrl: string; videoId: string }
     | { type: "vercel-blob" }
-    | { type: "duplicate" };
+    | { type: "duplicate"; status?: "pending" | "published" };
 
   const urlData = await urlRes.json() as UrlData;
 
   // Server detected an identical file already in this album — skip it.
-  if (urlData.type === "duplicate") return "duplicate";
+  if (urlData.type === "duplicate") {
+    return { type: "duplicate", status: urlData.status === "pending" ? "pending" : "published" };
+  }
 
   // ── Bunny Stream (tus direct upload) ──────────────────────────────────────
   if (urlData.type === "bunny-stream") {
@@ -138,7 +150,7 @@ async function uploadFile(
       momentId,
     }, albumPassword);
     onProgress(100);
-    return "uploaded";
+    return { type: "uploaded" };
   }
 
   // ── Bunny Storage S3: original browser file → Bunny directly ──────────────
@@ -161,7 +173,7 @@ async function uploadFile(
       momentId,
     }, albumPassword);
     onProgress(100);
-    return "uploaded";
+    return { type: "uploaded" };
   }
 
   // ── Bunny Storage legacy proxy fallback ────────────────────────────────────
@@ -183,7 +195,7 @@ async function uploadFile(
       momentId,
     }, albumPassword);
     onProgress(100);
-    return "uploaded";
+    return { type: "uploaded" };
   }
 
   // ── Cloudflare R2 legacy compatibility ─────────────────────────────────────
@@ -206,7 +218,7 @@ async function uploadFile(
       momentId,
     }, albumPassword);
     onProgress(100);
-    return "uploaded";
+    return { type: "uploaded" };
   }
 
   // ── Cloudflare Stream (legacy / fallback) ─────────────────────────────────
@@ -221,7 +233,7 @@ async function uploadFile(
       momentId,
     }, albumPassword);
     onProgress(100);
-    return "uploaded";
+    return { type: "uploaded" };
   }
 
   // ── Vercel Blob fallback ──────────────────────────────────────────────────
@@ -249,7 +261,7 @@ async function uploadFile(
     momentId,
   }, albumPassword);
   onProgress(100);
-  return "uploaded";
+  return { type: "uploaded" };
 }
 
 /** tus upload for Bunny Stream */
@@ -608,7 +620,11 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
           albumPassword,
           momentId || null,
         );
-        updateFile(f.id, { status: result === "duplicate" ? "skipped" : "done", progress: 100 });
+        updateFile(f.id, {
+          status: result.type === "duplicate" ? "skipped" : "done",
+          progress: 100,
+          duplicateStatus: result.type === "duplicate" ? result.status : undefined,
+        });
       } catch (err) {
         const msg = err instanceof Error ? err.message : t.genericError;
         const isStall = msg === "STALL";
@@ -916,7 +932,7 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
                         </div>
                       )}
                       {f.status === "done" && <p className="text-xs text-green-600 flex items-center gap-1"><svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>{t.fileUploaded}</p>}
-                      {f.status === "skipped" && <p className="text-xs text-gray-400 flex items-center gap-1"><svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>{t.alreadyUploaded}</p>}
+                      {f.status === "skipped" && <p className="text-xs text-gray-400 flex items-center gap-1"><svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>{f.duplicateStatus === "pending" ? t.alreadyUploadedPending : t.alreadyUploaded}</p>}
                       {f.status === "queued" && <p className="text-xs text-blue-500 flex items-center gap-1"><svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>{t.fileQueued}</p>}
                       {f.status === "error" && <p className="text-xs text-red-500 truncate">{f.error}</p>}
                     </div>

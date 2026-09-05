@@ -41,6 +41,8 @@ const files = {
   albumPage: await read("app/[slug]/page.tsx"),
   albumDashboardPage: await read("app/dashboard/[slug]/page.tsx"),
   albumGuestView: await read("components/album/AlbumGuestView.tsx"),
+  uploadModal: await read("components/album/UploadModal.tsx"),
+  slideshow: await read("components/album/Slideshow.tsx"),
   albumHeaderSettings: await read("lib/album-header-settings.ts"),
   proxy: await read("proxy.ts"),
   siteDomains: await read("lib/site-domains.ts"),
@@ -369,6 +371,63 @@ requireAbsent(
   files.albumPage,
   /providedPassword\s*=|\{\s*pw\s*,/,
   "the Server Component must never pass a raw album password into AlbumGuestView",
+);
+
+requireMatch(
+  "album grid publishes responsive Bunny image candidates",
+  files.albumGuestView,
+  /srcSet=\{\[320, 480, 640, 800\][\s\S]*?sizes="\(max-width: 639px\)/,
+  "mobile and desktop cards must not all download the same 800 px image",
+);
+
+requireMatch(
+  "lightbox caps display assets and preloads only adjacent slides",
+  files.albumGuestView,
+  /LIGHTBOX_WIDTHS\s*=\s*\[640, 960, 1280, 1600, 2048\][\s\S]*LIGHTBOX_QUALITY\s*=\s*82[\s\S]*carousel=\{\{ preload: 1/,
+  "the lightbox must not eagerly load five oversized 2400 px assets",
+);
+
+requireMatch(
+  "lightbox downloads still request untouched originals",
+  files.albumGuestView,
+  /download:\s*\{[\s\S]*?url:\s*bunnyOriginalUrl\(photo\.blobUrl\)/,
+  "display optimization must not reduce explicit photo download quality",
+);
+
+requireAbsent(
+  "album viewers do not display legacy 2400 px quality-90 assets",
+  `${files.albumGuestView}\n${files.slideshow}`,
+  /bunnyDisplayUrl\([^\n]*,\s*2400,\s*90\)/,
+  "2400 px quality-90 variants caused multi-megabyte lightbox preloads and stuttering",
+);
+
+requireMatch(
+  "album upload labels receive a stable server timestamp",
+  `${files.albumPage}\n${files.albumGuestView}`,
+  /const renderedAt = new Date\(\)\.toISOString\(\)[\s\S]*renderedAt=\{renderedAt\}[\s\S]*formatUploadTime\([^)]*renderedAt/,
+  "relative timestamps must not cause a text hydration mismatch and full client rerender",
+);
+
+for (const endpoint of [files.uploadUrl, files.saveUpload]) {
+  requireMatch(
+    "photo duplicate checks are scoped to the same uploader",
+    endpoint,
+    /eq\(photos\.uploaderName, uploaderName\)/,
+    "filename and byte size alone can falsely block a different guest's valid photo",
+  );
+  requireMatch(
+    "rejected photos do not permanently block a fresh upload",
+    endpoint,
+    /ne\(photos\.status, "rejected"\)/,
+    "a hidden rejected row must not keep reporting that the photo is already in the album",
+  );
+}
+
+requireMatch(
+  "duplicate upload responses preserve moderation status",
+  `${files.uploadUrl}\n${files.uploadModal}`,
+  /type: "duplicate", status: dup\.status[\s\S]*urlData\.status === "pending"[\s\S]*alreadyUploadedPending/,
+  "guests must be told when an existing upload is waiting for owner approval",
 );
 
 requireAbsent(

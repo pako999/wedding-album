@@ -10,7 +10,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { albums, photos } from "@/lib/db/schema";
-import { eq, and, like, sql } from "drizzle-orm";
+import { eq, and, like, ne, sql } from "drizzle-orm";
 import {
   isBunnyStorageConfigured,
   isBunnyStreamConfigured,
@@ -56,9 +56,9 @@ export async function POST(
   const rl = await checkRateLimit("upload-url-venue", VENUE_REQUESTS_PER_MINUTE, 60_000);
   if (!rl.ok) return rl.response;
 
-  let body: { filename?: string; contentType?: string; size?: number };
+  let body: { filename?: string; contentType?: string; size?: number; uploaderName?: string };
   try {
-    body = await req.json() as { filename?: string; contentType?: string; size?: number };
+    body = await req.json() as { filename?: string; contentType?: string; size?: number; uploaderName?: string };
   } catch {
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
   }
@@ -67,8 +67,12 @@ export async function POST(
   const contentType = typeof body.contentType === "string"
     ? body.contentType.split(";")[0].trim().toLowerCase()
     : "";
+  const uploaderName = typeof body.uploaderName === "string" ? body.uploaderName.trim() : "";
   if (!filename || !contentType || filename.length > 255) {
     return NextResponse.json({ error: "filename and contentType required" }, { status: 400 });
+  }
+  if (uploaderName.length > 80) {
+    return NextResponse.json({ error: "uploaderName too long" }, { status: 400 });
   }
 
   const album = await db.query.albums
@@ -106,17 +110,30 @@ export async function POST(
     return NextResponse.json({ error: "Album photo limit reached" }, { status: 403 });
   }
 
-  if (typeof body.size === "number" && Number.isFinite(body.size)) {
+  // Filename + byte size alone is not a safe cross-guest identity: two phones
+  // can reuse camera filenames, and a rejected row must not permanently block
+  // a fresh upload. Scope the fast pre-upload duplicate check to the same
+  // uploader and to rows that can actually be surfaced to them.
+  if (uploaderName && typeof body.size === "number" && Number.isFinite(body.size)) {
     const dup = await db.query.photos
       .findFirst({
         where: and(
           eq(photos.albumId, album.id),
+          eq(photos.uploaderName, uploaderName),
           eq(photos.originalFilename, filename),
           eq(photos.sizeBytes, body.size),
+          ne(photos.status, "rejected"),
         ),
       })
       .catch(() => null);
-    if (dup) return NextResponse.json({ type: "duplicate" });
+    if (dup) {
+      console.info("[upload-url] duplicate file metadata", {
+        albumId: album.id,
+        photoId: dup.id,
+        status: dup.status,
+      });
+      return NextResponse.json({ type: "duplicate", status: dup.status });
+    }
   }
 
   const cap = isVideo ? MAX_VIDEO_BYTES : MAX_IMAGE_BYTES;
