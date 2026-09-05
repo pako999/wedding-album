@@ -39,6 +39,8 @@ interface Props {
    *  invite to create their own gallery with 15% off. Optional; if
    *  null (e.g. legacy album pre-backfill) the CTA hides itself. */
   referralCode?: string | null;
+  /** When enabled, uploaded media remains hidden until the owner approves it. */
+  moderationEnabled?: boolean;
 }
 
 interface UploadFile {
@@ -440,7 +442,7 @@ async function saveUpload(slug: string, body: object, albumPassword = "") {
 
 // ── Component ─────────────────────────────────────────────────────────────────
 
-export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, currentCount, lang, onClose, onSuccess, onNameChange: _onNameChange, initialFiles, accent = "#C9820A", albumPassword = "", moments = [], defaultMomentId = null, referralCode = null, requireGuestData = false, organiserName = "" }: Props) {
+export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, currentCount, lang, onClose, onSuccess, onNameChange: _onNameChange, initialFiles, accent = "#C9820A", albumPassword = "", moments = [], defaultMomentId = null, referralCode = null, requireGuestData = false, organiserName = "", moderationEnabled = false }: Props) {
   const t = translations[lang];
   const lead = LEAD_COPY[lang];
 
@@ -797,8 +799,16 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
               </div>
               <p className="text-xl font-extrabold tracking-tight text-[#0F1729] mb-1 break-words">{t.successTitle(success)}</p>
               <p className="font-sans text-sm text-[#0F1729]/60 mb-3 break-words">{t.successDesc}</p>
-              <p className="font-sans text-xs text-[#0F1729]/45 bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 mb-6 leading-relaxed break-words">
-                {isDemo ? t.demoUploadNote : t.approvalNote}
+              <p className={`font-sans text-xs rounded-xl px-4 py-3 mb-6 leading-relaxed break-words border ${
+                moderationEnabled
+                  ? "bg-amber-50 border-amber-300 text-amber-900 font-semibold"
+                  : "bg-gray-50 border-gray-200 text-[#0F1729]/45"
+              }`} role={moderationEnabled ? "status" : undefined}>
+                {isDemo
+                  ? t.demoUploadNote
+                  : moderationEnabled
+                    ? t.moderationPendingNote
+                    : t.approvalNote}
               </p>
               <button
                 onClick={() => onSuccess({ emailCaptured: saveLinkSent })}

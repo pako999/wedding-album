@@ -2148,6 +2148,7 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
           referralCode={album.referralCode ?? null}
           requireGuestData={requireGuestData}
           organiserName={album.coupleName}
+          moderationEnabled={album.moderationEnabled}
           onClose={() => { setCameraFiles(null); setUploadOpen(false); }}
           onNameChange={(name) => setUploaderName(name)}
           onSuccess={(info) => {

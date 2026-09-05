@@ -20,6 +20,7 @@ import { EventModerationCard } from "@/components/dashboard/EventModerationCard"
 import { WallCollaboratorsCard } from "@/components/dashboard/WallCollaboratorsCard";
 import { EventAppearanceCard } from "@/components/dashboard/EventAppearanceCard";
 import { EventLeadsCard } from "@/components/dashboard/EventLeadsCard";
+import { ModerationEnabledNotice } from "@/components/dashboard/ModerationEnabledNotice";
 import { ALBUM_THEMES, themesForEvent } from "@/lib/album-themes";
 import { fbEvent } from "@/lib/fbpixel";
 
@@ -2077,17 +2078,27 @@ function AlbumSettingsForm({ album, children, wallToken, hasPassword, headerSett
         </label>
 
         {album.plan !== "free" && (
-          <label className="flex items-center gap-3 cursor-pointer">
-            <button
-              role="switch"
-              aria-checked={moderationEnabled}
-              onClick={() => updateSetting(setModerationEnabled, !moderationEnabled)}
-              className={`relative w-10 h-5 rounded-full transition-colors ${moderationEnabled ? "bg-[#FFC94D]" : "bg-gray-200"}`}
-            >
-              <span className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white shadow transition-transform ${moderationEnabled ? "translate-x-5" : "translate-x-0"}`} />
-            </button>
-            <span className="text-sm text-gray-700">Moderacija fotografij pred objavo</span>
-          </label>
+          <div className="space-y-3">
+            <div className="flex items-start gap-3">
+              <button
+                type="button"
+                role="switch"
+                aria-checked={moderationEnabled}
+                aria-label="Ročna odobritev fotografij in videov pred objavo"
+                onClick={() => updateSetting(setModerationEnabled, !moderationEnabled)}
+                className={`relative mt-0.5 h-5 w-10 shrink-0 rounded-full transition-colors ${moderationEnabled ? "bg-[#FFC94D]" : "bg-gray-200"}`}
+              >
+                <span className={`absolute left-0.5 top-0.5 h-4 w-4 rounded-full bg-white shadow transition-transform ${moderationEnabled ? "translate-x-5" : "translate-x-0"}`} />
+              </button>
+              <div>
+                <p className="text-sm font-semibold text-gray-800">Ročna odobritev pred objavo</p>
+                <p className="mt-0.5 text-xs leading-relaxed text-gray-500">
+                  Preglejte vsako novo fotografijo in video, preden ju lahko vidijo drugi gostje.
+                </p>
+              </div>
+            </div>
+            {moderationEnabled ? <ModerationEnabledNotice albumSlug={album.slug} /> : null}
+          </div>
         )}
       </div>
 

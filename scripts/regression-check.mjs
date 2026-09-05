@@ -32,6 +32,15 @@ function requireAbsent(name, text, pattern, hint) {
   console.log(`PASS: ${name}`);
 }
 
+function requireOccurrences(name, text, pattern, expected, hint) {
+  const flags = pattern.flags.includes("g") ? pattern.flags : `${pattern.flags}g`;
+  const matches = text.match(new RegExp(pattern.source, flags)) ?? [];
+  if (matches.length !== expected) {
+    throw new Error(`FAIL: ${name} — ${hint} (expected ${expected}, found ${matches.length})`);
+  }
+  console.log(`PASS: ${name}`);
+}
+
 const files = {
   legacyUpload: await read("app/api/albums/[slug]/upload/route.ts"),
   uploadUrl: await read("app/api/albums/[slug]/upload-url/route.ts"),
@@ -42,6 +51,9 @@ const files = {
   albumDashboardPage: await read("app/dashboard/[slug]/page.tsx"),
   albumGuestView: await read("components/album/AlbumGuestView.tsx"),
   uploadModal: await read("components/album/UploadModal.tsx"),
+  translations: await read("lib/i18n/translations.ts"),
+  moderationNotice: await read("components/dashboard/ModerationEnabledNotice.tsx"),
+  eventModeration: await read("components/dashboard/EventModerationCard.tsx"),
   slideshow: await read("components/album/Slideshow.tsx"),
   bunny: await read("lib/storage/bunny.ts"),
   albumHeaderSettings: await read("lib/album-header-settings.ts"),
@@ -465,6 +477,36 @@ requireMatch(
   `${files.uploadUrl}\n${files.uploadModal}`,
   /type: "duplicate", status: dup\.status[\s\S]*urlData\.status === "pending"[\s\S]*alreadyUploadedPending/,
   "guests must be told when an existing upload is waiting for owner approval",
+);
+
+requireMatch(
+  "enabled moderation shows owners a prominent manual-approval warning",
+  `${files.albumAdminPanel}\n${files.eventModeration}\n${files.moderationNotice}`,
+  /moderationEnabled \? <ModerationEnabledNotice[\s\S]*Ročna odobritev je vključena[\s\S]*ne bodo vidni v albumu ali na Foto steni[\s\S]*tab=pending/,
+  "both moderation controls must explain that uploads stay hidden and link to the approval queue",
+);
+
+requireOccurrences(
+  "manual-approval warning appears beside both owner controls",
+  `${files.albumAdminPanel}\n${files.eventModeration}`,
+  /<ModerationEnabledNotice\s+albumSlug=/,
+  2,
+  "the Settings and Events moderation toggles must both show the same warning",
+);
+
+requireMatch(
+  "guest upload success uses the moderation-specific notice",
+  `${files.albumGuestView}\n${files.uploadModal}`,
+  /moderationEnabled=\{album\.moderationEnabled\}[\s\S]*moderationEnabled[\s\S]*t\.moderationPendingNote/,
+  "guests must not be told their upload will appear automatically when manual approval is enabled",
+);
+
+requireOccurrences(
+  "manual-approval upload notice exists in every gallery language",
+  files.translations,
+  /moderationPendingNote:\s*"/,
+  6,
+  "Slovenian, Croatian, Serbian, English, German and Spanish all need the pending-approval message",
 );
 
 requireAbsent(

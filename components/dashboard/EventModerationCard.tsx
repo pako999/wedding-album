@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import type { AlbumFlags, AlbumPermission } from "@/lib/album-flags";
+import { ModerationEnabledNotice } from "@/components/dashboard/ModerationEnabledNotice";
 
 /**
  * Event moderation & permission controls, modelled on what event hosts
@@ -83,9 +84,15 @@ export function EventModerationCard({ albumSlug, initialFlags, initialModeration
       </div>
       <p className="text-xs text-gray-500 mb-2">Nadzor nad tem, kaj gostje lahko naložijo in počnejo v albumu.</p>
 
-      <Row title="Ročno potrjevanje fotografij" desc="Fotografije gostov se prikažejo šele, ko jih odobrite — v albumu in na foto steni.">
+      <Row title="Ročna odobritev pred objavo" desc="Preglejte vsako novo fotografijo in video, preden ju lahko vidijo drugi gostje.">
         <Toggle on={moderation} onChange={(v) => { setModeration(v); void save({ moderationEnabled: v }); }} />
       </Row>
+
+      {moderation ? (
+        <div className="py-4 border-b border-gray-100">
+          <ModerationEnabledNotice albumSlug={albumSlug} />
+        </div>
+      ) : null}
 
       <Row title="Samodejni filter vsebine" desc="Samodejno zaznavanje neprimernih fotografij.">
         <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-full bg-gray-100 text-gray-400">Kmalu</span>
