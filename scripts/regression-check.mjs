@@ -642,6 +642,13 @@ requireMatch(
 );
 
 requireMatch(
+  "custom domains require valid DNS before being shown as connected",
+  files.albumAdminPanel,
+  /domainReady\s*=\s*status\?\.verified\s*===\s*true\s*&&\s*status\.misconfigured\s*!==\s*true[\s\S]*DNS ni nastavljen[\s\S]*!domainReady[\s\S]*domainReady/,
+  "verified ownership alone must not hide missing CNAME/A instructions or claim that the album domain is live",
+);
+
+requireMatch(
   "album settings save the default guest language",
   files.albumSettingsRoute,
   /defaultLang:\s*validDefaultLang/,

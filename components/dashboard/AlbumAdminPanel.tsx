@@ -2435,6 +2435,10 @@ function CustomDomainPanel({ album }: { album: Album }) {
 
   const inputClass =
     "w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm text-gray-800 bg-white outline-none focus:border-[#FFC94D] transition-colors";
+  // Vercel can verify ownership through the parent domain while the concrete
+  // hostname still has no A/CNAME record. Only present the domain as live when
+  // both ownership and DNS routing are valid.
+  const domainReady = status?.verified === true && status.misconfigured !== true;
 
   // ── Locked panel (non-Premium) ──────────────────────────────────────────────
   if (!isPremium) {
@@ -2500,9 +2504,13 @@ function CustomDomainPanel({ album }: { album: Album }) {
         <>
           <div className="flex items-center justify-between gap-3 flex-wrap">
             <span className="font-mono text-sm text-gray-800 break-all">{domain}</span>
-            {status?.verified ? (
+            {domainReady ? (
               <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-green-100 text-green-700">
-                ✅ Preverjeno
+                ✅ Povezano
+              </span>
+            ) : status?.misconfigured ? (
+              <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-red-100 text-red-700">
+                ⚠️ DNS ni nastavljen
               </span>
             ) : (
               <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-amber-100 text-amber-700">
@@ -2511,11 +2519,16 @@ function CustomDomainPanel({ album }: { album: Album }) {
             )}
           </div>
 
-          {!status?.verified && (
+          {!domainReady && (
             <div
               className="rounded-xl p-4 space-y-3 text-sm"
               style={{ background: "#EFF2FB" }}
             >
+              {status?.verified && status.misconfigured && (
+                <p className="text-xs font-medium text-red-700">
+                  Lastništvo domene je potrjeno, vendar DNS še ni usmerjen na GuestCam.
+                </p>
+              )}
               <p className="font-medium" style={{ color: ACCENT }}>
                 Dodajte naslednji DNS zapis pri svojem ponudniku domene:
               </p>
@@ -2554,7 +2567,7 @@ function CustomDomainPanel({ album }: { album: Album }) {
             </div>
           )}
 
-          {status?.verified && (
+          {domainReady && (
             <p className="text-sm text-gray-500">
               Vaša galerija je dostopna na{" "}
               <a
