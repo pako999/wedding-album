@@ -129,36 +129,23 @@ html, body {
   letter-spacing: -0.025em;
 }
 
-/* Masonry grid for photo albums */
+/* Image-first album grid: two generous columns on phones and three on larger
+   screens, matching the editorial reference without ever fetching originals. */
 .masonry-grid {
   columns: 2;
-  column-gap: 8px;
+  column-gap: 4px;
 }
 
 @media (min-width: 640px) {
   .masonry-grid {
     columns: 3;
-    column-gap: 10px;
-  }
-}
-
-@media (min-width: 1024px) {
-  .masonry-grid {
-    columns: 4;
-    column-gap: 12px;
-  }
-}
-
-@media (min-width: 1280px) {
-  .masonry-grid {
-    columns: 5;
-    column-gap: 12px;
+    column-gap: 6px;
   }
 }
 
 .masonry-item {
   break-inside: avoid;
-  margin-bottom: 8px;
+  margin-bottom: 4px;
   min-height: 120px;
 }
 
@@ -168,11 +155,7 @@ html, body {
 }
 
 @media (min-width: 640px) {
-  .masonry-item { margin-bottom: 10px; }
-}
-
-@media (min-width: 1024px) {
-  .masonry-item { margin-bottom: 12px; }
+  .masonry-item { margin-bottom: 6px; }
 }
 
 /* Lightbox likes/comments side panel (desktop only, >= lg).
@@ -182,9 +165,25 @@ html, body {
    while the desktop panel is OPEN. When the panel is hidden the class is
    dropped, so no padding/shift applies and the photo uses the full width. */
 @media (min-width: 1024px) {
-  .guestcam-lightbox--panel .yarl__slide { padding-right: 340px; }
-  .guestcam-lightbox--panel .yarl__navigation_next { right: 340px; }
-  .guestcam-lightbox--panel .yarl__toolbar { right: 340px; }
+  .guestcam-lightbox--panel .yarl__slide { padding-right: 360px; }
+  .guestcam-lightbox--panel .yarl__navigation_next { right: 360px; }
+}
+
+/* The upgraded viewer supplies its own close/download/reaction rail. Zoom
+   stays available through pinch and double-click, without a second toolbar. */
+.guestcam-lightbox .yarl__toolbar { display: none; }
+.guestcam-lightbox .yarl__counter {
+  left: 50%;
+  right: auto;
+  top: 14px;
+  margin: 0;
+  transform: translateX(-50%);
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.42);
+  padding: 7px 12px;
+  font-size: 12px;
+  line-height: 1;
+  backdrop-filter: blur(10px);
 }
 
 /* Smooth scrollbar */

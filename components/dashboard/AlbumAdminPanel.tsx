@@ -1628,6 +1628,7 @@ function AlbumSettingsForm({ album, children, wallToken, hasPassword, headerSett
 
   const [coupleName, setCoupleName]           = useState(album.coupleName);
   const [weddingDate, setWeddingDate]         = useState(album.weddingDate);
+  const [eventTime, setEventTime]             = useState(headerSettings.eventTime ?? "");
   const [location, setLocation]               = useState(album.location ?? "");
   const [notifyEmail, setNotifyEmail]         = useState(album.notifyEmail ?? "");
   const [moderationEnabled, setModerationEnabled] = useState(album.moderationEnabled);
@@ -1642,6 +1643,7 @@ function AlbumSettingsForm({ album, children, wallToken, hasPassword, headerSett
   const lastQueuedSnapshot = useRef(JSON.stringify({
     coupleName: album.coupleName,
     weddingDate: album.weddingDate,
+    eventTime: headerSettings.eventTime ?? "",
     location: album.location ?? "",
     notifyEmail: album.notifyEmail ?? "",
     moderationEnabled: album.moderationEnabled,
@@ -1671,6 +1673,7 @@ function AlbumSettingsForm({ album, children, wallToken, hasPassword, headerSett
     const body = {
       coupleName,
       weddingDate,
+      eventTime,
       location,
       notifyEmail,
       moderationEnabled,
@@ -1713,7 +1716,7 @@ function AlbumSettingsForm({ album, children, wallToken, hasPassword, headerSett
     }, 600);
 
     return () => window.clearTimeout(timeoutId);
-  }, [album.slug, autoSaveRetry, coupleName, defaultLang, eventType, isPublished, location, moderationEnabled, notifyEmail, showEventDate, showEventType, showTitle, theme, weddingDate]);
+  }, [album.slug, autoSaveRetry, coupleName, defaultLang, eventTime, eventType, isPublished, location, moderationEnabled, notifyEmail, showEventDate, showEventType, showTitle, theme, weddingDate]);
 
   // NOTE: the password hash itself is deliberately NOT sent to this client
   // component (see lib/album-view.ts → toOwnerAlbum) — only the boolean
@@ -1830,14 +1833,28 @@ function AlbumSettingsForm({ album, children, wallToken, hasPassword, headerSett
         <input value={coupleName} onChange={(e) => updateSetting(setCoupleName, e.target.value)} className={inputClass} />
       </div>
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Datum</label>
-        <input
-          type="date"
-          value={weddingDate}
-          onChange={(e) => updateSetting(setWeddingDate, e.target.value)}
-          className={inputClass}
-        />
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Datum</label>
+          <input
+            type="date"
+            value={weddingDate}
+            onChange={(e) => updateSetting(setWeddingDate, e.target.value)}
+            className={inputClass}
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Čas začetka <span className="font-normal text-gray-400">(neobvezno)</span>
+          </label>
+          <input
+            type="time"
+            step={300}
+            value={eventTime}
+            onChange={(e) => updateSetting(setEventTime, e.target.value)}
+            className={inputClass}
+          />
+        </div>
       </div>
 
       <div>

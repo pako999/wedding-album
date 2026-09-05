@@ -6,7 +6,7 @@ import { ALBUM_THEMES } from "@/lib/album-themes";
 import { checkAlbumOwnership } from "@/lib/album-ownership";
 import { hashAlbumPassword, isHashed } from "@/lib/album-password";
 import { setAlbumFlags } from "@/lib/album-flags";
-import { setAlbumHeaderSettings } from "@/lib/album-header-settings";
+import { isValidEventTime, setAlbumHeaderSettings } from "@/lib/album-header-settings";
 
 export async function PATCH(
   req: NextRequest,
@@ -22,7 +22,7 @@ export async function PATCH(
   if (!album) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
   const body = await req.json();
-  const { coupleName, weddingDate, location, notifyEmail, password, moderationEnabled, isPublished, coverImageUrl, eventType, defaultLang, theme, guestDataCapture, allowPhotos, allowVideos, albumPermission, disableDownload, disableLikes, showTitle, showEventType, showEventDate } = body;
+  const { coupleName, weddingDate, eventTime, location, notifyEmail, password, moderationEnabled, isPublished, coverImageUrl, eventType, defaultLang, theme, guestDataCapture, allowPhotos, allowVideos, albumPermission, disableDownload, disableLikes, showTitle, showEventType, showEventDate } = body;
 
   const ALLOWED_EVENT_TYPES = [
     "wedding",
@@ -50,6 +50,17 @@ export async function PATCH(
     typeof weddingDate === "string" && /^\d{4}-\d{2}-\d{2}$/.test(weddingDate)
       ? weddingDate
       : album.weddingDate;
+
+  let validEventTime: string | null | undefined;
+  if (eventTime === null || eventTime === "") {
+    validEventTime = null;
+  } else if (eventTime === undefined) {
+    validEventTime = undefined;
+  } else if (typeof eventTime === "string" && isValidEventTime(eventTime)) {
+    validEventTime = eventTime;
+  } else {
+    return NextResponse.json({ error: "Neveljaven čas začetka dogodka." }, { status: 400 });
+  }
 
   const validTheme =
     typeof theme === "string" && ALBUM_THEMES.some((t) => t.id === theme)
@@ -106,11 +117,13 @@ export async function PATCH(
   const headerSettingsRequested =
     typeof showTitle === "boolean" ||
     typeof showEventType === "boolean" ||
-    typeof showEventDate === "boolean";
+    typeof showEventDate === "boolean" ||
+    validEventTime !== undefined;
   const headerSettingsSaved = await setAlbumHeaderSettings(album.id, {
     ...(typeof showTitle === "boolean" ? { showTitle } : {}),
     ...(typeof showEventType === "boolean" ? { showEventType } : {}),
     ...(typeof showEventDate === "boolean" ? { showEventDate } : {}),
+    ...(validEventTime !== undefined ? { eventTime: validEventTime } : {}),
   });
   if (headerSettingsRequested && !headerSettingsSaved) {
     return NextResponse.json(

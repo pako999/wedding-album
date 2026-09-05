@@ -86,10 +86,11 @@ function evtIcon(eventType: string): string {
 interface Props {
   album: Album;
   photos: Photo[];
+  eventTime?: string | null;
   onClose: () => void;
 }
 
-export function ProjectionWall({ album, photos, onClose }: Props) {
+export function ProjectionWall({ album, photos, eventTime, onClose }: Props) {
   const [now, setNow] = useState(new Date());
   const [isFS, setIsFS] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
@@ -301,7 +302,7 @@ export function ProjectionWall({ album, photos, onClose }: Props) {
               </h1>
             )}
             <p className={`text-xs truncate ${showTitle ? "text-white/45 mt-0.5" : "text-white/70"}`}>
-              {fmtEventDate(album.weddingDate)}{album.location ? ` · ${album.location}` : ""}
+              {fmtEventDate(album.weddingDate)}{eventTime ? ` · ${eventTime}` : ""}{album.location ? ` · ${album.location}` : ""}
             </p>
           </div>
         </div>

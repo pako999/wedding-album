@@ -266,19 +266,34 @@ export function CreateEventWizard({ initialPlan }: { initialPlan?: PaidPlanId } 
           </div>
         </div>
 
-        {/* Date */}
-        <div>
-          <label className="block text-sm font-semibold text-[#0F1729] mb-2">
-            {eventInfo.dateLabel} <span style={{ color: "#C9820A" }}>*</span>
-          </label>
-          <input
-            type="date"
-            name="eventDate"
-            required
-            className="w-full px-4 py-3 rounded-xl border border-gray-200 text-[#0F1729] text-sm outline-none transition-all focus:border-[#C9820A]"
-            onFocus={e => (e.target.style.boxShadow = "0 0 0 3px rgba(255,201,77,0.15)")}
-            onBlur={e => (e.target.style.boxShadow = "0 0 0 0px rgba(255,201,77,0)")}
-          />
+        {/* Date + optional start time */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-semibold text-[#0F1729] mb-2">
+              {eventInfo.dateLabel} <span style={{ color: "#C9820A" }}>*</span>
+            </label>
+            <input
+              type="date"
+              name="eventDate"
+              required
+              className="w-full px-4 py-3 rounded-xl border border-gray-200 text-[#0F1729] text-sm outline-none transition-all focus:border-[#C9820A]"
+              onFocus={e => (e.target.style.boxShadow = "0 0 0 3px rgba(255,201,77,0.15)")}
+              onBlur={e => (e.target.style.boxShadow = "0 0 0 0px rgba(255,201,77,0)")}
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-semibold text-[#0F1729] mb-2">
+              Čas začetka <span className="text-gray-400 font-normal">(neobvezno)</span>
+            </label>
+            <input
+              type="time"
+              name="eventTime"
+              step={300}
+              className="w-full px-4 py-3 rounded-xl border border-gray-200 text-[#0F1729] text-sm outline-none transition-all focus:border-[#C9820A]"
+              onFocus={e => (e.target.style.boxShadow = "0 0 0 3px rgba(255,201,77,0.15)")}
+              onBlur={e => (e.target.style.boxShadow = "0 0 0 0px rgba(255,201,77,0)")}
+            />
+          </div>
         </div>
 
         {/* Location */}

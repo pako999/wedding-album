@@ -13,6 +13,7 @@ import { recordUserCountry } from "@/lib/user-country";
 import { getAlbumCreationGate } from "@/lib/album-limits";
 import { generateWallToken } from "@/lib/wall-token";
 import { hashAlbumPassword } from "@/lib/album-password";
+import { isValidEventTime, setAlbumHeaderSettings } from "@/lib/album-header-settings";
 
 function slugify(text: string): string {
   return text
@@ -42,6 +43,8 @@ export async function createAlbum(formData: FormData) {
   const eventType  = (formData.get("eventType")   as string ?? "wedding").trim();
   const coupleName = (formData.get("coupleName")  as string ?? "").trim();
   const eventDate  = (formData.get("eventDate")   as string ?? "").trim();
+  const eventTimeRaw = (formData.get("eventTime") as string ?? "").trim();
+  const eventTime = eventTimeRaw || null;
   const location   = (formData.get("location")    as string ?? "").trim() || null;
   const passwordRaw = (formData.get("password")   as string ?? "").trim();
   const password = passwordRaw ? await hashAlbumPassword(passwordRaw) : null;
@@ -54,6 +57,9 @@ export async function createAlbum(formData: FormData) {
 
   if (coupleName.length > 40) {
     throw new Error("Ime dogodka je predolgo — največ 40 znakov.");
+  }
+  if (eventTime && !isValidEventTime(eventTime)) {
+    throw new Error("Čas začetka mora biti v obliki UU:MM.");
   }
   if (passwordRaw.length > 128) {
     throw new Error("Geslo je predolgo — največ 128 znakov.");
@@ -122,6 +128,9 @@ export async function createAlbum(formData: FormData) {
 
   const newAlbumId = inserted[0]?.id;
   if (newAlbumId) {
+    if (eventTime && !(await setAlbumHeaderSettings(newAlbumId, { eventTime }))) {
+      console.error("[create-album] event start time could not be saved", { albumId: newAlbumId });
+    }
     await attributeNewAlbumFromCookie(newAlbumId, userId).catch(() => {});
   }
 

@@ -63,6 +63,7 @@ interface Props {
     showTitle: boolean;
     showEventType: boolean;
     showEventDate: boolean;
+    eventTime: string | null;
   };
 }
 
@@ -220,6 +221,8 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
   const showTitle = headerVisibility?.showTitle !== false;
   const showEventType = headerVisibility?.showEventType !== false;
   const showEventDate = headerVisibility?.showEventDate !== false;
+  const eventTime = headerVisibility?.eventTime ?? null;
+  const eventDateLabel = `${formatEventDate(album.weddingDate)}${eventTime ? ` · ${eventTime}` : ""}`;
   const uploadAccept = [
     eventFlags?.allowPhotos === false ? null : "image/*",
     eventFlags?.allowVideos === false ? null : "video/*",
@@ -256,7 +259,7 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
   const [turnstileToken, setTurnstileToken]     = useState<string | null>(null);
   // Lightbox info panel (likes + comments for the currently shown photo)
   const [lightboxPanelOpen, setLightboxPanelOpen] = useState(false); // mobile bottom sheet
-  const [lightboxDesktopPanelOpen, setLightboxDesktopPanelOpen] = useState(true); // desktop side panel
+  const [lightboxDesktopPanelOpen, setLightboxDesktopPanelOpen] = useState(false); // desktop side panel
   // When a guest taps "like" in the lightbox without a name yet, highlight the
   // name-entry field and remember the photo to like once the name is confirmed.
   const [lightboxNamePrompt, setLightboxNamePrompt] = useState(false);
@@ -489,6 +492,7 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
     pendingLikeRef.current = photoId;
     setLightboxNamePrompt(true);
     setLightboxPanelOpen(true); // ensure the bottom sheet (with the input) is open on mobile
+    setLightboxDesktopPanelOpen(true); // and reveal the same input in the desktop side panel
     requestAnimationFrame(() => {
       const el = lbNameInputRef.current;
       if (el) {
@@ -713,7 +717,7 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
               {showTitle && <h1 className="text-2xl font-bold" style={{ color: BRAND.dark }}>{album.coupleName}</h1>}
               {(showEventDate || album.location) && (
                 <p className="text-sm mt-1" style={{ color: BRAND.muted }}>
-                  {showEventDate && formatEventDate(album.weddingDate)}
+                  {showEventDate && eventDateLabel}
                   {showEventDate && album.location ? " · " : ""}
                   {album.location}
                 </p>
@@ -823,7 +827,7 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
             <div className="absolute bottom-0 inset-x-0 px-6 pb-8 sm:px-10">
               {showTitle && <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-2 leading-tight">{album.coupleName}</h1>}
               <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-white/70 text-sm">
-                {showEventDate && <span>{formatEventDate(album.weddingDate)}</span>}
+                {showEventDate && <span>{eventDateLabel}</span>}
                 {album.location && <>{showEventDate && <span>·</span>}<span>{album.location}</span></>}
                 {(showEventDate || album.location) && <span>·</span>}
                 <span>{t.photoCount(photoCount)}{videoCount > 0 ? ` · ${t.videoCount(videoCount)}` : ""}</span>
@@ -870,7 +874,7 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
                 <div className="flex items-center justify-center gap-3 sm:gap-4 mb-6">
                   <span className="h-px w-8 sm:w-12" style={{ background: "rgba(255,255,255,0.3)" }} />
                   <div className="flex flex-wrap items-center justify-center gap-x-2.5 gap-y-0.5 text-white/75 text-xs sm:text-sm uppercase tracking-[0.14em]">
-                    {showEventDate && <span>{formatEventDate(album.weddingDate)}</span>}
+                    {showEventDate && <span>{eventDateLabel}</span>}
                     {album.location && <>{showEventDate && <span className="text-white/40">·</span>}<span>{album.location}</span></>}
                   </div>
                   <span className="h-px w-8 sm:w-12" style={{ background: "rgba(255,255,255,0.3)" }} />
@@ -885,7 +889,7 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
               {showEventDate && (
                 <div className="inline-flex items-center rounded-full px-5 py-2"
                   style={{ background: "rgba(255,255,255,0.12)", border: "1px solid rgba(255,255,255,0.25)" }}>
-                  <CountdownTimer targetDate={album.weddingDate} translations={t} accent="#FFFFFF" />
+                  <CountdownTimer targetDate={album.weddingDate} targetTime={eventTime} translations={t} accent="#FFFFFF" />
                 </div>
               )}
             </div>
@@ -1484,22 +1488,34 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
                   {filteredImages.map((photo) => (
                     <div
                       key={photo.id}
-                      className="masonry-item group cursor-pointer"
+                      role="button"
+                      tabIndex={0}
+                      aria-label={`${t.openAlbum}: ${photo.uploaderName ?? t.photosSection}`}
+                      className="masonry-item group cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+                      style={{ '--tw-ring-color': theme.accent } as React.CSSProperties}
                       onClick={() => {
                         const idx = getLightboxIdx(photo);
                         setLightboxPanelOpen(false);
-                        setLightboxDesktopPanelOpen(true);
+                        setLightboxDesktopPanelOpen(false);
+                        setLightboxIndex(idx);
+                      }}
+                      onKeyDown={(event) => {
+                        if (event.key !== "Enter" && event.key !== " ") return;
+                        event.preventDefault();
+                        const idx = getLightboxIdx(photo);
+                        setLightboxPanelOpen(false);
+                        setLightboxDesktopPanelOpen(false);
                         setLightboxIndex(idx);
                       }}
                     >
                       {/* Image */}
-                      <div className="relative rounded-xl overflow-hidden bg-gray-100">
+                      <div className="relative overflow-hidden bg-gray-100">
                         <img
                           src={bunnyDisplayUrl(photo.thumbnailUrl ?? photo.blobUrl, 800, 82)}
                           srcSet={[320, 480, 640, 800]
                             .map((width) => `${bunnyDisplayUrl(photo.thumbnailUrl ?? photo.blobUrl, width, 82)} ${width}w`)
                             .join(", ")}
-                          sizes="(max-width: 639px) calc(50vw - 12px), (max-width: 1023px) calc(33vw - 16px), (max-width: 1279px) calc(25vw - 18px), 250px"
+                          sizes="(max-width: 639px) calc(50vw - 6px), (max-width: 1399px) calc(33vw - 20px), 430px"
                           alt={photo.caption ?? ""}
                           className="w-full h-auto block transition-transform duration-500 group-hover:scale-[1.03]"
                           loading="lazy"
@@ -1511,54 +1527,47 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
                             e.currentTarget.style.background = "#f3f4f6";
                           }}
                         />
-                        {/* Subtle hover tint */}
                         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-300" />
-                      </div>
-
-                      {/* Uploader + time + reactions — below image */}
-                      <div className="flex items-center gap-1.5 px-1 pt-1.5 pb-0.5">
-                        {photo.uploaderName && <AvatarBubble name={photo.uploaderName} size={5} accent={theme.accent} />}
-                        <div className="min-w-0 flex-1">
+                        {/* Metadata now sits over the photo so the gallery stays
+                            dense and image-first, like the supplied reference. */}
+                        <div className="absolute inset-x-0 bottom-0 flex items-end gap-1.5 px-2.5 pt-10 pb-2 text-white" style={{ background: "linear-gradient(transparent, rgba(0,0,0,0.62))" }}>
+                          <div className="min-w-0 flex-1">
                           {photo.uploaderName && (
-                            <p className="text-[11px] font-semibold leading-tight truncate" style={{ color: BRAND.dark }}>
+                            <p className="text-[11px] font-semibold leading-tight truncate drop-shadow-sm">
                               {photo.uploaderName}
                             </p>
                           )}
-                          <p className="text-[10px] leading-tight" style={{ color: BRAND.muted }}>
+                          <p className="text-[10px] leading-tight text-white/75 drop-shadow-sm">
                             {formatUploadTime(photo.uploadedAt, t, renderedAt)}
                           </p>
+                          </div>
+                          {likesOn && (
+                            <button
+                              type="button"
+                              onClick={(event) => { event.stopPropagation(); toggleLike(photo.id); }}
+                              title={myLikes.has(photo.id) ? t.unlike : t.like}
+                              aria-label={myLikes.has(photo.id) ? t.unlike : t.like}
+                              className={`flex items-center gap-0.5 rounded-full px-1.5 py-1 text-[11px] font-semibold drop-shadow-sm ${myLikes.has(photo.id) ? "text-red-300" : "text-white"}`}
+                            >
+                              <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill={myLikes.has(photo.id) ? "currentColor" : "none"} stroke="currentColor" strokeWidth={2}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.49-2.1-4.5-4.69-4.5-1.93 0-3.6 1.13-4.31 2.73-.72-1.6-2.38-2.73-4.31-2.73C5.1 3.75 3 5.77 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+                              </svg>
+                              {(likeCounts[photo.id] ?? 0) > 0 && <span>{likeCounts[photo.id]}</span>}
+                            </button>
+                          )}
+                          <button
+                            type="button"
+                            onClick={(event) => { event.stopPropagation(); setOpenCommentsPhoto(photo.id); setCommentInput(""); }}
+                            title={t.comments}
+                            aria-label={t.comments}
+                            className="flex items-center gap-0.5 rounded-full px-1.5 py-1 text-[11px] font-semibold text-white drop-shadow-sm"
+                          >
+                              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M8 10h8m-8 4h5m8-2c0 4.4-4 8-9 8a10 10 0 01-2.6-.34L5 21l1.1-3.1A7.6 7.6 0 013 12c0-4.4 4-8 9-8s9 3.6 9 8z" />
+                              </svg>
+                            {(commentMap[photo.id]?.length ?? 0) > 0 && <span>{commentMap[photo.id].length}</span>}
+                          </button>
                         </div>
-                        {/* Like button */}
-                        {likesOn && (
-                        <button
-                          onClick={(e) => { e.stopPropagation(); toggleLike(photo.id); }}
-                          title={myLikes.has(photo.id) ? t.unlike : t.like}
-                          className="flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[11px] font-semibold transition-all shrink-0"
-                          style={myLikes.has(photo.id)
-                            ? { background: "#FEE2E2", color: "#EF4444" }
-                            : { background: "transparent", color: BRAND.muted }}
-                        >
-                          <svg className="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill={myLikes.has(photo.id) ? "#EF4444" : "none"} stroke={myLikes.has(photo.id) ? "#EF4444" : "currentColor"} strokeWidth={2}>
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
-                          </svg>
-                          {(likeCounts[photo.id] ?? 0) > 0 && (
-                            <span>{likeCounts[photo.id]}</span>
-                          )}
-                        </button>)}
-                        {/* Comment button */}
-                        <button
-                          onClick={(e) => { e.stopPropagation(); setOpenCommentsPhoto(photo.id); setCommentInput(""); }}
-                          title={t.comments}
-                          className="flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[11px] font-semibold transition-all shrink-0"
-                          style={{ background: "transparent", color: BRAND.muted }}
-                        >
-                          <svg className="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z" />
-                          </svg>
-                          {(commentMap[photo.id]?.length ?? 0) > 0 && (
-                            <span>{commentMap[photo.id].length}</span>
-                          )}
-                        </button>
                       </div>
                     </div>
                   ))}
@@ -1746,6 +1755,7 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
         <ProjectionWall
           album={album}
           photos={photos}
+          eventTime={eventTime}
           onClose={() => setProjectionOpen(false)}
         />
       )}
@@ -1756,10 +1766,22 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
 
       {/* ── Lightbox ─────────────────────────────────────────────────────── */}
       {lightboxSlides.length > 0 && (() => {
-        const PANEL_W = 340; // px — desktop side panel width
+        const PANEL_W = 360; // px — desktop side panel width
         const lbComments = lightboxPhoto ? (commentMap[lightboxPhoto.id] ?? []) : [];
         const lbLiked    = lightboxPhoto ? myLikes.has(lightboxPhoto.id) : false;
         const lbLikes    = lightboxPhoto ? (likeCounts[lightboxPhoto.id] ?? 0) : 0;
+        const closeViewer = () => {
+          setLightboxIndex(-1);
+          setLightboxPanelOpen(false);
+          setLightboxDesktopPanelOpen(false);
+          setOpenCommentsPhoto(null);
+          setLightboxNamePrompt(false);
+          pendingLikeRef.current = null;
+        };
+        const openDiscussion = () => {
+          setLightboxDesktopPanelOpen(true);
+          setLightboxPanelOpen(true);
+        };
 
         /* The likes + comments panel body — shared by desktop side panel and
            mobile bottom sheet. Reuses toggleLike / postComment / comment state.
@@ -1947,7 +1969,7 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
         return (
           <Lightbox
             open={lightboxIndex >= 0}
-            close={() => { setLightboxIndex(-1); setLightboxPanelOpen(false); setLightboxDesktopPanelOpen(true); setOpenCommentsPhoto(null); setLightboxNamePrompt(false); pendingLikeRef.current = null; }}
+            close={closeViewer}
             index={lightboxIndex}
             slides={lightboxSlides}
             plugins={downloadOn ? [Download, Counter, Zoom] : [Counter, Zoom]}
@@ -1979,87 +2001,99 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
                  Falls back to a normal <a download> on desktop. Fixes the
                  guest report where iOS Safari's default sheet only offered
                  Files + Google Drive. */
-              buttonDownload: () => {
-                const slide = lightboxSlides[lightboxIndex];
-                if (!slide?.download) return null;
-                const { url, filename } = slide.download;
-                return (
-                  <button
-                    key="save-to-device"
-                    type="button"
-                    className="yarl__button"
-                    aria-label={t.savePhoto}
-                    title={t.savePhoto}
-                    onClick={() => { void saveImageToDevice(url, filename); }}
-                  >
-                    <svg className="yarl__icon" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M12 3v12" />
-                      <path d="m7 10 5 5 5-5" />
-                      <path d="M5 21h14" />
-                    </svg>
-                  </button>
-                );
-              },
+              buttonClose: () => null,
+              buttonDownload: () => null,
+              buttonZoom: () => null,
               /* Inject the panel as a custom control (absolute positioned) */
               controls: () => lightboxPhoto ? (
                 <>
-                  {/* Desktop: fixed-width side panel, full height — collapsible */}
-                  {lightboxDesktopPanelOpen ? (
+                  {/* Reference-style close at top left and photo identity at
+                      bottom left, both outside the image interaction area. */}
+                  <button
+                    type="button"
+                    onClick={closeViewer}
+                    title={t.close}
+                    aria-label={t.close}
+                    className="absolute left-3 sm:left-5 top-3 sm:top-5 z-[3] w-11 h-11 rounded-full flex items-center justify-center text-white bg-black/45 backdrop-blur-md border border-white/15 transition-colors hover:bg-black/70"
+                  >
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+
+                  <div className={`absolute left-4 sm:left-6 bottom-4 sm:bottom-6 z-[2] max-w-[58vw] text-white pointer-events-none transition-opacity ${lightboxPanelOpen ? "opacity-0 lg:opacity-100" : "opacity-100"} ${lightboxDesktopPanelOpen ? "lg:opacity-0" : ""}`}>
+                    {lightboxPhoto.uploaderName && (
+                      <p className="text-sm font-bold truncate drop-shadow-lg">{lightboxPhoto.uploaderName}</p>
+                    )}
+                    <p className="text-xs text-white/70 drop-shadow-lg">
+                      {formatUploadTime(lightboxPhoto.uploadedAt, t, renderedAt)}
+                    </p>
+                  </div>
+
+                  {/* Compact action rail keeps the photo full-screen. The
+                      existing like, comment and download handlers are reused. */}
+                  {!lightboxPanelOpen && (
+                    <div className={`absolute right-3 sm:right-5 top-1/2 -translate-y-1/2 z-[3] flex flex-col items-center gap-3 ${lightboxDesktopPanelOpen ? "lg:hidden" : ""}`}>
+                      {likesOn && (
+                        <button
+                          type="button"
+                          onClick={() => handleLightboxLike(lightboxPhoto.id)}
+                          title={lbLiked ? t.unlike : t.like}
+                          aria-label={lbLiked ? t.unlike : t.like}
+                          className="group/action flex flex-col items-center gap-1 text-white"
+                        >
+                          <span className={`w-12 h-12 rounded-full flex items-center justify-center border backdrop-blur-md transition-colors ${lbLiked ? "bg-red-500/90 border-red-300/50" : "bg-black/45 border-white/15 group-hover/action:bg-black/70"}`}>
+                            <svg className="w-6 h-6" viewBox="0 0 24 24" fill={lbLiked ? "currentColor" : "none"} stroke="currentColor" strokeWidth={2}>
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.1-4.5-4.69-4.5-1.93 0-3.6 1.13-4.31 2.73-.72-1.6-2.38-2.73-4.31-2.73C5.1 3.75 3 5.77 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+                            </svg>
+                          </span>
+                          <span className="text-[11px] font-semibold tabular-nums drop-shadow">{lbLikes}</span>
+                        </button>
+                      )}
+                      <button
+                        type="button"
+                        onClick={openDiscussion}
+                        title={t.comments}
+                        aria-label={t.comments}
+                        className="group/action flex flex-col items-center gap-1 text-white"
+                      >
+                        <span className="w-12 h-12 rounded-full flex items-center justify-center bg-black/45 border border-white/15 backdrop-blur-md transition-colors group-hover/action:bg-black/70">
+                          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M8 10h8m-8 4h5m8-2c0 4.4-4 8-9 8a10 10 0 01-2.6-.34L5 21l1.1-3.1A7.6 7.6 0 013 12c0-4.4 4-8 9-8s9 3.6 9 8z" />
+                          </svg>
+                        </span>
+                        <span className="text-[11px] font-semibold tabular-nums drop-shadow">{lbComments.length}</span>
+                      </button>
+                      {downloadOn && (
+                        <button
+                          type="button"
+                          onClick={() => void saveImageToDevice(bunnyOriginalUrl(lightboxPhoto.blobUrl), lightboxPhoto.originalFilename ?? "photo.jpg")}
+                          title={t.savePhoto}
+                          aria-label={t.savePhoto}
+                          className="group/action flex flex-col items-center gap-1 text-white"
+                        >
+                          <span className="w-12 h-12 rounded-full flex items-center justify-center bg-black/45 border border-white/15 backdrop-blur-md transition-colors group-hover/action:bg-black/70">
+                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v12m-5-5 5 5 5-5M5 21h14" />
+                            </svg>
+                          </span>
+                        </button>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Desktop: fixed-width discussion panel, opened on demand. */}
+                  {lightboxDesktopPanelOpen && (
                     <div
                       className="hidden lg:flex flex-col absolute top-0 right-0 bottom-0 bg-white shadow-2xl z-[1]"
                       style={{ width: PANEL_W }}
                     >
-                      {renderPanelBody(() => setLightboxDesktopPanelOpen(false))}
+                      {renderPanelBody(() => {
+                        setLightboxDesktopPanelOpen(false);
+                        setLightboxPanelOpen(false);
+                      })}
                     </div>
-                  ) : (
-                    /* Hidden state — a tasteful pill to re-open the panel */
-                    <button
-                      onClick={() => setLightboxDesktopPanelOpen(true)}
-                      title={t.showInfo}
-                      className="hidden lg:flex absolute top-4 right-4 z-[2] items-center gap-2 pl-3 pr-3.5 py-2 rounded-full text-sm font-semibold text-white shadow-xl transition-all hover:opacity-95"
-                      style={{ background: theme.accent }}
-                    >
-                      <svg className="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.2}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
-                      </svg>
-                      <span>{t.showInfo}</span>
-                      {(lbLikes > 0 || lbComments.length > 0) && (
-                        <span className="flex items-center gap-1 ml-0.5 text-xs font-bold tabular-nums">
-                          {lbLikes > 0 && (
-                            <span className="flex items-center gap-0.5">
-                              <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="#EF4444" stroke="#EF4444" strokeWidth={2}>
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
-                              </svg>
-                              {lbLikes}
-                            </span>
-                          )}
-                          {lbComments.length > 0 && (
-                            <span className="flex items-center gap-0.5">
-                              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z" />
-                              </svg>
-                              {lbComments.length}
-                            </span>
-                          )}
-                        </span>
-                      )}
-                    </button>
                   )}
-
-                  {/* Mobile: toggle button + bottom sheet */}
-                  <button
-                    onClick={() => setLightboxPanelOpen(o => !o)}
-                    className="lg:hidden absolute left-1/2 -translate-x-1/2 bottom-4 z-[2] flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold text-white shadow-lg"
-                    style={{ background: theme.accent }}
-                  >
-                    <svg className="w-4 h-4" viewBox="0 0 24 24" fill={lbLiked ? "white" : "none"} stroke="currentColor" strokeWidth={2}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
-                    </svg>
-                    {lightboxPanelOpen ? t.hideInfo : t.showInfo}
-                    {(lbLikes > 0 || lbComments.length > 0) && !lightboxPanelOpen && (
-                      <span className="ml-0.5 opacity-90">· {lbLikes + lbComments.length}</span>
-                    )}
-                  </button>
 
                   {lightboxPanelOpen && (
                     /* The overlay is `fixed` and sized with dynamic viewport
@@ -2070,7 +2104,7 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
                     <div
                       className="lg:hidden fixed inset-x-0 top-0 z-[2] flex flex-col justify-end"
                       style={{ height: "100dvh" }}
-                      onClick={() => setLightboxPanelOpen(false)}
+                      onClick={() => { setLightboxPanelOpen(false); setLightboxDesktopPanelOpen(false); }}
                     >
                       <div className="absolute inset-0 bg-black/40" />
                       <div

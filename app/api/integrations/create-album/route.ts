@@ -4,6 +4,7 @@ import { db } from "@/lib/db";
 import { albums } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { z } from "zod";
+import { setAlbumHeaderSettings } from "@/lib/album-header-settings";
 
 // Note: Auth is handled at middleware level (x-api-key header)
 
@@ -12,6 +13,7 @@ const bodySchema = z.object({
   ownerEmail: z.string().email().optional(), // used to match albums across separate Clerk instances
   coupleName: z.string().min(1),
   weddingDate: z.string().min(1), // "2025-06-14"
+  eventTime: z.string().regex(/^(?:[01]\d|2[0-3]):[0-5]\d$/).optional(),
   location: z.string().optional(),
   slug: z.string().min(3).max(80).regex(/^[a-z0-9-]+$/),
   plan: z.enum(["free", "basic", "plus", "premium"]).default("free"),
@@ -64,6 +66,13 @@ export async function POST(req: NextRequest) {
       isPublished: true,
     })
     .returning();
+
+  if (data.eventTime) {
+    const saved = await setAlbumHeaderSettings(album.id, { eventTime: data.eventTime });
+    if (!saved) {
+      return NextResponse.json({ error: "Album created, but event time could not be saved" }, { status: 500 });
+    }
+  }
 
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? SITE_URL;
 

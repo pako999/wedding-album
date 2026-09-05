@@ -5,17 +5,21 @@ import type { Translations } from "@/lib/i18n/translations";
 
 interface Props {
   targetDate: string; // ISO date "2025-06-14"
+  targetTime?: string | null; // optional local time "18:30"
   translations: Translations;
   /** Event-specific accent color for the countdown label. */
   accent?: string;
 }
 
-export function CountdownTimer({ targetDate, translations: t, accent = "#C9820A" }: Props) {
+export function CountdownTimer({ targetDate, targetTime, translations: t, accent = "#C9820A" }: Props) {
   const [label, setLabel] = useState<string | null>(null);
 
   useEffect(() => {
     const target = new Date(targetDate);
-    target.setHours(12, 0, 0, 0);
+    const timeMatch = /^(?:[01]\d|2[0-3]):[0-5]\d$/.test(targetTime ?? "")
+      ? targetTime!.split(":").map(Number)
+      : null;
+    target.setHours(timeMatch?.[0] ?? 12, timeMatch?.[1] ?? 0, 0, 0);
 
     const update = () => {
       const now = new Date();
@@ -34,7 +38,7 @@ export function CountdownTimer({ targetDate, translations: t, accent = "#C9820A"
     update();
     const interval = setInterval(update, 60_000);
     return () => clearInterval(interval);
-  }, [targetDate, t]);
+  }, [targetDate, targetTime, t]);
 
   if (!label) return null;
 

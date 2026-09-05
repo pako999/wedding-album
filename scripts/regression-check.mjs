@@ -101,6 +101,8 @@ const files = {
   homeComponent: await read("components/GuestcamHomePage.tsx"),
   localizedHomeComponent: await read("components/LocalizedGuestcamHomePageV3.tsx"),
   albumAdminPanel: await read("components/dashboard/AlbumAdminPanel.tsx"),
+  createEventWizard: await read("components/dashboard/CreateEventWizard.tsx"),
+  createAlbumAction: await read("app/actions/create-album.ts"),
   albumSettingsRoute: await read("app/api/albums/[slug]/settings/route.ts"),
   seoFooter: await read("components/SeoFooter.tsx"),
   discountBanner: await read("components/DiscountBanner.tsx"),
@@ -752,6 +754,27 @@ requireMatch(
   files.albumSettingsRoute,
   /weddingDate:\s*validWeddingDate/,
   "the settings PATCH route must write the validated event date",
+);
+
+requireMatch(
+  "new albums accept an optional event start time",
+  `${files.createEventWizard}\n${files.createAlbumAction}`,
+  /name="eventTime"[\s\S]*setAlbumHeaderSettings\(newAlbumId, \{ eventTime \}\)/,
+  "the create flow must collect and persist a valid optional HH:mm start time",
+);
+
+requireMatch(
+  "album settings persist an optional event start time",
+  `${files.albumAdminPanel}\n${files.albumSettingsRoute}\n${files.albumHeaderSettings}`,
+  /type="time"[\s\S]*validEventTime[\s\S]*event_time[\s\S]*ON CONFLICT \(album_id\) DO UPDATE/,
+  "owners must be able to add, edit or clear the event start time safely",
+);
+
+requireMatch(
+  "album viewer uses the reference-style action rail",
+  `${files.albumGuestView}\n${files.globalStyles}`,
+  /Compact action rail keeps the photo full-screen[\s\S]*handleLightboxLike[\s\S]*openDiscussion[\s\S]*saveImageToDevice[\s\S]*columns:\s*3/,
+  "the full-screen image must keep like, comments and original download in the right-side rail",
 );
 
 requireMatch(
