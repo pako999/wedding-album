@@ -46,6 +46,7 @@ const files = {
   bunny: await read("lib/storage/bunny.ts"),
   albumHeaderSettings: await read("lib/album-header-settings.ts"),
   proxy: await read("proxy.ts"),
+  resolveDomain: await read("app/api/resolve-domain/route.ts"),
   siteDomains: await read("lib/site-domains.ts"),
   urls: await read("lib/urls.ts"),
   clerkProvider: await read("components/GuestcamClerkProvider.tsx"),
@@ -478,6 +479,34 @@ requireMatch(
   files.proxy,
   /delete\(["']x-album-access-password["']\)/,
   "browser-supplied internal password headers must be overwritten/removed",
+);
+
+requireMatch(
+  "custom domains resolve and rewrite inside the proxy",
+  files.proxy,
+  /eq\(albums\.customDomain, bareHost\)[\s\S]*customAlbumSlug = customAlbum\.slug[\s\S]*NextResponse\.rewrite\(target, \{ request: \{ headers: requestHeaders \} \}\)/,
+  "Next.js only supports the album rewrite in proxy.ts, not in an App Route Handler",
+);
+
+requireAbsent(
+  "custom domains never rewrite through an App Route Handler",
+  `${files.proxy}\n${files.resolveDomain}`,
+  /NextResponse\.rewrite\([\s\S]*api\/resolve-domain|api\/resolve-domain[\s\S]*NextResponse\.rewrite\(/,
+  "the unsupported route-handler rewrite causes HTTP 500 on custom domains",
+);
+
+requireAbsent(
+  "retired domain resolver contains no unsupported rewrite",
+  files.resolveDomain,
+  /NextResponse\.rewrite\(/,
+  "App Route Handlers cannot return NextResponse.rewrite() in Next.js 16",
+);
+
+requireMatch(
+  "custom-domain albums preserve password-cookie access",
+  files.proxy,
+  /const albumSlug = customAlbumSlug \?\?[\s\S]*unsealAlbumPassword\(albumSlug, sealed\)[\s\S]*requestHeaders\.set\("x-album-access-password", internalAlbumPassword\)/,
+  "password-protected albums must behave the same on custom and Guestcam URLs",
 );
 
 requireMatch(

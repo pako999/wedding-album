@@ -1,6 +1,9 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
+import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { db } from "@/lib/db";
+import { albums } from "@/lib/db/schema";
 import {
   SIGNUP_ATTR_COOKIE,
   SIGNUP_SOURCE_PARAM,
@@ -231,13 +234,56 @@ export default clerkMiddleware(
     return NextResponse.redirect(target, 307);
   }
 
+  // ── Resolve customer custom domains where rewrites are supported ───────────
+  // App Route Handlers cannot return NextResponse.rewrite() in Next.js 16.
+  // Resolve the domain here and rewrite straight to the regular album route.
+  let customAlbumSlug: string | null = null;
+  const isCustomAlbumPage =
+    !spanishRequest &&
+    !serbianRequest &&
+    !isOwnDomain(hostname) &&
+    !isInternalApi(req) &&
+    !pathname.startsWith("/api") &&
+    !pathname.startsWith("/_next");
+
+  if (isCustomAlbumPage) {
+    const bareHost = normalizedHostname(hostname);
+
+    try {
+      const customAlbum = await db.query.albums.findFirst({
+        columns: { slug: true },
+        where: eq(albums.customDomain, bareHost),
+      });
+
+      if (!customAlbum) {
+        return new NextResponse("Album not found for this domain.", {
+          status: 404,
+          headers: { "Cache-Control": "no-store" },
+        });
+      }
+
+      customAlbumSlug = customAlbum.slug;
+    } catch (error) {
+      console.error("[custom-domain] Domain resolution failed", {
+        domain: bareHost,
+        error: error instanceof Error ? error.message : String(error),
+      });
+      return new NextResponse("Album is temporarily unavailable.", {
+        status: 503,
+        headers: { "Cache-Control": "no-store", "Retry-After": "30" },
+      });
+    }
+  }
+
   // ── Album password URL hygiene ──────────────────────────────────────────────
   // Existing protected-album forms navigate once to /slug?pw=secret. Capture
   // that value, encrypt it into an HttpOnly cookie and immediately redirect to
   // the clean URL. The raw password is never restored into a URL afterwards.
-  const albumSlug = !countryLocale && isAlbumGuestPath(pathname)
-    ? decodeURIComponent(pathname.split("/").filter(Boolean)[0] ?? "")
-    : null;
+  const albumSlug = customAlbumSlug ?? (
+    !countryLocale && isAlbumGuestPath(pathname)
+      ? decodeURIComponent(pathname.split("/").filter(Boolean)[0] ?? "")
+      : null
+  );
 
   if (albumSlug) {
     const visiblePassword = req.nextUrl.searchParams.get("pw");
@@ -269,18 +315,6 @@ export default clerkMiddleware(
     if (sealed) internalAlbumPassword = await unsealAlbumPassword(albumSlug, sealed);
   }
 
-  // ── Custom domain routing ──────────────────────────────────────────────────
-  if (!spanishRequest && !serbianRequest && !isOwnDomain(hostname) && !isInternalApi(req)) {
-    const bareHost = normalizedHostname(hostname);
-
-    if (!pathname.startsWith("/api") && !pathname.startsWith("/_next")) {
-      const url = req.nextUrl.clone();
-      url.pathname = `/api/resolve-domain${pathname}`;
-      url.searchParams.set("domain", bareHost);
-      return NextResponse.rewrite(url);
-    }
-  }
-
   // ── Internal API key check ─────────────────────────────────────────────────
   if (isInternalApi(req)) {
     const key = req.headers.get("x-api-key");
@@ -294,7 +328,8 @@ export default clerkMiddleware(
 
   // ── Expose trusted request metadata for Server Components ─────────────────
   const requestHeaders = new Headers(req.headers);
-  requestHeaders.set("x-pathname", effectivePathname);
+  const resolvedPathname = customAlbumSlug ? `/${customAlbumSlug}` : effectivePathname;
+  requestHeaders.set("x-pathname", resolvedPathname);
 
   // Never trust a browser-supplied value for this internal header. Only the
   // password decrypted from Guestcam's HttpOnly cookie may populate it.
@@ -304,7 +339,12 @@ export default clerkMiddleware(
   }
 
   let res: NextResponse;
-  if (countryLocale && effectivePathname !== pathname) {
+  if (customAlbumSlug) {
+    const target = req.nextUrl.clone();
+    target.pathname = resolvedPathname;
+    res = NextResponse.rewrite(target, { request: { headers: requestHeaders } });
+    res.headers.set("Cache-Control", "no-store");
+  } else if (countryLocale && effectivePathname !== pathname) {
     const target = req.nextUrl.clone();
     target.pathname = effectivePathname;
     res = NextResponse.rewrite(target, { request: { headers: requestHeaders } });
@@ -386,7 +426,7 @@ export default clerkMiddleware(
   }
 
   // ── Block crawlers from album guest pages via HTTP header ────────────────
-  if (!countryLocale && isAlbumGuestPath(pathname)) {
+  if (customAlbumSlug || (!countryLocale && isAlbumGuestPath(pathname))) {
     res.headers.set(
       "X-Robots-Tag",
       "noindex, nofollow, noarchive, nosnippet, noimageindex, notranslate, noai, noimageai",
