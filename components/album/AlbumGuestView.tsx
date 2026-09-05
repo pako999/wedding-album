@@ -2018,6 +2018,16 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
                 return (
                   <div
                     className="w-full h-full flex items-center justify-center"
+                    onClick={() => {
+                      // Phone viewer is intentionally tap-first: one tap on
+                      // the photo advances it, while desktop keeps arrows.
+                      if (
+                        window.matchMedia("(max-width: 639px)").matches &&
+                        lightboxZoomRef.current <= 1.01
+                      ) {
+                        lightboxControllerRef.current?.next();
+                      }
+                    }}
                     style={previewSrc ? {
                       backgroundImage: `url(${JSON.stringify(previewSrc)})`,
                       backgroundPosition: "center",

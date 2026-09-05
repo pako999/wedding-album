@@ -164,7 +164,14 @@ html, body {
    Scoped to `.guestcam-lightbox--panel` — the modifier class is only present
    while the desktop panel is OPEN. When the panel is hidden the class is
    dropped, so no padding/shift applies and the photo uses the full width. */
-.guestcam-lightbox .yarl__navigation_next { right: 72px; }
+/* Phones keep the original tap-first viewer: tapping the photo advances it,
+   so arrow buttons would only cover the image and the action rail. */
+@media (max-width: 639px) {
+  .guestcam-lightbox .yarl__navigation_prev,
+  .guestcam-lightbox .yarl__navigation_next {
+    display: none;
+  }
+}
 
 @media (min-width: 640px) {
   .guestcam-lightbox .yarl__navigation_next { right: 88px; }

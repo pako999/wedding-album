@@ -425,9 +425,16 @@ requireMatch(
 );
 
 requireMatch(
-  "lightbox next arrow stays clear of the action rail",
+  "mobile lightbox uses tap navigation without arrows",
+  `${files.albumGuestView}\n${files.globalStyles}`,
+  /matchMedia\("\(max-width: 639px\)"\)\.matches[\s\S]*lightboxControllerRef\.current\?\.next\(\)[\s\S]*max-width:\s*639px[\s\S]*\.guestcam-lightbox \.yarl__navigation_prev,[\s\S]*\.guestcam-lightbox \.yarl__navigation_next\s*\{\s*display:\s*none/,
+  "phone viewers must advance on photo taps without covering the image with arrows",
+);
+
+requireMatch(
+  "desktop lightbox next arrow stays clear of the action rail",
   files.globalStyles,
-  /\.guestcam-lightbox \.yarl__navigation_next\s*\{\s*right:\s*72px[\s\S]*min-width:\s*640px[\s\S]*right:\s*88px[\s\S]*\.guestcam-lightbox--panel \.yarl__navigation_next\s*\{\s*right:\s*360px/,
+  /min-width:\s*640px[\s\S]*\.guestcam-lightbox \.yarl__navigation_next\s*\{\s*right:\s*88px[\s\S]*\.guestcam-lightbox--panel \.yarl__navigation_next\s*\{\s*right:\s*360px/,
   "the like/comment/download rail must not cover the next-photo arrow",
 );
 
