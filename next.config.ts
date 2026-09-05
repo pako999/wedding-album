@@ -44,6 +44,11 @@ const nextConfig: NextConfig = {
     // built-in optimizer used for public Bunny S3 display variants.
     deviceSizes: [320, 400, 480, 600, 640, 800, 960, 1200, 1280, 1600, 1800, 1920, 2000, 2048, 2400, 3840],
     qualities: [30, 75, 78, 80, 82, 90],
+    localPatterns: [
+      // Album image URLs carry validated width/quality query parameters.
+      // Omitting `search` intentionally allows those dynamic parameters.
+      { pathname: "/api/bunny-s3-file/**" },
+    ],
     remotePatterns: [
       { protocol: "https", hostname: "*.public.blob.vercel-storage.com" },
       { protocol: "https", hostname: "images.unsplash.com" },

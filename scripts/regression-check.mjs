@@ -417,6 +417,13 @@ requireMatch(
 );
 
 requireMatch(
+  "Next image optimizer accepts local S3 proxy query parameters",
+  files.nextConfig,
+  /localPatterns:\s*\[[\s\S]*pathname:\s*"\/api\/bunny-s3-file\/\*\*"[\s\S]*\]/,
+  "local album image routes with validated width and quality parameters must not be rejected by next/image",
+);
+
+requireMatch(
   "Bunny Stream thumbnails always use an absolute URL",
   files.bunny,
   /bunnyStreamThumbnailUrl[\s\S]*const cdn = normalizedStreamCdn\(\)/,
