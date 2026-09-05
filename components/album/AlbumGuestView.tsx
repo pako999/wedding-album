@@ -1471,7 +1471,7 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
                 <h2 className="text-xs font-bold uppercase tracking-widest mb-4" style={{ color: BRAND.muted }}>
                   {t.videosSection} · {filteredVideos.length}
                 </h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 items-start gap-4">
                   {filteredVideos.map(photo => <VideoCard key={photo.id} photo={photo} t={t} renderedAt={renderedAt} accent={theme.accent} />)}
                 </div>
               </div>
@@ -1479,7 +1479,7 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
 
             {/* ── Videos-only view ────────────────────────────────────────── */}
             {filter === "videos" && (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 items-start gap-4">
                 {filteredVideos.map(photo => <VideoCard key={photo.id} photo={photo} t={t} renderedAt={renderedAt} accent={theme.accent} />)}
               </div>
             )}
@@ -2254,7 +2254,7 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
 /* ── VideoCard ────────────────────────────────────────────────────────────── */
 function VideoCard({ photo, t, renderedAt, accent = BRAND.accent }: { photo: Photo; t: Translations; renderedAt: string; accent?: string }) {
   return (
-    <div className="rounded-2xl overflow-hidden bg-gray-950 border border-gray-800 flex flex-col">
+    <div className="h-fit self-start rounded-2xl overflow-hidden bg-gray-950 border border-gray-800 flex flex-col">
       {/* Video player */}
       {photo.cfStreamVideoId ? (
         <div style={{ position: "relative", paddingTop: "56.25%" }}>

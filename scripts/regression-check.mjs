@@ -341,6 +341,13 @@ requireMatch(
 );
 
 requireMatch(
+  "mixed-aspect video cards keep their natural height",
+  files.albumGuestView,
+  /grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 items-start gap-4[\s\S]*h-fit self-start rounded-2xl overflow-hidden bg-gray-950/,
+  "short landscape videos must not stretch to the height of a portrait video in the same grid row",
+);
+
+requireMatch(
   "new S3 media checks protected album guest access",
   files.s3Read,
   /hasAlbumRequestAccess/,
