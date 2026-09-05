@@ -26,6 +26,45 @@ const streamCdnUrl   = () => process.env.BUNNY_STREAM_CDN_URL ?? "";
 
 // ─────────────────────────────────────────────────────────────────────────────
 
+/** Accept Bunny hostnames copied from the dashboard with no URL scheme. */
+function normalizedBunnyUrl(value: string): string {
+  const trimmed = value.trim();
+  if (
+    trimmed &&
+    !/^https?:\/\//i.test(trimmed) &&
+    /^[a-z0-9.-]+\.b-cdn\.net(?:[/?#]|$)/i.test(trimmed)
+  ) {
+    return `https://${trimmed}`;
+  }
+  return trimmed;
+}
+
+function storageCdnHostname(): string | null {
+  try {
+    return new URL(normalizedBunnyUrl(cdnUrl())).hostname.toLowerCase();
+  } catch {
+    return null;
+  }
+}
+
+function isLikelyStreamAsset(url: URL): boolean {
+  const [videoId, asset] = url.pathname.replace(/^\/+/, "").split("/");
+  return (
+    /^[0-9a-f]{8}-[0-9a-f-]{27}$/i.test(videoId ?? "") &&
+    !!asset &&
+    (asset === "thumbnail.jpg" || asset === "playlist.m3u8" || asset.startsWith("play_"))
+  );
+}
+
+function withDisplayParams(url: string, width: number, quality: number): string {
+  const parsed = new URL(url, "https://guestcam.internal");
+  parsed.searchParams.set("width", String(width));
+  parsed.searchParams.set("quality", String(quality));
+  return parsed.origin === "https://guestcam.internal"
+    ? `${parsed.pathname}${parsed.search}${parsed.hash}`
+    : parsed.toString();
+}
+
 export function isBunnyStorageConfigured(): boolean {
   return !!(process.env.BUNNY_STORAGE_API_KEY && process.env.BUNNY_STORAGE_ZONE);
 }
@@ -44,20 +83,23 @@ export function isBunnyStorageConfigured(): boolean {
  */
 function extractBunnyKey(url: string): string | null {
   try {
+    const normalized = normalizedBunnyUrl(url);
     // Already a proxy URL — extract key param
-    if (url.includes("/api/img")) {
-      const u = new URL(url, "http://localhost");
+    if (normalized.includes("/api/img")) {
+      const u = new URL(normalized, "http://localhost");
       return u.searchParams.get("key");
     }
-    // Bunny CDN URL
-    if (url.includes(".b-cdn.net")) {
-      const u = new URL(url);
+    // Legacy Bunny Storage CDN URL. Other Bunny pull zones may be Stream
+    // or the new S3 zone and must never be rewritten onto this hostname.
+    if (normalized.includes(".b-cdn.net")) {
+      const u = new URL(normalized);
+      if (u.hostname.toLowerCase() !== storageCdnHostname()) return null;
       // pathname is "/albums/…" — remove leading slash
       return u.pathname.replace(/^\//, "");
     }
     // Looks like a bare storage key already (starts with "albums/")
-    if (url.startsWith("albums/")) {
-      return url.split("?")[0];
+    if (normalized.startsWith("albums/")) {
+      return normalized.split("?")[0];
     }
     return null;
   } catch {
@@ -85,9 +127,38 @@ export function bunnyDisplayUrl(
   quality = 82,
 ): string {
   if (!url) return "";
-  const key = extractBunnyKey(url);
-  if (!key) return url; // Non-Bunny URL — return as-is
-  return `${cdnUrl()}/${key}?width=${width}&quality=${quality}`;
+  const normalized = normalizedBunnyUrl(url);
+
+  // New Bunny S3 objects are stored behind an authorization-aware stable
+  // route. Keep that route and pass the requested display variant through to
+  // its public CDN redirect instead of downloading the original object.
+  try {
+    const parsed = new URL(normalized, "https://guestcam.internal");
+    if (parsed.pathname.startsWith("/api/bunny-s3-file/")) {
+      return withDisplayParams(normalized, width, quality);
+    }
+  } catch {
+    // Malformed non-Bunny values fall through unchanged below.
+  }
+
+  const key = extractBunnyKey(normalized);
+  if (key) {
+    const base = normalizedBunnyUrl(cdnUrl()).replace(/\/+$/, "");
+    return withDisplayParams(`${base}/${key}`, width, quality);
+  }
+
+  // Preserve direct S3 pull-zone URLs and optimize them in place. Stream
+  // thumbnails/video assets use the same b-cdn.net suffix but do not support
+  // image optimizer parameters, so leave those untouched.
+  try {
+    const parsed = new URL(normalized);
+    if (parsed.hostname.endsWith(".b-cdn.net") && !isLikelyStreamAsset(parsed)) {
+      return withDisplayParams(normalized, width, quality);
+    }
+  } catch {
+    // Non-Bunny URL — return as-is.
+  }
+  return normalized;
 }
 
 /**
@@ -98,8 +169,9 @@ export function bunnyDisplayUrl(
  */
 export function bunnyOriginalUrl(url: string | null | undefined): string {
   if (!url) return "";
-  const key = extractBunnyKey(url);
-  if (!key) return url.split("?")[0]; // Non-Bunny URL — strip params and return
+  const normalized = normalizedBunnyUrl(url);
+  const key = extractBunnyKey(normalized);
+  if (!key) return normalized.split("?")[0]; // Non-Bunny URL — strip params and return
   return `/api/img?key=${encodeURIComponent(key)}`;
 }
 
@@ -230,7 +302,7 @@ export async function deleteBunnyStreamVideo(videoId: string): Promise<boolean> 
 // ── Stream: URL helpers ───────────────────────────────────────────────────────
 
 export function bunnyStreamThumbnailUrl(videoId: string): string | undefined {
-  const cdn = streamCdnUrl();
+  const cdn = normalizedStreamCdn();
   return cdn ? `${cdn}/${videoId}/thumbnail.jpg` : undefined;
 }
 

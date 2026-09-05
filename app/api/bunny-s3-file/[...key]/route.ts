@@ -11,6 +11,23 @@ import {
 
 export const runtime = "nodejs";
 
+const DISPLAY_WIDTHS = new Set([
+  320, 400, 480, 600, 640, 800, 960, 1200, 1280, 1600, 1800, 2000, 2048, 2400,
+]);
+const DISPLAY_QUALITIES = new Set([30, 78, 80, 82, 90]);
+
+function allowedNumber(value: string | null, allowed: Set<number>): number | null {
+  if (!value || !/^\d+$/.test(value)) return null;
+  const parsed = Number(value);
+  return allowed.has(parsed) ? parsed : null;
+}
+
+function normalizedPublicCdn(): string {
+  let cdn = (process.env.BUNNY_S3_CDN_URL ?? "").trim().replace(/\/+$/, "");
+  if (cdn && !/^https?:\/\//i.test(cdn)) cdn = `https://${cdn}`;
+  return cdn;
+}
+
 function validKey(key: string): boolean {
   return (
     key.startsWith("albums/") &&
@@ -82,14 +99,16 @@ export async function GET(
     return NextResponse.json({ error: "Storage unavailable" }, { status: 503 });
   }
 
-  const s3Cdn = (process.env.BUNNY_S3_CDN_URL ?? "")
-    .trim()
-    .replace(/\/+$/, "");
+  const s3Cdn = normalizedPublicCdn();
 
   try {
     // For open published albums, retain the fast cacheable pull-zone redirect.
     if (s3Cdn && album.isPublished && !album.password) {
-      const target = `${s3Cdn}/${key}`;
+      const target = new URL(`${s3Cdn}/${key}`);
+      const width = allowedNumber(req.nextUrl.searchParams.get("width"), DISPLAY_WIDTHS);
+      const quality = allowedNumber(req.nextUrl.searchParams.get("quality"), DISPLAY_QUALITIES);
+      if (width !== null) target.searchParams.set("width", String(width));
+      if (quality !== null) target.searchParams.set("quality", String(quality));
       const response = NextResponse.redirect(target, 307);
       response.headers.set("Cache-Control", "public, max-age=300, s-maxage=300");
       return response;

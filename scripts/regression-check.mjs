@@ -43,6 +43,7 @@ const files = {
   albumGuestView: await read("components/album/AlbumGuestView.tsx"),
   uploadModal: await read("components/album/UploadModal.tsx"),
   slideshow: await read("components/album/Slideshow.tsx"),
+  bunny: await read("lib/storage/bunny.ts"),
   albumHeaderSettings: await read("lib/album-header-settings.ts"),
   proxy: await read("proxy.ts"),
   siteDomains: await read("lib/site-domains.ts"),
@@ -394,6 +395,20 @@ requireMatch(
   "display optimization must not reduce explicit photo download quality",
 );
 
+requireMatch(
+  "new Bunny S3 photos retain responsive display parameters",
+  `${files.bunny}\n${files.s3Read}`,
+  /pathname\.startsWith\("\/api\/bunny-s3-file\/"\)[\s\S]*withDisplayParams\(normalized, width, quality\)[\s\S]*DISPLAY_WIDTHS[\s\S]*target\.searchParams\.set\("width"/,
+  "S3-backed gallery photos must redirect to a resized CDN variant instead of the full original",
+);
+
+requireMatch(
+  "Bunny Stream thumbnails always use an absolute URL",
+  files.bunny,
+  /bunnyStreamThumbnailUrl[\s\S]*const cdn = normalizedStreamCdn\(\)/,
+  "a scheme-less Stream CDN hostname produced album and dashboard 404s",
+);
+
 requireAbsent(
   "album viewers do not display legacy 2400 px quality-90 assets",
   `${files.albumGuestView}\n${files.slideshow}`,
@@ -729,6 +744,13 @@ requireMatch(
   files.nextConfig,
   /source:\s*"\/slike-s-poroke"[\s\S]*destination:\s*"\/sl\/slike-s-poroke"[\s\S]*permanent:\s*true/,
   "old Slovenian search links must consolidate into the canonical /sl page",
+);
+
+requireMatch(
+  "conventional Apple touch-icon URLs resolve",
+  files.nextConfig,
+  /source:\s*"\/apple-touch-icon\.png"[\s\S]*destination:\s*"\/apple-icon"[\s\S]*source:\s*"\/apple-touch-icon-precomposed\.png"/,
+  "iOS and Safari must not receive a 404 for conventional touch-icon paths",
 );
 
 requireMatch(
