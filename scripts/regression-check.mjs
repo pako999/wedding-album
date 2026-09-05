@@ -425,6 +425,13 @@ requireMatch(
 );
 
 requireMatch(
+  "lightbox next arrow stays clear of the action rail",
+  files.globalStyles,
+  /\.guestcam-lightbox \.yarl__navigation_next\s*\{\s*right:\s*72px[\s\S]*min-width:\s*640px[\s\S]*right:\s*88px[\s\S]*\.guestcam-lightbox--panel \.yarl__navigation_next\s*\{\s*right:\s*360px/,
+  "the like/comment/download rail must not cover the next-photo arrow",
+);
+
+requireMatch(
   "lightbox downloads still request untouched originals",
   files.albumGuestView,
   /download:\s*\{[\s\S]*?url:\s*bunnyOriginalUrl\(photo\.blobUrl\)/,

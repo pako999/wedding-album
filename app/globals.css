@@ -164,6 +164,12 @@ html, body {
    Scoped to `.guestcam-lightbox--panel` — the modifier class is only present
    while the desktop panel is OPEN. When the panel is hidden the class is
    dropped, so no padding/shift applies and the photo uses the full width. */
+.guestcam-lightbox .yarl__navigation_next { right: 72px; }
+
+@media (min-width: 640px) {
+  .guestcam-lightbox .yarl__navigation_next { right: 88px; }
+}
+
 @media (min-width: 1024px) {
   .guestcam-lightbox--panel .yarl__slide { padding-right: 360px; }
   .guestcam-lightbox--panel .yarl__navigation_next { right: 360px; }
