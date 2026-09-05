@@ -133,15 +133,19 @@ function formatUploadTime(
 const LIGHTBOX_WIDTHS = [640, 960, 1280, 1600, 2048] as const;
 const LIGHTBOX_QUALITY = 82;
 
+type GuestLightboxSlide = SlideImage & {
+  download?: { url: string; filename: string };
+  description?: string;
+  /** Already-loaded gallery asset shown while the sharper variant decodes. */
+  previewSrc: string;
+};
+
 /**
  * Build responsive Bunny variants for the lightbox. The largest display file
  * is capped at 2048 px; the untouched original remains available only through
  * the explicit download action and in the album ZIP.
  */
-function lightboxSlide(photo: Photo, downloadOn: boolean): SlideImage & {
-  download?: { url: string; filename: string };
-  description?: string;
-} {
+function lightboxSlide(photo: Photo, downloadOn: boolean): GuestLightboxSlide {
   const hasDimensions = !!(photo.width && photo.height);
   const maxWidth = hasDimensions ? Math.min(photo.width!, 2048) : 1600;
   const maxHeight = hasDimensions
@@ -156,6 +160,10 @@ function lightboxSlide(photo: Photo, downloadOn: boolean): SlideImage & {
 
   return {
     src: bunnyDisplayUrl(photo.blobUrl, maxWidth, LIGHTBOX_QUALITY),
+    // On phones the two-column gallery normally selects this exact 640 px
+    // srcSet candidate. Reusing it as the lightbox background makes the first
+    // tap instant while the sharper responsive image downloads and decodes.
+    previewSrc: bunnyDisplayUrl(photo.thumbnailUrl ?? photo.blobUrl, 640, LIGHTBOX_QUALITY),
     ...(hasDimensions ? {
       width: maxWidth,
       height: maxHeight,
@@ -2004,6 +2012,23 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
               buttonClose: () => null,
               buttonDownload: () => null,
               buttonZoom: () => null,
+              iconLoading: () => null,
+              slideContainer: ({ slide, children }) => {
+                const previewSrc = (slide as GuestLightboxSlide).previewSrc;
+                return (
+                  <div
+                    className="w-full h-full flex items-center justify-center"
+                    style={previewSrc ? {
+                      backgroundImage: `url(${JSON.stringify(previewSrc)})`,
+                      backgroundPosition: "center",
+                      backgroundRepeat: "no-repeat",
+                      backgroundSize: "contain",
+                    } : undefined}
+                  >
+                    {children}
+                  </div>
+                );
+              },
               /* Inject the panel as a custom control (absolute positioned) */
               controls: () => lightboxPhoto ? (
                 <>
@@ -2241,12 +2266,15 @@ function VideoCard({ photo, t, renderedAt, accent = BRAND.accent }: { photo: Pho
           />
         </div>
       ) : (
+        /* iOS WebKit can turn metadata preload into a full MP4 range
+           download. The explicit poster already supplies the preview, so
+           defer every video byte until the guest presses Play. */
         <video
           src={photo.blobUrl}
           poster={photo.thumbnailUrl ? bunnyDisplayUrl(photo.thumbnailUrl, 800, 82) : undefined}
           controls
           playsInline
-          preload="metadata"
+          preload="none"
           className="w-full h-auto block"
           style={{ maxHeight: "360px" }}
         />

@@ -336,8 +336,8 @@ requireAbsent(
 requireMatch(
   "public video cards provide iOS poster thumbnails",
   `${files.albumPage}\n${files.albumGuestView}\n${files.videoClient}`,
-  /thumbnailUrl:\s*photo\.thumbnailUrl \?\? bunnyStreamThumbnailUrl[\s\S]*poster=\{photo\.thumbnailUrl \? bunnyDisplayUrl\(photo\.thumbnailUrl, 800, 82\) : undefined\}[\s\S]*iframePoster\(fallbackIframeSrc\)/,
-  "iOS Safari does not paint a preload=metadata frame, so every native player needs an explicit poster",
+  /thumbnailUrl:\s*photo\.thumbnailUrl \?\? bunnyStreamThumbnailUrl[\s\S]*poster=\{photo\.thumbnailUrl \? bunnyDisplayUrl\(photo\.thumbnailUrl, 800, 82\) : undefined\}[\s\S]*preload="none"[\s\S]*iframePoster\(fallbackIframeSrc\)/,
+  "iOS WebKit needs an explicit poster and must not preload each full MP4 before Play",
 );
 
 requireMatch(
@@ -408,6 +408,13 @@ requireMatch(
   files.albumGuestView,
   /LIGHTBOX_WIDTHS\s*=\s*\[640, 960, 1280, 1600, 2048\][\s\S]*LIGHTBOX_QUALITY\s*=\s*82[\s\S]*carousel=\{\{ preload: 1/,
   "the lightbox must not eagerly load five oversized 2400 px assets",
+);
+
+requireMatch(
+  "lightbox immediately reuses a gallery preview",
+  files.albumGuestView,
+  /previewSrc:\s*bunnyDisplayUrl\(photo\.thumbnailUrl \?\? photo\.blobUrl, 640, LIGHTBOX_QUALITY\)[\s\S]*iconLoading:\s*\(\)\s*=>\s*null[\s\S]*slideContainer:[\s\S]*backgroundImage/,
+  "the first tap must show the already-cached mobile gallery image while the sharper variant decodes",
 );
 
 requireMatch(

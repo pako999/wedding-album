@@ -195,9 +195,10 @@ export default async function AlbumPage({ params, searchParams }: Props) {
       return {
         ...photo,
         blobUrl: `/api/albums/${encodeURIComponent(slug)}/video-download?${qs.toString()}`,
-        // iOS Safari does not paint the first video frame for
-        // preload="metadata". Always provide the Bunny still as a poster,
-        // including for older rows created before thumbnailUrl was stored.
+        // iOS WebKit does not reliably paint a preview frame and can download
+        // the entire MP4 while trying to preload metadata. Always provide the
+        // Bunny still as a poster, including for older rows created before
+        // thumbnailUrl was stored; the native player itself uses preload=none.
         thumbnailUrl: photo.thumbnailUrl ?? bunnyStreamThumbnailUrl(photo.cfStreamVideoId) ?? null,
         cfStreamVideoId: null,
       };
