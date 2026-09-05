@@ -2241,7 +2241,15 @@ function VideoCard({ photo, t, renderedAt, accent = BRAND.accent }: { photo: Pho
           />
         </div>
       ) : (
-        <video src={photo.blobUrl} controls playsInline preload="metadata" className="w-full h-auto block" style={{ maxHeight: "360px" }} />
+        <video
+          src={photo.blobUrl}
+          poster={photo.thumbnailUrl ?? undefined}
+          controls
+          playsInline
+          preload="metadata"
+          className="w-full h-auto block"
+          style={{ maxHeight: "360px" }}
+        />
       )}
 
       {/* Uploader + time */}

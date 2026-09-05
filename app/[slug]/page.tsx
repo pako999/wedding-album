@@ -14,6 +14,7 @@ import { getAlbumFlags } from "@/lib/album-flags";
 import { getAlbumHeaderSettings } from "@/lib/album-header-settings";
 import { getAlbumAppearance, WELCOME_FONT_STACKS, type WelcomeFont } from "@/lib/album-appearance";
 import { createVideoPlaybackToken } from "@/lib/video-playback-token";
+import { bunnyStreamThumbnailUrl } from "@/lib/storage/bunny";
 import type { Metadata } from "next";
 
 export const dynamic = "force-dynamic";
@@ -194,6 +195,10 @@ export default async function AlbumPage({ params, searchParams }: Props) {
       return {
         ...photo,
         blobUrl: `/api/albums/${encodeURIComponent(slug)}/video-download?${qs.toString()}`,
+        // iOS Safari does not paint the first video frame for
+        // preload="metadata". Always provide the Bunny still as a poster,
+        // including for older rows created before thumbnailUrl was stored.
+        thumbnailUrl: photo.thumbnailUrl ?? bunnyStreamThumbnailUrl(photo.cfStreamVideoId) ?? null,
         cfStreamVideoId: null,
       };
     }

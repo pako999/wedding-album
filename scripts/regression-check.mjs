@@ -334,6 +334,13 @@ requireAbsent(
 );
 
 requireMatch(
+  "public video cards provide iOS poster thumbnails",
+  `${files.albumPage}\n${files.albumGuestView}\n${files.videoClient}`,
+  /thumbnailUrl:\s*photo\.thumbnailUrl \?\? bunnyStreamThumbnailUrl[\s\S]*poster=\{photo\.thumbnailUrl \?\? undefined\}[\s\S]*iframePoster\(fallbackIframeSrc\)/,
+  "iOS Safari does not paint a preload=metadata frame, so every native player needs an explicit poster",
+);
+
+requireMatch(
   "new S3 media checks protected album guest access",
   files.s3Read,
   /hasAlbumRequestAccess/,

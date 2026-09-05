@@ -22,9 +22,19 @@ function bunnyVideoIdFromUrl(src: string): string | null {
   }
 }
 
+function iframePoster(src: string): string | undefined {
+  try {
+    return new URL(src, window.location.href).searchParams.get("poster") ?? undefined;
+  } catch {
+    return undefined;
+  }
+}
+
 function makeNativeVideo(src: string, fallbackIframeSrc?: string): HTMLVideoElement {
   const video = document.createElement("video");
   video.src = src;
+  const poster = fallbackIframeSrc ? iframePoster(fallbackIframeSrc) : undefined;
+  if (poster) video.poster = poster;
   video.controls = true;
   video.playsInline = true;
   video.preload = "metadata";
