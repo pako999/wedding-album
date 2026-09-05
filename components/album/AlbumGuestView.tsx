@@ -2243,7 +2243,7 @@ function VideoCard({ photo, t, renderedAt, accent = BRAND.accent }: { photo: Pho
       ) : (
         <video
           src={photo.blobUrl}
-          poster={photo.thumbnailUrl ?? undefined}
+          poster={photo.thumbnailUrl ? bunnyDisplayUrl(photo.thumbnailUrl, 800, 82) : undefined}
           controls
           playsInline
           preload="metadata"
