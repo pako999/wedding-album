@@ -48,6 +48,13 @@ const nextConfig: NextConfig = {
       // Album image URLs carry validated width/quality query parameters.
       // Omitting `search` intentionally allows those dynamic parameters.
       { pathname: "/api/bunny-s3-file/**" },
+      // Setting localPatterns switches Next/Image from its default of allowing
+      // every local path to an allow-list. Keep the public website's static
+      // image folders on that list; otherwise Vercel returns
+      // INVALID_IMAGE_OPTIMIZE_REQUEST and the homepage tiles render empty.
+      { pathname: "/hero/**", search: "" },
+      { pathname: "/events/**", search: "" },
+      { pathname: "/print/**", search: "" },
     ],
     remotePatterns: [
       { protocol: "https", hostname: "*.public.blob.vercel-storage.com" },

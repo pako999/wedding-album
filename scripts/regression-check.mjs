@@ -521,6 +521,13 @@ requireMatch(
 );
 
 requireMatch(
+  "Next image optimizer accepts public website images",
+  files.nextConfig,
+  /localPatterns:\s*\[[\s\S]*pathname:\s*"\/hero\/\*\*"[\s\S]*pathname:\s*"\/events\/\*\*"[\s\S]*pathname:\s*"\/print\/\*\*"[\s\S]*\]/,
+  "homepage hero, event and print images must not be rejected by next/image",
+);
+
+requireMatch(
   "Bunny Stream thumbnails always use an absolute URL",
   files.bunny,
   /bunnyStreamThumbnailUrl[\s\S]*const cdn = normalizedStreamCdn\(\)/,
