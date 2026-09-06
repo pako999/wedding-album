@@ -259,7 +259,7 @@ export default async function RootLayout({
           {!isPrivateSurface && <MetaPixel />}
           {showPromo && <DiscountBanner lang={lang} />}
           {children}
-          <GuestcamProcessHowOverride />
+          <GuestcamProcessHowOverride lang={lang} />
           {showPromo && <ExitIntentPopup lang={lang} />}
           {GA_ID && !isPrivateSurface && (
             <>

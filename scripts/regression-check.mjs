@@ -857,6 +857,20 @@ requireMatch(
 );
 
 requireMatch(
+  "homepage process section uses the trusted request locale",
+  `${files.rootLayout}\n${files.processOverride}`,
+  /<GuestcamProcessHowOverride lang=\{lang\}[\s\S]*requestLang[\s\S]*pathLang \?\? requestLang/,
+  "clean .es and .rs homepage roots must not fall back to Slovenian client copy",
+);
+
+requireAbsent(
+  "Serbian process copy contains no Slovenian conjunction",
+  files.processOverride,
+  /bez aplikacije in prijave/,
+  "Serbian copy must use 'i', not the Slovenian 'in'",
+);
+
+requireMatch(
   "contact language switcher stays on the equivalent contact page",
   `${files.languageSwitcher}\n${files.contactPage}`,
   /CONTACT_HREFLANG[\s\S]*SERBIAN_GUESTCAM_ORIGIN\}\/contact[\s\S]*SPANISH_GUESTCAM_ORIGIN\}\/contact[\s\S]*hreflang=\{CONTACT_HREFLANG\}/,

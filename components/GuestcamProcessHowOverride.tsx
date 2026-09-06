@@ -105,7 +105,7 @@ const COPY: Record<Lang, Copy> = {
     steps: [
       { no: "1", title: "Izaberite događaj", text: "Izaberite vrstu događaja za koji pravite galeriju.", src: STEP_IMAGES[0], alt: "Guestcam izbor vrste događaja pri pravljenju nove galerije" },
       { no: "2", title: "Unesite podatke", text: "Unesite osnovne podatke i galerija će biti spremna za manje od dva minuta.", src: STEP_IMAGES[1], alt: "Guestcam unos podataka za galeriju događaja" },
-      { no: "3", title: "Podelite QR kod", text: "Gosti skeniraju QR kod — bez aplikacije in prijave — i odmah počinju da dele fotografije.", src: STEP_IMAGES[2], alt: "Guestcam QR kod koji gosti skeniraju za otpremanje fotografija" },
+      { no: "3", title: "Podelite QR kod", text: "Gosti skeniraju QR kod — bez aplikacije i prijave — i odmah počinju da dele fotografije.", src: STEP_IMAGES[2], alt: "Guestcam QR kod koji gosti skeniraju za otpremanje fotografija" },
     ],
   },
   de: {
@@ -146,22 +146,25 @@ const COPY: Record<Lang, Copy> = {
   },
 };
 
-function homeLang(pathname: string): Lang | null {
+function explicitHomeLang(pathname: string): Lang | null {
   const path = pathname.replace(/\/+$/, "") || "/";
-  if (path === "/") return "sl";
   const match = path.match(/^\/(hr|sr|de|en|es)$/);
   return match ? match[1] as Lang : null;
 }
 
-export function GuestcamProcessHowOverride() {
+export function GuestcamProcessHowOverride({ lang: requestLang }: { lang: Lang }) {
   const pathname = usePathname();
   const [target, setTarget] = useState<HTMLElement | null>(null);
-  const detectedLang = homeLang(pathname);
-  const lang = detectedLang ?? "sl";
+  const path = pathname.replace(/\/+$/, "") || "/";
+  const pathLang = explicitHomeLang(pathname);
+  const isHomepage = path === "/" || pathLang !== null;
+  // Country domains expose clean public roots (`guestcam.es/` and
+  // `guestcam.rs/`). On those URLs usePathname() is just "/", so the trusted
+  // request locale from the server layout must remain authoritative.
+  const lang = pathLang ?? requestLang;
 
   useEffect(() => {
-    const detected = homeLang(pathname);
-    if (!detected) return;
+    if (!isHomepage) return;
     const nextTarget = document.getElementById("how");
     const mountFrame = window.requestAnimationFrame(() => setTarget(nextTarget));
 
@@ -170,7 +173,7 @@ export function GuestcamProcessHowOverride() {
     // to both without duplicating six large pricing dictionaries.
     const inserted: HTMLLIElement[] = [];
     const cards = Array.from(document.querySelectorAll<HTMLElement>("#pricing article"));
-    const labels = PRICING_GALLERY_COPY[detected];
+    const labels = PRICING_GALLERY_COPY[lang];
     cards.slice(0, 4).forEach((card, index) => {
       const list = card.querySelector("ul");
       if (!list || list.querySelector("[data-gallery-plan-limit]")) return;
@@ -186,11 +189,11 @@ export function GuestcamProcessHowOverride() {
       window.cancelAnimationFrame(mountFrame);
       inserted.forEach((item) => item.remove());
     };
-  }, [pathname]);
+  }, [isHomepage, lang]);
 
   const copy = COPY[lang];
 
-  if (!detectedLang || !target) return null;
+  if (!isHomepage || !target) return null;
 
   return createPortal(
     <div className="guestcam-process-replacement mx-auto max-w-[1240px] px-5 sm:px-8">
