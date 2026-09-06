@@ -145,8 +145,8 @@ function permanentCountryRedirect(
  * and Spanish country domains are marketing-only and are never configured as
  * Clerk satellites. Create-album CTAs open the primary Clerk sign-up directly.
  */
-function primaryAccountRedirect(req: NextRequest): NextResponse {
-  const { pathname, search } = req.nextUrl;
+function primaryAccountRedirect(req: NextRequest, countryLocale: "sr" | "es"): NextResponse {
+  const { pathname } = req.nextUrl;
   const countryHost = requestHostname(req).replace(/^www\./, "");
   const cookieAttr = parseAttr(req.cookies.get(SIGNUP_ATTR_COOKIE)?.value);
   const requestAttr = collectAttribution(
@@ -166,12 +166,20 @@ function primaryAccountRedirect(req: NextRequest): NextResponse {
     for (const [key, value] of req.nextUrl.searchParams) {
       target.searchParams.append(key, value);
     }
+    // The country domain is authoritative even if a stale foreign `lang`
+    // query reached it. Carry that choice across the domain boundary and
+    // through Clerk's post-sign-up return URL.
+    target.searchParams.set("lang", countryLocale);
     target.searchParams.set(SIGNUP_SOURCE_PARAM, serializeSignupSourceSnapshot(source));
-    target.searchParams.set("redirect_url", `${pathname}${search}`);
+    const returnParams = new URLSearchParams(req.nextUrl.searchParams);
+    returnParams.set("lang", countryLocale);
+    target.searchParams.set("redirect_url", `${pathname}?${returnParams.toString()}`);
     return NextResponse.redirect(target, 307);
   }
 
-  const target = new URL(`${pathname}${search}`, PRIMARY_GUESTCAM_ORIGIN);
+  const target = new URL(pathname, PRIMARY_GUESTCAM_ORIGIN);
+  target.search = req.nextUrl.search;
+  target.searchParams.set("lang", countryLocale);
   if (pathname === "/sign-up" || pathname.startsWith("/sign-up/")) {
     target.searchParams.set(SIGNUP_SOURCE_PARAM, serializeSignupSourceSnapshot(source));
   }
@@ -233,7 +241,7 @@ export default clerkMiddleware(
   }
 
   if (countryLocale && isPrimaryAccountPath(pathname)) {
-    return primaryAccountRedirect(req);
+    return primaryAccountRedirect(req, countryLocale);
   }
 
   // /demo is a real route only on the primary app. Country marketing pages

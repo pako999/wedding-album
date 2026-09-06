@@ -12,6 +12,7 @@ import { notifyTelegram, htmlEscape } from "@/lib/telegram";
 import { validateDiscount, incrementDiscountUsage } from "@/lib/discount";
 import { recordStandOrder } from "@/lib/stand-orders";
 import { checkAlbumOwnership } from "@/lib/album-ownership";
+import { normalizeCheckoutLang } from "@/lib/i18n/checkout-locale";
 
 export const runtime = "nodejs";
 
@@ -48,6 +49,7 @@ export async function POST(req: NextRequest) {
     standsVariant?: StandVariant;
     planId?: unknown;
     albumSlug?: unknown;
+    locale?: unknown;
     billing?: BillingDetails;
     discountCode?: string;
   } | null;
@@ -69,6 +71,10 @@ export async function POST(req: NextRequest) {
     .findFirst({ where: eq(albums.slug, albumSlug) })
     .catch(() => null);
   if (!album) return NextResponse.json({ error: "Album not found" }, { status: 404 });
+  const checkoutLang =
+    normalizeCheckoutLang(body.locale) ??
+    normalizeCheckoutLang(album.defaultLang) ??
+    "sl";
 
   const owner = await checkAlbumOwnership(album);
   if (!owner.ok) {
@@ -148,6 +154,7 @@ export async function POST(req: NextRequest) {
     planPrice: plan.price,
     albumSlug,
     billing,
+    locale: checkoutLang,
   });
 
   const standsLines = tableStands && standsQuote

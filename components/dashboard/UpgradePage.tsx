@@ -9,6 +9,7 @@ import { fbEvent } from "@/lib/fbpixel";
 import type { Album } from "@/lib/db/schema";
 import { translations, type Lang } from "@/lib/i18n/translations";
 import { UPGRADE_COPY, PLAN_FEATURE_KEYS } from "@/lib/i18n/upgrade-translations";
+import { checkoutRegionName } from "@/lib/i18n/checkout-locale";
 import {
   SHIPPING_COUNTRIES, STAND_VARIANTS, DEFAULT_STAND_QTY, DEFAULT_STAND_VARIANT,
   MAX_STAND_QTY, VOLUME_BREAKS, LEAD_TIME_DAYS, quoteShipping, standsPriceCents, effectiveUnitCents,
@@ -701,7 +702,7 @@ export function UpgradePage({ album, lang = "sl", initialDiscount = null }: Prop
                     className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm text-gray-800 bg-white outline-none focus:border-[#FFC94D]"
                   >
                     {SHIPPING_COUNTRIES.map((c) => (
-                      <option key={c.code} value={c.code}>{c.name}</option>
+                      <option key={c.code} value={c.code}>{checkoutRegionName(c.code, lang, c.name)}</option>
                     ))}
                   </select>
                   {shipQuote && (
@@ -833,6 +834,7 @@ export function UpgradePage({ album, lang = "sl", initialDiscount = null }: Prop
                         body: JSON.stringify({
                           planId: selectedPlan,
                           albumSlug: album.slug,
+                          locale: lang,
                           tableStands: wantStands,
 
                           standsQty,
@@ -879,6 +881,7 @@ export function UpgradePage({ album, lang = "sl", initialDiscount = null }: Prop
                         body: JSON.stringify({
                           planId: selectedPlan,
                           albumSlug: album.slug,
+                          locale: lang,
                           tableStands: wantStands,
 
                           standsQty,

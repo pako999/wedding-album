@@ -1,5 +1,6 @@
 import { SITE_URL } from "@/lib/urls";
 import { Resend } from "resend";
+import type { Lang } from "@/lib/i18n/translations";
 
 const FROM = process.env.RESEND_FROM ?? "noreply@guestcam.si";
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? SITE_URL;
@@ -313,7 +314,70 @@ interface BankOrderConfirmationParams {
   planPrice: number;
   albumSlug: string;
   billing?: BillingDetails;
+  locale?: Lang;
 }
+
+interface BankConfirmationCopy {
+  subject: string;
+  title: string;
+  thanks: string;
+  intro: string;
+  billing: string;
+  taxId: string;
+  summary: string;
+  plan: string;
+  total: string;
+  next: string;
+  steps: (plan: string) => [string, string, string];
+  dashboard: string;
+  questions: string;
+  replyTime: string;
+}
+
+const BANK_CONFIRMATION_COPY: Record<Lang, BankConfirmationCopy> = {
+  sl: {
+    subject: "Naročilo prejeto", title: "Vaše naročilo je prejeto!", thanks: "Hvala za vaše naročilo za album",
+    intro: "Prejeli smo vašo zahtevo za plačilo po predračunu. Predračun bomo v kratkem poslali na ta e-poštni naslov. Po prejemu plačila bo vaš paket takoj aktiviran.",
+    billing: "Podatki za predračun", taxId: "Davčna", summary: "Povzetek naročila", plan: "Paket", total: "Skupaj za plačilo", next: "Kaj sledi?",
+    steps: (plan) => ["V naslednjih 24 urah prejmete predračun za plačilo.", "Poravnajte znesek na naš bančni račun (podatki so v predračunu).", `Po potrditvi plačila bo vaš paket <strong>${plan}</strong> takoj aktiviran.`],
+    dashboard: "Odpri nadzorno ploščo →", questions: "Vprašanja? Pišite nam na", replyTime: "odgovorimo v 24 urah.",
+  },
+  hr: {
+    subject: "Narudžba primljena", title: "Vaša je narudžba primljena!", thanks: "Hvala na narudžbi za album",
+    intro: "Primili smo vaš zahtjev za plaćanje po predračunu. Predračun ćemo uskoro poslati na ovu e-mail adresu. Nakon primitka uplate vaš će paket biti odmah aktiviran.",
+    billing: "Podaci za predračun", taxId: "OIB", summary: "Sažetak narudžbe", plan: "Paket", total: "Ukupno za plaćanje", next: "Što slijedi?",
+    steps: (plan) => ["U sljedeća 24 sata primit ćete predračun za plaćanje.", "Uplatite iznos na naš bankovni račun (podaci su na predračunu).", `Nakon potvrde uplate vaš će paket <strong>${plan}</strong> biti odmah aktiviran.`],
+    dashboard: "Otvori nadzornu ploču →", questions: "Imate pitanje? Pišite nam na", replyTime: "odgovaramo u roku od 24 sata.",
+  },
+  sr: {
+    subject: "Narudžbina primljena", title: "Vaša narudžbina je primljena!", thanks: "Hvala na narudžbini za album",
+    intro: "Primili smo vaš zahtev za plaćanje po predračunu. Predračun ćemo uskoro poslati na ovu e-mail adresu. Nakon prijema uplate vaš paket će biti odmah aktiviran.",
+    billing: "Podaci za predračun", taxId: "PIB", summary: "Pregled narudžbine", plan: "Paket", total: "Ukupno za plaćanje", next: "Šta sledi?",
+    steps: (plan) => ["U naredna 24 sata dobićete predračun za plaćanje.", "Uplatite iznos na naš bankovni račun (podaci su na predračunu).", `Nakon potvrde uplate vaš paket <strong>${plan}</strong> će biti odmah aktiviran.`],
+    dashboard: "Otvori kontrolnu tablu →", questions: "Imate pitanje? Pišite nam na", replyTime: "odgovaramo u roku od 24 sata.",
+  },
+  en: {
+    subject: "Order received", title: "Your order has been received!", thanks: "Thank you for your order for the album",
+    intro: "We received your request to pay by invoice. We will send the invoice to this email address shortly. Your plan will be activated as soon as payment is received.",
+    billing: "Invoice details", taxId: "Tax ID", summary: "Order summary", plan: "Plan", total: "Total to pay", next: "What happens next?",
+    steps: (plan) => ["You will receive the invoice within 24 hours.", "Pay the amount to our bank account using the details on the invoice.", `Your <strong>${plan}</strong> plan will be activated as soon as payment is confirmed.`],
+    dashboard: "Open dashboard →", questions: "Questions? Email us at", replyTime: "we reply within 24 hours.",
+  },
+  de: {
+    subject: "Bestellung eingegangen", title: "Ihre Bestellung ist eingegangen!", thanks: "Vielen Dank für Ihre Bestellung für das Album",
+    intro: "Wir haben Ihre Anfrage zur Zahlung per Rechnung erhalten. Die Rechnung senden wir Ihnen in Kürze an diese E-Mail-Adresse. Nach Zahlungseingang wird Ihr Paket sofort aktiviert.",
+    billing: "Rechnungsdaten", taxId: "Steuernummer", summary: "Bestellübersicht", plan: "Paket", total: "Gesamtbetrag", next: "Wie geht es weiter?",
+    steps: (plan) => ["Sie erhalten die Rechnung innerhalb von 24 Stunden.", "Überweisen Sie den Betrag anhand der Angaben auf der Rechnung auf unser Bankkonto.", `Nach bestätigtem Zahlungseingang wird Ihr Paket <strong>${plan}</strong> sofort aktiviert.`],
+    dashboard: "Dashboard öffnen →", questions: "Fragen? Schreiben Sie uns an", replyTime: "wir antworten innerhalb von 24 Stunden.",
+  },
+  es: {
+    subject: "Pedido recibido", title: "¡Hemos recibido tu pedido!", thanks: "Gracias por tu pedido para el álbum",
+    intro: "Hemos recibido tu solicitud de pago mediante factura. En breve enviaremos la factura a esta dirección de correo. Tu plan se activará en cuanto recibamos el pago.",
+    billing: "Datos de facturación", taxId: "NIF/CIF", summary: "Resumen del pedido", plan: "Plan", total: "Total a pagar", next: "¿Qué ocurre ahora?",
+    steps: (plan) => ["Recibirás la factura en un plazo de 24 horas.", "Abona el importe en nuestra cuenta bancaria utilizando los datos de la factura.", `Tu plan <strong>${plan}</strong> se activará en cuanto confirmemos el pago.`],
+    dashboard: "Abrir el panel →", questions: "¿Tienes preguntas? Escríbenos a", replyTime: "respondemos en un plazo de 24 horas.",
+  },
+};
 
 export async function sendBankOrderConfirmation({
   to,
@@ -322,6 +386,7 @@ export async function sendBankOrderConfirmation({
   planPrice,
   albumSlug,
   billing,
+  locale = "sl",
 }: BankOrderConfirmationParams) {
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) {
@@ -329,72 +394,74 @@ export async function sendBankOrderConfirmation({
     return;
   }
   const resend = new Resend(apiKey);
-  const dashboardUrl = `${APP_URL}/dashboard/${albumSlug}`;
+  const t = BANK_CONFIRMATION_COPY[locale];
+  const dashboardUrl = `${APP_URL}/dashboard/${albumSlug}?lang=${locale}`;
   const safe = { coupleName: escapeHtml(coupleName), planName: escapeHtml(planName) };
+  const steps = t.steps(safe.planName);
   const billingHtml = billing ? `
           <table width="100%" cellpadding="0" cellspacing="0" style="background:#F8FAFC;border-radius:12px;border:1px solid #E2E8F0;margin-bottom:28px;">
             <tr><td style="padding:18px 22px;">
-              <p style="margin:0 0 10px;font-size:11px;font-weight:700;letter-spacing:2px;color:#64748B;text-transform:uppercase;">Podatki za predračun</p>
+              <p style="margin:0 0 10px;font-size:11px;font-weight:700;letter-spacing:2px;color:#64748B;text-transform:uppercase;">${t.billing}</p>
               <p style="margin:0 0 4px;font-size:14px;font-weight:700;color:#0F1729;">${escapeHtml(billing.name)}</p>
               <p style="margin:0 0 2px;font-size:13px;color:#475569;">${escapeHtml(billing.address)}</p>
               <p style="margin:0 0 2px;font-size:13px;color:#475569;">${escapeHtml(billing.city)}</p>
-              ${billing.taxId ? `<p style="margin:6px 0 0;font-size:12px;color:#94A3B8;">Davčna: ${escapeHtml(billing.taxId)}</p>` : ""}
+              ${billing.taxId ? `<p style="margin:6px 0 0;font-size:12px;color:#94A3B8;">${t.taxId}: ${escapeHtml(billing.taxId)}</p>` : ""}
             </td></tr>
           </table>` : "";
 
   await resend.emails.send({
     from: `Guestcam <${FROM}>`,
     to,
-    subject: `✅ Naročilo prejeto — ${safe.coupleName} (${safe.planName})`,
+    subject: `✅ ${t.subject} — ${coupleName.replace(/[\r\n]/g, " ")} (${planName.replace(/[\r\n]/g, " ")})`,
     html: `<!DOCTYPE html>
-<html lang="sl">
-<head><meta charset="utf-8" /><title>Naročilo prejeto</title></head>
+<html lang="${locale}">
+<head><meta charset="utf-8" /><title>${t.subject}</title></head>
 <body style="margin:0;padding:0;background:#F2F4F8;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;color:#0F1729;">
   <table width="100%" cellpadding="0" cellspacing="0" style="background:#F2F4F8;padding:32px 16px;">
     <tr><td align="center">
       <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;background:#ffffff;border-radius:18px;overflow:hidden;box-shadow:0 4px 24px rgba(15,23,41,0.06);">
         <tr><td style="background:linear-gradient(135deg,#FFC94D 0%,#FFD966 100%);padding:36px 36px 28px;">
           <p style="margin:0 0 8px;font-size:12px;letter-spacing:3px;font-weight:700;color:#0F1729;">GUESTCAM</p>
-          <h1 style="margin:0;font-size:24px;line-height:1.25;color:#0F1729;font-weight:800;">Vase narocilo je prejeto!</h1>
+          <h1 style="margin:0;font-size:24px;line-height:1.25;color:#0F1729;font-weight:800;">${t.title}</h1>
         </td></tr>
         <tr><td style="padding:32px 36px;">
           <p style="margin:0 0 16px;font-size:16px;line-height:1.55;color:#0F1729;">
-            Hvala za vase narocilo za album <strong>${safe.coupleName}</strong>.
+            ${t.thanks} <strong>${safe.coupleName}</strong>.
           </p>
           <p style="margin:0 0 24px;font-size:15px;line-height:1.65;color:#475569;">
-            Prejeli smo vaso zahtevo za placilo po predracunu. V kratkem vam bomo poslali predracun na ta e-postni naslov. Po prejemu placila bo vas paket takoj aktiviran.
+            ${t.intro}
           </p>
           ${billingHtml}
           <table width="100%" cellpadding="0" cellspacing="0" style="background:#FFF9EC;border-radius:12px;border:1px solid #FFC94D;margin-bottom:28px;">
             <tr><td style="padding:20px 24px;">
-              <p style="margin:0 0 4px;font-size:11px;font-weight:700;letter-spacing:2px;color:#C9820A;text-transform:uppercase;">Povzetek narocila</p>
+              <p style="margin:0 0 4px;font-size:11px;font-weight:700;letter-spacing:2px;color:#C9820A;text-transform:uppercase;">${t.summary}</p>
               <table width="100%" cellpadding="0" cellspacing="0" style="margin-top:12px;">
                 <tr>
-                  <td style="font-size:14px;color:#475569;padding:4px 0;">Paket</td>
+                  <td style="font-size:14px;color:#475569;padding:4px 0;">${t.plan}</td>
                   <td align="right" style="font-size:14px;font-weight:700;color:#0F1729;padding:4px 0;">Guestcam ${safe.planName}</td>
                 </tr>
                 <tr><td colspan="2" style="padding:6px 0;"><hr style="border:none;border-top:1px solid rgba(255,201,77,0.3);margin:0;" /></td></tr>
                 <tr>
-                  <td style="font-size:14px;font-weight:700;color:#0F1729;padding:4px 0;">Skupaj za placilo</td>
+                  <td style="font-size:14px;font-weight:700;color:#0F1729;padding:4px 0;">${t.total}</td>
                   <td align="right" style="font-size:18px;font-weight:800;color:#0F1729;padding:4px 0;">${planPrice}&euro;</td>
                 </tr>
               </table>
             </td></tr>
           </table>
-          <p style="margin:0 0 12px;font-size:15px;font-weight:700;color:#0F1729;">Kaj sledi?</p>
+          <p style="margin:0 0 12px;font-size:15px;font-weight:700;color:#0F1729;">${t.next}</p>
           <ol style="margin:0 0 28px;padding-left:20px;font-size:14px;line-height:1.9;color:#475569;">
-            <li>V naslednjih 24 urah prejmete predracun za placilo.</li>
-            <li>Poravnajte znesek na nas bancni racun (podatki so v predracunu).</li>
-            <li>Po potrditvi placila bo vas paket <strong>${safe.planName}</strong> takoj aktiviran.</li>
+            <li>${steps[0]}</li>
+            <li>${steps[1]}</li>
+            <li>${steps[2]}</li>
           </ol>
           <a href="${dashboardUrl}" style="display:inline-block;background:#FFC94D;color:#0F1729;font-weight:700;font-size:15px;padding:14px 28px;border-radius:12px;text-decoration:none;">
-            Odpri nadzorno plosco &rarr;
+            ${t.dashboard}
           </a>
         </td></tr>
         <tr><td style="padding:0 36px 28px;">
           <p style="margin:0;font-size:13px;color:#94a3b8;line-height:1.6;">
-            Vprasanja? Pisite nam na
-            <a href="mailto:info@guestcam.si" style="color:#C9820A;text-decoration:none;">info@guestcam.si</a> - odgovorimo v 24 urah.
+            ${t.questions}
+            <a href="mailto:info@guestcam.si" style="color:#C9820A;text-decoration:none;">info@guestcam.si</a> — ${t.replyTime}
           </p>
         </td></tr>
         <tr><td style="padding:20px 36px;border-top:1px solid #f1f5f9;text-align:center;">

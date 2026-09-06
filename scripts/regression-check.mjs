@@ -79,11 +79,15 @@ const files = {
   deleteMedia: await read("lib/storage/delete-media.ts"),
   instrumentation: await read("instrumentation.ts"),
   bankOrder: await read("app/api/bank-order/route.ts"),
+  notifications: await read("lib/email/notifications.ts"),
   adminOverview: await read("app/admin/page.tsx"),
   adminPayments: await read("app/admin/payments/page.tsx"),
   adminSales: await read("lib/admin-sales.ts"),
   mollie: await read("lib/mollie.ts"),
+  mollieReturn: await read("app/api/mollie-return/route.ts"),
   checkout: await read("app/api/checkout/route.ts"),
+  checkoutLocale: await read("lib/i18n/checkout-locale.ts"),
+  upgradeTranslations: await read("lib/i18n/upgrade-translations.ts"),
   eventOfferCron: await read("app/api/cron/event-upgrade-reminder/route.ts"),
   eventOfferEmail: await read("lib/email/event-upgrade-reminder.ts"),
   eventOfferLog: await read("lib/event-upgrade-reminder-log.ts"),
@@ -681,6 +685,27 @@ requireMatch(
 );
 
 requireMatch(
+  "country-domain account redirects preserve the authoritative checkout language",
+  files.proxy,
+  /primaryAccountRedirect\(req: NextRequest, countryLocale: "sr" \| "es"\)[\s\S]*searchParams\.set\("lang", countryLocale\)[\s\S]*returnParams\.set\("lang", countryLocale\)[\s\S]*primaryAccountRedirect\(req, countryLocale\)/,
+  ".rs must enter account and checkout flows with sr, while .es must enter with es",
+);
+
+requireMatch(
+  "new-gallery sign-in preserves the selected language",
+  files.newAlbumPage,
+  /requestLang[\s\S]*returnParams\.set\("lang", requestLang \?\? "sl"\)[\s\S]*sign-in\?redirect_url=/,
+  "authentication must not reset a localized visitor to Slovenian",
+);
+
+requireMatch(
+  "upgrade sign-in preserves checkout plan, discount and language",
+  files.upgradePageRoute,
+  /if \(sp\.plan\)[\s\S]*if \(sp\.discount\)[\s\S]*returnParams\.set\("lang", requestLang \?\? "sl"\)[\s\S]*sign-in\?redirect_url=/,
+  "checkout state must survive the Clerk round-trip",
+);
+
+requireMatch(
   "country-domain sign-up bridges its acquisition source to the primary domain",
   files.proxy,
   /buildSignupSourceSnapshot[\s\S]*SIGNUP_SOURCE_PARAM[\s\S]*serializeSignupSourceSnapshot/,
@@ -1083,6 +1108,57 @@ requireAbsent(
   files.checkout,
   /currency:\s*["']RSD["']/,
   "Mollie does not support RSD for this checkout",
+);
+
+for (const locale of ["sl", "hr", "sr", "en", "de", "es"]) {
+  requireMatch(
+    `upgrade checkout has ${locale} copy`,
+    files.upgradeTranslations,
+    new RegExp(`\\n\\s{2}${locale}: \\{`),
+    `UPGRADE_COPY must define the complete ${locale} checkout`,
+  );
+  requireMatch(
+    `invoice confirmation has ${locale} copy`,
+    files.notifications,
+    new RegExp(`\\n\\s{2}${locale}: \\{`),
+    `bank-order confirmation must be localized for ${locale}`,
+  );
+}
+
+requireOccurrences(
+  "card and invoice checkout requests both send the selected language",
+  files.upgradePage,
+  /locale:\s*lang,/,
+  2,
+  "both payment methods must carry the page language to their APIs",
+);
+
+requireMatch(
+  "checkout falls back to the album language",
+  `${files.checkout}\n${files.bankOrder}\n${files.upgradePageRoute}`,
+  /normalizeCheckoutLang\(body\.locale\)[\s\S]*normalizeCheckoutLang\(album\.defaultLang\)[\s\S]*normalizeCheckoutLang\(album\.defaultLang\)/,
+  "direct checkout links must use the album's configured language when no explicit language is present",
+);
+
+requireMatch(
+  "shipping countries are localized in checkout",
+  `${files.checkoutLocale}\n${files.upgradePage}`,
+  /Intl\.DisplayNames[\s\S]*checkoutRegionName\(c\.code, lang, c\.name\)/,
+  "the delivery-country picker must not remain Slovenian in every locale",
+);
+
+requireMatch(
+  "Mollie receives a supported locale and a localized order description",
+  `${files.checkoutLocale}\n${files.checkout}\n${files.mollie}`,
+  /mollieLocaleForLang[\s\S]*"de_DE"[\s\S]*"es_ES"[\s\S]*checkoutPaymentDescription[\s\S]*locale:\s*mollieLocaleForLang\(checkoutLang\)[\s\S]*opts\.locale \? \{ locale: opts\.locale \}/,
+  "the hosted payment page and line item must follow the checkout language",
+);
+
+requireMatch(
+  "checkout language survives the Mollie return",
+  `${files.checkout}\n${files.mollieReturn}`,
+  /mollie-return\?slug=\$\{encodeURIComponent\(albumSlug\)\}&lang=\$\{checkoutLang\}[\s\S]*normalizeCheckoutLang\(req\.nextUrl\.searchParams\.get\("lang"\)\)[\s\S]*url\.searchParams\.set\("lang", lang\)/,
+  "returning from payment must not reset the dashboard language",
 );
 
 requireMatch(

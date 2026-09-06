@@ -3,6 +3,8 @@
  * Docs: https://docs.mollie.com/reference/create-payment
  */
 
+import type { MollieCheckoutLocale } from "@/lib/i18n/checkout-locale";
+
 export function mollieConfigured(): boolean {
   return !!process.env.MOLLIE_API_KEY;
 }
@@ -29,6 +31,7 @@ export interface MolliePayment {
   metadata: {
     albumSlug?: string;
     planId?: string;
+    locale?: string;
     discountCodeId?: string;
     affiliateRef?: string;
     // Physical add-on. Mollie stores metadata as strings, so the flag is
@@ -80,6 +83,7 @@ export async function createPayment(opts: {
   description: string;
   redirectUrl: string;
   webhookUrl: string;
+  locale?: MollieCheckoutLocale;
   metadata: Record<string, string>;
 }): Promise<{ id: string; checkoutUrl: string }> {
   const currency = opts.currency ?? "EUR";
@@ -92,6 +96,7 @@ export async function createPayment(opts: {
       description: opts.description,
       redirectUrl: opts.redirectUrl,
       webhookUrl: opts.webhookUrl,
+      ...(opts.locale ? { locale: opts.locale } : {}),
       metadata: opts.metadata,
     }),
   });

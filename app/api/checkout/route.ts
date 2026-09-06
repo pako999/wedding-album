@@ -12,6 +12,11 @@ import { validateDiscount } from "@/lib/discount";
 import { getAffiliateRefFromCookie } from "@/lib/affiliate/attribution";
 import { getGuestRefFromCookie } from "@/lib/referral/attribution";
 import { recordStandOrder } from "@/lib/stand-orders";
+import {
+  checkoutPaymentDescription,
+  mollieLocaleForLang,
+  normalizeCheckoutLang,
+} from "@/lib/i18n/checkout-locale";
 
 export const runtime = "nodejs";
 
@@ -44,6 +49,7 @@ export async function POST(req: NextRequest) {
   const body = await req.json() as {
     planId: PlanId;
     albumSlug: string;
+    locale?: unknown;
     tableStands?: boolean;
     /** Number of stands. Validated server-side against the allowed range — an
      *  unknown quantity is rejected, never repriced to a nearest match. */
@@ -79,6 +85,10 @@ export async function POST(req: NextRequest) {
   if (!album || album.ownerClerkId !== userId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+  const checkoutLang =
+    normalizeCheckoutLang(body.locale) ??
+    normalizeCheckoutLang(album.defaultLang) ??
+    "sl";
 
   const plan = PLAN_CONFIG[planId];
   let baseCents = plan.amount;
@@ -144,11 +154,15 @@ export async function POST(req: NextRequest) {
   const totalCents = baseCents + addOnCents;
   const standsQ = standsQty ?? DEFAULT_STAND_QTY;
   const standsV = standsVariant ?? DEFAULT_STAND_VARIANT;
-  const description = plan.name + (tableStands ? ` + ${standsQ}× QR podstavki za mize (${standsV === "gold" ? "zlati" : "leseni"}, s poštnino)` : "");
+  const description = checkoutPaymentDescription(
+    plan.name,
+    checkoutLang,
+    tableStands ? { qty: standsQ, variant: standsV } : null,
+  );
 
   const baseUrl = req.nextUrl.origin;
   // Mollie redirects back to /api/mollie-return which does reconcile then bounces to dashboard.
-  const redirectUrl = `${baseUrl}/api/mollie-return?slug=${encodeURIComponent(albumSlug)}`;
+  const redirectUrl = `${baseUrl}/api/mollie-return?slug=${encodeURIComponent(albumSlug)}&lang=${checkoutLang}`;
   const webhookUrl = `${baseUrl}/api/webhooks/mollie`;
 
   try {
@@ -157,9 +171,11 @@ export async function POST(req: NextRequest) {
       description,
       redirectUrl,
       webhookUrl,
+      locale: mollieLocaleForLang(checkoutLang),
       metadata: {
         albumSlug,
         planId,
+        locale: checkoutLang,
         ...(discountCodeId ? { discountCodeId } : {}),
         ...(affiliateRef ? { affiliateRef } : {}),
         ...(guestRefCode ? { guestRefCode } : {}),

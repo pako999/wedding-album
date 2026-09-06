@@ -6,6 +6,12 @@ import { albums } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { UpgradePage } from "@/components/dashboard/UpgradePage";
 import { type Lang } from "@/lib/i18n/translations";
+import {
+  checkoutLangFromHostname,
+  checkoutLangFromPath,
+  checkoutLangFromReferer,
+  normalizeCheckoutLang,
+} from "@/lib/i18n/checkout-locale";
 import { validateDiscount } from "@/lib/discount";
 
 export const dynamic = "force-dynamic";
@@ -16,60 +22,49 @@ interface Props {
 }
 
 export default async function UpgradePageRoute({ params, searchParams }: Props) {
+  const [{ slug }, sp, h] = await Promise.all([params, searchParams, headers()]);
+
+  // Country domains are authoritative. On guestcam.si, preserve an explicit
+  // language choice (or the localized page that sent the visitor here).
+  const countryLang =
+    checkoutLangFromHostname(h.get("x-forwarded-host")) ??
+    checkoutLangFromHostname(h.get("host"));
+  const requestLang =
+    countryLang ??
+    normalizeCheckoutLang(sp.lang) ??
+    checkoutLangFromPath(h.get("x-pathname")) ??
+    checkoutLangFromReferer(h.get("referer"));
+
   let userId: string | null = null;
   try {
     const session = await auth();
     userId = session.userId;
   } catch {/* ignore */}
-  if (!userId) redirect("/sign-in");
-
-  const { slug } = await params;
-  const sp = await searchParams;
-
-  const h = await headers();
-  const VALID_LANGS: Lang[] = ["sl", "hr", "sr", "en", "de", "es"];
-
-  // Lang detection precedence (upgrade flow is Slovenian-first — the
-  // site's primary market — so we deliberately do NOT fall through to
-  // Accept-Language, which would flip parts of the page to English for
-  // any browser set to English while other hardcoded copy stays SL.
-  // The right signals are the visitor's own choice, in this order):
-  //   1. ?lang= search param (explicit override)
-  //   2. First segment of the pathname or referrer (locale they were
-  //      already browsing in)
-  //   3. Clerk publicMetadata.lang (locale they picked at signup)
-  //   4. "sl" default (primary market)
-  function langFromPath(pathname: string | null | undefined): Lang | null {
-    if (!pathname) return null;
-    const seg = pathname.split("/").filter(Boolean)[0]?.toLowerCase();
-    return seg && VALID_LANGS.includes(seg as Lang) ? (seg as Lang) : null;
+  if (!userId) {
+    const returnParams = new URLSearchParams();
+    if (sp.plan) returnParams.set("plan", sp.plan);
+    if (sp.discount) returnParams.set("discount", sp.discount);
+    returnParams.set("lang", requestLang ?? "sl");
+    const returnTo = `/dashboard/${encodeURIComponent(slug)}/upgrade?${returnParams.toString()}`;
+    redirect(`/sign-in?redirect_url=${encodeURIComponent(returnTo)}`);
   }
-  function langFromReferer(ref: string | null | undefined): Lang | null {
-    if (!ref) return null;
-    try { return langFromPath(new URL(ref).pathname); } catch { return null; }
-  }
-  async function langFromClerk(): Promise<Lang | null> {
-    try {
-      const u = await currentUser();
-      const raw = (u?.publicMetadata as Record<string, unknown> | undefined)?.lang;
-      if (typeof raw === "string" && VALID_LANGS.includes(raw as Lang)) return raw as Lang;
-    } catch { /* Clerk unavailable — ignore */ }
-    return null;
-  }
-  const lang: Lang =
-    (sp.lang && VALID_LANGS.includes(sp.lang as Lang) ? (sp.lang as Lang) : null) ??
-    langFromPath(h.get("x-pathname")) ??
-    langFromReferer(h.get("referer")) ??
-    (await langFromClerk()) ??
-    "sl";
 
-  let album: typeof albums.$inferSelect | null = null;
-  try {
-    const result = await db.query.albums.findFirst({ where: eq(albums.slug, slug) });
-    album = result ?? null;
-  } catch {/* DB not ready */}
+  const [albumResult, clerkUser] = await Promise.all([
+    db.query.albums.findFirst({ where: eq(albums.slug, slug) }).catch(() => null),
+    currentUser().catch(() => null),
+  ]);
+  const album: typeof albums.$inferSelect | null = albumResult ?? null;
 
   if (!album || album.ownerClerkId !== userId) redirect("/dashboard");
+
+  const clerkLang = normalizeCheckoutLang(
+    (clerkUser?.publicMetadata as Record<string, unknown> | undefined)?.lang,
+  );
+  const lang: Lang =
+    requestLang ??
+    normalizeCheckoutLang(album.defaultLang) ??
+    clerkLang ??
+    "sl";
 
   const initialPlan = sp.plan === "basic" || sp.plan === "premium" ? sp.plan : "plus";
   const requestedCode = sp.discount?.trim().toUpperCase();

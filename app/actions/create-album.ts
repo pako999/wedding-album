@@ -9,6 +9,7 @@ import { sendWelcomeEmail, sendOrganizerAgreementEmail } from "@/lib/email/notif
 import { generateUniqueReferralCode } from "@/lib/referral/codes";
 import { attributeNewAlbumFromCookie } from "@/lib/referral/attribution";
 import { inferLangFromLocation } from "@/lib/i18n/infer-lang";
+import { normalizeCheckoutLang } from "@/lib/i18n/checkout-locale";
 import { recordUserCountry } from "@/lib/user-country";
 import { albumOwnerWhere, getAlbumCreationGate } from "@/lib/album-limits";
 import { generateWallToken } from "@/lib/wall-token";
@@ -38,9 +39,11 @@ export async function createAlbum(formData: FormData) {
 
   const creator = await currentUser().catch(() => null);
   const ownerVerifiedEmails = verifiedEmails(creator);
+  const requestedLang = normalizeCheckoutLang(formData.get("lang"));
   const gate = await getAlbumCreationGate(userId, ownerVerifiedEmails);
   if (!gate.allowed) {
-    redirect(`/dashboard/${gate.mostRecentSlug}/upgrade`);
+    const langQuery = requestedLang ? `?lang=${requestedLang}` : "";
+    redirect(`/dashboard/${gate.mostRecentSlug}/upgrade${langQuery}`);
   }
 
   const eventType  = (formData.get("eventType")   as string ?? "wedding").trim();
@@ -111,7 +114,7 @@ export async function createAlbum(formData: FormData) {
     coupleName,
     weddingDate:       eventDate,
     location,
-    defaultLang:       inferLangFromLocation(location),
+    defaultLang:       requestedLang ?? inferLangFromLocation(location),
     password,
     isPublished:       true,
     plan:              inheritedPlan,
@@ -171,8 +174,9 @@ export async function createAlbum(formData: FormData) {
     console.error("[create-album] agreement email error:", err);
   }
 
-  const redirectUrl = plan
-    ? `/dashboard/${slug}?new=1&plan=${plan}`
-    : `/dashboard/${slug}?new=1`;
+  const redirectParams = new URLSearchParams({ new: "1" });
+  if (plan) redirectParams.set("plan", plan);
+  if (requestedLang) redirectParams.set("lang", requestedLang);
+  const redirectUrl = `/dashboard/${slug}?${redirectParams.toString()}`;
   redirect(redirectUrl);
 }

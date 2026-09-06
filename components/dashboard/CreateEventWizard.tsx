@@ -2,6 +2,7 @@
 
 import { useState, useTransition, type ReactNode } from "react";
 import { createAlbum } from "@/app/actions/create-album";
+import type { Lang } from "@/lib/i18n/translations";
 
 type EventType = {
   id: string;
@@ -122,7 +123,7 @@ function EventIcon({ id, className }: { id: string; className?: string }) {
 
 type PaidPlanId = "basic" | "plus" | "premium";
 
-export function CreateEventWizard({ initialPlan }: { initialPlan?: PaidPlanId } = {}) {
+export function CreateEventWizard({ initialPlan, lang = "sl" }: { initialPlan?: PaidPlanId; lang?: Lang } = {}) {
   const [step, setStep] = useState<1 | 2>(1);
   const [selectedType, setSelectedType] = useState<EventType | null>(null);
   const [isPending, startTransition] = useTransition();
@@ -233,6 +234,7 @@ export function CreateEventWizard({ initialPlan }: { initialPlan?: PaidPlanId } 
       <form onSubmit={handleSubmit} className="px-8 py-8 space-y-6">
         {/* Hidden event type + pre-selected plan (when arriving from a pricing card) */}
         <input type="hidden" name="eventType" value={eventInfo.id} />
+        <input type="hidden" name="lang" value={lang} />
         {initialPlan ? <input type="hidden" name="plan" value={initialPlan} /> : null}
 
         {/* Name */}

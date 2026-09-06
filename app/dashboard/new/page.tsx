@@ -10,11 +10,29 @@ import { CreateEventWizard } from "@/components/dashboard/CreateEventWizard";
 import { albumOwnerWhere, getAlbumCreationGate } from "@/lib/album-limits";
 import { type Lang } from "@/lib/i18n/translations";
 import { GALLERY_LIMIT_COPY } from "@/lib/i18n/gallery-limit-translations";
+import {
+  checkoutLangFromHostname,
+  checkoutLangFromPath,
+  checkoutLangFromReferer,
+  normalizeCheckoutLang,
+} from "@/lib/i18n/checkout-locale";
 import { verifiedEmails } from "@/lib/album-ownership";
 
 export const dynamic = "force-dynamic";
 
 export default async function NewAlbumPage({ searchParams }: { searchParams: Promise<{ plan?: string; lang?: string }> }) {
+  const [sp, h] = await Promise.all([searchParams, headers()]);
+  const initialPlan =
+    sp.plan === "basic" || sp.plan === "plus" || sp.plan === "premium"
+      ? sp.plan
+      : undefined;
+  const requestLang =
+    checkoutLangFromHostname(h.get("x-forwarded-host")) ??
+    checkoutLangFromHostname(h.get("host")) ??
+    normalizeCheckoutLang(sp.lang) ??
+    checkoutLangFromPath(h.get("x-pathname")) ??
+    checkoutLangFromReferer(h.get("referer"));
+
   let userId: string | null = null;
   try {
     const session = await auth();
@@ -22,14 +40,13 @@ export default async function NewAlbumPage({ searchParams }: { searchParams: Pro
   } catch {
     // Clerk not configured or session error — redirect to sign-in
   }
-  if (!userId) redirect("/sign-in");
+  if (!userId) {
+    const returnParams = new URLSearchParams();
+    if (initialPlan) returnParams.set("plan", initialPlan);
+    returnParams.set("lang", requestLang ?? "sl");
+    redirect(`/sign-in?redirect_url=${encodeURIComponent(`/dashboard/new?${returnParams.toString()}`)}`);
+  }
   const clerkUser = await currentUser().catch(() => null);
-
-  const sp = await searchParams;
-  const initialPlan =
-    sp.plan === "basic" || sp.plan === "plus" || sp.plan === "premium"
-      ? sp.plan
-      : undefined;
 
   // Same lang-detection precedence as /dashboard/[slug]/upgrade — this
   // screen links straight into that page, so it needs to land in the same
@@ -39,29 +56,12 @@ export default async function NewAlbumPage({ searchParams }: { searchParams: Pro
   //      already browsing in)
   //   3. Clerk publicMetadata.lang (locale they picked at signup)
   //   4. "sl" default (primary market)
-  const h = await headers();
-  const VALID_LANGS: Lang[] = ["sl", "hr", "sr", "en", "de", "es"];
-  function langFromPath(pathname: string | null | undefined): Lang | null {
-    if (!pathname) return null;
-    const seg = pathname.split("/").filter(Boolean)[0]?.toLowerCase();
-    return seg && VALID_LANGS.includes(seg as Lang) ? (seg as Lang) : null;
-  }
-  function langFromReferer(ref: string | null | undefined): Lang | null {
-    if (!ref) return null;
-    try { return langFromPath(new URL(ref).pathname); } catch { return null; }
-  }
-  async function langFromClerk(): Promise<Lang | null> {
-    try {
-      const raw = (clerkUser?.publicMetadata as Record<string, unknown> | undefined)?.lang;
-      if (typeof raw === "string" && VALID_LANGS.includes(raw as Lang)) return raw as Lang;
-    } catch { /* Clerk unavailable — ignore */ }
-    return null;
-  }
+  const clerkLang = normalizeCheckoutLang(
+    (clerkUser?.publicMetadata as Record<string, unknown> | undefined)?.lang,
+  );
   const lang: Lang =
-    (sp.lang && VALID_LANGS.includes(sp.lang as Lang) ? (sp.lang as Lang) : null) ??
-    langFromPath(h.get("x-pathname")) ??
-    langFromReferer(h.get("referer")) ??
-    (await langFromClerk()) ??
+    requestLang ??
+    clerkLang ??
     "sl";
   const t = GALLERY_LIMIT_COPY[lang];
 
@@ -142,7 +142,7 @@ export default async function NewAlbumPage({ searchParams }: { searchParams: Pro
         )}
 
         {/* Multi-step wizard */}
-        <CreateEventWizard initialPlan={initialPlan} />
+        <CreateEventWizard initialPlan={initialPlan} lang={lang} />
 
         <p className="text-center text-xs text-gray-400 mt-6">
           Po ustvarjanju boste dobili edinstveno QR kodo za vaše goste.

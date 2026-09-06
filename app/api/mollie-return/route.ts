@@ -4,6 +4,7 @@ import { albums } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { getPayment, isPaidStatus, mollieConfigured } from "@/lib/mollie";
 import { applyPlanToAlbum } from "@/lib/paddle-reconcile";
+import { normalizeCheckoutLang } from "@/lib/i18n/checkout-locale";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -11,6 +12,8 @@ export const dynamic = "force-dynamic";
 function dashboardRedirect(req: NextRequest, slug: string, params: Record<string, string> = {}) {
   const base = slug ? `/dashboard/${encodeURIComponent(slug)}` : "/dashboard";
   const url = new URL(base, req.nextUrl.origin);
+  const lang = normalizeCheckoutLang(req.nextUrl.searchParams.get("lang"));
+  if (lang) url.searchParams.set("lang", lang);
   for (const [key, value] of Object.entries(params)) url.searchParams.set(key, value);
   return NextResponse.redirect(url, { headers: { "Cache-Control": "no-store" } });
 }
