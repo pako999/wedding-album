@@ -19,6 +19,7 @@ import {
   SERBIAN_GUESTCAM_ORIGIN,
   SPANISH_GUESTCAM_ORIGIN,
   countryPublicPath,
+  equivalentCountryPublicPath,
   isPrimaryGuestcamHost,
   isSerbianGuestcamHost,
   isSpanishGuestcamHost,
@@ -206,14 +207,26 @@ export default clerkMiddleware(
   // This also moves the former .si/sr and .si/es pages one-to-one without
   // losing their path or query string.
   const officialMarketingRequest = primaryRequest || serbianRequest || spanishRequest;
+  if (countryLocale) {
+    const localizedCountryPath = equivalentCountryPublicPath(countryLocale, pathname);
+    if (localizedCountryPath !== null) {
+      const canonicalPath = countryPublicPath(countryLocale, pathname);
+      if (localizedCountryPath !== canonicalPath || pathname !== canonicalPath) {
+        const origin = countryLocale === "sr" ? SERBIAN_GUESTCAM_ORIGIN : SPANISH_GUESTCAM_ORIGIN;
+        const target = new URL(localizedCountryPath, origin);
+        target.search = req.nextUrl.search;
+        return NextResponse.redirect(target, 308);
+      }
+    }
+  }
   if (
-    officialMarketingRequest &&
+    officialMarketingRequest && !countryLocale &&
     (pathname === "/sr" || pathname.startsWith("/sr/"))
   ) {
     return permanentCountryRedirect(req, "sr");
   }
   if (
-    officialMarketingRequest &&
+    officialMarketingRequest && !countryLocale &&
     (pathname === "/es" || pathname.startsWith("/es/"))
   ) {
     return permanentCountryRedirect(req, "es");

@@ -2,6 +2,29 @@ export const PRIMARY_GUESTCAM_ORIGIN = "https://www.guestcam.si";
 export const SPANISH_GUESTCAM_ORIGIN = "https://guestcam.es";
 export const SERBIAN_GUESTCAM_ORIGIN = "https://www.guestcam.rs";
 
+type MarketingLocale = "sl" | "hr" | "sr" | "de" | "en" | "es";
+
+const MARKETING_LOCALES = new Set<MarketingLocale>(["sl", "hr", "sr", "de", "en", "es"]);
+
+/** Equivalent localized routes used to recover malformed cross-domain URLs
+ * such as guestcam.rs/es/fotos-boda-invitados without serving the wrong
+ * language on a country domain. Keep these in the same order as the public
+ * SEO clusters (guide, alternatives, then event-topic pages). */
+const LOCALIZED_ROUTE_CLUSTERS: Array<Record<MarketingLocale, string>> = [
+  { sl: "/sl/qr-koda-poroka", hr: "/hr/qr-kod-vjencanje", sr: "/sr/qr-kod-vencanje", de: "/de/hochzeitsfotos-sammeln", en: "/en/wedding-photo-sharing", es: "/es/fotos-boda-qr" },
+  { sl: "/sl/alternative-aplikacije", hr: "/hr/alternativne-aplikacije", sr: "/sr/alternativne-aplikacije", de: "/de/alternativen", en: "/en/alternatives", es: "/es/alternativas" },
+  { sl: "/sl/slike-s-poroke", hr: "/hr/fotografije-s-vjencanja", sr: "/sr/slike-sa-vencanja", de: "/de/hochzeitsfotos-gaeste", en: "/en/wedding-photos-from-guests", es: "/es/fotos-boda-invitados" },
+  { sl: "/sl/qr-koda-za-poroko", hr: "/hr/qr-kod-za-vjencanje-kako", sr: "/sr/qr-kod-za-vencanje-kako", de: "/de/qr-code-hochzeit-erstellen", en: "/en/how-to-make-wedding-qr-code", es: "/es/como-hacer-codigo-qr-boda" },
+  { sl: "/sl/porocni-album", hr: "/hr/vjencani-album", sr: "/sr/vencani-album", de: "/de/digitales-hochzeitsalbum", en: "/en/digital-wedding-album", es: "/es/album-de-boda-digital" },
+  { sl: "/sl/zbiranje-slik-s-poroke", hr: "/hr/skupljanje-fotografija-vjencanje", sr: "/sr/skupljanje-fotografija-vencanje", de: "/de/hochzeitsfotos-von-gaesten-sammeln", en: "/en/collect-wedding-photos-guests", es: "/es/recopilar-fotos-boda-invitados" },
+  { sl: "/sl/slike-z-rojstnega-dne", hr: "/hr/fotografije-s-rodjendana", sr: "/sr/slike-sa-rodjendana", de: "/de/geburtstagsfotos-sammeln", en: "/en/birthday-photos-guests", es: "/es/fotos-cumpleanos-invitados" },
+  { sl: "/sl/baby-shower-slike", hr: "/hr/baby-shower-fotografije", sr: "/sr/baby-shower-fotografije", de: "/de/babyparty-fotos", en: "/en/baby-shower-photos-guests", es: "/es/fotos-baby-shower" },
+];
+
+const SAME_SLUG_ROUTES = new Set([
+  "contact", "privacy", "terms", "gdpr", "cookies", "refund", "blog", "affiliate/apply",
+]);
+
 // Both hosts are treated as official Guestcam routing hosts so a request is
 // never mistaken for a customer's custom album domain. Vercel redirects the
 // www host to the bare production domain before the app normally sees it.
@@ -43,6 +66,30 @@ export function countryPublicPath(locale: "sr" | "es", pathname = "/"): string {
     return normalizedPath.slice(prefix.length) || "/";
   }
   return normalizedPath;
+}
+
+/** Return the canonical, language-correct public path on a country domain.
+ * Unknown foreign-language paths intentionally fall back to that country's
+ * homepage instead of rendering foreign text or creating an indexable 404. */
+export function equivalentCountryPublicPath(
+  targetLocale: "sr" | "es",
+  pathname: string,
+): string | null {
+  const normalizedPath = pathname.startsWith("/") ? pathname : `/${pathname}`;
+  const segments = normalizedPath.split("/").filter(Boolean);
+  const sourceLocale = segments[0] as MarketingLocale | undefined;
+  if (!sourceLocale || !MARKETING_LOCALES.has(sourceLocale)) return null;
+
+  const cluster = LOCALIZED_ROUTE_CLUSTERS.find((routes) => routes[sourceLocale] === normalizedPath);
+  if (cluster) return countryPublicPath(targetLocale, cluster[targetLocale]);
+
+  const remainder = segments.slice(1).join("/");
+  if (!remainder) return "/";
+  if (SAME_SLUG_ROUTES.has(remainder)) {
+    return countryPublicPath(targetLocale, `/${targetLocale}/${remainder}`);
+  }
+  if (remainder.startsWith("blog/")) return "/blog";
+  return "/";
 }
 
 /** Public Serbian URL for canonical, hreflang and sitemap output. */

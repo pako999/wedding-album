@@ -71,6 +71,7 @@ const files = {
   demoButton: await read("components/DemoButton.tsx"),
   headerAuthButtons: await read("components/HeaderAuthButtons.tsx"),
   languageSwitcher: await read("components/LanguageSwitcher.tsx"),
+  eventTopicPage: await read("components/seo/EventTopicPage.tsx"),
   robots: await read("app/robots.ts"),
   s3: await read("lib/storage/bunny-s3.ts"),
   s3Read: await read("app/api/bunny-s3-file/[...key]/route.ts"),
@@ -385,8 +386,15 @@ requireAbsent(
 requireMatch(
   "public video cards provide iOS poster thumbnails",
   `${files.albumPage}\n${files.albumGuestView}\n${files.videoClient}`,
-  /thumbnailUrl:\s*photo\.thumbnailUrl \?\? bunnyStreamThumbnailUrl[\s\S]*poster=\{photo\.thumbnailUrl \? bunnyDisplayUrl\(photo\.thumbnailUrl, 800, 82\) : undefined\}[\s\S]*preload="none"[\s\S]*iframePoster\(fallbackIframeSrc\)/,
-  "iOS WebKit needs an explicit poster and must not preload each full MP4 before Play",
+  /thumbnailUrl:\s*photo\.thumbnailUrl \?\? bunnyStreamThumbnailUrl[\s\S]*const poster = photo\.thumbnailUrl[\s\S]*bunnyDisplayUrl\(photo\.thumbnailUrl, 800, 82\)[\s\S]*iframePoster\(fallbackIframeSrc\)/,
+  "iOS WebKit needs an explicit optimized poster before Play",
+);
+
+requireMatch(
+  "video bytes are deferred until the guest presses Play",
+  files.albumGuestView,
+  /const \[activated, setActivated\] = useState\(false\)[\s\S]*if \(activated\)[\s\S]*src=\{photo\.blobUrl\}[\s\S]*onClick=\{\(\) => setActivated\(true\)\}/,
+  "preload=none is insufficient because some mobile and desktop browsers still fetch every MP4 range",
 );
 
 requireMatch(
@@ -747,6 +755,20 @@ requireMatch(
   files.languageSwitcher,
   /sr:\s*`\$\{SERBIAN_GUESTCAM_ORIGIN\}\/`[\s\S]*es:\s*`\$\{SPANISH_GUESTCAM_ORIGIN\}\/`[\s\S]*SERBIAN_GUESTCAM_ORIGIN\}\/blog[\s\S]*SPANISH_GUESTCAM_ORIGIN\}\/blog/,
   "language switchers must send Serbian and Spanish visitors to clean country-domain paths",
+);
+
+requireMatch(
+  "event-topic language links use absolute locale origins",
+  files.eventTopicPage,
+  /acc\[loc\] = localeAbsoluteUrl\(loc, `\/\$\{loc\}\/\$\{e\.slug\}`\)[\s\S]*localeAbsoluteUrl\(loc, loc === "sl" \? "\/" : `\/\$\{loc\}`\)/,
+  "a relative /es or /sr switcher link would keep the current country host and render the wrong language",
+);
+
+requireMatch(
+  "country domains recover foreign locale paths in the local language",
+  `${files.siteDomains}\n${files.proxy}`,
+  /slike-sa-vencanja[\s\S]*fotos-boda-invitados[\s\S]*equivalentCountryPublicPath[\s\S]*localizedCountryPath[\s\S]*NextResponse\.redirect\(target, 308\)/,
+  "guestcam.rs/es/... and guestcam.es/sr/... must permanently redirect to the equivalent local-language URL",
 );
 
 requireMatch(

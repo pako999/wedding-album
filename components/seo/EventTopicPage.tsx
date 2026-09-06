@@ -11,7 +11,6 @@ import {
   localesForTopic,
 } from "@/lib/seo/event-topics";
 import { localeAbsoluteUrl, SITE_URL } from "@/lib/urls";
-import { serbianGuestcamUrl } from "@/lib/site-domains";
 import { safeJsonLd } from "@/lib/seo/jsonld-safe";
 import { withRegionalHreflang } from "@/lib/seo/hreflang";
 
@@ -82,22 +81,18 @@ export function EventTopicPage({ locale, topicKey }: Props) {
   const translated = new Set(localesForTopic(topicKey));
   const hreflang = ALL_LOCALES.reduce((acc, loc) => {
     if (topicKey === "qr-koda-za-poroko" && loc === "hr") {
-      acc[loc] = "/hr/qr-kod-vjencanje";
+      acc[loc] = localeAbsoluteUrl("hr", "/hr/qr-kod-vjencanje");
       return acc;
     }
     if (topicKey === "qr-koda-za-poroko" && loc === "sr") {
-      acc[loc] = serbianGuestcamUrl("/sr/qr-kod-vencanje");
+      acc[loc] = localeAbsoluteUrl("sr", "/sr/qr-kod-vencanje");
       return acc;
     }
     if (translated.has(loc)) {
       const e = getEventTopic(loc, topicKey)!;
-      acc[loc] = loc === "sr"
-        ? serbianGuestcamUrl(`/sr/${e.slug}`)
-        : `/${loc}/${e.slug}`;
+      acc[loc] = localeAbsoluteUrl(loc, `/${loc}/${e.slug}`);
     } else {
-      acc[loc] = loc === "sr"
-        ? serbianGuestcamUrl("/sr")
-        : loc === "sl" ? "/" : `/${loc}`;
+      acc[loc] = localeAbsoluteUrl(loc, loc === "sl" ? "/" : `/${loc}`);
     }
     return acc;
   }, {} as Record<(typeof ALL_LOCALES)[number], string>);

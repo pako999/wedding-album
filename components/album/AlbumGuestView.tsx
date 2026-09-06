@@ -2262,33 +2262,79 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
 }
 
 /* ── VideoCard ────────────────────────────────────────────────────────────── */
-function VideoCard({ photo, t, renderedAt, accent = BRAND.accent }: { photo: Photo; t: Translations; renderedAt: string; accent?: string }) {
-  return (
-    <div className="h-fit self-start rounded-2xl overflow-hidden bg-gray-950 border border-gray-800 flex flex-col">
-      {/* Video player */}
-      {photo.cfStreamVideoId ? (
+function DeferredVideoPlayer({ photo, t }: { photo: Photo; t: Translations }) {
+  const [activated, setActivated] = useState(false);
+  const poster = photo.thumbnailUrl
+    ? bunnyDisplayUrl(photo.thumbnailUrl, 800, 82)
+    : undefined;
+
+  if (activated) {
+    if (photo.cfStreamVideoId) {
+      return (
         <div style={{ position: "relative", paddingTop: "56.25%" }}>
           <iframe
             src={photo.blobUrl}
+            title={t.videosSection}
             style={{ border: "none", position: "absolute", top: 0, left: 0, height: "100%", width: "100%" }}
             allow="accelerometer;gyroscope;autoplay;encrypted-media;picture-in-picture;"
             allowFullScreen
           />
         </div>
-      ) : (
-        /* iOS WebKit can turn metadata preload into a full MP4 range
-           download. The explicit poster already supplies the preview, so
-           defer every video byte until the guest presses Play. */
-        <video
-          src={photo.blobUrl}
-          poster={photo.thumbnailUrl ? bunnyDisplayUrl(photo.thumbnailUrl, 800, 82) : undefined}
-          controls
-          playsInline
-          preload="none"
-          className="w-full h-auto block"
-          style={{ maxHeight: "360px" }}
+      );
+    }
+
+    return (
+      <video
+        src={photo.blobUrl}
+        poster={poster}
+        controls
+        playsInline
+        autoPlay
+        preload="auto"
+        className="w-full h-auto block bg-black object-contain"
+        style={{ maxHeight: "360px" }}
+      />
+    );
+  }
+
+  return (
+    <button
+      type="button"
+      onClick={() => setActivated(true)}
+      aria-label={t.videosSection}
+      className="group relative block w-full overflow-hidden bg-black"
+    >
+      {poster ? (
+        // The Bunny URL is already a width-capped optimized asset. Keeping its
+        // intrinsic aspect ratio avoids stretching portrait clips to 16:9.
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={poster}
+          alt=""
+          loading="lazy"
+          decoding="async"
+          className="block h-auto max-h-[360px] w-full object-contain"
         />
+      ) : (
+        <span className="block aspect-video" aria-hidden="true" />
       )}
+      <span
+        aria-hidden="true"
+        className="absolute left-1/2 top-1/2 flex h-16 w-16 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-black/65 text-white shadow-lg transition-transform group-hover:scale-105"
+      >
+        <span className="ml-1 block h-0 w-0 border-y-[11px] border-y-transparent border-l-[17px] border-l-white" />
+      </span>
+    </button>
+  );
+}
+
+function VideoCard({ photo, t, renderedAt, accent = BRAND.accent }: { photo: Photo; t: Translations; renderedAt: string; accent?: string }) {
+  return (
+    <div className="h-fit self-start rounded-2xl overflow-hidden bg-gray-950 border border-gray-800 flex flex-col">
+      {/* Do not put a video URL in the DOM until Play. Some Chromium/WebKit
+          versions download MP4 ranges even with preload="none", starving the
+          first lightbox image on albums that contain several large videos. */}
+      <DeferredVideoPlayer photo={photo} t={t} />
 
       {/* Uploader + time */}
       <div className="flex items-center gap-2.5 px-3 py-2.5 bg-gray-900">
