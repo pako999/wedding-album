@@ -4,12 +4,13 @@ import { headers } from "next/headers";
 import Link from "next/link";
 import { db } from "@/lib/db";
 import { albums } from "@/lib/db/schema";
-import { eq, desc } from "drizzle-orm";
+import { desc } from "drizzle-orm";
 import { DashboardNav } from "@/components/dashboard/DashboardNav";
 import { CreateEventWizard } from "@/components/dashboard/CreateEventWizard";
-import { getAlbumCreationGate } from "@/lib/album-limits";
+import { albumOwnerWhere, getAlbumCreationGate } from "@/lib/album-limits";
 import { type Lang } from "@/lib/i18n/translations";
 import { GALLERY_LIMIT_COPY } from "@/lib/i18n/gallery-limit-translations";
+import { verifiedEmails } from "@/lib/album-ownership";
 
 export const dynamic = "force-dynamic";
 
@@ -22,6 +23,7 @@ export default async function NewAlbumPage({ searchParams }: { searchParams: Pro
     // Clerk not configured or session error — redirect to sign-in
   }
   if (!userId) redirect("/sign-in");
+  const clerkUser = await currentUser().catch(() => null);
 
   const sp = await searchParams;
   const initialPlan =
@@ -50,8 +52,7 @@ export default async function NewAlbumPage({ searchParams }: { searchParams: Pro
   }
   async function langFromClerk(): Promise<Lang | null> {
     try {
-      const u = await currentUser();
-      const raw = (u?.publicMetadata as Record<string, unknown> | undefined)?.lang;
+      const raw = (clerkUser?.publicMetadata as Record<string, unknown> | undefined)?.lang;
       if (typeof raw === "string" && VALID_LANGS.includes(raw as Lang)) return raw as Lang;
     } catch { /* Clerk unavailable — ignore */ }
     return null;
@@ -64,8 +65,9 @@ export default async function NewAlbumPage({ searchParams }: { searchParams: Pro
     "sl";
   const t = GALLERY_LIMIT_COPY[lang];
 
+  const ownerVerifiedEmails = verifiedEmails(clerkUser);
   const existing = await db.query.albums.findFirst({
-    where: eq(albums.ownerClerkId, userId),
+    where: albumOwnerWhere(userId, ownerVerifiedEmails),
     orderBy: [desc(albums.createdAt)],
   });
 
@@ -74,7 +76,7 @@ export default async function NewAlbumPage({ searchParams }: { searchParams: Pro
   // THAT event. If all existing events are already paid, do not reuse their
   // entitlement — show the wizard and create a new event that will purchase
   // its own selected package.
-  const gate = await getAlbumCreationGate(userId);
+  const gate = await getAlbumCreationGate(userId, ownerVerifiedEmails);
   if (initialPlan && !gate.allowed) {
     redirect(`/dashboard/${gate.mostRecentSlug}/upgrade?plan=${initialPlan}&lang=${lang}`);
   }

@@ -44,11 +44,6 @@ interface UserRow {
 
 const PLAN_RANK: Record<PlanTier, number> = { free: 0, basic: 1, plus: 2, premium: 3 };
 
-/** Pick the higher-value of two plans. */
-function betterPlan(a: PlanTier, b: PlanTier): PlanTier {
-  return PLAN_RANK[a] >= PLAN_RANK[b] ? a : b;
-}
-
 export default async function AdminUsers() {
   // Source of truth = Clerk (every registered user, even if they never
   // created a gallery). Per-album detail is joined in so we can show the
@@ -102,7 +97,8 @@ export default async function AdminUsers() {
     const sid = a.stripeSessionId ?? "";
 
     // Classify the payment source for this album.
-    const isRealPaid = plan !== "free" && (sid.startsWith("txn_") || sid.startsWith("cs_"));
+    const isRealPaid = plan !== "free" &&
+      (sid.startsWith("tr_") || sid.startsWith("txn_") || sid.startsWith("cs_"));
     const isComp    = sid === "comp:influencer" || sid === "comp:sponsor";
     const isAdmin   = isComp || sid.startsWith("admin-grant:") || sid.startsWith("admin-override:") || sid.startsWith("manual_fix");
     const isInherit = sid.startsWith("inherit:");
@@ -307,7 +303,6 @@ export default async function AdminUsers() {
                 <td className="px-4 py-3">
                   <UserUpgradeMenu
                     clerkId={u.clerkId}
-                    albumCount={u.albumCount}
                     pendingOverride={overrides.get(u.clerkId) ?? null}
                   />
                 </td>

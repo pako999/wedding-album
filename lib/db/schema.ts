@@ -567,12 +567,9 @@ export const uploadReminders = pgTable(
 );
 
 // ─── User plan overrides ─────────────────────────────────────────────────────
-// Lets admin "upgrade" a user who has not created an album yet. The override
-// is consumed (and deleted) the first time that user creates a gallery, so
-// their freshly-created album lands on the chosen plan immediately. Admin
-// can also write here for users who already have albums — every NEW gallery
-// after the override would still inherit it on top of the existing
-// inherit-from-paid-album logic.
+// Persistent account-level plan granted explicitly by an admin. New galleries
+// inherit it until the admin changes the account back to Free. Regular Mollie
+// purchases are intentionally per-event and never write to this table.
 
 export const userPlanOverrides = pgTable("user_plan_overrides", {
   clerkId: text("clerk_id").primaryKey(),

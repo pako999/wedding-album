@@ -10,10 +10,11 @@ import { generateUniqueReferralCode } from "@/lib/referral/codes";
 import { attributeNewAlbumFromCookie } from "@/lib/referral/attribution";
 import { inferLangFromLocation } from "@/lib/i18n/infer-lang";
 import { recordUserCountry } from "@/lib/user-country";
-import { getAlbumCreationGate } from "@/lib/album-limits";
+import { albumOwnerWhere, getAlbumCreationGate } from "@/lib/album-limits";
 import { generateWallToken } from "@/lib/wall-token";
 import { hashAlbumPassword } from "@/lib/album-password";
 import { isValidEventTime, setAlbumHeaderSettings } from "@/lib/album-header-settings";
+import { verifiedEmails } from "@/lib/album-ownership";
 
 function slugify(text: string): string {
   return text
@@ -35,7 +36,9 @@ export async function createAlbum(formData: FormData) {
   }
   if (!userId) redirect("/sign-in");
 
-  const gate = await getAlbumCreationGate(userId);
+  const creator = await currentUser().catch(() => null);
+  const ownerVerifiedEmails = verifiedEmails(creator);
+  const gate = await getAlbumCreationGate(userId, ownerVerifiedEmails);
   if (!gate.allowed) {
     redirect(`/dashboard/${gate.mostRecentSlug}/upgrade`);
   }
@@ -86,7 +89,6 @@ export async function createAlbum(formData: FormData) {
         ? new Date(Date.now() + override.daysAccess * 24 * 60 * 60 * 1000)
         : null;
       inheritedSessionId = override.compTag ?? `admin-override:${userId}`;
-      await db.delete(userPlanOverrides).where(eq(userPlanOverrides.clerkId, userId));
     }
   } catch (err) {
     console.warn("[create-album] user_plan_overrides lookup failed:", err);
@@ -99,11 +101,7 @@ export async function createAlbum(formData: FormData) {
     console.warn("[create-album] referral code generation failed:", err);
   }
 
-  let ownerEmail: string | null = null;
-  try {
-    const creator = await currentUser();
-    ownerEmail = creator?.emailAddresses?.[0]?.emailAddress ?? null;
-  } catch { /* ignore — column stays null */ }
+  const ownerEmail = ownerVerifiedEmails[0] ?? creator?.emailAddresses?.[0]?.emailAddress ?? null;
 
   const inserted = await db.insert(albums).values({
     slug,
@@ -138,7 +136,7 @@ export async function createAlbum(formData: FormData) {
 
   try {
     const userAlbums = await db.query.albums.findMany({
-      where: eq(albums.ownerClerkId, userId),
+      where: albumOwnerWhere(userId, ownerVerifiedEmails),
       limit: 2,
     });
     if (userAlbums.length === 1) {

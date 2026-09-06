@@ -91,6 +91,11 @@ const files = {
   upgradePage: await read("components/dashboard/UpgradePage.tsx"),
   upgradePageRoute: await read("app/dashboard/[slug]/upgrade/page.tsx"),
   albumLimits: await read("lib/album-limits.ts"),
+  newAlbumPage: await read("app/dashboard/new/page.tsx"),
+  adminUserUpgrade: await read("app/api/admin/users/[clerkId]/upgrade/route.ts"),
+  adminUsers: await read("app/admin/users/page.tsx"),
+  userUpgradeMenu: await read("components/admin/UserUpgradeMenu.tsx"),
+  dbMigrations: await read("lib/db/migrations.ts"),
   galleryLimits: await read("lib/gallery-limits.ts"),
   processOverride: await read("components/GuestcamProcessHowOverride.tsx"),
   videoPlayback: await read("app/api/albums/[slug]/video-playback-url/route.ts"),
@@ -254,6 +259,48 @@ requireMatch(
   files.albumLimits,
   /activeFreeAlbum[\s\S]*allowed: false/,
   "creating albums must remain blocked while an active Free event exists",
+);
+
+requireMatch(
+  "album creation gate matches recreated Clerk accounts by verified email",
+  `${files.albumLimits}\n${files.newAlbumPage}\n${files.createAlbumAction}`,
+  /albumOwnerWhere[\s\S]*lower\(\$\{albums\.ownerEmail\}\)[\s\S]*verifiedEmails\(clerkUser\)[\s\S]*verifiedEmails\(creator\)/,
+  "the dashboard and creation action must use the same verified-email ownership fallback",
+);
+
+requireMatch(
+  "historical admin account grants self-heal later Free galleries",
+  files.albumLimits,
+  /isAdminGrant[\s\S]*userPlanOverrides[\s\S]*stripeSessionId: accountGrant\.compTag \?\? `admin-override:\$\{userId\}`[\s\S]*eq\(albums\.plan, "free"\)/,
+  "an explicit admin Premium account must not leave a later gallery on Free",
+);
+
+requireMatch(
+  "admin account grants persist for future galleries",
+  `${files.adminUserUpgrade}\n${files.createAlbumAction}\n${files.userUpgradeMenu}`,
+  /persistent account-level ADMIN grant[\s\S]*\.insert\(userPlanOverrides\)[\s\S]*inheritedPlan\s*=\s*override\.plan[\s\S]*paket računa/,
+  "admin-granted plans must remain attached to the account until explicitly set to Free",
+);
+
+requireAbsent(
+  "new gallery creation does not consume an admin account grant",
+  files.createAlbumAction,
+  /db\.delete\(userPlanOverrides\)/,
+  "a persistent admin account plan must not disappear after one gallery",
+);
+
+requireAbsent(
+  "migrations do not delete active account grants",
+  files.dbMigrations,
+  /DELETE FROM user_plan_overrides o[\s\S]*SELECT 1 FROM albums/,
+  "database maintenance must not erase persistent admin-granted plans",
+);
+
+requireMatch(
+  "admin users counts Mollie upgrades as real paid plans",
+  files.adminUsers,
+  /isRealPaid[\s\S]*sid\.startsWith\("tr_"\)/,
+  "Mollie-paid galleries must not be mislabeled as inherited or unpaid",
 );
 
 requireMatch(

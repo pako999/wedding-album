@@ -5,6 +5,8 @@ import { eq } from "drizzle-orm";
 import { clerkClient } from "@clerk/nextjs/server";
 import { requireAdmin } from "@/lib/admin";
 import { sendAccountUpgradedEmail } from "@/lib/email/notifications";
+import { verifiedEmails } from "@/lib/album-ownership";
+import { albumOwnerWhere } from "@/lib/album-limits";
 
 type EmailLang = "sl" | "hr" | "sr" | "de" | "en" | "es";
 const SUPPORTED_LANGS: EmailLang[] = ["sl", "hr", "sr", "de", "en", "es"];
@@ -38,9 +40,9 @@ export const dynamic = "force-dynamic";
  *     downgrades them. It does NOT create a placeholder album for a
  *     0-album user — there is nothing to do, they are already free.
  *
- * Also maintains user_plan_overrides as a fallback: if Clerk lookup
- * fails or the placeholder create errors, the override still gets
- * written so the user's first real album inherits the plan.
+ * Also maintains user_plan_overrides as the persistent account-level admin
+ * grant, so future galleries inherit the chosen plan until an admin selects
+ * Free. Ordinary customer purchases remain attached to one event only.
  *
  * Pseudo-plans:
  *   influencer / sponsor → effective premium, stamped with comp: tag.
@@ -99,18 +101,20 @@ export async function POST(
   const ownerEmail   = clerkUser?.emailAddresses?.[0]?.emailAddress ?? null;
   const firstName    = clerkUser?.firstName ?? null;
   const emailLang    = pickLang(clerkUser?.publicMetadata);
+  const ownerWhere = albumOwnerWhere(clerkId, verifiedEmails(clerkUser));
 
   // 1) Bulk-update any existing albums.
   const updated = await db
     .update(albums)
     .set({
+      ...(ownerEmail ? { ownerClerkId: clerkId, ownerEmail } : {}),
       plan: config.effectivePlan,
       maxPhotos: config.maxPhotos,
       filmTier: config.filmTier,
       expiresAt: expiresAt ?? undefined,
       ...sessionIdUpdate,
     })
-    .where(eq(albums.ownerClerkId, clerkId))
+    .where(ownerWhere)
     .returning({ slug: albums.slug });
 
   // 2) If the user had zero albums AND the plan is non-free, create
@@ -153,18 +157,12 @@ export async function POST(
     }
   }
 
-  // 3) Maintain the user-level override.
-  //    - "free" -> wipe any pending override (cancels a queued upgrade)
-  //    - If we already materialized the upgrade this call (via a
-  //      placeholder or existing album update), also wipe the override:
-  //      it's already applied, no point queueing "next gallery" too.
-  //    - Only WRITE the override when we couldn't materialize the upgrade
-  //      (placeholder creation failed AND user had no existing albums).
-  //      That's the true "waiting for their first gallery" state.
+  // 3) Maintain the persistent account-level ADMIN grant. Normal purchases
+  // remain per-event; only an explicit admin action makes future galleries
+  // inherit this plan.
   let overrideSaved = false;
   try {
-    const materialized = created !== null || updated.length > 0;
-    if (newPlan === "free" || materialized) {
+    if (newPlan === "free") {
       await db.delete(userPlanOverrides).where(eq(userPlanOverrides.clerkId, clerkId));
     } else {
       await db
