@@ -549,7 +549,7 @@ export default function AlternativenPage() {
             Erstellen Sie Ihre QR-Galerie in 2 Minuten — kostenlos, keine Kreditkarte nötig.
           </p>
           <Link
-            href="/dashboard/new"
+            href="/dashboard/new?lang=de"
             className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-[#FFC94D] text-[#0F1729] font-bold text-base transition-all duration-200 hover:scale-[1.02] hover:brightness-95"
           >
             Kostenlos starten →

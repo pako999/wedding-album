@@ -75,7 +75,7 @@ function CtaBox() {
         1 događaj, 1 galeriju i do 20 fotografija — bez kreditne kartice.
       </p>
       <Link
-        href="/dashboard/new"
+        href="/dashboard/new?lang=hr"
         className="inline-flex items-center gap-2 px-8 py-4 rounded-full text-white font-bold text-base transition-all duration-200 hover:scale-[1.02]"
         style={{
           background: "#FFC94D",
@@ -320,7 +320,7 @@ export default function QrKodVjencanjePage() {
             Kreirajte galeriju s QR kodom za 2 minute — besplatno, bez kreditne kartice.
           </p>
           <Link
-            href="/dashboard/new"
+            href="/dashboard/new?lang=hr"
             className="inline-flex items-center gap-2 px-8 py-4 rounded-full font-bold text-base transition-all duration-200 hover:scale-[1.02]"
             style={{ background: "#FFC94D", color: "#0F1729" }}
           >

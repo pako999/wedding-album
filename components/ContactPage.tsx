@@ -1,7 +1,7 @@
 import { SiteHeader } from "@/components/SiteHeader";
 import { SeoFooter } from "@/components/SeoFooter";
 import { ContactForm } from "@/components/ContactForm";
-import type { LangCode } from "@/components/LanguageSwitcher";
+import { CONTACT_HREFLANG, type LangCode } from "@/components/LanguageSwitcher";
 
 interface ContactCopy {
   eyebrow: string;
@@ -258,7 +258,7 @@ export function ContactPage({ lang }: { lang: LangCode }) {
 
   return (
     <div className="min-h-screen bg-white text-[#0F1729]">
-      <SiteHeader lang={lang} />
+      <SiteHeader lang={lang} hreflang={CONTACT_HREFLANG} />
 
       <main>
         {/* Hero */}

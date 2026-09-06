@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import type { LangCode } from "@/components/LanguageSwitcher";
+import { localizedAccountPath } from "@/lib/urls";
 
 const DISCOUNT_CODE = "WELCOME15";
 const STORAGE_KEY = "gc_exit_seen";
@@ -196,7 +197,7 @@ export function ExitIntentPopup({ lang }: { lang: LangCode }) {
 
           {/* CTA */}
           <Link
-            href="/dashboard/new"
+            href={localizedAccountPath(lang, "/dashboard/new")}
             onClick={close}
             className="block w-full text-center py-3.5 rounded-xl font-bold text-[#0F1729] text-sm transition-opacity hover:opacity-90"
             style={{ background: "linear-gradient(135deg, #FFD966 0%, #FFC94D 55%, #F0B429 100%)" }}

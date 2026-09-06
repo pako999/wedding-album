@@ -78,7 +78,7 @@ function CtaBox() {
         Create your gallery in 2 minutes. Free forever — no credit card required.
       </p>
       <Link
-        href="/dashboard/new"
+        href="/dashboard/new?lang=en"
         className="inline-flex items-center gap-2 px-8 py-4 rounded-full text-white font-bold text-base transition-all duration-200 hover:scale-[1.02]"
         style={{ background: "#FFC94D", boxShadow: "0 10px 30px rgba(255,201,77,0.35)" }}
       >
@@ -278,7 +278,7 @@ export default function WeddingPhotoSharingPage() {
             Create a QR photo gallery in 2 minutes — free, no credit card needed.
           </p>
           <Link
-            href="/dashboard/new"
+            href="/dashboard/new?lang=en"
             className="inline-flex items-center gap-2 px-8 py-4 rounded-full font-bold text-base transition-all duration-200 hover:scale-[1.02]"
             style={{ background: "#FFC94D", color: "#0F1729" }}
           >

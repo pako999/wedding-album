@@ -40,6 +40,21 @@ const PUBLIC_ROOTS = new Set([
   "opengraph-image", "_next",
 ]);
 
+const SUPPORTED_LOCALES = new Set(["sl", "hr", "sr", "de", "en", "es"]);
+
+function requestLocale(
+  countryLocale: "sr" | "es" | null,
+  pathname: string,
+  searchParams: URLSearchParams,
+): string {
+  if (countryLocale) return countryLocale;
+  const pathLocale = pathname.split("/").filter(Boolean)[0] ?? "";
+  if (SUPPORTED_LOCALES.has(pathLocale)) return pathLocale;
+  const queryLocale = searchParams.get("lang") ?? "";
+  if (SUPPORTED_LOCALES.has(queryLocale)) return queryLocale;
+  return "sl";
+}
+
 function isAlbumGuestPath(pathname: string): boolean {
   const segments = pathname.split("/").filter(Boolean);
   if (segments.length !== 1) return false;
@@ -351,6 +366,13 @@ export default clerkMiddleware(
   const requestHeaders = new Headers(req.headers);
   const resolvedPathname = customAlbumSlug ? `/${customAlbumSlug}` : effectivePathname;
   requestHeaders.set("x-pathname", resolvedPathname);
+  // Trusted locale signal for the root layout and Clerk. Never rely only on
+  // Referer: it is commonly stripped when a link opens in a new tab.
+  requestHeaders.delete("x-guestcam-lang");
+  requestHeaders.set(
+    "x-guestcam-lang",
+    requestLocale(countryLocale, effectivePathname, req.nextUrl.searchParams),
+  );
 
   // Never trust a browser-supplied value for this internal header. Only the
   // password decrypted from Guestcam's HttpOnly cookie may populate it.

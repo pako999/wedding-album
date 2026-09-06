@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { BlogIndexPage } from "@/components/BlogIndexPage";
 import { getAllPosts } from "@/lib/blog";
 import type { LangCode } from "@/components/LanguageSwitcher";
-import { OG_IMAGE_URL, ogImage } from "@/lib/og";
+import { localizedOgImageUrl, ogImage } from "@/lib/og";
 import { withRegionalHreflang } from "@/lib/seo/hreflang";
 
 export const revalidate = 3600;
@@ -57,9 +57,9 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       locale: OG_LOCALE[langCode],
       title: titles[langCode],
       description: descriptions[langCode],
-      images: [ogImage(titles[langCode])],
+      images: [ogImage(titles[langCode], langCode)],
     },
-    twitter: { card: "summary_large_image", title: titles[langCode], description: descriptions[langCode], images: [OG_IMAGE_URL] },
+    twitter: { card: "summary_large_image", title: titles[langCode], description: descriptions[langCode], images: [localizedOgImageUrl(langCode)] },
     robots: { index: true, follow: true },
   };
 }

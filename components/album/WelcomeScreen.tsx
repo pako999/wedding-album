@@ -27,10 +27,12 @@ export function WelcomeScreen({ albumSlug, title, text, button, bgUrl, fontStack
   const [name, setName] = useState(initialName);
 
   useEffect(() => {
-    try {
-      if (!localStorage.getItem(storageKey)) setVisible(true);
-    } catch { setVisible(true); }
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- SSR-safe first-visit check
+    const timer = window.setTimeout(() => {
+      try {
+        if (!localStorage.getItem(storageKey)) setVisible(true);
+      } catch { setVisible(true); }
+    }, 0);
+    return () => window.clearTimeout(timer);
   }, [storageKey]);
 
   if (!visible) return null;

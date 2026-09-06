@@ -576,7 +576,7 @@ export default function AlternativesPage() {
             Create your QR gallery in 2 minutes — free, no credit card required.
           </p>
           <Link
-            href="/dashboard/new"
+            href="/dashboard/new?lang=en"
             className="inline-flex items-center gap-2 px-8 py-4 rounded-full font-bold text-base transition-all duration-200 hover:scale-[1.02]"
             style={{ background: "#FFC94D", color: "#0F1729" }}
           >

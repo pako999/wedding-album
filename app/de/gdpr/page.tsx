@@ -5,8 +5,9 @@ import { legalAlternates } from "@/lib/seo/legal-alternates";
 
 export const metadata: Metadata = {
   title: "Ihre Rechte nach DSGVO",
+  description: "Überblick über Ihre DSGVO-Rechte und Anleitungen zu Auskunft, Berichtigung und Löschung Ihrer Daten bei Guestcam.",
   alternates: { canonical: `${SITE_URL}/de/gdpr`, languages: legalAlternates("gdpr") },
-  openGraph: { url: `${SITE_URL}/de/gdpr`, title: "Ihre Rechte nach DSGVO", images: ["/og-image.png?v=2"] },
+  openGraph: { url: `${SITE_URL}/de/gdpr`, title: "Ihre Rechte nach DSGVO", description: "So machen Sie Ihre Rechte auf Auskunft, Berichtigung oder Löschung geltend.", images: ["/og-image.png?v=2"] },
   robots: { index: true, follow: true },
 };
 

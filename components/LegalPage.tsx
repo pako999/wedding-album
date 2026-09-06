@@ -8,6 +8,8 @@ import { termsDoc }   from "@/lib/legal/terms";
 import { gdprDoc }    from "@/lib/legal/gdpr";
 import { cookiesDoc } from "@/lib/legal/cookies";
 import { refundDoc }  from "@/lib/legal/refund";
+import { legalAlternates } from "@/lib/seo/legal-alternates";
+import { localePublicPath } from "@/lib/urls";
 
 export type { LegalKind } from "@/lib/legal/types";
 export type LegalLang = LangCode;
@@ -22,7 +24,13 @@ const DOCS: Record<LegalKind, Record<LangCode, LegalDoc>> = {
 
 // ─── Block renderers ─────────────────────────────────────────────────────────
 
-function BlockRenderer({ block }: { block: Block }) {
+function localizedLegalHref(lang: LangCode, href: string): string {
+  if (!href.startsWith("/") || href.startsWith("//")) return href;
+  if (lang === "sl") return href;
+  return localePublicPath(lang, `/${lang}${href}`);
+}
+
+function BlockRenderer({ block, lang }: { block: Block; lang: LangCode }) {
   switch (block.type) {
     case "p":
       return <p className="text-gray-600 leading-relaxed mb-3">{block.text}</p>;
@@ -134,7 +142,7 @@ function BlockRenderer({ block }: { block: Block }) {
     case "link":
       return (
         <p className="mb-3">
-          <Link href={block.href} className="text-[#8C6218] hover:underline">
+          <Link href={localizedLegalHref(lang, block.href)} className="text-[#8C6218] hover:underline">
             {block.text}
           </Link>
         </p>
@@ -142,7 +150,7 @@ function BlockRenderer({ block }: { block: Block }) {
   }
 }
 
-function Section({ title, blocks }: { title: string; blocks: Block[] }) {
+function Section({ title, blocks, lang }: { title: string; blocks: Block[]; lang: LangCode }) {
   return (
     <div className="mb-8">
       <h2 className="text-xl font-bold text-[#0F1729] mb-3 pb-2 border-b border-gray-100">
@@ -150,7 +158,7 @@ function Section({ title, blocks }: { title: string; blocks: Block[] }) {
       </h2>
       <div>
         {blocks.map((block, i) => (
-          <BlockRenderer key={i} block={block} />
+          <BlockRenderer key={i} block={block} lang={lang} />
         ))}
       </div>
     </div>
@@ -161,10 +169,19 @@ function Section({ title, blocks }: { title: string; blocks: Block[] }) {
 
 export function LegalPage({ kind, lang }: { kind: LegalKind; lang: LegalLang }) {
   const doc = DOCS[kind][lang];
+  const alternates = legalAlternates(kind);
+  const languages: Record<LangCode, string> = {
+    sl: alternates.sl,
+    hr: alternates.hr,
+    sr: alternates.sr,
+    de: alternates.de,
+    en: alternates.en,
+    es: alternates.es,
+  };
 
   return (
     <div className="min-h-screen bg-[#F2F4F8] text-[#0F1729] font-sans">
-      <SiteHeader lang={lang} />
+      <SiteHeader lang={lang} hreflang={languages} />
 
       <main className="max-w-3xl mx-auto px-6 py-16">
         <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-8 md:p-12">
@@ -187,7 +204,7 @@ export function LegalPage({ kind, lang }: { kind: LegalKind; lang: LegalLang }) 
 
             {/* Sections */}
             {doc.sections.map((s, i) => (
-              <Section key={i} title={s.title} blocks={s.blocks} />
+              <Section key={i} title={s.title} blocks={s.blocks} lang={lang} />
             ))}
           </div>
         </div>

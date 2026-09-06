@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 import { ALTERNATIVES_HREFLANG } from "@/components/LanguageSwitcher";
 import { SeoFooter } from "@/components/SeoFooter";
 import { SiteHeader } from "@/components/SiteHeader";
-import { OG_IMAGE_URL, ogImage } from "@/lib/og";
+import { localizedOgImageUrl, ogImage } from "@/lib/og";
 import { safeJsonLd } from "@/lib/seo/jsonld-safe";
 import { withRegionalHreflang } from "@/lib/seo/hreflang";
 import { serbianGuestcamUrl } from "@/lib/site-domains";
@@ -20,13 +20,13 @@ export const metadata: Metadata = {
       "Iskreno poređenje rešenja za sakupljanje fotografija sa venčanja. Kvalitet, privatnost, cena — sve na jednom mestu.",
     type: "article",
     locale: "sr_RS",
-    images: [ogImage("Najbolje aplikacije za deljenje fotografija sa venčanja")],
+    images: [ogImage("Najbolje aplikacije za deljenje fotografija sa venčanja", "sr")],
   },
   twitter: {
     card: "summary_large_image",
     title: "Najbolje aplikacije za venčane fotografije 2026",
     description: "Iskreno poređenje rešenja za sakupljanje fotografija sa venčanja.",
-    images: [OG_IMAGE_URL],
+    images: [localizedOgImageUrl("sr")],
   },
   alternates: {
     canonical: serbianGuestcamUrl("/sr/alternativne-aplikacije"),
@@ -530,7 +530,7 @@ export default function AlternativneAplikacijePage() {
             Napravite svoju galeriju sa QR kodom za 2 minuta — besplatno, bez kreditne kartice.
           </p>
           <Link
-            href="/dashboard/new"
+            href="/dashboard/new?lang=sr"
             className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-[#FFC94D] text-[#0F1729] font-bold text-base transition-all duration-200 hover:scale-[1.02] hover:brightness-95"
           >
             Započni besplatno →

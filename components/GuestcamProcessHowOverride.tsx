@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { usePathname } from "next/navigation";
+import { localizedAccountPath } from "@/lib/urls";
 
 type Lang = "sl" | "hr" | "sr" | "de" | "en" | "es";
 
@@ -155,14 +156,14 @@ function homeLang(pathname: string): Lang | null {
 export function GuestcamProcessHowOverride() {
   const pathname = usePathname();
   const [target, setTarget] = useState<HTMLElement | null>(null);
-  const [lang, setLang] = useState<Lang>("sl");
+  const detectedLang = homeLang(pathname);
+  const lang = detectedLang ?? "sl";
 
   useEffect(() => {
-    setTarget(null);
     const detected = homeLang(pathname);
     if (!detected) return;
-    setLang(detected);
-    setTarget(document.getElementById("how"));
+    const nextTarget = document.getElementById("how");
+    const mountFrame = window.requestAnimationFrame(() => setTarget(nextTarget));
 
     // The public pricing cards are server-rendered by two different home
     // components (Slovenian + localized V3). Add the same entitlement line
@@ -181,12 +182,15 @@ export function GuestcamProcessHowOverride() {
       inserted.push(item);
     });
 
-    return () => inserted.forEach((item) => item.remove());
+    return () => {
+      window.cancelAnimationFrame(mountFrame);
+      inserted.forEach((item) => item.remove());
+    };
   }, [pathname]);
 
-  const copy = useMemo(() => COPY[lang], [lang]);
+  const copy = COPY[lang];
 
-  if (!target) return null;
+  if (!detectedLang || !target) return null;
 
   return createPortal(
     <div className="guestcam-process-replacement mx-auto max-w-[1240px] px-5 sm:px-8">
@@ -224,7 +228,7 @@ export function GuestcamProcessHowOverride() {
       </div>
 
       <div className="mt-10 text-center sm:mt-12">
-        <a href="/dashboard/new" className="inline-flex min-h-13 items-center justify-center gap-2 rounded-xl bg-[#171A20] px-7 text-sm font-bold text-white transition-transform hover:-translate-y-0.5 sm:text-base">
+        <a href={localizedAccountPath(lang, "/dashboard/new")} className="inline-flex min-h-13 items-center justify-center gap-2 rounded-xl bg-[#171A20] px-7 text-sm font-bold text-white transition-transform hover:-translate-y-0.5 sm:text-base">
           {copy.cta} <span aria-hidden="true">→</span>
         </a>
       </div>

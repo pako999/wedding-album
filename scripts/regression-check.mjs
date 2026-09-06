@@ -61,6 +61,8 @@ const files = {
   resolveDomain: await read("app/api/resolve-domain/route.ts"),
   siteDomains: await read("lib/site-domains.ts"),
   urls: await read("lib/urls.ts"),
+  og: await read("lib/og.ts"),
+  rootLayout: await read("app/layout.tsx"),
   clerkProvider: await read("components/GuestcamClerkProvider.tsx"),
   clerkWebhook: await read("app/api/webhooks/clerk/route.ts"),
   signUpPage: await read("app/sign-up/[[...sign-up]]/page.tsx"),
@@ -71,6 +73,9 @@ const files = {
   demoButton: await read("components/DemoButton.tsx"),
   headerAuthButtons: await read("components/HeaderAuthButtons.tsx"),
   languageSwitcher: await read("components/LanguageSwitcher.tsx"),
+  legalPage: await read("components/LegalPage.tsx"),
+  contactPage: await read("components/ContactPage.tsx"),
+  blogPostPage: await read("components/BlogPostPage.tsx"),
   eventTopicPage: await read("components/seo/EventTopicPage.tsx"),
   robots: await read("app/robots.ts"),
   s3: await read("lib/storage/bunny-s3.ts"),
@@ -826,8 +831,8 @@ requireMatch(
 
 requireMatch(
   "country homepages use social images in their own language",
-  `${files.srHomePage}\n${files.esHomePage}`,
-  /SERBIAN_GUESTCAM_ORIGIN\}\/og-image-sr\.jpg\?v=1[\s\S]*SPANISH_GUESTCAM_ORIGIN\}\/og-image-es\.jpg\?v=1/,
+  `${files.srHomePage}\n${files.esHomePage}\n${files.og}`,
+  /ogImage\([^\n]+"sr"\)[\s\S]*ogImage\([^\n]+"es"\)[\s\S]*og-image-sr\.jpg[\s\S]*og-image-es\.jpg/,
   "shared Serbian and Spanish links must not show the Slovenian social card",
 );
 
@@ -843,6 +848,41 @@ await Promise.all([
   fs.access(path.join(root, "public", "og-image-es.jpg")),
 ]);
 console.log("PASS: localized country social image files exist");
+
+requireMatch(
+  "request locale survives direct account visits and new tabs",
+  `${files.proxy}\n${files.rootLayout}\n${files.urls}`,
+  /requestLocale[\s\S]*x-guestcam-lang[\s\S]*trustedLocale[\s\S]*localizedAccountPath/,
+  "marketing-to-account links must not depend on a Referer header for language",
+);
+
+requireMatch(
+  "contact language switcher stays on the equivalent contact page",
+  `${files.languageSwitcher}\n${files.contactPage}`,
+  /CONTACT_HREFLANG[\s\S]*SERBIAN_GUESTCAM_ORIGIN\}\/contact[\s\S]*SPANISH_GUESTCAM_ORIGIN\}\/contact[\s\S]*hreflang=\{CONTACT_HREFLANG\}/,
+  "changing language on Contact must not send visitors to a homepage",
+);
+
+requireMatch(
+  "legal language switcher stays on the equivalent document",
+  files.legalPage,
+  /legalAlternates\(kind\)[\s\S]*hreflang=\{languages\}/,
+  "changing language on a legal page must keep the same document",
+);
+
+requireMatch(
+  "legal in-content links keep the current language",
+  files.legalPage,
+  /localizedLegalHref[\s\S]*localePublicPath\(lang,[\s\S]*localizedLegalHref\(lang, block\.href\)/,
+  "translated privacy pages must not link back to Slovenian cookies",
+);
+
+requireMatch(
+  "blog header switches to the translated article",
+  files.blogPostPage,
+  /getTranslationMap\(post\.translationKey\)[\s\S]*hreflang=\{headerLanguages\}/,
+  "the main language switcher must use the article translation cluster",
+);
 
 requireMatch(
   "film no-generation state is a normal response",

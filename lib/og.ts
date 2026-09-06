@@ -1,4 +1,8 @@
 import { SITE_URL } from "@/lib/urls";
+import {
+  SERBIAN_GUESTCAM_ORIGIN,
+  SPANISH_GUESTCAM_ORIGIN,
+} from "@/lib/site-domains";
 /**
  * Single source of truth for the Guestcam social-share card image.
  *
@@ -13,21 +17,33 @@ import { SITE_URL } from "@/lib/urls";
  * WhatsApp, Slack, LinkedIn, etc. re-scrape instead of serving the
  * cached old card.
  */
-export const OG_IMAGE_VERSION = 2;
+export const OG_IMAGE_VERSION = 3;
 
 export const OG_IMAGE_URL =
   `${SITE_URL}/og-image.png?v=${OG_IMAGE_VERSION}`;
+
+/** Social cards must match the language of the country domain being shared. */
+export function localizedOgImageUrl(locale: string): string {
+  if (locale === "sr") {
+    return `${SERBIAN_GUESTCAM_ORIGIN}/og-image-sr.jpg?v=${OG_IMAGE_VERSION}`;
+  }
+  if (locale === "es") {
+    return `${SPANISH_GUESTCAM_ORIGIN}/og-image-es.jpg?v=${OG_IMAGE_VERSION}`;
+  }
+  return OG_IMAGE_URL;
+}
 
 export const OG_IMAGE_WIDTH = 910;
 export const OG_IMAGE_HEIGHT = 1200;
 
 /** Object form for `openGraph.images`. Accepts a custom alt per-page. */
-export function ogImage(alt: string) {
+export function ogImage(alt: string, locale = "sl") {
+  const isCountryCard = locale === "sr" || locale === "es";
   return {
-    url: OG_IMAGE_URL,
+    url: localizedOgImageUrl(locale),
     width: OG_IMAGE_WIDTH,
     height: OG_IMAGE_HEIGHT,
     alt,
-    type: "image/png" as const,
+    type: (isCountryCard ? "image/jpeg" : "image/png") as "image/jpeg" | "image/png",
   };
 }

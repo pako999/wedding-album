@@ -13,7 +13,7 @@ import { toPublicAlbum } from "@/lib/album-view";
 import { getAlbumFlags } from "@/lib/album-flags";
 import { getAlbumHeaderSettings } from "@/lib/album-header-settings";
 import { getAlbumAppearance, WELCOME_FONT_STACKS, type WelcomeFont } from "@/lib/album-appearance";
-import { createVideoPlaybackToken } from "@/lib/video-playback-token";
+import { createVideoPlaybackToken, videoPlaybackExpiry } from "@/lib/video-playback-token";
 import { bunnyStreamThumbnailUrl } from "@/lib/storage/bunny";
 import type { Metadata } from "next";
 
@@ -175,7 +175,7 @@ export default async function AlbumPage({ params, searchParams }: Props) {
 
   const userAgent = requestHeaders.get("user-agent") ?? "";
   const safari = isSafariUserAgent(userAgent);
-  const playbackExpiresAt = Math.floor(Date.now() / 1000) + 2 * 60 * 60;
+  const playbackExpiresAt = videoPlaybackExpiry();
 
   // Use Guestcam's same-origin signed MP4 proxy for every browser. This keeps
   // portrait videos in the native <video> element, so they can use the full

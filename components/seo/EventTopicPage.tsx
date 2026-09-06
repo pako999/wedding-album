@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SeoFooter } from "@/components/SeoFooter";
-import { OG_IMAGE_URL, ogImage } from "@/lib/og";
+import { localizedOgImageUrl, ogImage } from "@/lib/og";
 import {
   type EventLocale,
   type EventTopicEntry,
@@ -10,7 +10,7 @@ import {
   getEventTopic,
   localesForTopic,
 } from "@/lib/seo/event-topics";
-import { localeAbsoluteUrl, SITE_URL } from "@/lib/urls";
+import { localeAbsoluteUrl, localizedAccountPath, SITE_URL } from "@/lib/urls";
 import { safeJsonLd } from "@/lib/seo/jsonld-safe";
 import { withRegionalHreflang } from "@/lib/seo/hreflang";
 
@@ -50,13 +50,13 @@ export function eventTopicMetadata(
       url: canonicalUrl,
       title: entry.title,
       description: entry.description,
-      images: [ogImage(entry.title)],
+      images: [ogImage(entry.title, locale)],
     },
     twitter: {
       card: "summary_large_image",
       title: entry.title,
       description: entry.description,
-      images: [OG_IMAGE_URL],
+      images: [localizedOgImageUrl(locale)],
     },
     robots: { index: true, follow: true },
   };
@@ -71,7 +71,7 @@ export function EventTopicPage({ locale, topicKey }: Props) {
   const entry: EventTopicEntry | null = getEventTopic(locale, topicKey);
   if (!entry) return null;
 
-  const dashboardHref = "/dashboard/new";
+  const dashboardHref = localizedAccountPath(locale, "/dashboard/new");
 
   // Build a complete 6-locale hreflang map for the LanguageSwitcher.
   // Locales that have this topic translated point to their translated

@@ -78,7 +78,7 @@ function CtaBox() {
         Kostenlos für immer — keine Kreditkarte erforderlich.
       </p>
       <Link
-        href="/dashboard/new"
+        href="/dashboard/new?lang=de"
         className="inline-flex items-center gap-2 px-8 py-4 rounded-full text-white font-bold text-base transition-all duration-200 hover:scale-[1.02]"
         style={{ background: "#FFC94D", boxShadow: "0 10px 30px rgba(255,201,77,0.35)" }}
       >
@@ -302,7 +302,7 @@ export default function HochzeitsfotosSammelnPage() {
             QR-Fotogalerie in 2 Minuten erstellen — kostenlos, ohne Kreditkarte.
           </p>
           <Link
-            href="/dashboard/new"
+            href="/dashboard/new?lang=de"
             className="inline-flex items-center gap-2 px-8 py-4 rounded-full font-bold text-base transition-all duration-200 hover:scale-[1.02]"
             style={{ background: "#FFC94D", color: "#0F1729" }}
           >

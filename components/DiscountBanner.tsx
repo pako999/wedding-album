@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { usePathname } from "next/navigation";
 import type { LangCode } from "@/components/LanguageSwitcher";
+import { localizedAccountPath } from "@/lib/urls";
 
 const DISCOUNT_CODE = "WELCOME15";
 const STORAGE_KEY = "gc_banner_closed";
@@ -114,7 +115,7 @@ export function DiscountBanner({ lang }: { lang: LangCode }) {
 
       {/* CTA */}
       <Link
-        href="/dashboard/new"
+        href={localizedAccountPath(effectiveLang, "/dashboard/new")}
         className="hidden sm:inline-flex items-center text-xs font-bold underline underline-offset-2 hover:opacity-70 transition-opacity whitespace-nowrap"
       >
         {t.cta}

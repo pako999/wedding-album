@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState, useEffect, useMemo } from "react";
 import { LanguageSwitcher, HOME_HREFLANG, type LangCode } from "./LanguageSwitcher";
 import { UserButton } from "@clerk/nextjs";
+import { localizedAccountPath } from "@/lib/urls";
 
 export interface HomeMobileMenuLabels {
   open: string;
@@ -131,7 +132,7 @@ export function HomeMobileMenu({ signedIn = false, lang, links, labels }: HomeMo
               {signedIn ? (
                 <div className="px-3 py-2 flex items-center justify-between gap-3" role="menuitem">
                   <Link
-                    href="/dashboard"
+                    href={localizedAccountPath(lang, "/dashboard")}
                     onClick={() => setOpen(false)}
                     className="text-base font-medium text-gray-700 hover:text-[#0F1729] transition-colors"
                   >
@@ -143,7 +144,7 @@ export function HomeMobileMenu({ signedIn = false, lang, links, labels }: HomeMo
                 </div>
               ) : (
                 <Link
-                  href="/sign-in"
+                  href={localizedAccountPath(lang, "/sign-in")}
                   onClick={() => setOpen(false)}
                   role="menuitem"
                   className="px-3 py-3 rounded-lg text-base font-medium text-gray-600 hover:bg-gray-50 transition-colors"
@@ -153,7 +154,7 @@ export function HomeMobileMenu({ signedIn = false, lang, links, labels }: HomeMo
               )}
               {!signedIn && (
                 <Link
-                  href="/dashboard/new"
+                  href={localizedAccountPath(lang, "/dashboard/new")}
                   onClick={() => setOpen(false)}
                   role="menuitem"
                   className="mt-1 inline-flex items-center justify-center gap-1.5 px-5 py-3 rounded-full text-sm font-bold text-[#0F1729]"

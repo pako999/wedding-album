@@ -6,7 +6,7 @@ import { GUIDE_HREFLANG, LanguageSwitcher } from "@/components/LanguageSwitcher"
 import { GuestcamLogo } from "@/components/GuestcamLogo";
 import { SeoFooter } from "@/components/SeoFooter";
 import { SiteHeader } from "@/components/SiteHeader";
-import { OG_IMAGE_URL, ogImage } from "@/lib/og";
+import { localizedOgImageUrl, ogImage } from "@/lib/og";
 import { withRegionalHreflang } from "@/lib/seo/hreflang";
 
 export const metadata: Metadata = {
@@ -19,13 +19,13 @@ export const metadata: Metadata = {
     description:
       "Recopila todas las fotos de tus invitados con un código QR. Sin app, resolución completa, privado y seguro.",
     type: "article",
-    images: [ogImage("Código QR para boda — fotos de invitados")],
+    images: [ogImage("Código QR para boda — fotos de invitados", "es")],
   },
   twitter: {
     card: "summary_large_image",
     title: "Código QR para boda: recopila las fotos de tus invitados",
     description: "Recopila todas las fotos de tus invitados con un código QR.",
-    images: [OG_IMAGE_URL],
+    images: [localizedOgImageUrl("es")],
   },
   alternates: {
     canonical: spanishGuestcamUrl("/es/fotos-boda-qr"),
@@ -79,7 +79,7 @@ function CtaBox() {
         Gratis para siempre — sin tarjeta de crédito.
       </p>
       <Link
-        href="/dashboard/new"
+        href="/dashboard/new?lang=es"
         className="inline-flex items-center gap-2 px-8 py-4 rounded-full text-white font-bold text-base transition-all duration-200 hover:scale-[1.02]"
         style={{ background: "#FFC94D", boxShadow: "0 10px 30px rgba(255,201,77,0.35)" }}
       >
@@ -277,7 +277,7 @@ export default function FotosBodaQrPage() {
             Crea una galería QR en 2 minutos — gratis, sin tarjeta de crédito.
           </p>
           <Link
-            href="/dashboard/new"
+            href="/dashboard/new?lang=es"
             className="inline-flex items-center gap-2 px-8 py-4 rounded-full font-bold text-base transition-all duration-200 hover:scale-[1.02]"
             style={{ background: "#FFC94D", color: "#0F1729" }}
           >

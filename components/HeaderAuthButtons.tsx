@@ -3,6 +3,7 @@ import { auth } from "@clerk/nextjs/server";
 import { UserButton } from "@clerk/nextjs";
 import type { LangCode } from "@/components/LanguageSwitcher";
 import { DemoButton } from "@/components/DemoButton";
+import { localizedAccountPath } from "@/lib/urls";
 
 const LABELS: Record<LangCode, { login: string; dashboard: string }> = {
   sl: { login: "Prijava",        dashboard: "Nadzorna plošča" },
@@ -46,13 +47,13 @@ export async function HeaderAuthButtons({
   const demoBridge = <DemoButton variant="bridge" lang={lang} />;
 
   if (!signedIn) {
-    return <>{demoBridge}<Link href="/sign-in" className={linkClassName}>{t.login}</Link></>;
+    return <>{demoBridge}<Link href={localizedAccountPath(lang, "/sign-in")} className={linkClassName}>{t.login}</Link></>;
   }
 
   return (
     <>
       {demoBridge}
-      <Link href="/dashboard" className={linkClassName}>{t.dashboard}</Link>
+      <Link href={localizedAccountPath(lang, "/dashboard")} className={linkClassName}>{t.dashboard}</Link>
       <UserButton appearance={{ elements: { userButtonAvatarBox: { width: 30, height: 30 } } }} />
     </>
   );

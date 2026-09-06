@@ -113,6 +113,15 @@ export const BLOG_HREFLANG: Record<LangCode, string> = {
   es: `${SPANISH_GUESTCAM_ORIGIN}/blog`,
 };
 
+export const CONTACT_HREFLANG: Record<LangCode, string> = {
+  sl: `${SITE_URL}/contact`,
+  hr: `${SITE_URL}/hr/contact`,
+  sr: `${SERBIAN_GUESTCAM_ORIGIN}/contact`,
+  de: `${SITE_URL}/de/contact`,
+  en: `${SITE_URL}/en/contact`,
+  es: `${SPANISH_GUESTCAM_ORIGIN}/contact`,
+};
+
 export const GUIDE_HREFLANG: Record<LangCode, string> = {
   sl: `${SITE_URL}/sl/qr-koda-poroka`,
   hr: `${SITE_URL}/hr/qr-kod-vjencanje`,

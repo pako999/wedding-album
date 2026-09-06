@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 import { GUIDE_HREFLANG } from "@/components/LanguageSwitcher";
 import { SeoFooter } from "@/components/SeoFooter";
 import { SiteHeader } from "@/components/SiteHeader";
-import { OG_IMAGE_URL, ogImage } from "@/lib/og";
+import { localizedOgImageUrl, ogImage } from "@/lib/og";
 import { safeJsonLd } from "@/lib/seo/jsonld-safe";
 import { withRegionalHreflang } from "@/lib/seo/hreflang";
 import { serbianGuestcamUrl } from "@/lib/site-domains";
@@ -20,13 +20,13 @@ export const metadata: Metadata = {
       "Sakupite sve slike i fotografije sa svadbe i venčanja jednim QR kodom. Bez aplikacije, u punom kvalitetu.",
     type: "article",
     locale: "sr_RS",
-    images: [ogImage("QR kod za venčanje i svadbu")],
+    images: [ogImage("QR kod za venčanje i svadbu", "sr")],
   },
   twitter: {
     card: "summary_large_image",
     title: "QR kod za venčanje i svadbu — slike gostiju 2026",
     description: "Sakupite sve slike sa svadbe jednim QR kodom. Bez aplikacije.",
-    images: [OG_IMAGE_URL],
+    images: [localizedOgImageUrl("sr")],
   },
   alternates: {
     canonical: serbianGuestcamUrl("/sr/qr-kod-vencanje"),
@@ -70,7 +70,7 @@ function CtaBox() {
         1 događaj, 1 galeriju i do 20 fotografija — bez kreditne kartice.
       </p>
       <Link
-        href="/dashboard/new"
+        href="/dashboard/new?lang=sr"
         className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-[#FFC94D] text-[#0F1729] font-bold text-base transition-all duration-200 hover:scale-[1.02] hover:brightness-95"
       >
         Započni besplatno →
@@ -325,7 +325,7 @@ export default function QrKodVencanjePage() {
             Napravite galeriju sa QR kodom za 2 minuta — besplatno, bez kreditne kartice.
           </p>
           <Link
-            href="/dashboard/new"
+            href="/dashboard/new?lang=sr"
             className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-[#FFC94D] text-[#0F1729] font-bold text-base transition-all duration-200 hover:scale-[1.02] hover:brightness-95"
           >
             Započni besplatno →

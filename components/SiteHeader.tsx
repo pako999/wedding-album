@@ -7,7 +7,7 @@ import {
   type LangCode,
 } from "@/components/LanguageSwitcher";
 import { HeaderAuthButtons } from "@/components/HeaderAuthButtons";
-import { localePublicPath } from "@/lib/urls";
+import { localePublicPath, localizedAccountPath } from "@/lib/urls";
 
 interface NavLinkSet {
   home: string;          // label for the "back to home" link
@@ -35,7 +35,8 @@ const NAV_COPY: Record<LangCode, NavLinkSet> = {
  *
  * Pass a `hreflang` map to control where the language-switcher flag
  * links go. Defaults to HOME_HREFLANG (every language → its homepage),
- * which is right for legal pages. Guide / alternatives pages pass
+ * which is right for standalone pages without equivalents. Legal, contact,
+ * guide and alternatives pages pass their own equivalent-page maps.
  * GUIDE_HREFLANG / ALTERNATIVES_HREFLANG.
  */
 export async function SiteHeader({
@@ -88,7 +89,7 @@ export async function SiteHeader({
           <HeaderAuthButtons lang={lang} />
           {!signedIn && (
             <Link
-              href="/dashboard/new"
+              href={localizedAccountPath(lang, "/dashboard/new")}
               className="inline-flex items-center gap-1.5 px-4 sm:px-5 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-bold transition-all duration-200 hover:scale-[1.03]"
               style={{
                 background: "linear-gradient(135deg, #FFD966 0%, #FFC94D 55%, #F0B429 100%)",

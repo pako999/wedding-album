@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { BlogPostPage } from "@/components/BlogPostPage";
 import { getAllSlugs, getPost, getTranslationMap, blogUrl } from "@/lib/blog";
 import type { LangCode } from "@/components/LanguageSwitcher";
-import { OG_IMAGE_URL, ogImage } from "@/lib/og";
+import { localizedOgImageUrl, ogImage } from "@/lib/og";
 import { localeAbsoluteUrl } from "@/lib/urls";
 
 export const revalidate = 3600;
@@ -48,13 +48,13 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       authors: [post.author],
       images: post.coverImage
         ? [{ url: post.coverImage, alt: post.coverAlt ?? post.title }]
-        : [ogImage(post.title)],
+        : [ogImage(post.title, langCode)],
     },
     twitter: {
       card: "summary_large_image",
       title: post.title,
       description: post.description,
-      images: post.coverImage ? [post.coverImage] : [OG_IMAGE_URL],
+      images: post.coverImage ? [post.coverImage] : [localizedOgImageUrl(langCode)],
     },
     robots: { index: true, follow: true },
   };

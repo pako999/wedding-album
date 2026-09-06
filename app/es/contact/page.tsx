@@ -3,6 +3,7 @@ import { spanishGuestcamUrl } from "@/lib/site-domains";
 import type { Metadata } from "next";
 import { ContactPage } from "@/components/ContactPage";
 import { withRegionalHreflang } from "@/lib/seo/hreflang";
+import { localizedOgImageUrl } from "@/lib/og";
 
 export const metadata: Metadata = {
   title: "Contacto",
@@ -23,7 +24,7 @@ export const metadata: Metadata = {
     url: spanishGuestcamUrl("/es/contact"),
     title: "Contacto",
     description: "Escríbenos — email, WhatsApp, soporte Premium para tu galería de boda.",
-    images: ["/og-image.png?v=2"],
+    images: [localizedOgImageUrl("es")],
   },
   robots: { index: true, follow: true },
 };

@@ -23,10 +23,10 @@ const nextConfig: NextConfig = {
       { source: "/apple-touch-icon.png", destination: "/apple-icon", permanent: false },
       { source: "/apple-touch-icon-precomposed.png", destination: "/apple-icon", permanent: false },
       // Slovenian-language URL aliases for legal pages.
-      { source: "/pogoji", destination: "/terms", permanent: false },
-      { source: "/zasebnost", destination: "/privacy", permanent: false },
-      { source: "/piskotki", destination: "/cookies", permanent: false },
-      { source: "/vracilo", destination: "/refund", permanent: false },
+      { source: "/pogoji", destination: "/terms", permanent: true },
+      { source: "/zasebnost", destination: "/privacy", permanent: true },
+      { source: "/piskotki", destination: "/cookies", permanent: true },
+      { source: "/vracilo", destination: "/refund", permanent: true },
       // Preserve the former root-level Slovenian SEO URL and consolidate its
       // ranking signals into the current canonical language-prefixed page.
       { source: "/slike-s-poroke", destination: "/sl/slike-s-poroke", permanent: true },

@@ -86,7 +86,7 @@ function CtaBox() {
         brez kreditne kartice.
       </p>
       <Link
-        href="/dashboard/new"
+        href="/dashboard/new?lang=sl"
         className="inline-flex items-center gap-2 px-8 py-4 rounded-full text-white font-bold text-base transition-all duration-200 hover:scale-[1.02]"
         style={{
           background: "#FFC94D",
@@ -432,7 +432,7 @@ export default function QrKodaPorokaPage() {
             kreditne kartice.
           </p>
           <Link
-            href="/dashboard/new"
+            href="/dashboard/new?lang=sl"
             className="inline-flex items-center gap-2 px-8 py-4 rounded-full font-bold text-base transition-all duration-200 hover:scale-[1.02]"
             style={{ background: "#FFC94D", color: "#0F1729" }}
           >

@@ -104,12 +104,15 @@ export function ProjectionWall({ album, photos, eventTime, onClose }: Props) {
   // The dedicated /wall/<token> screen still has its URL-based title
   // setting; this makes the in-gallery Foto zid equally configurable.
   useEffect(() => {
-    try {
-      const stored = window.localStorage.getItem(titlePreferenceKey);
-      if (stored === "0" || stored === "1") setShowTitle(stored === "1");
-    } catch {
-      // Storage can be unavailable in private/restricted browser modes.
-    }
+    const timer = window.setTimeout(() => {
+      try {
+        const stored = window.localStorage.getItem(titlePreferenceKey);
+        if (stored === "0" || stored === "1") setShowTitle(stored === "1");
+      } catch {
+        // Storage can be unavailable in private/restricted browser modes.
+      }
+    }, 0);
+    return () => window.clearTimeout(timer);
   }, [titlePreferenceKey]);
 
   const updateShowTitle = (value: boolean) => {

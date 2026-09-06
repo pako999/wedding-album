@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { GuestcamLogo } from "@/components/GuestcamLogo";
-import { localePublicPath } from "@/lib/urls";
+import { localePublicPath, localizedAccountPath } from "@/lib/urls";
 
 type Lang = "sl" | "hr" | "sr" | "de" | "en" | "es";
 
@@ -175,10 +175,10 @@ export function SeoFooter({ lang }: { lang: Lang }) {
               <li><a href={`${home}#features`} className="hover:text-white transition-colors">{t.features}</a></li>
               <li><a href={`${home}#pricing`} className="hover:text-white transition-colors">{t.pricing}</a></li>
               <li><a href={`${home}#faq`} className="hover:text-white transition-colors">{t.faq}</a></li>
-              <li><Link href="/dashboard/new" className="hover:text-white transition-colors">{t.createAlbum}</Link></li>
+              <li><Link href={localizedAccountPath(lang, "/dashboard/new")} className="hover:text-white transition-colors">{t.createAlbum}</Link></li>
               <li><Link href={localePublicPath(lang, lang === "sl" ? "/blog" : `/${lang}/blog`)} className="hover:text-white transition-colors">{t.blog}</Link></li>
               <li><Link href={localePublicPath(lang, lang === "sl" ? "/affiliate/apply" : `/${lang}/affiliate/apply`)} className="hover:text-white transition-colors">{t.affiliateProgram}</Link></li>
-              <li><Link href="/dashboard" className="hover:text-white transition-colors">{t.login}</Link></li>
+              <li><Link href={localizedAccountPath(lang, "/dashboard")} className="hover:text-white transition-colors">{t.login}</Link></li>
             </ul>
           </div>
 

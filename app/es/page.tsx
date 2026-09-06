@@ -1,5 +1,6 @@
 import { SITE_URL } from "@/lib/urls";
-import { SPANISH_GUESTCAM_ORIGIN, spanishGuestcamUrl } from "@/lib/site-domains";
+import { spanishGuestcamUrl } from "@/lib/site-domains";
+import { localizedOgImageUrl, ogImage } from "@/lib/og";
 import type { Metadata } from "next";
 import { LocalizedGuestcamHomePageV3 } from "@/components/LocalizedGuestcamHomePageV3";
 import { withRegionalHreflang } from "@/lib/seo/hreflang";
@@ -8,8 +9,8 @@ export const metadata: Metadata = {
   title: { absolute: "Código QR para fotos de boda · Sin app · Gratis | Guestcam" },
   description: "Reúne todas las fotos y vídeos de tus invitados con un código QR en una galería privada. Sin app, calidad completa, gratis para empezar. Para bodas.",
   alternates: { canonical: spanishGuestcamUrl("/es"), languages: withRegionalHreflang({ sl: `${SITE_URL}/`, hr: `${SITE_URL}/hr`, sr: `${SITE_URL}/sr`, de: `${SITE_URL}/de`, en: `${SITE_URL}/en`, es: `${SITE_URL}/es`, "x-default": `${SITE_URL}/` }) },
-  openGraph: { type: "website", locale: "es_ES", siteName: "Guestcam", url: spanishGuestcamUrl("/es"), title: "Código QR para fotos de boda · Sin app · Gratis | Guestcam", description: "Reúne todas las fotos y vídeos de tus invitados con un código QR en una galería privada. Sin app, calidad completa, gratis para empezar. Para bodas.", images: [{ url: `${SPANISH_GUESTCAM_ORIGIN}/og-image-es.jpg?v=1`, width: 910, height: 1200, alt: "Código QR para fotos de boda · Sin app · Gratis | Guestcam", type: "image/jpeg" }] },
-  twitter: { card: "summary_large_image", title: "Código QR para fotos de boda · Sin app · Gratis | Guestcam", description: "Reúne todas las fotos y vídeos de tus invitados con un código QR en una galería privada. Sin app, calidad completa, gratis para empezar.", images: [`${SPANISH_GUESTCAM_ORIGIN}/og-image-es.jpg?v=1`] },
+  openGraph: { type: "website", locale: "es_ES", siteName: "Guestcam", url: spanishGuestcamUrl("/es"), title: "Código QR para fotos de boda · Sin app · Gratis | Guestcam", description: "Reúne todas las fotos y vídeos de tus invitados con un código QR en una galería privada. Sin app, calidad completa, gratis para empezar. Para bodas.", images: [ogImage("Código QR para fotos de boda · Sin app · Gratis | Guestcam", "es")] },
+  twitter: { card: "summary_large_image", title: "Código QR para fotos de boda · Sin app · Gratis | Guestcam", description: "Reúne todas las fotos y vídeos de tus invitados con un código QR en una galería privada. Sin app, calidad completa, gratis para empezar.", images: [localizedOgImageUrl("es")] },
 };
 
 export default function EsHomePage() { return <LocalizedGuestcamHomePageV3 lang="es" />; }

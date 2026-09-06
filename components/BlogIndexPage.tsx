@@ -2,7 +2,7 @@ import Link from "next/link";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SeoFooter } from "@/components/SeoFooter";
 import type { BlogPost, BlogCategory } from "@/lib/blog";
-import { localeAbsoluteUrl, localePublicPath, SITE_URL } from "@/lib/urls";
+import { localeAbsoluteUrl, localePublicPath, localizedAccountPath, SITE_URL } from "@/lib/urls";
 import { BLOG_HREFLANG, type LangCode } from "@/components/LanguageSwitcher";
 import { safeJsonLd } from "@/lib/seo/jsonld-safe";
 
@@ -202,7 +202,7 @@ export function BlogIndexPage({ posts, lang }: { posts: BlogPost[]; lang: LangCo
               <h2 className="text-3xl sm:text-5xl font-black tracking-[-.05em] leading-[1]">{t.ctaTitle}</h2>
               <p className="mt-4 text-white/65 leading-relaxed">{t.ctaBody}</p>
             </div>
-            <Link href="/dashboard/new" className="mt-7 sm:mt-0 inline-flex shrink-0 items-center rounded-full bg-[#F4B400] px-6 py-3.5 text-sm font-black text-black hover:scale-[1.03] transition-transform">
+            <Link href={localizedAccountPath(lang, "/dashboard/new")} className="mt-7 sm:mt-0 inline-flex shrink-0 items-center rounded-full bg-[#F4B400] px-6 py-3.5 text-sm font-black text-black hover:scale-[1.03] transition-transform">
               {t.ctaButton}
             </Link>
           </div>

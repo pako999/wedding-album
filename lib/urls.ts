@@ -29,6 +29,8 @@ export const SITE_URL: string =
  *  for HTML lang alt attributes and structured-data host fields. */
 export const SITE_HOST: string = new URL(SITE_URL).host;
 
+const SUPPORTED_LOCALES = new Set(["sl", "hr", "sr", "de", "en", "es"]);
+
 /** Build an absolute URL for a path. Guarantees exactly one leading slash
  *  and never returns a bare-host redirect target. */
 export function absoluteUrl(path: string = "/"): string {
@@ -50,4 +52,25 @@ export function localeAbsoluteUrl(locale: string, path: string = "/"): string {
   if (locale === "sr") return serbianGuestcamUrl(path);
   if (locale === "es") return spanishGuestcamUrl(path);
   return absoluteUrl(path);
+}
+
+/**
+ * Keep the visitor's chosen language when a marketing page enters an account
+ * surface. Account routes deliberately live on guestcam.si, including for the
+ * Serbian and Spanish country sites, so the locale must travel explicitly in
+ * the query string. This also survives refreshes, direct visits and opening a
+ * CTA in a new tab where the Referer header may be absent.
+ */
+export function localizedAccountPath(locale: string, path: string): string {
+  const normalizedPath = path.startsWith("/") ? path : `/${path}`;
+  if (!SUPPORTED_LOCALES.has(locale)) return normalizedPath;
+
+  const hashIndex = normalizedPath.indexOf("#");
+  const hash = hashIndex >= 0 ? normalizedPath.slice(hashIndex) : "";
+  const withoutHash = hashIndex >= 0 ? normalizedPath.slice(0, hashIndex) : normalizedPath;
+  const queryIndex = withoutHash.indexOf("?");
+  const pathname = queryIndex >= 0 ? withoutHash.slice(0, queryIndex) : withoutHash;
+  const params = new URLSearchParams(queryIndex >= 0 ? withoutHash.slice(queryIndex + 1) : "");
+  params.set("lang", locale);
+  return `${pathname}?${params.toString()}${hash}`;
 }

@@ -545,7 +545,7 @@ export default function AlternativeAplikacijePage() {
             Ustvarite svojo galerijo z QR kodo v 2 minutah — brezplačno, brez kreditne kartice.
           </p>
           <Link
-            href="/dashboard/new"
+            href="/dashboard/new?lang=sl"
             className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-[#FFC94D] text-[#0F1729] font-bold text-base transition-all duration-200 hover:scale-[1.02] hover:brightness-95"
           >
             Začni brezplačno →

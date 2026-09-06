@@ -4,11 +4,12 @@
   "private": true,
   "scripts": {
     "dev": "next dev --port 3001",
-    "build": "npm run test:regression && next build",
+    "build": "npm run test:regression && npm run audit:i18n && next build",
     "start": "next start --port 3001",
     "lint": "eslint",
     "test": "npm run test:regression",
     "test:regression": "node scripts/regression-check.mjs",
+    "audit:i18n": "node scripts/localized-site-audit.mjs",
     "db:generate": "drizzle-kit generate",
     "db:push": "drizzle-kit push --force",
     "db:setup": "tsx scripts/setup-db.ts",

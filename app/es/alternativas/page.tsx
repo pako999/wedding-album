@@ -7,7 +7,7 @@ import { ALTERNATIVES_HREFLANG, LanguageSwitcher } from "@/components/LanguageSw
 import { GuestcamLogo } from "@/components/GuestcamLogo";
 import { SeoFooter } from "@/components/SeoFooter";
 import { SiteHeader } from "@/components/SiteHeader";
-import { OG_IMAGE_URL, ogImage } from "@/lib/og";
+import { localizedOgImageUrl, ogImage } from "@/lib/og";
 import { safeJsonLd } from "@/lib/seo/jsonld-safe";
 
 export const metadata: Metadata = {
@@ -20,13 +20,13 @@ export const metadata: Metadata = {
     description:
       "Comparativa honesta de soluciones para recopilar fotos de boda. Calidad, privacidad, precio — todo en un solo lugar.",
     type: "article",
-    images: [ogImage("Mejores Apps para Compartir Fotos de Boda")],
+    images: [ogImage("Mejores Apps para Compartir Fotos de Boda", "es")],
   },
   twitter: {
     card: "summary_large_image",
     title: "Mejores Apps para Compartir Fotos de Boda 2025",
     description: "Comparativa honesta de soluciones para recopilar fotos de boda.",
-    images: [OG_IMAGE_URL],
+    images: [localizedOgImageUrl("es")],
   },
   alternates: {
     canonical: spanishGuestcamUrl("/es/alternativas"),
@@ -551,7 +551,7 @@ export default function AlternativasPage() {
             Crea tu galería con código QR en 2 minutos — gratis, sin tarjeta de crédito.
           </p>
           <Link
-            href="/dashboard/new"
+            href="/dashboard/new?lang=es"
             className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-[#FFC94D] text-[#0F1729] font-bold text-base transition-all duration-200 hover:scale-[1.02] hover:brightness-95"
           >
             Empezar gratis →

@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { ContactPage } from "@/components/ContactPage";
 import { withRegionalHreflang } from "@/lib/seo/hreflang";
 import { serbianGuestcamUrl } from "@/lib/site-domains";
+import { localizedOgImageUrl } from "@/lib/og";
 
 export const metadata: Metadata = {
   title: "Kontakt",
@@ -23,7 +24,7 @@ export const metadata: Metadata = {
     url: serbianGuestcamUrl("/sr/contact"),
     title: "Kontakt",
     description: "Pišite nam — email, WhatsApp, Premium podrška za vašu venčanu galeriju.",
-    images: ["/og-image.png?v=2"],
+    images: [localizedOgImageUrl("sr")],
   },
   robots: { index: true, follow: true },
 };

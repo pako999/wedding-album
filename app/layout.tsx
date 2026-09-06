@@ -32,6 +32,10 @@ const SUPPORTED_LANGS: LangCode[] = ["sl", "hr", "sr", "de", "en", "es"];
 async function detectLang(): Promise<LangCode> {
   try {
     const h = await headers();
+    const trustedLocale = h.get("x-guestcam-lang") ?? "";
+    if ((SUPPORTED_LANGS as string[]).includes(trustedLocale)) {
+      return trustedLocale as LangCode;
+    }
     const path =
       h.get("x-pathname") ??
       h.get("next-url") ??

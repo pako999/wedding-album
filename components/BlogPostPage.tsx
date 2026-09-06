@@ -1,12 +1,15 @@
-import { localeAbsoluteUrl, SITE_URL } from "@/lib/urls";
+import { localeAbsoluteUrl, localizedAccountPath, SITE_URL } from "@/lib/urls";
 import Link from "next/link";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SeoFooter } from "@/components/SeoFooter";
 import type { LangCode } from "@/components/LanguageSwitcher";
 import { type BlogPost, type BlogBlock, type BlogCategory, getRelatedPosts, getTranslationMap, blogUrl, headingId } from "@/lib/blog";
 import { safeJsonLd } from "@/lib/seo/jsonld-safe";
+import { localizedOgImageUrl } from "@/lib/og";
 
 interface Props { post: BlogPost }
+
+const SITE_HOSTNAME = new URL(SITE_URL).hostname;
 
 const CATEGORY_LABEL: Record<LangCode, Record<BlogCategory, string>> = {
   sl: { vodnik: "Vodnik", primerjava: "Primerjava", nasvet: "Nasvet", "kontrolni-seznam": "Kontrolni seznam", novice: "Novice" },
@@ -31,7 +34,19 @@ const T: Record<LangCode, {
   es: { inShort: "En resumen", toc: "En esta guía", faq: "Preguntas frecuentes", related: "Sigue leyendo", back: "← Volver a las guías", by: "Por", readingTime: (m) => `${m} min de lectura`, ctaTitle: "Todas las fotos de tus invitados. Un álbum.", ctaBody: "Crea una galería privada, comparte el QR y recopila fotos y vídeos sin app.", ctaButton: "Empieza gratis →", languages: "Leer en otro idioma" },
 };
 
-function RenderBlock({ block }: { block: BlogBlock }) {
+function localizedBlogCtaHref(lang: LangCode, href: string): string {
+  try {
+    const parsed = new URL(href, SITE_URL);
+    if ((parsed.hostname === SITE_HOSTNAME || parsed.hostname.endsWith("guestcam.si")) && parsed.pathname === "/dashboard/new") {
+      return localizedAccountPath(lang, `${parsed.pathname}${parsed.search}${parsed.hash}`);
+    }
+  } catch {
+    // Preserve malformed or non-URL content rather than breaking the article.
+  }
+  return href;
+}
+
+function RenderBlock({ block, lang }: { block: BlogBlock; lang: LangCode }) {
   switch (block.type) {
     case "h2": return <h2 id={block.id ?? headingId(block.text)} className="text-3xl sm:text-4xl font-black tracking-[-.045em] leading-[1.05] text-[#111111] mt-14 mb-5 scroll-mt-24">{block.text}</h2>;
     case "h3": return <h3 id={block.id ?? headingId(block.text)} className="text-xl sm:text-2xl font-black tracking-[-.025em] text-[#111111] mt-9 mb-3 scroll-mt-24">{block.text}</h3>;
@@ -42,7 +57,7 @@ function RenderBlock({ block }: { block: BlogBlock }) {
     case "callout": return <div className="my-7 rounded-[24px] border border-[#D6A400]/30 bg-[#FFF1B8] p-5 sm:p-6 text-[16px] leading-relaxed text-black/75">{block.text}</div>;
     case "stat": return <div className="my-8 flex flex-col sm:flex-row sm:items-center gap-4 rounded-[28px] bg-[#111111] p-6 sm:p-7 text-white"><p className="text-4xl sm:text-5xl font-black tracking-[-.05em] text-[#F4B400]">{block.value}</p><div><p className="text-sm sm:text-base font-bold leading-snug">{block.label}</p>{block.source && <p className="text-xs text-white/45 mt-1">{block.source}</p>}</div></div>;
     case "table": return <div className="overflow-x-auto mb-7 rounded-[20px] border border-black/10 bg-white"><table className="w-full text-sm border-collapse"><thead><tr className="bg-[#F4B400]">{block.headers.map((h, i) => <th key={i} className="text-left p-3.5 font-black border-b border-black/10">{h}</th>)}</tr></thead><tbody>{block.rows.map((row, i) => <tr key={i} className={i % 2 === 0 ? "bg-white" : "bg-[#FFFDF8]"}>{row.map((cell, j) => <td key={j} className="p-3.5 border-t border-black/10 text-black/65">{cell}</td>)}</tr>)}</tbody></table></div>;
-    case "cta": return <div className="my-10 rounded-[30px] bg-[#F4B400] p-7 sm:p-9"><p className="text-2xl sm:text-3xl font-black tracking-[-.035em] leading-tight text-black mb-5">{block.text}</p><Link href={block.href} className="inline-flex rounded-full bg-[#111111] px-5 py-3 text-sm font-black text-white hover:scale-[1.02] transition-transform">{block.text} →</Link></div>;
+    case "cta": return <div className="my-10 rounded-[30px] bg-[#F4B400] p-7 sm:p-9"><p className="text-2xl sm:text-3xl font-black tracking-[-.035em] leading-tight text-black mb-5">{block.text}</p><Link href={localizedBlogCtaHref(lang, block.href)} className="inline-flex rounded-full bg-[#111111] px-5 py-3 text-sm font-black text-white hover:scale-[1.02] transition-transform">{block.text} →</Link></div>;
     case "image": return <figure className="my-9">{/* eslint-disable-next-line @next/next/no-img-element */}<img src={block.src} alt={block.alt} loading="lazy" decoding="async" className="w-full h-auto rounded-[26px] border border-black/10 object-cover" />{(block.caption || block.credit) && <figcaption className="mt-2.5 flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1.5 text-xs text-black/45">{block.caption && <span className="leading-relaxed">{block.caption}</span>}{block.credit && <span className="shrink-0">{block.credit}</span>}</figcaption>}</figure>;
     case "faq": return null;
   }
@@ -50,8 +65,18 @@ function RenderBlock({ block }: { block: BlogBlock }) {
 
 export async function BlogPostPage({ post }: Props) {
   const t = T[post.lang];
-  const related = await getRelatedPosts(post, 3);
-  const langMap = await getTranslationMap(post.translationKey);
+  const [related, langMap] = await Promise.all([
+    getRelatedPosts(post, 3),
+    getTranslationMap(post.translationKey),
+  ]);
+  const headerLanguages: Record<LangCode, string> = {
+    sl: langMap.sl,
+    hr: langMap.hr,
+    sr: langMap.sr,
+    de: langMap.de,
+    en: langMap.en,
+    es: langMap.es,
+  };
   const faqs = post.content.filter((b): b is Extract<BlogBlock, { type: "faq" }> => b.type === "faq");
   const tocEntries = post.content.filter((b): b is Extract<BlogBlock, { type: "h2" }> => b.type === "h2").map((h) => ({ id: h.id ?? headingId(h.text), text: h.text }));
   const canonical = localeAbsoluteUrl(post.lang, blogUrl(post.lang, post.slug));
@@ -62,7 +87,7 @@ export async function BlogPostPage({ post }: Props) {
       "@context": "https://schema.org", "@type": "BlogPosting", "@id": `${canonical}#article`,
       headline: post.title, description: post.description,
       datePublished: post.publishedAt, dateModified: post.updatedAt,
-      ...(post.coverImage ? { image: [post.coverImage] } : { image: [`${SITE_URL}/og-image.png?v=2`] }),
+      ...(post.coverImage ? { image: [post.coverImage] } : { image: [localizedOgImageUrl(post.lang)] }),
       author: { "@type": "Organization", name: post.author, url: SITE_URL },
       publisher: { "@type": "Organization", "@id": `${SITE_URL}/#organization`, name: "Guestcam", url: SITE_URL, logo: { "@type": "ImageObject", url: `${SITE_URL}/guestcam-logo.svg` } },
       inLanguage: post.lang, mainEntityOfPage: { "@type": "WebPage", "@id": canonical },
@@ -83,7 +108,7 @@ export async function BlogPostPage({ post }: Props) {
 
   return (
     <div className="min-h-screen bg-[#FFFDF8] text-[#111111]">
-      <SiteHeader lang={post.lang} />
+      <SiteHeader lang={post.lang} hreflang={headerLanguages} />
       <article>
         <header className="border-b border-black/10">
           <div className="max-w-5xl mx-auto px-5 sm:px-8 py-10 sm:py-16">
@@ -109,7 +134,7 @@ export async function BlogPostPage({ post }: Props) {
 
           {tocEntries.length >= 3 && <nav className="rounded-[26px] border border-black/10 bg-white p-6 sm:p-7 mb-11"><p className="text-[10px] font-black uppercase tracking-[.18em] text-[#8F6900] mb-4">{t.toc}</p><ol className="space-y-2.5 text-sm">{tocEntries.map((entry, i) => <li key={entry.id}><a href={`#${entry.id}`} className="font-semibold text-black/65 hover:text-[#8F6900] transition-colors"><span className="mr-2 text-black/30">{String(i + 1).padStart(2, "0")}</span>{entry.text}</a></li>)}</ol></nav>}
 
-          <div className="prose-content">{post.content.map((block, i) => <RenderBlock key={i} block={block} />)}</div>
+          <div className="prose-content">{post.content.map((block, i) => <RenderBlock key={i} block={block} lang={post.lang} />)}</div>
 
           {faqs.length > 0 && <section className="mt-16"><p className="text-xs font-black uppercase tracking-[.18em] text-[#8F6900] mb-3">Guestcam FAQ</p><h2 className="text-3xl sm:text-4xl font-black tracking-[-.045em] mb-6">{t.faq}</h2><div className="space-y-3">{faqs.map((f, i) => <details key={i} className="group rounded-[22px] bg-white border border-black/10 p-5 open:border-[#D6A400]"><summary className="font-black cursor-pointer list-none flex items-center justify-between gap-4"><span>{f.q}</span><span className="w-8 h-8 rounded-full bg-[#FFF1B8] flex items-center justify-center text-[#8F6900] transition-transform group-open:rotate-45">+</span></summary><p className="text-[15px] text-black/60 mt-4 leading-relaxed pr-10">{f.a}</p></details>)}</div></section>}
 
@@ -117,7 +142,7 @@ export async function BlogPostPage({ post }: Props) {
             <p className="text-[10px] font-black uppercase tracking-[.18em] text-[#F4B400] mb-3">Guestcam</p>
             <h2 className="text-3xl sm:text-4xl font-black tracking-[-.045em] leading-[1.02]">{t.ctaTitle}</h2>
             <p className="mt-4 text-white/65 leading-relaxed max-w-xl">{t.ctaBody}</p>
-            <Link href="/dashboard/new" className="mt-7 inline-flex rounded-full bg-[#F4B400] px-6 py-3.5 text-sm font-black text-black hover:scale-[1.03] transition-transform">{t.ctaButton}</Link>
+            <Link href={localizedAccountPath(post.lang, "/dashboard/new")} className="mt-7 inline-flex rounded-full bg-[#F4B400] px-6 py-3.5 text-sm font-black text-black hover:scale-[1.03] transition-transform">{t.ctaButton}</Link>
           </section>
 
           {related.length > 0 && <section className="mt-16"><h2 className="text-3xl sm:text-4xl font-black tracking-[-.045em] mb-6">{t.related}</h2><div className="grid sm:grid-cols-3 gap-4">{related.map((p) => <Link key={p.slug} href={blogUrl(p.lang, p.slug)} className="group block rounded-[22px] border border-black/10 bg-white p-5 hover:border-[#D6A400] hover:-translate-y-1 transition-all"><span className="text-[10px] font-black uppercase tracking-[.12em] text-[#8F6900]">{CATEGORY_LABEL[post.lang][p.category]}</span><h3 className="text-lg font-black tracking-[-.025em] mt-3 leading-snug group-hover:text-[#795900]">{p.title}</h3><p className="text-xs text-black/45 line-clamp-3 mt-2 leading-relaxed">{p.tldr}</p></Link>)}</div></section>}

@@ -14,6 +14,11 @@ function payload(slug: string, videoId: string, expiresAt: number): string {
   return `${slug}:${videoId}:${expiresAt}`;
 }
 
+/** Calculate a short-lived server timestamp outside React render analysis. */
+export function videoPlaybackExpiry(lifetimeSeconds = 2 * 60 * 60): number {
+  return Math.floor(Date.now() / 1000) + lifetimeSeconds;
+}
+
 export function createVideoPlaybackToken(
   slug: string,
   videoId: string,

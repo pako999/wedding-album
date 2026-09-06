@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { ApplyForm } from "./ApplyForm";
 import { affiliateTranslations, type AffiliateLang } from "@/lib/i18n/affiliate-translations";
 import { withRegionalHreflang } from "@/lib/seo/hreflang";
+import { localizedOgImageUrl, ogImage } from "@/lib/og";
 
 /** Shared renderer used by /affiliate/apply (SL master) and the 5
  *  localized variants (/{lang}/affiliate/apply). Pass the lang in;
@@ -82,21 +83,13 @@ export function affiliateApplyMetadata(lang: AffiliateLang): Metadata {
       url: pageUrl,
       title: t.pageTitle,
       description: t.metaDescription,
-      images: [
-        {
-          url: "/og-image.png?v=2",
-          width: 910,
-          height: 1200,
-          alt: t.pageTitle,
-          type: "image/png",
-        },
-      ],
+      images: [ogImage(t.pageTitle, lang)],
     },
     twitter: {
       card: "summary_large_image",
       title: t.pageTitle,
       description: t.metaDescription,
-      images: ["/og-image.png?v=2"],
+      images: [localizedOgImageUrl(lang)],
     },
     robots: { index: true, follow: true },
   };
