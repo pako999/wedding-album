@@ -18,10 +18,15 @@ const nextConfig: NextConfig = {
       // /favicon.ico → Next.js dynamic icon route so Google finds a favicon
       // at the conventional path (in addition to the <link rel="icon"> tag).
       { source: "/favicon.ico", destination: "/icon", permanent: false },
+      // Some browsers and link preview crawlers still request favicon.png.
+      { source: "/favicon.png", destination: "/icon", permanent: false },
       // Older iOS/Safari clients request these conventional filenames even
       // though Next.js publishes the generated image at /apple-icon.
       { source: "/apple-touch-icon.png", destination: "/apple-icon", permanent: false },
       { source: "/apple-touch-icon-precomposed.png", destination: "/apple-icon", permanent: false },
+      // Keep the increasingly common well-known AI discovery URL in sync with
+      // Guestcam's canonical /llms.txt endpoint.
+      { source: "/.well-known/llms.txt", destination: "/llms.txt", permanent: true },
       // Slovenian-language URL aliases for legal pages.
       { source: "/pogoji", destination: "/terms", permanent: true },
       { source: "/zasebnost", destination: "/privacy", permanent: true },
@@ -37,6 +42,13 @@ const nextConfig: NextConfig = {
       // Preserve links to the retired Croatian video-guide slug by sending
       // them to the closest current guide instead of a dead page.
       { source: "/blog/kako-prikupiti-video-snimke-gostiju-vencanje", destination: "/hr/blog/kako-skupiti-fotografije-gostiju-na-vjencanju", permanent: true },
+      // Retired/generated blog URLs observed in production logs. Preserve
+      // their ranking signals and send visitors to the equivalent live guide.
+      { source: "/blog/muro-fotos-boda-en-directo", destination: "/es/blog/como-recopilar-fotos-de-invitados-en-la-boda", permanent: true },
+      { source: "/blog/aplikacija-fotografije-vencanje-vs-google-photos", destination: "/sr/blog/aplikacija-za-vencanje-fotografije-qr-kod", permanent: true },
+      // A stale client once produced this invalid slug. The blog index is the
+      // safest permanent destination and prevents an indexable soft dead end.
+      { source: "/blog/null", destination: "/blog", permanent: true },
     ];
   },
   images: {

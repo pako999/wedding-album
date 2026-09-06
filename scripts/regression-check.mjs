@@ -1081,6 +1081,13 @@ requireMatch(
 );
 
 requireMatch(
+  "conventional PNG favicon and well-known llms URLs resolve",
+  files.nextConfig,
+  /source:\s*"\/favicon\.png"[\s\S]*destination:\s*"\/icon"[\s\S]*source:\s*"\/\.well-known\/llms\.txt"[\s\S]*destination:\s*"\/llms\.txt"/,
+  "browser icons and AI discovery requests must not end at a 404",
+);
+
+requireMatch(
   "duplicate Croatian QR guide redirects permanently",
   files.nextConfig,
   /source:\s*"\/hr\/qr-kod-za-vjencanje-kako"[\s\S]*destination:\s*"\/hr\/qr-kod-vjencanje"[\s\S]*permanent:\s*true/,
@@ -1099,6 +1106,13 @@ requireMatch(
   files.nextConfig,
   /source:\s*"\/blog\/kako-prikupiti-video-snimke-gostiju-vencanje"[\s\S]*destination:\s*"\/hr\/blog\/kako-skupiti-fotografije-gostiju-na-vjencanju"[\s\S]*permanent:\s*true/,
   "old indexed Croatian links must resolve to the closest current guide",
+);
+
+requireMatch(
+  "observed stale blog URLs redirect permanently",
+  files.nextConfig,
+  /source:\s*"\/blog\/muro-fotos-boda-en-directo"[\s\S]*destination:\s*"\/es\/blog\/como-recopilar-fotos-de-invitados-en-la-boda"[\s\S]*source:\s*"\/blog\/aplikacija-fotografije-vencanje-vs-google-photos"[\s\S]*destination:\s*"\/sr\/blog\/aplikacija-za-vencanje-fotografije-qr-kod"[\s\S]*source:\s*"\/blog\/null"[\s\S]*destination:\s*"\/blog"/,
+  "production log URLs must preserve visitors and ranking signals instead of returning 404",
 );
 
 requireMatch(
