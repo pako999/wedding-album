@@ -727,6 +727,13 @@ requireMatch(
 );
 
 requireMatch(
+  "demo album inherits the originating marketing language",
+  files.demoButton,
+  /const demoUrl = `\$\{demoOrigin\}\/\$\{DEMO_SLUG\}\?lang=\$\{encodeURIComponent\(lang\)\}`[\s\S]*encodeURIComponent\(demoUrl\)/,
+  "the demo link and QR code must carry the current page language into the shared album",
+);
+
+requireMatch(
   "country marketing domains do not boot Clerk in the browser",
   files.clerkProvider,
   /isCountryMarketingHost\(host\)[\s\S]*return <>\{children\}<\/>/,

@@ -118,7 +118,9 @@ export function DemoButton({
       // Keep the current origin if a non-browser test supplies an invalid URL.
     }
   }
-  const demoUrl = `${demoOrigin}/${DEMO_SLUG}`;
+  // The demo album is shared across all marketing domains. Carry the
+  // originating page language explicitly so its UI opens in that language.
+  const demoUrl = `${demoOrigin}/${DEMO_SLUG}?lang=${encodeURIComponent(lang)}`;
   const qrSrc = demoOrigin
     ? `https://api.qrserver.com/v1/create-qr-code/?size=320x320&qzone=2&format=png` +
       `&bgcolor=ffffff&color=2C2825&data=${encodeURIComponent(demoUrl)}`
