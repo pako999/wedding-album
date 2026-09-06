@@ -103,6 +103,8 @@ const files = {
   filmStatus: await read("app/api/albums/[slug]/film/status/route.ts"),
   envExample: await read(".env.example"),
   homePage: await read("app/page.tsx"),
+  srHomePage: await read("app/sr/page.tsx"),
+  esHomePage: await read("app/es/page.tsx"),
   homeComponent: await read("components/GuestcamHomePage.tsx"),
   localizedHomeComponent: await read("components/LocalizedGuestcamHomePageV3.tsx"),
   albumAdminPanel: await read("components/dashboard/AlbumAdminPanel.tsx"),
@@ -774,6 +776,26 @@ requireMatch(
   /locale === "sr"[\s\S]*serbianGuestcamUrl[\s\S]*locale === "es"[\s\S]*spanishGuestcamUrl/,
   "locale canonical builders must not point Serbian or Spanish pages back to .si",
 );
+
+requireMatch(
+  "country homepages use social images in their own language",
+  `${files.srHomePage}\n${files.esHomePage}`,
+  /SERBIAN_GUESTCAM_ORIGIN\}\/og-image-sr\.jpg\?v=1[\s\S]*SPANISH_GUESTCAM_ORIGIN\}\/og-image-es\.jpg\?v=1/,
+  "shared Serbian and Spanish links must not show the Slovenian social card",
+);
+
+requireAbsent(
+  "country homepages do not reuse the Slovenian social image",
+  `${files.srHomePage}\n${files.esHomePage}`,
+  /SITE_URL\}\/og-image\.png/,
+  "the .rs and .es homepage previews need their own localized image assets",
+);
+
+await Promise.all([
+  fs.access(path.join(root, "public", "og-image-sr.jpg")),
+  fs.access(path.join(root, "public", "og-image-es.jpg")),
+]);
+console.log("PASS: localized country social image files exist");
 
 requireMatch(
   "film no-generation state is a normal response",
