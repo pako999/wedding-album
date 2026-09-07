@@ -96,6 +96,8 @@ export interface UpgradeCopy {
   taglinePlus:    string;
   taglinePremium: string;
   badgeRecommended: string;
+  showAllFeatures: string;
+  showFewerFeatures: string;
 
   // Feature bullets used across plans (dedup — same key can be referenced by
   // multiple plans in the PLAN_FEATURE_KEYS map on the client).
@@ -203,6 +205,8 @@ export const UPGRADE_COPY: Record<Lang, UpgradeCopy> = {
     taglinePlus:  "Najpopularnejši",
     taglinePremium: "Vse vključeno",
     badgeRecommended: "PRIPOROČENO",
+    showAllFeatures: "Prikaži vse funkcije",
+    showFewerFeatures: "Prikaži manj",
     featurePhotos1000:       "Do 1000 fotografij",
     featurePhotos5000:       "Do 5000 fotografij",
     featurePhotosUnlimited:  "Neomejeno fotografij",
@@ -297,6 +301,8 @@ export const UPGRADE_COPY: Record<Lang, UpgradeCopy> = {
     taglinePlus:  "Najpopularniji",
     taglinePremium: "Sve uključeno",
     badgeRecommended: "PREPORUČENO",
+    showAllFeatures: "Prikaži sve pogodnosti",
+    showFewerFeatures: "Prikaži manje",
     featurePhotos1000:       "Do 1000 fotografija",
     featurePhotos5000:       "Do 5000 fotografija",
     featurePhotosUnlimited:  "Neograničeno fotografija",
@@ -391,6 +397,8 @@ export const UPGRADE_COPY: Record<Lang, UpgradeCopy> = {
     taglinePlus:  "Najpopularniji",
     taglinePremium: "Sve uključeno",
     badgeRecommended: "PREPORUČENO",
+    showAllFeatures: "Prikaži sve pogodnosti",
+    showFewerFeatures: "Prikaži manje",
     featurePhotos1000:       "Do 1000 fotografija",
     featurePhotos5000:       "Do 5000 fotografija",
     featurePhotosUnlimited:  "Neograničeno fotografija",
@@ -485,6 +493,8 @@ export const UPGRADE_COPY: Record<Lang, UpgradeCopy> = {
     taglinePlus:  "Most popular",
     taglinePremium: "Everything included",
     badgeRecommended: "RECOMMENDED",
+    showAllFeatures: "Show all features",
+    showFewerFeatures: "Show fewer",
     featurePhotos1000:       "Up to 1000 photos",
     featurePhotos5000:       "Up to 5000 photos",
     featurePhotosUnlimited:  "Unlimited photos",
@@ -579,6 +589,8 @@ export const UPGRADE_COPY: Record<Lang, UpgradeCopy> = {
     taglinePlus:  "Am beliebtesten",
     taglinePremium: "Alles inklusive",
     badgeRecommended: "EMPFOHLEN",
+    showAllFeatures: "Alle Funktionen anzeigen",
+    showFewerFeatures: "Weniger anzeigen",
     featurePhotos1000:       "Bis zu 1000 Fotos",
     featurePhotos5000:       "Bis zu 5000 Fotos",
     featurePhotosUnlimited:  "Unbegrenzt Fotos",
@@ -673,6 +685,8 @@ export const UPGRADE_COPY: Record<Lang, UpgradeCopy> = {
     taglinePlus:  "El más popular",
     taglinePremium: "Todo incluido",
     badgeRecommended: "RECOMENDADO",
+    showAllFeatures: "Ver todas las funciones",
+    showFewerFeatures: "Ver menos",
     featurePhotos1000:       "Hasta 1000 fotos",
     featurePhotos5000:       "Hasta 5000 fotos",
     featurePhotosUnlimited:  "Fotos ilimitadas",
