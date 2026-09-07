@@ -69,6 +69,13 @@ const ALL_ACCEPTED = [...ACCEPTED_IMAGES, ...ACCEPTED_VIDEOS];
 const MAX_IMAGE_MB = 250;
 const MAX_VIDEO_MB = 500;
 
+// Small phone photos benefit from a few simultaneous direct S3 connections:
+// the API/presign/save round-trips overlap and one slow TCP connection no
+// longer blocks the other 19 selected photos. Keep the pool deliberately
+// small for mobile stability, and reduce it for unusually large originals.
+const MAX_PARALLEL_PHOTO_UPLOADS = 3;
+const LARGE_PHOTO_BYTES = 25 * 1024 * 1024;
+
 function fmt(bytes: number) { return (bytes / 1024 / 1024).toFixed(1) + " MB"; }
 
 /** Pixel dimensions of the original image file, or null when they can't be read
@@ -104,7 +111,6 @@ async function uploadFile(
 ): Promise<UploadResult> {
   // Preserve the original bytes. No browser-side resize or JPEG re-encode.
   const file = rawFile;
-  const dims = await readImageDims(file);
 
   // Ask the server which upload path to use.
   const urlRes = await fetch(`/api/albums/${albumSlug}/upload-url`, {
@@ -140,6 +146,10 @@ async function uploadFile(
     return { type: "duplicate", status: urlData.status === "pending" ? "pending" : "published" };
   }
 
+  // Decoding a full-resolution phone photo can take noticeable time. Run it
+  // alongside the network transfer instead of blocking the upload first.
+  const dimsPromise = readImageDims(file);
+
   // ── Bunny Stream (tus direct upload) ──────────────────────────────────────
   if (urlData.type === "bunny-stream") {
     await uploadViaBunnyStream(file, urlData, onProgress);
@@ -158,12 +168,14 @@ async function uploadFile(
   // ── Bunny Storage S3: original browser file → Bunny directly ──────────────
   if (urlData.type === "bunny-s3") {
     onProgress(8);
-    const put = await fetch(urlData.presignedUrl, {
-      method: "PUT",
-      body: file,
-      headers: { "Content-Type": file.type },
-    });
-    if (!put.ok) throw new Error(`Bunny direct upload failed: ${put.status}`);
+    const [, dims] = await Promise.all([
+      uploadDirectPut(
+        urlData.presignedUrl,
+        file,
+        pct => onProgress(8 + Math.round(pct * 0.84)),
+      ),
+      dimsPromise,
+    ]);
     onProgress(92);
     await saveUpload(albumSlug, {
       blobUrl: urlData.publicUrl,
@@ -180,12 +192,15 @@ async function uploadFile(
 
   // ── Bunny Storage legacy proxy fallback ────────────────────────────────────
   if (urlData.type === "bunny-storage") {
-    const publicUrl = await retryingXhrUpload(
-      `/api/albums/${albumSlug}/bunny-upload?key=${encodeURIComponent(urlData.key)}`,
-      file,
-      pct => onProgress(Math.round(pct * 0.9)),
-      albumPassword,
-    );
+    const [publicUrl, dims] = await Promise.all([
+      retryingXhrUpload(
+        `/api/albums/${albumSlug}/bunny-upload?key=${encodeURIComponent(urlData.key)}`,
+        file,
+        pct => onProgress(Math.round(pct * 0.9)),
+        albumPassword,
+      ),
+      dimsPromise,
+    ]);
     onProgress(92);
     await saveUpload(albumSlug, {
       blobUrl: publicUrl,
@@ -203,12 +218,14 @@ async function uploadFile(
   // ── Cloudflare R2 legacy compatibility ─────────────────────────────────────
   if (urlData.type === "r2") {
     onProgress(10);
-    const put = await fetch(urlData.presignedUrl, {
-      method: "PUT",
-      body: file,
-      headers: { "Content-Type": file.type },
-    });
-    if (!put.ok) throw new Error(`R2 upload failed: ${put.status}`);
+    const [, dims] = await Promise.all([
+      uploadDirectPut(
+        urlData.presignedUrl,
+        file,
+        pct => onProgress(10 + Math.round(pct * 0.7)),
+      ),
+      dimsPromise,
+    ]);
     onProgress(80);
     await saveUpload(albumSlug, {
       blobUrl: urlData.publicUrl,
@@ -241,17 +258,20 @@ async function uploadFile(
   // ── Vercel Blob fallback ──────────────────────────────────────────────────
   const { upload } = await import("@vercel/blob/client");
   onProgress(10);
-  const blob = await upload(
-    `albums/${albumId}/${crypto.randomUUID()}.${file.name.split(".").pop() ?? "bin"}`,
-    file,
-    {
-      access: "public",
-      handleUploadUrl: `/api/albums/${albumSlug}/upload`,
-      clientPayload: JSON.stringify({ uploaderName }),
-      multipart: true,
-      onUploadProgress: ({ percentage }) => onProgress(Math.round(percentage * 0.85)),
-    },
-  );
+  const [blob, dims] = await Promise.all([
+    upload(
+      `albums/${albumId}/${crypto.randomUUID()}.${file.name.split(".").pop() ?? "bin"}`,
+      file,
+      {
+        access: "public",
+        handleUploadUrl: `/api/albums/${albumSlug}/upload`,
+        clientPayload: JSON.stringify({ uploaderName }),
+        multipart: true,
+        onUploadProgress: ({ percentage }) => onProgress(Math.round(percentage * 0.85)),
+      },
+    ),
+    dimsPromise,
+  ]);
   onProgress(88);
   await saveUpload(albumSlug, {
     blobUrl: blob.url,
@@ -264,6 +284,57 @@ async function uploadFile(
   }, albumPassword);
   onProgress(100);
   return { type: "uploaded" };
+}
+
+/** Direct cross-origin PUT with real byte-level progress. `fetch()` uploads do
+ * not expose progress, which made each photo appear stuck at 8% until Bunny
+ * had received the entire file. */
+function uploadDirectPut(
+  url: string,
+  file: File,
+  onProgress: (pct: number) => void,
+): Promise<void> {
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.upload.addEventListener("progress", (event) => {
+      if (event.lengthComputable) {
+        onProgress(Math.round((event.loaded / event.total) * 100));
+      }
+    });
+    xhr.addEventListener("load", () => {
+      if (xhr.status >= 200 && xhr.status < 300) {
+        resolve();
+      } else {
+        reject(new Error(`Direct upload failed: ${xhr.status}`));
+      }
+    });
+    xhr.addEventListener("error", () => reject(new Error("Network error during direct upload")));
+    xhr.addEventListener("abort", () => reject(new Error("Direct upload aborted")));
+    xhr.open("PUT", url);
+    xhr.setRequestHeader("Content-Type", file.type);
+    xhr.send(file);
+  });
+}
+
+function photoUploadConcurrency(items: UploadFile[]): number {
+  if (items.length === 0) return 0;
+  const hasLargeOriginal = items.some(item => item.file.size > LARGE_PHOTO_BYTES);
+  return Math.min(items.length, hasLargeOriginal ? 2 : MAX_PARALLEL_PHOTO_UPLOADS);
+}
+
+async function runUploadPool(
+  items: UploadFile[],
+  concurrency: number,
+  task: (item: UploadFile) => Promise<void>,
+): Promise<void> {
+  let nextIndex = 0;
+  const worker = async () => {
+    while (nextIndex < items.length) {
+      const item = items[nextIndex++];
+      await task(item);
+    }
+  };
+  await Promise.all(Array.from({ length: Math.min(concurrency, items.length) }, worker));
 }
 
 /** tus upload for Bunny Stream */
@@ -609,9 +680,12 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
     if (!files.length || uploading) return;
     setUploading(true);
 
-    for (const f of files) {
-      if (f.status === "done" || f.status === "skipped") continue;
+    const pending = files.filter(f => f.status !== "done" && f.status !== "skipped");
+    const photos = pending.filter(f => !f.isVideo);
+    const videos = pending.filter(f => f.isVideo);
+    let completedUpload = false;
 
+    const uploadOne = async (f: UploadFile) => {
       // Originals are uploaded as-is; there is no pre-upload optimization step.
       updateFile(f.id, { status: "uploading", progress: 5 });
 
@@ -627,6 +701,7 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
           progress: 100,
           duplicateStatus: result.type === "duplicate" ? result.status : undefined,
         });
+        if (result.type === "uploaded") completedUpload = true;
       } catch (err) {
         const msg = err instanceof Error ? err.message : t.genericError;
         const isStall = msg === "STALL";
@@ -636,10 +711,20 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
           progress: 0,
         });
       }
+    };
+
+    // Photos are small independent direct-S3 PUTs, so a bounded worker pool is
+    // safe and substantially faster for a 10-20 image selection. Videos remain
+    // sequential to avoid exhausting mobile bandwidth and memory.
+    if (photos.length > 0) {
+      await runUploadPool(photos, photoUploadConcurrency(photos), uploadOne);
+    }
+    for (const video of videos) {
+      await uploadOne(video);
     }
 
     setUploading(false);
-    setAllDone(filesRef.current.some(f => f.status === "done"));
+    setAllDone(completedUpload || filesRef.current.some(f => f.status === "done"));
   };
 
   useEffect(() => { retryRef.current = uploadAll; });
