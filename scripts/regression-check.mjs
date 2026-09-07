@@ -232,6 +232,27 @@ requireMatch(
 );
 
 requireMatch(
+  "gallery comments use the configured Turnstile public key",
+  files.albumGuestView,
+  /NEXT_PUBLIC_TURNSTILE_SITE_KEY[\s\S]*NEXT_PUBLIC_CF_TURNSTILE_SITE_KEY/,
+  "the gallery must use the same Turnstile key as the rest of the application while retaining the legacy alias",
+);
+
+requireAbsent(
+  "gallery Turnstile widget uses only supported size options",
+  files.albumGuestView,
+  /size:\s*["']invisible["']/,
+  "Turnstile invisible mode is configured in Cloudflare, not through an unsupported client-side size",
+);
+
+requireMatch(
+  "gallery comments surface failed submissions",
+  files.albumGuestView,
+  /if \(!res\.ok\) throw new Error[\s\S]*setCommentError\(t\.commentFailed\)/,
+  "a rejected comment request must not fail silently",
+);
+
+requireMatch(
   "legacy server ZIP endpoint stays retired",
   files.legacyDownload,
   /status:\s*410/,

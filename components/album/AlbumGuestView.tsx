@@ -77,6 +77,12 @@ interface CommentItem {
   createdAt: string;
 }
 
+interface TurnstileApi {
+  render: (el: HTMLElement, options: Record<string, unknown>) => string;
+  reset: (widgetId?: string) => void;
+  remove: (widgetId?: string) => void;
+}
+
 function eventIcon(eventType: string): string {
   switch (eventType) {
     case "wedding":     return "💍";
@@ -264,6 +270,7 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
   const [openCommentsPhoto, setOpenCommentsPhoto] = useState<string | null>(null); // photoId
   const [commentInput, setCommentInput]         = useState("");
   const [commentPosting, setCommentPosting]     = useState(false);
+  const [commentError, setCommentError]         = useState<string | null>(null);
   const [turnstileToken, setTurnstileToken]     = useState<string | null>(null);
   // Lightbox info panel (likes + comments for the currently shown photo)
   const [lightboxPanelOpen, setLightboxPanelOpen] = useState(false); // mobile bottom sheet
@@ -296,10 +303,14 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
   // updates batch and the modal still mounts with the files present.
   const [cameraFiles, setCameraFiles] = useState<FileList | null>(null);
   const turnstileContainerRef = useRef<HTMLDivElement>(null);
+  const turnstileWidgetRef = useRef<string | null>(null);
   const sortMenuRef = useRef<HTMLDivElement>(null);
   const lightboxControllerRef = useRef<ControllerRef | null>(null);
 
   const t       = translations[lang];
+  const turnstileSiteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY
+    ?? process.env.NEXT_PUBLIC_CF_TURNSTILE_SITE_KEY
+    ?? "";
   const evtIcon = eventIcon(album.eventType ?? "other");
   // Hero header background: the owner's chosen cover wins; otherwise the
   // NEWEST uploaded photo takes the stage automatically, so the moment a
@@ -389,26 +400,33 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
 
   // ── Cloudflare Turnstile ──────────────────────────────────────────────────
   useEffect(() => {
-    const siteKey = process.env.NEXT_PUBLIC_CF_TURNSTILE_SITE_KEY;
-    if (!siteKey || !openCommentsPhoto || !nameConfirmed || !turnstileContainerRef.current) return;
+    if (!turnstileSiteKey || !openCommentsPhoto || !nameConfirmed || !turnstileContainerRef.current) return;
 
     const container = turnstileContainerRef.current;
+    let cancelled = false;
+    let pollId: ReturnType<typeof setInterval> | null = null;
     setTurnstileToken(null);
+    setCommentError(null);
 
     const render = () => {
-      if (!container || !(window as { turnstile?: { render: (el: HTMLElement, opts: object) => void } }).turnstile) return;
-      (window as { turnstile?: { render: (el: HTMLElement, opts: object) => void } }).turnstile!.render(container, {
-        sitekey: siteKey,
+      const api = (window as { turnstile?: TurnstileApi }).turnstile;
+      if (cancelled || !container || !api || turnstileWidgetRef.current) return;
+      turnstileWidgetRef.current = api.render(container, {
+        sitekey: turnstileSiteKey,
         callback: (token: string) => setTurnstileToken(token),
         "expired-callback": () => setTurnstileToken(null),
-        "error-callback": () => setTurnstileToken(null),
-        size: "invisible",
+        "error-callback": () => {
+          setTurnstileToken(null);
+          setCommentError(t.commentFailed);
+        },
+        "timeout-callback": () => setTurnstileToken(null),
         appearance: "interaction-only",
+        language: lang,
       });
     };
 
     // If script already loaded, render immediately
-    if ((window as { turnstile?: unknown }).turnstile) {
+    if ((window as { turnstile?: TurnstileApi }).turnstile) {
       render();
     } else {
       // Load script once
@@ -421,16 +439,23 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
         document.head.appendChild(script);
       } else {
         // Script loading, wait
-        const check = setInterval(() => {
+        pollId = setInterval(() => {
           if ((window as { turnstile?: unknown }).turnstile) {
-            clearInterval(check);
+            if (pollId) clearInterval(pollId);
             render();
           }
         }, 100);
-        return () => clearInterval(check);
       }
     }
-  }, [openCommentsPhoto, nameConfirmed]);
+
+    return () => {
+      cancelled = true;
+      if (pollId) clearInterval(pollId);
+      const api = (window as { turnstile?: TurnstileApi }).turnstile;
+      if (api && turnstileWidgetRef.current) api.remove(turnstileWidgetRef.current);
+      turnstileWidgetRef.current = null;
+    };
+  }, [openCommentsPhoto, nameConfirmed, turnstileSiteKey, lang, t.commentFailed]);
 
   // ── Lightbox panel ↔ comment target sync ──────────────────────────────────
   // While the lightbox is open, the info panel reuses the existing comment
@@ -513,7 +538,12 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
   // ── Post comment ─────────────────────────────────────────────────────────
   const postComment = useCallback(async () => {
     if (!openCommentsPhoto || !commentInput.trim() || !uploaderName.trim()) return;
+    if (turnstileSiteKey && !turnstileToken) {
+      setCommentError(t.commentFailed);
+      return;
+    }
     setCommentPosting(true);
+    setCommentError(null);
     try {
       const res = await fetch(
         `/api/albums/${album.slug}/photos/${openCommentsPhoto}/comments`,
@@ -523,18 +553,23 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
           body: JSON.stringify({ uploaderName: uploaderName.trim(), body: commentInput.trim(), turnstileToken: turnstileToken ?? undefined }),
         }
       );
-      if (res.ok) {
-        const newComment: CommentItem = await res.json();
-        setCommentMap(prev => ({
-          ...prev,
-          [openCommentsPhoto]: [...(prev[openCommentsPhoto] ?? []), newComment],
-        }));
-        setCommentInput("");
-      }
+      if (!res.ok) throw new Error(`comment request failed (${res.status})`);
+      const newComment: CommentItem = await res.json();
+      setCommentMap(prev => ({
+        ...prev,
+        [openCommentsPhoto]: [...(prev[openCommentsPhoto] ?? []), newComment],
+      }));
+      setCommentInput("");
+    } catch (error) {
+      console.error("[gallery-comment] submission failed", error);
+      setCommentError(t.commentFailed);
     } finally {
+      const api = (window as { turnstile?: TurnstileApi }).turnstile;
+      if (api && turnstileWidgetRef.current) api.reset(turnstileWidgetRef.current);
+      setTurnstileToken(null);
       setCommentPosting(false);
     }
-  }, [openCommentsPhoto, commentInput, uploaderName, album.slug]);
+  }, [openCommentsPhoto, commentInput, uploaderName, album.slug, turnstileSiteKey, turnstileToken, t.commentFailed]);
 
   // ── Uploader list (sorted by upload count desc) ───────────────────────────
   const uploaders: string[] = (() => {
@@ -1717,7 +1752,7 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
                     <input
                       type="text"
                       value={commentInput}
-                      onChange={e => setCommentInput(e.target.value)}
+                      onChange={e => { setCommentInput(e.target.value); setCommentError(null); }}
                       onKeyDown={e => e.key === "Enter" && !e.shiftKey && postComment()}
                       placeholder={t.addComment}
                       maxLength={500}
@@ -1743,6 +1778,7 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
                     </button>
                   </div>
                 )}
+                {commentError && <p className="mt-2 text-center text-xs text-red-600">{commentError}</p>}
               </div>
             </div>
           </div>
@@ -1768,9 +1804,12 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
         />
       )}
 
-      {/* Invisible Turnstile widget host — always mounted so the panel and the
-          standalone comments modal can both reuse the existing comment flow. */}
-      <div ref={turnstileContainerRef} className="hidden" aria-hidden="true" />
+      {/* Turnstile host — always mounted so the lightbox panel and standalone
+          comments modal can share one interaction-only challenge. */}
+      <div
+        ref={turnstileContainerRef}
+        className="fixed bottom-4 left-1/2 z-[100] w-[300px] max-w-[calc(100vw-2rem)] -translate-x-1/2"
+      />
 
       {/* ── Lightbox ─────────────────────────────────────────────────────── */}
       {lightboxSlides.length > 0 && (() => {
@@ -1937,7 +1976,7 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
                     <input
                       type="text"
                       value={commentInput}
-                      onChange={e => setCommentInput(e.target.value)}
+                      onChange={e => { setCommentInput(e.target.value); setCommentError(null); }}
                       onKeyDown={e => e.key === "Enter" && !e.shiftKey && postComment()}
                       onFocus={e => {
                         // Keep the input above the on-screen keyboard on mobile.
@@ -1969,9 +2008,10 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
                     </button>
                   </div>
                 </div>
-              )}
+                )}
+                {commentError && <p className="mt-2 text-center text-xs text-red-600">{commentError}</p>}
+              </div>
             </div>
-          </div>
         );
 
         return (

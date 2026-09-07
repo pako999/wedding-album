@@ -158,6 +158,7 @@ export interface Translations {
   enterNameToComment: string;   // "Enter your name to comment:"
   enterNameToLike: string;      // "Enter your name first to like photos:"
   addComment: string;           // "Add a comment…"
+  commentFailed: string;        // "Comment could not be posted. Please try again."
   ok: string;                   // "OK"
   showInfo: string;             // "Likes & comments"
   hideInfo: string;             // "Hide"
@@ -332,6 +333,7 @@ const sl: Translations = {
   enterNameToComment: "Vnesi ime za komentar:",
   enterNameToLike: "Najprej vnesi ime za všečkanje:",
   addComment: "Dodaj komentar…",
+  commentFailed: "Komentarja ni bilo mogoče objaviti. Poskusite znova.",
   ok: "OK",
   showInfo: "Všečki in komentarji",
   hideInfo: "Skrij",
@@ -490,6 +492,7 @@ const hr: Translations = {
   enterNameToComment: "Unesi ime za komentar:",
   enterNameToLike: "Prvo unesi ime za sviđanje:",
   addComment: "Dodaj komentar…",
+  commentFailed: "Komentar nije moguće objaviti. Pokušajte ponovno.",
   ok: "U redu",
   showInfo: "Sviđanja i komentari",
   hideInfo: "Sakrij",
@@ -648,6 +651,7 @@ const sr: Translations = {
   enterNameToComment: "Unesi ime za komentar:",
   enterNameToLike: "Prvo unesi ime za sviđanje:",
   addComment: "Dodaj komentar…",
+  commentFailed: "Komentar nije moguće objaviti. Pokušajte ponovo.",
   ok: "U redu",
   showInfo: "Sviđanja i komentari",
   hideInfo: "Sakrij",
@@ -806,6 +810,7 @@ const en: Translations = {
   enterNameToComment: "Enter your name to comment:",
   enterNameToLike: "Enter your name first to like photos:",
   addComment: "Add a comment…",
+  commentFailed: "The comment could not be posted. Please try again.",
   ok: "OK",
   showInfo: "Likes & comments",
   hideInfo: "Hide",
@@ -964,6 +969,7 @@ const de: Translations = {
   enterNameToComment: "Namen eingeben zum Kommentieren:",
   enterNameToLike: "Erst Namen eingeben, um zu liken:",
   addComment: "Kommentar hinzufügen…",
+  commentFailed: "Der Kommentar konnte nicht veröffentlicht werden. Bitte versuchen Sie es erneut.",
   ok: "OK",
   showInfo: "Likes & Kommentare",
   hideInfo: "Ausblenden",
@@ -1122,6 +1128,7 @@ const es: Translations = {
   enterNameToComment: "Introduce tu nombre para comentar:",
   enterNameToLike: "Introduce tu nombre para dar me gusta:",
   addComment: "Añadir un comentario…",
+  commentFailed: "No se pudo publicar el comentario. Inténtalo de nuevo.",
   ok: "OK",
   showInfo: "Me gusta y comentarios",
   hideInfo: "Ocultar",
