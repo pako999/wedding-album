@@ -86,6 +86,9 @@ const files = {
   bankOrder: await read("app/api/bank-order/route.ts"),
   notifications: await read("lib/email/notifications.ts"),
   adminOverview: await read("app/admin/page.tsx"),
+  adminEvents: await read("app/admin/events/page.tsx"),
+  adminEventList: await read("components/admin/AdminEventList.tsx"),
+  adminEventsData: await read("lib/admin-events.ts"),
   adminPayments: await read("app/admin/payments/page.tsx"),
   adminSales: await read("lib/admin-sales.ts"),
   mollie: await read("lib/mollie.ts"),
@@ -96,6 +99,9 @@ const files = {
   eventOfferCron: await read("app/api/cron/event-upgrade-reminder/route.ts"),
   eventOfferEmail: await read("lib/email/event-upgrade-reminder.ts"),
   eventOfferLog: await read("lib/event-upgrade-reminder-log.ts"),
+  lifecycleCron: await read("app/api/cron/lifecycle-emails/route.ts"),
+  lifecycleEmail: await read("lib/email/lifecycle-reminders.ts"),
+  lifecycleLog: await read("lib/lifecycle-email-log.ts"),
   vercelConfig: await read("vercel.json"),
   dbSchema: await read("lib/db/schema.ts"),
   upgradePage: await read("components/dashboard/UpgradePage.tsx"),
@@ -153,6 +159,34 @@ const files = {
     ].map(readTsxTree))
   ).join("\n"),
 };
+
+requireMatch(
+  "super admin dashboard shows customer event dates and contacts",
+  `${files.adminOverview}\n${files.adminEvents}\n${files.adminEventList}`,
+  /Prihajajoči dogodki strank[\s\S]*Dogodki strank[\s\S]*eventTime[\s\S]*ownerEmail/,
+  "the admin must be able to see who has an event and when it happens",
+);
+
+requireMatch(
+  "admin event data is sorted and legacy owner emails are resolved",
+  files.adminEventsData,
+  /orderBy\(asc\(albums\.weddingDate\)[\s\S]*resolveLegacyOwnerEmails\(events\)/,
+  "event operations need chronological data and contacts for older albums too",
+);
+
+requireMatch(
+  "owner lifecycle email flow covers D15, event countdowns, post-event and expiry",
+  `${files.lifecycleCron}\n${files.vercelConfig}`,
+  /SALES_DELAY_DAYS\s*=\s*15[\s\S]*EVENT_REMINDER_DAYS\s*=\s*\[7, 3, 1\][\s\S]*post-event-d1[\s\S]*expiry-d7[\s\S]*\/api\/cron\/lifecycle-emails/,
+  "all requested lifecycle reminders must be scheduled in one daily job",
+);
+
+requireMatch(
+  "lifecycle emails are multilingual and idempotent",
+  `${files.lifecycleEmail}\n${files.lifecycleLog}`,
+  /sl-SI[\s\S]*hr-HR[\s\S]*sr-Latn[\s\S]*de-DE[\s\S]*en-GB[\s\S]*es-ES[\s\S]*idempotencyKey[\s\S]*PRIMARY KEY \(scope_id, kind\)/,
+  "every locale must have a template and retries must not send duplicates",
+);
 
 requireMatch(
   "unpaid event offer runs exactly 14 days before the event",

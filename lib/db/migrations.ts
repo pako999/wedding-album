@@ -730,6 +730,20 @@ export async function runMigrations() {
     CREATE UNIQUE INDEX IF NOT EXISTS event_leads_album_email_unique ON event_leads (album_id, email)
   `);
 
+  // ── Owner lifecycle emails ───────────────────────────────────────────────
+  // One durable receipt per user/album + message type prevents duplicate
+  // delivery when Vercel retries a cron invocation.
+  await run("create lifecycle_email_reminders", (q) => q`
+    CREATE TABLE IF NOT EXISTS lifecycle_email_reminders (
+      scope_id   TEXT NOT NULL,
+      kind       VARCHAR(40) NOT NULL,
+      email      TEXT NOT NULL,
+      claimed_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      sent_at    TIMESTAMPTZ,
+      PRIMARY KEY (scope_id, kind)
+    )
+  `);
+
   // Backfill: give every existing album a referral code. Done in the DB
   // (not app-side) so we don't need N round-trips. Uses UPPER + regex
   // fold + album.id suffix for uniqueness.

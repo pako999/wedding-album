@@ -3,6 +3,9 @@ import { albums, photos, referralConversions, guestEmails, bankOrders } from "@/
 import { sql, desc, count, eq, isNotNull } from "drizzle-orm";
 import { listAllPayments, mollieConfigured, type MolliePayment } from "@/lib/mollie";
 import { summarizePaidPlanSales, type PaidPlanId } from "@/lib/admin-sales";
+import Link from "next/link";
+import { AdminEventList } from "@/components/admin/AdminEventList";
+import { listAdminEvents, todayInSlovenia } from "@/lib/admin-events";
 
 export const dynamic = "force-dynamic";
 
@@ -27,6 +30,7 @@ export default async function AdminOverview() {
         return [];
       })
     : Promise.resolve([]);
+  const allEventsPromise = listAdminEvents();
 
   // Headline numbers
   const [
@@ -50,10 +54,15 @@ export default async function AdminOverview() {
   const sales = summarizePaidPlanSales(molliePayments, paidBankOrders);
   const paidAlbums = sales.totalCount;
 
-  const recent = await db.query.albums.findMany({
-    orderBy: [desc(albums.createdAt)],
-    limit: 8,
-  });
+  const [recent, allEvents] = await Promise.all([
+    db.query.albums.findMany({
+      orderBy: [desc(albums.createdAt)],
+      limit: 8,
+    }),
+    allEventsPromise,
+  ]);
+  const today = todayInSlovenia();
+  const upcomingEvents = allEvents.filter((event) => event.weddingDate >= today).slice(0, 6);
 
   // ── Referral engine (guest viral loop) metrics ──────────────────────────
   // Wrapped in try/catch so a DB that hasn't run migrations yet doesn't
@@ -107,6 +116,23 @@ export default async function AdminOverview() {
         <Stat label="Plačani paketi" value={paidAlbums} icon="💎" />
         <Stat label="Fotografije"  value={totalPhotos} icon="📷" />
       </div>
+
+      <section className="overflow-hidden rounded-2xl border border-gray-200 bg-white">
+        <div className="flex items-center justify-between gap-4 border-b border-gray-100 px-4 py-4 sm:px-5">
+          <div>
+            <h2 className="font-semibold text-[#0F1729]">Prihajajoči dogodki strank</h2>
+            <p className="mt-0.5 text-xs text-gray-400">Naslednji po datumu · čas Slovenije</p>
+          </div>
+          <Link href="/admin/events" className="shrink-0 text-xs font-bold text-[#C9820A] hover:underline">
+            Vsi dogodki →
+          </Link>
+        </div>
+        <AdminEventList
+          events={upcomingEvents}
+          today={today}
+          emptyMessage="Trenutno ni prihajajočih dogodkov."
+        />
+      </section>
 
       <section className="bg-white rounded-2xl border border-gray-200 p-6">
         <h2 className="font-semibold text-[#0F1729] mb-4">Paketi</h2>
