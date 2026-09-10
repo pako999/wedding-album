@@ -2105,10 +2105,11 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
                     </p>
                   </div>
 
-                  {/* Compact action rail keeps the photo full-screen. The
-                      existing like, comment and download handlers are reused. */}
+                  {/* Mobile/tablet: keep actions in a horizontal top bar so
+                      they never cover the right side of a portrait photo.
+                      Desktop retains the familiar vertical action rail. */}
                   {!lightboxPanelOpen && (
-                    <div className={`absolute right-3 sm:right-5 top-1/2 -translate-y-1/2 z-[3] flex flex-col items-center gap-3 ${lightboxDesktopPanelOpen ? "lg:hidden" : ""}`}>
+                    <div className={`absolute left-16 right-3 top-3 z-[3] flex flex-row items-start justify-end gap-2 lg:left-auto lg:right-5 lg:top-1/2 lg:-translate-y-1/2 lg:flex-col lg:items-center lg:justify-start lg:gap-3 ${lightboxDesktopPanelOpen ? "lg:hidden" : ""}`}>
                       {likesOn && (
                         <button
                           type="button"

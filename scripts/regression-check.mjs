@@ -1011,10 +1011,10 @@ requireMatch(
 );
 
 requireMatch(
-  "album viewer uses the reference-style action rail",
+  "album viewer keeps mobile actions above the photo",
   `${files.albumGuestView}\n${files.globalStyles}`,
-  /Compact action rail keeps the photo full-screen[\s\S]*handleLightboxLike[\s\S]*openDiscussion[\s\S]*saveImageToDevice[\s\S]*columns:\s*3/,
-  "the full-screen image must keep like, comments and original download in the right-side rail",
+  /Mobile\/tablet: keep actions in a horizontal top bar[\s\S]*left-16 right-3 top-3[\s\S]*flex-row[\s\S]*lg:top-1\/2[\s\S]*lg:flex-col[\s\S]*handleLightboxLike[\s\S]*openDiscussion[\s\S]*saveImageToDevice/,
+  "mobile lightbox actions must stay in the top bar while desktop keeps the right-side rail",
 );
 
 requireMatch(
