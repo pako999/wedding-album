@@ -22,6 +22,7 @@ export const metadata: Metadata = {
 const NAV = [
   { href: "/admin",            label: "Pregled",       icon: "📊" },
   { href: "/admin/events",     label: "Dogodki",       icon: "📅" },
+  { href: "/admin/emails",     label: "E-maili",       icon: "✉️" },
   { href: "/admin/albums",     label: "Galerije",      icon: "🖼️" },
   { href: "/admin/users",      label: "Uporabniki",    icon: "👥" },
   { href: "/admin/discounts",  label: "Kode za popust", icon: "🏷️" },

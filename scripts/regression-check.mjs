@@ -87,8 +87,10 @@ const files = {
   notifications: await read("lib/email/notifications.ts"),
   adminOverview: await read("app/admin/page.tsx"),
   adminEvents: await read("app/admin/events/page.tsx"),
+  adminEmails: await read("app/admin/emails/page.tsx"),
   adminEventList: await read("components/admin/AdminEventList.tsx"),
   adminEventsData: await read("lib/admin-events.ts"),
+  adminEmailsData: await read("lib/admin-emails.ts"),
   adminPayments: await read("app/admin/payments/page.tsx"),
   adminSales: await read("lib/admin-sales.ts"),
   mollie: await read("lib/mollie.ts"),
@@ -172,6 +174,13 @@ requireMatch(
   files.adminEventsData,
   /orderBy\(asc\(albums\.weddingDate\)[\s\S]*resolveLegacyOwnerEmails\(events\)/,
   "event operations need chronological data and contacts for older albums too",
+);
+
+requireMatch(
+  "super admin email history uses Resend delivery and open events",
+  `${files.adminEmailsData}\n${files.adminEmails}\n${files.adminLayout}`,
+  /opened[\s\S]*clicked[\s\S]*bounced[\s\S]*emails\.list\([\s\S]*Poslani e[‑-]maili[\s\S]*\/admin\/emails/,
+  "admins need a protected menu with sent, read and delivery-problem states",
 );
 
 requireMatch(
