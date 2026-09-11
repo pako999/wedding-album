@@ -1069,10 +1069,17 @@ requireMatch(
 );
 
 requireMatch(
-  "cover crop position is adjustable, persisted and rendered publicly",
+  "cover crop position is draggable, persisted and rendered publicly",
   `${files.coverPhotoSettings}\n${files.albumSettingsRoute}\n${files.albumHeaderSettings}\n${files.albumGuestView}\n${files.dbMigrations}`,
-  /type="range"[\s\S]*coverPositionY[\s\S]*cover_position_y[\s\S]*objectPosition:\s*`50% \$\{coverPositionY\}%`/,
-  "owners must be able to move the cover vertically and keep the same crop in the public gallery",
+  /setPointerCapture[\s\S]*onPointerMove=\{currentCover \? handlePointerMove[\s\S]*coverPositionY[\s\S]*cover_position_y[\s\S]*objectPosition:\s*`50% \$\{coverPositionY\}%`/,
+  "owners must be able to drag the cover vertically and keep the same crop in the public gallery",
+);
+
+requireAbsent(
+  "cover crop no longer uses a slider",
+  files.coverPhotoSettings,
+  /type="range"/,
+  "the cover editor must use direct manipulation instead of a percentage slider",
 );
 
 requireMatch(

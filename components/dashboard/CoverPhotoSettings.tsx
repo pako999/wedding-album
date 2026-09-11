@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
 import { useRouter } from "next/navigation";
 import { bunnyDisplayUrl } from "@/lib/storage/bunny";
 import type { Album, Photo } from "@/lib/db/schema";
@@ -36,15 +36,30 @@ const ACCEPTED_MIME = new Set([
   "image/jpeg", "image/jpg", "image/png", "image/webp", "image/heic", "image/heif",
 ]);
 
+type CoverDrag = {
+  pointerId: number;
+  startClientY: number;
+  startPositionY: number;
+  movementRangeY: number;
+};
+
+function clampCoverPosition(value: number) {
+  return Math.min(100, Math.max(0, Math.round(value)));
+}
+
 export function CoverPhotoSettings({ album, photos, initialPositionY }: Props) {
   const router = useRouter();
   const fileInput = useRef<HTMLInputElement>(null);
+  const previewRef = useRef<HTMLDivElement>(null);
+  const coverImageRef = useRef<HTMLImageElement>(null);
+  const dragRef = useRef<CoverDrag | null>(null);
   const [pickerOpen, setPickerOpen] = useState(false);
   const [busy, setBusy] = useState<null | "pick" | "upload" | "remove" | "position">(null);
   const [error, setError] = useState<string | null>(null);
-  const safeInitialPosition = Math.min(100, Math.max(0, Math.round(initialPositionY)));
+  const safeInitialPosition = clampCoverPosition(initialPositionY);
+  const positionYRef = useRef(safeInitialPosition);
   const [positionY, setPositionY] = useState(safeInitialPosition);
-  const [savedPositionY, setSavedPositionY] = useState(safeInitialPosition);
+  const [isDragging, setIsDragging] = useState(false);
 
   const canUpload = album.plan === "plus" || album.plan === "premium";
 
@@ -117,8 +132,15 @@ export function CoverPhotoSettings({ album, photos, initialPositionY }: Props) {
     }
   }
 
-  async function savePosition(nextPosition = positionY) {
-    const value = Math.min(100, Math.max(0, Math.round(nextPosition)));
+  function updatePosition(nextPosition: number) {
+    const value = clampCoverPosition(nextPosition);
+    positionYRef.current = value;
+    setPositionY(value);
+    return value;
+  }
+
+  async function savePosition(nextPosition: number) {
+    const value = updatePosition(nextPosition);
     setError(null);
     setBusy("position");
     try {
@@ -128,8 +150,6 @@ export function CoverPhotoSettings({ album, photos, initialPositionY }: Props) {
         body: JSON.stringify({ coverPositionY: value }),
       });
       if (!res.ok) throw new Error("position_save_failed");
-      setPositionY(value);
-      setSavedPositionY(value);
       router.refresh();
     } catch {
       setError("Položaja naslovne fotografije ni bilo mogoče shraniti.");
@@ -138,10 +158,74 @@ export function CoverPhotoSettings({ album, photos, initialPositionY }: Props) {
     }
   }
 
-  function moveCover(delta: number) {
-    const next = Math.min(100, Math.max(0, positionY + delta));
-    setPositionY(next);
-    void savePosition(next);
+  function getVerticalMovementRange() {
+    const preview = previewRef.current;
+    const image = coverImageRef.current;
+    if (!preview || !image || image.naturalWidth === 0 || image.naturalHeight === 0) {
+      return preview?.getBoundingClientRect().height ?? 1;
+    }
+
+    const bounds = preview.getBoundingClientRect();
+    const coverScale = Math.max(
+      bounds.width / image.naturalWidth,
+      bounds.height / image.naturalHeight,
+    );
+    const overflowY = image.naturalHeight * coverScale - bounds.height;
+
+    // When the source already has the exact cover ratio, object-position has
+    // no visible overflow. Keeping the preview height as a fallback still
+    // lets the owner choose a focal point for narrower public/mobile layouts.
+    return Math.max(overflowY, bounds.height, 1);
+  }
+
+  function handlePointerDown(event: ReactPointerEvent<HTMLDivElement>) {
+    if (busy !== null || event.button !== 0) return;
+
+    event.preventDefault();
+    event.currentTarget.setPointerCapture(event.pointerId);
+    dragRef.current = {
+      pointerId: event.pointerId,
+      startClientY: event.clientY,
+      startPositionY: positionYRef.current,
+      movementRangeY: getVerticalMovementRange(),
+    };
+    setError(null);
+    setIsDragging(true);
+  }
+
+  function handlePointerMove(event: ReactPointerEvent<HTMLDivElement>) {
+    const drag = dragRef.current;
+    if (!drag || drag.pointerId !== event.pointerId) return;
+
+    event.preventDefault();
+    const draggedPixels = event.clientY - drag.startClientY;
+    updatePosition(
+      drag.startPositionY - (draggedPixels / drag.movementRangeY) * 100,
+    );
+  }
+
+  function finishPointerDrag(event: ReactPointerEvent<HTMLDivElement>) {
+    const drag = dragRef.current;
+    if (!drag || drag.pointerId !== event.pointerId) return;
+
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.releasePointerCapture(event.pointerId);
+    }
+    dragRef.current = null;
+    setIsDragging(false);
+
+    const nextPosition = positionYRef.current;
+    if (nextPosition !== drag.startPositionY) void savePosition(nextPosition);
+  }
+
+  function handlePositionKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
+    if (busy !== null || (event.key !== "ArrowUp" && event.key !== "ArrowDown")) return;
+
+    event.preventDefault();
+    const nextPosition = updatePosition(
+      positionYRef.current + (event.key === "ArrowUp" ? 5 : -5),
+    );
+    void savePosition(nextPosition);
   }
 
   const currentCover = album.coverImageUrl;
@@ -155,15 +239,49 @@ export function CoverPhotoSettings({ album, photos, initialPositionY }: Props) {
       </p>
 
       {/* Preview */}
-      <div className="rounded-xl overflow-hidden border border-gray-200 bg-gray-100 aspect-[3/1] mb-3 relative">
+      <div
+        ref={previewRef}
+        role={currentCover ? "button" : undefined}
+        tabIndex={currentCover ? 0 : undefined}
+        aria-label={currentCover ? "Premaknite naslovno fotografijo gor ali dol" : undefined}
+        aria-describedby={currentCover ? "cover-drag-help" : undefined}
+        aria-disabled={currentCover ? busy !== null : undefined}
+        onPointerDown={currentCover ? handlePointerDown : undefined}
+        onPointerMove={currentCover ? handlePointerMove : undefined}
+        onPointerUp={currentCover ? finishPointerDrag : undefined}
+        onPointerCancel={currentCover ? finishPointerDrag : undefined}
+        onKeyDown={currentCover ? handlePositionKeyDown : undefined}
+        className={`relative mb-3 aspect-[3/1] overflow-hidden rounded-xl border bg-gray-100 select-none outline-none transition-shadow focus-visible:ring-2 focus-visible:ring-[#C9820A] focus-visible:ring-offset-2 ${
+          currentCover
+            ? busy !== null
+              ? "cursor-wait border-gray-200"
+              : isDragging
+                ? "cursor-grabbing border-[#FFC94D] ring-4 ring-[#FFC94D]/25 touch-none"
+                : "cursor-grab border-gray-200 touch-none"
+            : "border-gray-200"
+        }`}
+      >
         {currentCover ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={bunnyDisplayUrl(currentCover)}
-            alt="Trenutna naslovna fotografija"
-            className="w-full h-full object-cover"
-            style={{ objectPosition: `50% ${positionY}%` }}
-          />
+          <>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              ref={coverImageRef}
+              src={bunnyDisplayUrl(currentCover)}
+              alt="Trenutna naslovna fotografija"
+              draggable={false}
+              className="pointer-events-none h-full w-full object-cover"
+              style={{ objectPosition: `50% ${positionY}%` }}
+            />
+            <div className="pointer-events-none absolute inset-x-0 bottom-3 flex justify-center px-3">
+              <span className="rounded-full bg-black/65 px-3 py-1.5 text-xs font-bold text-white shadow-sm backdrop-blur-sm">
+                {isDragging
+                  ? "↕ Spustite za shranjevanje"
+                  : busy === "position"
+                    ? "Shranjujem položaj…"
+                    : "↕ Zgrabite in premaknite sliko"}
+              </span>
+            </div>
+          </>
         ) : (
           <div
             className="w-full h-full flex items-center justify-center text-xs text-[#0F1729]/60"
@@ -175,55 +293,9 @@ export function CoverPhotoSettings({ album, photos, initialPositionY }: Props) {
       </div>
 
       {currentCover && (
-        <div className="mb-3 rounded-xl border border-gray-200 bg-[#F8FAFC] p-3">
-          <div className="flex items-center justify-between gap-3">
-            <label htmlFor="cover-position-y" className="text-xs font-bold text-[#0F1729]">
-              Navpični položaj slike
-            </label>
-            <span className="text-[11px] font-medium text-gray-400">{positionY} %</span>
-          </div>
-          <input
-            id="cover-position-y"
-            type="range"
-            min="0"
-            max="100"
-            step="1"
-            value={positionY}
-            onChange={(event) => setPositionY(Number(event.target.value))}
-            aria-valuetext={`${positionY} odstotkov od vrha`}
-            className="mt-2 w-full accent-[#C9820A]"
-          />
-          <div className="mt-1 flex justify-between text-[10px] font-semibold uppercase tracking-wide text-gray-400">
-            <span>Prikaži zgornji del</span>
-            <span>Prikaži spodnji del</span>
-          </div>
-          <div className="mt-3 flex flex-wrap gap-2">
-            <button
-              type="button"
-              onClick={() => moveCover(5)}
-              disabled={busy !== null || positionY >= 100}
-              className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs font-bold text-[#0F1729] hover:border-[#FFC94D] disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              ↑ Premakni sliko gor
-            </button>
-            <button
-              type="button"
-              onClick={() => moveCover(-5)}
-              disabled={busy !== null || positionY <= 0}
-              className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs font-bold text-[#0F1729] hover:border-[#FFC94D] disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              ↓ Premakni sliko dol
-            </button>
-            <button
-              type="button"
-              onClick={() => void savePosition()}
-              disabled={busy !== null || positionY === savedPositionY}
-              className="rounded-lg bg-[#0F1729] px-3 py-2 text-xs font-bold text-white hover:brightness-125 disabled:cursor-not-allowed disabled:opacity-40"
-            >
-              {busy === "position" ? "Shranjujem…" : "Shrani položaj"}
-            </button>
-          </div>
-        </div>
+        <p id="cover-drag-help" className="mb-3 text-xs text-gray-500">
+          Povlecite sliko gor ali dol. Položaj se samodejno shrani, ko jo spustite.
+        </p>
       )}
 
       {/* Actions */}
