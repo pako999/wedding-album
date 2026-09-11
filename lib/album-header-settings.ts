@@ -6,6 +6,8 @@ export interface AlbumHeaderSettings {
   showEventDate: boolean;
   /** Optional local start time in 24-hour HH:mm format. */
   eventTime: string | null;
+  /** Vertical focal point for the cover crop: 0 = top, 100 = bottom. */
+  coverPositionY: number;
 }
 
 export const DEFAULT_ALBUM_HEADER_SETTINGS: AlbumHeaderSettings = {
@@ -13,6 +15,7 @@ export const DEFAULT_ALBUM_HEADER_SETTINGS: AlbumHeaderSettings = {
   showEventType: true,
   showEventDate: true,
   eventTime: null,
+  coverPositionY: 50,
 };
 
 type HeaderRow = {
@@ -20,6 +23,7 @@ type HeaderRow = {
   show_event_type: boolean;
   show_event_date: boolean;
   event_time: string | null;
+  cover_position_y: number | string | null;
 };
 
 const EVENT_TIME_RE = /^(?:[01]\d|2[0-3]):[0-5]\d$/;
@@ -49,7 +53,8 @@ export async function getAlbumHeaderSettings(albumId: string): Promise<AlbumHead
         show_event_name,
         show_event_type,
         show_event_date,
-        NULLIF(to_jsonb(album_header_settings)->>'event_time', '') AS event_time
+        NULLIF(to_jsonb(album_header_settings)->>'event_time', '') AS event_time,
+        NULLIF(to_jsonb(album_header_settings)->>'cover_position_y', '') AS cover_position_y
       FROM album_header_settings
       WHERE album_id = ${albumId}
       LIMIT 1
@@ -57,11 +62,15 @@ export async function getAlbumHeaderSettings(albumId: string): Promise<AlbumHead
     const row = rows[0];
     if (!row) return DEFAULT_ALBUM_HEADER_SETTINGS;
 
+    const parsedCoverPosition = Number(row.cover_position_y);
     return {
       showTitle: row.show_event_name !== false,
       showEventType: row.show_event_type !== false,
       showEventDate: row.show_event_date !== false,
       eventTime: row.event_time && isValidEventTime(row.event_time) ? row.event_time : null,
+      coverPositionY: Number.isFinite(parsedCoverPosition)
+        ? Math.min(100, Math.max(0, Math.round(parsedCoverPosition)))
+        : 50,
     };
   } catch (err) {
     console.warn("[album-header-settings] read failed; using defaults:", err);
@@ -80,6 +89,7 @@ async function ensureTable() {
       show_event_type BOOLEAN NOT NULL DEFAULT TRUE,
       show_event_date BOOLEAN NOT NULL DEFAULT TRUE,
       event_time VARCHAR(5),
+      cover_position_y INTEGER NOT NULL DEFAULT 50,
       updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
     )
   `;
@@ -88,6 +98,7 @@ async function ensureTable() {
   await query`ALTER TABLE album_header_settings ADD COLUMN IF NOT EXISTS show_event_type BOOLEAN NOT NULL DEFAULT TRUE`;
   await query`ALTER TABLE album_header_settings ADD COLUMN IF NOT EXISTS show_event_date BOOLEAN NOT NULL DEFAULT TRUE`;
   await query`ALTER TABLE album_header_settings ADD COLUMN IF NOT EXISTS event_time VARCHAR(5)`;
+  await query`ALTER TABLE album_header_settings ADD COLUMN IF NOT EXISTS cover_position_y INTEGER NOT NULL DEFAULT 50`;
 
   return query;
 }
@@ -104,6 +115,14 @@ export async function setAlbumHeaderSettings(
   if (patch.eventTime === null || (typeof patch.eventTime === "string" && isValidEventTime(patch.eventTime))) {
     clean.eventTime = patch.eventTime;
   }
+  if (
+    typeof patch.coverPositionY === "number" &&
+    Number.isInteger(patch.coverPositionY) &&
+    patch.coverPositionY >= 0 &&
+    patch.coverPositionY <= 100
+  ) {
+    clean.coverPositionY = patch.coverPositionY;
+  }
   if (Object.keys(clean).length === 0) return true;
 
   try {
@@ -118,6 +137,7 @@ export async function setAlbumHeaderSettings(
         show_event_type,
         show_event_date,
         event_time,
+        cover_position_y,
         updated_at
       )
       VALUES (
@@ -126,6 +146,7 @@ export async function setAlbumHeaderSettings(
         ${next.showEventType},
         ${next.showEventDate},
         ${next.eventTime},
+        ${next.coverPositionY},
         NOW()
       )
       ON CONFLICT (album_id) DO UPDATE SET
@@ -133,6 +154,7 @@ export async function setAlbumHeaderSettings(
         show_event_type = EXCLUDED.show_event_type,
         show_event_date = EXCLUDED.show_event_date,
         event_time = EXCLUDED.event_time,
+        cover_position_y = EXCLUDED.cover_position_y,
         updated_at = NOW()
     `;
     return true;

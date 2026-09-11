@@ -811,7 +811,11 @@ export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activ
                 {/* Cover-photo picker injected into the settings form so it
                     sits inside the same card chrome, between the password
                     field and the theme picker. */}
-                <CoverPhotoSettings album={album} photos={photos} />
+                <CoverPhotoSettings
+                  album={album}
+                  photos={photos}
+                  initialPositionY={headerSettings.coverPositionY}
+                />
               </AlbumSettingsForm>
               <MomentsManager album={album} />
               <CustomDomainPanel album={album} />

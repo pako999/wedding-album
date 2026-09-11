@@ -692,6 +692,7 @@ export async function runMigrations() {
       show_event_type   BOOLEAN NOT NULL DEFAULT TRUE,
       show_event_date   BOOLEAN NOT NULL DEFAULT TRUE,
       event_time        VARCHAR(5),
+      cover_position_y  INTEGER NOT NULL DEFAULT 50,
       updated_at        TIMESTAMPTZ NOT NULL DEFAULT NOW()
     )
   `);
@@ -706,6 +707,9 @@ export async function runMigrations() {
   `);
   await run("album_header_settings.event_time", (q) => q`
     ALTER TABLE album_header_settings ADD COLUMN IF NOT EXISTS event_time VARCHAR(5)
+  `);
+  await run("album_header_settings.cover_position_y", (q) => q`
+    ALTER TABLE album_header_settings ADD COLUMN IF NOT EXISTS cover_position_y INTEGER NOT NULL DEFAULT 50
   `);
 
   // ── Event lead capture ────────────────────────────────────────────────────

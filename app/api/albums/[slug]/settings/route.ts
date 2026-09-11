@@ -22,7 +22,7 @@ export async function PATCH(
   if (!album) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
   const body = await req.json();
-  const { coupleName, weddingDate, eventTime, location, notifyEmail, password, moderationEnabled, isPublished, coverImageUrl, eventType, defaultLang, theme, guestDataCapture, allowPhotos, allowVideos, albumPermission, disableDownload, disableLikes, showTitle, showEventType, showEventDate } = body;
+  const { coupleName, weddingDate, eventTime, location, notifyEmail, password, moderationEnabled, isPublished, coverImageUrl, coverPositionY, eventType, defaultLang, theme, guestDataCapture, allowPhotos, allowVideos, albumPermission, disableDownload, disableLikes, showTitle, showEventType, showEventDate } = body;
 
   const ALLOWED_EVENT_TYPES = [
     "wedding",
@@ -60,6 +60,19 @@ export async function PATCH(
     validEventTime = eventTime;
   } else {
     return NextResponse.json({ error: "Neveljaven čas začetka dogodka." }, { status: 400 });
+  }
+
+  let validCoverPositionY: number | undefined;
+  if (coverPositionY !== undefined) {
+    if (
+      typeof coverPositionY !== "number" ||
+      !Number.isInteger(coverPositionY) ||
+      coverPositionY < 0 ||
+      coverPositionY > 100
+    ) {
+      return NextResponse.json({ error: "Neveljaven položaj naslovne fotografije." }, { status: 400 });
+    }
+    validCoverPositionY = coverPositionY;
   }
 
   const validTheme =
@@ -118,11 +131,13 @@ export async function PATCH(
     typeof showTitle === "boolean" ||
     typeof showEventType === "boolean" ||
     typeof showEventDate === "boolean" ||
+    validCoverPositionY !== undefined ||
     validEventTime !== undefined;
   const headerSettingsSaved = await setAlbumHeaderSettings(album.id, {
     ...(typeof showTitle === "boolean" ? { showTitle } : {}),
     ...(typeof showEventType === "boolean" ? { showEventType } : {}),
     ...(typeof showEventDate === "boolean" ? { showEventDate } : {}),
+    ...(validCoverPositionY !== undefined ? { coverPositionY: validCoverPositionY } : {}),
     ...(validEventTime !== undefined ? { eventTime: validEventTime } : {}),
   });
   if (headerSettingsRequested && !headerSettingsSaved) {

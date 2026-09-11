@@ -64,6 +64,7 @@ interface Props {
     showEventType: boolean;
     showEventDate: boolean;
     eventTime: string | null;
+    coverPositionY: number;
   };
 }
 
@@ -236,6 +237,7 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
   const showEventType = headerVisibility?.showEventType !== false;
   const showEventDate = headerVisibility?.showEventDate !== false;
   const eventTime = headerVisibility?.eventTime ?? null;
+  const coverPositionY = Math.min(100, Math.max(0, headerVisibility?.coverPositionY ?? 50));
   const eventDateLabel = `${formatEventDate(album.weddingDate)}${eventTime ? ` · ${eventTime}` : ""}`;
   const uploadAccept = [
     eventFlags?.allowPhotos === false ? null : "image/*",
@@ -851,7 +853,14 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
       <div className="relative">
         {headerCover ? (
           <div className="relative h-72 sm:h-96 lg:h-[460px] w-full overflow-hidden">
-            <Image src={headerCover} alt={album.coupleName} fill className="object-cover" priority />
+            <Image
+              src={headerCover}
+              alt={album.coupleName}
+              fill
+              className="object-cover"
+              style={{ objectPosition: `50% ${coverPositionY}%` }}
+              priority
+            />
             <div className="absolute inset-0" style={{ background: "rgba(0,0,0,0.45)" }} />
             <div className="absolute top-0 inset-x-0 flex items-center justify-between px-6 pt-5">
               {showEventType ? (

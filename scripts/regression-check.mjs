@@ -57,6 +57,7 @@ const files = {
   slideshow: await read("components/album/Slideshow.tsx"),
   bunny: await read("lib/storage/bunny.ts"),
   albumHeaderSettings: await read("lib/album-header-settings.ts"),
+  coverPhotoSettings: await read("components/dashboard/CoverPhotoSettings.tsx"),
   proxy: await read("proxy.ts"),
   resolveDomain: await read("app/api/resolve-domain/route.ts"),
   siteDomains: await read("lib/site-domains.ts"),
@@ -1065,6 +1066,13 @@ requireMatch(
   files.albumSettingsRoute,
   /setAlbumHeaderSettings\(album\.id,[\s\S]*showTitle[\s\S]*showEventType[\s\S]*showEventDate/,
   "the settings PATCH route must persist all three header visibility flags",
+);
+
+requireMatch(
+  "cover crop position is adjustable, persisted and rendered publicly",
+  `${files.coverPhotoSettings}\n${files.albumSettingsRoute}\n${files.albumHeaderSettings}\n${files.albumGuestView}\n${files.dbMigrations}`,
+  /type="range"[\s\S]*coverPositionY[\s\S]*cover_position_y[\s\S]*objectPosition:\s*`50% \$\{coverPositionY\}%`/,
+  "owners must be able to move the cover vertically and keep the same crop in the public gallery",
 );
 
 requireMatch(
