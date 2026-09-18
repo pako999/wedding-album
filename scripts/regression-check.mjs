@@ -1098,10 +1098,24 @@ requireMatch(
 );
 
 requireMatch(
-  "mobile album cover shows the complete image without changing desktop crop",
+  "album cover shows the complete image on every screen",
   files.albumGuestView,
-  /className="object-cover scale-110 blur-xl sm:hidden"[\s\S]*className="object-contain sm:object-cover"/,
-  "mobile must contain the full cover while desktop keeps its cover crop",
+  /className="object-cover scale-110 blur-xl"[\s\S]*className="object-contain"/,
+  "the complete cover must stay visible over a blurred backdrop on every screen",
+);
+
+requireMatch(
+  "cover drag and keyboard controls move in the expected direction",
+  files.coverPhotoSettings,
+  /startPositionY \+ \(draggedPixels \/ drag\.movementRangeY\) \* 100[\s\S]*event\.key === "ArrowUp" \? -5 : 5/,
+  "dragging down must move the image down, while the up arrow must move it up",
+);
+
+requireMatch(
+  "cover editor provides matching desktop and mobile safe previews",
+  files.coverPhotoSettings,
+  /Namizni prikaz[\s\S]*Mobilni prikaz[\s\S]*aspect-\[4\/3\][\s\S]*object-contain[\s\S]*Na vrh[\s\S]*Na sredino[\s\S]*Na dno/,
+  "owners must see the real phone framing and keep the full cover inside it",
 );
 
 requireAbsent(

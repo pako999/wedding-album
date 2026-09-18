@@ -75,9 +75,13 @@ export function CoverPhotoSettings({ album, photos, initialPositionY }: Props) {
       const res = await fetch(`/api/albums/${album.slug}/settings`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ coverImageUrl: p.thumbnailUrl ?? p.blobUrl }),
+        body: JSON.stringify({
+          coverImageUrl: p.thumbnailUrl ?? p.blobUrl,
+          coverPositionY: 50,
+        }),
       });
       if (!res.ok) throw new Error("save_failed");
+      updatePosition(50);
       setPickerOpen(false);
       router.refresh();
     } catch {
@@ -109,6 +113,12 @@ export function CoverPhotoSettings({ album, photos, initialPositionY }: Props) {
         return;
       }
       if (!res.ok) throw new Error("upload_failed");
+      const positionRes = await fetch(`/api/albums/${album.slug}/settings`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ coverPositionY: 50 }),
+      });
+      if (positionRes.ok) updatePosition(50);
       router.refresh();
     } catch {
       setError("Nalaganje naslovne fotografije ni uspelo. Poskusite znova.");
@@ -166,16 +176,16 @@ export function CoverPhotoSettings({ album, photos, initialPositionY }: Props) {
     }
 
     const bounds = preview.getBoundingClientRect();
-    const coverScale = Math.max(
+    const containScale = Math.min(
       bounds.width / image.naturalWidth,
       bounds.height / image.naturalHeight,
     );
-    const overflowY = image.naturalHeight * coverScale - bounds.height;
+    const freeSpaceY = bounds.height - image.naturalHeight * containScale;
 
-    // When the source already has the exact cover ratio, object-position has
-    // no visible overflow. Keeping the preview height as a fallback still
-    // lets the owner choose a focal point for narrower public/mobile layouts.
-    return Math.max(overflowY, bounds.height, 1);
+    // The public cover now uses contain, so a wide banner can move only inside
+    // the safe free space above/below it. A small fallback keeps keyboard and
+    // pointer movement stable for photos that already fill the preview.
+    return Math.max(freeSpaceY, bounds.height * 0.35, 1);
   }
 
   function handlePointerDown(event: ReactPointerEvent<HTMLDivElement>) {
@@ -200,7 +210,7 @@ export function CoverPhotoSettings({ album, photos, initialPositionY }: Props) {
     event.preventDefault();
     const draggedPixels = event.clientY - drag.startClientY;
     updatePosition(
-      drag.startPositionY - (draggedPixels / drag.movementRangeY) * 100,
+      drag.startPositionY + (draggedPixels / drag.movementRangeY) * 100,
     );
   }
 
@@ -223,7 +233,7 @@ export function CoverPhotoSettings({ album, photos, initialPositionY }: Props) {
 
     event.preventDefault();
     const nextPosition = updatePosition(
-      positionYRef.current + (event.key === "ArrowUp" ? 5 : -5),
+      positionYRef.current + (event.key === "ArrowUp" ? -5 : 5),
     );
     void savePosition(nextPosition);
   }
@@ -238,64 +248,129 @@ export function CoverPhotoSettings({ album, photos, initialPositionY }: Props) {
         fotografij ali naložite svojo (Plus / Premium).
       </p>
 
-      {/* Preview */}
-      <div
-        ref={previewRef}
-        role={currentCover ? "button" : undefined}
-        tabIndex={currentCover ? 0 : undefined}
-        aria-label={currentCover ? "Premaknite naslovno fotografijo gor ali dol" : undefined}
-        aria-describedby={currentCover ? "cover-drag-help" : undefined}
-        aria-disabled={currentCover ? busy !== null : undefined}
-        onPointerDown={currentCover ? handlePointerDown : undefined}
-        onPointerMove={currentCover ? handlePointerMove : undefined}
-        onPointerUp={currentCover ? finishPointerDrag : undefined}
-        onPointerCancel={currentCover ? finishPointerDrag : undefined}
-        onKeyDown={currentCover ? handlePositionKeyDown : undefined}
-        className={`relative mb-3 aspect-[3/1] overflow-hidden rounded-xl border bg-gray-100 select-none outline-none transition-shadow focus-visible:ring-2 focus-visible:ring-[#C9820A] focus-visible:ring-offset-2 ${
-          currentCover
-            ? busy !== null
-              ? "cursor-wait border-gray-200"
-              : isDragging
-                ? "cursor-grabbing border-[#FFC94D] ring-4 ring-[#FFC94D]/25 touch-none"
-                : "cursor-grab border-gray-200 touch-none"
-            : "border-gray-200"
-        }`}
-      >
-        {currentCover ? (
-          <>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              ref={coverImageRef}
-              src={bunnyDisplayUrl(currentCover)}
-              alt="Trenutna naslovna fotografija"
-              draggable={false}
-              className="pointer-events-none h-full w-full object-cover"
-              style={{ objectPosition: `50% ${positionY}%` }}
-            />
-            <div className="pointer-events-none absolute inset-x-0 bottom-3 flex justify-center px-3">
-              <span className="rounded-full bg-black/65 px-3 py-1.5 text-xs font-bold text-white shadow-sm backdrop-blur-sm">
-                {isDragging
-                  ? "↕ Spustite za shranjevanje"
-                  : busy === "position"
-                    ? "Shranjujem položaj…"
-                    : "↕ Zgrabite in premaknite sliko"}
-              </span>
-            </div>
-          </>
-        ) : (
-          <div
-            className="w-full h-full flex items-center justify-center text-xs text-[#0F1729]/60"
-            style={{ background: "linear-gradient(135deg, #FFF9EC 0%, #FFC94D 100%)" }}
-          >
-            Privzeta naslovnica (gradient)
+      {/* Desktop + phone previews use the same contain behavior as the public
+          album. The phone preview is the drag surface because wide banners
+          have the most vertical positioning room on narrow screens. */}
+      <div className="mb-3 grid items-start gap-3 sm:grid-cols-[minmax(0,1fr)_180px]">
+        <div>
+          <p className="mb-1.5 text-[11px] font-bold uppercase tracking-wide text-gray-400">Namizni prikaz</p>
+          <div className="relative aspect-[3/1] overflow-hidden rounded-xl border border-gray-200 bg-[#0F1729]">
+            {currentCover ? (
+              <>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={bunnyDisplayUrl(currentCover)}
+                  alt=""
+                  aria-hidden="true"
+                  className="absolute inset-0 h-full w-full scale-110 object-cover blur-xl"
+                  style={{ objectPosition: `50% ${positionY}%` }}
+                />
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={bunnyDisplayUrl(currentCover)}
+                  alt="Namizni predogled naslovne fotografije"
+                  className="absolute inset-0 h-full w-full object-contain"
+                  style={{ objectPosition: `50% ${positionY}%` }}
+                />
+              </>
+            ) : (
+              <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-[#FFF9EC] to-[#FFC94D] text-xs text-[#0F1729]/60">
+                Privzeta naslovnica
+              </div>
+            )}
           </div>
-        )}
+        </div>
+
+        <div>
+          <p className="mb-1.5 text-[11px] font-bold uppercase tracking-wide text-gray-400">Mobilni prikaz</p>
+          <div
+            ref={previewRef}
+            role={currentCover ? "button" : undefined}
+            tabIndex={currentCover ? 0 : undefined}
+            aria-label={currentCover ? "Premaknite naslovno fotografijo gor ali dol" : undefined}
+            aria-describedby={currentCover ? "cover-drag-help" : undefined}
+            aria-disabled={currentCover ? busy !== null : undefined}
+            onPointerDown={currentCover ? handlePointerDown : undefined}
+            onPointerMove={currentCover ? handlePointerMove : undefined}
+            onPointerUp={currentCover ? finishPointerDrag : undefined}
+            onPointerCancel={currentCover ? finishPointerDrag : undefined}
+            onKeyDown={currentCover ? handlePositionKeyDown : undefined}
+            className={`relative aspect-[4/3] overflow-hidden rounded-xl border bg-[#0F1729] select-none outline-none transition-shadow focus-visible:ring-2 focus-visible:ring-[#C9820A] focus-visible:ring-offset-2 ${
+              currentCover
+                ? busy !== null
+                  ? "cursor-wait border-gray-200"
+                  : isDragging
+                    ? "cursor-grabbing border-[#FFC94D] ring-4 ring-[#FFC94D]/25 touch-none"
+                    : "cursor-grab border-gray-200 touch-none"
+                : "border-gray-200"
+            }`}
+          >
+            {currentCover ? (
+              <>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={bunnyDisplayUrl(currentCover)}
+                  alt=""
+                  aria-hidden="true"
+                  className="absolute inset-0 h-full w-full scale-110 object-cover blur-xl"
+                  style={{ objectPosition: `50% ${positionY}%` }}
+                />
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  ref={coverImageRef}
+                  src={bunnyDisplayUrl(currentCover)}
+                  alt="Mobilni predogled naslovne fotografije"
+                  draggable={false}
+                  className="pointer-events-none absolute inset-0 h-full w-full object-contain"
+                  style={{ objectPosition: `50% ${positionY}%` }}
+                />
+                <div className="pointer-events-none absolute inset-x-0 bottom-2 flex justify-center px-2">
+                  <span className="rounded-full bg-black/70 px-2.5 py-1 text-[10px] font-bold text-white shadow-sm backdrop-blur-sm">
+                    {isDragging
+                      ? "↕ Spustite"
+                      : busy === "position"
+                        ? "Shranjujem…"
+                        : "↕ Povlecite sliko"}
+                  </span>
+                </div>
+              </>
+            ) : (
+              <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-[#FFF9EC] to-[#FFC94D] text-center text-xs text-[#0F1729]/60">
+                Privzeta<br />naslovnica
+              </div>
+            )}
+          </div>
+        </div>
       </div>
 
       {currentCover && (
-        <p id="cover-drag-help" className="mb-3 text-xs text-gray-500">
-          Povlecite sliko gor ali dol. Položaj se samodejno shrani, ko jo spustite.
-        </p>
+        <div id="cover-drag-help" className="mb-3 rounded-xl border border-gray-200 bg-gray-50 p-3">
+          <p className="text-xs font-medium text-gray-600">
+            Povlecite sliko v mobilnem predogledu ali izberite položaj. Celotna slika vedno ostane vidna.
+          </p>
+          <div className="mt-2 flex flex-wrap gap-2">
+            {([
+              ["Na vrh", 0],
+              ["Na sredino", 50],
+              ["Na dno", 100],
+            ] as const).map(([label, value]) => (
+              <button
+                key={value}
+                type="button"
+                onClick={() => void savePosition(value)}
+                disabled={busy !== null}
+                aria-pressed={positionY === value}
+                className={`rounded-lg border px-3 py-1.5 text-xs font-bold transition-colors disabled:cursor-wait disabled:opacity-60 ${
+                  positionY === value
+                    ? "border-[#FFC94D] bg-[#FFF3C4] text-[#6B4D00]"
+                    : "border-gray-200 bg-white text-gray-600 hover:border-[#FFC94D]"
+                }`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        </div>
       )}
 
       {/* Actions */}
