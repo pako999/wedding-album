@@ -1097,6 +1097,13 @@ requireMatch(
   "owners must be able to drag the cover vertically and keep the same crop in the public gallery",
 );
 
+requireMatch(
+  "mobile album cover shows the complete image without changing desktop crop",
+  files.albumGuestView,
+  /className="object-cover scale-110 blur-xl sm:hidden"[\s\S]*className="object-contain sm:object-cover"/,
+  "mobile must contain the full cover while desktop keeps its cover crop",
+);
+
 requireAbsent(
   "cover crop no longer uses a slider",
   files.coverPhotoSettings,

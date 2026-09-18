@@ -852,12 +852,25 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
       ════════════════════════════════════════════════════════════════════ */}
       <div className="relative">
         {headerCover ? (
-          <div className="relative h-72 sm:h-96 lg:h-[460px] w-full overflow-hidden">
+          <div className="relative h-72 sm:h-96 lg:h-[460px] w-full overflow-hidden bg-[#0F1729]">
+            {/* A phone viewport is much narrower than the desktop hero. Keep
+                the entire cover visible there, while a softly blurred copy
+                fills the otherwise empty bands. Desktop keeps the owner's
+                existing cropped cover position exactly as configured. */}
+            <Image
+              src={headerCover}
+              alt=""
+              aria-hidden="true"
+              fill
+              className="object-cover scale-110 blur-xl sm:hidden"
+              style={{ objectPosition: `50% ${coverPositionY}%` }}
+              priority
+            />
             <Image
               src={headerCover}
               alt={album.coupleName}
               fill
-              className="object-cover"
+              className="object-contain sm:object-cover"
               style={{ objectPosition: `50% ${coverPositionY}%` }}
               priority
             />
