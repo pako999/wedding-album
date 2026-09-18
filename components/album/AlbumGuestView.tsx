@@ -2396,21 +2396,26 @@ function DeferredVideoPlayer({ albumSlug, photo, t }: { albumSlug: string; photo
     };
   }, [activated, albumSlug, playbackUrl, retryAttempt, streamVideoId]);
 
-  if (activated) {
-    if (photo.cfStreamVideoId) {
-      return (
-        <div style={{ position: "relative", paddingTop: "56.25%" }}>
-          <iframe
-            src={photo.blobUrl}
-            title={t.videosSection}
-            style={{ border: "none", position: "absolute", top: 0, left: 0, height: "100%", width: "100%" }}
-            allow="accelerometer;gyroscope;autoplay;encrypted-media;picture-in-picture;"
-            allowFullScreen
-          />
-        </div>
-      );
-    }
+  // Bunny's own iframe player is the reliable source for this Stream library.
+  // Render it directly (the same path used by the older working deployments)
+  // and do not depend on the optional thumbnail/MP4 fallback files.
+  if (photo.cfStreamVideoId) {
+    return (
+      <div className="relative aspect-video w-full overflow-hidden bg-black">
+        <iframe
+          src={photo.blobUrl}
+          title={t.videosSection}
+          loading="lazy"
+          data-bunny-playback-checked="1"
+          className="absolute inset-0 h-full w-full border-0"
+          allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture"
+          allowFullScreen
+        />
+      </div>
+    );
+  }
 
+  if (activated) {
     if (streamVideoId && !playbackUrl) {
       return (
         <div className="flex min-h-52 flex-col items-center justify-center gap-3 bg-black px-6 py-10 text-center text-white">

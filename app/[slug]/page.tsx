@@ -13,8 +13,6 @@ import { toPublicAlbum } from "@/lib/album-view";
 import { getAlbumFlags } from "@/lib/album-flags";
 import { getAlbumHeaderSettings } from "@/lib/album-header-settings";
 import { getAlbumAppearance, WELCOME_FONT_STACKS, type WelcomeFont } from "@/lib/album-appearance";
-import { createVideoPlaybackToken, videoPlaybackExpiry } from "@/lib/video-playback-token";
-import { bunnyStreamThumbnailUrl } from "@/lib/storage/bunny";
 import type { Metadata } from "next";
 
 export const dynamic = "force-dynamic";
@@ -42,27 +40,6 @@ function compatibleBunnyPlayerUrl(url: string): string {
     "https://player.mediadelivery.net/embed/",
     "https://iframe.mediadelivery.net/embed/",
   );
-}
-
-/** Safari HLS fallback if the signed MP4 playback token cannot be created. */
-function bunnyHlsUrl(thumbnailUrl: string | null | undefined, videoId: string): string | null {
-  if (!thumbnailUrl || !videoId) return null;
-  try {
-    const normalized = /^https?:\/\//i.test(thumbnailUrl)
-      ? thumbnailUrl
-      : `https://${thumbnailUrl}`;
-    const thumbnail = new URL(normalized);
-    return `${thumbnail.protocol}//${thumbnail.host}/${videoId}/playlist.m3u8`;
-  } catch {
-    return null;
-  }
-}
-
-function isSafariUserAgent(userAgent: string): boolean {
-  if (!userAgent) return false;
-  const hasSafari = /Safari\//i.test(userAgent);
-  const isOtherWebKitBrowser = /CriOS|FxiOS|EdgiOS|OPiOS|DuckDuckGo/i.test(userAgent);
-  return hasSafari && !isOtherWebKitBrowser;
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -173,50 +150,16 @@ export default async function AlbumPage({ params, searchParams }: Props) {
       })
     : [];
 
-  const userAgent = requestHeaders.get("user-agent") ?? "";
-  const safari = isSafariUserAgent(userAgent);
-  const playbackExpiresAt = videoPlaybackExpiry();
-
-  // Use Guestcam's same-origin signed MP4 proxy for every browser. This keeps
-  // portrait videos in the native <video> element, so they can use the full
-  // card width instead of being letterboxed inside Bunny's fixed 16:9 iframe.
-  // HLS/iframe remain fallbacks only if a playback token cannot be created.
-  const playbackPhotos = albumPhotos.map((photo) => {
-    if (!photo.cfStreamVideoId) return photo;
-
-    const sig = createVideoPlaybackToken(slug, photo.cfStreamVideoId, playbackExpiresAt);
-    if (sig) {
-      const qs = new URLSearchParams({
-        vid: photo.cfStreamVideoId,
-        play: "1",
-        exp: String(playbackExpiresAt),
-        sig,
-      });
-      return {
-        ...photo,
-        blobUrl: `/api/albums/${encodeURIComponent(slug)}/video-download?${qs.toString()}`,
-        // iOS WebKit does not reliably paint a preview frame and can download
-        // the entire MP4 while trying to preload metadata. Always provide the
-        // Bunny still as a poster, including for older rows created before
-        // thumbnailUrl was stored; the native player itself uses preload=none.
-        thumbnailUrl: photo.thumbnailUrl ?? bunnyStreamThumbnailUrl(photo.cfStreamVideoId) ?? null,
-        cfStreamVideoId: null,
-      };
-    }
-
-    if (safari) {
-      const hlsUrl = bunnyHlsUrl(photo.thumbnailUrl, photo.cfStreamVideoId);
-      if (hlsUrl) {
-        return {
-          ...photo,
-          blobUrl: hlsUrl,
-          cfStreamVideoId: null,
-        };
-      }
-    }
-
-    return { ...photo, blobUrl: compatibleBunnyPlayerUrl(photo.blobUrl) };
-  });
+  // Restore the proven Bunny iframe playback used by the older deployments.
+  // The library's optional thumbnail and MP4 fallback files currently return
+  // 404, while Bunny's own iframe/HLS player is healthy. Keep the Stream ID so
+  // the gallery renders that player directly instead of routing through the
+  // broken optional assets.
+  const playbackPhotos = albumPhotos.map((photo) =>
+    photo.cfStreamVideoId
+      ? { ...photo, blobUrl: compatibleBunnyPlayerUrl(photo.blobUrl) }
+      : photo,
+  );
 
   // Event/Photo Wall branding belongs only to the dedicated event surface.
   // Ordinary album URLs stay standard even when event branding is configured.

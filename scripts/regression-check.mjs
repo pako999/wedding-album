@@ -480,17 +480,17 @@ requireAbsent(
 );
 
 requireMatch(
-  "public video cards provide iOS poster thumbnails",
-  `${files.albumPage}\n${files.albumGuestView}\n${files.videoClient}`,
-  /thumbnailUrl:\s*photo\.thumbnailUrl \?\? bunnyStreamThumbnailUrl[\s\S]*const poster = photo\.thumbnailUrl[\s\S]*bunnyDisplayUrl\(photo\.thumbnailUrl, 800, 82\)[\s\S]*iframePoster\(fallbackIframeSrc\)/,
-  "iOS WebKit needs an explicit optimized poster before Play",
+  "public Bunny videos do not depend on broken external posters",
+  `${files.albumPage}\n${files.albumGuestView}`,
+  /compatibleBunnyPlayerUrl\(photo\.blobUrl\)[\s\S]*relative aspect-video[\s\S]*<iframe/,
+  "the Stream player must remain visible even when Bunny's optional thumbnail file is unavailable",
 );
 
 requireMatch(
-  "video bytes are deferred until the guest presses Play",
-  files.albumGuestView,
-  /const \[activated, setActivated\] = useState\(false\)[\s\S]*if \(activated\)[\s\S]*src=\{playbackUrl \?\? photo\.blobUrl\}[\s\S]*onClick=\{\(\) => setActivated\(true\)\}/,
-  "preload=none is insufficient because some mobile and desktop browsers still fetch every MP4 range",
+  "Bunny Stream videos use the proven direct player",
+  `${files.albumPage}\n${files.albumGuestView}`,
+  /photo\.cfStreamVideoId[\s\S]*compatibleBunnyPlayerUrl\(photo\.blobUrl\)[\s\S]*data-bunny-playback-checked="1"/,
+  "gallery playback must not depend on optional Bunny thumbnail or MP4 fallback files",
 );
 
 requireMatch(
