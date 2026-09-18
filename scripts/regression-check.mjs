@@ -83,6 +83,7 @@ const files = {
   s3Read: await read("app/api/bunny-s3-file/[...key]/route.ts"),
   legacyRead: await read("app/api/img/route.ts"),
   deleteMedia: await read("lib/storage/delete-media.ts"),
+  moderationRoute: await read("app/api/albums/[slug]/moderate/route.ts"),
   instrumentation: await read("instrumentation.ts"),
   bankOrder: await read("app/api/bank-order/route.ts"),
   notifications: await read("lib/email/notifications.ts"),
@@ -315,6 +316,27 @@ requireMatch(
   files.deleteMedia,
   /deleteBunnyS3Object/,
   "provider-aware deletion must include Bunny S3",
+);
+
+requireMatch(
+  "album dashboard supports selecting and deleting multiple media items",
+  files.albumAdminPanel,
+  /action:\s*"delete_many"[\s\S]*Izberi več slik[\s\S]*Izberi vse[\s\S]*Izbriši izbrane/,
+  "owners must be able to select individual items or all visible media and request one bulk deletion",
+);
+
+requireMatch(
+  "bulk media deletion requires a prominent irreversible warning",
+  files.albumAdminPanel,
+  /Pozor – trajni izbris[\s\S]*Izbrisane bodo vse izbrane slike in videoposnetki[\s\S]*ni mogoče razveljaviti ali obnoviti[\s\S]*Potrjujem, da želim trajno izbrisati vse izbrane slike in videoposnetke[\s\S]*Da, trajno izbriši vseh/,
+  "the destructive confirmation must state exactly what is removed and that recovery is impossible",
+);
+
+requireMatch(
+  "bulk media deletion removes storage objects before database rows",
+  files.moderationRoute,
+  /action === "delete_many"[\s\S]*deleteStoredMedia[\s\S]*db\.delete\(photos\)[\s\S]*GREATEST/,
+  "bulk deletion must clean physical media, delete only successful rows and update album counters safely",
 );
 
 requireAbsent(

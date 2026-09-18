@@ -1237,13 +1237,152 @@ function GalleryTab({
   setCoverPhoto: (blobUrl: string) => void;
 }) {
   const [viewPhoto, setViewPhoto] = useState<Photo | null>(null);
+  const [selectionMode, setSelectionMode] = useState(false);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [confirmBulkDelete, setConfirmBulkDelete] = useState(false);
+  const [bulkDeleteAcknowledged, setBulkDeleteAcknowledged] = useState(false);
+  const [bulkDeleting, setBulkDeleting] = useState(false);
+  const [bulkProgress, setBulkProgress] = useState({ deleted: 0, total: 0 });
+  const [bulkError, setBulkError] = useState<string | null>(null);
+  const router = useRouter();
+
+  const togglePhotoSelection = (photoId: string) => {
+    setSelectedIds((current) => {
+      const next = new Set(current);
+      if (next.has(photoId)) next.delete(photoId);
+      else next.add(photoId);
+      return next;
+    });
+  };
+
+  const leaveSelectionMode = () => {
+    if (bulkDeleting) return;
+    setSelectionMode(false);
+    setSelectedIds(new Set());
+    setBulkError(null);
+  };
+
+  const deleteSelectedPhotos = async () => {
+    const ids = Array.from(selectedIds);
+    if (ids.length === 0 || bulkDeleting || !bulkDeleteAcknowledged) return;
+
+    setBulkDeleting(true);
+    setBulkError(null);
+    setBulkProgress({ deleted: 0, total: ids.length });
+    const remaining = new Set(ids);
+
+    try {
+      // Small sequential requests prevent hundreds of storage deletions from
+      // competing at once and keep every request inside the function timeout.
+      for (let offset = 0; offset < ids.length; offset += 25) {
+        const batch = ids.slice(offset, offset + 25);
+        const response = await fetch(`/api/albums/${album.slug}/moderate`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ photoIds: batch, action: "delete_many" }),
+        });
+        const result = await response.json().catch(() => null) as {
+          deletedIds?: string[];
+          failedIds?: string[];
+          error?: string;
+        } | null;
+
+        if (!response.ok && response.status !== 207) {
+          throw new Error(result?.error ?? "Bulk delete failed");
+        }
+
+        for (const deletedId of result?.deletedIds ?? []) remaining.delete(deletedId);
+        setBulkProgress({ deleted: ids.length - remaining.size, total: ids.length });
+      }
+
+      setConfirmBulkDelete(false);
+      setBulkDeleteAcknowledged(false);
+      if (remaining.size === 0) {
+        setSelectionMode(false);
+        setSelectedIds(new Set());
+      } else {
+        setSelectedIds(new Set(remaining));
+        setBulkError(
+          `${ids.length - remaining.size} datotek je izbrisanih. ${remaining.size} datotek ni bilo mogoče izbrisati; ostale so označene.`,
+        );
+      }
+      router.refresh();
+    } catch (error) {
+      console.error("[dashboard-gallery] Bulk delete failed", error);
+      setSelectedIds(new Set(remaining));
+      setConfirmBulkDelete(false);
+      setBulkDeleteAcknowledged(false);
+      setBulkError("Brisanje ni uspelo v celoti. Neizbrisane datoteke so ostale označene. Poskusite znova.");
+      router.refresh();
+    } finally {
+      setBulkDeleting(false);
+    }
+  };
+
   return (
     <div>
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-4">
         <h2 className="font-semibold text-gray-900">
           {activeTab === "pending" ? "Čakajoče fotografije" : "Vse fotografije"}
         </h2>
+        {activeTab === "gallery" && photos.length > 0 && (
+          <div className="flex flex-wrap items-center gap-2">
+            {!selectionMode ? (
+              <button
+                type="button"
+                onClick={() => { setSelectionMode(true); setBulkError(null); }}
+                className="inline-flex items-center gap-2 rounded-xl border border-gray-300 bg-white px-3.5 py-2 text-sm font-semibold text-gray-700 transition-colors hover:border-gray-400 hover:bg-gray-50"
+              >
+                <span className="flex h-4 w-4 items-center justify-center rounded border-2 border-gray-400" />
+                Izberi več slik
+              </button>
+            ) : (
+              <>
+                <span className="rounded-full bg-gray-100 px-3 py-2 text-sm font-semibold text-gray-700">
+                  Izbrano: {selectedIds.size}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setSelectedIds(new Set(photos.map((photo) => photo.id)))}
+                  className="rounded-xl border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+                >
+                  Izberi vse
+                </button>
+                {selectedIds.size > 0 && (
+                  <button
+                    type="button"
+                    onClick={() => setSelectedIds(new Set())}
+                    className="rounded-xl border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+                  >
+                    Počisti izbor
+                  </button>
+                )}
+                <button
+                  type="button"
+                  onClick={() => { setBulkDeleteAcknowledged(false); setConfirmBulkDelete(true); }}
+                  disabled={selectedIds.size === 0}
+                  className="inline-flex items-center gap-2 rounded-xl bg-red-600 px-3.5 py-2 text-sm font-bold text-white transition-colors hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-40"
+                >
+                  Izbriši izbrane ({selectedIds.size})
+                </button>
+                <button
+                  type="button"
+                  onClick={leaveSelectionMode}
+                  className="rounded-xl px-3 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-800"
+                >
+                  Prekliči
+                </button>
+              </>
+            )}
+          </div>
+        )}
       </div>
+
+      {bulkError && (
+        <div className="mb-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-800" role="alert">
+          {bulkError}
+        </div>
+      )}
 
       {photos.length === 0 ? (
         <div className="flex items-center justify-center h-48 text-gray-400 text-sm bg-white rounded-2xl border border-gray-100">
@@ -1255,15 +1394,36 @@ function GalleryTab({
             {photos.map((photo) => (
               <div
                 key={photo.id}
-                onClick={() => setViewPhoto(photo)}
-                className="group relative bg-white border border-gray-100 rounded-xl overflow-hidden cursor-pointer"
+                onClick={() => selectionMode && activeTab === "gallery" ? togglePhotoSelection(photo.id) : setViewPhoto(photo)}
+                className={`group relative bg-white border rounded-xl overflow-hidden cursor-pointer transition-all ${
+                  selectedIds.has(photo.id)
+                    ? "border-red-500 ring-2 ring-red-500 ring-offset-2"
+                    : "border-gray-100"
+                }`}
               >
+                {selectionMode && activeTab === "gallery" && (
+                  <button
+                    type="button"
+                    onClick={(event) => { event.stopPropagation(); togglePhotoSelection(photo.id); }}
+                    aria-label={selectedIds.has(photo.id) ? "Odstrani iz izbora" : "Dodaj v izbor"}
+                    aria-pressed={selectedIds.has(photo.id)}
+                    className={`absolute left-2 top-2 z-20 flex h-8 w-8 items-center justify-center rounded-full border-2 shadow-md transition-colors ${
+                      selectedIds.has(photo.id)
+                        ? "border-red-600 bg-red-600 text-white"
+                        : "border-white bg-white/95 text-transparent"
+                    }`}
+                  >
+                    <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={3}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
+                  </button>
+                )}
                 <MediaThumb photo={photo} heightClass="h-40" />
                 <div className="px-2 py-1.5">
                   <p className="text-xs text-gray-500 truncate">{photo.uploaderName ?? "Gost"}</p>
                 </div>
                 {/* Actions overlay */}
-                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100">
+                {!selectionMode && <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100">
                   {activeTab === "pending" && (
                     <>
                       <button
@@ -1308,7 +1468,7 @@ function GalleryTab({
                       </svg>
                     </button>
                   )}
-                </div>
+                </div>}
               </div>
             ))}
           </div>
@@ -1367,6 +1527,75 @@ function GalleryTab({
                 className="px-4 py-2 rounded-xl border border-white/40 text-white text-sm font-medium hover:bg-white/10 transition-colors"
               >
                 Zapri
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Destructive bulk-delete confirmation */}
+      {confirmBulkDelete && (
+        <div className="fixed inset-0 z-[70] flex items-center justify-center bg-black/60 p-4" role="dialog" aria-modal="true" aria-labelledby="bulk-delete-title">
+          <div className="w-full max-w-lg overflow-hidden rounded-2xl bg-white shadow-2xl">
+            <div className="border-b border-red-200 bg-red-600 px-6 py-5 text-white">
+              <div className="flex items-center gap-3">
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white/20 text-2xl" aria-hidden="true">⚠</span>
+                <div>
+                  <p className="text-xs font-black uppercase tracking-[0.16em] text-red-100">Pozor – trajni izbris</p>
+                  <h3 id="bulk-delete-title" className="mt-1 text-xl font-black">
+                    Izbrisali boste {selectedIds.size} datotek
+                  </h3>
+                </div>
+              </div>
+            </div>
+            <div className="space-y-4 px-6 py-5">
+              <div className="rounded-xl border-2 border-red-200 bg-red-50 p-4 text-red-900">
+                <p className="font-black uppercase">Izbrisane bodo vse izbrane slike in videoposnetki.</p>
+                <p className="mt-2 text-sm leading-6">
+                  Datoteke bodo trajno odstranjene iz albuma in shrambe. Tega dejanja ni mogoče razveljaviti ali obnoviti.
+                </p>
+              </div>
+              <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-red-200 px-4 py-3 text-sm font-semibold text-red-900">
+                <input
+                  type="checkbox"
+                  checked={bulkDeleteAcknowledged}
+                  onChange={(event) => setBulkDeleteAcknowledged(event.target.checked)}
+                  disabled={bulkDeleting}
+                  className="mt-0.5 h-5 w-5 shrink-0 accent-red-600"
+                />
+                <span>Potrjujem, da želim trajno izbrisati vse izbrane slike in videoposnetke.</span>
+              </label>
+              {bulkDeleting && (
+                <div>
+                  <div className="mb-1.5 flex justify-between text-xs font-semibold text-gray-600">
+                    <span>Brisanje datotek …</span>
+                    <span>{bulkProgress.deleted} / {bulkProgress.total}</span>
+                  </div>
+                  <div className="h-2 overflow-hidden rounded-full bg-gray-200">
+                    <div
+                      className="h-full rounded-full bg-red-600 transition-all"
+                      style={{ width: `${bulkProgress.total > 0 ? (bulkProgress.deleted / bulkProgress.total) * 100 : 0}%` }}
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+            <div className="flex flex-col-reverse gap-2 border-t border-gray-100 bg-gray-50 px-6 py-4 sm:flex-row sm:justify-end">
+              <button
+                type="button"
+                onClick={() => { setConfirmBulkDelete(false); setBulkDeleteAcknowledged(false); }}
+                disabled={bulkDeleting}
+                className="rounded-xl border border-gray-300 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-50 disabled:opacity-50"
+              >
+                Ne, prekliči
+              </button>
+              <button
+                type="button"
+                onClick={deleteSelectedPhotos}
+                disabled={bulkDeleting || selectedIds.size === 0 || !bulkDeleteAcknowledged}
+                className="rounded-xl bg-red-600 px-4 py-2.5 text-sm font-black text-white hover:bg-red-700 disabled:cursor-wait disabled:opacity-60"
+              >
+                {bulkDeleting ? "Brišem …" : `Da, trajno izbriši vseh ${selectedIds.size}`}
               </button>
             </div>
           </div>
