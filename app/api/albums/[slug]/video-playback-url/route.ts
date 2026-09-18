@@ -5,6 +5,7 @@ import { and, eq } from "drizzle-orm";
 import { hasAlbumRequestAccess } from "@/lib/album-request-access";
 import { createVideoPlaybackToken } from "@/lib/video-playback-token";
 import {
+  bunnyStreamIframeUrl,
   getBunnyStreamVideo,
   isBunnyStreamConfigured,
   isBunnyStreamVideoReady,
@@ -75,6 +76,20 @@ export async function GET(
     );
   }
 
+  // Bunny's status-8/JIT pipeline serves HLS through its player, but it does
+  // not necessarily create the optional play_<resolution>.mp4 fallback files.
+  // Sending those videos to the MP4 proxy produces a permanent 404 even though
+  // the video is fully playable. Use Bunny's responsive player for that case.
+  // The explicit mp4Fallback flag also covers status-4 libraries where the
+  // optional MP4 fallback feature is disabled.
+  const iframeUrl = bunnyStreamIframeUrl(vid);
+  if (meta.status === 8 || meta.mp4Fallback === false) {
+    return NextResponse.json(
+      { url: iframeUrl, playbackType: "iframe" as const },
+      { headers: { "Cache-Control": "private, no-store, max-age=0" } },
+    );
+  }
+
   const expiresAt = Math.floor(Date.now() / 1000) + 2 * 60 * 60;
   const sig = createVideoPlaybackToken(slug, vid, expiresAt);
   if (!sig) {
@@ -91,6 +106,8 @@ export async function GET(
   return NextResponse.json(
     {
       url: `/api/albums/${encodeURIComponent(slug)}/video-download?${qs.toString()}`,
+      playbackType: "video" as const,
+      fallbackUrl: iframeUrl,
       expiresAt,
     },
     { headers: { "Cache-Control": "private, no-store, max-age=0" } },

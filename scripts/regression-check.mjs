@@ -501,6 +501,13 @@ requireMatch(
 );
 
 requireMatch(
+  "Bunny status-8 videos avoid unavailable MP4 fallback files",
+  `${files.videoPlayback}\n${files.albumGuestView}`,
+  /meta\.status === 8[\s\S]*playbackType:\s*"iframe"[\s\S]*data-bunny-playback-checked="1"/,
+  "JIT/HLS-ready videos must use Bunny's player instead of a missing play_<resolution>.mp4 file",
+);
+
+requireMatch(
   "video cards poll while Bunny is still processing",
   files.albumGuestView,
   /response\.status === 425[\s\S]*Retry-After[\s\S]*setTimeout\(\(\) => void poll\(\)/,

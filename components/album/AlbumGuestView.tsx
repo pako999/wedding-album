@@ -2327,6 +2327,8 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
 function DeferredVideoPlayer({ albumSlug, photo, t }: { albumSlug: string; photo: Photo; t: Translations }) {
   const [activated, setActivated] = useState(false);
   const [playbackUrl, setPlaybackUrl] = useState<string | null>(null);
+  const [playbackType, setPlaybackType] = useState<"video" | "iframe">("video");
+  const [fallbackUrl, setFallbackUrl] = useState<string | null>(null);
   const [playbackState, setPlaybackState] = useState<"idle" | "checking" | "processing" | "error">("idle");
   const [retryAttempt, setRetryAttempt] = useState(0);
   const poster = photo.thumbnailUrl
@@ -2369,11 +2371,17 @@ function DeferredVideoPlayer({ albumSlug, photo, t }: { albumSlug: string; photo
           return;
         }
 
-        const data = (await response.json()) as { url?: string };
+        const data = (await response.json()) as {
+          url?: string;
+          playbackType?: "video" | "iframe";
+          fallbackUrl?: string;
+        };
         if (!data.url) {
           setPlaybackState("error");
           return;
         }
+        setPlaybackType(data.playbackType === "iframe" ? "iframe" : "video");
+        setFallbackUrl(data.fallbackUrl ?? null);
         setPlaybackUrl(data.url);
         setPlaybackState("idle");
       } catch {
@@ -2427,6 +2435,21 @@ function DeferredVideoPlayer({ albumSlug, photo, t }: { albumSlug: string; photo
       );
     }
 
+    if (playbackType === "iframe" && playbackUrl) {
+      return (
+        <div className="relative aspect-video w-full overflow-hidden bg-black">
+          <iframe
+            src={playbackUrl}
+            title={t.videosSection}
+            data-bunny-playback-checked="1"
+            className="absolute inset-0 h-full w-full border-0"
+            allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture"
+            allowFullScreen
+          />
+        </div>
+      );
+    }
+
     return (
       <video
         src={playbackUrl ?? photo.blobUrl}
@@ -2435,6 +2458,12 @@ function DeferredVideoPlayer({ albumSlug, photo, t }: { albumSlug: string; photo
         playsInline
         autoPlay
         preload="auto"
+        onError={() => {
+          if (fallbackUrl) {
+            setPlaybackType("iframe");
+            setPlaybackUrl(fallbackUrl);
+          }
+        }}
         className="w-full h-auto block bg-black object-contain"
         style={{ maxHeight: "360px" }}
       />
