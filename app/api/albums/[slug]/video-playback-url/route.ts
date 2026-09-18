@@ -4,6 +4,11 @@ import { albums, photos } from "@/lib/db/schema";
 import { and, eq } from "drizzle-orm";
 import { hasAlbumRequestAccess } from "@/lib/album-request-access";
 import { createVideoPlaybackToken } from "@/lib/video-playback-token";
+import {
+  getBunnyStreamVideo,
+  isBunnyStreamConfigured,
+  isBunnyStreamVideoReady,
+} from "@/lib/storage/bunny";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -48,6 +53,26 @@ export async function GET(
 
   if (!photo) {
     return NextResponse.json({ error: "Video not found" }, { status: 404 });
+  }
+
+  // A Bunny Stream upload is visible in the album as soon as its metadata is
+  // saved, but transcoding can continue for another minute or two. Do not hand
+  // the browser a video URL that will immediately fail with HTTP 425. The
+  // gallery polls this lightweight readiness endpoint and starts playback as
+  // soon as Bunny reports the video as ready.
+  if (!isBunnyStreamConfigured()) {
+    return NextResponse.json({ error: "Video playback unavailable" }, { status: 503 });
+  }
+
+  const meta = await getBunnyStreamVideo(vid);
+  if (!meta) {
+    return NextResponse.json({ error: "Video status unavailable" }, { status: 503 });
+  }
+  if (!isBunnyStreamVideoReady(meta)) {
+    return NextResponse.json(
+      { error: "Video is still processing", processing: true },
+      { status: 425, headers: { "Retry-After": "5", "Cache-Control": "no-store" } },
+    );
   }
 
   const expiresAt = Math.floor(Date.now() / 1000) + 2 * 60 * 60;

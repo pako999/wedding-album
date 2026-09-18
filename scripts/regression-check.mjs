@@ -489,8 +489,22 @@ requireMatch(
 requireMatch(
   "video bytes are deferred until the guest presses Play",
   files.albumGuestView,
-  /const \[activated, setActivated\] = useState\(false\)[\s\S]*if \(activated\)[\s\S]*src=\{photo\.blobUrl\}[\s\S]*onClick=\{\(\) => setActivated\(true\)\}/,
+  /const \[activated, setActivated\] = useState\(false\)[\s\S]*if \(activated\)[\s\S]*src=\{playbackUrl \?\? photo\.blobUrl\}[\s\S]*onClick=\{\(\) => setActivated\(true\)\}/,
   "preload=none is insufficient because some mobile and desktop browsers still fetch every MP4 range",
+);
+
+requireMatch(
+  "Bunny status-8 videos are treated as ready",
+  `${files.bunny}\n${files.videoPlayback}`,
+  /meta\.status === 4 \|\| meta\.status === 8[\s\S]*isBunnyStreamVideoReady\(meta\)/,
+  "Bunny's newer/JIT-ready videos must not remain stuck behind HTTP 425",
+);
+
+requireMatch(
+  "video cards poll while Bunny is still processing",
+  files.albumGuestView,
+  /response\.status === 425[\s\S]*Retry-After[\s\S]*setTimeout\(\(\) => void poll\(\)/,
+  "fresh uploads should start automatically after Bunny finishes processing",
 );
 
 requireMatch(

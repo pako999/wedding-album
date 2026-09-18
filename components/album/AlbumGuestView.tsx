@@ -1528,7 +1528,7 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
                   {t.videosSection} · {filteredVideos.length}
                 </h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 items-start gap-4">
-                  {filteredVideos.map(photo => <VideoCard key={photo.id} photo={photo} t={t} renderedAt={renderedAt} accent={theme.accent} />)}
+                  {filteredVideos.map(photo => <VideoCard key={photo.id} albumSlug={album.slug} photo={photo} t={t} renderedAt={renderedAt} accent={theme.accent} />)}
                 </div>
               </div>
             )}
@@ -1536,7 +1536,7 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
             {/* ── Videos-only view ────────────────────────────────────────── */}
             {filter === "videos" && (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 items-start gap-4">
-                {filteredVideos.map(photo => <VideoCard key={photo.id} photo={photo} t={t} renderedAt={renderedAt} accent={theme.accent} />)}
+                {filteredVideos.map(photo => <VideoCard key={photo.id} albumSlug={album.slug} photo={photo} t={t} renderedAt={renderedAt} accent={theme.accent} />)}
               </div>
             )}
 
@@ -2324,11 +2324,69 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
 }
 
 /* ── VideoCard ────────────────────────────────────────────────────────────── */
-function DeferredVideoPlayer({ photo, t }: { photo: Photo; t: Translations }) {
+function DeferredVideoPlayer({ albumSlug, photo, t }: { albumSlug: string; photo: Photo; t: Translations }) {
   const [activated, setActivated] = useState(false);
+  const [playbackUrl, setPlaybackUrl] = useState<string | null>(null);
+  const [playbackState, setPlaybackState] = useState<"idle" | "checking" | "processing" | "error">("idle");
+  const [retryAttempt, setRetryAttempt] = useState(0);
   const poster = photo.thumbnailUrl
     ? bunnyDisplayUrl(photo.thumbnailUrl, 800, 82)
     : undefined;
+
+  const streamVideoId = useMemo(() => {
+    try {
+      return new URL(photo.blobUrl, "https://guestcam.invalid").searchParams.get("vid");
+    } catch {
+      return null;
+    }
+  }, [photo.blobUrl]);
+
+  useEffect(() => {
+    if (!activated || playbackUrl || !streamVideoId) return;
+
+    let cancelled = false;
+    let retryTimer: ReturnType<typeof setTimeout> | null = null;
+
+    const poll = async () => {
+      if (cancelled) return;
+      setPlaybackState(current => current === "processing" ? "processing" : "checking");
+      try {
+        const qs = new URLSearchParams({ vid: streamVideoId });
+        const response = await fetch(
+          `/api/albums/${encodeURIComponent(albumSlug)}/video-playback-url?${qs.toString()}`,
+          { cache: "no-store", credentials: "same-origin" },
+        );
+
+        if (cancelled) return;
+        if (response.status === 425) {
+          setPlaybackState("processing");
+          const retryAfter = Math.max(3, Number(response.headers.get("Retry-After") ?? "5"));
+          retryTimer = setTimeout(() => void poll(), retryAfter * 1000);
+          return;
+        }
+        if (!response.ok) {
+          setPlaybackState("error");
+          return;
+        }
+
+        const data = (await response.json()) as { url?: string };
+        if (!data.url) {
+          setPlaybackState("error");
+          return;
+        }
+        setPlaybackUrl(data.url);
+        setPlaybackState("idle");
+      } catch {
+        if (!cancelled) setPlaybackState("error");
+      }
+    };
+
+    void poll();
+    return () => {
+      cancelled = true;
+      if (retryTimer) clearTimeout(retryTimer);
+    };
+  }, [activated, albumSlug, playbackUrl, retryAttempt, streamVideoId]);
 
   if (activated) {
     if (photo.cfStreamVideoId) {
@@ -2345,9 +2403,33 @@ function DeferredVideoPlayer({ photo, t }: { photo: Photo; t: Translations }) {
       );
     }
 
+    if (streamVideoId && !playbackUrl) {
+      return (
+        <div className="flex min-h-52 flex-col items-center justify-center gap-3 bg-black px-6 py-10 text-center text-white">
+          {playbackState !== "error" && (
+            <span className="h-8 w-8 animate-spin rounded-full border-2 border-white/30 border-t-white" aria-hidden="true" />
+          )}
+          <p className="text-sm font-semibold">{t.videoProcessing}</p>
+          <p className="max-w-xs text-xs text-white/65">{t.videoProcessingHint}</p>
+          {playbackState === "error" && (
+            <button
+              type="button"
+              onClick={() => {
+                setPlaybackState("checking");
+                setRetryAttempt(value => value + 1);
+              }}
+              className="mt-1 rounded-full bg-white px-4 py-2 text-xs font-semibold text-gray-950"
+            >
+              {t.videoTryAgain}
+            </button>
+          )}
+        </div>
+      );
+    }
+
     return (
       <video
-        src={photo.blobUrl}
+        src={playbackUrl ?? photo.blobUrl}
         poster={poster}
         controls
         playsInline
@@ -2390,13 +2472,13 @@ function DeferredVideoPlayer({ photo, t }: { photo: Photo; t: Translations }) {
   );
 }
 
-function VideoCard({ photo, t, renderedAt, accent = BRAND.accent }: { photo: Photo; t: Translations; renderedAt: string; accent?: string }) {
+function VideoCard({ albumSlug, photo, t, renderedAt, accent = BRAND.accent }: { albumSlug: string; photo: Photo; t: Translations; renderedAt: string; accent?: string }) {
   return (
     <div className="h-fit self-start rounded-2xl overflow-hidden bg-gray-950 border border-gray-800 flex flex-col">
       {/* Do not put a video URL in the DOM until Play. Some Chromium/WebKit
           versions download MP4 ranges even with preload="none", starving the
           first lightbox image on albums that contain several large videos. */}
-      <DeferredVideoPlayer photo={photo} t={t} />
+      <DeferredVideoPlayer albumSlug={albumSlug} photo={photo} t={t} />
 
       {/* Uploader + time */}
       <div className="flex items-center gap-2.5 px-3 py-2.5 bg-gray-900">

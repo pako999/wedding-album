@@ -138,6 +138,9 @@ export interface Translations {
   // Section headers
   videosSection: string;        // "Videos"
   photosSection: string;        // "Photos"
+  videoProcessing: string;      // "Video is being processed"
+  videoProcessingHint: string;  // "It will play automatically when ready."
+  videoTryAgain: string;        // "Try again"
 
   // Sort & filter controls
   sortLabel: string;            // "Sort"
@@ -317,6 +320,9 @@ const sl: Translations = {
   beFirstToShareHint: "Vpišite spodaj vaše ime in naložite slike in videje iz vašega telefona.",
   videosSection: "Videi",
   photosSection: "Fotografije",
+  videoProcessing: "Video se še obdeluje",
+  videoProcessingHint: "Predvajanje se bo začelo samodejno, ko bo pripravljen.",
+  videoTryAgain: "Poskusi znova",
   sortLabel: "Razvrsti",
   sortNewest: "Najnovejše",
   sortOldest: "Najstarejše",
@@ -476,6 +482,9 @@ const hr: Translations = {
   beFirstToShareHint: "Upišite dolje svoje ime i učitajte slike i videe sa svog telefona.",
   videosSection: "Videi",
   photosSection: "Fotografije",
+  videoProcessing: "Video se još obrađuje",
+  videoProcessingHint: "Reprodukcija će početi automatski čim bude spreman.",
+  videoTryAgain: "Pokušaj ponovno",
   sortLabel: "Razvrstaj",
   sortNewest: "Najnovije",
   sortOldest: "Najstarije",
@@ -635,6 +644,9 @@ const sr: Translations = {
   beFirstToShareHint: "Upišite dole svoje ime i otpremite slike i video zapise sa svog telefona.",
   videosSection: "Videi",
   photosSection: "Fotografije",
+  videoProcessing: "Video se još obrađuje",
+  videoProcessingHint: "Reprodukcija će početi automatski čim bude spreman.",
+  videoTryAgain: "Pokušaj ponovo",
   sortLabel: "Razvrstaj",
   sortNewest: "Najnovije",
   sortOldest: "Najstarije",
@@ -794,6 +806,9 @@ const en: Translations = {
   beFirstToShareHint: "Enter your name below and upload photos and videos from your phone.",
   videosSection: "Videos",
   photosSection: "Photos",
+  videoProcessing: "Video is being processed",
+  videoProcessingHint: "Playback will start automatically when it is ready.",
+  videoTryAgain: "Try again",
   sortLabel: "Sort",
   sortNewest: "Newest first",
   sortOldest: "Oldest first",
@@ -953,6 +968,9 @@ const de: Translations = {
   beFirstToShareHint: "Geben Sie unten Ihren Namen ein und laden Sie Fotos und Videos von Ihrem Handy hoch.",
   videosSection: "Videos",
   photosSection: "Fotos",
+  videoProcessing: "Video wird verarbeitet",
+  videoProcessingHint: "Die Wiedergabe startet automatisch, sobald es bereit ist.",
+  videoTryAgain: "Erneut versuchen",
   sortLabel: "Sortieren",
   sortNewest: "Neueste zuerst",
   sortOldest: "Älteste zuerst",
@@ -1112,6 +1130,9 @@ const es: Translations = {
   beFirstToShareHint: "Escribe tu nombre abajo y sube fotos y vídeos desde tu teléfono.",
   videosSection: "Vídeos",
   photosSection: "Fotos",
+  videoProcessing: "El vídeo se está procesando",
+  videoProcessingHint: "La reproducción comenzará automáticamente cuando esté listo.",
+  videoTryAgain: "Intentar de nuevo",
   sortLabel: "Ordenar",
   sortNewest: "Más recientes",
   sortOldest: "Más antiguas",

@@ -19,6 +19,7 @@ import { albums, photos } from "@/lib/db/schema";
 import { eq, and } from "drizzle-orm";
 import {
   getBunnyStreamVideo,
+  isBunnyStreamVideoReady,
   pickBestMp4Url,
   isBunnyStreamConfigured,
   signBunnyStreamUrl,
@@ -124,7 +125,7 @@ export async function GET(
         { status: 502 },
       );
     }
-    if (meta.status !== 4) {
+    if (!isBunnyStreamVideoReady(meta)) {
       return NextResponse.json(
         { error: `Video still processing (Bunny status ${meta.status})` },
         { status: 425 },

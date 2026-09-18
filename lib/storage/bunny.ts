@@ -315,10 +315,18 @@ export function bunnyStreamThumbnailUrl(videoId: string): string | undefined {
  */
 export interface BunnyStreamVideoMeta {
   guid: string;
-  status: number;                  // 4 = ready
+  status: number;                  // 4 = encoded, 8 = ready through Bunny's newer/JIT pipeline
   availableResolutions: string;    // CSV
   length: number;                  // seconds
   mp4Fallback?: boolean;           // present on newer accounts
+}
+
+/** Bunny currently reports playable videos as either fully encoded (4) or
+ * ready through its newer/JIT pipeline (8). Older Guestcam code accepted only
+ * 4, which incorrectly left status-8 videos in a permanent "processing" state.
+ */
+export function isBunnyStreamVideoReady(meta: BunnyStreamVideoMeta): boolean {
+  return meta.status === 4 || meta.status === 8;
 }
 
 /** Fetch one Bunny Stream video's metadata. Returns null on any error. */
