@@ -320,8 +320,13 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
   // photo. Videos are skipped (no still to show), and the uploader sees
   // it immediately — the gallery refreshes after a successful upload.
   const newestImage = photos.find((p) => !p.mimeType?.startsWith("video/"));
+  // Next Image builds a responsive srcset from this source: phones download a
+  // smaller variant while wide desktop screens can use the full cover width.
   const headerCover = album.coverImageUrl
-    ?? (newestImage ? bunnyDisplayUrl(newestImage.blobUrl, 1600, 80) : null);
+    ? bunnyDisplayUrl(album.coverImageUrl, 2400, 82)
+    : newestImage
+      ? bunnyDisplayUrl(newestImage.blobUrl, 2400, 82)
+      : null;
   const albumFull = album.plan === "free" && photos.length >= (album.maxPhotos ?? 20);
 
   // ── Demo album: uploads allowed, but a tester is capped at 5 photos ───────
@@ -861,6 +866,7 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
               alt=""
               aria-hidden="true"
               fill
+              sizes="100vw"
               className="object-cover scale-110 blur-xl"
               style={{ objectPosition: `50% ${coverPositionY}%` }}
               priority
@@ -869,6 +875,7 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
               src={headerCover}
               alt={album.coupleName}
               fill
+              sizes="100vw"
               className="object-contain"
               style={{ objectPosition: `50% ${coverPositionY}%` }}
               priority

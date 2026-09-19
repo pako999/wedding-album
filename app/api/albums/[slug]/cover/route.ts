@@ -24,7 +24,8 @@ const ALLOWED = new Set([
 
 const PLANS_WITH_COVER_UPLOAD = new Set(["plus", "premium"]);
 const MAX_SOURCE_BYTES = 50 * 1024 * 1024;
-const COVER_MAX_WIDTH = 800;
+const COVER_MAX_WIDTH = 2400;
+const COVER_MAX_HEIGHT = 800;
 const COVER_WEBP_QUALITY = 82;
 
 const storageApiKey = () => process.env.BUNNY_STORAGE_API_KEY ?? "";
@@ -44,6 +45,8 @@ async function optimizeAndStoreCover(album: Album, source: ArrayBuffer) {
       .rotate()
       .resize({
         width: COVER_MAX_WIDTH,
+        height: COVER_MAX_HEIGHT,
+        fit: "inside",
         withoutEnlargement: true,
       })
       .webp({ quality: COVER_WEBP_QUALITY, effort: 4 })

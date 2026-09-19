@@ -1167,8 +1167,8 @@ requireMatch(
 
 requireMatch(
   "album covers are always resized and stored as WebP",
-  `${files.coverRoute}\n${files.coverPhotoSettings}\n${files.albumAdminPanel}`,
-  /COVER_MAX_WIDTH = 800[\s\S]*\.resize\([\s\S]*width: COVER_MAX_WIDTH[\s\S]*withoutEnlargement: true[\s\S]*\.webp\([\s\S]*cover-\$\{crypto\.randomUUID\(\)\}\.webp[\s\S]*method: "POST"[\s\S]*photoId: p\.id[\s\S]*setCoverPhoto\(photo\.id\)/,
+  `${files.coverRoute}\n${files.coverPhotoSettings}\n${files.albumAdminPanel}\n${files.albumGuestView}`,
+  /COVER_MAX_WIDTH = 2400[\s\S]*COVER_MAX_HEIGHT = 800[\s\S]*\.resize\([\s\S]*width: COVER_MAX_WIDTH[\s\S]*height: COVER_MAX_HEIGHT[\s\S]*fit: "inside"[\s\S]*withoutEnlargement: true[\s\S]*\.webp\([\s\S]*cover-\$\{crypto\.randomUUID\(\)\}\.webp[\s\S]*method: "POST"[\s\S]*photoId: p\.id[\s\S]*setCoverPhoto\(photo\.id\)[\s\S]*bunnyDisplayUrl\(album\.coverImageUrl, 2400, 82\)[\s\S]*sizes="100vw"/,
   "both uploaded files and gallery selections must create a bounded WebP cover copy",
 );
 
