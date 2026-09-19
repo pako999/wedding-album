@@ -408,11 +408,11 @@ export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activ
     navigator.clipboard.writeText(text);
   };
 
-  const setCoverPhoto = async (blobUrl: string) => {
-    await fetch(`/api/albums/${album.slug}/settings`, {
-      method: "PATCH",
+  const setCoverPhoto = async (photoId: string) => {
+    await fetch(`/api/albums/${album.slug}/cover`, {
+      method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ coverImageUrl: blobUrl }),
+      body: JSON.stringify({ photoId }),
     });
     router.refresh();
   };
@@ -1234,7 +1234,7 @@ function GalleryTab({
   approvePhoto: (id: string) => void;
   rejectPhoto: (id: string) => void;
   deletePhoto: (id: string) => void;
-  setCoverPhoto: (blobUrl: string) => void;
+  setCoverPhoto: (photoId: string) => void;
 }) {
   const [viewPhoto, setViewPhoto] = useState<Photo | null>(null);
   const [selectionMode, setSelectionMode] = useState(false);
@@ -1448,7 +1448,7 @@ function GalleryTab({
                   )}
                   {activeTab === "gallery" && !photo.mimeType?.startsWith("video/") && (
                     <button
-                      onClick={(e) => { e.stopPropagation(); setCoverPhoto(photo.thumbnailUrl ?? photo.blobUrl); }}
+                      onClick={(e) => { e.stopPropagation(); setCoverPhoto(photo.id); }}
                       title="Nastavi kot naslovnico"
                       className="w-9 h-9 rounded-full bg-white/90 text-gray-800 flex items-center justify-center hover:bg-white transition-colors"
                     >
@@ -1510,7 +1510,7 @@ function GalleryTab({
             <div className="flex items-center justify-center flex-wrap gap-2 mt-4">
               {!viewPhoto.mimeType?.startsWith("video/") && (
                 <button
-                  onClick={() => { setCoverPhoto(viewPhoto.thumbnailUrl ?? viewPhoto.blobUrl); setViewPhoto(null); }}
+                  onClick={() => { setCoverPhoto(viewPhoto.id); setViewPhoto(null); }}
                   className="px-4 py-2 rounded-xl bg-white text-gray-800 text-sm font-medium hover:bg-gray-100 transition-colors"
                 >
                   Nastavi kot naslovnico

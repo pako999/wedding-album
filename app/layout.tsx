@@ -67,7 +67,7 @@ const cormorant = Cormorant_Garamond({
 export const viewport: Viewport = {
   themeColor: [
     { media: "(prefers-color-scheme: light)", color: "#FFFFFF" },
-    { media: "(prefers-color-scheme: dark)",  color: "#0F1729" },
+    { media: "(prefers-color-scheme: dark)", color: "#0F1729" },
   ],
 };
 
@@ -167,7 +167,9 @@ export default async function RootLayout({
   // /sr/affiliate/*, etc. The discount banner + exit popup are for paying
   // customers; partners are a different audience and the offer doesn't
   // apply to them.
-  const isAffiliatePath = /^\/(?:sl|hr|sr|de|en|es)?\/?affiliate(?:\/|$)/.test(pathname);
+  const isAffiliatePath = /^\/(?:sl|hr|sr|de|en|es)?\/?affiliate(?:\/|$)/.test(
+    pathname,
+  );
 
   // Album guest pages live at /<slug>. Owners have already paid, guests
   // don't need to see a "15% off your first plan" pitch when they're
@@ -176,9 +178,26 @@ export default async function RootLayout({
     const segments = pathname.split("/").filter(Boolean);
     if (segments.length !== 1) return false;
     const RESERVED = new Set([
-      "blog", "contact", "privacy", "terms", "gdpr", "cookies", "refund",
-      "admin", "dashboard", "api", "sign-in", "sign-up", "dev", "affiliate",
-      "sl", "hr", "sr", "de", "en", "es",
+      "blog",
+      "contact",
+      "privacy",
+      "terms",
+      "gdpr",
+      "cookies",
+      "refund",
+      "admin",
+      "dashboard",
+      "api",
+      "sign-in",
+      "sign-up",
+      "dev",
+      "affiliate",
+      "sl",
+      "hr",
+      "sr",
+      "de",
+      "en",
+      "es",
     ]);
     return !RESERVED.has(segments[0]);
   })();
@@ -232,16 +251,26 @@ export default async function RootLayout({
   }
 
   return (
-    <GuestcamClerkProvider localization={clerkLocalization}>
+    <GuestcamClerkProvider
+      localization={clerkLocalization}
+      disabled={isPrivateSurface}
+    >
       <html lang={lang} className={`${dmSans.variable} ${cormorant.variable}`}>
         <body className="font-sans antialiased bg-[#F2F4F8] text-[#0F1729] min-h-screen">
           {/* Preconnect hints — trim ~100-300 ms off TLS handshake for the
               third-party scripts we KNOW will load on every page. Next.js
               hoists these to <head> automatically. */}
-          <link rel="preconnect" href="https://www.googletagmanager.com" />
-          <link rel="preconnect" href="https://consent.cookiebot.com" />
-          <link rel="dns-prefetch" href="https://www.google-analytics.com" />
-          <link rel="dns-prefetch" href="https://connect.facebook.net" />
+          {!isPrivateSurface && (
+            <>
+              <link rel="preconnect" href="https://www.googletagmanager.com" />
+              <link rel="preconnect" href="https://consent.cookiebot.com" />
+              <link
+                rel="dns-prefetch"
+                href="https://www.google-analytics.com"
+              />
+              <link rel="dns-prefetch" href="https://connect.facebook.net" />
+            </>
+          )}
 
           {/* Cookiebot — must be beforeInteractive so auto-blocking mode can
               intercept GA and any other third-party scripts before they fire.
@@ -259,7 +288,7 @@ export default async function RootLayout({
           {!isPrivateSurface && <MetaPixel />}
           {showPromo && <DiscountBanner lang={lang} />}
           {children}
-          <GuestcamProcessHowOverride lang={lang} />
+          {!isPrivateSurface && <GuestcamProcessHowOverride lang={lang} />}
           {showPromo && <ExitIntentPopup lang={lang} />}
           {GA_ID && !isPrivateSurface && (
             <>

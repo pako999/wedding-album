@@ -1,20 +1,25 @@
 import type { ComponentProps, ReactNode } from "react";
 import { headers } from "next/headers";
 import { ClerkProvider } from "@clerk/nextjs";
-import {
-  isCountryMarketingHost,
-  normalizedHostname,
-} from "@/lib/site-domains";
+import { isCountryMarketingHost, normalizedHostname } from "@/lib/site-domains";
 
 type Localization = ComponentProps<typeof ClerkProvider>["localization"];
 
 export async function GuestcamClerkProvider({
   children,
   localization,
+  disabled = false,
 }: {
   children: ReactNode;
   localization: Localization;
+  disabled?: boolean;
 }) {
+  // Public galleries and photo walls do not expose account controls. Avoid
+  // loading Clerk's client runtime on these latency-sensitive guest pages.
+  if (disabled) {
+    return <>{children}</>;
+  }
+
   const h = await headers();
   const host = normalizedHostname(
     h.get("x-forwarded-host") ?? h.get("host") ?? "www.guestcam.si",

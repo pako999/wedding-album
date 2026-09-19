@@ -10,11 +10,13 @@ async function read(file) {
 async function readTsxTree(directory) {
   const absolute = path.join(root, directory);
   const entries = await fs.readdir(absolute, { withFileTypes: true });
-  const chunks = await Promise.all(entries.map(async (entry) => {
-    const relative = path.join(directory, entry.name);
-    if (entry.isDirectory()) return readTsxTree(relative);
-    return entry.name.endsWith(".tsx") ? read(relative) : "";
-  }));
+  const chunks = await Promise.all(
+    entries.map(async (entry) => {
+      const relative = path.join(directory, entry.name);
+      if (entry.isDirectory()) return readTsxTree(relative);
+      return entry.name.endsWith(".tsx") ? read(relative) : "";
+    }),
+  );
   return chunks.join("\n");
 }
 
@@ -33,10 +35,14 @@ function requireAbsent(name, text, pattern, hint) {
 }
 
 function requireOccurrences(name, text, pattern, expected, hint) {
-  const flags = pattern.flags.includes("g") ? pattern.flags : `${pattern.flags}g`;
+  const flags = pattern.flags.includes("g")
+    ? pattern.flags
+    : `${pattern.flags}g`;
   const matches = text.match(new RegExp(pattern.source, flags)) ?? [];
   if (matches.length !== expected) {
-    throw new Error(`FAIL: ${name} — ${hint} (expected ${expected}, found ${matches.length})`);
+    throw new Error(
+      `FAIL: ${name} — ${hint} (expected ${expected}, found ${matches.length})`,
+    );
   }
   console.log(`PASS: ${name}`);
 }
@@ -52,12 +58,15 @@ const files = {
   albumGuestView: await read("components/album/AlbumGuestView.tsx"),
   uploadModal: await read("components/album/UploadModal.tsx"),
   translations: await read("lib/i18n/translations.ts"),
-  moderationNotice: await read("components/dashboard/ModerationEnabledNotice.tsx"),
+  moderationNotice: await read(
+    "components/dashboard/ModerationEnabledNotice.tsx",
+  ),
   eventModeration: await read("components/dashboard/EventModerationCard.tsx"),
   slideshow: await read("components/album/Slideshow.tsx"),
   bunny: await read("lib/storage/bunny.ts"),
   albumHeaderSettings: await read("lib/album-header-settings.ts"),
   coverPhotoSettings: await read("components/dashboard/CoverPhotoSettings.tsx"),
+  coverRoute: await read("app/api/albums/[slug]/cover/route.ts"),
   proxy: await read("proxy.ts"),
   resolveDomain: await read("app/api/resolve-domain/route.ts"),
   siteDomains: await read("lib/site-domains.ts"),
@@ -65,6 +74,7 @@ const files = {
   og: await read("lib/og.ts"),
   rootLayout: await read("app/layout.tsx"),
   clerkProvider: await read("components/GuestcamClerkProvider.tsx"),
+  vercelConfig: await read("vercel.json"),
   clerkWebhook: await read("app/api/webhooks/clerk/route.ts"),
   signUpPage: await read("app/sign-up/[[...sign-up]]/page.tsx"),
   signupAttribution: await read("lib/attribution/signup.ts"),
@@ -112,13 +122,17 @@ const files = {
   upgradePageRoute: await read("app/dashboard/[slug]/upgrade/page.tsx"),
   albumLimits: await read("lib/album-limits.ts"),
   newAlbumPage: await read("app/dashboard/new/page.tsx"),
-  adminUserUpgrade: await read("app/api/admin/users/[clerkId]/upgrade/route.ts"),
+  adminUserUpgrade: await read(
+    "app/api/admin/users/[clerkId]/upgrade/route.ts",
+  ),
   adminUsers: await read("app/admin/users/page.tsx"),
   userUpgradeMenu: await read("components/admin/UserUpgradeMenu.tsx"),
   dbMigrations: await read("lib/db/migrations.ts"),
   galleryLimits: await read("lib/gallery-limits.ts"),
   processOverride: await read("components/GuestcamProcessHowOverride.tsx"),
-  videoPlayback: await read("app/api/albums/[slug]/video-playback-url/route.ts"),
+  videoPlayback: await read(
+    "app/api/albums/[slug]/video-playback-url/route.ts",
+  ),
   videoClient: await read("components/album/IosBunnyPlaybackFix.tsx"),
   filmStatus: await read("app/api/albums/[slug]/film/status/route.ts"),
   envExample: await read(".env.example"),
@@ -126,7 +140,9 @@ const files = {
   srHomePage: await read("app/sr/page.tsx"),
   esHomePage: await read("app/es/page.tsx"),
   homeComponent: await read("components/GuestcamHomePage.tsx"),
-  localizedHomeComponent: await read("components/LocalizedGuestcamHomePageV3.tsx"),
+  localizedHomeComponent: await read(
+    "components/LocalizedGuestcamHomePageV3.tsx",
+  ),
   albumAdminPanel: await read("components/dashboard/AlbumAdminPanel.tsx"),
   createEventWizard: await read("components/dashboard/CreateEventWizard.tsx"),
   createAlbumAction: await read("app/actions/create-album.ts"),
@@ -142,25 +158,33 @@ const files = {
   hrAlternatives: await read("app/hr/alternativne-aplikacije/page.tsx"),
   srAlternatives: await read("app/sr/alternativne-aplikacije/page.tsx"),
   regionalBlogContent: (
-    await Promise.all((await Promise.all(
-      ["hr", "sr"].map(async (lang) =>
-        (await fs.readdir(path.join(root, "content", "blog", lang)))
-          .filter((name) => name.endsWith(".json"))
-          .map((name) => `content/blog/${lang}/${name}`),
-      ),
-    )).flat().map(read))
+    await Promise.all(
+      (
+        await Promise.all(
+          ["hr", "sr"].map(async (lang) =>
+            (await fs.readdir(path.join(root, "content", "blog", lang)))
+              .filter((name) => name.endsWith(".json"))
+              .map((name) => `content/blog/${lang}/${name}`),
+          ),
+        )
+      )
+        .flat()
+        .map(read),
+    )
   ).join("\n"),
   globalStyles: await read("app/globals.css"),
   dashboardLayout: await read("app/dashboard/layout.tsx"),
   adminLayout: await read("app/admin/layout.tsx"),
   authenticatedUi: (
-    await Promise.all([
-      "app/dashboard",
-      "app/admin",
-      "app/affiliate/dashboard",
-      "components/dashboard",
-      "components/admin",
-    ].map(readTsxTree))
+    await Promise.all(
+      [
+        "app/dashboard",
+        "app/admin",
+        "app/affiliate/dashboard",
+        "components/dashboard",
+        "components/admin",
+      ].map(readTsxTree),
+    )
   ).join("\n"),
 };
 
@@ -841,7 +865,9 @@ requireMatch(
 
 requireAbsent(
   "cross-domain signup source excludes advertising click IDs and full referrer URLs",
-  files.signupAttribution.split("export function buildSignupSourceSnapshot")[1] ?? "",
+  files.signupAttribution.split(
+    "export function buildSignupSourceSnapshot",
+  )[1] ?? "",
   /gclid\s*:|fbclid\s*:|referrerUrl\s*:/,
   "the URL/Clerk bridge should carry only a compact non-sensitive attribution summary",
 );
@@ -886,6 +912,27 @@ requireMatch(
   files.clerkProvider,
   /isCountryMarketingHost\(host\)[\s\S]*return <>\{children\}<\/>/,
   "the Serbian and Spanish origins must render without a local Clerk frontend instance",
+);
+
+requireMatch(
+  "public galleries do not boot Clerk or marketing-only client code",
+  `${files.rootLayout}\n${files.clerkProvider}`,
+  /disabled=\{isPrivateSurface\}[\s\S]*!isPrivateSurface && <GuestcamProcessHowOverride[\s\S]*if \(disabled\)[\s\S]*return <>\{children\}<\/>/,
+  "guest albums and photo walls must not download account or homepage JavaScript",
+);
+
+requireMatch(
+  "gallery data loads without duplicate or sequential database round trips",
+  files.albumPage,
+  /const getAlbumBySlug = cache\([\s\S]*getAlbumBySlug\(slug\)[\s\S]*Promise\.all\(\[[\s\S]*db\.query\.photos\.findMany[\s\S]*getAlbumFlags\(album\.id\)[\s\S]*db\.query\.moments\.findMany/,
+  "metadata and page rendering must share the album lookup and load independent gallery data in parallel",
+);
+
+requireMatch(
+  "Vercel functions run near Guestcam's European audience",
+  files.vercelConfig,
+  /"regions":\s*\["fra1"\]/,
+  "the production function region must remain Frankfurt instead of the US default",
 );
 
 requireMatch(
@@ -1116,6 +1163,13 @@ requireMatch(
   `${files.coverPhotoSettings}\n${files.albumSettingsRoute}\n${files.albumHeaderSettings}\n${files.albumGuestView}\n${files.dbMigrations}`,
   /setPointerCapture[\s\S]*onPointerMove=\{currentCover \? handlePointerMove[\s\S]*coverPositionY[\s\S]*cover_position_y[\s\S]*objectPosition:\s*`50% \$\{coverPositionY\}%`/,
   "owners must be able to drag the cover vertically and keep the same crop in the public gallery",
+);
+
+requireMatch(
+  "album covers are always resized and stored as WebP",
+  `${files.coverRoute}\n${files.coverPhotoSettings}\n${files.albumAdminPanel}`,
+  /COVER_MAX_WIDTH = 800[\s\S]*\.resize\([\s\S]*width: COVER_MAX_WIDTH[\s\S]*withoutEnlargement: true[\s\S]*\.webp\([\s\S]*cover-\$\{crypto\.randomUUID\(\)\}\.webp[\s\S]*method: "POST"[\s\S]*photoId: p\.id[\s\S]*setCoverPhoto\(photo\.id\)/,
+  "both uploaded files and gallery selections must create a bounded WebP cover copy",
 );
 
 requireMatch(

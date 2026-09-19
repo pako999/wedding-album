@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { headers } from "next/headers";
+import { cache } from "react";
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { db } from "@/lib/db";
 import { albums, photos, moments } from "@/lib/db/schema";
@@ -7,15 +8,32 @@ import { eq, and } from "drizzle-orm";
 import { withSchemaHealing } from "@/lib/db/bootstrap";
 import { AlbumGuestView } from "@/components/album/AlbumGuestView";
 import { type Lang } from "@/lib/i18n/translations";
-import { hashAlbumPassword, needsRehash, verifyAlbumPassword } from "@/lib/album-password";
+import {
+  hashAlbumPassword,
+  needsRehash,
+  verifyAlbumPassword,
+} from "@/lib/album-password";
 import { verifiedEmails } from "@/lib/album-ownership";
 import { toPublicAlbum } from "@/lib/album-view";
 import { getAlbumFlags } from "@/lib/album-flags";
 import { getAlbumHeaderSettings } from "@/lib/album-header-settings";
-import { getAlbumAppearance, WELCOME_FONT_STACKS, type WelcomeFont } from "@/lib/album-appearance";
+import {
+  getAlbumAppearance,
+  WELCOME_FONT_STACKS,
+  type WelcomeFont,
+} from "@/lib/album-appearance";
 import type { Metadata } from "next";
 
 export const dynamic = "force-dynamic";
+
+// generateMetadata and AlbumPage both need the same album row. React cache
+// deduplicates that ORM call within one server render without making gallery
+// data stale across requests.
+const getAlbumBySlug = cache((slug: string) =>
+  withSchemaHealing(() =>
+    db.query.albums.findFirst({ where: eq(albums.slug, slug) }),
+  ),
+);
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -23,15 +41,15 @@ interface Props {
 }
 
 const EVENT_LABEL_SL: Record<string, string> = {
-  wedding:     "Poročni album za",
-  birthday:    "Album rojstnega dne za",
+  wedding: "Poročni album za",
+  birthday: "Album rojstnega dne za",
   anniversary: "Album obletnice za",
-  party:       "Album zabave za",
-  baptism:     "Album krsta za",
-  graduation:  "Maturantski album za",
+  party: "Album zabave za",
+  baptism: "Album krsta za",
+  graduation: "Maturantski album za",
   baby_shower: "Baby shower album za",
-  business:    "Poslovni album za",
-  other:       "Album dogodka za",
+  business: "Poslovni album za",
+  other: "Album dogodka za",
 };
 
 /** Legacy Bunny iframe fallback if signed same-origin playback is unavailable. */
@@ -44,12 +62,11 @@ function compatibleBunnyPlayerUrl(url: string): string {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const album = await withSchemaHealing(() =>
-    db.query.albums.findFirst({ where: eq(albums.slug, slug) }),
-  );
+  const album = await getAlbumBySlug(slug);
   if (!album) return { title: "Album not found" };
 
-  const eventLabel = EVENT_LABEL_SL[album.eventType ?? "other"] ?? EVENT_LABEL_SL.other;
+  const eventLabel =
+    EVENT_LABEL_SL[album.eventType ?? "other"] ?? EVENT_LABEL_SL.other;
   const description = `${eventLabel} ${album.coupleName}, ${album.weddingDate}`;
 
   return {
@@ -87,12 +104,17 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function AlbumPage({ params, searchParams }: Props) {
   const { slug } = await params;
-  const { lang: langParam, event } = await searchParams;
   const renderedAt = new Date().toISOString();
 
-  const album = await withSchemaHealing(() =>
-    db.query.albums.findFirst({ where: eq(albums.slug, slug) }),
-  );
+  // These are independent request operations. Starting them together avoids
+  // paying their network latency one after another on every gallery visit.
+  const [album, { lang: langParam, event }, requestHeaders, session] =
+    await Promise.all([
+      getAlbumBySlug(slug),
+      searchParams,
+      headers(),
+      auth().catch(() => null),
+    ]);
 
   if (!album || !album.isPublished) {
     notFound();
@@ -109,8 +131,7 @@ export default async function AlbumPage({ params, searchParams }: Props) {
 
   let isOwner = false;
   try {
-    const session = await auth();
-    if (session.userId) {
+    if (session?.userId) {
       if (session.userId === album.ownerClerkId) {
         isOwner = true;
       } else if (album.ownerEmail) {
@@ -121,15 +142,20 @@ export default async function AlbumPage({ params, searchParams }: Props) {
         }
       }
     }
-  } catch { /* viewer is anonymous */ }
+  } catch {
+    /* viewer is anonymous */
+  }
 
-  const requestHeaders = await headers();
-  const internalAlbumPassword = requestHeaders.get("x-album-access-password") ?? "";
+  const internalAlbumPassword =
+    requestHeaders.get("x-album-access-password") ?? "";
 
   const passwordRequired = !!album.password && !isOwner;
   let passwordCorrect = isOwner || !album.password;
   if (!passwordCorrect && album.password) {
-    passwordCorrect = await verifyAlbumPassword(internalAlbumPassword, album.password);
+    passwordCorrect = await verifyAlbumPassword(
+      internalAlbumPassword,
+      album.password,
+    );
     if (passwordCorrect && needsRehash(album.password)) {
       const upgraded = await hashAlbumPassword(internalAlbumPassword);
       await db
@@ -140,15 +166,26 @@ export default async function AlbumPage({ params, searchParams }: Props) {
     }
   }
 
-  const albumPhotos = passwordCorrect
-    ? await db.query.photos.findMany({
-        where: and(
-          eq(photos.albumId, album.id),
-          eq(photos.status, "published")
-        ),
-        orderBy: (p, { asc }) => [asc(p.sortOrder), asc(p.uploadedAt)],
-      })
-    : [];
+  const isEventSurface = event === "1";
+  const [albumPhotos, flags, headerSettings, appearance, albumMoments] =
+    await Promise.all([
+      passwordCorrect
+        ? db.query.photos.findMany({
+            where: and(
+              eq(photos.albumId, album.id),
+              eq(photos.status, "published"),
+            ),
+            orderBy: (p, { asc }) => [asc(p.sortOrder), asc(p.uploadedAt)],
+          })
+        : Promise.resolve([]),
+      getAlbumFlags(album.id),
+      getAlbumHeaderSettings(album.id),
+      isEventSurface ? getAlbumAppearance(album.id) : Promise.resolve(null),
+      db.query.moments.findMany({
+        where: eq(moments.albumId, album.id),
+        orderBy: (m, { asc }) => [asc(m.sortOrder), asc(m.createdAt)],
+      }),
+    ]);
 
   // Restore the proven Bunny iframe playback used by the older deployments.
   // The library's optional thumbnail and MP4 fallback files currently return
@@ -163,18 +200,7 @@ export default async function AlbumPage({ params, searchParams }: Props) {
 
   // Event/Photo Wall branding belongs only to the dedicated event surface.
   // Ordinary album URLs stay standard even when event branding is configured.
-  const [flags, headerSettings] = await Promise.all([
-    getAlbumFlags(album.id),
-    getAlbumHeaderSettings(album.id),
-  ]);
-  const isEventSurface = event === "1";
-  const appearance = isEventSurface ? await getAlbumAppearance(album.id) : null;
   const requireEventGuestData = flags.guestDataCapture && isEventSurface;
-
-  const albumMoments = await db.query.moments.findMany({
-    where: eq(moments.albumId, album.id),
-    orderBy: (m, { asc }) => [asc(m.sortOrder), asc(m.createdAt)],
-  });
 
   return (
     <>
@@ -203,17 +229,23 @@ export default async function AlbumPage({ params, searchParams }: Props) {
         requireGuestData={requireEventGuestData}
         eventFlags={flags}
         headerVisibility={headerSettings}
-        appearance={appearance ? {
-          logoUrl: appearance.logoUrl,
-          accentColor: appearance.accentColor,
-          backgroundUrl: appearance.backgroundUrl,
-          welcomeEnabled: appearance.welcomeEnabled,
-          welcomeTitle: appearance.welcomeTitle,
-          welcomeText: appearance.welcomeText,
-          welcomeButton: appearance.welcomeButton,
-          welcomeBgUrl: appearance.welcomeBgUrl,
-          welcomeFontStack: WELCOME_FONT_STACKS[(appearance.welcomeFont as WelcomeFont)] ?? WELCOME_FONT_STACKS.elegant,
-        } : undefined}
+        appearance={
+          appearance
+            ? {
+                logoUrl: appearance.logoUrl,
+                accentColor: appearance.accentColor,
+                backgroundUrl: appearance.backgroundUrl,
+                welcomeEnabled: appearance.welcomeEnabled,
+                welcomeTitle: appearance.welcomeTitle,
+                welcomeText: appearance.welcomeText,
+                welcomeButton: appearance.welcomeButton,
+                welcomeBgUrl: appearance.welcomeBgUrl,
+                welcomeFontStack:
+                  WELCOME_FONT_STACKS[appearance.welcomeFont as WelcomeFont] ??
+                  WELCOME_FONT_STACKS.elegant,
+              }
+            : undefined
+        }
       />
     </>
   );

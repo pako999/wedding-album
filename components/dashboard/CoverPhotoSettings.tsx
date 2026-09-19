@@ -10,8 +10,8 @@ import type { Album, Photo } from "@/lib/db/schema";
  *
  * Two ways to set the public album page's hero image:
  *   1. Pick from photos already uploaded to this gallery (any plan that
- *      has at least one photo can do this — uses the existing
- *      /api/albums/[slug]/settings PATCH with coverImageUrl).
+ *      has at least one photo can do this). The cover endpoint creates a
+ *      resized WebP copy, leaving the original gallery photo untouched.
  *   2. Upload a fresh image from the user's computer (Plus / Premium
  *      only — gated server-side by /api/albums/[slug]/cover too).
  *
@@ -72,15 +72,18 @@ export function CoverPhotoSettings({ album, photos, initialPositionY }: Props) {
     setError(null);
     setBusy("pick");
     try {
-      const res = await fetch(`/api/albums/${album.slug}/settings`, {
-        method: "PATCH",
+      const res = await fetch(`/api/albums/${album.slug}/cover`, {
+        method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          coverImageUrl: p.thumbnailUrl ?? p.blobUrl,
-          coverPositionY: 50,
-        }),
+        body: JSON.stringify({ photoId: p.id }),
       });
       if (!res.ok) throw new Error("save_failed");
+      const positionRes = await fetch(`/api/albums/${album.slug}/settings`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ coverPositionY: 50 }),
+      });
+      if (!positionRes.ok) throw new Error("position_save_failed");
       updatePosition(50);
       setPickerOpen(false);
       router.refresh();
