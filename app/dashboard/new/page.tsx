@@ -1,6 +1,6 @@
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
-import { headers } from "next/headers";
+import { cookies, headers } from "next/headers";
 import Link from "next/link";
 import { db } from "@/lib/db";
 import { albums } from "@/lib/db/schema";
@@ -8,30 +8,27 @@ import { desc } from "drizzle-orm";
 import { DashboardNav } from "@/components/dashboard/DashboardNav";
 import { CreateEventWizard } from "@/components/dashboard/CreateEventWizard";
 import { albumOwnerWhere, getAlbumCreationGate } from "@/lib/album-limits";
-import { type Lang } from "@/lib/i18n/translations";
 import { GALLERY_LIMIT_COPY } from "@/lib/i18n/gallery-limit-translations";
 import {
-  checkoutLangFromHostname,
-  checkoutLangFromPath,
-  checkoutLangFromReferer,
-  normalizeCheckoutLang,
-} from "@/lib/i18n/checkout-locale";
+  DASHBOARD_COPY,
+  DASHBOARD_LANG_COOKIE,
+  resolveDashboardLang,
+} from "@/lib/i18n/dashboard-language";
 import { verifiedEmails } from "@/lib/album-ownership";
 
 export const dynamic = "force-dynamic";
 
 export default async function NewAlbumPage({ searchParams }: { searchParams: Promise<{ plan?: string; lang?: string }> }) {
-  const [sp, h] = await Promise.all([searchParams, headers()]);
+  const [sp, h, cookieStore] = await Promise.all([searchParams, headers(), cookies()]);
   const initialPlan =
     sp.plan === "basic" || sp.plan === "plus" || sp.plan === "premium"
       ? sp.plan
       : undefined;
-  const requestLang =
-    checkoutLangFromHostname(h.get("x-forwarded-host")) ??
-    checkoutLangFromHostname(h.get("host")) ??
-    normalizeCheckoutLang(sp.lang) ??
-    checkoutLangFromPath(h.get("x-pathname")) ??
-    checkoutLangFromReferer(h.get("referer"));
+  const initialDashboardLang = resolveDashboardLang({
+    requested: sp.lang,
+    saved: cookieStore.get(DASHBOARD_LANG_COOKIE)?.value,
+    acceptLanguage: h.get("accept-language"),
+  });
 
   let userId: string | null = null;
   try {
@@ -43,27 +40,19 @@ export default async function NewAlbumPage({ searchParams }: { searchParams: Pro
   if (!userId) {
     const returnParams = new URLSearchParams();
     if (initialPlan) returnParams.set("plan", initialPlan);
-    returnParams.set("lang", requestLang ?? "sl");
+    returnParams.set("lang", initialDashboardLang);
     redirect(`/sign-in?redirect_url=${encodeURIComponent(`/dashboard/new?${returnParams.toString()}`)}`);
   }
   const clerkUser = await currentUser().catch(() => null);
 
-  // Same lang-detection precedence as /dashboard/[slug]/upgrade — this
-  // screen links straight into that page, so it needs to land in the same
-  // language the visitor was already browsing in.
-  //   1. ?lang= search param (explicit override)
-  //   2. First segment of the pathname or referrer (locale they were
-  //      already browsing in)
-  //   3. Clerk publicMetadata.lang (locale they picked at signup)
-  //   4. "sl" default (primary market)
-  const clerkLang = normalizeCheckoutLang(
-    (clerkUser?.publicMetadata as Record<string, unknown> | undefined)?.lang,
-  );
-  const lang: Lang =
-    requestLang ??
-    clerkLang ??
-    "sl";
+  const lang = resolveDashboardLang({
+    requested: sp.lang,
+    saved: cookieStore.get(DASHBOARD_LANG_COOKIE)?.value,
+    clerk: (clerkUser?.publicMetadata as Record<string, unknown> | undefined)?.lang,
+    acceptLanguage: h.get("accept-language"),
+  });
   const t = GALLERY_LIMIT_COPY[lang];
+  const dashboardCopy = DASHBOARD_COPY[lang];
 
   const ownerVerifiedEmails = verifiedEmails(clerkUser);
   const existing = await db.query.albums.findFirst({
@@ -92,7 +81,7 @@ export default async function NewAlbumPage({ searchParams }: { searchParams: Pro
   if (!gate.allowed) {
     return (
       <div className="min-h-screen" style={{ background: "#F4F6FB" }}>
-        <DashboardNav />
+        <DashboardNav lang={lang} />
 
         <main className="max-w-xl mx-auto px-4 sm:px-6 py-14">
           <Link href="/dashboard" className="inline-flex items-center gap-1.5 text-sm text-gray-400 hover:text-[#0F1729] transition-colors mb-8">
@@ -125,7 +114,7 @@ export default async function NewAlbumPage({ searchParams }: { searchParams: Pro
 
   return (
     <div className="min-h-screen" style={{ background: "#F4F6FB" }}>
-      <DashboardNav />
+      <DashboardNav lang={lang} />
 
       <main className="max-w-xl mx-auto px-4 sm:px-6 py-14">
 
@@ -137,7 +126,7 @@ export default async function NewAlbumPage({ searchParams }: { searchParams: Pro
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
             </svg>
-            Nazaj na nadzorno ploščo
+            {dashboardCopy.backDashboard}
           </Link>
         )}
 
@@ -145,7 +134,7 @@ export default async function NewAlbumPage({ searchParams }: { searchParams: Pro
         <CreateEventWizard initialPlan={initialPlan} lang={lang} />
 
         <p className="text-center text-xs text-gray-400 mt-6">
-          Po ustvarjanju boste dobili edinstveno QR kodo za vaše goste.
+          {dashboardCopy.newGalleryFootnote}
         </p>
       </main>
     </div>

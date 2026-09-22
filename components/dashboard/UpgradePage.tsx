@@ -4,12 +4,14 @@ import { useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { GuestcamLogo } from "@/components/GuestcamLogo";
+import { DashboardLanguageSwitcher } from "@/components/dashboard/DashboardLanguageSwitcher";
 import { TrackViewContent } from "@/components/TrackViewContent";
 import { fbEvent } from "@/lib/fbpixel";
 import type { Album } from "@/lib/db/schema";
 import { translations, type Lang } from "@/lib/i18n/translations";
 import { UPGRADE_COPY, PLAN_FEATURE_KEYS } from "@/lib/i18n/upgrade-translations";
 import { checkoutRegionName } from "@/lib/i18n/checkout-locale";
+import { DASHBOARD_COPY } from "@/lib/i18n/dashboard-language";
 import {
   SHIPPING_COUNTRIES, STAND_VARIANTS, DEFAULT_STAND_QTY, DEFAULT_STAND_VARIANT,
   MAX_STAND_QTY, VOLUME_BREAKS, LEAD_TIME_DAYS, quoteShipping, standsPriceCents, effectiveUnitCents,
@@ -194,7 +196,10 @@ export function UpgradePage({ album, lang = "sl", initialDiscount = null }: Prop
             {u.back}
           </Link>
           <GuestcamLogo size="sm" showMark={false} />
-          <div className="w-16" />
+          <DashboardLanguageSwitcher
+            current={lang}
+            ariaLabel={DASHBOARD_COPY[lang].language}
+          />
         </div>
       </header>
 

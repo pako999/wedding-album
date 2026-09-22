@@ -2,8 +2,11 @@
 
 import Link from "next/link";
 import { UserButton } from "@clerk/nextjs";
+import { DashboardLanguageSwitcher } from "@/components/dashboard/DashboardLanguageSwitcher";
+import { DASHBOARD_COPY, type DashboardLang } from "@/lib/i18n/dashboard-language";
 
-export function DashboardNav() {
+export function DashboardNav({ lang }: { lang: DashboardLang }) {
+  const copy = DASHBOARD_COPY[lang];
   return (
     <nav className="bg-white border-b sticky top-0 z-40" style={{ borderColor: "rgba(255,201,77,0.15)" }}>
       <div className="max-w-5xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between gap-4">
@@ -16,6 +19,7 @@ export function DashboardNav() {
         </Link>
 
         <div className="flex items-center gap-3">
+          <DashboardLanguageSwitcher current={lang} ariaLabel={copy.language} />
           <UserButton />
         </div>
       </div>

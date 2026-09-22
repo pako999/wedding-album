@@ -1,5 +1,6 @@
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
+import { cookies, headers } from "next/headers";
 import { db } from "@/lib/db";
 import { albums } from "@/lib/db/schema";
 import { eq, or, desc, sql } from "drizzle-orm";
@@ -14,6 +15,11 @@ import {
   type SignupSourceSnapshot,
 } from "@/lib/attribution/signup";
 import { signupSourceTelegramLines } from "@/lib/attribution/telegram";
+import {
+  DASHBOARD_COPY,
+  DASHBOARD_LANG_COOKIE,
+  resolveDashboardLang,
+} from "@/lib/i18n/dashboard-language";
 
 export const dynamic = "force-dynamic";
 
@@ -26,11 +32,21 @@ function isNewerThan(ts: number | null | undefined, windowMs: number): boolean {
   return ts != null && Date.now() - ts < windowMs;
 }
 
-export default async function DashboardPage() {
+export default async function DashboardPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ lang?: string }>;
+}) {
+  const [sp, requestHeaders, cookieStore] = await Promise.all([
+    searchParams,
+    headers(),
+    cookies(),
+  ]);
   let userId: string | null = null;
   let userEmail: string | null = null;
   let userCreatedAt: number | null = null;
   let clerkSignupSource: SignupSourceSnapshot | null = null;
+  let clerkPreferredLang: unknown;
   try {
     const session = await auth();
     userId = session.userId;
@@ -41,11 +57,20 @@ export default async function DashboardPage() {
       clerkSignupSource = parseSignupSourceSnapshot(
         user?.unsafeMetadata?.guestcamAttribution,
       );
+      clerkPreferredLang = (user?.publicMetadata as Record<string, unknown> | undefined)?.lang;
     }
   } catch {
     redirect("/sign-in");
   }
   if (!userId) redirect("/sign-in");
+
+  const lang = resolveDashboardLang({
+    requested: sp.lang,
+    saved: cookieStore.get(DASHBOARD_LANG_COOKIE)?.value,
+    clerk: clerkPreferredLang,
+    acceptLanguage: requestHeaders.get("accept-language"),
+  });
+  const copy = DASHBOARD_COPY[lang];
 
   // Capture the user's country from Vercel's geo header for the admin
   // Uporabniki view. Covers existing users who never create new albums.
@@ -128,7 +153,7 @@ export default async function DashboardPage() {
 
   return (
     <div className="min-h-screen" style={{ background: "var(--paper)" }}>
-      <DashboardNav />
+      <DashboardNav lang={lang} />
 
       <main className="max-w-5xl mx-auto px-4 sm:px-6 py-10">
 
@@ -137,10 +162,9 @@ export default async function DashboardPage() {
           <div className="mb-6 bg-amber-50 border border-amber-200 rounded-2xl px-5 py-4 flex items-start gap-3">
             <span className="text-amber-500 text-lg shrink-0">⚠️</span>
             <div>
-              <p className="font-semibold text-amber-800 text-sm">Baza podatkov ni nastavljena</p>
+              <p className="font-semibold text-amber-800 text-sm">{copy.databaseTitle}</p>
               <p className="text-amber-700 text-xs mt-1">
-                V Vercel nastavitvah dodajte <code className="bg-amber-100 px-1 rounded">DATABASE_URL</code> nato
-                lokalno zaženite: <code className="bg-amber-100 px-1 rounded">npm run db:setup</code>
+                {copy.databaseBody}
               </p>
             </div>
           </div>
@@ -149,9 +173,9 @@ export default async function DashboardPage() {
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="gc-admin-page-title text-[color:var(--ink)]">Moje galerije</h1>
+            <h1 className="gc-admin-page-title text-[color:var(--ink)]">{copy.listTitle}</h1>
             <p className="text-sm text-[color:var(--muted)] mt-1">
-              {userAlbums.length} {userAlbums.length === 1 ? "galerija" : "galerij"}
+              {userAlbums.length} {userAlbums.length === 1 ? copy.gallerySingular : copy.galleryPlural}
             </p>
           </div>
           {!dbError && (
@@ -163,7 +187,7 @@ export default async function DashboardPage() {
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
               </svg>
-              Nova galerija
+              {copy.newGallery}
             </Link>
           )}
         </div>
@@ -176,9 +200,9 @@ export default async function DashboardPage() {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
               </svg>
             </div>
-            <h2 className="text-2xl font-semibold tracking-tight text-[color:var(--ink)] mb-2">Ustvarite prvo galerijo</h2>
+            <h2 className="text-2xl font-semibold tracking-tight text-[color:var(--ink)] mb-2">{copy.firstGalleryTitle}</h2>
             <p className="text-sm text-[color:var(--muted)] mb-2 max-w-xs mx-auto">
-              Poroka, rojstni dan, obletnica — ustvarite galerijo in zbirajte spomine.
+              {copy.firstGalleryBody}
             </p>
             <Link
               href="/dashboard/new"
@@ -188,9 +212,9 @@ export default async function DashboardPage() {
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
               </svg>
-              Ustvari prvo galerijo
+              {copy.firstGalleryCta}
             </Link>
-            <p className="text-xs text-[color:var(--muted)] mt-4">Brezplačno · Do 20 fotografij · QR koda vključena</p>
+            <p className="text-xs text-[color:var(--muted)] mt-4">{copy.freeSummary}</p>
           </div>
         ) : (
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -222,7 +246,7 @@ export default async function DashboardPage() {
                          album.eventType === "baptism" ? "👶" :
                          album.eventType === "graduation" ? "🎓" : "📸"}
                       </span>
-                      <span className="text-xs" style={{ color: "rgba(255,201,77,0.5)" }}>Brez naslovnice</span>
+                      <span className="text-xs" style={{ color: "rgba(255,201,77,0.5)" }}>{copy.noCover}</span>
                     </div>
                   )}
                   {/* Badges */}
@@ -230,7 +254,7 @@ export default async function DashboardPage() {
                     <span className={`text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full ${
                       album.isPublished ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-500"
                     }`}>
-                      {album.isPublished ? "Aktivno" : "Skrito"}
+                      {album.isPublished ? copy.active : copy.hidden}
                     </span>
                   </div>
                   <div className="absolute top-3 left-3">
@@ -257,12 +281,12 @@ export default async function DashboardPage() {
                       <svg className="w-3.5 h-3.5" style={{ color: "var(--honey)" }} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5z" />
                       </svg>
-                      <span className="text-xs text-[color:var(--muted)]">{album.photoCount} fotografij</span>
+                      <span className="text-xs text-[color:var(--muted)]">{album.photoCount} {copy.photos}</span>
                     </div>
                     {album.pendingCount > 0 && (
                       <div className="flex items-center gap-1">
                         <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
-                        <span className="text-xs text-amber-600 font-medium">{album.pendingCount} v čakanju</span>
+                        <span className="text-xs text-amber-600 font-medium">{album.pendingCount} {copy.pending}</span>
                       </div>
                     )}
                     <span className="ml-auto text-xs text-[color:var(--muted)]">{album.photoCount}/{album.maxPhotos}</span>
@@ -274,14 +298,14 @@ export default async function DashboardPage() {
                       className="flex-1 py-2 text-center text-xs font-medium rounded-lg border transition-colors"
                       style={{ borderColor: "#E5E7EB", color: "#4B5563" }}
                     >
-                      Odpri galerijo
+                      {copy.openGallery}
                     </Link>
                     <Link
                       href={`/dashboard/${album.slug}`}
                       className="flex-1 py-2 text-center text-xs font-bold rounded-lg text-white transition-opacity hover:opacity-90"
                       style={{ background: "var(--ink)", color: "var(--paper)" }}
                     >
-                      Upravljaj →
+                      {copy.manage}
                     </Link>
                   </div>
                 </div>

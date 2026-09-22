@@ -23,6 +23,12 @@ import { EventLeadsCard } from "@/components/dashboard/EventLeadsCard";
 import { ModerationEnabledNotice } from "@/components/dashboard/ModerationEnabledNotice";
 import { ALBUM_THEMES, themesForEvent } from "@/lib/album-themes";
 import { fbEvent } from "@/lib/fbpixel";
+import { DashboardLanguageSwitcher } from "@/components/dashboard/DashboardLanguageSwitcher";
+import {
+  ALBUM_ADMIN_COPY,
+  DASHBOARD_COPY,
+  type DashboardLang,
+} from "@/lib/i18n/dashboard-language";
 
 /**
  * List price of each paid plan in EUR. Used to fire the Meta Pixel
@@ -37,10 +43,28 @@ const PLAN_PRICES_EUR: Record<"basic" | "plus" | "premium", number> = {
   premium: 99,
 };
 
+const DASHBOARD_DATE_LOCALE: Record<DashboardLang, string> = {
+  sl: "sl-SI", hr: "hr-HR", sr: "sr-Latn-RS", en: "en-GB", de: "de-DE", es: "es-ES",
+};
+
+const CLOSE_LABEL: Record<DashboardLang, string> = {
+  sl: "Zapri", hr: "Zatvori", sr: "Zatvori", en: "Close", de: "Schließen", es: "Cerrar",
+};
+
+const PRINT_PRICE_COPY: Record<DashboardLang, { from: string; each: string }> = {
+  sl: { from: "že od", each: "na kos, samo ob nakupu paketa" },
+  hr: { from: "već od", each: "po komadu, samo uz kupnju paketa" },
+  sr: { from: "već od", each: "po komadu, samo uz kupovinu paketa" },
+  en: { from: "from", each: "each with a plan purchase" },
+  de: { from: "ab", each: "pro Stück, nur beim Kauf eines Tarifs" },
+  es: { from: "desde", each: "por unidad, solo al comprar un plan" },
+};
+
 type Tab = "overview" | "gallery" | "qr" | "events" | "settings" | "pending" | "film";
 
 interface Props {
   album: Album;
+  lang: DashboardLang;
   photos: Photo[];
   pendingCount: number;
   guestCount: number;
@@ -88,21 +112,20 @@ interface Props {
 }
 
 /** Copy + tone for the one-time Google Drive result banner. */
-function driveBannerCopy(result: string, count?: string): { tone: "success" | "warning" | "neutral" | "error"; text: string } {
-  switch (result) {
-    case "ok":
-      return { tone: "success", text: `Galerija je shranjena v Google Drive${count ? ` (${count} datotek)` : ""}.` };
-    case "partial":
-      return { tone: "warning", text: `Del galerije je shranjen v Google Drive${count ? ` (${count} datotek)` : ""} — nekaj datotek ni bilo mogoče prenesti. Poskusite znova.` };
-    case "denied":
-      return { tone: "neutral", text: "Shranjevanje v Google Drive je bilo preklicano." };
-    case "empty":
-      return { tone: "neutral", text: "Galerija še nima objavljenih fotografij za shranjevanje v Google Drive." };
-    case "notconfigured":
-      return { tone: "error", text: "Shranjevanje v Google Drive trenutno ni na voljo. Kontaktirajte nas na info@guestcam.si." };
-    default:
-      return { tone: "error", text: "Prišlo je do napake pri shranjevanju v Google Drive. Poskusite znova ali nas kontaktirajte na info@guestcam.si." };
-  }
+function driveBannerCopy(result: string, count: string | undefined, lang: DashboardLang): { tone: "success" | "warning" | "neutral" | "error"; text: string } {
+  const suffix = count ? ` (${count})` : "";
+  const messages = {
+    sl: { ok: `Galerija je shranjena v Google Drive${suffix}.`, partial: `Del galerije je shranjen v Google Drive${suffix}; nekaj datotek ni bilo mogoče prenesti. Poskusite znova.`, denied: "Shranjevanje v Google Drive je bilo preklicano.", empty: "Galerija še nima objavljenih fotografij za shranjevanje v Google Drive.", notconfigured: "Shranjevanje v Google Drive trenutno ni na voljo. Kontaktirajte info@guestcam.si.", error: "Pri shranjevanju v Google Drive je prišlo do napake. Poskusite znova ali kontaktirajte info@guestcam.si." },
+    hr: { ok: `Galerija je spremljena na Google Drive${suffix}.`, partial: `Dio galerije spremljen je na Google Drive${suffix}; neke datoteke nije bilo moguće prenijeti. Pokušajte ponovno.`, denied: "Spremanje na Google Drive je otkazano.", empty: "Galerija još nema objavljenih fotografija za spremanje.", notconfigured: "Izvoz na Google Drive trenutačno nije dostupan. Kontaktirajte info@guestcam.si.", error: "Došlo je do pogreške pri spremanju na Google Drive. Pokušajte ponovno ili kontaktirajte info@guestcam.si." },
+    sr: { ok: `Galerija je sačuvana na Google Drive${suffix}.`, partial: `Deo galerije je sačuvan na Google Drive${suffix}; neke datoteke nije bilo moguće preneti. Pokušajte ponovo.`, denied: "Čuvanje na Google Drive je otkazano.", empty: "Galerija još nema objavljenih fotografija za čuvanje.", notconfigured: "Izvoz na Google Drive trenutno nije dostupan. Kontaktirajte info@guestcam.si.", error: "Došlo je do greške pri čuvanju na Google Drive. Pokušajte ponovo ili kontaktirajte info@guestcam.si." },
+    en: { ok: `Gallery saved to Google Drive${suffix}.`, partial: `Part of the gallery was saved to Google Drive${suffix}; some files could not be transferred. Please try again.`, denied: "Saving to Google Drive was cancelled.", empty: "The gallery has no published photos to save yet.", notconfigured: "Google Drive export is currently unavailable. Contact info@guestcam.si.", error: "An error occurred while saving to Google Drive. Try again or contact info@guestcam.si." },
+    de: { ok: `Galerie in Google Drive gespeichert${suffix}.`, partial: `Ein Teil der Galerie wurde in Google Drive gespeichert${suffix}; einige Dateien konnten nicht übertragen werden. Bitte erneut versuchen.`, denied: "Das Speichern in Google Drive wurde abgebrochen.", empty: "Die Galerie enthält noch keine veröffentlichten Fotos zum Speichern.", notconfigured: "Der Google-Drive-Export ist derzeit nicht verfügbar. Kontaktieren Sie info@guestcam.si.", error: "Beim Speichern in Google Drive ist ein Fehler aufgetreten. Versuchen Sie es erneut oder kontaktieren Sie info@guestcam.si." },
+    es: { ok: `Galería guardada en Google Drive${suffix}.`, partial: `Parte de la galería se guardó en Google Drive${suffix}; algunos archivos no se pudieron transferir. Inténtalo de nuevo.`, denied: "Se canceló el guardado en Google Drive.", empty: "La galería aún no tiene fotos publicadas para guardar.", notconfigured: "La exportación a Google Drive no está disponible en este momento. Contacta con info@guestcam.si.", error: "Se produjo un error al guardar en Google Drive. Inténtalo de nuevo o contacta con info@guestcam.si." },
+  }[lang];
+  if (result === "ok") return { tone: "success", text: messages.ok };
+  if (result === "partial") return { tone: "warning", text: messages.partial };
+  if (result === "denied" || result === "empty") return { tone: "neutral", text: messages[result] };
+  return { tone: "error", text: result === "notconfigured" ? messages.notconfigured : messages.error };
 }
 
 const DRIVE_BANNER_STYLES: Record<"success" | "warning" | "neutral" | "error", { bg: string; border: string; text: string; icon: string }> = {
@@ -114,7 +137,9 @@ const DRIVE_BANNER_STYLES: Record<"success" | "warning" | "neutral" | "error", {
 
 // ─── Success Screen ───────────────────────────────────────────────────────────
 
-function NewAlbumSuccess({ album, paidPlan }: { album: Album; paidPlan?: "basic" | "plus" | "premium" }) {
+function NewAlbumSuccess({ album, paidPlan, lang }: { album: Album; paidPlan?: "basic" | "plus" | "premium"; lang: DashboardLang }) {
+  const copy = ALBUM_ADMIN_COPY[lang].success;
+  const dashboardCopy = DASHBOARD_COPY[lang];
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? SITE_URL;
   const albumUrl = `${appUrl}/${album.slug}`;
   // Always route to the dashboard — the upgrade page is a separate flow.
@@ -152,6 +177,9 @@ function NewAlbumSuccess({ album, paidPlan }: { album: Album; paidPlan?: "basic"
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4" style={{ background: "#f5f5f7" }}>
+      <div className="fixed right-4 top-4 z-20">
+        <DashboardLanguageSwitcher current={lang} ariaLabel={dashboardCopy.language} />
+      </div>
       <div className="bg-white rounded-2xl shadow-lg p-6 sm:p-10 max-w-md w-full">
         {/* Stepper */}
         <div className="flex items-center gap-2 mb-6">
@@ -164,7 +192,7 @@ function NewAlbumSuccess({ album, paidPlan }: { album: Album; paidPlan?: "basic"
           ))}
         </div>
         <p className="text-center text-[11px] font-semibold uppercase tracking-widest text-gray-400 mb-5">
-          Korak {step} od 3
+          {copy.step} {step} {copy.of} 3
         </p>
 
         {/* ── Step 1 — Album created ─────────────────────────────────── */}
@@ -176,18 +204,17 @@ function NewAlbumSuccess({ album, paidPlan }: { album: Album; paidPlan?: "basic"
               </svg>
             </div>
             <h1 className="gc-admin-page-title text-gray-900 mb-2">
-              Galerija je ustvarjena! 🎉
+              {copy.created}
             </h1>
             <p className="text-sm text-gray-500 leading-relaxed mb-6">
-              <strong className="text-gray-800">{album.coupleName}</strong> — vse je pripravljeno.
-              V naslednjih dveh korakih si oglejte svojo QR kodo in izberite predlogo za tisk.
+              <strong className="text-gray-800">{album.coupleName}</strong> {copy.ready}
             </p>
             <button
               onClick={() => setStep(2)}
               className="flex items-center justify-center gap-2 w-full py-3.5 rounded-xl text-white font-bold text-base transition-opacity hover:opacity-90"
               style={{ background: "#FFC94D" }}
             >
-              Naprej
+              {copy.next}
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
               </svg>
@@ -198,14 +225,14 @@ function NewAlbumSuccess({ album, paidPlan }: { album: Album; paidPlan?: "basic"
         {/* ── Step 2 — Your QR code ──────────────────────────────────── */}
         {step === 2 && (
           <div className="text-center">
-            <h2 className="text-xl font-bold text-gray-900 mb-2">Vaša QR koda</h2>
+            <h2 className="text-xl font-bold text-gray-900 mb-2">{copy.qrTitle}</h2>
             <p className="text-sm text-gray-500 leading-relaxed mb-5">
-              Gostje skenirajo to QR kodo s telefonom — brez aplikacije, brez prijave — in začnejo deliti fotografije.
+              {copy.qrBody}
             </p>
             <div className="inline-flex items-center justify-center p-4 rounded-2xl border-2 mx-auto mb-5"
               style={{ borderColor: "rgba(255,201,77,0.25)" }}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={qrPreview} alt="QR koda za galerijo" width={208} height={208} className="rounded-lg" />
+              <img src={qrPreview} alt={copy.qrTitle} width={208} height={208} className="rounded-lg" />
             </div>
             <div className="grid grid-cols-2 gap-2 mb-4">
               <Link
@@ -214,7 +241,7 @@ function NewAlbumSuccess({ album, paidPlan }: { album: Album; paidPlan?: "basic"
                 rel="noreferrer"
                 className="flex items-center justify-center gap-1.5 py-3 text-sm font-medium text-gray-700 border border-gray-200 rounded-xl hover:border-gray-300 hover:bg-gray-50 transition-colors"
               >
-                🖨️ Poglej predloge
+                {copy.templates}
               </Link>
               <a
                 href={`/api/albums/${album.slug}/qr?format=png&design=1`}
@@ -222,7 +249,7 @@ function NewAlbumSuccess({ album, paidPlan }: { album: Album; paidPlan?: "basic"
                 className="flex items-center justify-center gap-1.5 py-3 text-sm font-medium text-white rounded-xl transition-opacity hover:opacity-90"
                 style={{ background: "#FFC94D" }}
               >
-                ⬇ Prenesi QR kodo
+                {copy.downloadQr}
               </a>
             </div>
             <div className="flex items-center gap-2">
@@ -230,14 +257,14 @@ function NewAlbumSuccess({ album, paidPlan }: { album: Album; paidPlan?: "basic"
                 onClick={() => setStep(1)}
                 className="px-4 py-3 rounded-xl border border-gray-200 text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors"
               >
-                ← Nazaj
+                {copy.back}
               </button>
               <button
                 onClick={() => setStep(3)}
                 className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-white font-bold text-sm transition-opacity hover:opacity-90"
                 style={{ background: "#FFC94D" }}
               >
-                Naprej
+                {copy.next}
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
                 </svg>
@@ -254,17 +281,16 @@ function NewAlbumSuccess({ album, paidPlan }: { album: Album; paidPlan?: "basic"
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6.72 13.829c-.24.03-.48.062-.72.096m.72-.096a42.415 42.415 0 0110.56 0m-10.56 0L6.34 18m10.94-4.171c.24.03.48.062.72.096m-.72-.096L17.66 18m0 0l.229 2.523a1.125 1.125 0 01-1.12 1.227H7.231c-.662 0-1.18-.568-1.12-1.227L6.34 18m11.318 0h1.091A2.25 2.25 0 0021 15.75V9.456c0-1.081-.768-2.015-1.837-2.175a48.055 48.055 0 00-1.913-.247M6.34 18H5.25A2.25 2.25 0 013 15.75V9.456c0-1.081.768-2.015 1.837-2.175a48.041 48.041 0 011.913-.247m10.5 0a48.536 48.536 0 00-10.5 0m10.5 0V3.375c0-.621-.504-1.125-1.125-1.125h-8.25c-.621 0-1.125.504-1.125 1.125v3.659M18 10.5h.008v.008H18V10.5zm-3 0h.008v.008H15V10.5z" />
               </svg>
             </div>
-            <h2 className="text-xl font-bold text-gray-900 mb-2">Izberite predlogo za tisk</h2>
+            <h2 className="text-xl font-bold text-gray-900 mb-2">{copy.printTitle}</h2>
             <p className="text-sm text-gray-500 leading-relaxed mb-5">
-              Personalizirana kartica z imenom para, datumom in vašo QR kodo.
-              Natisnite in postavite na mize ali ob vhod — gostje takoj vedo, kaj storiti.
+              {copy.printBody}
             </p>
             <Link
               href={`/dashboard/${album.slug}/print`}
               className="flex items-center justify-center gap-2 w-full py-3.5 rounded-xl text-white font-bold text-base mb-3 transition-opacity hover:opacity-90"
               style={{ background: "#FFC94D" }}
             >
-              🖨️ Odpri predloge za tisk
+              {copy.openTemplates}
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
               </svg>
@@ -273,7 +299,7 @@ function NewAlbumSuccess({ album, paidPlan }: { album: Album; paidPlan?: "basic"
               href={dashboardUrl}
               className="block text-sm text-gray-500 hover:text-gray-700 transition-colors mb-6"
             >
-              Preskoči — to lahko storim kasneje v nadzorni plošči
+              {copy.skip}
             </Link>
 
             {/* Bottom row — back on the left, primary dashboard CTA on the right.
@@ -285,13 +311,13 @@ function NewAlbumSuccess({ album, paidPlan }: { album: Album; paidPlan?: "basic"
                 onClick={() => setStep(2)}
                 className="text-sm font-medium text-gray-600 hover:text-gray-800 transition-colors"
               >
-                ← Nazaj na QR kodo
+                {copy.backQr}
               </button>
               <Link
                 href={dashboardUrl}
                 className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl text-sm font-bold border-2 border-[#0F1729] text-[#0F1729] hover:bg-[#0F1729] hover:text-white transition-colors"
               >
-                Pojdi na nadzorno ploščo →
+                {copy.dashboard}
               </Link>
             </div>
           </div>
@@ -303,7 +329,9 @@ function NewAlbumSuccess({ album, paidPlan }: { album: Album; paidPlan?: "basic"
 
 // ─── Main Panel ───────────────────────────────────────────────────────────────
 
-export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activeTab, isNew, isUpgraded, paidAmount, paidPlan, ownerEmail, viewingAsAdmin, driveResult, driveCount, hasPassword, wallToken, guestDataCapture = false, flags, headerSettings }: Props) {
+export function AlbumAdminPanel({ album, lang, photos, pendingCount, guestCount, activeTab, isNew, isUpgraded, paidAmount, paidPlan, ownerEmail, viewingAsAdmin, driveResult, driveCount, hasPassword, wallToken, guestDataCapture = false, flags, headerSettings }: Props) {
+  const copy = ALBUM_ADMIN_COPY[lang];
+  const dashboardCopy = DASHBOARD_COPY[lang];
   const router = useRouter();
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? SITE_URL;
   const albumUrl = `${appUrl}/${album.slug}`;
@@ -368,7 +396,7 @@ export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activ
 
   // Show success screen if just created
   if (isNew) {
-    return <NewAlbumSuccess album={album} paidPlan={paidPlan} />;
+    return <NewAlbumSuccess album={album} paidPlan={paidPlan} lang={lang} />;
   }
 
   const navigateTab = (tab: Tab) => {
@@ -395,7 +423,7 @@ export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activ
   };
 
   const deletePhoto = async (photoId: string) => {
-    if (!confirm("Res želite izbrisati to fotografijo?")) return;
+    if (!confirm(copy.deleteConfirm)) return;
     await fetch(`/api/albums/${album.slug}/moderate`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -421,7 +449,7 @@ export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activ
     album.plan === "premium" ? "Premium" :
     album.plan === "plus"    ? "Plus"    :
     album.plan === "basic"   ? "Basic"   :
-    "Brezplačno";
+    copy.freePlan;
 
   const planBadgeClass =
     album.plan === "premium"
@@ -435,16 +463,16 @@ export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activ
   // Last uploaded photo date
   const lastPhoto = photos[0];
   const lastUploadDate = lastPhoto
-    ? new Date(lastPhoto.uploadedAt).toLocaleDateString("sl-SI", { day: "numeric", month: "short", year: "numeric" })
+    ? new Date(lastPhoto.uploadedAt).toLocaleDateString(DASHBOARD_DATE_LOCALE[lang], { day: "numeric", month: "short", year: "numeric" })
     : "-";
 
   const navItems: { id: Tab; label: string; icon: string }[] = [
-    { id: "overview",  label: "Pregled",    icon: "🕐" },
-    { id: "gallery",   label: "Fotografije",   icon: "🖼" },
-    { id: "film",      label: "Film Studio", icon: "🎬" },
-    { id: "qr",        label: "QR koda",    icon: "📱" },
-    { id: "events",    label: "Eventi",     icon: "🎪" },
-    { id: "settings",  label: "Nastavitve", icon: "⚙️" },
+    { id: "overview",  label: copy.tabs.overview, icon: "🕐" },
+    { id: "gallery",   label: copy.tabs.gallery, icon: "🖼" },
+    { id: "film",      label: copy.tabs.film, icon: "🎬" },
+    { id: "qr",        label: copy.tabs.qr, icon: "📱" },
+    { id: "events",    label: copy.tabs.events, icon: "🎪" },
+    { id: "settings",  label: copy.tabs.settings, icon: "⚙️" },
   ];
 
   return (
@@ -462,14 +490,14 @@ export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activ
           <div className="flex items-center gap-2 min-w-0">
             <span className="text-base leading-none">🛡️</span>
             <span className="truncate">
-              Admin pogled — galerija lastnika{ownerEmail ? `: ${ownerEmail}` : ""}
+              {copy.adminView}{ownerEmail ? `: ${ownerEmail}` : ""}
             </span>
           </div>
           <Link
             href="/admin/albums"
             className="shrink-0 inline-flex items-center gap-1 rounded-md bg-[#FFC94D] text-[#0F1729] px-2.5 py-1 text-xs font-bold hover:opacity-90"
           >
-            ← Nazaj na admin
+            {copy.backAdmin}
           </Link>
         </div>
       )}
@@ -508,13 +536,13 @@ export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activ
             <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
             </svg>
-            Vse galerije
+            {copy.allGalleries}
           </Link>
         </div>
 
         {/* Gallery info */}
         <div className="px-5 pb-4">
-          <p className="text-[11px] font-semibold uppercase tracking-wider text-gray-400 mb-2">Tvoja galerija</p>
+          <p className="text-[11px] font-semibold uppercase tracking-wider text-gray-400 mb-2">{copy.yourGallery}</p>
           <p className="font-bold text-sm text-gray-900 leading-tight truncate">{album.coupleName}</p>
           <p className="text-xs text-gray-400 mt-0.5">{album.weddingDate}</p>
           <span className={`inline-block mt-2 px-2 py-0.5 rounded-full text-[11px] font-semibold ${planBadgeClass}`}>
@@ -529,7 +557,7 @@ export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activ
             className="flex items-center justify-center gap-1.5 w-full py-2 text-sm text-gray-500 rounded-lg border border-dashed border-gray-300 hover:border-gray-400 hover:text-gray-700 transition-colors"
           >
             <span className="text-base leading-none">+</span>
-            Dodaj novo galerijo
+            {copy.addGallery}
           </Link>
         </div>
 
@@ -562,7 +590,7 @@ export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activ
               }`}
             >
               <span className="text-base leading-none">⏳</span>
-              V čakanju
+              {copy.tabs.pending}
               <span className="ml-auto flex items-center justify-center min-w-[20px] h-5 bg-amber-400 text-white text-[10px] font-bold rounded-full px-1">
                 {pendingCount}
               </span>
@@ -577,7 +605,7 @@ export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activ
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
               </svg>
-              Odjava
+              {copy.signOut}
             </button>
           </SignOutButton>
         </div>
@@ -585,6 +613,9 @@ export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activ
 
       {/* ── MAIN CONTENT ─────────────────────────────────────────────── */}
       <main className="flex-1 flex flex-col min-w-0">
+        <div className="sticky top-0 z-30 flex justify-end border-b border-gray-100 bg-white/95 px-4 py-2 backdrop-blur sm:px-8">
+          <DashboardLanguageSwitcher current={lang} ariaLabel={dashboardCopy.language} />
+        </div>
         {/* Upgrade success banner */}
         {isUpgraded && (
           <div
@@ -592,7 +623,7 @@ export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activ
             style={{ background: "#F0FDF4" }}
           >
             <p className="text-sm text-green-700 font-medium">
-              🎉 Paket aktiviran! Hvala za zaupanje.
+              {copy.planActivated}
             </p>
           </div>
         )}
@@ -613,7 +644,7 @@ export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activ
                   <span className="text-sm font-bold" style={{ color: atLimit ? "#DC2626" : "#FFC94D" }}>
                     {used} / {max}
                   </span>
-                  <span className="text-xs" style={{ color: atLimit ? "#DC2626" : "#FFC94D" }}>slik</span>
+                  <span className="text-xs" style={{ color: atLimit ? "#DC2626" : "#FFC94D" }}>{copy.photosShort}</span>
                 </div>
                 <div className="w-28 h-1.5 rounded-full bg-gray-200 hidden sm:block">
                   <div
@@ -625,7 +656,7 @@ export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activ
                   />
                 </div>
                 <span className="text-xs hidden md:block" style={{ color: atLimit ? "#DC2626" : "#FFC94D" }}>
-                  {atLimit ? "⚠️ Dosežena meja — gostje ne morejo več nalagati!" : "Brezplačni paket"}
+                  {atLimit ? copy.limitReached : copy.freePlan}
                 </span>
               </div>
               <Link
@@ -633,7 +664,7 @@ export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activ
                 className="flex-shrink-0 px-4 py-1.5 rounded-lg text-white text-xs font-bold transition-opacity hover:opacity-90 whitespace-nowrap"
                 style={{ background: atLimit ? "#DC2626" : "#FFC94D" }}
               >
-                {atLimit ? "Odkleni takoj →" : "Odkleni galerijo →"}
+                {atLimit ? copy.unlockNow : copy.unlockGallery}
               </Link>
             </div>
           );
@@ -645,7 +676,7 @@ export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activ
             <button
               onClick={() => setSidebarOpen(true)}
               className="lg:hidden p-2 -ml-1 rounded-lg hover:bg-gray-100 text-gray-600 flex-shrink-0"
-              aria-label="Odpri meni"
+              aria-label={copy.openMenu}
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
@@ -653,15 +684,9 @@ export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activ
             </button>
             <div className="min-w-0">
               <h1 className="gc-admin-page-title text-gray-900 truncate">
-                {activeTab === "overview"  && "Pregled galerije"}
-                {activeTab === "gallery"   && "Fotografije"}
-                {activeTab === "film"      && "🎬 Film Studio"}
-                {activeTab === "qr"        && "QR koda"}
-                {activeTab === "events"    && "🎪 Eventi"}
-                {activeTab === "settings"  && "Nastavitve"}
-                {activeTab === "pending"   && "Čakajoče fotografije"}
+                {copy.titles[activeTab]}
               </h1>
-              <p className="text-sm text-gray-400 mt-0.5">Upravljaj svojo galerijo.</p>
+              <p className="text-sm text-gray-400 mt-0.5">{copy.subtitle}</p>
             </div>
           </div>
           <div className="flex flex-wrap items-center gap-2">
@@ -672,21 +697,21 @@ export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activ
                 ? { background: "#f0fdf4", borderColor: "#86efac", color: "#15803d" }
                 : { background: "white", borderColor: "#e5e7eb", color: "#4b5563" }
               }
-              title="Kopiraj povezavo za goste"
+              title={copy.copyTitle}
             >
               {linkCopied ? (
                 <>
                   <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                   </svg>
-                  Kopirano!
+                  {copy.copied}
                 </>
               ) : (
                 <>
                   <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
                   </svg>
-                  Kopiraj povezavo
+                  {copy.copyLink}
                 </>
               )}
             </button>
@@ -700,7 +725,7 @@ export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activ
                 <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                 <path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
               </svg>
-              Poglej kot gost
+              {copy.guestView}
             </a>
             <ZipDownloader
               albumSlug={album.slug}
@@ -709,36 +734,36 @@ export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activ
               <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
               </svg>
-              Prenesi ZIP
+              {copy.downloadZip}
             </ZipDownloader>
             <a
               href={`/api/google-drive/auth?slug=${album.slug}`}
               className="flex items-center gap-1.5 px-3 py-2 text-sm text-gray-600 border border-gray-200 rounded-lg hover:border-gray-300 transition-colors bg-white"
-              title="Shrani vse fotografije v svoj Google Drive"
+              title={copy.saveDriveTitle}
             >
               <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M3 15a4 4 0 001 7.874M3 15a4 4 0 011-7.874M3 15h13.5M17 22a4 4 0 002-7.472M17 22a4 4 0 01-2-7.472m2 7.472H8m9-14.945A5.5 5.5 0 008.5 7.528M17 7.055A5.5 5.5 0 0110.5 12" />
               </svg>
-              Shrani v Google Drive
+              {copy.saveDrive}
             </a>
           </div>
         </div>
 
         {driveBanner && (() => {
-          const copy = driveBannerCopy(driveBanner, driveCount);
-          const style = DRIVE_BANNER_STYLES[copy.tone];
+          const bannerCopy = driveBannerCopy(driveBanner, driveCount, lang);
+          const style = DRIVE_BANNER_STYLES[bannerCopy.tone];
           return (
             <div
               className="mx-4 sm:mx-8 mb-4 flex items-start gap-3 rounded-2xl border px-5 py-4"
               style={{ background: style.bg, borderColor: style.border }}
             >
               <span className="text-lg shrink-0">{style.icon}</span>
-              <p className="text-sm flex-1" style={{ color: style.text }}>{copy.text}</p>
+              <p className="text-sm flex-1" style={{ color: style.text }}>{bannerCopy.text}</p>
               <button
                 onClick={() => setDriveBanner(undefined)}
                 className="shrink-0 p-1 rounded-lg hover:bg-black/5"
                 style={{ color: style.text }}
-                aria-label="Zapri"
+                aria-label={CLOSE_LABEL[lang]}
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -756,6 +781,7 @@ export function AlbumAdminPanel({ album, photos, pendingCount, guestCount, activ
           {activeTab === "overview" && (
             <OverviewTab
               album={album}
+              lang={lang}
               photos={photos}
               albumUrl={albumUrl}
               lastUploadDate={lastUploadDate}
@@ -897,6 +923,7 @@ function MediaThumb({
 
 function OverviewTab({
   album,
+  lang,
   photos,
   albumUrl,
   lastUploadDate,
@@ -906,6 +933,7 @@ function OverviewTab({
   guestDataCapture,
 }: {
   album: Album;
+  lang: DashboardLang;
   photos: Photo[];
   albumUrl: string;
   lastUploadDate: string;
@@ -914,6 +942,8 @@ function OverviewTab({
   wallToken: string;
   guestDataCapture: boolean;
 }) {
+  const copy = ALBUM_ADMIN_COPY[lang];
+  const overview = copy.overview;
   const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(albumUrl)}&bgcolor=ffffff&color=1a1a2e&qzone=2&format=png`;
   const last4 = photos.slice(0, 4);
   const usedPct = album.plan === "free" ? Math.min(100, Math.round(((album.photoCount ?? 0) / (album.maxPhotos ?? 20)) * 100)) : 0;
@@ -929,9 +959,9 @@ function OverviewTab({
         <div className="bg-[#FFF9EC] border border-indigo-100 rounded-2xl p-5 flex flex-col sm:flex-row sm:items-center gap-4">
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-1">
-              <span className="text-sm font-bold text-indigo-800">📦 Brezplačni paket</span>
+              <span className="text-sm font-bold text-indigo-800">{overview.freePlan}</span>
               <span className="text-xs bg-[#FFF3CC] text-[#C9820A] px-2 py-0.5 rounded-full font-medium">
-                {album.photoCount ?? 0} / {album.maxPhotos ?? 20} slik
+                {album.photoCount ?? 0} / {album.maxPhotos ?? 20} {copy.photosShort}
               </span>
             </div>
             <div className="w-full h-2 bg-[#FFF3CC] rounded-full mb-2">
@@ -945,8 +975,8 @@ function OverviewTab({
             </div>
             <p className="text-xs text-[#C9820A]">
               {usedPct >= 100
-                ? "⚠️ Meja dosežena — nadgradi za neomejeno nalaganje"
-                : `Nadgradi za neomejene fotografije, videe in dostop 1 leto`}
+                ? overview.limit
+                : overview.upgrade}
             </p>
           </div>
           <Link
@@ -954,7 +984,7 @@ function OverviewTab({
             className="flex-shrink-0 px-5 py-2.5 rounded-xl text-white text-sm font-bold transition-all hover:opacity-90 hover:brightness-95 shadow-sm"
             style={{ background: "#FFC94D" }}
           >
-            Poglej pakete →
+            {overview.plans}
           </Link>
         </div>
       )}
@@ -969,7 +999,7 @@ function OverviewTab({
                 <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M1.5 18.75h21M3.75 9h.008v.008H3.75V9zm0 3h.008v.008H3.75V12z" />
               </svg>
             ),
-            label: "Naložene slike",
+            label: overview.uploaded,
             value: album.photoCount,
           },
           {
@@ -978,7 +1008,7 @@ function OverviewTab({
                 <path strokeLinecap="round" strokeLinejoin="round" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" />
               </svg>
             ),
-            label: "Gostje",
+            label: overview.guests,
             value: guestCount,
           },
           {
@@ -987,7 +1017,7 @@ function OverviewTab({
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             ),
-            label: "Zadnja slika",
+            label: overview.lastPhoto,
             value: lastUploadDate,
           },
         ].map((card) => (
@@ -1013,8 +1043,8 @@ function OverviewTab({
         {/* QR Card */}
         <div className="rounded-2xl border border-gray-100 p-5 flex flex-col gap-4" style={{ background: "linear-gradient(180deg,#FFF9EC 0%,#FFFFFF 45%)" }}>
           <div>
-            <h3 className="font-bold text-gray-900 text-base">📱 Tvoja galerija</h3>
-            <p className="text-xs text-gray-400 mt-0.5">Natisni to kodo in jo postavi na mize.</p>
+            <h3 className="font-bold text-gray-900 text-base">{overview.gallery}</h3>
+            <p className="text-xs text-gray-400 mt-0.5">{overview.galleryHint}</p>
           </div>
           <a
             href={albumUrl}
@@ -1022,13 +1052,13 @@ function OverviewTab({
             rel="noreferrer"
             className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs text-[#C9820A] border border-[#FFE08A] rounded-lg hover:bg-[#FFF9EC] transition-colors self-start"
           >
-            Skeniraj to QR kodo in preizkusi, kako deluje
+            {overview.testQr}
           </a>
           <div className="flex flex-col items-center gap-3">
             <div className="text-gray-300 text-xl select-none">↓</div>
             <img
               src={qrUrl}
-              alt="QR koda"
+              alt={overview.qrAlt}
               className="w-48 h-48 rounded-lg border border-gray-100"
             />
           </div>
@@ -1038,14 +1068,14 @@ function OverviewTab({
               download={`qr-design-${album.slug}.png`}
               className="flex-1 py-2 text-xs text-center text-gray-600 border border-gray-200 rounded-lg hover:border-gray-300 transition-colors bg-white"
             >
-              ⬇ Prenesi QR kodo z designom
+              {overview.qrDesign}
             </a>
             <a
               href={`/api/albums/${album.slug}/qr?format=png`}
               download={`qr-${album.slug}.png`}
               className="flex-1 py-2 text-xs text-center text-gray-600 border border-gray-200 rounded-lg hover:border-gray-300 transition-colors bg-white"
             >
-              ⬇ Prenesi samo QR kodo
+              {overview.qrOnly}
             </a>
           </div>
 
@@ -1066,9 +1096,9 @@ function OverviewTab({
               className="w-11 h-14 object-contain rounded-md shrink-0"
             />
             <span className="flex-1 min-w-0">
-              <span className="block text-sm font-bold text-gray-900">🖨 Ne želite tiskati sami?</span>
+              <span className="block text-sm font-bold text-gray-900">{overview.printTitle}</span>
               <span className="block text-xs text-gray-500 mt-0.5">
-                Natisnemo in dostavimo QR podstavke za mize (tisk na 200 g papir) — že od {eur(Math.min(...STAND_VARIANTS.map((v) => v.unitCents)))} na kos, samo ob nakupu paketa.
+          {overview.printBody} — {PRINT_PRICE_COPY[lang].from} {eur(Math.min(...STAND_VARIANTS.map((v) => v.unitCents)))} {PRINT_PRICE_COPY[lang].each}.
               </span>
             </span>
             <svg className="w-4 h-4 text-[#C9820A] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
@@ -1086,14 +1116,13 @@ function OverviewTab({
           style={{ background: "linear-gradient(180deg,#0F1729 0%,#1B2842 100%)" }}
         >
           <div>
-            <h3 className="font-bold text-white text-base">🎪 Eventi &amp; Foto stena</h3>
+            <h3 className="font-bold text-white text-base">{overview.eventsTitle}</h3>
             <p className="text-xs text-gray-300 mt-1">
-              Živa foto stena za TV, sponzorji, moderacija in dovoljenja, zajem
-              kontaktov gostov ter sodelavci — vse na enem mestu.
+              {overview.eventsBody}
             </p>
           </div>
           <span className="inline-flex items-center gap-1.5 text-sm font-bold text-[#FFC94D]">
-            Odpri nastavitve eventov
+            {overview.eventsCta}
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
             </svg>
@@ -1105,9 +1134,9 @@ function OverviewTab({
         {/* Recent photos card */}
         <div className="bg-white rounded-2xl border border-gray-100 p-5 flex flex-col gap-3">
           <div className="flex items-center justify-between">
-            <h3 className="font-semibold text-gray-900 text-sm">Zadnje naloženo</h3>
+            <h3 className="font-semibold text-gray-900 text-sm">{overview.recent}</h3>
             <Link href={`/dashboard/${album.slug}?tab=gallery`} className="text-xs text-[#8C6218] hover:underline">
-              Poglej vse
+              {overview.viewAll}
             </Link>
           </div>
           {last4.length > 0 ? (
@@ -1122,7 +1151,7 @@ function OverviewTab({
             </div>
           ) : (
             <div className="flex-1 flex items-center justify-center text-sm text-gray-400">
-              Še ni naloženih fotografij.
+              {overview.empty}
             </div>
           )}
         </div>

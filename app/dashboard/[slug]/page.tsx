@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { notFound, redirect } from "next/navigation";
+import { cookies, headers } from "next/headers";
 import { db } from "@/lib/db";
 import { albums, photos } from "@/lib/db/schema";
 import { eq, and, countDistinct } from "drizzle-orm";
@@ -11,12 +12,16 @@ import { toOwnerAlbum } from "@/lib/album-view";
 import { getOrCreateWallToken } from "@/lib/wall-token";
 import { getAlbumFlags } from "@/lib/album-flags";
 import { getAlbumHeaderSettings } from "@/lib/album-header-settings";
+import {
+  DASHBOARD_LANG_COOKIE,
+  resolveDashboardLang,
+} from "@/lib/i18n/dashboard-language";
 
 export const dynamic = "force-dynamic";
 
 interface Props {
   params: Promise<{ slug: string }>;
-  searchParams: Promise<{ tab?: string; new?: string; upgraded?: string; plan?: string; amount?: string; drive?: string; n?: string }>;
+  searchParams: Promise<{ tab?: string; new?: string; upgraded?: string; plan?: string; amount?: string; drive?: string; n?: string; lang?: string }>;
 }
 
 export default async function AlbumAdminPage({ params, searchParams }: Props) {
@@ -30,7 +35,11 @@ export default async function AlbumAdminPage({ params, searchParams }: Props) {
   }
   if (!userId) redirect("/sign-in");
 
-  const { slug } = await params;
+  const [{ slug }, requestHeaders, cookieStore] = await Promise.all([
+    params,
+    headers(),
+    cookies(),
+  ]);
   const {
     tab = "overview",
     new: isNewParam,
@@ -39,6 +48,7 @@ export default async function AlbumAdminPage({ params, searchParams }: Props) {
     amount: amountParam,
     drive: driveResult,
     n: driveCount,
+    lang: requestedLang,
   } = await searchParams;
   const isNew = isNewParam === "1";
   const isUpgraded = isUpgradedParam === "1";
@@ -69,13 +79,21 @@ export default async function AlbumAdminPage({ params, searchParams }: Props) {
   // full list; keep this in sync so the dashboard read path matches
   // every mutation path.
   let viewerEmails: string[] = [];
+  let clerkPreferredLang: unknown;
   try {
     const u = await currentUser();
     viewerEmails = verifiedEmails(u);
+    clerkPreferredLang = (u?.publicMetadata as Record<string, unknown> | undefined)?.lang;
   } catch {
     // ignore — fall back to ID-only match
   }
   const viewerEmail = viewerEmails[0] ?? null;
+  const dashboardLang = resolveDashboardLang({
+    requested: requestedLang,
+    saved: cookieStore.get(DASHBOARD_LANG_COOKIE)?.value,
+    clerk: clerkPreferredLang,
+    acceptLanguage: requestHeaders.get("accept-language"),
+  });
   const isOwnerOfAlbum = (
     a: { ownerClerkId: string; ownerEmail: string | null },
   ): boolean => {
@@ -180,6 +198,7 @@ export default async function AlbumAdminPage({ params, searchParams }: Props) {
   return (
     <AlbumAdminPanel
       album={toOwnerAlbum(album)}
+      lang={dashboardLang}
       photos={albumPhotos}
       pendingCount={pendingCount}
       guestCount={guestCount}

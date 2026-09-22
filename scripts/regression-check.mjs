@@ -81,6 +81,11 @@ const files = {
   signupAttributionRecord: await read("lib/attribution/record.ts"),
   signupAttributionTelegram: await read("lib/attribution/telegram.ts"),
   dashboardPage: await read("app/dashboard/page.tsx"),
+  dashboardLanguage: await read("lib/i18n/dashboard-language.ts"),
+  dashboardLanguageSwitcher: await read(
+    "components/dashboard/DashboardLanguageSwitcher.tsx",
+  ),
+  dashboardNav: await read("components/dashboard/DashboardNav.tsx"),
   demoButton: await read("components/DemoButton.tsx"),
   headerAuthButtons: await read("components/HeaderAuthButtons.tsx"),
   languageSwitcher: await read("components/LanguageSwitcher.tsx"),
@@ -831,15 +836,52 @@ requireMatch(
 requireMatch(
   "new-gallery sign-in preserves the selected language",
   files.newAlbumPage,
-  /requestLang[\s\S]*returnParams\.set\("lang", requestLang \?\? "sl"\)[\s\S]*sign-in\?redirect_url=/,
-  "authentication must not reset a localized visitor to Slovenian",
+  /initialDashboardLang[\s\S]*returnParams\.set\("lang", initialDashboardLang\)[\s\S]*sign-in\?redirect_url=/,
+  "authentication must preserve the independent account-language choice",
 );
 
 requireMatch(
   "upgrade sign-in preserves checkout plan, discount and language",
   files.upgradePageRoute,
-  /if \(sp\.plan\)[\s\S]*if \(sp\.discount\)[\s\S]*returnParams\.set\("lang", requestLang \?\? "sl"\)[\s\S]*sign-in\?redirect_url=/,
+  /if \(sp\.plan\)[\s\S]*if \(sp\.discount\)[\s\S]*returnParams\.set\("lang", initialDashboardLang\)[\s\S]*sign-in\?redirect_url=/,
   "checkout state must survive the Clerk round-trip",
+);
+
+requireMatch(
+  "owner dashboard language is independent from marketing domains",
+  files.dashboardLanguage,
+  /requested[\s\S]*saved[\s\S]*clerk[\s\S]*acceptLanguage[\s\S]*"en"/,
+  "the account UI must prefer an explicit or saved choice, use Slovenian for Slovenian users, and otherwise default to English",
+);
+
+requireAbsent(
+  "owner dashboard locale does not inspect the request hostname",
+  `${files.dashboardLanguage}\n${files.dashboardPage}\n${files.albumDashboardPage}\n${files.newAlbumPage}\n${files.upgradePageRoute}`,
+  /checkoutLangFromHostname|x-forwarded-host/,
+  "account language must not change when the same user arrives from a country domain",
+);
+
+requireMatch(
+  "owner dashboard exposes a persistent top language switcher",
+  `${files.dashboardLanguageSwitcher}\n${files.dashboardNav}\n${files.albumAdminPanel}\n${files.upgradePage}`,
+  /guestcam_dashboard_lang[\s\S]*LANGS\.map[\s\S]*DashboardLanguageSwitcher current=\{lang\}[\s\S]*sticky top-0[\s\S]*DashboardLanguageSwitcher[\s\S]*DashboardLanguageSwitcher/,
+  "gallery lists, album management and checkout must all expose the same easy language control",
+);
+
+for (const locale of ["sl", "hr", "sr", "en", "de", "es"]) {
+  requireMatch(
+    `owner dashboard has ${locale} copy`,
+    files.dashboardLanguage,
+    new RegExp(`\\n\\s{2}${locale}: \\{`),
+    `DASHBOARD_COPY and ALBUM_ADMIN_COPY must define the ${locale} owner interface`,
+  );
+}
+
+requireMatch(
+  "unsupported owner languages default to English",
+  files.dashboardLanguage,
+  /browserDashboardLang\(acceptLanguage\) \?\?[\s\S]*"en"/,
+  "the account UI must support all six site languages and use English as its safe fallback",
 );
 
 requireMatch(
