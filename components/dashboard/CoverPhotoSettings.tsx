@@ -52,6 +52,30 @@ function clampCoverPosition(value: number) {
 
 export function CoverPhotoSettings({ album, lang, photos, initialPositionY }: Props) {
   const copy = ADMIN_SETTINGS_COPY[lang];
+  const coverDescription: Record<DashboardLang, string> = {
+    sl: "Velika slika na vrhu javne strani galerije. Izberite med naloženimi fotografijami ali naložite svojo (Plus / Premium).",
+    hr: "Velika fotografija na vrhu javne galerije. Odaberite već prenesenu fotografiju ili prenesite svoju (Plus / Premium).",
+    sr: "Velika fotografija na vrhu javne galerije. Izaberite već otpremljenu fotografiju ili otpremite svoju (Plus / Premium).",
+    en: "The large image at the top of your public gallery. Choose an uploaded photo or upload your own (Plus / Premium).",
+    de: "Das große Bild oben auf Ihrer öffentlichen Galerie. Wählen Sie ein hochgeladenes Foto oder laden Sie ein eigenes hoch (Plus / Premium).",
+    es: "La imagen grande en la parte superior de tu galería pública. Elige una foto subida o sube la tuya (Plus / Premium).",
+  };
+  const coverDragHelp: Record<DashboardLang, string> = {
+    sl: "Povlecite sliko v mobilnem predogledu ali izberite položaj. Celotna slika ostane vidna.",
+    hr: "Povucite sliku u mobilnom prikazu ili odaberite položaj. Cijela slika ostaje vidljiva.",
+    sr: "Prevucite sliku u mobilnom prikazu ili izaberite položaj. Cela slika ostaje vidljiva.",
+    en: "Drag the image in the mobile preview or choose a position. The full image always remains visible.",
+    de: "Ziehen Sie das Bild in der mobilen Vorschau oder wählen Sie eine Position. Das gesamte Bild bleibt sichtbar.",
+    es: "Arrastra la imagen en la vista móvil o elige una posición. La imagen completa siempre permanece visible.",
+  };
+  const busyCopy: Record<DashboardLang, { uploading: string; removing: string }> = {
+    sl: { uploading: "Nalaganje…", removing: "Odstranjevanje…" },
+    hr: { uploading: "Prijenos…", removing: "Uklanjanje…" },
+    sr: { uploading: "Отпремање…", removing: "Уклањање…" },
+    en: { uploading: "Uploading…", removing: "Removing…" },
+    de: { uploading: "Wird hochgeladen…", removing: "Wird entfernt…" },
+    es: { uploading: "Subiendo…", removing: "Quitando…" },
+  };
   const router = useRouter();
   const fileInput = useRef<HTMLInputElement>(null);
   const previewRef = useRef<HTMLDivElement>(null);
@@ -251,7 +275,7 @@ export function CoverPhotoSettings({ album, lang, photos, initialPositionY }: Pr
     <div>
       <label className="block text-sm font-medium text-gray-700 mb-1">{copy.cover}</label>
       <p className="text-xs text-gray-400 mb-2.5">
-        {lang === "sl" ? "Velika slika na vrhu javne strani galerije. Lahko izberete iz naloženih fotografij ali naložite svojo (Plus / Premium)." : lang === "en" ? "The large image at the top of your public gallery. Choose an uploaded photo or upload your own (Plus / Premium)." : lang === "de" ? "Das große Bild oben auf Ihrer öffentlichen Galerie. Wählen Sie ein hochgeladenes Foto oder laden Sie ein eigenes hoch (Plus / Premium)." : lang === "es" ? "La imagen grande en la parte superior de tu galería pública. Elige una foto subida o sube la tuya (Plus / Premium)." : "Velika slika na vrhu javne galerije. Izaberite već učitanu fotografiju ili dodajte svoju (Plus / Premium)."}
+        {coverDescription[lang]}
       </p>
 
       {/* Desktop + phone previews use the same contain behavior as the public
@@ -352,7 +376,7 @@ export function CoverPhotoSettings({ album, lang, photos, initialPositionY }: Pr
       {currentCover && (
         <div id="cover-drag-help" className="mb-3 rounded-xl border border-gray-200 bg-gray-50 p-3">
           <p className="text-xs font-medium text-gray-600">
-            Povlecite sliko v mobilnem predogledu ali izberite položaj. Celotna slika vedno ostane vidna.
+            {coverDragHelp[lang]}
           </p>
           <div className="mt-2 flex flex-wrap gap-2">
             {([
@@ -403,7 +427,7 @@ export function CoverPhotoSettings({ album, lang, photos, initialPositionY }: Pr
           }
           title={canUpload ? copy.chooseComputer : copy.plusPremium}
         >
-          {busy === "upload" ? (lang === "en" ? "Uploading…" : lang === "de" ? "Wird hochgeladen…" : lang === "es" ? "Subiendo…" : "Nalaganje…") : copy.uploadCover}
+          {busy === "upload" ? busyCopy[lang].uploading : copy.uploadCover}
         </button>
 
         {currentCover && (
@@ -413,7 +437,7 @@ export function CoverPhotoSettings({ album, lang, photos, initialPositionY }: Pr
             disabled={busy !== null}
             className="px-3 py-2 text-sm rounded-lg border border-gray-200 bg-white text-gray-500 hover:text-red-500 hover:border-red-200 transition-colors disabled:opacity-50"
           >
-            {busy === "remove" ? (lang === "en" ? "Removing…" : lang === "de" ? "Wird entfernt…" : lang === "es" ? "Quitando…" : "Odstranjevanje…") : copy.removeCover}
+            {busy === "remove" ? busyCopy[lang].removing : copy.removeCover}
           </button>
         )}
 
