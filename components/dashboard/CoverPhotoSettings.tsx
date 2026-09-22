@@ -4,6 +4,8 @@ import { useRef, useState, type PointerEvent as ReactPointerEvent } from "react"
 import { useRouter } from "next/navigation";
 import { bunnyDisplayUrl } from "@/lib/storage/bunny";
 import type { Album, Photo } from "@/lib/db/schema";
+import type { DashboardLang } from "@/lib/i18n/dashboard-language";
+import { ADMIN_SETTINGS_COPY } from "@/lib/i18n/admin-settings-copy";
 
 /**
  * Cover-photo picker in album Settings.
@@ -25,6 +27,7 @@ import type { Album, Photo } from "@/lib/db/schema";
 
 interface Props {
   album: Album;
+  lang: DashboardLang;
   /** All published photos so the "pick from gallery" modal can render them. */
   photos: Photo[];
   /** Saved vertical focal point for the public cover crop. */
@@ -47,7 +50,8 @@ function clampCoverPosition(value: number) {
   return Math.min(100, Math.max(0, Math.round(value)));
 }
 
-export function CoverPhotoSettings({ album, photos, initialPositionY }: Props) {
+export function CoverPhotoSettings({ album, lang, photos, initialPositionY }: Props) {
+  const copy = ADMIN_SETTINGS_COPY[lang];
   const router = useRouter();
   const fileInput = useRef<HTMLInputElement>(null);
   const previewRef = useRef<HTMLDivElement>(null);
@@ -88,7 +92,7 @@ export function CoverPhotoSettings({ album, photos, initialPositionY }: Props) {
       setPickerOpen(false);
       router.refresh();
     } catch {
-      setError("Nastavitve naslovne fotografije ni bilo mogoče shraniti.");
+      setError(copy.saveCoverFailed);
     } finally {
       setBusy(null);
     }
@@ -97,11 +101,11 @@ export function CoverPhotoSettings({ album, photos, initialPositionY }: Props) {
   async function uploadFromComputer(file: File) {
     setError(null);
     if (!ACCEPTED_MIME.has(file.type)) {
-      setError("Neveljaven tip datoteke. Dovoljeni: JPG, PNG, WEBP, HEIC.");
+      setError(copy.allowedTypes);
       return;
     }
     if (file.size > 15 * 1024 * 1024) {
-      setError("Datoteka je prevelika (največ 15 MB).");
+      setError(copy.tooLarge);
       return;
     }
     setBusy("upload");
@@ -112,7 +116,7 @@ export function CoverPhotoSettings({ album, photos, initialPositionY }: Props) {
         body: file,
       });
       if (res.status === 402) {
-        setError("Lastna naslovna fotografija je na voljo s paketom Plus ali Premium.");
+        setError(copy.customCoverPaid);
         return;
       }
       if (!res.ok) throw new Error("upload_failed");
@@ -124,7 +128,7 @@ export function CoverPhotoSettings({ album, photos, initialPositionY }: Props) {
       if (positionRes.ok) updatePosition(50);
       router.refresh();
     } catch {
-      setError("Nalaganje naslovne fotografije ni uspelo. Poskusite znova.");
+      setError(copy.uploadCoverFailed);
     } finally {
       setBusy(null);
       if (fileInput.current) fileInput.current.value = "";
@@ -139,7 +143,7 @@ export function CoverPhotoSettings({ album, photos, initialPositionY }: Props) {
       if (!res.ok) throw new Error("remove_failed");
       router.refresh();
     } catch {
-      setError("Naslovne fotografije ni bilo mogoče odstraniti.");
+      setError(copy.removeCoverFailed);
     } finally {
       setBusy(null);
     }
@@ -165,7 +169,7 @@ export function CoverPhotoSettings({ album, photos, initialPositionY }: Props) {
       if (!res.ok) throw new Error("position_save_failed");
       router.refresh();
     } catch {
-      setError("Položaja naslovne fotografije ni bilo mogoče shraniti.");
+      setError(copy.savePositionFailed);
     } finally {
       setBusy(null);
     }
@@ -245,10 +249,9 @@ export function CoverPhotoSettings({ album, photos, initialPositionY }: Props) {
 
   return (
     <div>
-      <label className="block text-sm font-medium text-gray-700 mb-1">Naslovna fotografija</label>
+      <label className="block text-sm font-medium text-gray-700 mb-1">{copy.cover}</label>
       <p className="text-xs text-gray-400 mb-2.5">
-        Velika slika na vrhu javne strani galerije. Lahko izberete iz naloženih
-        fotografij ali naložite svojo (Plus / Premium).
+        {lang === "sl" ? "Velika slika na vrhu javne strani galerije. Lahko izberete iz naloženih fotografij ali naložite svojo (Plus / Premium)." : lang === "en" ? "The large image at the top of your public gallery. Choose an uploaded photo or upload your own (Plus / Premium)." : lang === "de" ? "Das große Bild oben auf Ihrer öffentlichen Galerie. Wählen Sie ein hochgeladenes Foto oder laden Sie ein eigenes hoch (Plus / Premium)." : lang === "es" ? "La imagen grande en la parte superior de tu galería pública. Elige una foto subida o sube la tuya (Plus / Premium)." : "Velika slika na vrhu javne galerije. Izaberite već učitanu fotografiju ili dodajte svoju (Plus / Premium)."}
       </p>
 
       {/* Desktop + phone previews use the same contain behavior as the public
@@ -256,7 +259,7 @@ export function CoverPhotoSettings({ album, photos, initialPositionY }: Props) {
           have the most vertical positioning room on narrow screens. */}
       <div className="mb-3 grid items-start gap-3 sm:grid-cols-[minmax(0,1fr)_180px]">
         <div>
-          <p className="mb-1.5 text-[11px] font-bold uppercase tracking-wide text-gray-400">Namizni prikaz</p>
+          <p className="mb-1.5 text-[11px] font-bold uppercase tracking-wide text-gray-400">{copy.desktopPreview}</p>
           <div className="relative aspect-[3/1] overflow-hidden rounded-xl border border-gray-200 bg-[#0F1729]">
             {currentCover ? (
               <>
@@ -271,26 +274,26 @@ export function CoverPhotoSettings({ album, photos, initialPositionY }: Props) {
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={bunnyDisplayUrl(currentCover)}
-                  alt="Namizni predogled naslovne fotografije"
+                  alt={copy.desktopPreview}
                   className="absolute inset-0 h-full w-full object-contain"
                   style={{ objectPosition: `50% ${positionY}%` }}
                 />
               </>
             ) : (
               <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-[#FFF9EC] to-[#FFC94D] text-xs text-[#0F1729]/60">
-                Privzeta naslovnica
+                {lang === "en" ? "Default cover" : lang === "de" ? "Standard-Titelbild" : lang === "es" ? "Portada predeterminada" : lang === "hr" ? "Zadana naslovna fotografija" : lang === "sr" ? "Подразумевана насловна фотографија" : "Privzeta naslovnica"}
               </div>
             )}
           </div>
         </div>
 
         <div>
-          <p className="mb-1.5 text-[11px] font-bold uppercase tracking-wide text-gray-400">Mobilni prikaz</p>
+          <p className="mb-1.5 text-[11px] font-bold uppercase tracking-wide text-gray-400">{copy.mobilePreview}</p>
           <div
             ref={previewRef}
             role={currentCover ? "button" : undefined}
             tabIndex={currentCover ? 0 : undefined}
-            aria-label={currentCover ? "Premaknite naslovno fotografijo gor ali dol" : undefined}
+            aria-label={currentCover ? copy.moveCover : undefined}
             aria-describedby={currentCover ? "cover-drag-help" : undefined}
             aria-disabled={currentCover ? busy !== null : undefined}
             onPointerDown={currentCover ? handlePointerDown : undefined}
@@ -322,7 +325,7 @@ export function CoverPhotoSettings({ album, photos, initialPositionY }: Props) {
                 <img
                   ref={coverImageRef}
                   src={bunnyDisplayUrl(currentCover)}
-                  alt="Mobilni predogled naslovne fotografije"
+                  alt={copy.mobilePreview}
                   draggable={false}
                   className="pointer-events-none absolute inset-0 h-full w-full object-contain"
                   style={{ objectPosition: `50% ${positionY}%` }}
@@ -330,16 +333,16 @@ export function CoverPhotoSettings({ album, photos, initialPositionY }: Props) {
                 <div className="pointer-events-none absolute inset-x-0 bottom-2 flex justify-center px-2">
                   <span className="rounded-full bg-black/70 px-2.5 py-1 text-[10px] font-bold text-white shadow-sm backdrop-blur-sm">
                     {isDragging
-                      ? "↕ Spustite"
+                      ? copy.dropCover
                       : busy === "position"
-                        ? "Shranjujem…"
-                        : "↕ Povlecite sliko"}
+                        ? copy.coverSaved
+                        : copy.dragCover}
                   </span>
                 </div>
               </>
             ) : (
               <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-[#FFF9EC] to-[#FFC94D] text-center text-xs text-[#0F1729]/60">
-                Privzeta<br />naslovnica
+                {lang === "en" ? <>Default<br />cover</> : lang === "de" ? <>Standard-<br />Titelbild</> : lang === "es" ? <>Portada<br />predeterminada</> : lang === "hr" ? <>Zadana<br />naslovnica</> : lang === "sr" ? <>Подразумевана<br />насловна</> : <>Privzeta<br />naslovnica</>}
               </div>
             )}
           </div>
@@ -353,9 +356,9 @@ export function CoverPhotoSettings({ album, photos, initialPositionY }: Props) {
           </p>
           <div className="mt-2 flex flex-wrap gap-2">
             {([
-              ["Na vrh", 0],
-              ["Na sredino", 50],
-              ["Na dno", 100],
+              [copy.top, 0],
+              [copy.middle, 50],
+              [copy.bottom, 100],
             ] as const).map(([label, value]) => (
               <button
                 key={value}
@@ -383,9 +386,9 @@ export function CoverPhotoSettings({ album, photos, initialPositionY }: Props) {
           onClick={() => setPickerOpen(true)}
           disabled={busy !== null || eligible.length === 0}
           className="px-3 py-2 text-sm font-semibold rounded-lg border border-gray-200 bg-white text-[#0F1729] hover:border-[#FFC94D] hover:bg-[#FFF9EC] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-          title={eligible.length === 0 ? "V galeriji še ni fotografij — naloži kakšno najprej." : ""}
+          title={eligible.length === 0 ? copy.noPhotos : ""}
         >
-          {busy === "pick" ? "Shranjujem…" : "🖼️ Izberi iz galerije"}
+          {busy === "pick" ? copy.coverSaved : copy.chooseCover}
         </button>
 
         <button
@@ -398,9 +401,9 @@ export function CoverPhotoSettings({ album, photos, initialPositionY }: Props) {
               ? { borderColor: "#FFC94D", background: "#FFF9EC", color: "#0F1729" }
               : { borderColor: "#e5e7eb", background: "white", color: "#9ca3af" }
           }
-          title={canUpload ? "Naloži lastno naslovno fotografijo z računalnika." : "Na voljo s paketom Plus ali Premium."}
+          title={canUpload ? copy.chooseComputer : copy.plusPremium}
         >
-          {busy === "upload" ? "Nalagam…" : "💻 Naloži z računalnika"}
+          {busy === "upload" ? (lang === "en" ? "Uploading…" : lang === "de" ? "Wird hochgeladen…" : lang === "es" ? "Subiendo…" : "Nalaganje…") : copy.uploadCover}
         </button>
 
         {currentCover && (
@@ -410,7 +413,7 @@ export function CoverPhotoSettings({ album, photos, initialPositionY }: Props) {
             disabled={busy !== null}
             className="px-3 py-2 text-sm rounded-lg border border-gray-200 bg-white text-gray-500 hover:text-red-500 hover:border-red-200 transition-colors disabled:opacity-50"
           >
-            {busy === "remove" ? "Odstranjujem…" : "Odstrani"}
+            {busy === "remove" ? (lang === "en" ? "Removing…" : lang === "de" ? "Wird entfernt…" : lang === "es" ? "Quitando…" : "Odstranjevanje…") : copy.removeCover}
           </button>
         )}
 
@@ -428,8 +431,7 @@ export function CoverPhotoSettings({ album, photos, initialPositionY }: Props) {
 
       {!canUpload && (
         <p className="text-[11px] text-amber-700 mt-2">
-          ⓘ Nalaganje lastne naslovne fotografije je na voljo s paketom <strong>Plus</strong> ali
-          <strong> Premium</strong>. Izbira iz naloženih fotografij deluje na vseh paketih.
+          ⓘ {copy.coverUploadHelp}
         </p>
       )}
 
@@ -447,13 +449,13 @@ export function CoverPhotoSettings({ album, photos, initialPositionY }: Props) {
           >
             <div className="p-5 border-b border-gray-100 flex items-center justify-between">
               <div>
-                <h3 className="font-semibold text-[#0F1729]">Izberi naslovno fotografijo</h3>
-                <p className="text-xs text-gray-400">Iz {eligible.length} naloženih fotografij.</p>
+                <h3 className="font-semibold text-[#0F1729]">{copy.chooseCoverTitle}</h3>
+                <p className="text-xs text-gray-400">{copy.uploadedPhotos.replace("{count}", String(eligible.length))}</p>
               </div>
               <button
                 onClick={() => setPickerOpen(false)}
                 className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center"
-                aria-label="Zapri"
+                aria-label={copy.close}
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -463,7 +465,7 @@ export function CoverPhotoSettings({ album, photos, initialPositionY }: Props) {
             <div className="overflow-y-auto p-5 flex-1">
               {eligible.length === 0 ? (
                 <p className="text-sm text-gray-400 text-center py-10">
-                  V galeriji še ni primernih fotografij za naslovnico.
+                  {copy.noEligiblePhotos}
                 </p>
               ) : (
                 <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 gap-2">

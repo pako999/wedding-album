@@ -29,6 +29,7 @@ import {
   DASHBOARD_COPY,
   type DashboardLang,
 } from "@/lib/i18n/dashboard-language";
+import { ADMIN_SETTINGS_COPY } from "@/lib/i18n/admin-settings-copy";
 
 /**
  * List price of each paid plan in EUR. Used to fire the Meta Pixel
@@ -58,6 +59,15 @@ const PRINT_PRICE_COPY: Record<DashboardLang, { from: string; each: string }> = 
   en: { from: "from", each: "each with a plan purchase" },
   de: { from: "ab", each: "pro Stück, nur beim Kauf eines Tarifs" },
   es: { from: "desde", each: "por unidad, solo al comprar un plan" },
+};
+
+const THEME_NAME_COPY: Record<DashboardLang, Record<string, string>> = {
+  sl: { navy: "Polnočno modra", champagne: "Šampanjec", rose: "Pudrasto roza", sage: "Žajbelj", charcoal: "Oglje", plum: "Sliva", terracotta: "Terakota", ocean: "Ocean", burgundy: "Bordo", emerald: "Smaragd", babyblue: "Baby modra", babypink: "Baby roza", sunshine: "Sonček", lavender: "Sivka", slate: "Poslovna" },
+  hr: { navy: "Ponoćno plava", champagne: "Šampanjac", rose: "Puderasto ružičasta", sage: "Kadulja", charcoal: "Ugljen", plum: "Šljiva", terracotta: "Terakota", ocean: "Ocean", burgundy: "Bordo", emerald: "Smaragdna", babyblue: "Baby plava", babypink: "Baby ružičasta", sunshine: "Sunce", lavender: "Lavanda", slate: "Poslovna" },
+  sr: { navy: "Ponoćno plava", champagne: "Šampanjac", rose: "Puderasto roze", sage: "Žalfija", charcoal: "Ugalj", plum: "Šljiva", terracotta: "Terakota", ocean: "Okean", burgundy: "Bordo", emerald: "Smaragdna", babyblue: "Baby plava", babypink: "Baby roze", sunshine: "Sunce", lavender: "Lavanda", slate: "Poslovna" },
+  en: { navy: "Midnight blue", champagne: "Champagne", rose: "Dusty rose", sage: "Sage", charcoal: "Charcoal", plum: "Plum", terracotta: "Terracotta", ocean: "Ocean", burgundy: "Burgundy", emerald: "Emerald", babyblue: "Baby blue", babypink: "Baby pink", sunshine: "Sunshine", lavender: "Lavender", slate: "Business" },
+  de: { navy: "Mitternachtsblau", champagne: "Champagner", rose: "Altrosa", sage: "Salbei", charcoal: "Anthrazit", plum: "Pflaume", terracotta: "Terrakotta", ocean: "Ozean", burgundy: "Bordeaux", emerald: "Smaragd", babyblue: "Babyblau", babypink: "Rosé", sunshine: "Sonnenschein", lavender: "Lavendel", slate: "Business" },
+  es: { navy: "Azul noche", champagne: "Champán", rose: "Rosa empolvado", sage: "Salvia", charcoal: "Carbón", plum: "Ciruela", terracotta: "Terracota", ocean: "Océano", burgundy: "Burdeos", emerald: "Esmeralda", babyblue: "Azul bebé", babypink: "Rosa bebé", sunshine: "Sol", lavender: "Lavanda", slate: "Negocios" },
 };
 
 type Tab = "overview" | "gallery" | "qr" | "events" | "settings" | "pending" | "film";
@@ -796,6 +806,7 @@ export function AlbumAdminPanel({ album, lang, photos, pendingCount, guestCount,
           {(activeTab === "gallery" || activeTab === "pending") && (
             <GalleryTab
               album={album}
+              lang={lang}
               photos={photos}
               activeTab={activeTab}
               approvePhoto={approvePhoto}
@@ -812,7 +823,7 @@ export function AlbumAdminPanel({ album, lang, photos, pendingCount, guestCount,
 
           {/* QR */}
           {activeTab === "qr" && (
-            <QrTab album={album} albumUrl={albumUrl} copyToClipboard={copyToClipboard} />
+            <QrTab album={album} albumUrl={albumUrl} copyToClipboard={copyToClipboard} lang={lang} />
           )}
 
           {/* EVENTS — all "running an event" controls in one place, in
@@ -821,6 +832,7 @@ export function AlbumAdminPanel({ album, lang, photos, pendingCount, guestCount,
           {activeTab === "events" && (
             <EventsTab
               album={album}
+              lang={lang}
               wallToken={wallToken}
               hasPassword={!!hasPassword}
               guestDataCapture={guestDataCapture}
@@ -832,20 +844,21 @@ export function AlbumAdminPanel({ album, lang, photos, pendingCount, guestCount,
           {/* SETTINGS */}
           {activeTab === "settings" && (
             <div className="max-w-lg space-y-6">
-              <AccountInfoCard ownerEmail={ownerEmail ?? null} />
-              <AlbumSettingsForm album={album} wallToken={wallToken} hasPassword={!!hasPassword} headerSettings={headerSettings}>
+              <AccountInfoCard ownerEmail={ownerEmail ?? null} lang={lang} />
+              <AlbumSettingsForm album={album} lang={lang} wallToken={wallToken} hasPassword={!!hasPassword} headerSettings={headerSettings}>
                 {/* Cover-photo picker injected into the settings form so it
                     sits inside the same card chrome, between the password
                     field and the theme picker. */}
                 <CoverPhotoSettings
                   album={album}
+                  lang={lang}
                   photos={photos}
                   initialPositionY={headerSettings.coverPositionY}
                 />
               </AlbumSettingsForm>
-              <MomentsManager album={album} />
-              <CustomDomainPanel album={album} />
-              <DangerZone album={album} />
+              <MomentsManager album={album} lang={lang} />
+              <CustomDomainPanel album={album} lang={lang} />
+              <DangerZone album={album} lang={lang} />
             </div>
           )}
         </div>
@@ -1168,6 +1181,7 @@ function OverviewTab({
 
 function EventsTab({
   album,
+  lang,
   wallToken,
   hasPassword,
   guestDataCapture,
@@ -1175,6 +1189,7 @@ function EventsTab({
   ownerEmail,
 }: {
   album: Album & { pendingCount?: number };
+  lang: DashboardLang;
   wallToken: string;
   hasPassword: boolean;
   guestDataCapture: boolean;
@@ -1184,27 +1199,21 @@ function EventsTab({
   const [sub, setSub] = useState<"wall" | "appearance" | "moderation" | "leads" | "collab">("wall");
   const wallAppUrl = process.env.NEXT_PUBLIC_APP_URL ?? SITE_URL;
   const wallUrl = `${wallAppUrl}/wall/${wallToken}`;
-  const SUBTABS = [
-    { id: "wall" as const,       label: "🖼 Foto stena" },
-    { id: "appearance" as const, label: "🎨 Videz" },
-    { id: "moderation" as const, label: "🛡 Moderacija" },
-    { id: "leads" as const,      label: "📇 Zajem podatkov" },
-    { id: "collab" as const,     label: "👥 Sodelavci" },
-  ];
+  const SUBTABS = ["wall", "appearance", "moderation", "leads", "collab"] as const;
   return (
     <div className="max-w-3xl">
       <div className="flex gap-1 mb-5 border-b border-gray-200 overflow-x-auto">
-        {SUBTABS.map((t) => (
+        {SUBTABS.map((id, index) => (
           <button
-            key={t.id}
-            onClick={() => setSub(t.id)}
+            key={id}
+            onClick={() => setSub(id)}
             className={`px-4 py-2.5 text-sm font-semibold whitespace-nowrap border-b-2 -mb-px transition-colors ${
-              sub === t.id
+              sub === id
                 ? "border-[#FFC94D] text-[#C9820A]"
                 : "border-transparent text-gray-500 hover:text-gray-800"
             }`}
           >
-            {t.label}
+            {ADMIN_SETTINGS_COPY[lang].eventSubtabs[index]}
           </button>
         ))}
       </div>
@@ -1250,6 +1259,7 @@ function EventsTab({
 
 function GalleryTab({
   album,
+  lang,
   photos,
   activeTab,
   approvePhoto,
@@ -1258,6 +1268,7 @@ function GalleryTab({
   setCoverPhoto,
 }: {
   album: Album;
+  lang: DashboardLang;
   photos: Photo[];
   activeTab: Tab;
   approvePhoto: (id: string) => void;
@@ -1265,6 +1276,7 @@ function GalleryTab({
   deletePhoto: (id: string) => void;
   setCoverPhoto: (photoId: string) => void;
 }) {
+  const copy = ADMIN_SETTINGS_COPY[lang];
   const [viewPhoto, setViewPhoto] = useState<Photo | null>(null);
   const [selectionMode, setSelectionMode] = useState(false);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
@@ -1331,9 +1343,7 @@ function GalleryTab({
         setSelectedIds(new Set());
       } else {
         setSelectedIds(new Set(remaining));
-        setBulkError(
-          `${ids.length - remaining.size} datotek je izbrisanih. ${remaining.size} datotek ni bilo mogoče izbrisati; ostale so označene.`,
-        );
+        setBulkError(copy.bulkDeleted.replace("{ok}", String(ids.length - remaining.size)).replace("{failed}", String(remaining.size)));
       }
       router.refresh();
     } catch (error) {
@@ -1341,7 +1351,7 @@ function GalleryTab({
       setSelectedIds(new Set(remaining));
       setConfirmBulkDelete(false);
       setBulkDeleteAcknowledged(false);
-      setBulkError("Brisanje ni uspelo v celoti. Neizbrisane datoteke so ostale označene. Poskusite znova.");
+      setBulkError(copy.bulkDeleteFailed);
       router.refresh();
     } finally {
       setBulkDeleting(false);
@@ -1352,7 +1362,7 @@ function GalleryTab({
     <div>
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-4">
         <h2 className="font-semibold text-gray-900">
-          {activeTab === "pending" ? "Čakajoče fotografije" : "Vse fotografije"}
+          {activeTab === "pending" ? copy.galleryPending : copy.galleryAll}
         </h2>
         {activeTab === "gallery" && photos.length > 0 && (
           <div className="flex flex-wrap items-center gap-2">
@@ -1363,19 +1373,19 @@ function GalleryTab({
                 className="inline-flex items-center gap-2 rounded-xl border border-gray-300 bg-white px-3.5 py-2 text-sm font-semibold text-gray-700 transition-colors hover:border-gray-400 hover:bg-gray-50"
               >
                 <span className="flex h-4 w-4 items-center justify-center rounded border-2 border-gray-400" />
-                Izberi več slik
+                {copy.chooseMany}
               </button>
             ) : (
               <>
                 <span className="rounded-full bg-gray-100 px-3 py-2 text-sm font-semibold text-gray-700">
-                  Izbrano: {selectedIds.size}
+                  {copy.selectedCount.replace("{count}", String(selectedIds.size))}
                 </span>
                 <button
                   type="button"
                   onClick={() => setSelectedIds(new Set(photos.map((photo) => photo.id)))}
                   className="rounded-xl border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
                 >
-                  Izberi vse
+                  {copy.selectAll}
                 </button>
                 {selectedIds.size > 0 && (
                   <button
@@ -1383,7 +1393,7 @@ function GalleryTab({
                     onClick={() => setSelectedIds(new Set())}
                     className="rounded-xl border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
                   >
-                    Počisti izbor
+                    {copy.clearSelection}
                   </button>
                 )}
                 <button
@@ -1392,14 +1402,14 @@ function GalleryTab({
                   disabled={selectedIds.size === 0}
                   className="inline-flex items-center gap-2 rounded-xl bg-red-600 px-3.5 py-2 text-sm font-bold text-white transition-colors hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-40"
                 >
-                  Izbriši izbrane ({selectedIds.size})
+                  {copy.deleteSelected.replace("{count}", String(selectedIds.size))}
                 </button>
                 <button
                   type="button"
                   onClick={leaveSelectionMode}
                   className="rounded-xl px-3 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-800"
                 >
-                  Prekliči
+                  {copy.cancel}
                 </button>
               </>
             )}
@@ -1415,7 +1425,7 @@ function GalleryTab({
 
       {photos.length === 0 ? (
         <div className="flex items-center justify-center h-48 text-gray-400 text-sm bg-white rounded-2xl border border-gray-100">
-          Ni fotografij v tej kategoriji.
+          {copy.noCategoryPhotos}
         </div>
       ) : (
         <>
@@ -1434,7 +1444,7 @@ function GalleryTab({
                   <button
                     type="button"
                     onClick={(event) => { event.stopPropagation(); togglePhotoSelection(photo.id); }}
-                    aria-label={selectedIds.has(photo.id) ? "Odstrani iz izbora" : "Dodaj v izbor"}
+                    aria-label={selectedIds.has(photo.id) ? copy.clearSelection : copy.chooseMany}
                     aria-pressed={selectedIds.has(photo.id)}
                     className={`absolute left-2 top-2 z-20 flex h-8 w-8 items-center justify-center rounded-full border-2 shadow-md transition-colors ${
                       selectedIds.has(photo.id)
@@ -1457,7 +1467,7 @@ function GalleryTab({
                     <>
                       <button
                         onClick={(e) => { e.stopPropagation(); approvePhoto(photo.id); }}
-                        title="Odobri"
+                        title={copy.approve}
                         className="w-9 h-9 rounded-full bg-green-500 text-white flex items-center justify-center hover:bg-green-600 transition-colors"
                       >
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
@@ -1466,7 +1476,7 @@ function GalleryTab({
                       </button>
                       <button
                         onClick={(e) => { e.stopPropagation(); rejectPhoto(photo.id); }}
-                        title="Zavrni"
+                        title={copy.reject}
                         className="w-9 h-9 rounded-full bg-red-500 text-white flex items-center justify-center hover:bg-red-600 transition-colors"
                       >
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
@@ -1478,7 +1488,7 @@ function GalleryTab({
                   {activeTab === "gallery" && !photo.mimeType?.startsWith("video/") && (
                     <button
                       onClick={(e) => { e.stopPropagation(); setCoverPhoto(photo.id); }}
-                      title="Nastavi kot naslovnico"
+                      title={copy.setAsCover}
                       className="w-9 h-9 rounded-full bg-white/90 text-gray-800 flex items-center justify-center hover:bg-white transition-colors"
                     >
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
@@ -1489,7 +1499,7 @@ function GalleryTab({
                   {activeTab === "gallery" && (
                     <button
                       onClick={(e) => { e.stopPropagation(); deletePhoto(photo.id); }}
-                      title="Izbriši"
+                        title={copy.delete}
                       className="w-9 h-9 rounded-full bg-red-500/90 text-white flex items-center justify-center hover:bg-red-600 transition-colors"
                     >
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
@@ -1542,20 +1552,20 @@ function GalleryTab({
                   onClick={() => { setCoverPhoto(viewPhoto.id); setViewPhoto(null); }}
                   className="px-4 py-2 rounded-xl bg-white text-gray-800 text-sm font-medium hover:bg-gray-100 transition-colors"
                 >
-                  Nastavi kot naslovnico
+                  {copy.setAsCover}
                 </button>
               )}
               <button
                 onClick={() => { deletePhoto(viewPhoto.id); setViewPhoto(null); }}
                 className="px-4 py-2 rounded-xl bg-red-500 text-white text-sm font-medium hover:bg-red-600 transition-colors"
               >
-                Izbriši
+                {copy.delete}
               </button>
               <button
                 onClick={() => setViewPhoto(null)}
                 className="px-4 py-2 rounded-xl border border-white/40 text-white text-sm font-medium hover:bg-white/10 transition-colors"
               >
-                Zapri
+                {copy.close}
               </button>
             </div>
           </div>
@@ -1640,11 +1650,21 @@ function QrTab({
   album,
   albumUrl,
   copyToClipboard,
+  lang,
 }: {
   album: Album;
   albumUrl: string;
   copyToClipboard: (text: string) => void;
+  lang: DashboardLang;
 }) {
+  const qrCopy = ({
+    sl: { copied: "Kopirano!", copy: "Kopiraj", design: "Prenesi QR kodo z dizajnom", plain: "Prenesi samo QR kodo", description: "Prilagodite kartico s QR-kodo za goste — izberite med 8 predlogami za tisk.", templates: "Odpri predloge za tisk" },
+    hr: { copied: "Kopirano!", copy: "Kopiraj", design: "Preuzmi QR kod s dizajnom", plain: "Preuzmi samo QR kod", description: "Prilagodite karticu s QR kodom za goste — odaberite među 8 predložaka za tisak.", templates: "Otvori predloške za tisak" },
+    sr: { copied: "Копирано!", copy: "Копирај", design: "Преузми QR код са дизајном", plain: "Преузми само QR код", description: "Прилагодите QR картицу за госте — изаберите један од 8 шаблона за штампу.", templates: "Отвори шаблоне за штампу" },
+    en: { copied: "Copied!", copy: "Copy", design: "Download designed QR code", plain: "Download QR code only", description: "Personalise a QR card for your guests — choose from 8 print templates.", templates: "Open print templates" },
+    de: { copied: "Kopiert!", copy: "Kopieren", design: "QR-Code mit Design herunterladen", plain: "Nur QR-Code herunterladen", description: "Gestalten Sie eine QR-Karte für Ihre Gäste — wählen Sie aus 8 Druckvorlagen.", templates: "Druckvorlagen öffnen" },
+    es: { copied: "¡Copiado!", copy: "Copiar", design: "Descargar QR con diseño", plain: "Descargar solo el QR", description: "Personaliza una tarjeta QR para tus invitados — elige entre 8 plantillas de impresión.", templates: "Abrir plantillas de impresión" },
+  } satisfies Record<DashboardLang, { copied: string; copy: string; design: string; plain: string; description: string; templates: string }>)[lang];
   const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=${encodeURIComponent(albumUrl)}&bgcolor=ffffff&color=1a1a2e&qzone=2&format=png`;
   const [copied, setCopied] = useState(false);
 
@@ -1675,7 +1695,7 @@ function QrTab({
             className="px-4 py-2.5 text-sm font-semibold rounded-lg text-white transition-colors whitespace-nowrap"
             style={{ background: copied ? "#22c55e" : "#FFC94D" }}
           >
-            {copied ? "Kopirano!" : "Kopiraj"}
+            {copied ? qrCopy.copied : qrCopy.copy}
           </button>
         </div>
 
@@ -1687,20 +1707,20 @@ function QrTab({
             download={`qr-design-${album.slug}.png`}
             className="flex-1 py-2.5 px-3 text-sm text-center text-gray-600 border border-gray-200 rounded-lg hover:border-gray-300 transition-colors"
           >
-            Prenesi QR kodo z designom
+            {qrCopy.design}
           </a>
           <a
             href={`/api/albums/${album.slug}/qr?format=png`}
             download={`qr-${album.slug}.png`}
             className="flex-1 py-2.5 px-3 text-sm text-center text-gray-600 border border-gray-200 rounded-lg hover:border-gray-300 transition-colors"
           >
-            Prenesi samo QR kodo
+            {qrCopy.plain}
           </a>
         </div>
 
         <div className="w-full pt-2 text-center">
           <p className="text-xs text-gray-500 mb-3 max-w-xs mx-auto leading-relaxed">
-            Personalizirajte kartico s QR kodo za vaše goste — izberite med 8 predlogami za tisk.
+            {qrCopy.description}
           </p>
           <Link
             href={`/dashboard/${album.slug}/print`}
@@ -1709,7 +1729,7 @@ function QrTab({
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M6.72 13.829c-.24.03-.48.062-.72.096m.72-.096a42.415 42.415 0 0110.56 0m-10.56 0L6.34 18m10.94-4.171c.24.03.48.062.72.096m-.72-.096L17.66 18m0 0l.229 2.523a1.125 1.125 0 01-1.12 1.227H7.231c-.662 0-1.18-.568-1.12-1.227L6.34 18m11.318 0h1.091A2.25 2.25 0 0021 15.75V9.456c0-1.081-.768-2.015-1.837-2.175a48.055 48.055 0 00-1.913-.247M6.34 18H5.25A2.25 2.25 0 013 15.75V9.456c0-1.081.768-2.015 1.837-2.175a48.041 48.041 0 011.913-.247m10.5 0a48.536 48.536 0 00-10.5 0m10.5 0V3.375c0-.621-.504-1.125-1.125-1.125h-8.25c-.621 0-1.125.504-1.125 1.125v3.659M18 10.5h.008v.008H18V10.5zm-3 0h.008v.008H15V10.5z" />
             </svg>
-            Odpri predloge za tisk
+            {qrCopy.templates}
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
             </svg>
@@ -1724,11 +1744,14 @@ function QrTab({
 
 function DeleteAlbumModal({
   album,
+  lang,
   onClose,
 }: {
   album: Album;
+  lang: DashboardLang;
   onClose: () => void;
 }) {
+  const copy = ADMIN_SETTINGS_COPY[lang];
   const router = useRouter();
   const [confirmText, setConfirmText] = useState("");
   const [deleting, setDeleting] = useState(false);
@@ -1769,15 +1792,15 @@ function DeleteAlbumModal({
             </svg>
           </div>
           <div>
-            <h2 className="font-semibold text-gray-900 text-base">Izbriši galerijo</h2>
-            <p className="text-sm text-gray-500 mt-0.5">To dejanje je <strong>nepovratno</strong>. Vse fotografije, videi in podatki bodo trajno izbrisani.</p>
+          <h2 className="font-semibold text-gray-900 text-base">{copy.deleteGallery}</h2>
+            <p className="text-sm text-gray-500 mt-0.5">{lang === "en" ? <>This action is <strong>irreversible</strong>. All photos, videos, and data will be permanently deleted.</> : lang === "de" ? <>Diese Aktion ist <strong>unwiderruflich</strong>. Alle Fotos, Videos und Daten werden dauerhaft gelöscht.</> : lang === "es" ? <>Esta acción es <strong>irreversible</strong>. Todas las fotos, vídeos y datos se eliminarán permanentemente.</> : <>To dejanje je <strong>nepovratno</strong>. Vse fotografije, videoposnetki in podatki bodo trajno izbrisani.</>}</p>
           </div>
         </div>
 
         {/* Confirmation input */}
         <div className="bg-red-50 border border-red-200 rounded-xl p-4 space-y-3">
           <p className="text-sm text-red-700">
-            Za potrditev vpiši ime galerije:
+            {lang === "en" ? "Enter the gallery name to confirm:" : lang === "de" ? "Geben Sie zur Bestätigung den Galerienamen ein:" : lang === "es" ? "Escribe el nombre de la galería para confirmar:" : "Za potrditev vpišite ime galerije:"}
             <span className="ml-1 font-mono font-bold text-red-800 select-all">{slug}</span>
           </p>
           <input
@@ -1790,10 +1813,10 @@ function DeleteAlbumModal({
             style={{ borderColor: confirmText && !ready ? "#f87171" : ready ? "#22c55e" : "#e5e7eb" }}
           />
           {confirmText && !ready && (
-            <p className="text-xs text-red-600">Besedilo se ne ujema</p>
+            <p className="text-xs text-red-600">{lang === "en" ? "The text does not match" : lang === "de" ? "Der Text stimmt nicht überein" : lang === "es" ? "El texto no coincide" : "Besedilo se ne ujema"}</p>
           )}
           {ready && (
-            <p className="text-xs text-green-600 font-medium">✓ Potrditev pravilna</p>
+            <p className="text-xs text-green-600 font-medium">✓ {lang === "en" ? "Confirmation matches" : lang === "de" ? "Bestätigung stimmt" : lang === "es" ? "Confirmación correcta" : "Potrditev pravilna"}</p>
           )}
         </div>
 
@@ -1808,7 +1831,7 @@ function DeleteAlbumModal({
             disabled={deleting}
             className="flex-1 py-2.5 rounded-xl border border-gray-200 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors disabled:opacity-50"
           >
-            Prekliči
+            {copy.cancel}
           </button>
           <button
             onClick={handleDelete}
@@ -1816,7 +1839,7 @@ function DeleteAlbumModal({
             className="flex-1 py-2.5 rounded-xl text-sm font-semibold text-white transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
             style={{ background: ready ? "#dc2626" : "#fca5a5" }}
           >
-            {deleting ? "Brišem…" : "Izbriši galerijo"}
+            {deleting ? (lang === "en" ? "Deleting…" : lang === "de" ? "Wird gelöscht…" : lang === "es" ? "Eliminando…" : "Brišem…") : copy.deleteGallery}
           </button>
         </div>
       </div>
@@ -1827,18 +1850,19 @@ function DeleteAlbumModal({
 // Tiny card at the top of Settings showing the owner's Clerk email +
 // a sign-out shortcut. Users have asked for an easy way to confirm
 // which account a given album is on.
-function AccountInfoCard({ ownerEmail }: { ownerEmail: string | null }) {
+function AccountInfoCard({ ownerEmail, lang }: { ownerEmail: string | null; lang: DashboardLang }) {
+  const copy = ADMIN_SETTINGS_COPY[lang];
   return (
     <div className="bg-white rounded-2xl border border-gray-200 p-5">
       <div className="flex items-center justify-between gap-4">
         <div className="min-w-0">
-          <p className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-1">Prijavljeni račun</p>
+          <p className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-1">{copy.account}</p>
           <p className="text-sm font-semibold text-[#0F1729] truncate">{ownerEmail ?? "—"}</p>
-          <p className="text-xs text-gray-400 mt-0.5">Ta galerija je vezana na ta račun.</p>
+          <p className="text-xs text-gray-400 mt-0.5">{copy.accountHelp}</p>
         </div>
         <SignOutButton>
           <button className="flex-shrink-0 px-3 py-2 text-xs font-semibold text-[#0F1729] border border-gray-200 rounded-lg hover:bg-[#FFF9EC] hover:border-[#FFC94D] transition-colors">
-            Odjava
+            {lang === "sl" ? "Odjava" : lang === "de" ? "Abmelden" : lang === "es" ? "Cerrar sesión" : lang === "hr" ? "Odjava" : lang === "sr" ? "Одјава" : "Sign out"}
           </button>
         </SignOutButton>
       </div>
@@ -1879,7 +1903,8 @@ function SettingsToggle({
 
 type AutoSaveStatus = "idle" | "pending" | "saving" | "saved" | "error";
 
-function AlbumSettingsForm({ album, children, wallToken, hasPassword, headerSettings }: { album: Album; children?: React.ReactNode; wallToken: string; hasPassword: boolean; headerSettings: AlbumHeaderSettings }) {
+function AlbumSettingsForm({ album, children, wallToken, hasPassword, headerSettings, lang }: { album: Album; children?: React.ReactNode; wallToken: string; hasPassword: boolean; headerSettings: AlbumHeaderSettings; lang: DashboardLang }) {
+  const copy = ADMIN_SETTINGS_COPY[lang];
   const wallAppUrl = process.env.NEXT_PUBLIC_APP_URL ?? SITE_URL;
   const wallUrl = `${wallAppUrl}/wall/${wallToken}`;
   const router = useRouter();
@@ -2036,17 +2061,12 @@ function AlbumSettingsForm({ album, children, wallToken, hasPassword, headerSett
 
   const inputClass =
     "w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm text-gray-800 bg-white outline-none focus:border-[#FFC94D] transition-colors";
-  const autoSaveLabel =
-    autoSaveStatus === "pending" ? "Čakam na shranjevanje…" :
-    autoSaveStatus === "saving" ? "Shranjujem…" :
-    autoSaveStatus === "saved" ? "✓ Spremembe shranjene" :
-    autoSaveStatus === "error" ? "⚠ Shranjevanje ni uspelo" :
-    "Samodejno shranjevanje vključeno";
+  const autoSaveLabel = autoSaveStatus === "pending" ? copy.autosave[0] : autoSaveStatus === "saving" ? copy.autosave[1] : autoSaveStatus === "saved" ? copy.autosave[2] : autoSaveStatus === "error" ? copy.autosave[3] : copy.autosave[4];
 
   return (
     <div className="bg-white rounded-2xl border border-gray-100 p-6 space-y-5">
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <h3 className="font-semibold text-gray-900">Nastavitve galerije</h3>
+        <h3 className="font-semibold text-gray-900">{copy.title}</h3>
         <div className="flex items-center gap-2" role="status" aria-live="polite">
           <span className={`text-xs font-medium ${
             autoSaveStatus === "error"
@@ -2063,7 +2083,7 @@ function AlbumSettingsForm({ album, children, wallToken, hasPassword, headerSett
               onClick={() => setAutoSaveRetry((value) => value + 1)}
               className="text-xs font-semibold text-[#C9820A] underline underline-offset-2"
             >
-              Poskusi znova
+              {copy.retry}
             </button>
           )}
         </div>
@@ -2084,20 +2104,20 @@ function AlbumSettingsForm({ album, children, wallToken, hasPassword, headerSett
               onClick={() => setAutoSaveRetry((value) => value + 1)}
               className="text-xs font-semibold underline underline-offset-2"
             >
-              Poskusi znova
+              {copy.retry}
             </button>
           )}
         </div>
       )}
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Ime galerije</label>
+        <label className="block text-sm font-medium text-gray-700 mb-1">{copy.galleryName}</label>
         <input value={coupleName} onChange={(e) => updateSetting(setCoupleName, e.target.value)} className={inputClass} />
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Datum</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">{copy.date}</label>
           <input
             type="date"
             value={weddingDate}
@@ -2107,7 +2127,7 @@ function AlbumSettingsForm({ album, children, wallToken, hasPassword, headerSett
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
-            Čas začetka <span className="font-normal text-gray-400">(neobvezno)</span>
+            {copy.eventTime} <span className="font-normal text-gray-400">({copy.optional})</span>
           </label>
           <input
             type="time"
@@ -2120,28 +2140,20 @@ function AlbumSettingsForm({ album, children, wallToken, hasPassword, headerSett
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Vrsta dogodka</label>
+        <label className="block text-sm font-medium text-gray-700 mb-1">{copy.eventType}</label>
         <select
           value={eventType}
           onChange={(e) => updateSetting(setEventType, e.target.value)}
           className={inputClass}
         >
-          <option value="wedding">Poroka</option>
-          <option value="birthday">Rojstni dan</option>
-          <option value="anniversary">Obletnica</option>
-          <option value="party">Zabava</option>
-          <option value="baptism">Krst</option>
-          <option value="graduation">Diploma/Matura</option>
-          <option value="baby_shower">Baby Shower</option>
-          <option value="business">Poslovni dogodek</option>
-          <option value="other">Drugo</option>
+          {(["wedding", "birthday", "anniversary", "party", "baptism", "graduation", "baby_shower", "business", "other"] as const).map((id, index) => <option key={id} value={id}>{copy.eventTypes[index]}</option>)}
         </select>
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Privzeti jezik galerije</label>
+        <label className="block text-sm font-medium text-gray-700 mb-1">{copy.galleryLanguage}</label>
         <p className="text-xs text-gray-400 mb-2">
-          V tem jeziku se galerija in Photo Wall prvič odpreta gostom. Gost lahko jezik pozneje spremeni.
+          {copy.galleryLanguageHelp}
         </p>
         <select
           value={defaultLang}
@@ -2158,59 +2170,59 @@ function AlbumSettingsForm({ album, children, wallToken, hasPassword, headerSett
       </div>
 
       <div>
-        <h4 className="text-sm font-semibold text-gray-800">Prikaz v glavi galerije</h4>
+        <h4 className="text-sm font-semibold text-gray-800">{copy.header}</h4>
         <p className="mb-3 mt-1 text-xs text-gray-400">
-          Izberite, kateri podatki so vidni gostom na vrhu galerije.
+          {copy.headerHelp}
         </p>
         <div className="space-y-2">
           <SettingsToggle
             checked={showTitle}
             onChange={(value) => updateSetting(setShowTitle, value)}
-            label="Ime galerije"
-            description="Prikaže glavni naslov galerije."
+            label={copy.titleLabel}
+            description={copy.titleHelp}
           />
           <SettingsToggle
             checked={showEventType}
             onChange={(value) => updateSetting(setShowEventType, value)}
-            label="Vrsta dogodka"
-            description="Prikaže oznako in ikono dogodka."
+            label={copy.typeLabel}
+            description={copy.typeHelp}
           />
           <SettingsToggle
             checked={showEventDate}
             onChange={(value) => updateSetting(setShowEventDate, value)}
-            label="Datum dogodka"
-            description="Prikaže datum in odštevanje do dogodka."
+            label={copy.dateLabel}
+            description={copy.dateHelp}
           />
         </div>
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Lokacija</label>
+        <label className="block text-sm font-medium text-gray-700 mb-1">{copy.location}</label>
         <input
           value={location}
           onChange={(e) => updateSetting(setLocation, e.target.value)}
-          placeholder="Ljubljana"
+          placeholder={lang === "sl" ? "Ljubljana" : lang === "de" ? "Berlin" : lang === "es" ? "Madrid" : "London"}
           className={inputClass}
         />
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Pozdravno sporočilo za goste</label>
+        <label className="block text-sm font-medium text-gray-700 mb-1">{copy.welcome}</label>
         <textarea
           value={notifyEmail}
           onChange={(e) => updateSetting(setNotifyEmail, e.target.value)}
           rows={3}
-          placeholder="Dobrodošli! Naložite svoje fotografije in delite spomine."
+          placeholder={copy.welcomePlaceholder}
           className={`${inputClass} resize-none`}
         />
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Geslo galerije</label>
+        <label className="block text-sm font-medium text-gray-700 mb-1">{copy.password}</label>
         <p className="text-xs text-gray-400 mb-2.5">
           {hasPasswordNow
-            ? "Galerija je trenutno zaščitena z geslom — brez njega je nihče ne more odpreti."
-            : "Privzeto brez gesla — galerija je dostopna vsakomur s povezavo ali QR kodo."}
+            ? copy.protected
+            : copy.unprotected}
         </p>
         {!removePassword && (
           <input
@@ -2220,7 +2232,7 @@ function AlbumSettingsForm({ album, children, wallToken, hasPassword, headerSett
               setPasswordDraft(e.target.value);
               setPasswordSaveStatus("idle");
             }}
-            placeholder={hasPasswordNow ? "Novo geslo (pustite prazno, če ne spreminjate)" : "Nastavite geslo (neobvezno)"}
+            placeholder={hasPasswordNow ? copy.newPassword : copy.setPassword}
             className={inputClass}
             autoComplete="new-password"
           />
@@ -2236,16 +2248,16 @@ function AlbumSettingsForm({ album, children, wallToken, hasPassword, headerSett
                 if (e.target.checked) setPasswordDraft("");
               }}
             />
-            Odstrani geslo — galerija bo dostopna vsakomur s povezavo
+            {copy.removePassword}
           </label>
         )}
         <p className="mt-2 text-xs text-gray-400">
-          Geslo se zaradi varnosti shrani šele s potrditvijo spodaj.
+          {copy.passwordHint}
         </p>
         {justSetPassword && (
           <div className="mt-3 rounded-xl border p-3" style={{ background: "#f0fdf4", borderColor: "#86efac" }}>
             <p className="text-xs font-medium mb-1.5" style={{ color: "#15803d" }}>
-              Geslo shranjeno. Pripravljena povezava za Foto steno (z vključenim geslom, brez ponovnega vnosa na TV-ju):
+              {copy.passwordSavedLink}
             </p>
             <div className="flex items-center gap-2">
               <code className="flex-1 min-w-0 truncate bg-white/70 px-2 py-1 rounded text-[11px]" style={{ color: "#15803d" }}>
@@ -2257,7 +2269,7 @@ function AlbumSettingsForm({ album, children, wallToken, hasPassword, headerSett
                 className="shrink-0 px-2 py-1 text-[11px] rounded bg-white border hover:bg-green-50"
                 style={{ borderColor: "#86efac", color: "#15803d" }}
               >
-                Kopiraj
+                {copy.copy}
               </button>
             </div>
           </div>
@@ -2270,8 +2282,8 @@ function AlbumSettingsForm({ album, children, wallToken, hasPassword, headerSett
       {children}
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Tema galerije</label>
-        <p className="text-xs text-gray-400 mb-2.5">Izberite barvno temo za javno stran galerije.</p>
+        <label className="block text-sm font-medium text-gray-700 mb-1">{copy.theme}</label>
+        <p className="text-xs text-gray-400 mb-2.5">{copy.themeHelp}</p>
         {(() => {
           const { recommended, others } = themesForEvent(eventType);
           const renderTheme = (tm: (typeof ALBUM_THEMES)[number]) => {
@@ -2282,7 +2294,7 @@ function AlbumSettingsForm({ album, children, wallToken, hasPassword, headerSett
                 type="button"
                 onClick={() => updateSetting(setTheme, tm.id)}
                 aria-pressed={selected}
-                title={tm.name}
+                title={THEME_NAME_COPY[lang][tm.id] ?? tm.name}
                 className={`group flex flex-col items-center gap-1.5 rounded-xl p-1.5 transition-all ${
                   selected
                     ? "ring-2 ring-[#FFC94D] ring-offset-1"
@@ -2312,7 +2324,7 @@ function AlbumSettingsForm({ album, children, wallToken, hasPassword, headerSett
                   )}
                 </span>
                 <span className={`text-[11px] text-center leading-tight ${selected ? "font-semibold text-[#C9820A]" : "text-gray-600"}`}>
-                  {tm.name}
+                  {THEME_NAME_COPY[lang][tm.id] ?? tm.name}
                 </span>
               </button>
             );
@@ -2323,13 +2335,13 @@ function AlbumSettingsForm({ album, children, wallToken, hasPassword, headerSett
           return recommended.length > 0 ? (
             <>
               <p className="text-[11px] font-bold uppercase tracking-widest text-[#C9820A] mb-2">
-                ✨ Priporočene za vaš dogodek
+                ✨ {copy.recommendedThemes}
               </p>
               <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5 mb-4">
                 {recommended.map(renderTheme)}
               </div>
               <p className="text-[11px] font-bold uppercase tracking-widest text-gray-400 mb-2">
-                Vse teme
+                {copy.allThemes}
               </p>
               <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5">
                 {others.map(renderTheme)}
@@ -2353,7 +2365,7 @@ function AlbumSettingsForm({ album, children, wallToken, hasPassword, headerSett
           >
             <span className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white shadow transition-transform ${isPublished ? "translate-x-5" : "translate-x-0"}`} />
           </button>
-          <span className="text-sm text-gray-700">Galerija je javno dostopna</span>
+          <span className="text-sm text-gray-700">{copy.published}</span>
         </label>
 
         {album.plan !== "free" && (
@@ -2363,16 +2375,16 @@ function AlbumSettingsForm({ album, children, wallToken, hasPassword, headerSett
                 type="button"
                 role="switch"
                 aria-checked={moderationEnabled}
-                aria-label="Ročna odobritev fotografij in videov pred objavo"
+                aria-label={copy.moderation}
                 onClick={() => updateSetting(setModerationEnabled, !moderationEnabled)}
                 className={`relative mt-0.5 h-5 w-10 shrink-0 rounded-full transition-colors ${moderationEnabled ? "bg-[#FFC94D]" : "bg-gray-200"}`}
               >
                 <span className={`absolute left-0.5 top-0.5 h-4 w-4 rounded-full bg-white shadow transition-transform ${moderationEnabled ? "translate-x-5" : "translate-x-0"}`} />
               </button>
               <div>
-                <p className="text-sm font-semibold text-gray-800">Ročna odobritev pred objavo</p>
+                <p className="text-sm font-semibold text-gray-800">{copy.moderation}</p>
                 <p className="mt-0.5 text-xs leading-relaxed text-gray-500">
-                  Preglejte vsako novo fotografijo in video, preden ju lahko vidijo drugi gostje.
+                  {copy.moderationHelp}
                 </p>
               </div>
             </div>
@@ -2388,14 +2400,14 @@ function AlbumSettingsForm({ album, children, wallToken, hasPassword, headerSett
         className="w-full py-3 rounded-xl text-white text-sm font-semibold disabled:opacity-50 transition-colors bg-[#FFC94D] hover:bg-[#F0B429]"
       >
         {passwordSaving
-          ? "Shranjujem geslo…"
+          ? copy.savingPassword
           : passwordSaveStatus === "saved"
-            ? "✓ Geslo shranjeno"
-            : "Shrani spremembo gesla"}
+            ? copy.passwordSaved
+            : copy.savePassword}
       </button>
       {passwordSaveStatus === "error" && (
         <p className="text-center text-xs font-medium text-red-600" role="alert">
-          Gesla ni bilo mogoče shraniti. Poskusite znova.
+          {copy.passwordError}
         </p>
       )}
     </div>
@@ -2404,31 +2416,32 @@ function AlbumSettingsForm({ album, children, wallToken, hasPassword, headerSett
 
 // ─── Danger Zone ─────────────────────────────────────────────────────────────
 // Rendered as the very last section of the Settings tab.
-function DangerZone({ album }: { album: Album }) {
+function DangerZone({ album, lang }: { album: Album; lang: DashboardLang }) {
+  const copy = ADMIN_SETTINGS_COPY[lang];
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   return (
     <>
       <div className="border border-red-200 rounded-2xl p-5 space-y-3" style={{ background: "#fff5f5" }}>
         <div>
-          <h4 className="font-semibold text-red-700 text-sm">Nevarno območje</h4>
-          <p className="text-xs text-red-500 mt-0.5">Spodnja dejanja so nepovratna. Nadaljuj previdno.</p>
+          <h4 className="font-semibold text-red-700 text-sm">{copy.danger}</h4>
+          <p className="text-xs text-red-500 mt-0.5">{copy.dangerHelp}</p>
         </div>
         <div className="flex items-center justify-between gap-4 bg-white border border-red-100 rounded-xl px-4 py-3">
           <div>
-            <p className="text-sm font-medium text-gray-800">Izbriši galerijo</p>
-            <p className="text-xs text-gray-500 mt-0.5">Trajno izbriše galerijo in vse fotografije.</p>
+            <p className="text-sm font-medium text-gray-800">{copy.deleteGallery}</p>
+            <p className="text-xs text-gray-500 mt-0.5">{copy.deleteGalleryHelp}</p>
           </div>
           <button
             onClick={() => setShowDeleteModal(true)}
             className="flex-shrink-0 px-4 py-2 rounded-xl border border-red-300 text-red-600 text-sm font-medium hover:bg-red-50 transition-colors"
           >
-            Izbriši
+            {copy.delete}
           </button>
         </div>
       </div>
 
       {showDeleteModal && (
-        <DeleteAlbumModal album={album} onClose={() => setShowDeleteModal(false)} />
+        <DeleteAlbumModal album={album} lang={lang} onClose={() => setShowDeleteModal(false)} />
       )}
     </>
   );
@@ -2436,8 +2449,8 @@ function DangerZone({ album }: { album: Album }) {
 
 // ─── Moments Manager ──────────────────────────────────────────────────────────
 
-function MomentsManager({ album }: { album: Album }) {
-  const t = translations.sl;
+function MomentsManager({ album, lang }: { album: Album; lang: DashboardLang }) {
+  const t = translations[lang];
   const [moments, setMoments] = useState<Moment[]>([]);
   const [loading, setLoading] = useState(true);
   const [newName, setNewName] = useState("");
@@ -2622,7 +2635,8 @@ interface DomainStatus {
 
 const ACCENT = "#C9820A"; // black-blue accent
 
-function CustomDomainPanel({ album }: { album: Album }) {
+function CustomDomainPanel({ album, lang }: { album: Album; lang: DashboardLang }) {
+  const copy = ADMIN_SETTINGS_COPY[lang];
   const isPremium = album.plan === "premium";
 
   const [domain, setDomain] = useState<string | null>(album.customDomain ?? null);
@@ -2668,14 +2682,14 @@ function CustomDomainPanel({ album }: { album: Album }) {
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
-        setError(data.error ?? "Shranjevanje ni uspelo.");
+        setError(data.error ?? copy.domainSaveFailed);
         return;
       }
       setDomain(data.domain ?? value);
       setStatus(data.status ?? null);
       setInput("");
     } catch {
-      setError("Napaka pri povezavi.");
+      setError(copy.connectionError);
     } finally {
       setBusy(false);
     }
@@ -2692,17 +2706,17 @@ function CustomDomainPanel({ album }: { album: Album }) {
         setDomain(data.domain);
         setStatus(data.status);
       } else {
-        setError(data.error ?? "Osvežitev ni uspela.");
+        setError(data.error ?? copy.refreshFailed);
       }
     } catch {
-      setError("Napaka pri povezavi.");
+      setError(copy.connectionError);
     } finally {
       setBusy(false);
     }
   };
 
   const removeDomain = async () => {
-    if (busy || !confirm("Res želite odstraniti lastno domeno?")) return;
+    if (busy || !confirm(copy.removeDomainConfirm)) return;
     setBusy(true);
     setError("");
     try {
@@ -2711,13 +2725,13 @@ function CustomDomainPanel({ album }: { album: Album }) {
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
-        setError(data.error ?? "Odstranjevanje ni uspelo.");
+        setError(data.error ?? copy.removeDomainFailed);
         return;
       }
       setDomain(null);
       setStatus(null);
     } catch {
-      setError("Napaka pri povezavi.");
+      setError(copy.connectionError);
     } finally {
       setBusy(false);
     }
@@ -2736,21 +2750,20 @@ function CustomDomainPanel({ album }: { album: Album }) {
       <div className="bg-white rounded-2xl border border-gray-100 p-6 space-y-4">
         <div className="flex items-center gap-2">
           <span className="text-base">🌐</span>
-          <h3 className="font-semibold text-gray-900">Lastna domena</h3>
+          <h3 className="font-semibold text-gray-900">{copy.domain}</h3>
           <span className="ml-auto text-[11px] font-semibold px-2 py-0.5 rounded-full bg-rose-500 text-white">
             Premium
           </span>
         </div>
         <p className="text-sm text-gray-500">
-          Lastna domena je na voljo v paketu Premium. Galerijo lahko prikažete na
-          svoji domeni, npr. <span className="font-mono">galerija.mojadomena.si</span>.
+          {copy.premiumOnly} <span className="font-mono">gallery.example.com</span>.
         </p>
         <Link
           href={`/dashboard/${album.slug}/upgrade`}
           className="inline-block px-5 py-2.5 rounded-xl text-white text-sm font-semibold transition-opacity hover:opacity-90"
           style={{ background: ACCENT }}
         >
-          Nadgradi na Premium →
+          {copy.upgradePremium}
         </Link>
       </div>
     );
@@ -2761,23 +2774,23 @@ function CustomDomainPanel({ album }: { album: Album }) {
     <div className="bg-white rounded-2xl border border-gray-100 p-6 space-y-4">
       <div className="flex items-center gap-2">
         <span className="text-base">🌐</span>
-        <h3 className="font-semibold text-gray-900">Lastna domena</h3>
+        <h3 className="font-semibold text-gray-900">{copy.domain}</h3>
       </div>
 
       {loading ? (
-        <p className="text-sm text-gray-400">Nalaganje…</p>
+        <p className="text-sm text-gray-400">{copy.loading}</p>
       ) : !domain ? (
         // No domain set — input + save.
         <>
           <p className="text-sm text-gray-500">
             Vnesite domeno, na kateri želite prikazati svojo galerijo. Po vnosu vam
-            bomo prikazali DNS zapis, ki ga dodate pri svojem ponudniku domene.
+            {copy.enterDomain}
           </p>
           <input
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && saveDomain()}
-            placeholder="npr. galerija.mojadomena.si"
+            placeholder={copy.domainPlaceholder}
             className={inputClass}
           />
           <button
@@ -2786,7 +2799,7 @@ function CustomDomainPanel({ album }: { album: Album }) {
             className="w-full py-3 rounded-xl text-white text-sm font-semibold transition-opacity hover:opacity-90 disabled:opacity-40"
             style={{ background: ACCENT }}
           >
-            {busy ? "Shranjevanje…" : "Shrani"}
+            {busy ? copy.saving : copy.save}
           </button>
         </>
       ) : (
@@ -2796,15 +2809,15 @@ function CustomDomainPanel({ album }: { album: Album }) {
             <span className="font-mono text-sm text-gray-800 break-all">{domain}</span>
             {domainReady ? (
               <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-green-100 text-green-700">
-                ✅ Povezano
+                {copy.connected}
               </span>
             ) : status?.misconfigured ? (
               <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-red-100 text-red-700">
-                ⚠️ DNS ni nastavljen
+                {copy.dnsMissing}
               </span>
             ) : (
               <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-amber-100 text-amber-700">
-                ⏳ Čaka na DNS
+                {copy.dnsPending}
               </span>
             )}
           </div>
@@ -2816,19 +2829,19 @@ function CustomDomainPanel({ album }: { album: Album }) {
             >
               {status?.verified && status.misconfigured && (
                 <p className="text-xs font-medium text-red-700">
-                  Lastništvo domene je potrjeno, vendar DNS še ni usmerjen na GuestCam.
+                  {copy.dnsMismatch}
                 </p>
               )}
               <p className="font-medium" style={{ color: ACCENT }}>
-                Dodajte naslednji DNS zapis pri svojem ponudniku domene:
+                {copy.addDns}
               </p>
 
               {status?.verification && status.verification.length > 0 ? (
                 status.verification.map((r, i) => (
                   <div key={i} className="bg-white rounded-lg border border-gray-200 p-3 space-y-1.5">
-                    <DnsRow label="Tip" value={r.type} />
-                    <DnsRow label="Ime" value={r.domain} />
-                    <DnsRow label="Vrednost" value={r.value} />
+                    <DnsRow label={copy.dnsType} value={r.type} />
+                    <DnsRow label={copy.dnsName} value={r.domain} />
+                    <DnsRow label={copy.dnsValue} value={r.value} />
                   </div>
                 ))
               ) : (
@@ -2836,30 +2849,29 @@ function CustomDomainPanel({ album }: { album: Album }) {
                 <div className="bg-white rounded-lg border border-gray-200 p-3 space-y-1.5">
                   {domain.split(".").length > 2 ? (
                     <>
-                      <DnsRow label="Tip" value="CNAME" />
-                      <DnsRow label="Ime" value={domain.split(".")[0]} />
-                      <DnsRow label="Vrednost" value="cname.vercel-dns.com" />
+                      <DnsRow label={copy.dnsType} value="CNAME" />
+                      <DnsRow label={copy.dnsName} value={domain.split(".")[0]} />
+                      <DnsRow label={copy.dnsValue} value="cname.vercel-dns.com" />
                     </>
                   ) : (
                     <>
-                      <DnsRow label="Tip" value="A" />
-                      <DnsRow label="Ime" value="@" />
-                      <DnsRow label="Vrednost" value="76.76.21.21" />
+                      <DnsRow label={copy.dnsType} value="A" />
+                      <DnsRow label={copy.dnsName} value="@" />
+                      <DnsRow label={copy.dnsValue} value="76.76.21.21" />
                     </>
                   )}
                 </div>
               )}
 
               <p className="text-xs text-gray-500">
-                Ko dodate DNS zapis pri svojem ponudniku domene, ga sistem samodejno
-                preveri in izda SSL certifikat. To lahko traja nekaj minut.
+                {copy.dnsHelp}
               </p>
             </div>
           )}
 
           {domainReady && (
             <p className="text-sm text-gray-500">
-              Vaša galerija je dostopna na{" "}
+              {copy.domainAccessible}{" "}
               <a
                 href={`https://${domain}`}
                 target="_blank"
@@ -2880,14 +2892,14 @@ function CustomDomainPanel({ album }: { album: Album }) {
               className="flex-1 py-2.5 rounded-xl border text-sm font-semibold transition-colors disabled:opacity-40"
               style={{ borderColor: ACCENT, color: ACCENT }}
             >
-              {busy ? "…" : "Osveži stanje"}
+              {busy ? "…" : copy.refresh}
             </button>
             <button
               onClick={removeDomain}
               disabled={busy}
               className="flex-1 py-2.5 rounded-xl border border-red-300 text-red-600 text-sm font-semibold hover:bg-red-50 transition-colors disabled:opacity-40"
             >
-              Odstrani
+              {copy.remove}
             </button>
           </div>
         </>

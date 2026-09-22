@@ -350,7 +350,7 @@ requireMatch(
 requireMatch(
   "album dashboard supports selecting and deleting multiple media items",
   files.albumAdminPanel,
-  /action:\s*"delete_many"[\s\S]*Izberi več slik[\s\S]*Izberi vse[\s\S]*Izbriši izbrane/,
+  /action:\s*"delete_many"[\s\S]*copy\.chooseMany[\s\S]*copy\.selectAll[\s\S]*copy\.deleteSelected/,
   "owners must be able to select individual items or all visible media and request one bulk deletion",
 );
 
@@ -1133,14 +1133,14 @@ requireMatch(
 requireMatch(
   "album settings expose the default guest language",
   files.albumAdminPanel,
-  /Privzeti jezik galerije[\s\S]*value=\{defaultLang\}[\s\S]*setDefaultLang/,
+  /copy\.galleryLanguage[\s\S]*value=\{defaultLang\}[\s\S]*setDefaultLang/,
   "the owner must be able to choose the album and Photo Wall language",
 );
 
 requireMatch(
   "custom domains require valid DNS before being shown as connected",
   files.albumAdminPanel,
-  /domainReady\s*=\s*status\?\.verified\s*===\s*true\s*&&\s*status\.misconfigured\s*!==\s*true[\s\S]*DNS ni nastavljen[\s\S]*!domainReady[\s\S]*domainReady/,
+  /domainReady\s*=\s*status\?\.verified\s*===\s*true\s*&&\s*status\.misconfigured\s*!==\s*true[\s\S]*copy\.dnsMissing[\s\S]*!domainReady[\s\S]*domainReady/,
   "verified ownership alone must not hide missing CNAME/A instructions or claim that the album domain is live",
 );
 
@@ -1154,14 +1154,14 @@ requireMatch(
 requireMatch(
   "album settings auto-save ordinary changes",
   files.albumAdminPanel,
-  /setTimeout\(\(\) => \{[\s\S]*setAutoSaveStatus\("saving"\)[\s\S]*fetch\(`\/api\/albums\/\$\{album\.slug\}\/settings`[\s\S]*Samodejno shranjevanje vključeno/,
+  /setTimeout\(\(\) => \{[\s\S]*setAutoSaveStatus\("saving"\)[\s\S]*fetch\(`\/api\/albums\/\$\{album\.slug\}\/settings`[\s\S]*copy\.autosave/,
   "ordinary settings must auto-save and expose a visible save status",
 );
 
 requireMatch(
   "album settings expose all gallery header controls",
   files.albumAdminPanel,
-  /Prikaz v glavi galerije[\s\S]*checked=\{showTitle\}[\s\S]*checked=\{showEventType\}[\s\S]*checked=\{showEventDate\}/,
+  /copy\.header[\s\S]*checked=\{showTitle\}[\s\S]*checked=\{showEventType\}[\s\S]*checked=\{showEventDate\}/,
   "owners must be able to toggle the title, event type and event date separately",
 );
 
@@ -1231,7 +1231,7 @@ requireMatch(
 requireMatch(
   "cover editor provides matching desktop and mobile safe previews",
   files.coverPhotoSettings,
-  /Namizni prikaz[\s\S]*Mobilni prikaz[\s\S]*aspect-\[4\/3\][\s\S]*object-contain[\s\S]*Na vrh[\s\S]*Na sredino[\s\S]*Na dno/,
+  /copy\.desktopPreview[\s\S]*copy\.mobilePreview[\s\S]*aspect-\[4\/3\][\s\S]*object-contain[\s\S]*copy\.top[\s\S]*copy\.middle[\s\S]*copy\.bottom/,
   "owners must see the real phone framing and keep the full cover inside it",
 );
 
