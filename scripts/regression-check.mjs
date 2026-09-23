@@ -1126,8 +1126,15 @@ requireAbsent(
 requireMatch(
   "homepage video is rendered directly after the hero",
   files.homeComponent,
-  /<\/section>\s*<PromoVideo\s*\/>\s*<section className="bg-\[#FFFDF8\] px-4 py-8/,
+  /<\/section>\s*<PromoVideo\s*\/>\s*<section className="border-y border-black\/10 bg-white"/,
   "the promo video must stay in the React tree immediately after the hero section",
+);
+
+requireAbsent(
+  "expired Nina Badric homepage banner is removed",
+  files.homeComponent,
+  /nina-badric-maribox\.webp/,
+  "the expired event banner must not appear on the homepage",
 );
 
 requireMatch(

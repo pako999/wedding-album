@@ -99,19 +99,6 @@ export async function GuestcamHomePage() {
 
     <PromoVideo />
 
-    <section className="bg-[#FFFDF8] px-4 py-8 sm:px-8 sm:py-12">
-      <div className="mx-auto max-w-[1400px] overflow-hidden rounded-[24px] border border-black/10 bg-[#140313] shadow-2xl sm:rounded-[30px]">
-        <Image
-          src="/events/nina-badric-maribox.webp"
-          alt="Nina Badrić v Mariboxu 18. septembra 2026 z Guestcam zbiranjem fotografij gostov"
-          width={1600}
-          height={768}
-          sizes="(max-width: 1439px) 100vw, 1400px"
-          className="block h-auto w-full"
-        />
-      </div>
-    </section>
-
     <section className="border-y border-black/10 bg-white"><div className="mx-auto grid max-w-[1240px] grid-cols-2 gap-3 px-5 py-5 sm:grid-cols-4 sm:px-8">{["Brez aplikacije","Fotografije + videi","Originalna kakovost","Zasebna galerija"].map(x => <div key={x} className="flex items-center gap-3 rounded-2xl p-2 sm:justify-center"><span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#FFF2B3] font-black">✓</span><span className="text-sm font-extrabold text-black/65">{x}</span></div>)}</div></section>
 
     <section className="mx-auto max-w-[1320px] px-5 py-24 sm:px-8 sm:py-32">
