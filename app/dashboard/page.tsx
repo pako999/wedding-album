@@ -47,6 +47,7 @@ export default async function DashboardPage({
   let userCreatedAt: number | null = null;
   let clerkSignupSource: SignupSourceSnapshot | null = null;
   let clerkPreferredLang: unknown;
+  let clerkDashboardLang: unknown;
   try {
     const session = await auth();
     userId = session.userId;
@@ -57,7 +58,9 @@ export default async function DashboardPage({
       clerkSignupSource = parseSignupSourceSnapshot(
         user?.unsafeMetadata?.guestcamAttribution,
       );
-      clerkPreferredLang = (user?.publicMetadata as Record<string, unknown> | undefined)?.lang;
+      const metadata = user?.publicMetadata as Record<string, unknown> | undefined;
+      clerkPreferredLang = metadata?.lang;
+      clerkDashboardLang = metadata?.dashboardLang;
     }
   } catch {
     redirect("/sign-in");
@@ -67,6 +70,8 @@ export default async function DashboardPage({
   const lang = resolveDashboardLang({
     requested: sp.lang,
     saved: cookieStore.get(DASHBOARD_LANG_COOKIE)?.value,
+    account: clerkDashboardLang,
+    country: requestHeaders.get("x-vercel-ip-country"),
     clerk: clerkPreferredLang,
     acceptLanguage: requestHeaders.get("accept-language"),
   });
