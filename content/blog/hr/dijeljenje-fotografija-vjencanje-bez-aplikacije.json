@@ -92,13 +92,41 @@
         "Bez aplikacije (Guestcam)"
       ],
       "rows": [
-        ["Sudjelovanje gostiju", "Više prepreka", "Jednostavniji pristup"],
-        ["Put do učitavanja fotografije", "Instalacija i moguća registracija", "Skeniranje QR koda i odabir fotografija"],
-        ["Kompatibilnost (stariji mobiteli)", "Ograničena", "Svaki mobitel s preglednikom"],
-        ["Kapacitet pohrane", "Ograničen planom", "Originalna rezolucija"],
-        ["Privatnost galerije", "Ovisi o aplikaciji", "Privatna, samo s QR kodom"],
-        ["Potreban internet za pregled", "Da", "Da"],
-        ["Radi na iPhoneu i Androidu", "Ovisi o aplikaciji", "Da, u podržanom pregledniku"]
+        [
+          "Sudjelovanje gostiju",
+          "Više prepreka",
+          "Jednostavniji pristup"
+        ],
+        [
+          "Put do učitavanja fotografije",
+          "Instalacija i moguća registracija",
+          "Skeniranje QR koda i odabir fotografija"
+        ],
+        [
+          "Kompatibilnost (stariji mobiteli)",
+          "Ograničena",
+          "Svaki mobitel s preglednikom"
+        ],
+        [
+          "Kapacitet pohrane",
+          "Ograničen planom",
+          "Originalna rezolucija"
+        ],
+        [
+          "Privatnost galerije",
+          "Ovisi o aplikaciji",
+          "Privatna, samo s QR kodom"
+        ],
+        [
+          "Potreban internet za pregled",
+          "Da",
+          "Da"
+        ],
+        [
+          "Radi na iPhoneu i Androidu",
+          "Ovisi o aplikaciji",
+          "Da, u podržanom pregledniku"
+        ]
       ]
     },
     {
@@ -163,7 +191,7 @@
     },
     {
       "type": "p",
-      "text": "Galerija ostaje privatna i dostupna samo vama i gostima koji imaju QR kod. Sve fotografije možete preuzeti u originalnoj rezoluciji — Guestcam ne komprimira niti mijenja slike. Premium paket uključuje:"
+      "text": "Galerija ostaje privatna i dostupna samo vama i gostima koji imaju QR kod. Sve fotografije možete preuzeti u originalnoj rezoluciji — Guestcam ne komprimira niti mijenja slike. Vjenčani premium paket uključuje:"
     },
     {
       "type": "ul",
@@ -197,7 +225,7 @@
     {
       "type": "faq",
       "q": "Koliko fotografija mogu skupiti?",
-      "a": "Besplatni plan uključuje jedan događaj, jednu galeriju, do 20 fotografija i jedan videozapis uz pristup 30 dana. Premium podržava neograničen broj fotografija i do 100 videozapisa."
+      "a": "Besplatni plan uključuje jedan događaj, jednu galeriju, do 20 fotografija i jedan videozapis uz pristup 30 dana. Vjenčani premium podržava neograničen broj fotografija i do 100 videozapisa."
     },
     {
       "type": "faq",
@@ -207,7 +235,7 @@
     {
       "type": "faq",
       "q": "Mogu li pratiti tko učitava fotografije?",
-      "a": "Vidite sve fotografije čim se učitaju. Na Premium planu imate i moderaciju — možete odobriti ili sakriti svaku fotografiju prije nego što postane vidljiva ostalim gostima."
+      "a": "Vidite sve fotografije čim se učitaju. Na Vjenčani premium planu imate i moderaciju — možete odobriti ili sakriti svaku fotografiju prije nego što postane vidljiva ostalim gostima."
     },
     {
       "type": "faq",
@@ -217,7 +245,7 @@
     {
       "type": "faq",
       "q": "Kako preuzeti sve fotografije gostiju?",
-      "a": "Na Premium planu jednim klikom preuzmete ZIP arhivu sa svim fotografijama u originalnoj rezoluciji i s originalnim metapodacima (datum, sat, uređaj)."
+      "a": "Na Vjenčani premium planu jednim klikom preuzmete ZIP arhivu sa svim fotografijama u originalnoj rezoluciji i s originalnim metapodacima (datum, sat, uređaj)."
     }
   ]
 }

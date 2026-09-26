@@ -1,3 +1,4 @@
+import { weddingCopy } from "@/lib/wedding/copy";
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { cookies, headers } from "next/headers";
@@ -265,7 +266,7 @@ export default async function DashboardPage({
                       "bg-white/80 text-[color:var(--muted)]"
                     }`}
                     style={album.plan === "premium" ? { background: "var(--honey)", color: "#FFFFFF" } : undefined}>
-                      {album.plan === "free" ? "Free" : album.plan === "basic" ? "Basic" : album.plan === "plus" ? "Plus" : "Premium"}
+                      {album.plan === "free" ? "Free" : album.plan === "basic" ? "Basic" : album.plan === "plus" ? "Plus" : weddingCopy(lang).plan}
                     </span>
                   </div>
                 </Link>

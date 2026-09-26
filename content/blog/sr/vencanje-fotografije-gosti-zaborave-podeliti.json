@@ -80,13 +80,43 @@
     },
     {
       "type": "table",
-      "headers": ["Metoda", "Učešće gostiju", "Prepreke", "Kvalitet"],
+      "headers": [
+        "Metoda",
+        "Učešće gostiju",
+        "Prepreke",
+        "Kvalitet"
+      ],
       "rows": [
-        ["QR kod na svakom stolu", "Jednostavan pristup", "Skeniranje i otpremanje", "Originalna datoteka"],
-        ["WhatsApp grupa", "Zahteva članstvo u grupi", "Pronalaženje grupe i slanje", "Zavisi od načina slanja"],
-        ["Google Photos album", "Može zahtevati nalog", "Pozivnica, prijava i otpremanje", "Originalna datoteka"],
-        ["E-mail posle venčanja", "Ručni podsetnik", "Prilozi i ograničenja veličine", "Originalna datoteka"],
-        ["»Pošaljite nam nekad«", "Bez jasnog odredišta", "Gost mora kasnije da se seti", "—"]
+        [
+          "QR kod na svakom stolu",
+          "Jednostavan pristup",
+          "Skeniranje i otpremanje",
+          "Originalna datoteka"
+        ],
+        [
+          "WhatsApp grupa",
+          "Zahteva članstvo u grupi",
+          "Pronalaženje grupe i slanje",
+          "Zavisi od načina slanja"
+        ],
+        [
+          "Google Photos album",
+          "Može zahtevati nalog",
+          "Pozivnica, prijava i otpremanje",
+          "Originalna datoteka"
+        ],
+        [
+          "E-mail posle venčanja",
+          "Ručni podsetnik",
+          "Prilozi i ograničenja veličine",
+          "Originalna datoteka"
+        ],
+        [
+          "»Pošaljite nam nekad«",
+          "Bez jasnog odredišta",
+          "Gost mora kasnije da se seti",
+          "—"
+        ]
       ]
     },
     {
@@ -157,7 +187,7 @@
     {
       "type": "faq",
       "q": "Šta ako gost otpremi neprimerenu fotografiju?",
-      "a": "Uključite moderaciju — fotografije tada čekaju vašu potvrdu pre nego što postanu vidljive ostalima. Funkcija je uključena u Plus i Premium paket."
+      "a": "Uključite moderaciju — fotografije tada čekaju vašu potvrdu pre nego što postanu vidljive ostalima. Funkcija je uključena u Plus i Venčani premium paket."
     },
     {
       "type": "faq",

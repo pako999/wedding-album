@@ -86,7 +86,7 @@
       "items": [
         "La semana siguiente al evento, envía a los invitados un recordatorio de la galería.",
         "Descarga todas las fotos de la galería Guestcam (ZIP).",
-        "Combínalas con las del fotógrafo (Premium soporta también la subida directa del fotógrafo).",
+        "Combínalas con las del fotógrafo (Premium para bodas soporta también la subida directa del fotógrafo).",
         "Haz copia en un disco externo o en la nube.",
         "Pide el álbum de boda — Guestcam exporta un ZIP listo para imprimir."
       ]
@@ -117,7 +117,7 @@
     {
       "type": "faq",
       "q": "¿El fotógrafo y Guestcam funcionan juntos?",
-      "a": "Sí. El plan Premium permite que el fotógrafo suba todo su material en bruto a la misma galería (de acuerdo con la pareja). Todos los recuerdos en un lugar."
+      "a": "Sí. El plan Premium para bodas permite que el fotógrafo suba todo su material en bruto a la misma galería (de acuerdo con la pareja). Todos los recuerdos en un lugar."
     },
     {
       "type": "faq",

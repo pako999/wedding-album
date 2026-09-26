@@ -10,7 +10,7 @@ export const refundDoc: Record<LangCode, LegalDoc> = {
       "Želimo, da ste s storitvijo Guestcam popolnoma zadovoljni. Zato za prvi nakup paketa ponujamo 30-dnevno garancijo vračila denarja — brez zapletenih vprašanj. Ta politika pojasnjuje, kdaj in kako lahko zahtevate vračilo ter kako poteka postopek.",
     sections: [
       { title: "1. 30-dnevna garancija vračila denarja", blocks: [
-        { type: "p", text: "Za prvi nakup plačljivega paketa (Basic, Plus ali Premium) velja 30-dnevna garancija vračila denarja. Če v 30 dneh od nakupa niste zadovoljni, vam vrnemo celoten znesek." },
+        { type: "p", text: "Za prvi nakup plačljivega paketa (Basic, Plus ali Poročni premium) velja 30-dnevna garancija vračila denarja. Če v 30 dneh od nakupa niste zadovoljni, vam vrnemo celoten znesek." },
         { type: "callout", text: "Garancija velja za prvi nakup posameznega računa. Pri ponovnih nakupih ali nadgradnjah po preteku 30 dni se uporabljajo pravila iz spodnjih razdelkov." },
       ] },
       { title: "2. Pogoji za vračilo", blocks: [
@@ -69,7 +69,7 @@ export const refundDoc: Record<LangCode, LegalDoc> = {
       "Želimo da budete potpuno zadovoljni uslugom Guestcam. Zato za prvu kupnju paketa nudimo 30-dnevnu garanciju povrata novca — bez kompliciranih pitanja. Ova politika objašnjava kada i kako možete zatražiti povrat te kako teče postupak.",
     sections: [
       { title: "1. 30-dnevna garancija povrata novca", blocks: [
-        { type: "p", text: "Za prvu kupnju plaćenog paketa (Basic, Plus ili Premium) vrijedi 30-dnevna garancija povrata novca. Ako u roku od 30 dana od kupnje niste zadovoljni, vraćamo vam cijeli iznos." },
+        { type: "p", text: "Za prvu kupnju plaćenog paketa (Basic, Plus ili Vjenčani premium) vrijedi 30-dnevna garancija povrata novca. Ako u roku od 30 dana od kupnje niste zadovoljni, vraćamo vam cijeli iznos." },
         { type: "callout", text: "Garancija vrijedi za prvu kupnju pojedinog računa. Za ponovne kupnje ili nadogradnje nakon isteka 30 dana primjenjuju se pravila iz nastavka." },
       ] },
       { title: "2. Uvjeti za povrat", blocks: [
@@ -128,7 +128,7 @@ export const refundDoc: Record<LangCode, LegalDoc> = {
       "Želimo da budete potpuno zadovoljni uslugom Guestcam. Zato za prvu kupovinu paketa nudimo 30-dnevnu garanciju povraćaja novca — bez komplikovanih pitanja. Ova politika objašnjava kada i kako možete zatražiti povraćaj i kako teče postupak.",
     sections: [
       { title: "1. 30-dnevna garancija povraćaja novca", blocks: [
-        { type: "p", text: "Za prvu kupovinu plaćenog paketa (Basic, Plus ili Premium) važi 30-dnevna garancija povraćaja novca. Ako u roku od 30 dana od kupovine niste zadovoljni, vraćamo vam ceo iznos." },
+        { type: "p", text: "Za prvu kupovinu plaćenog paketa (Basic, Plus ili Venčani premium) važi 30-dnevna garancija povraćaja novca. Ako u roku od 30 dana od kupovine niste zadovoljni, vraćamo vam ceo iznos." },
         { type: "callout", text: "Garancija važi za prvu kupovinu pojedinačnog naloga. Za ponovne kupovine ili nadogradnje nakon isteka 30 dana primenjuju se pravila iz nastavka." },
       ] },
       { title: "2. Uslovi za povraćaj", blocks: [
@@ -187,7 +187,7 @@ export const refundDoc: Record<LangCode, LegalDoc> = {
       "Wir möchten, dass Sie mit Guestcam rundum zufrieden sind. Deshalb bieten wir für den ersten Paketkauf eine 30-tägige Geld-zurück-Garantie — ohne komplizierte Rückfragen. Diese Richtlinie erklärt, wann und wie Sie eine Rückerstattung beantragen können und wie der Ablauf ist.",
     sections: [
       { title: "1. 30-tägige Geld-zurück-Garantie", blocks: [
-        { type: "p", text: "Für den ersten Kauf eines kostenpflichtigen Pakets (Basic, Plus oder Premium) gilt eine 30-tägige Geld-zurück-Garantie. Wenn Sie innerhalb von 30 Tagen nach dem Kauf nicht zufrieden sind, erstatten wir Ihnen den vollen Betrag." },
+        { type: "p", text: "Für den ersten Kauf eines kostenpflichtigen Pakets (Basic, Plus oder Hochzeits-Premium) gilt eine 30-tägige Geld-zurück-Garantie. Wenn Sie innerhalb von 30 Tagen nach dem Kauf nicht zufrieden sind, erstatten wir Ihnen den vollen Betrag." },
         { type: "callout", text: "Die Garantie gilt für den ersten Kauf pro Konto. Für erneute Käufe oder Upgrades nach Ablauf der 30 Tage gelten die Regeln in den folgenden Abschnitten." },
       ] },
       { title: "2. Voraussetzungen für eine Rückerstattung", blocks: [
@@ -246,7 +246,7 @@ export const refundDoc: Record<LangCode, LegalDoc> = {
       "We want you to be completely happy with Guestcam. That's why we offer a 30-day money-back guarantee on your first plan purchase — no complicated questions. This policy explains when and how you can request a refund and how the process works.",
     sections: [
       { title: "1. 30-day money-back guarantee", blocks: [
-        { type: "p", text: "Your first purchase of a paid plan (Basic, Plus or Premium) is covered by a 30-day money-back guarantee. If you're not satisfied within 30 days of purchase, we'll refund the full amount." },
+        { type: "p", text: "Your first purchase of a paid plan (Basic, Plus or Wedding Premium) is covered by a 30-day money-back guarantee. If you're not satisfied within 30 days of purchase, we'll refund the full amount." },
         { type: "callout", text: "The guarantee applies to the first purchase per account. Repeat purchases or upgrades after the 30-day window are governed by the rules in the sections below." },
       ] },
       { title: "2. Eligibility", blocks: [
@@ -305,7 +305,7 @@ export const refundDoc: Record<LangCode, LegalDoc> = {
       "Queremos que estés completamente satisfecho con Guestcam. Por eso ofrecemos una garantía de devolución de 30 días en tu primera compra de un plan, sin preguntas complicadas. Esta política explica cuándo y cómo puedes solicitar un reembolso y cómo funciona el proceso.",
     sections: [
       { title: "1. Garantía de devolución de 30 días", blocks: [
-        { type: "p", text: "Tu primera compra de un plan de pago (Basic, Plus o Premium) está cubierta por una garantía de devolución de 30 días. Si no quedas satisfecho dentro de los 30 días posteriores a la compra, te devolvemos el importe íntegro." },
+        { type: "p", text: "Tu primera compra de un plan de pago (Basic, Plus o Premium para bodas) está cubierta por una garantía de devolución de 30 días. Si no quedas satisfecho dentro de los 30 días posteriores a la compra, te devolvemos el importe íntegro." },
         { type: "callout", text: "La garantía se aplica a la primera compra por cuenta. Las compras repetidas o las mejoras tras el plazo de 30 días se rigen por las reglas de los apartados siguientes." },
       ] },
       { title: "2. Requisitos para el reembolso", blocks: [

@@ -45,9 +45,9 @@ const COPY: Record<LangCode, ContactCopy> = {
     formCta: "Pošlji sporočilo",
     faqTitle: "Pogosta vprašanja",
     faqs: [
-      { q: "Kako hitro odgovorite na sporočilo?", a: "Običajno v nekaj urah med delavniki, najpozneje v 24 urah. Imetniki paketa Premium imajo prednostno podporo z odzivom pod 4 ure ob delavnikih." },
+      { q: "Kako hitro odgovorite na sporočilo?", a: "Običajno v nekaj urah med delavniki, najpozneje v 24 urah. Imetniki paketa Poročni premium imajo prednostno podporo z odzivom pod 4 ure ob delavnikih." },
       { q: "Lahko najprej preizkusim Guestcam?", a: "Da. Brezplačni paket omogoča testno galerijo do 20 fotografij za 30 dni — brez kreditne kartice, brez registracije gostov. Tako vidite, kako deluje, preden plačate." },
-      { q: "Kaj se zgodi, če imamo težave na sam dan poroke?", a: "Pišite nam na info@guestcam.si ali na WhatsApp — odzivamo se tudi ob koncu tedna. Premium paket vključuje 24/7 podporo na dan dogodka, ko šteje vsaka minuta." },
+      { q: "Kaj se zgodi, če imamo težave na sam dan poroke?", a: "Pišite nam na info@guestcam.si ali na WhatsApp — odzivamo se tudi ob koncu tedna. Poročni premium paket vključuje 24/7 podporo na dan dogodka, ko šteje vsaka minuta." },
       { q: "Imam težavo z nalaganjem fotografij — kaj zdaj?", a: "Najpogostejši vzrok je počasna mobilna povezava. Preverite, da ste povezani na WiFi, ali pa nam pišite — fotografije lahko po dogodku ročno dodamo iz vaše naprave." },
     ],
     company: {
@@ -79,9 +79,9 @@ const COPY: Record<LangCode, ContactCopy> = {
     formCta: "Pošalji poruku",
     faqTitle: "Često postavljana pitanja",
     faqs: [
-      { q: "Koliko brzo odgovarate na poruke?", a: "Obično u nekoliko sati radnim danima, najkasnije u 24 sata. Premium paket uključuje prioritetnu podršku s odzivom unutar 4 sata radnim danima." },
+      { q: "Koliko brzo odgovarate na poruke?", a: "Obično u nekoliko sati radnim danima, najkasnije u 24 sata. Vjenčani premium paket uključuje prioritetnu podršku s odzivom unutar 4 sata radnim danima." },
       { q: "Mogu li prvo isprobati Guestcam?", a: "Da. Besplatan paket omogućuje testnu galeriju do 20 fotografija na 30 dana — bez kreditne kartice, bez registracije gostiju. Tako vidite kako radi prije plaćanja." },
-      { q: "Što ako imamo problema na sam dan vjenčanja?", a: "Pišite nam na info@guestcam.si ili WhatsApp — odgovaramo i vikendom. Premium paket uključuje 24/7 podršku na dan događaja, kad svaka minuta broji." },
+      { q: "Što ako imamo problema na sam dan vjenčanja?", a: "Pišite nam na info@guestcam.si ili WhatsApp — odgovaramo i vikendom. Vjenčani premium paket uključuje 24/7 podršku na dan događaja, kad svaka minuta broji." },
       { q: "Imam problem s učitavanjem fotografija — što sada?", a: "Najčešći uzrok je spora mobilna veza. Provjerite jeste li spojeni na WiFi, ili nam pišite — fotografije možemo nakon događaja ručno dodati s vašeg uređaja." },
     ],
     company: {
@@ -113,9 +113,9 @@ const COPY: Record<LangCode, ContactCopy> = {
     formCta: "Pošalji poruku",
     faqTitle: "Najčešća pitanja",
     faqs: [
-      { q: "Koliko brzo odgovarate na poruke?", a: "Obično za nekoliko sati radnim danom, najkasnije u roku od 24 sata. Premium paket uključuje prioritetnu podršku sa odzivom u roku od 4 sata radnim danom." },
+      { q: "Koliko brzo odgovarate na poruke?", a: "Obično za nekoliko sati radnim danom, najkasnije u roku od 24 sata. Venčani premium paket uključuje prioritetnu podršku sa odzivom u roku od 4 sata radnim danom." },
       { q: "Mogu li prvo da isprobam Guestcam?", a: "Da. Besplatan paket omogućava testnu galeriju do 20 fotografija na 30 dana — bez kreditne kartice, bez registracije gostiju. Tako vidite kako radi pre plaćanja." },
-      { q: "Šta ako imamo problem na sam dan venčanja?", a: "Pišite nam na info@guestcam.si ili WhatsApp — odgovaramo i vikendom. Premium paket uključuje 24/7 podršku na dan događaja, kada svaki minut važi." },
+      { q: "Šta ako imamo problem na sam dan venčanja?", a: "Pišite nam na info@guestcam.si ili WhatsApp — odgovaramo i vikendom. Venčani premium paket uključuje 24/7 podršku na dan događaja, kada svaki minut važi." },
       { q: "Imam problem sa otpremanjem fotografija — šta sad?", a: "Najčešći uzrok je spora mobilna veza. Proverite da li ste povezani na WiFi, ili nam pišite — fotografije možemo posle događaja ručno dodati sa vašeg uređaja." },
     ],
     company: {
@@ -147,9 +147,9 @@ const COPY: Record<LangCode, ContactCopy> = {
     formCta: "Nachricht senden",
     faqTitle: "Häufige Fragen",
     faqs: [
-      { q: "Wie schnell antworten Sie auf Nachrichten?", a: "Meist innerhalb weniger Stunden an Werktagen, spätestens innerhalb von 24 Stunden. Premium-Kunden erhalten Priority-Support mit Antwort unter 4 Stunden an Werktagen." },
+      { q: "Wie schnell antworten Sie auf Nachrichten?", a: "Meist innerhalb weniger Stunden an Werktagen, spätestens innerhalb von 24 Stunden. Hochzeits-Premium-Kunden erhalten Priority-Support mit Antwort unter 4 Stunden an Werktagen." },
       { q: "Kann ich Guestcam zuerst testen?", a: "Ja. Das kostenlose Paket bietet eine Testgalerie mit bis zu 20 Fotos für 30 Tage — ohne Kreditkarte, ohne Gäste-Registrierung. So sehen Sie, wie es funktioniert, bevor Sie zahlen." },
-      { q: "Was, wenn am Hochzeitstag Probleme auftreten?", a: "Schreiben Sie an info@guestcam.si oder per WhatsApp — wir antworten auch am Wochenende. Das Premium-Paket beinhaltet 24/7-Support am Veranstaltungstag, wenn jede Minute zählt." },
+      { q: "Was, wenn am Hochzeitstag Probleme auftreten?", a: "Schreiben Sie an info@guestcam.si oder per WhatsApp — wir antworten auch am Wochenende. Das Hochzeits-Premium-Paket beinhaltet 24/7-Support am Veranstaltungstag, wenn jede Minute zählt." },
       { q: "Ich habe Probleme beim Hochladen von Fotos — was nun?", a: "Häufigste Ursache ist eine langsame Mobilverbindung. Prüfen Sie, ob Sie mit WLAN verbunden sind, oder schreiben Sie uns — wir können Fotos nach der Veranstaltung manuell von Ihrem Gerät einspielen." },
     ],
     company: {
@@ -181,9 +181,9 @@ const COPY: Record<LangCode, ContactCopy> = {
     formCta: "Send message",
     faqTitle: "FAQ",
     faqs: [
-      { q: "How fast do you reply to messages?", a: "Usually within a few hours on weekdays, no later than 24 hours. Premium customers get priority support with under-4h response on weekdays." },
+      { q: "How fast do you reply to messages?", a: "Usually within a few hours on weekdays, no later than 24 hours. Wedding Premium customers get priority support with under-4h response on weekdays." },
       { q: "Can I try Guestcam first?", a: "Yes. The free plan gives you a test gallery of up to 20 photos for 30 days — no credit card, no guest sign-up. See how it works before you pay." },
-      { q: "What if something goes wrong on the wedding day itself?", a: "Email info@guestcam.si or message us on WhatsApp — we reply on weekends too. The Premium plan includes 24/7 event-day support when every minute counts." },
+      { q: "What if something goes wrong on the wedding day itself?", a: "Email info@guestcam.si or message us on WhatsApp — we reply on weekends too. The Wedding Premium plan includes 24/7 event-day support when every minute counts." },
       { q: "I'm having trouble uploading photos — what now?", a: "The most common cause is slow mobile data. Check you're on WiFi, or message us — we can manually add photos from your device after the event." },
     ],
     company: {
@@ -215,9 +215,9 @@ const COPY: Record<LangCode, ContactCopy> = {
     formCta: "Enviar mensaje",
     faqTitle: "Preguntas frecuentes",
     faqs: [
-      { q: "¿Con qué rapidez respondéis a los mensajes?", a: "Normalmente en pocas horas entre semana, como máximo en 24 horas. Los clientes Premium reciben soporte prioritario con respuesta en menos de 4 horas en días laborables." },
+      { q: "¿Con qué rapidez respondéis a los mensajes?", a: "Normalmente en pocas horas entre semana, como máximo en 24 horas. Los clientes Premium para bodas reciben soporte prioritario con respuesta en menos de 4 horas en días laborables." },
       { q: "¿Puedo probar Guestcam primero?", a: "Sí. El plan gratuito incluye una galería de prueba de hasta 20 fotos durante 30 días — sin tarjeta de crédito, sin registro de invitados. Comprueba cómo funciona antes de pagar." },
-      { q: "¿Y si algo va mal el día de la boda?", a: "Escríbenos a info@guestcam.si o por WhatsApp — respondemos también los fines de semana. El plan Premium incluye soporte 24/7 el día del evento, cuando cada minuto cuenta." },
+      { q: "¿Y si algo va mal el día de la boda?", a: "Escríbenos a info@guestcam.si o por WhatsApp — respondemos también los fines de semana. El plan Premium para bodas incluye soporte 24/7 el día del evento, cuando cada minuto cuenta." },
       { q: "Tengo problemas para subir fotos — ¿qué hago?", a: "La causa más común es una conexión móvil lenta. Comprueba que estés en WiFi, o escríbenos — podemos añadir manualmente las fotos desde tu dispositivo después del evento." },
     ],
     company: {

@@ -1,3 +1,5 @@
+import { weddingCopy } from "@/lib/wedding/copy";
+import { WEDDING_PATHS } from "@/lib/wedding/contracts";
 import Link from "next/link";
 import { auth } from "@clerk/nextjs/server";
 import { GuestcamLogo } from "@/components/GuestcamLogo";
@@ -70,6 +72,7 @@ export async function SiteHeader({
         </Link>
 
         <div className="flex items-center gap-3 sm:gap-5">
+          <Link href={localePublicPath(lang, WEDDING_PATHS[lang])} className="hidden text-sm font-semibold text-gray-700 lg:inline">{weddingCopy(lang).nav}</Link>
           <LanguageSwitcher current={lang} languages={hreflang} ariaLabel={copy.switcherAria} />
           <Link
             href={resolvedHome}

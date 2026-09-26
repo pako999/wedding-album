@@ -1,3 +1,4 @@
+import { weddingEnabled } from "@/lib/wedding/server";
 import { notFound } from "next/navigation";
 import { headers } from "next/headers";
 import { cache } from "react";
@@ -224,6 +225,7 @@ export default async function AlbumPage({ params, searchParams }: Props) {
         passwordRequired={passwordRequired}
         passwordCorrect={passwordCorrect}
         initialLang={lang}
+        weddingEnabled={passwordCorrect && await weddingEnabled(album)}
         renderedAt={renderedAt}
         isOwner={isOwner}
         requireGuestData={requireEventGuestData}

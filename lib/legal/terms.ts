@@ -15,7 +15,7 @@ export const termsDoc: Record<LangCode, LegalDoc> = {
           "Ustvarjanje zasebne galerije z unikatno QR kodo.",
           "Shranjevanje fotografij in videoposnetkov v polni kakovosti.",
           "Prenos vsebine galerije (ZIP).",
-          "Generiranje video filma iz fotografij (Premium dodatek).",
+          "Generiranje video filma iz fotografij (Poročni premium dodatek).",
           "Personalizacijo galerije in tiskovin (predloge).",
         ] },
       ] },
@@ -30,12 +30,12 @@ export const termsDoc: Record<LangCode, LegalDoc> = {
         { type: "p", text: "Vse fotografije in videoposnetki ostanejo last organizatorja in oseb, ki so jih naložile. Guestcam vsebine ne uporablja za oglaševanje, AI treninge ali javno objavo. Storitev nima pravice do uporabe vaše vsebine v marketinške ali komercialne namene." },
       ] },
       { title: "4. Paketi in omejitve", blocks: [
-        { type: "p", text: "Storitev je na voljo v štirih paketih (Brezplačni, Basic, Plus, Premium) z različnimi omejitvami glede števila fotografij, časa hrambe in funkcionalnosti. Trenutne omejitve so vedno navedene na strani s ceniki." },
+        { type: "p", text: "Storitev je na voljo v štirih paketih (Brezplačni, Basic, Plus, Poročni premium) z različnimi omejitvami glede števila fotografij, časa hrambe in funkcionalnosti. Trenutne omejitve so vedno navedene na strani s ceniki." },
         { type: "ul", items: [
           "Brezplačni paket — testna galerija do 20 fotografij za 30 dni.",
           "Basic paket — do 1000 fotografij, dostop 3 mesece.",
           "Plus paket — do 500 fotografij in 100 videov, dostop 1 leto, Live galerija.",
-          "Premium paket — neomejene fotografije, Film Studio, prednostna podpora.",
+          "Poročni premium paket — neomejene fotografije, Film Studio, prednostna podpora.",
         ] },
       ] },
       { title: "5. Plačila in vračila", blocks: [
@@ -86,7 +86,7 @@ export const termsDoc: Record<LangCode, LegalDoc> = {
           "Kreiranje privatne galerije s jedinstvenim QR kodom.",
           "Pohranu fotografija i videozapisa u punoj kvaliteti.",
           "Preuzimanje sadržaja galerije (ZIP).",
-          "Generiranje video filma iz fotografija (Premium dodatak).",
+          "Generiranje video filma iz fotografija (Vjenčani premium dodatak).",
           "Personalizaciju galerije i materijala za ispis (predlošci).",
         ] },
       ] },
@@ -101,12 +101,12 @@ export const termsDoc: Record<LangCode, LegalDoc> = {
         { type: "p", text: "Sve fotografije i videozapisi ostaju vlasništvo organizatora i osoba koje su ih učitale. Guestcam sadržaj ne koristi za oglašavanje, treniranje AI-a ni javnu objavu. Usluga nema pravo koristiti vaš sadržaj u marketinške ili komercijalne svrhe." },
       ] },
       { title: "4. Paketi i ograničenja", blocks: [
-        { type: "p", text: "Usluga je dostupna u četiri paketa (Besplatan, Basic, Plus, Premium) s različitim ograničenjima broja fotografija, vremena pohrane i funkcionalnosti. Aktualna ograničenja uvijek su navedena na stranici s cijenama." },
+        { type: "p", text: "Usluga je dostupna u četiri paketa (Besplatan, Basic, Plus, Vjenčani premium) s različitim ograničenjima broja fotografija, vremena pohrane i funkcionalnosti. Aktualna ograničenja uvijek su navedena na stranici s cijenama." },
         { type: "ul", items: [
           "Besplatan paket — testna galerija do 20 fotografija na 30 dana.",
           "Basic paket — do 1000 fotografija, pristup 3 mjeseca.",
           "Plus paket — do 500 fotografija i 100 videozapisa, pristup 1 godina, Live galerija.",
-          "Premium paket — neograničene fotografije, Film Studio, prioritetna podrška.",
+          "Vjenčani premium paket — neograničene fotografije, Film Studio, prioritetna podrška.",
         ] },
       ] },
       { title: "5. Plaćanja i povrati", blocks: [
@@ -157,7 +157,7 @@ export const termsDoc: Record<LangCode, LegalDoc> = {
           "Kreiranje privatne galerije sa jedinstvenim QR kodom.",
           "Čuvanje fotografija i video zapisa u punoj kvaliteti.",
           "Preuzimanje sadržaja galerije (ZIP).",
-          "Generisanje video filma iz fotografija (Premium dodatak).",
+          "Generisanje video filma iz fotografija (Venčani premium dodatak).",
           "Personalizaciju galerije i materijala za štampu (šabloni).",
         ] },
       ] },
@@ -172,12 +172,12 @@ export const termsDoc: Record<LangCode, LegalDoc> = {
         { type: "p", text: "Sve fotografije i video zapisi ostaju vlasništvo organizatora i lica koja su ih otpremila. Guestcam sadržaj ne koristi za reklamiranje, treniranje AI-a ili javno objavljivanje. Usluga nema pravo da koristi vaš sadržaj u marketinške ili komercijalne svrhe." },
       ] },
       { title: "4. Paketi i ograničenja", blocks: [
-        { type: "p", text: "Usluga je dostupna u četiri paketa (Besplatan, Basic, Plus, Premium) sa različitim ograničenjima broja fotografija, vremena čuvanja i funkcionalnosti. Aktuelna ograničenja uvek su navedena na stranici sa cenama." },
+        { type: "p", text: "Usluga je dostupna u četiri paketa (Besplatan, Basic, Plus, Venčani premium) sa različitim ograničenjima broja fotografija, vremena čuvanja i funkcionalnosti. Aktuelna ograničenja uvek su navedena na stranici sa cenama." },
         { type: "ul", items: [
           "Besplatan paket — testna galerija do 20 fotografija na 30 dana.",
           "Basic paket — do 1000 fotografija, pristup 3 meseca.",
           "Plus paket — do 500 fotografija i 100 video zapisa, pristup 1 godina, Live galerija.",
-          "Premium paket — neograničene fotografije, Film Studio, prioritetna podrška.",
+          "Venčani premium paket — neograničene fotografije, Film Studio, prioritetna podrška.",
         ] },
       ] },
       { title: "5. Plaćanja i povraćaji", blocks: [
@@ -228,7 +228,7 @@ export const termsDoc: Record<LangCode, LegalDoc> = {
           "Erstellung einer privaten Galerie mit eindeutigem QR-Code.",
           "Speicherung von Fotos und Videos in voller Qualität.",
           "Download des Galerie-Inhalts (ZIP).",
-          "Erstellung eines Videofilms aus Fotos (Premium-Erweiterung).",
+          "Erstellung eines Videofilms aus Fotos (Hochzeits-Premium-Erweiterung).",
           "Personalisierung der Galerie und Druckmaterialien (Vorlagen).",
         ] },
       ] },
@@ -243,12 +243,12 @@ export const termsDoc: Record<LangCode, LegalDoc> = {
         { type: "p", text: "Alle Fotos und Videos bleiben Eigentum des Organisators und der Personen, die sie hochgeladen haben. Guestcam nutzt Inhalte weder für Werbung, KI-Training noch zur öffentlichen Veröffentlichung. Der Dienst hat kein Recht, Ihre Inhalte zu Marketing- oder kommerziellen Zwecken zu verwenden." },
       ] },
       { title: "4. Pakete und Beschränkungen", blocks: [
-        { type: "p", text: "Der Dienst ist in vier Paketen erhältlich (Kostenlos, Basic, Plus, Premium) mit unterschiedlichen Beschränkungen für Fotoanzahl, Aufbewahrungszeit und Funktionen. Aktuelle Beschränkungen sind jederzeit auf der Preisseite angegeben." },
+        { type: "p", text: "Der Dienst ist in vier Paketen erhältlich (Kostenlos, Basic, Plus, Hochzeits-Premium) mit unterschiedlichen Beschränkungen für Fotoanzahl, Aufbewahrungszeit und Funktionen. Aktuelle Beschränkungen sind jederzeit auf der Preisseite angegeben." },
         { type: "ul", items: [
           "Kostenlos — Testgalerie bis zu 20 Fotos für 30 Tage.",
           "Basic — bis zu 1000 Fotos, Zugriff 3 Monate.",
           "Plus — bis zu 500 Fotos und 100 Videos, Zugriff 1 Jahr, Live-Galerie.",
-          "Premium — unbegrenzte Fotos, Film Studio, Priority-Support.",
+          "Hochzeits-Premium — unbegrenzte Fotos, Film Studio, Priority-Support.",
         ] },
       ] },
       { title: "5. Zahlungen und Rückerstattungen", blocks: [
@@ -299,7 +299,7 @@ export const termsDoc: Record<LangCode, LegalDoc> = {
           "Creating a private gallery with a unique QR code.",
           "Storing photos and videos in full quality.",
           "Downloading gallery content (ZIP).",
-          "Generating a video film from photos (Premium add-on).",
+          "Generating a video film from photos (Wedding Premium add-on).",
           "Personalising the gallery and print materials (templates).",
         ] },
       ] },
@@ -314,12 +314,12 @@ export const termsDoc: Record<LangCode, LegalDoc> = {
         { type: "p", text: "All photos and videos remain the property of the organiser and the persons who uploaded them. Guestcam does not use content for advertising, AI training or public posting. The service has no right to use your content for marketing or commercial purposes." },
       ] },
       { title: "4. Plans and limits", blocks: [
-        { type: "p", text: "The service is available in four plans (Free, Basic, Plus, Premium) with different limits on photo count, retention period and features. Current limits are always shown on the pricing page." },
+        { type: "p", text: "The service is available in four plans (Free, Basic, Plus, Wedding Premium) with different limits on photo count, retention period and features. Current limits are always shown on the pricing page." },
         { type: "ul", items: [
           "Free — test gallery up to 20 photos for 30 days.",
           "Basic — up to 1000 photos, 3 months access.",
           "Plus — up to 500 photos and 100 videos, 1 year access, Live gallery.",
-          "Premium — unlimited photos, Film Studio, priority support.",
+          "Wedding Premium — unlimited photos, Film Studio, priority support.",
         ] },
       ] },
       { title: "5. Payments and refunds", blocks: [
@@ -370,7 +370,7 @@ export const termsDoc: Record<LangCode, LegalDoc> = {
           "Creación de una galería privada con código QR único.",
           "Almacenamiento de fotos y vídeos en calidad completa.",
           "Descarga del contenido de la galería (ZIP).",
-          "Generación de un vídeo a partir de las fotos (extra Premium).",
+          "Generación de un vídeo a partir de las fotos (extra Premium para bodas).",
           "Personalización de la galería y materiales impresos (plantillas).",
         ] },
       ] },
@@ -385,12 +385,12 @@ export const termsDoc: Record<LangCode, LegalDoc> = {
         { type: "p", text: "Todas las fotos y vídeos siguen siendo propiedad del organizador y de las personas que los subieron. Guestcam no utiliza el contenido para publicidad, entrenamiento de IA ni publicación pública. El servicio no tiene derecho a utilizar tu contenido con fines de marketing o comerciales." },
       ] },
       { title: "4. Planes y límites", blocks: [
-        { type: "p", text: "El servicio está disponible en cuatro planes (Gratuito, Basic, Plus, Premium) con distintos límites de número de fotos, tiempo de almacenamiento y funcionalidades. Los límites actuales se muestran siempre en la página de precios." },
+        { type: "p", text: "El servicio está disponible en cuatro planes (Gratuito, Basic, Plus, Premium para bodas) con distintos límites de número de fotos, tiempo de almacenamiento y funcionalidades. Los límites actuales se muestran siempre en la página de precios." },
         { type: "ul", items: [
           "Gratuito — galería de prueba hasta 20 fotos durante 30 días.",
           "Basic — hasta 1000 fotos, acceso 3 meses.",
           "Plus — hasta 500 fotos y 100 vídeos, acceso 1 año, galería en directo.",
-          "Premium — fotos ilimitadas, Film Studio, soporte prioritario.",
+          "Premium para bodas — fotos ilimitadas, Film Studio, soporte prioritario.",
         ] },
       ] },
       { title: "5. Pagos y reembolsos", blocks: [

@@ -1124,10 +1124,10 @@ requireAbsent(
 );
 
 requireMatch(
-  "homepage video is rendered directly after the hero",
+  "homepage uses the responsive video-led hero",
   files.homeComponent,
-  /<\/section>\s*<PromoVideo\s*\/>\s*<section className="border-y border-black\/10 bg-white"/,
-  "the promo video must stay in the React tree immediately after the hero section",
+  /<HomeWeddingHero[\s\S]*?<section className="border-y border-black\/10 bg-white"/,
+  "the responsive video must remain in the React hero, without DOM reparenting",
 );
 
 requireAbsent(
@@ -1301,7 +1301,7 @@ requireMatch(
 requireMatch(
   "homepage sitemap date reflects the latest meaningful edit",
   files.sitemap,
-  /homepage:\s*"2026-08-30"/,
+  /homepage:\s*"2026-09-26"/,
   "do not leave the homepage lastmod stale after a meaningful homepage update",
 );
 

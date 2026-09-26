@@ -33,7 +33,7 @@ const jsonLd = {
         { "@type": "Offer", name: "Free", price: "0", priceCurrency: "EUR" },
         { "@type": "Offer", name: "Basic", price: "39", priceCurrency: "EUR" },
         { "@type": "Offer", name: "Plus", price: "49", priceCurrency: "EUR" },
-        { "@type": "Offer", name: "Premium", price: "99", priceCurrency: "EUR" },
+        { "@type": "Offer", name: "Poročni premium", price: "99", priceCurrency: "EUR" },
       ],
     },
     {

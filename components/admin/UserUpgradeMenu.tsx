@@ -9,7 +9,7 @@ const PLANS: { key: AdminPlan; label: string }[] = [
   { key: "free",       label: "Free" },
   { key: "basic",      label: "Basic" },
   { key: "plus",       label: "Plus" },
-  { key: "premium",    label: "Premium" },
+  { key: "premium",    label: "Poročni premium" },
   { key: "influencer", label: "🎤 Influencer" },
   { key: "sponsor",    label: "🤝 Sponsor" },
 ];

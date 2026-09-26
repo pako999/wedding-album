@@ -194,7 +194,7 @@
     },
     {
       "type": "p",
-      "text": "La galería sigue siendo privada y solo accesible para ti y para los invitados que tengan el código QR. Puedes descargar todas las fotos en resolución original: Guestcam no comprime ni modifica las imágenes. El plan Premium incluye:"
+      "text": "La galería sigue siendo privada y solo accesible para ti y para los invitados que tengan el código QR. Puedes descargar todas las fotos en resolución original: Guestcam no comprime ni modifica las imágenes. El plan Premium para bodas incluye:"
     },
     {
       "type": "ul",
@@ -228,7 +228,7 @@
     {
       "type": "faq",
       "q": "¿Cuántas fotos puedo recoger?",
-      "a": "El plan gratuito admite hasta 20 fotos. Premium no tiene límite, que es lo que necesitas en una boda de más de 100 invitados."
+      "a": "El plan gratuito admite hasta 20 fotos. Premium para bodas no tiene límite, que es lo que necesitas en una boda de más de 100 invitados."
     },
     {
       "type": "faq",
@@ -238,7 +238,7 @@
     {
       "type": "faq",
       "q": "¿Puedo ver quién sube fotos?",
-      "a": "Ves cada foto en cuanto llega. Premium añade moderación: puedes aprobar u ocultar cualquier foto antes de que la vean el resto de invitados."
+      "a": "Ves cada foto en cuanto llega. Premium para bodas añade moderación: puedes aprobar u ocultar cualquier foto antes de que la vean el resto de invitados."
     },
     {
       "type": "faq",
@@ -248,7 +248,7 @@
     {
       "type": "faq",
       "q": "¿Cómo descargo todas las fotos de los invitados?",
-      "a": "Con Premium, un clic te da un archivo ZIP con todas las fotos en resolución original y con los metadatos intactos (fecha, hora, dispositivo)."
+      "a": "Con Premium para bodas, un clic te da un archivo ZIP con todas las fotos en resolución original y con los metadatos intactos (fecha, hora, dispositivo)."
     }
   ]
 }

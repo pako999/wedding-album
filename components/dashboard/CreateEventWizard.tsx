@@ -1,4 +1,5 @@
 "use client";
+import { weddingCopy } from "@/lib/wedding/copy";
 
 import { useState, useTransition, type ReactNode } from "react";
 import { createAlbum } from "@/app/actions/create-album";
@@ -321,13 +322,13 @@ export function CreateEventWizard({ initialPlan, lang = "sl" }: { initialPlan?: 
           {initialPlan ? (
             <p className="text-gray-500 leading-relaxed">
               Galerija se ustvari z izbranim paketom{" "}
-              <strong className="text-[#0F1729]">{{ basic: "Basic", plus: "Plus", premium: "Premium" }[initialPlan]}</strong>.
+              <strong className="text-[#0F1729]">{{ basic: "Basic", plus: "Plus", premium: weddingCopy(lang).plan }[initialPlan]}</strong>.
               Plačilo varno opravite v naslednjem koraku.
             </p>
           ) : (
             <p className="text-gray-500 leading-relaxed">
               Galerija se ustvari z <strong className="text-[#0F1729]">brezplačnim</strong> paketom (do 20 fotografij).
-              Nadgradnjo na Plus ali Premium lahko opravite kadarkoli.
+              Nadgradnjo na Plus ali {weddingCopy(lang).plan} lahko opravite kadarkoli.
             </p>
           )}
         </div>

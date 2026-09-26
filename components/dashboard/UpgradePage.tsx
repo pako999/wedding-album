@@ -1,4 +1,5 @@
 "use client";
+import { weddingCopy } from "@/lib/wedding/copy";
 
 import { useState } from "react";
 import { useSearchParams } from "next/navigation";
@@ -46,6 +47,8 @@ interface Props {
 export function UpgradePage({ album, lang = "sl", initialDiscount = null }: Props) {
   const t = translations[lang];
   const u = UPGRADE_COPY[lang];
+  const wedding = weddingCopy(lang);
+  const plans = PLANS.map(plan => plan.id === "premium" ? {...plan, name: wedding.plan} : plan);
 
   // Localised tagline lookup, keyed by plan id → UPGRADE_COPY key.
   const planTagline = (id: PlanId): string => {
@@ -102,7 +105,7 @@ export function UpgradePage({ album, lang = "sl", initialDiscount = null }: Prop
   const [discountPercent, setDiscountPercent] = useState<number>(initialDiscount?.percentOff ?? 0);
   const [appliedCode, setAppliedCode] = useState<string>(initialDiscount?.code ?? "");
 
-  const chosen = PLANS.find((p) => p.id === selectedPlan)!;
+  const chosen = plans.find((p) => p.id === selectedPlan)!;
 
   // Discount codes apply to every paid package, so changing the selected
   // package must not silently remove a valid emailed offer.
@@ -220,7 +223,7 @@ export function UpgradePage({ album, lang = "sl", initialDiscount = null }: Prop
 
           {/* ── Plan cards ────────────────────────────────────────────── */}
           <div className="grid grid-cols-1 gap-3 mb-6">
-            {PLANS.map((plan) => {
+            {plans.map((plan) => {
               const isSelected = selectedPlan === plan.id;
               const features = PLAN_FEATURE_KEYS[plan.id as "basic" | "plus" | "premium"];
               const canCollapse = features.length > 6;
@@ -274,6 +277,7 @@ export function UpgradePage({ album, lang = "sl", initialDiscount = null }: Prop
 
                   {isSelected && plan.id !== "free" && (
                     <div className="px-5 pb-5">
+                      {plan.id === "premium" && <div className="mb-4 grid gap-2 rounded-xl bg-amber-50 p-4 text-sm font-semibold text-stone-800">{[wedding.schedule,wedding.menu,wedding.songs,wedding.bingo].map(label => <p key={label}>✓ {label}</p>)}</div>}
                       <ul className="border-t border-gray-100 pt-4 space-y-2.5">
                         {visibleFeatures.map((fk) => (
                           <li key={fk} className="flex items-start gap-3 text-[17px] leading-6 font-medium text-gray-700">

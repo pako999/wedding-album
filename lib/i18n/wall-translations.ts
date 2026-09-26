@@ -27,7 +27,7 @@ export const WALL_COPY: Record<Lang, WallCopy> = {
     justShared: "Pravkar deljeno",
     sponsor: "Sponzor",
     passwordNeeded: "Ta galerija je zaščitena z geslom. Odprite povezavo za steno neposredno iz nadzorne plošče.",
-    premiumOnly: "Predogled — Foto stena je na voljo v paketu Premium",
+    premiumOnly: "Predogled — Foto stena je na voljo v paketu Poročni premium",
   },
   hr: {
     emptyPrompt: "Skenirajte i podijelite prve fotografije",
@@ -35,7 +35,7 @@ export const WALL_COPY: Record<Lang, WallCopy> = {
     justShared: "Upravo podijeljeno",
     sponsor: "Sponzor",
     passwordNeeded: "Ova galerija zaštićena je lozinkom. Otvorite poveznicu za zid izravno s nadzorne ploče.",
-    premiumOnly: "Pregled — Foto zid dostupan je u paketu Premium",
+    premiumOnly: "Pregled — Foto zid dostupan je u paketu Vjenčani premium",
   },
   sr: {
     emptyPrompt: "Skenirajte i podelite prve fotografije",
@@ -43,7 +43,7 @@ export const WALL_COPY: Record<Lang, WallCopy> = {
     justShared: "Upravo podeljeno",
     sponsor: "Sponzor",
     passwordNeeded: "Ova galerija je zaštićena lozinkom. Otvorite link za zid direktno sa kontrolne table.",
-    premiumOnly: "Pregled — Foto zid je dostupan u paketu Premium",
+    premiumOnly: "Pregled — Foto zid je dostupan u paketu Venčani premium",
   },
   de: {
     emptyPrompt: "Scannen und die ersten Fotos teilen",
@@ -51,7 +51,7 @@ export const WALL_COPY: Record<Lang, WallCopy> = {
     justShared: "Gerade geteilt",
     sponsor: "Sponsor",
     passwordNeeded: "Diese Galerie ist passwortgeschützt. Öffnen Sie den Wall-Link direkt aus Ihrer Übersicht.",
-    premiumOnly: "Vorschau — die Foto-Wall ist im Premium-Paket enthalten",
+    premiumOnly: "Vorschau — die Foto-Wall ist im Hochzeits-Premium-Paket enthalten",
   },
   en: {
     emptyPrompt: "Scan and share the first photos",
@@ -59,7 +59,7 @@ export const WALL_COPY: Record<Lang, WallCopy> = {
     justShared: "Just shared",
     sponsor: "Sponsor",
     passwordNeeded: "This gallery is password protected. Open the wall link directly from your dashboard.",
-    premiumOnly: "Preview — the Photo Wall is available on the Premium plan",
+    premiumOnly: "Preview — the Photo Wall is available on the Wedding Premium plan",
   },
   es: {
     emptyPrompt: "Escanea y comparte las primeras fotos",
@@ -67,6 +67,6 @@ export const WALL_COPY: Record<Lang, WallCopy> = {
     justShared: "Recién compartida",
     sponsor: "Patrocinador",
     passwordNeeded: "Esta galería está protegida con contraseña. Abre el enlace del muro desde tu panel.",
-    premiumOnly: "Vista previa — el Muro de Fotos está disponible en el plan Premium",
+    premiumOnly: "Vista previa — el Muro de Fotos está disponible en el plan Premium para bodas",
   },
 };

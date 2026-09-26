@@ -202,7 +202,7 @@ export default async function AlbumAdminPage({ params, searchParams }: Props) {
       photos={albumPhotos}
       pendingCount={pendingCount}
       guestCount={guestCount}
-      activeTab={tab as "overview" | "gallery" | "qr" | "events" | "settings" | "pending" | "film"}
+      activeTab={tab as "wedding" | "overview" | "gallery" | "qr" | "events" | "settings" | "pending" | "film"}
       isNew={isNew}
       isUpgraded={isUpgraded && album?.plan !== "free"}
       paidAmount={paidAmount}

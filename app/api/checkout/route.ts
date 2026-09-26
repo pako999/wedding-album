@@ -1,3 +1,4 @@
+import { weddingCopy } from "@/lib/wedding/copy";
 import { NextRequest, NextResponse } from "next/server";
 import {
   addOnTotalCents, quoteShipping, standsPriceCents,
@@ -90,7 +91,7 @@ export async function POST(req: NextRequest) {
     normalizeCheckoutLang(album.defaultLang) ??
     "sl";
 
-  const plan = PLAN_CONFIG[planId];
+  const plan = {...PLAN_CONFIG[planId], ...(planId === "premium" ? {name: `Guestcam ${weddingCopy(checkoutLang).plan}`} : {})};
   let baseCents = plan.amount;
   let discountCodeId: string | undefined;
   // Pull the referral code from the cookie. May be overridden below if

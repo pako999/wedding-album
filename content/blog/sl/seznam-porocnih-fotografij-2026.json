@@ -86,7 +86,7 @@
       "items": [
         "V tednu po dogodku pošljite gostom opomnik o galeriji.",
         "Prenesite vse fotografije iz Guestcam galerije (ZIP).",
-        "Združite s fotografi (Premium paket podpira tudi neposredno nalaganje fotografa).",
+        "Združite s fotografi (Poročni premium paket podpira tudi neposredno nalaganje fotografa).",
         "Naredite varnostno kopijo na zunanjem disku ali oblaku.",
         "Naročite poročni album — Guestcam exportira ZIP, pripravljen za tisk."
       ]
@@ -117,7 +117,7 @@
     {
       "type": "faq",
       "q": "Ali fotograf in Guestcam delujeta skupaj?",
-      "a": "Da. Premium paket omogoča fotografu, da naloži vse svoje surove posnetke v isto galerijo (po dogovoru s parom). Vse spomine imate na enem mestu."
+      "a": "Da. Poročni premium paket omogoča fotografu, da naloži vse svoje surove posnetke v isto galerijo (po dogovoru s parom). Vse spomine imate na enem mestu."
     },
     {
       "type": "faq",

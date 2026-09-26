@@ -194,7 +194,7 @@
     },
     {
       "type": "p",
-      "text": "Galerija ostane zasebna in dostopna samo vam in gostom, ki imajo QR kodo. Vse fotografije lahko prenesete v originalni ločljivosti — Guestcam slik ne stiska in ne spreminja. Premium paket vključuje:"
+      "text": "Galerija ostane zasebna in dostopna samo vam in gostom, ki imajo QR kodo. Vse fotografije lahko prenesete v originalni ločljivosti — Guestcam slik ne stiska in ne spreminja. Poročni premium paket vključuje:"
     },
     {
       "type": "ul",
@@ -228,7 +228,7 @@
     {
       "type": "faq",
       "q": "Koliko fotografij lahko zberem?",
-      "a": "Brezplačni paket podpira do 20 fotografij. Premium paket nima omejitev — idealen za poroke s 100+ gosti."
+      "a": "Brezplačni paket podpira do 20 fotografij. Poročni premium paket nima omejitev — idealen za poroke s 100+ gosti."
     },
     {
       "type": "faq",
@@ -238,7 +238,7 @@
     {
       "type": "faq",
       "q": "Ali lahko spremljam, kdo nalaga fotografije?",
-      "a": "Vse fotografije vidite takoj, ko so naložene. V paketu Premium imate tudi moderacijo — vsako fotografijo lahko odobrite ali skrijete, preden postane vidna drugim gostom."
+      "a": "Vse fotografije vidite takoj, ko so naložene. V paketu Poročni premium imate tudi moderacijo — vsako fotografijo lahko odobrite ali skrijete, preden postane vidna drugim gostom."
     },
     {
       "type": "faq",
@@ -248,7 +248,7 @@
     {
       "type": "faq",
       "q": "Kako prenesem vse fotografije gostov?",
-      "a": "V paketu Premium z enim klikom prenesete ZIP arhiv z vsemi fotografijami v originalni ločljivosti in z originalnimi metapodatki (datum, ura, naprava)."
+      "a": "V paketu Poročni premium z enim klikom prenesete ZIP arhiv z vsemi fotografijami v originalni ločljivosti in z originalnimi metapodatki (datum, ura, naprava)."
     }
   ]
 }
