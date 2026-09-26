@@ -26,15 +26,16 @@ jobs:
         with:
           node-version: '22'
           cache: npm
-      - name: Apply final verified copy only when present
+      - name: Restore original homepage and retain wedding pricing only
         run: |
-          if test -f .upgrade/final-copy.py; then
-            python3 .upgrade/final-copy.py
+          if test -f .upgrade/restore-homepage.py; then
+            git fetch --depth=1 origin d74edbc224e193f5beb8d7057f35c0248f1d904f
+            python3 .upgrade/restore-homepage.py
             git config user.name 'Patrik'
             git config user.email '125508378+pako999@users.noreply.github.com'
-            git add app components lib scripts
-            git rm -r .upgrade
-            git commit -m 'fix: complete wedding package naming across all supported locales'
+            git add components/GuestcamHomePage.tsx components/LocalizedGuestcamHomePageV3.tsx scripts/regression-check.mjs docs/wedding-premium-20260926.md
+            git rm .upgrade/restore-homepage.py
+            git commit -m 'fix: preserve original GuestCam homepages and limit wedding upgrade to pricing'
             git push origin HEAD:feat/guestcam-wedding-premium-20260926
           fi
       - name: Locked application dependencies and type check
@@ -60,17 +61,22 @@ jobs:
           mkdir -p node_modules/@playwright
           ln -s "$RUNNER_TEMP/wedding-playwright/node_modules/@playwright/test" node_modules/@playwright/test
           "$RUNNER_TEMP/wedding-playwright/node_modules/.bin/playwright" install --with-deps chromium
-      - name: Browser interactions and screenshots
+      - name: Original homepage and wedding page browser verification
+        run: node scripts/homepage-scope-browser.mjs > homepage-browser.log 2>&1
+      - name: Wedding application interactions
         run: node scripts/wedding-browser-check.mjs > wedding-browser.log 2>&1
       - name: Read browser results
         if: always()
-        run: test ! -f wedding-browser.log || tail -70 wedding-browser.log
+        run: |
+          test ! -f homepage-browser.log || tail -60 homepage-browser.log
+          test ! -f wedding-browser.log || tail -60 wedding-browser.log
       - name: Archive candidate
         if: always()
         run: |
           mkdir -p wedding-test-results
           git rev-parse HEAD > wedding-test-results/commit.txt
           git archive --format=zip HEAD -o wedding-test-results/source.zip
+          test ! -f homepage-browser.log || cp homepage-browser.log wedding-test-results/
           test ! -f wedding-browser.log || cp wedding-browser.log wedding-test-results/
       - uses: actions/upload-artifact@v4
         if: always()
