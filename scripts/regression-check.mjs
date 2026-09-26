@@ -1124,10 +1124,10 @@ requireAbsent(
 );
 
 requireMatch(
-  "homepage uses the responsive video-led hero",
+  "homepage video is rendered directly after the hero",
   files.homeComponent,
-  /<HomeWeddingHero[\s\S]*?<section className="border-y border-black\/10 bg-white"/,
-  "the responsive video must remain in the React hero, without DOM reparenting",
+  /<\/section>\s*<PromoVideo\s*\/>\s*<section className="border-y border-black\/10 bg-white"/,
+  "the promo video must stay in the React tree immediately after the hero section",
 );
 
 requireAbsent(

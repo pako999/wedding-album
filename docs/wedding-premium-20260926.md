@@ -18,7 +18,7 @@ scripts/migrations/20260926-wedding-premium.sql adds wedding_settings, wedding_s
 
 /porocni-paket, /hr/vjencani-paket, /sr/vencani-paket, /en/wedding-package, /de/hochzeitspaket, /es/paquete-boda. Serbian/Spanish public URLs keep the existing .rs/.es domain routing. Hreflang, sitemap and navigation are included. Private experience pages remain noindex.
 
-Homepage video uses GuestCam's existing footage, not Mexico branding. Desktop/mobile clips are served from public/promo with no preload. The footage itself is Slovenian; each language labels that fact explicitly. UI/control/marketing copy is localized.
+The homepage retains its original hero, images, text, calls to action, navigation and video placement in all six languages. Only the Premium pricing card is updated: localized wedding name, schedule/menu/song requests/photo bingo and a link to the separate wedding-package page. The new wedding page and private wedding features remain separate from the homepage layout.
 
 ## Verification
 
