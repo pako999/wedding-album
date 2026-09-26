@@ -85,6 +85,7 @@ const files = {
   dashboardLanguageSwitcher: await read(
     "components/dashboard/DashboardLanguageSwitcher.tsx",
   ),
+  dashboardLanguagePreference: await read("app/api/account/language/route.ts"),
   dashboardNav: await read("components/dashboard/DashboardNav.tsx"),
   demoButton: await read("components/DemoButton.tsx"),
   headerAuthButtons: await read("components/HeaderAuthButtons.tsx"),
@@ -866,6 +867,20 @@ requireMatch(
   `${files.dashboardLanguageSwitcher}\n${files.dashboardNav}\n${files.albumAdminPanel}\n${files.upgradePage}`,
   /guestcam_dashboard_lang[\s\S]*LANGS\.map[\s\S]*DashboardLanguageSwitcher current=\{lang\}[\s\S]*sticky top-0[\s\S]*DashboardLanguageSwitcher[\s\S]*DashboardLanguageSwitcher/,
   "gallery lists, album management and checkout must all expose the same easy language control",
+);
+
+requireMatch(
+  "owner dashboard auto-detects supported countries before browser language",
+  `${files.dashboardLanguage}\n${files.dashboardPage}\n${files.albumDashboardPage}\n${files.newAlbumPage}\n${files.upgradePageRoute}`,
+  /case "SI": return "sl"[\s\S]*case "HR": return "hr"[\s\S]*case "RS": return "sr"[\s\S]*case "ES": return "es"[\s\S]*x-vercel-ip-country/,
+  "first-time owners in Slovenia, Croatia, Serbia and Spain must see the matching dashboard language; unsupported countries fall back through browser to English",
+);
+
+requireMatch(
+  "manual dashboard language is saved to the signed-in account",
+  `${files.dashboardLanguageSwitcher}\n${files.dashboardLanguagePreference}\n${files.dashboardLanguage}`,
+  /api\/account\/language[\s\S]*dashboardLang:\s*lang[\s\S]*guestcam_dashboard_lang[\s\S]*explicitDashboardLang\(account\)/,
+  "a manual language choice must persist across browsers and override geo detection",
 );
 
 for (const locale of ["sl", "hr", "sr", "en", "de", "es"]) {
