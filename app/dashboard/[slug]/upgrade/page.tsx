@@ -28,6 +28,7 @@ export default async function UpgradePageRoute({ params, searchParams }: Props) 
   const initialDashboardLang = resolveDashboardLang({
     requested: sp.lang,
     saved: cookieStore.get(DASHBOARD_LANG_COOKIE)?.value,
+    country: h.get("x-vercel-ip-country"),
     acceptLanguage: h.get("accept-language"),
   });
 
@@ -53,10 +54,13 @@ export default async function UpgradePageRoute({ params, searchParams }: Props) 
 
   if (!album || album.ownerClerkId !== userId) redirect("/dashboard");
 
+  const clerkMetadata = clerkUser?.publicMetadata as Record<string, unknown> | undefined;
   const lang = resolveDashboardLang({
     requested: sp.lang,
     saved: cookieStore.get(DASHBOARD_LANG_COOKIE)?.value,
-    clerk: (clerkUser?.publicMetadata as Record<string, unknown> | undefined)?.lang,
+    account: clerkMetadata?.dashboardLang,
+    country: h.get("x-vercel-ip-country"),
+    clerk: clerkMetadata?.lang,
     acceptLanguage: h.get("accept-language"),
   });
 
