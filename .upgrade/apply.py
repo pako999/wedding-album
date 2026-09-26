@@ -14,7 +14,7 @@ for name, change in data.items():
   assert not p.exists(), f'New path already exists: {name}'
   text = change['new']
  else:
-  original = p.read_bytes()
+  original = p.read_bytes() if p.exists() else b''
   assert hashlib.sha256(original).hexdigest() == change['sha'], f'Source changed: {name}'
   text = original.decode('utf8')
   for start, end, replacement in reversed(change['edits']):
