@@ -1,0 +1,80 @@
+name: GuestCam wedding verification
+on:
+  push:
+    branches: [feat/guestcam-wedding-premium-20260926]
+permissions:
+  contents: write
+concurrency:
+  group: guestcam-wedding-tests
+  cancel-in-progress: false
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: ci-only-local-password
+          POSTGRES_USER: postgres
+          POSTGRES_DB: guestcam_wedding_ci
+        ports: ['5432:5432']
+        options: --health-cmd 'pg_isready -U postgres' --health-interval 5s --health-timeout 5s --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Apply final verified copy only when present
+        run: |
+          if test -f .upgrade/final-copy.py; then
+            python3 .upgrade/final-copy.py
+            git config user.name 'Patrik'
+            git config user.email '125508378+pako999@users.noreply.github.com'
+            git add app components lib scripts
+            git rm -r .upgrade
+            git commit -m 'fix: complete wedding package naming across all supported locales'
+            git push origin HEAD:feat/guestcam-wedding-premium-20260926
+          fi
+      - name: Locked application dependencies and type check
+        run: |
+          npm ci --no-audit --no-fund
+          npx next typegen
+          npx tsc --noEmit
+      - name: Regression and locale coverage
+        run: npm run test:regression && npm run audit:i18n && npm run test:wedding
+      - name: Isolated database integration
+        env:
+          PGHOST: 127.0.0.1
+          PGPORT: '5432'
+          PGUSER: postgres
+          PGPASSWORD: ci-only-local-password
+          PGDATABASE: guestcam_wedding_ci
+        run: |
+          test "$PGDATABASE" = guestcam_wedding_ci && test "$PGHOST" = 127.0.0.1
+          psql -f scripts/wedding-schema-test.sql
+      - name: Install isolated browser tooling without changing application versions
+        run: |
+          npm install --prefix "$RUNNER_TEMP/wedding-playwright" --no-audit --no-fund @playwright/test@1.56.1
+          mkdir -p node_modules/@playwright
+          ln -s "$RUNNER_TEMP/wedding-playwright/node_modules/@playwright/test" node_modules/@playwright/test
+          "$RUNNER_TEMP/wedding-playwright/node_modules/.bin/playwright" install --with-deps chromium
+      - name: Browser interactions and screenshots
+        run: node scripts/wedding-browser-check.mjs > wedding-browser.log 2>&1
+      - name: Read browser results
+        if: always()
+        run: test ! -f wedding-browser.log || tail -70 wedding-browser.log
+      - name: Archive candidate
+        if: always()
+        run: |
+          mkdir -p wedding-test-results
+          git rev-parse HEAD > wedding-test-results/commit.txt
+          git archive --format=zip HEAD -o wedding-test-results/source.zip
+          test ! -f wedding-browser.log || cp wedding-browser.log wedding-test-results/
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: guestcam-wedding-browser
+          path: wedding-test-results/
+          retention-days: 3
