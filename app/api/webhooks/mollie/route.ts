@@ -22,7 +22,7 @@ export const dynamic = "force-dynamic";
 
 function planLabel(planId: string): { emoji: string; text: string } {
   switch (planId) {
-    case "premium":      return { emoji: "💸", text: "Premium" };
+    case "premium":      return { emoji: "💸", text: "Poročni premium" };
     case "plus":         return { emoji: "💸", text: "Plus" };
     case "basic":        return { emoji: "💸", text: "Basic" };
     case "film_pro":     return { emoji: "🎬", text: "Film Studio Pro" };

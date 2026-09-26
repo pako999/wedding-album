@@ -30,7 +30,7 @@ export async function updateCardText(
     return { ok: false, error: "Galerija ni najdena." };
   }
   if (album.plan !== "premium") {
-    return { ok: false, error: "Urejanje besedila je na voljo samo v paketu Premium." };
+    return { ok: false, error: "Urejanje besedila je na voljo samo v paketu Poročni premium." };
   }
 
   const clean = (v: string) => {

@@ -5,7 +5,7 @@ import assert from 'node:assert/strict';
 import { chromium } from '@playwright/test';
 const delay=ms=>new Promise(r=>setTimeout(r,ms));
 const layout=await fs.readFile('app/layout.tsx','utf8'),proxy=await fs.readFile('proxy.ts','utf8');
-const testPath='app/dev/wedding-ci';let server,browser;
+const testPath='app/dev/wedding-ci';let server,browser,page;
 await fs.mkdir('wedding-test-results',{recursive:true});
 try {
  await fs.writeFile('app/layout.tsx',`import './globals.css'; export default function Layout({children}:{children:React.ReactNode}) {return <html lang="en"><body>{children}</body></html>;}`);
@@ -15,7 +15,7 @@ try {
  const log=await fs.open('wedding-test-results/dev-server.log','w');
  server=spawn('node',['node_modules/next/dist/bin/next','dev','--port','3001'],{env:{...process.env,NEXT_TELEMETRY_DISABLED:'1'},stdio:['ignore',log.fd,log.fd]});
  for(let i=0;i<90;i++){try{const r=await fetch('http://127.0.0.1:3001/dev/wedding-ci?view=walkthrough&lang=en');if(r.ok)break;}catch{}await delay(1000);}
- browser=await chromium.launch({headless:true});const context=await browser.newContext();const page=await context.newPage();const errors=[];page.on('pageerror',e=>errors.push(e.message));
+ browser=await chromium.launch({headless:true});const context=await browser.newContext();page=await context.newPage();const errors=[];page.on('pageerror',e=>errors.push(e.message));
  const settings={enabled:true,requestsOpen:true,schedule:[{id:'s1',time:'18:00',title:'Ceremony',detail:'Garden'}],menu:[{id:'m1',title:'Dinner',detail:'Vegetarian option available'}],challenges:[{id:'challenge-1',title:'Photo with the couple',detail:''},{id:'challenge-2',title:'Dance floor',detail:''}]};let songs=[];let savedBingo=null;let managed=false;
  await context.route('**/api/albums/wedding-ci/wedding/manage',async route=>{const method=route.request().method();if(method==='PUT'){managed=true;Object.assign(settings,route.request().postDataJSON());}await route.fulfill({json:method==='POST'?{path:`/wedding-ci/dj#token=${'a'.repeat(43)}`}:{settings,eligible:true,published:true,hasDjLink:false}});});
  await context.route('**/api/albums/wedding-ci/wedding/dj',async route=>{if(route.request().method()==='PATCH'){const {id,status}=route.request().postDataJSON();songs=songs.map(s=>s.id===id?{...s,status}:s);}assert.match(route.request().headers().authorization??'',/^Bearer a{43}$/);await route.fulfill({json:{name:'Ana & Marko',requestsOpen:true,songs}});});
@@ -33,6 +33,10 @@ try {
  await visit('hero','sl',1440);await page.screenshot({path:'wedding-test-results/hero-desktop.png',fullPage:true});await visit('hero','sl',390);await page.screenshot({path:'wedding-test-results/hero-mobile.png',fullPage:true});
  await visit('walkthrough','sl',1440);await page.screenshot({path:'wedding-test-results/walkthrough-desktop.png',fullPage:true});
  assert.equal(errors.length,0,errors.join('\n'));console.log('PASS browser: all six locales, 390/1440px no overflow, owner save, guest song, bingo upload, DJ update, screenshots and no page errors.');
+} catch (error) {
+ await fs.writeFile('wedding-test-results/error.txt',String(error?.stack??error));
+ await page?.screenshot({path:'wedding-test-results/failure.png',fullPage:true}).catch(()=>{});
+ throw error;
 } finally {
  await browser?.close();server?.kill('SIGTERM');await fs.writeFile('app/layout.tsx',layout);await fs.writeFile('proxy.ts',proxy);await fs.rm('proxy.ts.ci-backup',{force:true});await fs.rm(testPath,{recursive:true,force:true});
 }
