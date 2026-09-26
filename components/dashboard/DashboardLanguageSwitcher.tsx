@@ -10,8 +10,19 @@ export function DashboardLanguageSwitcher({
   current: DashboardLang;
   ariaLabel: string;
 }) {
-  function changeLanguage(next: DashboardLang) {
+  async function changeLanguage(next: DashboardLang) {
+    // Update immediately in this browser, then persist the same preference
+    // to the signed-in Clerk account so it follows the owner to other devices.
     document.cookie = `guestcam_dashboard_lang=${next}; Path=/; Max-Age=31536000; SameSite=Lax; Secure`;
+    try {
+      await fetch("/api/account/language", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ lang: next }),
+      });
+    } catch {
+      // The cookie still keeps this browser usable even if Clerk is temporarily unavailable.
+    }
     const url = new URL(window.location.href);
     url.searchParams.set("lang", next);
     window.location.assign(url.toString());
