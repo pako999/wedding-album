@@ -1,0 +1,20 @@
+name: Wedding upgrade source review
+on:
+  push:
+    branches: [feat/guestcam-wedding-premium-20260926]
+permissions:
+  contents: read
+jobs:
+  source:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Export tracked application source for review
+        run: git archive --format=zip HEAD -o guestcam-source.zip
+      - uses: actions/upload-artifact@v4
+        with:
+          name: guestcam-source-review
+          path: guestcam-source.zip
+          retention-days: 1
