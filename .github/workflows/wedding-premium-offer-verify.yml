@@ -29,5 +29,3 @@ jobs:
         run: npm run test:premium-offer
       - name: Next production build (without deployment DB mutation)
         run: npx next build
-      - name: Full Next.js build
-        run: npx next build
