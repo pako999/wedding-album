@@ -40,6 +40,7 @@ export async function createAlbum(formData: FormData) {
   const creator = await currentUser().catch(() => null);
   const ownerVerifiedEmails = verifiedEmails(creator);
   const requestedLang = normalizeCheckoutLang(formData.get("lang"));
+  const requestedAlbumLang = normalizeCheckoutLang(formData.get("albumLang"));
   const gate = await getAlbumCreationGate(userId, ownerVerifiedEmails);
   if (!gate.allowed) {
     const langQuery = requestedLang ? `?lang=${requestedLang}` : "";
@@ -114,7 +115,7 @@ export async function createAlbum(formData: FormData) {
     coupleName,
     weddingDate:       eventDate,
     location,
-    defaultLang:       requestedLang ?? inferLangFromLocation(location),
+    defaultLang:       requestedAlbumLang ?? requestedLang ?? inferLangFromLocation(location),
     password,
     isPublished:       true,
     plan:              inheritedPlan,
