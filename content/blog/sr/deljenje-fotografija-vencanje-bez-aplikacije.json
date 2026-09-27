@@ -196,10 +196,10 @@
     {
       "type": "ul",
       "items": [
-        "Neograničen broj fotografija i do 100 video zapisa",
+        "Neograničen broj fotografija i video zapisa",
         "Živu galeriju za projekciju na ekranu tokom večeri",
         "ZIP preuzimanje svih sadržaja jednim klikom",
-        "Pristup galeriji do 2 godine",
+        "Neograničeno vreme čuvanja i pristupa",
         "Moderaciju — vi odobravate koje fotografije su vidljive svima"
       ]
     },
@@ -225,7 +225,7 @@
     {
       "type": "faq",
       "q": "Koliko fotografija mogu da skupim?",
-      "a": "Besplatan plan uključuje jedan događaj, jednu galeriju, do 20 fotografija i jedan video zapis uz pristup 30 dana. Venčani premium podržava neograničen broj fotografija i do 100 video zapisa."
+      "a": "Besplatan plan uključuje jedan događaj, jednu galeriju, do 20 fotografija i jedan video zapis uz pristup 30 dana. Venčani premium podržava neograničen broj fotografija i video zapisa bez vremenskog ograničenja čuvanja."
     },
     {
       "type": "faq",
