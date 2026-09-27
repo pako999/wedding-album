@@ -77,10 +77,14 @@ const publicMarketing = [
 ].filter(Boolean);
 
 const stalePrice = /(Poročni premium|Vjenčani premium|Venčani premium|Wedding Premium|Hochzeits-Premium|Premium para bodas)[^\n"]{0,90}(?:\(?(?:79|99)\s*€|€(?:79|99))/gi;
+const staleHits = [];
 for (const p of publicMarketing) {
   const src = await read(p);
-  const hit = src.match(stalePrice);
-  assert(!hit, `stale Premium price in ${p}: ${hit?.[0]}`);
+  for (const hit of src.matchAll(stalePrice)) staleHits.push(`${p}: ${hit[0]}`);
+}
+if (staleHits.length) {
+  console.error("Stale Wedding Premium price references:\n" + staleHits.join("\n"));
+  process.exit(1);
 }
 
 console.log("PASS: Wedding Premium offer is 129 EUR regular / 84 EUR sale, with unlimited media and non-expiring retention.");
