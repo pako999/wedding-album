@@ -2,10 +2,10 @@ import { db } from "@/lib/db";
 import { albums } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 
-const PLAN_CONFIG: Record<string, { maxPhotos: number; daysAccess: number }> = {
+const PLAN_CONFIG: Record<string, { maxPhotos: number; daysAccess: number | null }> = {
   basic:   { maxPhotos: 1000,    daysAccess: 90  }, // 3 months
   plus:    { maxPhotos: 999_999, daysAccess: 365 }, // 1 year
-  premium: { maxPhotos: 999_999, daysAccess: 730 }, // 2 years
+  premium: { maxPhotos: 999_999, daysAccess: null }, // no expiry
 };
 
 /**
@@ -63,7 +63,9 @@ export async function applyPlanToAlbum(
   const config = PLAN_CONFIG[planId];
   if (!config) return null;
 
-  const expiresAt = new Date(Date.now() + config.daysAccess * 24 * 60 * 60 * 1000);
+  const expiresAt = config.daysAccess
+    ? new Date(Date.now() + config.daysAccess * 24 * 60 * 60 * 1000)
+    : null;
   const filmTierUpdate = planId === "premium" ? { filmTier: "premium" as const } : {};
 
   await db
