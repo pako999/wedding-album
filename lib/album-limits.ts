@@ -1,6 +1,7 @@
 import { and, desc, eq, inArray, or, sql } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { albums, userPlanOverrides } from "@/lib/db/schema";
+import { PREMIUM_MEDIA_LIMIT } from "@/lib/plan-entitlements";
 
 export type AlbumCreationGate =
   | { allowed: true }
@@ -15,7 +16,7 @@ const PLAN_CONFIG: Record<PaidPlan, {
 }> = {
   basic: { maxPhotos: 1_000, daysAccess: 90, filmTier: "free" },
   plus: { maxPhotos: 999_999, daysAccess: 365, filmTier: "free" },
-  premium: { maxPhotos: 999_999, daysAccess: null, filmTier: "premium" },
+  premium: { maxPhotos: PREMIUM_MEDIA_LIMIT, daysAccess: null, filmTier: "premium" },
 };
 
 const PLAN_RANK: Record<PaidPlan, number> = { basic: 1, plus: 2, premium: 3 };
