@@ -1,29 +1,16 @@
 "use client";
-import { weddingCopy } from "@/lib/wedding/copy";
 
 import { useState, useTransition, type ReactNode } from "react";
 import { createAlbum } from "@/app/actions/create-album";
-import type { Lang } from "@/lib/i18n/translations";
+import { LANGS, type Lang } from "@/lib/i18n/translations";
+import { CREATE_EVENT_COPY, type EventTypeId } from "@/lib/i18n/create-event-copy";
 
-type EventType = {
-  id: string;
-  emoji: string;
-  label: string;
-  nameLabel: string;
-  namePlaceholder: string;
-  dateLabel: string;
-};
-
+type EventType = { id: EventTypeId; emoji: string };
 const EVENT_TYPES: EventType[] = [
-  { id: "wedding",     emoji: "💍", label: "Poroka",      nameLabel: "Ime para",      namePlaceholder: "npr. Ana & Marko",       dateLabel: "Datum poroke"       },
-  { id: "birthday",    emoji: "🎂", label: "Rojstni dan", nameLabel: "Ime",           namePlaceholder: "npr. Janko, 50 let",     dateLabel: "Datum rojstnega dne"},
-  { id: "anniversary", emoji: "💑", label: "Obletnica",   nameLabel: "Ime para",      namePlaceholder: "npr. Ana & Marko",       dateLabel: "Datum obletnice"    },
-  { id: "party",       emoji: "🎉", label: "Zabava",      nameLabel: "Ime zabave",    namePlaceholder: "npr. Novoletna zabava",  dateLabel: "Datum zabave"       },
-  { id: "baptism",     emoji: "👶", label: "Krst",        nameLabel: "Ime otroka",    namePlaceholder: "npr. Mali Luka",         dateLabel: "Datum krsta"        },
-  { id: "graduation",  emoji: "🎓", label: "Diploma/Matura", nameLabel: "Ime",      namePlaceholder: "npr. Sara, diplomirala", dateLabel: "Datum zagovora"     },
-  { id: "baby_shower", emoji: "👶", label: "Baby Shower", nameLabel: "Ime",           namePlaceholder: "npr. Ana",               dateLabel: "Datum baby showerja"},
-  { id: "business",    emoji: "💼", label: "Poslovni dogodek", nameLabel: "Ime dogodka", namePlaceholder: "npr. Letna konferenca 2026", dateLabel: "Datum dogodka" },
-  { id: "other",       emoji: "📸", label: "Drugo",       nameLabel: "Ime dogodka",   namePlaceholder: "npr. Ekskurzija 2025",   dateLabel: "Datum dogodka"      },
+  { id: "wedding", emoji: "💍" }, { id: "birthday", emoji: "🎂" },
+  { id: "anniversary", emoji: "💑" }, { id: "party", emoji: "🎉" },
+  { id: "baptism", emoji: "👶" }, { id: "graduation", emoji: "🎓" },
+  { id: "baby_shower", emoji: "👶" }, { id: "business", emoji: "💼" }, { id: "other", emoji: "📸" },
 ];
 
 // ── Event category icons — clean line icons in the brand gold ────────────────
@@ -124,13 +111,16 @@ function EventIcon({ id, className }: { id: string; className?: string }) {
 
 type PaidPlanId = "basic" | "plus" | "premium";
 
-export function CreateEventWizard({ initialPlan, lang = "sl" }: { initialPlan?: PaidPlanId; lang?: Lang } = {}) {
+export function CreateEventWizard({ initialPlan, lang = "sl", defaultAlbumLang }: { initialPlan?: PaidPlanId; lang?: Lang; defaultAlbumLang?: Lang } = {}) {
+  const copy = CREATE_EVENT_COPY[lang];
+  const [albumLang, setAlbumLang] = useState<Lang>(defaultAlbumLang ?? lang);
   const [step, setStep] = useState<1 | 2>(1);
   const [selectedType, setSelectedType] = useState<EventType | null>(null);
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
 
   const eventInfo = selectedType ?? EVENT_TYPES[0];
+  const eventText = copy.types[eventInfo.id];
 
   // Event/couple name is used on QR print cards, in referral codes, in
   // email subjects and page titles — long names overflow all of them.
@@ -150,6 +140,13 @@ export function CreateEventWizard({ initialPlan, lang = "sl" }: { initialPlan?: 
     setError(null);
   }
 
+  async function changeAlbumLanguage(next: Lang) {
+    setAlbumLang(next);
+    try {
+      await fetch("/api/account/language", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ defaultAlbumLang: next }) });
+    } catch { /* current form choice still works even if account persistence is temporarily unavailable */ }
+  }
+
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setError(null);
@@ -161,7 +158,7 @@ export function CreateEventWizard({ initialPlan, lang = "sl" }: { initialPlan?: 
         // redirect() throws NEXT_REDIRECT — Next.js handles navigation, ignore it
         const msg = err instanceof Error ? err.message : String(err);
         if (msg.includes("NEXT_REDIRECT") || msg.includes("redirect")) return;
-        setError("Napaka pri ustvarjanju galerije. Preverite povezavo in poskusite znova.");
+        setError(copy.error);
         console.error("[createAlbum]", err);
       }
     });
@@ -178,17 +175,17 @@ export function CreateEventWizard({ initialPlan, lang = "sl" }: { initialPlan?: 
               <span className="text-xl">📸</span>
             </div>
             <div>
-              <h1 className="gc-admin-page-title text-[#0F1729]">Nova galerija</h1>
-              <p className="text-xs text-gray-400">Korak 1 od 2 · Izberi vrsto dogodka</p>
+              <h1 className="gc-admin-page-title text-[#0F1729]">{copy.title}</h1>
+              <p className="text-xs text-gray-400">{copy.step1}</p>
             </div>
           </div>
         </div>
 
         {/* Event type grid */}
         <div className="p-8">
-          <p className="text-sm text-gray-500 mb-5">Za kakšen dogodek ustvarjaš galerijo?</p>
+          <p className="text-sm text-gray-500 mb-5">{copy.question}</p>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-            {EVENT_TYPES.map((et) => (
+            {EVENT_TYPES.map((et) => { const etText = copy.types[et.id]; return (
               <button
                 key={et.id}
                 onClick={() => handleTypeSelect(et)}
@@ -206,9 +203,9 @@ export function CreateEventWizard({ initialPlan, lang = "sl" }: { initialPlan?: 
                 <span className="group-hover:scale-110 transition-transform" style={{ color: "#C9820A" }}>
                   <EventIcon id={et.id} className="w-9 h-9" />
                 </span>
-                <span className="text-sm font-semibold text-[#0F1729]">{et.label}</span>
+                <span className="text-sm font-semibold text-[#0F1729]">{etText.label}</span>
               </button>
-            ))}
+            ); })}
           </div>
         </div>
       </div>
@@ -225,8 +222,8 @@ export function CreateEventWizard({ initialPlan, lang = "sl" }: { initialPlan?: 
             <EventIcon id={eventInfo.id} className="w-6 h-6" />
           </div>
           <div>
-            <h1 className="gc-admin-page-title text-[#0F1729]">{eventInfo.label}</h1>
-            <p className="text-xs text-gray-400">Korak 2 od 2 · Podatki o dogodku</p>
+            <h1 className="gc-admin-page-title text-[#0F1729]">{eventText.label}</h1>
+            <p className="text-xs text-gray-400">{copy.step2}</p>
           </div>
         </div>
       </div>
@@ -236,12 +233,13 @@ export function CreateEventWizard({ initialPlan, lang = "sl" }: { initialPlan?: 
         {/* Hidden event type + pre-selected plan (when arriving from a pricing card) */}
         <input type="hidden" name="eventType" value={eventInfo.id} />
         <input type="hidden" name="lang" value={lang} />
+        <input type="hidden" name="albumLang" value={albumLang} />
         {initialPlan ? <input type="hidden" name="plan" value={initialPlan} /> : null}
 
         {/* Name */}
         <div>
           <label className="block text-sm font-semibold text-[#0F1729] mb-2">
-            {eventInfo.nameLabel} <span style={{ color: "#C9820A" }}>*</span>
+            {eventText.name} <span style={{ color: "#C9820A" }}>*</span>
           </label>
           <input
             name="coupleName"
@@ -249,7 +247,7 @@ export function CreateEventWizard({ initialPlan, lang = "sl" }: { initialPlan?: 
             maxLength={NAME_MAX}
             value={nameValue}
             onChange={e => setNameValue(e.target.value.slice(0, NAME_MAX))}
-            placeholder={eventInfo.namePlaceholder}
+            placeholder={eventText.placeholder}
             className={`w-full px-4 py-3 rounded-xl border text-[#0F1729] text-sm outline-none transition-all ${nameAtLimit ? "border-red-400 focus:border-red-400" : "border-gray-200 focus:border-[#C9820A]"}`}
             style={{ boxShadow: "0 0 0 0px rgba(255,201,77,0)" }}
             onFocus={e => (e.target.style.boxShadow = "0 0 0 3px rgba(255,201,77,0.15)")}
@@ -258,7 +256,7 @@ export function CreateEventWizard({ initialPlan, lang = "sl" }: { initialPlan?: 
           <div className="mt-1.5 flex items-center justify-between gap-3">
             {nameAtLimit ? (
               <p className="text-xs text-red-500 font-medium">
-                Ime je predolgo — največ {NAME_MAX} znakov. Uporabite krajšo obliko (npr. »Ana &amp; Marko«).
+                {copy.tooLong}
               </p>
             ) : (
               <span />
@@ -273,7 +271,7 @@ export function CreateEventWizard({ initialPlan, lang = "sl" }: { initialPlan?: 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-semibold text-[#0F1729] mb-2">
-              {eventInfo.dateLabel} <span style={{ color: "#C9820A" }}>*</span>
+              {eventText.date} <span style={{ color: "#C9820A" }}>*</span>
             </label>
             <input
               type="date"
@@ -286,7 +284,7 @@ export function CreateEventWizard({ initialPlan, lang = "sl" }: { initialPlan?: 
           </div>
           <div>
             <label className="block text-sm font-semibold text-[#0F1729] mb-2">
-              Čas začetka <span className="text-gray-400 font-normal">(neobvezno)</span>
+              {copy.start} <span className="text-gray-400 font-normal">({copy.optional})</span>
             </label>
             <input
               type="time"
@@ -302,15 +300,23 @@ export function CreateEventWizard({ initialPlan, lang = "sl" }: { initialPlan?: 
         {/* Location */}
         <div>
           <label className="block text-sm font-semibold text-[#0F1729] mb-2">
-            Lokacija <span className="text-gray-400 font-normal">(neobvezno)</span>
+            {copy.location} <span className="text-gray-400 font-normal">({copy.optional})</span>
           </label>
           <input
             name="location"
-            placeholder="npr. Grad Bogenšperk, Ljubljana"
+            placeholder={copy.locationPh}
             className="w-full px-4 py-3 rounded-xl border border-gray-200 text-[#0F1729] text-sm outline-none transition-all focus:border-[#C9820A]"
             onFocus={e => (e.target.style.boxShadow = "0 0 0 3px rgba(255,201,77,0.15)")}
             onBlur={e => (e.target.style.boxShadow = "0 0 0 0px rgba(255,201,77,0)")}
           />
+        </div>
+
+        <div>
+          <label className="block text-sm font-semibold text-[#0F1729] mb-2">{copy.albumLang}</label>
+          <select value={albumLang} onChange={(e) => changeAlbumLanguage(e.target.value as Lang)} className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white text-[#0F1729] text-sm outline-none focus:border-[#C9820A]">
+            {LANGS.map((language) => <option key={language.code} value={language.code}>{language.flag} {language.native}</option>)}
+          </select>
+          <p className="mt-1.5 text-xs text-gray-400">{copy.albumHint}</p>
         </div>
 
         {/* Info strip. A visitor arriving from a pricing card carries
@@ -320,16 +326,9 @@ export function CreateEventWizard({ initialPlan, lang = "sl" }: { initialPlan?: 
         <div className="rounded-2xl p-4 flex items-start gap-3 text-sm" style={{ background: "rgba(255,201,77,0.06)", border: "1px solid rgba(255,201,77,0.15)" }}>
           <span className="shrink-0" style={{ color: "#C9820A" }}>✨</span>
           {initialPlan ? (
-            <p className="text-gray-500 leading-relaxed">
-              Galerija se ustvari z izbranim paketom{" "}
-              <strong className="text-[#0F1729]">{{ basic: "Basic", plus: "Plus", premium: weddingCopy(lang).plan }[initialPlan]}</strong>.
-              Plačilo varno opravite v naslednjem koraku.
-            </p>
+            <p className="text-gray-500 leading-relaxed">{copy.paidInfo}</p>
           ) : (
-            <p className="text-gray-500 leading-relaxed">
-              Galerija se ustvari z <strong className="text-[#0F1729]">brezplačnim</strong> paketom (do 20 fotografij).
-              Nadgradnjo na Plus ali {weddingCopy(lang).plan} lahko opravite kadarkoli.
-            </p>
+            <p className="text-gray-500 leading-relaxed">{copy.freeInfo}</p>
           )}
         </div>
 
@@ -342,11 +341,9 @@ export function CreateEventWizard({ initialPlan, lang = "sl" }: { initialPlan?: 
             className="mt-0.5 shrink-0 w-4 h-4 rounded border-gray-300 accent-[#C9820A]"
           />
           <span className="text-xs text-gray-500 leading-relaxed group-hover:text-gray-700 transition-colors">
-            Potrjujem, da bom goste in udeležence dogodka obvestil/a o uporabi Guestcam galerije,
-            zagotovil/a ustrezno pravno podlago za obdelavo fotografij in videov ter odgovarjal/a
-            na zahteve udeležencev v zvezi z vsebino galerije.{" "}
+            {copy.privacy}{" "}
             <a href="/gdpr" target="_blank" rel="noopener noreferrer" className="underline text-[#C9820A]">
-              Politika zasebnosti →
+              {copy.privacyLink} →
             </a>
           </span>
         </label>
@@ -365,7 +362,7 @@ export function CreateEventWizard({ initialPlan, lang = "sl" }: { initialPlan?: 
             onClick={handleBack}
             className="px-5 py-3.5 rounded-2xl border border-gray-200 text-sm font-semibold text-gray-500 hover:border-gray-300 hover:text-[#0F1729] transition-all"
           >
-            ← Nazaj
+            ← {copy.back}
           </button>
           <button
             type="submit"
@@ -379,10 +376,10 @@ export function CreateEventWizard({ initialPlan, lang = "sl" }: { initialPlan?: 
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                 </svg>
-                Ustvarjam...
+                {copy.creating}
               </span>
             ) : (
-              "Ustvari galerijo →"
+              copy.create + " →"
             )}
           </button>
         </div>
