@@ -3,8 +3,11 @@ import { neon } from '@neondatabase/serverless';
 // Explicit deployment preflight, never called by a guest/app request.
 const expectedProject = 'prj_EDblP7nig2nLLZTQlxnrkusvxoSj';
 if (process.env.VERCEL_PROJECT_ID && process.env.VERCEL_PROJECT_ID !== expectedProject) throw new Error('Refusing wedding migration outside the verified GuestCam Vercel project');
-if (!process.env.DATABASE_URL) {
-  if (process.env.VERCEL) throw new Error('DATABASE_URL is required: wedding schema must exist before deployment');
+const isVercelPreview = Boolean(process.env.VERCEL) && process.env.VERCEL_ENV !== 'production';
+if (isVercelPreview) {
+  console.log('[wedding migration] Preview deployment: skipping customer database mutation; schema is verified by CI.');
+} else if (!process.env.DATABASE_URL) {
+  if (process.env.VERCEL_ENV === 'production') throw new Error('DATABASE_URL is required: wedding schema must exist before production deployment');
   console.log('[wedding migration] No DATABASE_URL in local build; schema migration not executed.');
 } else {
   const sql = neon(process.env.DATABASE_URL);
