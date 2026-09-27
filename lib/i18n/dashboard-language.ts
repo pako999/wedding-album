@@ -21,26 +21,52 @@ function browserDashboardLang(value?: string | null): DashboardLang | null {
   return null;
 }
 
+function countryDashboardLang(value?: unknown): DashboardLang | null {
+  if (typeof value !== "string") return null;
+  switch (value.trim().toUpperCase()) {
+    case "SI": return "sl";
+    case "HR": return "hr";
+    case "RS": return "sr";
+    case "ES": return "es";
+    case "DE":
+    case "AT": return "de";
+    default: return null;
+  }
+}
+
 /**
- * Account pages intentionally ignore the marketing domain locale. Owners can
- * work from any Guestcam domain. We use the explicit dashboard choice, saved
- * account preference, or browser language; unsupported languages fall back to
- * English.
+ * Dashboard language precedence:
+ *   1. explicit ?lang= override
+ *   2. browser cookie saved by the dashboard language switcher
+ *   3. account-level dashboard preference saved in Clerk
+ *   4. Vercel country/IP detection (SI→SL, HR→HR, RS→SR, ES→ES, DE/AT→DE)
+ *   5. legacy/general Clerk language
+ *   6. browser Accept-Language
+ *   7. English
+ *
+ * This makes a first-time Slovenian/Croatian/Serbian/Spanish visitor land in
+ * the expected owner UI while a manual choice remains authoritative later.
  */
 export function resolveDashboardLang({
   requested,
   saved,
+  account,
+  country,
   clerk,
   acceptLanguage,
 }: {
   requested?: unknown;
   saved?: unknown;
+  account?: unknown;
+  country?: unknown;
   clerk?: unknown;
   acceptLanguage?: string | null;
 }): DashboardLang {
   return (
     explicitDashboardLang(requested) ??
     explicitDashboardLang(saved) ??
+    explicitDashboardLang(account) ??
+    countryDashboardLang(country) ??
     explicitDashboardLang(clerk) ??
     browserDashboardLang(acceptLanguage) ??
     "en"
