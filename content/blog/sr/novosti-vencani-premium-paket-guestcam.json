@@ -1,0 +1,133 @@
+{
+  "slug": "novosti-vencani-premium-paket-guestcam",
+  "lang": "sr",
+  "title": "Novosti u Venčanom premium paketu: program, meni, muzičke želje i foto bingo",
+  "description": "Guestcam Venčani premium sada uključuje program venčanja, digitalni meni, muzičke želje za DJ-a, fotografski bingo i neograničene fotografije, video zapise i čuvanje.",
+  "translationKey": "wedding-premium-new-features-2026",
+  "publishedAt": "2026-09-27",
+  "updatedAt": "2026-09-27",
+  "author": "Guestcam Team",
+  "category": "novice",
+  "readingTime": 5,
+  "tags": [
+    "Venčani premium",
+    "venčanje",
+    "QR galerija",
+    "foto bingo",
+    "DJ",
+    "novosti"
+  ],
+  "tldr": "Venčani premium sada povezuje QR galeriju sa programom venčanja, digitalnim menijem, muzičkim željama, foto bingom i neograničenim fotografijama, video zapisima i vremenom čuvanja.",
+  "content": [
+    {
+      "type": "h2",
+      "text": "Šta je novo u Venčanom premium paketu?"
+    },
+    {
+      "type": "p",
+      "text": "Venčani premium više nije samo galerija za fotografije i video zapise. Paket je proširen u digitalno iskustvo za organizatora, goste i DJ-a — bez instalacije dodatne aplikacije."
+    },
+    {
+      "type": "ul",
+      "items": [
+        "Neograničene fotografije i video zapisi.",
+        "Neograničeno vreme čuvanja i pristupa.",
+        "Program venčanja za goste.",
+        "Digitalni meni.",
+        "Muzičke želje za DJ-a.",
+        "Fotografski bingo sa izazovima.",
+        "Live Photo Wall, ZIP preuzimanje i ostale Premium funkcije."
+      ]
+    },
+    {
+      "type": "h2",
+      "text": "1. Program venčanja uvek pri ruci"
+    },
+    {
+      "type": "p",
+      "text": "Dodajte dolazak gostiju, ceremoniju, fotografisanje, večeru, prvi ples, tortu i druge tačke. Gosti kroz isti QR pristup brzo vide šta sledi."
+    },
+    {
+      "type": "h2",
+      "text": "2. Digitalni meni"
+    },
+    {
+      "type": "p",
+      "text": "Meni je dostupan direktno na telefonu, zajedno sa galerijom i rasporedom događaja."
+    },
+    {
+      "type": "image",
+      "src": "https://images.unsplash.com/photo-1519741497674-611481863552?w=1200&h=720&fit=crop&q=82&auto=format",
+      "alt": "Gosti za stolom na venčanju",
+      "credit": "Foto: Unsplash"
+    },
+    {
+      "type": "h2",
+      "text": "3. Muzičke želje direktno DJ-u"
+    },
+    {
+      "type": "p",
+      "text": "Gosti šalju naziv pesme, izvođača i svoje ime. DJ ima poseban zaštićen prikaz i može želje označiti kao prihvaćene, puštene ili odbijene."
+    },
+    {
+      "type": "h2",
+      "text": "4. Fotografski bingo"
+    },
+    {
+      "type": "p",
+      "text": "Foto bingo pretvara fotografisanje u igru. Gosti rešavaju fotografske izazove i fotografiju mogu poslati direktno uz određeni zadatak."
+    },
+    {
+      "type": "h2",
+      "text": "5. Neograničene fotografije, video zapisi i čuvanje"
+    },
+    {
+      "type": "p",
+      "text": "Venčani premium uključuje neograničeno slanje fotografija i video zapisa i neograničeno vreme čuvanja i pristupa. Sve sadržaje možete preuzeti i kao ZIP."
+    },
+    {
+      "type": "callout",
+      "text": "Trenutna promotivna cena Venčanog premium paketa je 84 € umesto redovnih 129 € — 35 % popusta ograničeno vreme."
+    },
+    {
+      "type": "h2",
+      "text": "Sve preko iste QR veze"
+    },
+    {
+      "type": "p",
+      "text": "Gosti ne moraju da instaliraju aplikaciju ili otvaraju nalog. Jedna QR veza vodi do galerije i funkcija za venčanje, dok organizator sve podešava u Guestcam administraciji."
+    },
+    {
+      "type": "faq",
+      "q": "Da li su nove funkcije uključene u isti paket?",
+      "a": "Da. Program, meni, muzičke želje i fotografski bingo uključeni su u Venčani premium."
+    },
+    {
+      "type": "faq",
+      "q": "Mogu li gosti samo da šalju fotografije i video zapise?",
+      "a": "Da. QR galerija ostaje osnova, a dodatne funkcije koristite po želji."
+    },
+    {
+      "type": "faq",
+      "q": "Postoji li ograničenje fotografija ili video zapisa?",
+      "a": "Ne. Venčani premium uključuje neograničene fotografije i video zapise."
+    },
+    {
+      "type": "faq",
+      "q": "Koliko dugo galerija ostaje dostupna?",
+      "a": "Venčani premium uključuje neograničeno vreme čuvanja i pristupa."
+    },
+    {
+      "type": "faq",
+      "q": "Koliko paket trenutno košta?",
+      "a": "Redovna cena je 129 €, a trenutna promotivna cena 84 € — 35 % manje ograničeno vreme."
+    },
+    {
+      "type": "cta",
+      "text": "Pogledajte Venčani premium",
+      "href": "/sr/vencani-paket"
+    }
+  ],
+  "coverImage": "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=1600&h=900&fit=crop&q=82&auto=format",
+  "coverAlt": "Mladenci i gosti na večernjoj proslavi venčanja"
+}
