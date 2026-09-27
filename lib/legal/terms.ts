@@ -35,7 +35,7 @@ export const termsDoc: Record<LangCode, LegalDoc> = {
           "Brezplačni paket — testna galerija do 20 fotografij za 30 dni.",
           "Basic paket — do 1000 fotografij, dostop 3 mesece.",
           "Plus paket — do 500 fotografij in 100 videov, dostop 1 leto, Live galerija.",
-          "Poročni premium paket — neomejene fotografije, Film Studio, prednostna podpora.",
+          "Poročni premium paket — neomejene fotografije in videoposnetki, neomejen čas hrambe in dostopa, Film Studio, poročne funkcije in prednostna podpora.",
         ] },
       ] },
       { title: "5. Plačila in vračila", blocks: [
@@ -106,7 +106,7 @@ export const termsDoc: Record<LangCode, LegalDoc> = {
           "Besplatan paket — testna galerija do 20 fotografija na 30 dana.",
           "Basic paket — do 1000 fotografija, pristup 3 mjeseca.",
           "Plus paket — do 500 fotografija i 100 videozapisa, pristup 1 godina, Live galerija.",
-          "Vjenčani premium paket — neograničene fotografije, Film Studio, prioritetna podrška.",
+          "Vjenčani premium paket — neograničene fotografije i videozapisi, neograničeno vrijeme pohrane i pristupa, Film Studio, funkcije za vjenčanja i prioritetna podrška.",
         ] },
       ] },
       { title: "5. Plaćanja i povrati", blocks: [
@@ -177,7 +177,7 @@ export const termsDoc: Record<LangCode, LegalDoc> = {
           "Besplatan paket — testna galerija do 20 fotografija na 30 dana.",
           "Basic paket — do 1000 fotografija, pristup 3 meseca.",
           "Plus paket — do 500 fotografija i 100 video zapisa, pristup 1 godina, Live galerija.",
-          "Venčani premium paket — neograničene fotografije, Film Studio, prioritetna podrška.",
+          "Venčani premium paket — neograničene fotografije i video zapisi, neograničeno vreme čuvanja i pristupa, Film Studio, funkcije za venčanja i prioritetna podrška.",
         ] },
       ] },
       { title: "5. Plaćanja i povraćaji", blocks: [
@@ -248,7 +248,7 @@ export const termsDoc: Record<LangCode, LegalDoc> = {
           "Kostenlos — Testgalerie bis zu 20 Fotos für 30 Tage.",
           "Basic — bis zu 1000 Fotos, Zugriff 3 Monate.",
           "Plus — bis zu 500 Fotos und 100 Videos, Zugriff 1 Jahr, Live-Galerie.",
-          "Hochzeits-Premium — unbegrenzte Fotos, Film Studio, Priority-Support.",
+          "Hochzeits-Premium — unbegrenzte Fotos und Videos, unbegrenzte Speicherdauer und Zugriff, Film Studio, Hochzeitsfunktionen und Priority-Support.",
         ] },
       ] },
       { title: "5. Zahlungen und Rückerstattungen", blocks: [
@@ -319,7 +319,7 @@ export const termsDoc: Record<LangCode, LegalDoc> = {
           "Free — test gallery up to 20 photos for 30 days.",
           "Basic — up to 1000 photos, 3 months access.",
           "Plus — up to 500 photos and 100 videos, 1 year access, Live gallery.",
-          "Wedding Premium — unlimited photos, Film Studio, priority support.",
+          "Wedding Premium — unlimited photos and videos, unlimited storage and access, Film Studio, wedding features and priority support.",
         ] },
       ] },
       { title: "5. Payments and refunds", blocks: [
@@ -390,7 +390,7 @@ export const termsDoc: Record<LangCode, LegalDoc> = {
           "Gratuito — galería de prueba hasta 20 fotos durante 30 días.",
           "Basic — hasta 1000 fotos, acceso 3 meses.",
           "Plus — hasta 500 fotos y 100 vídeos, acceso 1 año, galería en directo.",
-          "Premium para bodas — fotos ilimitadas, Film Studio, soporte prioritario.",
+          "Premium para bodas — fotos y vídeos ilimitados, almacenamiento y acceso sin vencimiento, Film Studio, funciones de boda y soporte prioritario.",
         ] },
       ] },
       { title: "5. Pagos y reembolsos", blocks: [
