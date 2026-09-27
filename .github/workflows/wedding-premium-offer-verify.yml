@@ -27,3 +27,5 @@ jobs:
         run: npm run test:wedding
       - name: Wedding Premium offer guard
         run: npm run test:premium-offer
+      - name: Full Next.js build
+        run: npx next build
