@@ -488,6 +488,23 @@ export async function runMigrations() {
     )
   `);
 
+  // Wedding Premium promise: unlimited media and no expiry. Safe, idempotent
+  // backfill for every existing paid/comp Premium album and account grant.
+  await run("backfill Wedding Premium unlimited entitlements", (q) => q`
+    UPDATE albums
+       SET max_photos = 2000000000,
+           expires_at = NULL
+     WHERE plan = 'premium'
+       AND (max_photos <> 2000000000 OR expires_at IS NOT NULL)
+  `);
+  await run("backfill Wedding Premium account grants", (q) => q`
+    UPDATE user_plan_overrides
+       SET max_photos = 2000000000,
+           days_access = NULL
+     WHERE plan = 'premium'
+       AND (max_photos <> 2000000000 OR days_access IS NOT NULL)
+  `);
+
   await run("create user_meta", (q) => q`
     CREATE TABLE IF NOT EXISTS user_meta (
       clerk_id    TEXT PRIMARY KEY,
