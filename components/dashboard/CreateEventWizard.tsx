@@ -140,6 +140,13 @@ export function CreateEventWizard({ initialPlan, lang = "sl", defaultAlbumLang }
     setError(null);
   }
 
+  async function changeAlbumLanguage(next: Lang) {
+    setAlbumLang(next);
+    try {
+      await fetch("/api/account/language", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ defaultAlbumLang: next }) });
+    } catch { /* current form choice still works even if account persistence is temporarily unavailable */ }
+  }
+
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setError(null);
@@ -306,7 +313,7 @@ export function CreateEventWizard({ initialPlan, lang = "sl", defaultAlbumLang }
 
         <div>
           <label className="block text-sm font-semibold text-[#0F1729] mb-2">{copy.albumLang}</label>
-          <select value={albumLang} onChange={(e) => setAlbumLang(e.target.value as Lang)} className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white text-[#0F1729] text-sm outline-none focus:border-[#C9820A]">
+          <select value={albumLang} onChange={(e) => changeAlbumLanguage(e.target.value as Lang)} className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white text-[#0F1729] text-sm outline-none focus:border-[#C9820A]">
             {LANGS.map((language) => <option key={language.code} value={language.code}>{language.flag} {language.native}</option>)}
           </select>
           <p className="mt-1.5 text-xs text-gray-400">{copy.albumHint}</p>
