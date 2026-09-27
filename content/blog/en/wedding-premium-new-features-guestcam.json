@@ -1,0 +1,133 @@
+{
+  "slug": "wedding-premium-new-features-guestcam",
+  "lang": "en",
+  "title": "What’s New in Wedding Premium: Schedule, Menu, Song Requests and Photo Bingo",
+  "description": "Guestcam Wedding Premium now includes a wedding schedule, digital menu, DJ song requests, photo bingo, unlimited photos and videos, and unlimited storage and access.",
+  "translationKey": "wedding-premium-new-features-2026",
+  "publishedAt": "2026-09-27",
+  "updatedAt": "2026-09-27",
+  "author": "Guestcam Team",
+  "category": "novice",
+  "readingTime": 5,
+  "tags": [
+    "Wedding Premium",
+    "wedding",
+    "QR gallery",
+    "photo bingo",
+    "DJ",
+    "product update"
+  ],
+  "tldr": "Wedding Premium now combines the QR gallery with a wedding schedule, digital menu, DJ song requests, photo bingo, unlimited photos and videos, and unlimited storage and access.",
+  "content": [
+    {
+      "type": "h2",
+      "text": "What’s new in Wedding Premium?"
+    },
+    {
+      "type": "p",
+      "text": "Wedding Premium is no longer just a gallery for collecting guest photos and videos. It has grown into a digital wedding experience for the organiser, guests and DJ — all available on a phone with no extra app to install."
+    },
+    {
+      "type": "ul",
+      "items": [
+        "Unlimited photos and videos.",
+        "Unlimited storage and access time.",
+        "Wedding schedule for guests.",
+        "Digital menu.",
+        "Song requests for the DJ.",
+        "Photo bingo with guest challenges.",
+        "Live Photo Wall, ZIP download and other Premium features."
+      ]
+    },
+    {
+      "type": "h2",
+      "text": "1. Wedding schedule guests can check anytime"
+    },
+    {
+      "type": "p",
+      "text": "Add guest arrival, ceremony, photo session, dinner, first dance, cake and other moments. Guests can open the schedule from the same QR experience and quickly see what happens next."
+    },
+    {
+      "type": "h2",
+      "text": "2. Digital menu"
+    },
+    {
+      "type": "p",
+      "text": "The wedding menu sits alongside the gallery and schedule, so guests can check meal information directly from their phones."
+    },
+    {
+      "type": "image",
+      "src": "https://images.unsplash.com/photo-1519741497674-611481863552?w=1200&h=720&fit=crop&q=82&auto=format",
+      "alt": "Wedding guests seated at a reception table",
+      "credit": "Foto: Unsplash"
+    },
+    {
+      "type": "h2",
+      "text": "3. Song requests sent directly to the DJ"
+    },
+    {
+      "type": "p",
+      "text": "Guests can submit a song title, artist and their name. The DJ gets a separate protected view where requests can be accepted, marked as played or declined."
+    },
+    {
+      "type": "h2",
+      "text": "4. Photo bingo"
+    },
+    {
+      "type": "p",
+      "text": "Photo bingo turns guest photography into a game. Challenges can include the first dance, a funny moment, a group of friends or a decoration detail. Guests can upload a photo directly to a challenge and progress is tracked automatically."
+    },
+    {
+      "type": "h2",
+      "text": "5. Unlimited photos, videos and storage"
+    },
+    {
+      "type": "p",
+      "text": "Wedding Premium includes unlimited photo and video uploads plus unlimited storage and access time. The organiser can also download the gallery content as a ZIP archive at any time."
+    },
+    {
+      "type": "callout",
+      "text": "Wedding Premium is currently €84 instead of the regular €129 — 35% off for a limited time."
+    },
+    {
+      "type": "h2",
+      "text": "Everything stays connected to one QR code"
+    },
+    {
+      "type": "p",
+      "text": "Guests do not need to install an app or create an account. One QR code opens the gallery and wedding features, while the organiser manages everything from the Guestcam dashboard."
+    },
+    {
+      "type": "faq",
+      "q": "Are the new wedding features included in the same Wedding Premium package?",
+      "a": "Yes. The schedule, menu, song requests and photo bingo are included in Wedding Premium."
+    },
+    {
+      "type": "faq",
+      "q": "Can guests still use it only as a photo and video gallery?",
+      "a": "Yes. The QR gallery remains the core experience. The wedding features are optional and can be used when needed."
+    },
+    {
+      "type": "faq",
+      "q": "Are photos and videos limited?",
+      "a": "No. Wedding Premium includes unlimited photos and videos."
+    },
+    {
+      "type": "faq",
+      "q": "How long does the gallery stay available?",
+      "a": "Wedding Premium includes unlimited storage and access time."
+    },
+    {
+      "type": "faq",
+      "q": "How much does Wedding Premium cost now?",
+      "a": "The regular price is €129. The current limited-time promotional price is €84, which is 35% off."
+    },
+    {
+      "type": "cta",
+      "text": "Explore Wedding Premium",
+      "href": "/en/wedding-package"
+    }
+  ],
+  "coverImage": "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=1600&h=900&fit=crop&q=82&auto=format",
+  "coverAlt": "Wedding couple and guests celebrating in the evening"
+}
