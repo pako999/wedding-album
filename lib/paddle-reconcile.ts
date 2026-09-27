@@ -1,11 +1,12 @@
 import { db } from "@/lib/db";
 import { albums } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
+import { PREMIUM_MEDIA_LIMIT } from "@/lib/plan-entitlements";
 
 const PLAN_CONFIG: Record<string, { maxPhotos: number; daysAccess: number | null }> = {
   basic:   { maxPhotos: 1000,    daysAccess: 90  }, // 3 months
   plus:    { maxPhotos: 999_999, daysAccess: 365 }, // 1 year
-  premium: { maxPhotos: 999_999, daysAccess: null }, // no expiry
+  premium: { maxPhotos: PREMIUM_MEDIA_LIMIT, daysAccess: null }, // no expiry
 };
 
 /**
