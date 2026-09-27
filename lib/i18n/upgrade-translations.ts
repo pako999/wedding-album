@@ -106,12 +106,14 @@ export interface UpgradeCopy {
   featurePhotosUnlimited:  string; // "Unlimited photos"
   featureVideos10:         string; // "Up to 10 videos"
   featureVideos100:        string; // "Up to 100 videos"
+  featureVideosUnlimited:  string; // "Unlimited videos"
   featureQrCode:           string; // "QR code for tables"
   featureFullQuality:      string; // "Full-quality photo download"
   featureZipDownload:      string; // "Download all photos (ZIP)"
   featureAccess3mo:        string; // "3-month access"
   featureAccess1yr:        string; // "1-year access"
   featureAccess2yr:        string; // "2-year access"
+  featureAccessUnlimited:  string; // "Unlimited storage/access"
   featureLiveGallery:      string; // "Live gallery in real time"
   featureCustomPage:       string; // "Personalized page"
   featurePremiumTemplates: string; // "Premium templates"
@@ -212,12 +214,14 @@ export const UPGRADE_COPY: Record<Lang, UpgradeCopy> = {
     featurePhotosUnlimited:  "Neomejeno fotografij",
     featureVideos10:         "Do 10 videoposnetkov",
     featureVideos100:        "Do 100 videoposnetkov",
+    featureVideosUnlimited:  "Neomejeno videoposnetkov",
     featureQrCode:           "QR koda za mizo",
     featureFullQuality:      "Prenos slik v polni kakovosti",
     featureZipDownload:      "Prenos vseh slik (ZIP)",
     featureAccess3mo:        "Dostop 3 mesece",
     featureAccess1yr:        "Dostop 1 leto",
     featureAccess2yr:        "Dostop 2 leti",
+    featureAccessUnlimited:  "Neomejen čas hrambe in dostopa",
     featureLiveGallery:      "Live galerija v realnem času",
     featureCustomPage:       "Personalizirana stran",
     featurePremiumTemplates: "Premium predloge",
@@ -308,12 +312,15 @@ export const UPGRADE_COPY: Record<Lang, UpgradeCopy> = {
     featurePhotosUnlimited:  "Neograničeno fotografija",
     featureVideos10:         "Do 10 videa",
     featureVideos100:        "Do 100 videa",
+    featureVideosUnlimited:  "Neograničeno videa",
     featureQrCode:           "QR kod za stol",
     featureFullQuality:      "Preuzimanje slika u punoj kvaliteti",
     featureZipDownload:      "Preuzmi sve fotografije (ZIP)",
     featureAccess3mo:        "Pristup 3 mjeseca",
     featureAccess1yr:        "Pristup 1 godinu",
     featureAccess2yr:        "Pristup 2 godine",
+    featureAccessUnlimited:  "Neograničeno vreme čuvanja i pristupa",
+    featureAccessUnlimited:  "Neograničeno vrijeme pohrane i pristupa",
     featureLiveGallery:      "Live galerija u stvarnom vremenu",
     featureCustomPage:       "Personalizirana stranica",
     featurePremiumTemplates: "Premium predlošci",
@@ -404,6 +411,7 @@ export const UPGRADE_COPY: Record<Lang, UpgradeCopy> = {
     featurePhotosUnlimited:  "Neograničeno fotografija",
     featureVideos10:         "Do 10 video zapisa",
     featureVideos100:        "Do 100 video zapisa",
+    featureVideosUnlimited:  "Neograničeno video zapisa",
     featureQrCode:           "QR kod za sto",
     featureFullQuality:      "Preuzimanje slika u punom kvalitetu",
     featureZipDownload:      "Preuzmi sve fotografije (ZIP)",
@@ -500,12 +508,14 @@ export const UPGRADE_COPY: Record<Lang, UpgradeCopy> = {
     featurePhotosUnlimited:  "Unlimited photos",
     featureVideos10:         "Up to 10 videos",
     featureVideos100:        "Up to 100 videos",
+    featureVideosUnlimited:  "Unlimited videos",
     featureQrCode:           "QR code for tables",
     featureFullQuality:      "Full-quality photo download",
     featureZipDownload:      "Download all photos (ZIP)",
     featureAccess3mo:        "3-month access",
     featureAccess1yr:        "1-year access",
     featureAccess2yr:        "2-year access",
+    featureAccessUnlimited:  "Unlimited storage and access",
     featureLiveGallery:      "Live gallery in real time",
     featureCustomPage:       "Personalized page",
     featurePremiumTemplates: "Premium templates",
@@ -596,12 +606,14 @@ export const UPGRADE_COPY: Record<Lang, UpgradeCopy> = {
     featurePhotosUnlimited:  "Unbegrenzt Fotos",
     featureVideos10:         "Bis zu 10 Videos",
     featureVideos100:        "Bis zu 100 Videos",
+    featureVideosUnlimited:  "Unbegrenzte Videos",
     featureQrCode:           "QR-Code für den Tisch",
     featureFullQuality:      "Fotodownload in voller Qualität",
     featureZipDownload:      "Alle Fotos herunterladen (ZIP)",
     featureAccess3mo:        "3 Monate Zugang",
     featureAccess1yr:        "1 Jahr Zugang",
     featureAccess2yr:        "2 Jahre Zugang",
+    featureAccessUnlimited:  "Unbegrenzte Speicherdauer und Zugriff",
     featureLiveGallery:      "Live-Galerie in Echtzeit",
     featureCustomPage:       "Personalisierte Seite",
     featurePremiumTemplates: "Premium-Vorlagen",
@@ -692,12 +704,14 @@ export const UPGRADE_COPY: Record<Lang, UpgradeCopy> = {
     featurePhotosUnlimited:  "Fotos ilimitadas",
     featureVideos10:         "Hasta 10 vídeos",
     featureVideos100:        "Hasta 100 vídeos",
+    featureVideosUnlimited:  "Vídeos ilimitados",
     featureQrCode:           "Código QR para las mesas",
     featureFullQuality:      "Descarga de fotos en calidad completa",
     featureZipDownload:      "Descarga todas las fotos (ZIP)",
     featureAccess3mo:        "Acceso 3 meses",
     featureAccess1yr:        "Acceso 1 año",
     featureAccess2yr:        "Acceso 2 años",
+    featureAccessUnlimited:  "Almacenamiento y acceso sin vencimiento",
     featureLiveGallery:      "Galería en vivo, en tiempo real",
     featureCustomPage:       "Página personalizada",
     featurePremiumTemplates: "Plantillas premium",
@@ -748,10 +762,10 @@ export const PLAN_FEATURE_KEYS: Record<"basic" | "plus" | "premium", (keyof Upgr
   premium: [
     "featureFullQuality",
     "featurePhotosUnlimited",
-    "featureVideos100",
+    "featureVideosUnlimited",
     "featureQrCode",
     "featureZipDownload",
-    "featureAccess2yr",
+    "featureAccessUnlimited",
     "featureLiveGallery",
     "featureCustomPage",
     "featurePremiumTemplates",
