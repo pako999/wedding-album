@@ -23,3 +23,7 @@ jobs:
         run: npm run test:regression
       - name: Translation audit
         run: npm run audit:i18n
+      - name: Wedding feature regression
+        run: npm run test:wedding
+      - name: Wedding Premium offer guard
+        run: npm run test:premium-offer
