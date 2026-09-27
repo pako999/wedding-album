@@ -1,0 +1,25 @@
+name: Wedding Premium offer verification
+on:
+  push:
+    branches: [feat/wedding-premium-35-sale-unlimited-20260927]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - name: Next type generation
+        run: npx next typegen
+      - name: TypeScript
+        run: npx tsc --noEmit
+      - name: Regression checks
+        run: npm run test:regression
+      - name: Translation audit
+        run: npm run audit:i18n
