@@ -14,13 +14,14 @@ import { validateDiscount, incrementDiscountUsage } from "@/lib/discount";
 import { recordStandOrder } from "@/lib/stand-orders";
 import { checkAlbumOwnership } from "@/lib/album-ownership";
 import { normalizeCheckoutLang } from "@/lib/i18n/checkout-locale";
+import { PREMIUM_SALE_PRICE_EUR } from "@/lib/plan-pricing";
 
 export const runtime = "nodejs";
 
 const PLAN_LABELS = {
   basic:   { name: "Basic",   price: 39 },
   plus:    { name: "Plus",    price: 49 },
-  premium: { name: "Premium", price: 99 },
+  premium: { name: "Premium", price: PREMIUM_SALE_PRICE_EUR },
 } as const;
 
 type BankPlanId = keyof typeof PLAN_LABELS;
