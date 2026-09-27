@@ -3,6 +3,7 @@ import { db } from "@/lib/db";
 import { albums, photos } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { deleteStoredMedia } from "@/lib/storage/delete-media";
+import { PREMIUM_MEDIA_LIMIT } from "@/lib/plan-entitlements";
 
 // Note: Auth is handled at middleware level (x-api-key header)
 
@@ -57,11 +58,12 @@ export async function POST(req: NextRequest) {
   switch (event) {
     case "plan.upgraded": {
       const { ownerClerkId, newPlan } = data as { ownerClerkId: string; newPlan: "free" | "basic" | "plus" | "premium" };
-      const maxPhotos = newPlan === "free" ? 50 : newPlan === "premium" ? 2000 : 500;
+      const maxPhotos = newPlan === "free" ? 50 : newPlan === "premium" ? PREMIUM_MEDIA_LIMIT : 500;
+      const expiresAt = newPlan === "premium" ? null : undefined;
 
       await db
         .update(albums)
-        .set({ plan: newPlan, maxPhotos, updatedAt: new Date() })
+        .set({ plan: newPlan, maxPhotos, ...(newPlan === "premium" ? { expiresAt } : {}), updatedAt: new Date() })
         .where(eq(albums.ownerClerkId, ownerClerkId));
 
       return NextResponse.json({ ok: true });
