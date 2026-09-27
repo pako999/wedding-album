@@ -1316,7 +1316,7 @@ requireMatch(
 requireMatch(
   "homepage sitemap date reflects the latest meaningful edit",
   files.sitemap,
-  /homepage:\s*"2026-08-30"/,
+  /homepage:\s*"2026-09-26"/,
   "do not leave the homepage lastmod stale after a meaningful homepage update",
 );
 

@@ -53,12 +53,12 @@ function clampCoverPosition(value: number) {
 export function CoverPhotoSettings({ album, lang, photos, initialPositionY }: Props) {
   const copy = ADMIN_SETTINGS_COPY[lang];
   const coverDescription: Record<DashboardLang, string> = {
-    sl: "Velika slika na vrhu javne strani galerije. Izberite med naloženimi fotografijami ali naložite svojo (Plus / Premium).",
-    hr: "Velika fotografija na vrhu javne galerije. Odaberite već prenesenu fotografiju ili prenesite svoju (Plus / Premium).",
-    sr: "Velika fotografija na vrhu javne galerije. Izaberite već otpremljenu fotografiju ili otpremite svoju (Plus / Premium).",
-    en: "The large image at the top of your public gallery. Choose an uploaded photo or upload your own (Plus / Premium).",
-    de: "Das große Bild oben auf Ihrer öffentlichen Galerie. Wählen Sie ein hochgeladenes Foto oder laden Sie ein eigenes hoch (Plus / Premium).",
-    es: "La imagen grande en la parte superior de tu galería pública. Elige una foto subida o sube la tuya (Plus / Premium).",
+    sl: "Velika slika na vrhu javne strani galerije. Izberite med naloženimi fotografijami ali naložite svojo (Plus / Poročni premium).",
+    hr: "Velika fotografija na vrhu javne galerije. Odaberite već prenesenu fotografiju ili prenesite svoju (Plus / Vjenčani premium).",
+    sr: "Velika fotografija na vrhu javne galerije. Izaberite već otpremljenu fotografiju ili otpremite svoju (Plus / Venčani premium).",
+    en: "The large image at the top of your public gallery. Choose an uploaded photo or upload your own (Plus / Wedding Premium).",
+    de: "Das große Bild oben auf Ihrer öffentlichen Galerie. Wählen Sie ein hochgeladenes Foto oder laden Sie ein eigenes hoch (Plus / Hochzeits-Premium).",
+    es: "La imagen grande en la parte superior de tu galería pública. Elige una foto subida o sube la tuya (Plus / Premium para bodas).",
   };
   const coverDragHelp: Record<DashboardLang, string> = {
     sl: "Povlecite sliko v mobilnem predogledu ali izberite položaj. Celotna slika ostane vidna.",

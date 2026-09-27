@@ -234,7 +234,7 @@ export default function QrKodaPoslovniDogodekPage() {
               {
                 icon: "🏢",
                 title: "Lastna domena",
-                desc: "S Premium paketom galerijo povežete z lastno domeno (npr. foto.vase-podjetje.si) za bolj profesionalen videz.",
+                desc: "S paketom Poročni premium galerijo povežete z lastno domeno (npr. foto.vase-podjetje.si) za bolj profesionalen videz.",
               },
             ].map(({ icon, title, desc }) => (
               <div
@@ -369,7 +369,7 @@ export default function QrKodaPoslovniDogodekPage() {
               },
               {
                 q: "Ali lahko dodamo logotip podjetja ali lastno domeno?",
-                a: "S Premium paketom lahko galerijo povežete z lastno domeno (npr. foto.vase-podjetje.si) za bolj profesionalen videz na dogodku.",
+                a: "S paketom Poročni premium lahko galerijo povežete z lastno domeno (npr. foto.vase-podjetje.si) za bolj profesionalen videz na dogodku.",
               },
               {
                 q: "Ali morajo udeleženci prenesti aplikacijo?",

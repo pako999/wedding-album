@@ -1,3 +1,4 @@
+import { weddingCopy } from "@/lib/wedding/copy";
 import { localeAbsoluteUrl, SITE_URL } from "@/lib/urls";
 
 type Lang = "en" | "de" | "hr" | "sr" | "es";
@@ -65,7 +66,7 @@ export function LocalizedHomeSchema({ lang }: { lang: Lang }) {
         { "@type": "Offer", name: "Free", price: "0", priceCurrency: "EUR" },
         { "@type": "Offer", name: "Basic", price: "39", priceCurrency: "EUR" },
         { "@type": "Offer", name: "Plus", price: "49", priceCurrency: "EUR" },
-        { "@type": "Offer", name: "Premium", price: "99", priceCurrency: "EUR" },
+        { "@type": "Offer", name: weddingCopy(lang).plan, price: "99", priceCurrency: "EUR" },
       ] },
       { "@type": "HowTo", name: t.howToName, description: t.howToDescription, totalTime: "PT2M", inLanguage: t.language, step: t.steps.map(([name, text], index) => ({ "@type": "HowToStep", position: index + 1, name, text })) },
       { "@type": "FAQPage", inLanguage: t.language, mainEntity: t.faqs.map(([q, a]) => ({ "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: a } })) },

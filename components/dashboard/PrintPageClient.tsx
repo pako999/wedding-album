@@ -432,14 +432,14 @@ export function PrintPageClient({ slug, coupleName, weddingDate, location, qrUrl
                 </div>
                 <p className="text-[11px] text-gray-400 mb-3">
                   Uredite naslov, podnaslov in poziv na kartici. Na voljo v paketu{" "}
-                  <strong className="text-[#0F1729]">Premium</strong>.
+                  <strong className="text-[#0F1729]">Poročni premium</strong>.
                 </p>
                 <Link
                   href={`/dashboard/${slug}/upgrade`}
                   className="block text-center py-2.5 rounded-xl text-white text-sm font-bold transition-all hover:brightness-95"
                   style={{ background: "#FFC94D" }}
                 >
-                  Nadgradi na Premium
+                  Nadgradi na Poročni premium
                 </Link>
               </div>
             )}

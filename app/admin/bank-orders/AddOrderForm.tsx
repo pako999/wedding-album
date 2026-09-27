@@ -113,7 +113,7 @@ export function AddOrderForm() {
           >
             <option value="basic">Basic — 39€</option>
             <option value="plus">Plus — 49€</option>
-            <option value="premium">Premium — 99€</option>
+            <option value="premium">Poročni premium — 99€</option>
           </select>
         </div>
 

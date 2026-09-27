@@ -55,6 +55,7 @@ export default async function NewAlbumPage({ searchParams }: { searchParams: Pro
     clerk: clerkMetadata?.lang,
     acceptLanguage: h.get("accept-language"),
   });
+  const defaultAlbumLang = resolveDashboardLang({ requested: clerkMetadata?.defaultAlbumLang, account: lang });
   const t = GALLERY_LIMIT_COPY[lang];
   const dashboardCopy = DASHBOARD_COPY[lang];
 
@@ -135,7 +136,7 @@ export default async function NewAlbumPage({ searchParams }: { searchParams: Pro
         )}
 
         {/* Multi-step wizard */}
-        <CreateEventWizard initialPlan={initialPlan} lang={lang} />
+        <CreateEventWizard initialPlan={initialPlan} lang={lang} defaultAlbumLang={defaultAlbumLang} />
 
         <p className="text-center text-xs text-gray-400 mt-6">
           {dashboardCopy.newGalleryFootnote}

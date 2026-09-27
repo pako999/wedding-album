@@ -98,7 +98,7 @@ export function AdminAlbumRow({ slug, coupleName, ownerEmail, plan, filmTier, ma
           ))}
         </select>
         {isComp && compLabel && (
-          <p className="text-[10px] text-fuchsia-600 mt-1 font-semibold">{compLabel} → Premium</p>
+          <p className="text-[10px] text-fuchsia-600 mt-1 font-semibold">{compLabel} → Poročni premium</p>
         )}
         {filmTier !== "free" && (
           <p className="text-[10px] text-violet-600 mt-1">🎬 Film {filmTier}</p>

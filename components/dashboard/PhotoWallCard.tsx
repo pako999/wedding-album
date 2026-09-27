@@ -187,18 +187,18 @@ export function PhotoWallCard({ wallUrl, hasPassword, albumSlug, moderationEnabl
           <span className="text-lg shrink-0">★</span>
           <div className="flex-1 min-w-0">
             <p className="text-sm font-semibold" style={{ color: "#92600A" }}>
-              Foto stena je del paketa Premium
+              Foto stena je del paketa Poročni premium
             </p>
             <p className="text-xs mt-0.5" style={{ color: "#92600A" }}>
               Preizkusite jo brez omejitev — na zaslonu bo vidna opomba, da gre za predogled.
-              Z nadgradnjo na Premium opomba izgine.
+              Z nadgradnjo na Poročni premium opomba izgine.
             </p>
             <a
               href={`/dashboard/${albumSlug}/upgrade?plan=premium`}
               className="inline-block text-xs font-semibold underline mt-2"
               style={{ color: "#92600A" }}
             >
-              Nadgradi na Premium →
+              Nadgradi na Poročni premium →
             </a>
           </div>
         </div>

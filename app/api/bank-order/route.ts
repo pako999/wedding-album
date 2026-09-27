@@ -1,3 +1,4 @@
+import { weddingCopy } from "@/lib/wedding/copy";
 import { NextRequest, NextResponse } from "next/server";
 import {
   addOnTotalCents, quoteShipping, standsPriceCents,
@@ -131,7 +132,7 @@ export async function POST(req: NextRequest) {
       discountPercent = disc.percentOff;
     }
   }
-  const plan = { name: planBase.name, price: finalPrice };
+  const plan = { name: planId === "premium" ? weddingCopy(checkoutLang).plan : planBase.name, price: finalPrice };
 
   await db.insert(bankOrders).values({
     albumSlug,

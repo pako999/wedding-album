@@ -41,7 +41,7 @@ async function loadOwnedPremiumAlbum(slug: string) {
   if (album.plan !== "premium") {
     return {
       error: NextResponse.json(
-        { error: "Lastna domena je na voljo samo v paketu Premium." },
+        { error: "Lastna domena je na voljo samo v paketu Poročni premium." },
         { status: 403 }
       ),
     };

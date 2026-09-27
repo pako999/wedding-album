@@ -1,4 +1,6 @@
 "use client";
+import { WeddingSettingsCard } from "@/components/wedding/WeddingSettingsCard";
+import { weddingCopy } from "@/lib/wedding/copy";
 
 import { SITE_URL } from "@/lib/urls";
 import { useState, useEffect, useRef } from "react";
@@ -70,7 +72,7 @@ const THEME_NAME_COPY: Record<DashboardLang, Record<string, string>> = {
   es: { navy: "Azul noche", champagne: "Champán", rose: "Rosa empolvado", sage: "Salvia", charcoal: "Carbón", plum: "Ciruela", terracotta: "Terracota", ocean: "Océano", burgundy: "Burdeos", emerald: "Esmeralda", babyblue: "Azul bebé", babypink: "Rosa bebé", sunshine: "Sol", lavender: "Lavanda", slate: "Negocios" },
 };
 
-type Tab = "overview" | "gallery" | "qr" | "events" | "settings" | "pending" | "film";
+type Tab = "wedding" | "overview" | "gallery" | "qr" | "events" | "settings" | "pending" | "film";
 
 interface Props {
   album: Album;
@@ -456,7 +458,7 @@ export function AlbumAdminPanel({ album, lang, photos, pendingCount, guestCount,
   };
 
   const planLabel =
-    album.plan === "premium" ? "Premium" :
+    album.plan === "premium" ? weddingCopy(lang).plan :
     album.plan === "plus"    ? "Plus"    :
     album.plan === "basic"   ? "Basic"   :
     copy.freePlan;
@@ -481,6 +483,7 @@ export function AlbumAdminPanel({ album, lang, photos, pendingCount, guestCount,
     { id: "gallery",   label: copy.tabs.gallery, icon: "🖼" },
     { id: "film",      label: copy.tabs.film, icon: "🎬" },
     { id: "qr",        label: copy.tabs.qr, icon: "📱" },
+    { id: "wedding", label: weddingCopy(lang).nav, icon: "♡" },
     { id: "events",    label: copy.tabs.events, icon: "🎪" },
     { id: "settings",  label: copy.tabs.settings, icon: "⚙️" },
   ];
@@ -694,7 +697,7 @@ export function AlbumAdminPanel({ album, lang, photos, pendingCount, guestCount,
             </button>
             <div className="min-w-0">
               <h1 className="gc-admin-page-title text-gray-900 truncate">
-                {copy.titles[activeTab]}
+                {activeTab === "wedding" ? weddingCopy(lang).nav : copy.titles[activeTab]}
               </h1>
               <p className="text-sm text-gray-400 mt-0.5">{copy.subtitle}</p>
             </div>
@@ -840,6 +843,8 @@ export function AlbumAdminPanel({ album, lang, photos, pendingCount, guestCount,
               ownerEmail={ownerEmail ?? null}
             />
           )}
+
+          {activeTab === "wedding" && <div className="max-w-3xl"><WeddingSettingsCard slug={album.slug} lang={lang} plan={album.plan} /></div>}
 
           {/* SETTINGS */}
           {activeTab === "settings" && (
@@ -2752,7 +2757,7 @@ function CustomDomainPanel({ album, lang }: { album: Album; lang: DashboardLang 
           <span className="text-base">🌐</span>
           <h3 className="font-semibold text-gray-900">{copy.domain}</h3>
           <span className="ml-auto text-[11px] font-semibold px-2 py-0.5 rounded-full bg-rose-500 text-white">
-            Premium
+            {weddingCopy(lang).plan}
           </span>
         </div>
         <p className="text-sm text-gray-500">

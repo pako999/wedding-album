@@ -84,7 +84,7 @@ export function registrationWelcomeEmailHtml({ firstName }: RegistrationWelcomeF
         <tr><td style="padding:28px 32px 0;">
           <table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="background:#F7F8FA;border-radius:14px;border:1px solid #E5E7EB;">
             <tr><td style="padding:20px 22px;">
-              <p style="margin:0 0 6px;font-size:15px;font-weight:800;color:#111827;">💎 Želite pred nakupom preizkusiti Plus ali Premium?</p>
+              <p style="margin:0 0 6px;font-size:15px;font-weight:800;color:#111827;">💎 Želite pred nakupom preizkusiti Plus ali Poročni premium?</p>
               <p style="margin:0;font-size:14px;line-height:1.65;color:#5B6472;">
                 Pišite nam. Če želite preveriti napredne funkcije na svojem dogodku, vam lahko pred nakupom omogočimo brezplačen testni dostop.
               </p>

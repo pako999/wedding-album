@@ -101,9 +101,9 @@ export function welcomeEmailHtml({ ownerName, coupleName, weddingDate, albumSlug
         <tr><td style="padding:28px 36px 0;">
           <table width="100%" cellpadding="0" cellspacing="0" style="background:#0F1729;border-radius:14px;">
             <tr><td style="padding:22px 24px;color:#ffffff;">
-              <p style="margin:0 0 6px;font-size:11px;letter-spacing:2px;color:#FFC94D;font-weight:700;">💎 PREMIUM</p>
+              <p style="margin:0 0 6px;font-size:11px;letter-spacing:2px;color:#FFC94D;font-weight:700;">💎 POROČNI PREMIUM</p>
               <p style="margin:0 0 10px;font-size:16px;font-weight:700;">Neomejene fotografije, do 100 videoposnetkov in več</p>
-              <p style="margin:0 0 14px;font-size:13px;line-height:1.55;color:rgba(255,255,255,0.7);">Z nadgradnjo na Premium dobite neomejeno fotografij, do 100 videoposnetkov, live galerijo, personalizirano stran, premium predloge in prioritetno podporo.</p>
+              <p style="margin:0 0 14px;font-size:13px;line-height:1.55;color:rgba(255,255,255,0.7);">Z nadgradnjo na Poročni premium dobite neomejeno fotografij, do 100 videoposnetkov, live galerijo, personalizirano stran, premium predloge in prioritetno podporo.</p>
               <a href="${upgradeUrl}" style="display:inline-block;padding:11px 22px;background:#FFC94D;color:#0F1729;text-decoration:none;border-radius:10px;font-weight:700;font-size:13px;">Nadgradi paket →</a>
             </td></tr>
           </table>
@@ -683,7 +683,7 @@ const AFF_STRINGS: Record<AffiliateLocale, AffiliateStrings> = {
     promoDiscountLabel: "Popust za kupca",
     promoDiscountValue: (pct) => `${pct}% popusta na celotno naročilo`,
     promoPlansLabel: "Velja za pakete",
-    promoPlansValue: "Basic, Plus, Premium (vse plačljive pakete GuestCam)",
+    promoPlansValue: "Basic, Plus, Poročni premium (vse plačljive pakete GuestCam)",
     promoExampleHeading: "Primer popusta",
     promoExample: (code, pct) => `Kupec izbere paket Plus (49 €) in v polje »koda za popust« vnese <strong>${code}</strong>. S ${pct}% popustom plača samo ${(49 * (100 - pct) / 100).toFixed(2)} €. Vi prejmete vašo redno provizijo od te transakcije.`,
     promoShareHeading: "Predlog besedila za objavo",
@@ -729,7 +729,7 @@ const AFF_STRINGS: Record<AffiliateLocale, AffiliateStrings> = {
     promoDiscountLabel: "Customer discount",
     promoDiscountValue: (pct) => `${pct}% off the entire order`,
     promoPlansLabel: "Works on plans",
-    promoPlansValue: "Basic, Plus, Premium (all paid GuestCam plans)",
+    promoPlansValue: "Basic, Plus, Wedding Premium (all paid GuestCam plans)",
     promoExampleHeading: "Example",
     promoExample: (code, pct) => `Customer picks the Plus plan (€49) and enters <strong>${code}</strong> in the discount field. With ${pct}% off they pay only €${(49 * (100 - pct) / 100).toFixed(2)}. You still earn your regular commission on this transaction.`,
     promoShareHeading: "Suggested share text",
@@ -775,7 +775,7 @@ const AFF_STRINGS: Record<AffiliateLocale, AffiliateStrings> = {
     promoDiscountLabel: "Kundenrabatt",
     promoDiscountValue: (pct) => `${pct}% auf die gesamte Bestellung`,
     promoPlansLabel: "Gültig für Pakete",
-    promoPlansValue: "Basic, Plus, Premium (alle bezahlten GuestCam-Pakete)",
+    promoPlansValue: "Basic, Plus, Hochzeits-Premium (alle bezahlten GuestCam-Pakete)",
     promoExampleHeading: "Beispiel",
     promoExample: (code, pct) => `Der Kunde wählt das Plus-Paket (49 €) und gibt <strong>${code}</strong> im Rabattfeld ein. Mit ${pct}% Rabatt bezahlt er nur ${(49 * (100 - pct) / 100).toFixed(2)} €. Sie verdienen weiterhin Ihre reguläre Provision für diese Transaktion.`,
     promoShareHeading: "Vorgeschlagener Werbetext",
@@ -821,7 +821,7 @@ const AFF_STRINGS: Record<AffiliateLocale, AffiliateStrings> = {
     promoDiscountLabel: "Popust za kupca",
     promoDiscountValue: (pct) => `${pct}% popusta na cijelu narudžbu`,
     promoPlansLabel: "Vrijedi za pakete",
-    promoPlansValue: "Basic, Plus, Premium (svi plaćeni GuestCam paketi)",
+    promoPlansValue: "Basic, Plus, Vjenčani premium (svi plaćeni GuestCam paketi)",
     promoExampleHeading: "Primjer",
     promoExample: (code, pct) => `Kupac odabere paket Plus (49 €) i u polje za popust unese <strong>${code}</strong>. S ${pct}% popusta plaća samo ${(49 * (100 - pct) / 100).toFixed(2)} €. Vi i dalje dobivate svoju redovnu proviziju za tu transakciju.`,
     promoShareHeading: "Prijedlog teksta za dijeljenje",
@@ -867,7 +867,7 @@ const AFF_STRINGS: Record<AffiliateLocale, AffiliateStrings> = {
     promoDiscountLabel: "Popust za kupca",
     promoDiscountValue: (pct) => `${pct}% popusta na celu porudžbinu`,
     promoPlansLabel: "Važi za pakete",
-    promoPlansValue: "Basic, Plus, Premium (svi plaćeni GuestCam paketi)",
+    promoPlansValue: "Basic, Plus, Venčani premium (svi plaćeni GuestCam paketi)",
     promoExampleHeading: "Primer",
     promoExample: (code, pct) => `Kupac odabere paket Plus (49 €) i u polje za popust unese <strong>${code}</strong>. Sa ${pct}% popusta plaća samo ${(49 * (100 - pct) / 100).toFixed(2)} €. Vi i dalje dobijate svoju redovnu proviziju za tu transakciju.`,
     promoShareHeading: "Predlog teksta za deljenje",
@@ -913,7 +913,7 @@ const AFF_STRINGS: Record<AffiliateLocale, AffiliateStrings> = {
     promoDiscountLabel: "Descuento para el cliente",
     promoDiscountValue: (pct) => `${pct}% de descuento en todo el pedido`,
     promoPlansLabel: "Válido para los planes",
-    promoPlansValue: "Basic, Plus, Premium (todos los planes pagos de GuestCam)",
+    promoPlansValue: "Basic, Plus, Premium para bodas (todos los planes pagos de GuestCam)",
     promoExampleHeading: "Ejemplo",
     promoExample: (code, pct) => `El cliente elige el plan Plus (49 €) e introduce <strong>${code}</strong> en el campo de descuento. Con ${pct}% de descuento paga solo ${(49 * (100 - pct) / 100).toFixed(2)} €. Tú sigues ganando tu comisión habitual en esa transacción.`,
     promoShareHeading: "Texto sugerido para compartir",
@@ -1671,7 +1671,7 @@ const UPGRADE_COPY: Record<EmailLang, UpgradeCopy> = {
     bullets: {
       basic:   ["1.000 fotos", "90 días de acceso", "Tarjetas QR personalizadas"],
       plus:    ["Fotos ilimitadas", "1 año de acceso", "Galería en directo", "Plantillas personalizadas"],
-      premium: ["Fotos y vídeos ilimitados", "1 año de acceso", "Galería en directo + AI Film Studio", "Plantillas Premium", "Soporte prioritario"],
+      premium: ["Fotos y vídeos ilimitados", "1 año de acceso", "Galería en directo + AI Film Studio", "Plantillas Premium para bodas", "Soporte prioritario"],
     },
     cta: "Abrir el panel →",
     ctaRename: "Editar mi galería →",

@@ -6,6 +6,8 @@ import { LEAD_COPY } from "@/lib/i18n/lead-translations";
 import { GuestReferralCta } from "@/components/album/GuestReferralCta";
 
 interface Props {
+  /** Photo bingo context; never accepted without server-side challenge validation. */
+  bingoChallengeId?: string;
   albumSlug: string;
   albumId: string;
   uploaderName: string;
@@ -108,6 +110,7 @@ async function uploadFile(
   onProgress: (pct: number) => void,
   albumPassword: string,
   momentId: string | null,
+  bingoChallengeId?: string,
 ): Promise<UploadResult> {
   // Preserve the original bytes. No browser-side resize or JPEG re-encode.
   const file = rawFile;
@@ -154,6 +157,7 @@ async function uploadFile(
   if (urlData.type === "bunny-stream") {
     await uploadViaBunnyStream(file, urlData, onProgress);
     await saveUpload(albumSlug, {
+      bingoChallengeId,
       cfStreamVideoId: urlData.videoId,
       mimeType: file.type,
       originalFilename: file.name,
@@ -178,6 +182,7 @@ async function uploadFile(
     ]);
     onProgress(92);
     await saveUpload(albumSlug, {
+      bingoChallengeId,
       blobUrl: urlData.publicUrl,
       ...(dims ?? {}),
       mimeType: file.type,
@@ -203,6 +208,7 @@ async function uploadFile(
     ]);
     onProgress(92);
     await saveUpload(albumSlug, {
+      bingoChallengeId,
       blobUrl: publicUrl,
       ...(dims ?? {}),
       mimeType: file.type,
@@ -228,6 +234,7 @@ async function uploadFile(
     ]);
     onProgress(80);
     await saveUpload(albumSlug, {
+      bingoChallengeId,
       blobUrl: urlData.publicUrl,
       ...(dims ?? {}),
       mimeType: file.type,
@@ -244,6 +251,7 @@ async function uploadFile(
   if (urlData.type === "stream") {
     await uploadViaCFStream(file, urlData.uploadUrl, onProgress);
     await saveUpload(albumSlug, {
+      bingoChallengeId,
       cfStreamVideoId: urlData.videoId,
       mimeType: file.type,
       originalFilename: file.name,
@@ -274,6 +282,7 @@ async function uploadFile(
   ]);
   onProgress(88);
   await saveUpload(albumSlug, {
+      bingoChallengeId,
     blobUrl: blob.url,
     ...(dims ?? {}),
     mimeType: file.type,
@@ -513,7 +522,7 @@ async function saveUpload(slug: string, body: object, albumPassword = "") {
 
 // ── Component ─────────────────────────────────────────────────────────────────
 
-export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, currentCount, lang, onClose, onSuccess, onNameChange: _onNameChange, initialFiles, accent = "#C9820A", albumPassword = "", moments = [], defaultMomentId = null, referralCode = null, requireGuestData = false, organiserName = "", moderationEnabled = false }: Props) {
+export function UploadModal({ bingoChallengeId, albumSlug, albumId, uploaderName, maxPhotos, currentCount, lang, onClose, onSuccess, onNameChange: _onNameChange, initialFiles, accent = "#C9820A", albumPassword = "", moments = [], defaultMomentId = null, referralCode = null, requireGuestData = false, organiserName = "", moderationEnabled = false }: Props) {
   const t = translations[lang];
   const lead = LEAD_COPY[lang];
 
@@ -594,6 +603,7 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
     for (const f of Array.from(raw)) {
       if (!ALL_ACCEPTED.includes(f.type)) continue;
       const isVideo = ACCEPTED_VIDEOS.includes(f.type);
+      if (bingoChallengeId && isVideo) continue;
       const maxMB = isVideo ? MAX_VIDEO_MB : MAX_IMAGE_MB;
       if (f.size > maxMB * 1024 * 1024) continue;
       if (files.length + toAdd.length >= remaining) { dropped++; continue; }
@@ -601,7 +611,7 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
     }
     if (dropped > 0) setDroppedCount(n => n + dropped);
     setFiles(p => [...p, ...toAdd]);
-  }, [files.length, remaining]);
+  }, [files.length, remaining, bingoChallengeId]);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps, react-hooks/set-state-in-effect -- mount-once ingest
   useEffect(() => { if (initialFiles?.length) addFiles(initialFiles); }, []);
@@ -695,6 +705,7 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
           pct => updateFile(f.id, { status: "uploading", progress: pct }),
           albumPassword,
           momentId || null,
+          bingoChallengeId,
         );
         updateFile(f.id, {
           status: result.type === "duplicate" ? "skipped" : "done",
@@ -707,7 +718,7 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
         const isStall = msg === "STALL";
         updateFile(f.id, {
           status: "error",
-          error: isStall ? undefined : msg,
+          error: isStall ? undefined : bingoChallengeId && msg.startsWith("Save failed:") ? t.genericError : msg,
           progress: 0,
         });
       }
@@ -985,7 +996,7 @@ export function UploadModal({ albumSlug, albumId, uploaderName, maxPhotos, curre
                     ? { borderColor: accent, background: `${accent}14` }
                     : { borderColor: "#D1D5DB", background: "transparent" }}
                 >
-                  <input ref={inputRef} type="file" multiple accept={ALL_ACCEPTED.join(",")} className="hidden" onChange={e => e.target.files && addFiles(e.target.files)} />
+                  <input ref={inputRef} type="file" multiple accept={(bingoChallengeId ? ACCEPTED_IMAGES : ALL_ACCEPTED).join(",")} className="hidden" onChange={e => e.target.files && addFiles(e.target.files)} />
                   <div className="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3" style={{ background: `${accent}1A` }}>
                     <svg className="w-6 h-6" style={{ color: accent }} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />

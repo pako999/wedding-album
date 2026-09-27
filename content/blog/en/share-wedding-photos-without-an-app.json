@@ -194,7 +194,7 @@
     },
     {
       "type": "p",
-      "text": "The gallery stays private, reachable only by you and the guests holding the QR code. You can download every photo at original resolution — Guestcam never compresses or alters the images. The Premium plan includes:"
+      "text": "The gallery stays private, reachable only by you and the guests holding the QR code. You can download every photo at original resolution — Guestcam never compresses or alters the images. The Wedding Premium plan includes:"
     },
     {
       "type": "ul",
@@ -228,7 +228,7 @@
     {
       "type": "faq",
       "q": "How many photos can I collect?",
-      "a": "The free plan supports up to 20 photos. Premium has no limit — which is what you want for a wedding with 100+ guests."
+      "a": "The free plan supports up to 20 photos. Wedding Premium has no limit — which is what you want for a wedding with 100+ guests."
     },
     {
       "type": "faq",
@@ -238,7 +238,7 @@
     {
       "type": "faq",
       "q": "Can I see who uploads photos?",
-      "a": "You see every photo the moment it lands. Premium adds moderation — you can approve or hide any photo before the other guests see it."
+      "a": "You see every photo the moment it lands. Wedding Premium adds moderation — you can approve or hide any photo before the other guests see it."
     },
     {
       "type": "faq",
@@ -248,7 +248,7 @@
     {
       "type": "faq",
       "q": "How do I download all the guests' photos?",
-      "a": "On Premium, one click gives you a ZIP archive of every photo at original resolution, with the original metadata intact (date, time, device)."
+      "a": "On Wedding Premium, one click gives you a ZIP archive of every photo at original resolution, with the original metadata intact (date, time, device)."
     }
   ]
 }

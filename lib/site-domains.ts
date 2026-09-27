@@ -11,6 +11,7 @@ const MARKETING_LOCALES = new Set<MarketingLocale>(["sl", "hr", "sr", "de", "en"
  * language on a country domain. Keep these in the same order as the public
  * SEO clusters (guide, alternatives, then event-topic pages). */
 const LOCALIZED_ROUTE_CLUSTERS: Array<Record<MarketingLocale, string>> = [
+  {"sl": "/porocni-paket", "hr": "/hr/vjencani-paket", "sr": "/sr/vencani-paket", "en": "/en/wedding-package", "de": "/de/hochzeitspaket", "es": "/es/paquete-boda"},
   { sl: "/sl/qr-koda-poroka", hr: "/hr/qr-kod-vjencanje", sr: "/sr/qr-kod-vencanje", de: "/de/hochzeitsfotos-sammeln", en: "/en/wedding-photo-sharing", es: "/es/fotos-boda-qr" },
   { sl: "/sl/alternative-aplikacije", hr: "/hr/alternativne-aplikacije", sr: "/sr/alternativne-aplikacije", de: "/de/alternativen", en: "/en/alternatives", es: "/es/alternativas" },
   { sl: "/sl/slike-s-poroke", hr: "/hr/fotografije-s-vjencanja", sr: "/sr/slike-sa-vencanja", de: "/de/hochzeitsfotos-gaeste", en: "/en/wedding-photos-from-guests", es: "/es/fotos-boda-invitados" },

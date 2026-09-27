@@ -1,3 +1,6 @@
+import { randomUUID } from "node:crypto";
+import { bingoUploadContext } from "@/lib/wedding/server";
+import { weddingBingoSubmissions } from "@/lib/wedding/schema";
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { albums, photos, moments } from "@/lib/db/schema";
@@ -24,6 +27,7 @@ const MAX_FILENAME = 255;
 const VENUE_SAVES_PER_MINUTE = 2_000;
 
 interface SaveBody {
+  bingoChallengeId?: string;
   blobUrl?: string;
   cfStreamVideoId?: string;
   mimeType: string;
@@ -221,6 +225,13 @@ export async function POST(
     if (moment) validMomentId = moment.id;
   }
 
+  let bingo: Awaited<ReturnType<typeof bingoUploadContext>> = null;
+  if (body.bingoChallengeId) {
+    if (isVideo) return NextResponse.json({ error: "invalid" }, { status: 400 });
+    try { bingo = await bingoUploadContext(req, album, body.bingoChallengeId); }
+    catch { return NextResponse.json({ error: "unavailable" }, { status: 409 }); }
+  }
+
   const status = album.moderationEnabled ? "pending" : "published";
 
   // Reserve a quota slot atomically BEFORE inserting metadata. This closes the
@@ -248,7 +259,9 @@ export async function POST(
       ? (bunnyStreamThumbnailUrl(cfStreamVideoId) ?? undefined)
       : undefined;
 
-    const [photo] = await db.insert(photos).values({
+    const photoId = randomUUID();
+    const photoInsert = db.insert(photos).values({
+      id: photoId,
       albumId: album.id,
       momentId: validMomentId,
       uploaderName,
@@ -262,6 +275,15 @@ export async function POST(
       height: width && height ? height : null,
       status,
     }).returning();
+    // Neon HTTP batch is a transaction: no photo without its bingo submission,
+    // and no submission that points to a failed photo insert.
+    const photoRows = bingo
+      ? (await db.batch([photoInsert, db.insert(weddingBingoSubmissions).values({
+          id: randomUUID(), albumId: album.id, photoId,
+          challengeId: bingo.challengeId, guestTokenHash: bingo.guestTokenHash,
+        })]))[0]
+      : await photoInsert;
+    const photo = photoRows[0];
 
     if (album.notifyEmail && !isVideo) {
       sendNewPhotoNotification({

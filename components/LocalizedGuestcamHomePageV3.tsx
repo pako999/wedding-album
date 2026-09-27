@@ -1,3 +1,5 @@
+import { weddingCopy } from "@/lib/wedding/copy";
+import { WEDDING_PATHS } from "@/lib/wedding/contracts";
 import Image from "next/image";
 import Link from "next/link";
 import { auth } from "@clerk/nextjs/server";
@@ -265,14 +267,15 @@ export async function LocalizedGuestcamHomePageV3({ lang }: { lang: Lang }) {
               className={`relative flex min-h-[560px] flex-col rounded-[30px] p-7 ${plan.name === "Plus" ? "bg-black text-white ring-4 ring-[#F4B400] shadow-2xl" : "border border-black/10 bg-white shadow-sm"}`}
             >
               {plan.popular ? <span className="absolute -top-3 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-[#F4B400] px-4 py-1.5 text-[11px] font-black uppercase text-black">{plan.popular}</span> : null}
-              <p className="text-sm font-black uppercase tracking-[.15em]">{plan.name}</p>
+              <p className="text-sm font-black uppercase tracking-[.15em]">{plan.name === "Premium" ? weddingCopy(lang).plan : plan.name}</p>
               <p className="mt-2 text-sm opacity-50">{plan.tag}</p>
               <p className="mt-6 text-5xl font-black">{plan.price}</p>
               {plan.localPrice ? <p className="mt-2 text-sm font-bold opacity-65">{plan.localPrice}</p> : null}
               <ul className="mt-8 flex flex-1 flex-col gap-3 text-sm opacity-75">
-                {plan.features.map((feature) => <li key={feature}>✓ {feature}</li>)}
+                {[...plan.features, ...(plan.name === "Premium" ? [weddingCopy(lang).schedule, weddingCopy(lang).menu, weddingCopy(lang).songs, weddingCopy(lang).bingo] : [])].map((feature) => <li key={feature}>✓ {feature}</li>)}
               </ul>
-              <Link href={localizedAccountPath(lang, plan.name === "Free" ? "/dashboard/new" : `/dashboard/new?plan=${plan.name.toLowerCase()}`)} className={`mt-8 rounded-full px-5 py-3.5 text-center font-black ${plan.name === "Plus" ? "bg-[#F4B400] text-black" : "bg-black text-white"}`}>{plan.cta}</Link>
+              {plan.name === "Premium" && <Link href={localePublicPath(lang, WEDDING_PATHS[lang])} className="mt-5 text-sm font-bold underline underline-offset-4">{weddingCopy(lang).nav} →</Link>}
+              <Link href={localizedAccountPath(lang, plan.name === "Free" ? "/dashboard/new" : `/dashboard/new?plan=${plan.name.toLowerCase()}`)} className={`mt-8 rounded-full px-5 py-3.5 text-center font-black ${plan.name === "Plus" ? "bg-[#F4B400] text-black" : "bg-black text-white"}`}>{plan.name === "Premium" ? weddingCopy(lang).choose : plan.cta}</Link>
             </article>
           ))}
         </div>

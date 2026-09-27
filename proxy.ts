@@ -33,7 +33,7 @@ import {
 } from "@/lib/album-password-cookie";
 
 const PUBLIC_ROOTS = new Set([
-  "", "blog", "contact", "privacy", "terms", "gdpr", "cookies", "refund",
+  "", "porocni-paket", "blog", "contact", "privacy", "terms", "gdpr", "cookies", "refund",
   "admin", "dashboard", "api", "sign-in", "sign-up", "dev", "wall",
   "sl", "hr", "sr", "de", "en", "es",
   "robots.txt", "sitemap.xml", "favicon.ico", "manifest.json",

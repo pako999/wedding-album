@@ -1,4 +1,5 @@
 "use client";
+import { weddingCopy } from "@/lib/wedding/copy";
 
 import { WelcomeScreen } from "@/components/album/WelcomeScreen";
 import { useState, useRef, useEffect, useCallback, useMemo } from "react";
@@ -24,6 +25,7 @@ import { getAlbumTheme } from "@/lib/album-themes";
 import type { Album, Photo, Moment } from "@/lib/db/schema";
 
 interface Props {
+  weddingEnabled?: boolean;
   album: Album;
   photos: Photo[];
   moments: Moment[];
@@ -226,7 +228,7 @@ function AvatarBubble({ name, size = 5, accent = BRAND.accent }: { name: string;
   );
 }
 
-export function AlbumGuestView({ album, photos, moments, passwordRequired, passwordCorrect, providedPassword, initialLang, renderedAt, isOwner = false, requireGuestData = false, eventFlags, appearance, headerVisibility }: Props) {
+export function AlbumGuestView({ weddingEnabled = false, album, photos, moments, passwordRequired, passwordCorrect, providedPassword, initialLang, renderedAt, isOwner = false, requireGuestData = false, eventFlags, appearance, headerVisibility }: Props) {
   // Event permission gates. UI-side only — the real doors are in the
   // upload and like APIs; this keeps the guest page honest about them.
   const canUpload = eventFlags?.albumPermission !== "view_only";
@@ -967,6 +969,8 @@ export function AlbumGuestView({ album, photos, moments, passwordRequired, passw
           </div>
         )}
       </div>
+
+      {weddingEnabled && <div className="border-b border-amber-200 bg-amber-50 px-4 py-4 text-center"><a href={`/${album.slug}/wedding?lang=${lang}`} className="inline-flex min-h-11 items-center gap-3 rounded-full bg-stone-900 px-6 py-3 text-sm font-bold text-white">{weddingCopy(lang).nav} <span aria-hidden>→</span></a><p className="mt-2 text-xs text-stone-600">{weddingCopy(lang).schedule} · {weddingCopy(lang).menu} · {weddingCopy(lang).songs} · {weddingCopy(lang).bingo}</p></div>}
 
       {/* ════════════════════════════════════════════════════════════════════
           STICKY TOOLBAR

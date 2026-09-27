@@ -37,7 +37,7 @@ export default async function AdminDiscounts() {
             <tr className="text-left text-xs uppercase tracking-wide text-gray-400 border-b border-gray-100">
               <th className="px-4 py-3 font-medium">Koda</th>
               <th className="px-4 py-3 font-medium">Popust</th>
-              <th className="px-4 py-3 font-medium">Cena (Basic / Plus / Premium)</th>
+              <th className="px-4 py-3 font-medium">Cena (Basic / Plus / Poročni premium)</th>
               <th className="px-4 py-3 font-medium">Poraba</th>
               <th className="px-4 py-3 font-medium">Velja do</th>
               <th className="px-4 py-3 font-medium">Status</th>
