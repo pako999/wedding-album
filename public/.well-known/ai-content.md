@@ -29,7 +29,7 @@ stored in the EU.
 - **Free** — up to 20 photos, 30-day access, feature preview
 - **Basic** — €39 · up to 1000 photos, 10 videos, 3-month access
 - **Plus** — €49 · up to 5000 photos, 100 videos, 1-year access, live gallery, custom page, premium templates
-- **Premium** — €99 · unlimited photos, 100 videos, 2-year access, cinematic AI film, custom QR-card text, priority support
+- **Wedding Premium** — €84 promotional price (regular €129, 35% off for a limited time) · unlimited photos and videos · unlimited storage/access · wedding schedule · menu · song requests · photo bingo · live wall · cinematic AI film · custom QR-card text · priority support
 
 All plans are one-time payments (no subscription), include VAT, and
 carry a 30-day money-back guarantee. Payment by card or bank transfer.
