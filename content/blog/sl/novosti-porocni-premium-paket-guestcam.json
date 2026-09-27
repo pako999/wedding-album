@@ -1,0 +1,133 @@
+{
+  "slug": "novosti-porocni-premium-paket-guestcam",
+  "lang": "sl",
+  "title": "Novosti v Poročnem premium paketu: program, jedilnik, glasbene želje in foto bingo",
+  "description": "Guestcam Poročni premium je dobil nove interaktivne funkcije za poroke: program dneva, digitalni jedilnik, glasbene želje za DJ-ja, fotografski bingo ter neomejene fotografije, videe in hrambo.",
+  "translationKey": "wedding-premium-new-features-2026",
+  "publishedAt": "2026-09-27",
+  "updatedAt": "2026-09-27",
+  "author": "Guestcam Team",
+  "category": "novice",
+  "readingTime": 5,
+  "tags": [
+    "Poročni premium",
+    "poroka",
+    "QR galerija",
+    "fotografski bingo",
+    "DJ",
+    "novosti"
+  ],
+  "tldr": "Poročni premium zdaj združuje QR galerijo z interaktivnim poročnim programom, jedilnikom, glasbenimi željami, foto bingom ter neomejenimi fotografijami, videi in časom hrambe.",
+  "content": [
+    {
+      "type": "h2",
+      "text": "Kaj je novega v Poročnem premium paketu?"
+    },
+    {
+      "type": "p",
+      "text": "Poročni premium ni več samo galerija za zbiranje fotografij in videov. Paket je razširjen v digitalno poročno izkušnjo, ki jo lahko uporabljajo organizator, gostje in DJ — vse prek telefona in brez dodatne aplikacije."
+    },
+    {
+      "type": "ul",
+      "items": [
+        "Neomejeno fotografij in videoposnetkov.",
+        "Neomejen čas hrambe in dostopa do galerije.",
+        "Program poroke za goste.",
+        "Digitalni jedilnik.",
+        "Glasbene želje za DJ-ja.",
+        "Fotografski bingo z izzivi za goste.",
+        "Live Photo Wall, ZIP prenos in druge Premium funkcije."
+      ]
+    },
+    {
+      "type": "h2",
+      "text": "1. Program poroke vedno pri roki"
+    },
+    {
+      "type": "p",
+      "text": "V album lahko dodate potek dneva: prihod gostov, obred, fotografiranje, večerjo, prvi ples, torto in druge točke. Gostje odprejo poročni meni prek istega QR okolja in hitro preverijo, kaj sledi."
+    },
+    {
+      "type": "h2",
+      "text": "2. Digitalni jedilnik"
+    },
+    {
+      "type": "p",
+      "text": "Jedilnik je del poročnega paketa, zato ga lahko gostje pogledajo neposredno na telefonu. Tako lahko na enem mestu združite poročni program, galerijo in informacije o meniju."
+    },
+    {
+      "type": "image",
+      "src": "https://images.unsplash.com/photo-1519741497674-611481863552?w=1200&h=720&fit=crop&q=82&auto=format",
+      "alt": "Poročni gostje pri mizi z digitalnimi informacijami dogodka",
+      "credit": "Foto: Unsplash"
+    },
+    {
+      "type": "h2",
+      "text": "3. Glasbene želje neposredno za DJ-ja"
+    },
+    {
+      "type": "p",
+      "text": "Gostje lahko pošljejo naslov skladbe, izvajalca in svoje ime. DJ ima ločen zaščiten pogled, kjer lahko želje vidi ter jih označi kot sprejete, predvajane ali zavrnjene."
+    },
+    {
+      "type": "h2",
+      "text": "4. Fotografski bingo"
+    },
+    {
+      "type": "p",
+      "text": "Fotografski bingo spremeni nalaganje fotografij v igro. Gostje dobijo izzive, na primer fotografijo prvega plesa, smešnega trenutka, skupine prijateljev ali detajla dekoracije. Fotografijo lahko naložijo neposredno k izzivu, sistem pa beleži opravljene naloge."
+    },
+    {
+      "type": "h2",
+      "text": "5. Neomejene fotografije, videi in hramba"
+    },
+    {
+      "type": "p",
+      "text": "Poročni premium vključuje neomejeno nalaganje fotografij in videoposnetkov ter neomejen čas hrambe in dostopa. Po dogodku lahko organizator vse vsebine kadarkoli prenese tudi v ZIP arhivu."
+    },
+    {
+      "type": "callout",
+      "text": "Trenutna promocijska cena Poročnega premium paketa je 84 € namesto rednih 129 € — 35 % popust za omejen čas."
+    },
+    {
+      "type": "h2",
+      "text": "Vse ostane povezano z vašo QR kodo"
+    },
+    {
+      "type": "p",
+      "text": "Gostom ni treba nameščati aplikacije ali ustvarjati računa. Ena QR koda jih pripelje do galerije in poročnih funkcij, organizator pa vse upravlja iz svojega Guestcam administratorskega panela."
+    },
+    {
+      "type": "faq",
+      "q": "Ali so nove poročne funkcije vključene v isti Poročni premium paket?",
+      "a": "Da. Program, jedilnik, glasbene želje in fotografski bingo so del Poročnega premium paketa."
+    },
+    {
+      "type": "faq",
+      "q": "Ali lahko gostje še vedno samo naložijo fotografije in videe?",
+      "a": "Da. Klasična QR galerija ostaja osnova paketa. Poročne funkcije so dodatne in jih organizator uporablja po želji."
+    },
+    {
+      "type": "faq",
+      "q": "Ali je število fotografij in videov omejeno?",
+      "a": "Ne. Poročni premium vključuje neomejeno fotografij in videoposnetkov."
+    },
+    {
+      "type": "faq",
+      "q": "Kako dolgo ostane galerija dostopna?",
+      "a": "Poročni premium vključuje neomejen čas hrambe in dostopa."
+    },
+    {
+      "type": "faq",
+      "q": "Koliko trenutno stane Poročni premium?",
+      "a": "Redna cena je 129 €, trenutna promocijska cena pa 84 € oziroma 35 % manj za omejen čas."
+    },
+    {
+      "type": "cta",
+      "text": "Oglejte si Poročni premium",
+      "href": "/porocni-paket"
+    }
+  ],
+  "coverImage": "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=1600&h=900&fit=crop&q=82&auto=format",
+  "coverAlt": "Poročni par in gostje na večernem slavju"
+}
