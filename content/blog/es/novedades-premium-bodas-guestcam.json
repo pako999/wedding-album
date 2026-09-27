@@ -1,0 +1,133 @@
+{
+  "slug": "novedades-premium-bodas-guestcam",
+  "lang": "es",
+  "title": "Novedades en Premium para bodas: programa, menú, canciones y bingo fotográfico",
+  "description": "Guestcam Premium para bodas ahora incluye programa del evento, menú digital, peticiones de canciones para el DJ, bingo fotográfico, fotos y vídeos ilimitados y almacenamiento sin vencimiento.",
+  "translationKey": "wedding-premium-new-features-2026",
+  "publishedAt": "2026-09-27",
+  "updatedAt": "2026-09-27",
+  "author": "Guestcam Team",
+  "category": "novice",
+  "readingTime": 5,
+  "tags": [
+    "Premium para bodas",
+    "boda",
+    "galería QR",
+    "bingo fotográfico",
+    "DJ",
+    "novedades"
+  ],
+  "tldr": "Premium para bodas ahora combina la galería QR con programa de boda, menú digital, peticiones de canciones, bingo fotográfico, fotos y vídeos ilimitados y almacenamiento sin vencimiento.",
+  "content": [
+    {
+      "type": "h2",
+      "text": "¿Qué hay de nuevo en Premium para bodas?"
+    },
+    {
+      "type": "p",
+      "text": "Premium para bodas ya no es solo una galería para recopilar fotos y vídeos. Ahora funciona como una experiencia digital para los organizadores, los invitados y el DJ, directamente desde el móvil y sin instalar ninguna aplicación."
+    },
+    {
+      "type": "ul",
+      "items": [
+        "Fotos y vídeos ilimitados.",
+        "Almacenamiento y acceso sin vencimiento.",
+        "Programa de la boda para los invitados.",
+        "Menú digital.",
+        "Peticiones de canciones para el DJ.",
+        "Bingo fotográfico con retos para los invitados.",
+        "Live Photo Wall, descarga ZIP y otras funciones Premium."
+      ]
+    },
+    {
+      "type": "h2",
+      "text": "1. Programa de la boda siempre disponible"
+    },
+    {
+      "type": "p",
+      "text": "Añade llegada de invitados, ceremonia, sesión de fotos, cena, primer baile, tarta y otros momentos. Los invitados consultan el programa desde la misma experiencia QR."
+    },
+    {
+      "type": "h2",
+      "text": "2. Menú digital"
+    },
+    {
+      "type": "p",
+      "text": "El menú se puede consultar directamente desde el móvil y queda integrado junto a la galería y el programa del evento."
+    },
+    {
+      "type": "image",
+      "src": "https://images.unsplash.com/photo-1519741497674-611481863552?w=1200&h=720&fit=crop&q=82&auto=format",
+      "alt": "Invitados sentados en una mesa durante una boda",
+      "credit": "Foto: Unsplash"
+    },
+    {
+      "type": "h2",
+      "text": "3. Peticiones de canciones directamente al DJ"
+    },
+    {
+      "type": "p",
+      "text": "Los invitados envían título, artista y su nombre. El DJ dispone de una vista protegida donde puede aceptar una petición, marcarla como reproducida o rechazarla."
+    },
+    {
+      "type": "h2",
+      "text": "4. Bingo fotográfico"
+    },
+    {
+      "type": "p",
+      "text": "El bingo fotográfico convierte las fotos de los invitados en un juego. Los retos pueden incluir el primer baile, un momento divertido, un grupo de amigos o un detalle de decoración. Cada foto puede subirse directamente al reto correspondiente."
+    },
+    {
+      "type": "h2",
+      "text": "5. Fotos, vídeos y almacenamiento ilimitados"
+    },
+    {
+      "type": "p",
+      "text": "Premium para bodas incluye cargas ilimitadas de fotos y vídeos y almacenamiento y acceso sin vencimiento. El organizador también puede descargar el contenido en ZIP cuando quiera."
+    },
+    {
+      "type": "callout",
+      "text": "Premium para bodas cuesta ahora 84 € en lugar del precio habitual de 129 € — 35 % de descuento por tiempo limitado."
+    },
+    {
+      "type": "h2",
+      "text": "Todo conectado con un solo código QR"
+    },
+    {
+      "type": "p",
+      "text": "Los invitados no necesitan instalar una app ni crear una cuenta. Un solo QR abre la galería y las funciones de boda, mientras el organizador lo gestiona todo desde el panel de Guestcam."
+    },
+    {
+      "type": "faq",
+      "q": "¿Las nuevas funciones están incluidas en el mismo paquete?",
+      "a": "Sí. El programa, el menú, las peticiones de canciones y el bingo fotográfico están incluidos en Premium para bodas."
+    },
+    {
+      "type": "faq",
+      "q": "¿Los invitados pueden usarlo solo para subir fotos y vídeos?",
+      "a": "Sí. La galería QR sigue siendo la base. Las funciones adicionales son opcionales."
+    },
+    {
+      "type": "faq",
+      "q": "¿Hay límite de fotos o vídeos?",
+      "a": "No. Premium para bodas incluye fotos y vídeos ilimitados."
+    },
+    {
+      "type": "faq",
+      "q": "¿Cuánto tiempo permanece disponible la galería?",
+      "a": "Premium para bodas incluye almacenamiento y acceso sin vencimiento."
+    },
+    {
+      "type": "faq",
+      "q": "¿Cuánto cuesta ahora Premium para bodas?",
+      "a": "El precio habitual es 129 €. La promoción actual es 84 €, un 35 % menos por tiempo limitado."
+    },
+    {
+      "type": "cta",
+      "text": "Ver Premium para bodas",
+      "href": "/es/paquete-boda"
+    }
+  ],
+  "coverImage": "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=1600&h=900&fit=crop&q=82&auto=format",
+  "coverAlt": "Pareja de novios e invitados celebrando por la noche"
+}
