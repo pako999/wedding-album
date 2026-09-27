@@ -80,10 +80,13 @@ export default async function AlbumAdminPage({ params, searchParams }: Props) {
   // every mutation path.
   let viewerEmails: string[] = [];
   let clerkPreferredLang: unknown;
+  let clerkDashboardLang: unknown;
   try {
     const u = await currentUser();
     viewerEmails = verifiedEmails(u);
-    clerkPreferredLang = (u?.publicMetadata as Record<string, unknown> | undefined)?.lang;
+    const metadata = u?.publicMetadata as Record<string, unknown> | undefined;
+    clerkPreferredLang = metadata?.lang;
+    clerkDashboardLang = metadata?.dashboardLang;
   } catch {
     // ignore — fall back to ID-only match
   }
@@ -91,6 +94,8 @@ export default async function AlbumAdminPage({ params, searchParams }: Props) {
   const dashboardLang = resolveDashboardLang({
     requested: requestedLang,
     saved: cookieStore.get(DASHBOARD_LANG_COOKIE)?.value,
+    account: clerkDashboardLang,
+    country: requestHeaders.get("x-vercel-ip-country"),
     clerk: clerkPreferredLang,
     acceptLanguage: requestHeaders.get("accept-language"),
   });
