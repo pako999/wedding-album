@@ -82,7 +82,7 @@ export async function GuestcamHomePage() {
     <section className="relative border-b border-black/10">
       <div className="mx-auto grid max-w-[1440px] gap-10 px-5 pb-12 pt-10 sm:gap-14 sm:px-8 sm:py-20 lg:grid-cols-[.9fr_1.1fr] lg:items-center lg:py-24">
         <div className="relative z-10">
-          <div className="inline-flex rounded-full border border-black/10 bg-white px-4 py-2 text-xs font-black uppercase tracking-[.15em] text-black/55 shadow-sm">QR koda za poroko · fotografije gostov</div>
+          <div className="inline-flex rounded-full border border-black/10 bg-white px-4 py-2 text-xs font-black uppercase tracking-[.15em] text-black/55 shadow-sm">QR koda za poroko · baby shower · rojstni dnevi · dogodki · fotografije gostov</div>
           <h1 className="mt-6 max-w-[760px] text-[clamp(2.8rem,13vw,6.7rem)] font-black leading-[1.07] tracking-[-.05em] sm:mt-7 sm:leading-[1.02] sm:tracking-[-.065em]">Vse fotografije gostov.<span className="mt-3 block text-[#B88700] sm:mt-2">En sam album.</span></h1>
           <p className="mt-5 max-w-2xl text-[17px] leading-7 text-black/60 sm:mt-7 sm:text-xl sm:leading-8">Gostje skenirajo QR kodo in dodajo fotografije ter videe neposredno v vašo zasebno Guestcam galerijo, brez aplikacije in registracije.</p>
           <div className="mt-7 flex flex-col gap-3 sm:mt-9 sm:flex-row"><Link href="/dashboard/new" className="rounded-full bg-[#F4B400] px-8 py-4 text-center text-base font-black text-black shadow-[0_12px_30px_rgba(244,180,0,.25)]">Začni brezplačno →</Link><Link href="/demo" className="rounded-full border border-black/15 bg-white px-8 py-4 text-center text-base font-bold hover:bg-black hover:text-white">Poglej demo</Link></div>
