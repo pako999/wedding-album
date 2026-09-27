@@ -7,6 +7,7 @@ import { requireAdmin } from "@/lib/admin";
 import { sendAccountUpgradedEmail } from "@/lib/email/notifications";
 import { verifiedEmails } from "@/lib/album-ownership";
 import { albumOwnerWhere } from "@/lib/album-limits";
+import { PREMIUM_MEDIA_LIMIT } from "@/lib/plan-entitlements";
 
 type EmailLang = "sl" | "hr" | "sr" | "de" | "en" | "es";
 const SUPPORTED_LANGS: EmailLang[] = ["sl", "hr", "sr", "de", "en", "es"];
@@ -59,9 +60,9 @@ const PLAN_CONFIG: Record<AdminPlan, {
   free:       { effectivePlan: "free",    maxPhotos: 20,      daysAccess: 30,  filmTier: "free"    },
   basic:      { effectivePlan: "basic",   maxPhotos: 1000,    daysAccess: 90,  filmTier: "free"    },
   plus:       { effectivePlan: "plus",    maxPhotos: 999_999, daysAccess: 365, filmTier: "free"    },
-  premium:    { effectivePlan: "premium", maxPhotos: 999_999, daysAccess: 365, filmTier: "premium" },
-  influencer: { effectivePlan: "premium", maxPhotos: 999_999, daysAccess: 365, compTag: "comp:influencer", filmTier: "premium" },
-  sponsor:    { effectivePlan: "premium", maxPhotos: 999_999, daysAccess: 365, compTag: "comp:sponsor",    filmTier: "premium" },
+  premium:    { effectivePlan: "premium", maxPhotos: PREMIUM_MEDIA_LIMIT, daysAccess: null, filmTier: "premium" },
+  influencer: { effectivePlan: "premium", maxPhotos: PREMIUM_MEDIA_LIMIT, daysAccess: null, compTag: "comp:influencer", filmTier: "premium" },
+  sponsor:    { effectivePlan: "premium", maxPhotos: PREMIUM_MEDIA_LIMIT, daysAccess: null, compTag: "comp:sponsor",    filmTier: "premium" },
 };
 
 function slugify(text: string): string {
@@ -111,7 +112,7 @@ export async function POST(
       plan: config.effectivePlan,
       maxPhotos: config.maxPhotos,
       filmTier: config.filmTier,
-      expiresAt: expiresAt ?? undefined,
+      expiresAt,
       ...sessionIdUpdate,
     })
     .where(ownerWhere)
@@ -146,7 +147,7 @@ export async function POST(
           plan: config.effectivePlan,
           maxPhotos: config.maxPhotos,
           filmTier: config.filmTier,
-          expiresAt: expiresAt ?? undefined,
+          expiresAt,
           stripeSessionId: config.compTag ?? `admin-grant:${clerkId}`,
           moderationEnabled: false,
         })

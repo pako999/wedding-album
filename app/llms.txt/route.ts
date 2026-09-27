@@ -89,7 +89,7 @@ export function GET() {
 - **Brezplačno** — do 20 fotografij, dostop 30 dni, osnovne funkcije za preizkus.
 - **Basic — 39 €** — do 1000 fotografij, do 10 videoposnetkov, dostop 3 mesece, prenos vseh fotografij v ZIP.
 - **Plus — 49 €** (najbolj priljubljen) — do 5000 fotografij, do 100 videoposnetkov, dostop 1 leto, Foto stena, personalizirana stran, e-mail obvestila.
-- **Poročni premium — 99 €** — neomejeno fotografij, do 100 videoposnetkov, dostop 2 leti, Foto stena, Film Studio, premium predloge, prioritetna podpora.
+- **Poročni premium — 84 €** (redna cena 129 €, −35 % za omejen čas) — neomejeno fotografij in videoposnetkov, neomejen čas hrambe in dostopa, Foto stena, Film Studio, poročni program, jedilnik, glasbene želje, fotografski bingo, premium predloge in prioritetna podpora.
 
 Vsi paketi so **enkratno plačilo, brez naročnine**. 30-dnevna garancija vračila denarja. Vključen DDV. Plačilo s kartico ali predračun / bančno nakazilo. Paket velja za posamezno galerijo.
 
@@ -119,7 +119,7 @@ Da. Foto stena prikazuje nove fotografije v živo na TV-ju ali projektorju, z la
 Da. QR kartice in namizne podstavke (lesene ali zlate) natisnemo in dostavimo, že od ${standFrom} na kos, ob nakupu paketa.
 
 **Koliko stane?**
-Osnovna uporaba brezplačna (do 20 fotografij, 30 dni). Plačljivi paketi enkratno plačilo: Basic 39 €, Plus 49 €, Poročni premium 99 €. 30-dnevna garancija vračila denarja.
+Osnovna uporaba brezplačna (do 20 fotografij, 30 dni). Plačljivi paketi enkratno plačilo: Basic 39 €, Plus 49 €, Poročni premium 84 € (redna cena 129 €, −35 % za omejen čas). 30-dnevna garancija vračila denarja.
 
 **Kje se hranijo podatki?**
 V EU. Galerija je privzeto zasebna, lahko zaščitena z geslom. GDPR skladno.

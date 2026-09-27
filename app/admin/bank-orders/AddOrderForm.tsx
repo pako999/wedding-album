@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 import { addManualOrder } from "./actions";
+import { PREMIUM_SALE_PRICE_EUR } from "@/lib/plan-pricing";
 
-const PLAN_PRICES: Record<string, number> = { basic: 39, plus: 49, premium: 99 };
+const PLAN_PRICES: Record<string, number> = { basic: 39, plus: 49, premium: PREMIUM_SALE_PRICE_EUR };
 
 export function AddOrderForm() {
   const [open, setOpen]       = useState(false);

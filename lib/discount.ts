@@ -1,11 +1,12 @@
 import { db } from "@/lib/db";
 import { discountCodes } from "@/lib/db/schema";
 import { and, eq, isNull, or, sql } from "drizzle-orm";
+import { PREMIUM_SALE_PRICE_EUR } from "@/lib/plan-pricing";
 
 export const PLAN_PRICES: Record<string, number> = {
   basic:   39,
   plus:    49,
-  premium: 99,
+  premium: PREMIUM_SALE_PRICE_EUR,
 };
 
 export interface DiscountResult {

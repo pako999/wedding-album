@@ -196,10 +196,10 @@
     {
       "type": "ul",
       "items": [
-        "Neograničen broj fotografija i do 100 videozapisa",
+        "Neograničen broj fotografija i videozapisa",
         "Live galerija uživo za projekciju na ekranu za vrijeme večeri",
         "ZIP preuzimanje svih sadržaja jednim klikom",
-        "Pristup galeriji do 2 godine",
+        "Neograničeno vrijeme pohrane i pristupa",
         "Moderacija — vi odobravate koje fotografije su vidljive svima"
       ]
     },
@@ -225,7 +225,7 @@
     {
       "type": "faq",
       "q": "Koliko fotografija mogu skupiti?",
-      "a": "Besplatni plan uključuje jedan događaj, jednu galeriju, do 20 fotografija i jedan videozapis uz pristup 30 dana. Vjenčani premium podržava neograničen broj fotografija i do 100 videozapisa."
+      "a": "Besplatni plan uključuje jedan događaj, jednu galeriju, do 20 fotografija i jedan videozapis uz pristup 30 dana. Vjenčani premium podržava neograničen broj fotografija i videozapisa bez vremenskog ograničenja pohrane."
     },
     {
       "type": "faq",

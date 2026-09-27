@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --port 3001",
-    "build": "npm run test:regression && npm run audit:i18n && npm run test:wedding && npm run db:migrate:wedding && next build",
+    "build": "npm run test:regression && npm run audit:i18n && npm run test:wedding && npm run test:premium-offer && npm run db:migrate:wedding && next build",
     "start": "next start --port 3001",
     "lint": "eslint",
     "test": "npm run test:regression",
@@ -15,6 +15,7 @@
     "db:setup": "tsx scripts/setup-db.ts",
     "db:studio": "drizzle-kit studio",
     "test:wedding": "node scripts/wedding-regression.mjs",
+    "test:premium-offer": "node scripts/wedding-premium-offer-check.mjs",
     "db:migrate:wedding": "node scripts/migrate-wedding-premium.mjs"
   },
   "dependencies": {

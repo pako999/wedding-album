@@ -13,6 +13,7 @@ import { translations, type Lang } from "@/lib/i18n/translations";
 import { UPGRADE_COPY, PLAN_FEATURE_KEYS } from "@/lib/i18n/upgrade-translations";
 import { checkoutRegionName } from "@/lib/i18n/checkout-locale";
 import { DASHBOARD_COPY } from "@/lib/i18n/dashboard-language";
+import { PREMIUM_REGULAR_PRICE_EUR, PREMIUM_SALE_PERCENT, PREMIUM_SALE_PRICE_EUR } from "@/lib/plan-pricing";
 import {
   SHIPPING_COUNTRIES, STAND_VARIANTS, DEFAULT_STAND_QTY, DEFAULT_STAND_VARIANT,
   MAX_STAND_QTY, VOLUME_BREAKS, LEAD_TIME_DAYS, quoteShipping, standsPriceCents, effectiveUnitCents,
@@ -35,7 +36,7 @@ interface PlanMeta {
 const PLANS: PlanMeta[] = [
   { id: "basic",   name: "Basic",   price: 39 },
   { id: "plus",    name: "Plus",    price: 49, hasBadge: true },
-  { id: "premium", name: "Premium", price: 99 },
+  { id: "premium", name: "Premium", price: PREMIUM_SALE_PRICE_EUR },
 ];
 
 interface Props {
@@ -225,6 +226,7 @@ export function UpgradePage({ album, lang = "sl", initialDiscount = null }: Prop
           <div className="grid grid-cols-1 gap-3 mb-6">
             {plans.map((plan) => {
               const isSelected = selectedPlan === plan.id;
+              const isPremium = plan.id === "premium";
               const features = PLAN_FEATURE_KEYS[plan.id as "basic" | "plus" | "premium"];
               const canCollapse = features.length > 6;
               const isExpanded = expandedPlans[plan.id] === true;
@@ -232,10 +234,10 @@ export function UpgradePage({ album, lang = "sl", initialDiscount = null }: Prop
               return (
                 <div
                   key={plan.id}
-                  className="w-full rounded-2xl border-2 bg-white transition-all overflow-hidden"
+                  className={`w-full rounded-2xl border-2 transition-all overflow-hidden ${isPremium ? "bg-[#111111] text-white" : "bg-white"}`}
                   style={{
-                    borderColor: isSelected ? "#FFC94D" : "#e5e7eb",
-                    boxShadow: isSelected ? "0 0 0 3px rgba(255,201,77,0.15)" : "none",
+                    borderColor: isPremium ? "#F4B400" : isSelected ? "#FFC94D" : "#e5e7eb",
+                    boxShadow: isPremium ? "0 14px 40px rgba(0,0,0,.18), 0 0 0 3px rgba(244,180,0,.16)" : isSelected ? "0 0 0 3px rgba(255,201,77,0.15)" : "none",
                   }}
                 >
                   <button
@@ -258,30 +260,37 @@ export function UpgradePage({ album, lang = "sl", initialDiscount = null }: Prop
                     {/* Label */}
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 flex-wrap">
-                        <span className="text-lg leading-6 font-bold text-gray-900">{plan.name}</span>
+                        <span className={`text-lg leading-6 font-bold ${isPremium ? "text-white" : "text-gray-900"}`}>{plan.name}</span>
                         {plan.hasBadge && (
                           <span className="text-[11px] leading-5 font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full" style={{ background: "#FFC94D", color: "#0F1729" }}>
                             {u.badgeRecommended}
                           </span>
                         )}
                       </div>
-                      <p className="mt-0.5 text-sm leading-5 font-medium text-gray-600">{planTagline(plan.id)}</p>
+                      <p className={`mt-0.5 text-sm leading-5 font-medium ${isPremium ? "text-white/65" : "text-gray-600"}`}>{planTagline(plan.id)}</p>
                     </div>
 
                     {/* Price */}
                     <div className="text-right flex-shrink-0">
-                      <span className="text-2xl leading-7 font-extrabold text-gray-900">{plan.price}€</span>
-                      <p className="mt-1 text-sm leading-5 font-medium text-gray-600">{u.vatIncluded}</p>
+                      {isPremium ? <>
+                        <span className="inline-flex rounded-full bg-[#F4B400] px-2.5 py-1 text-[10px] font-black uppercase text-black">−{PREMIUM_SALE_PERCENT}%</span>
+                        <p className="mt-1 text-xs font-semibold text-white/45 line-through">{PREMIUM_REGULAR_PRICE_EUR}€</p>
+                        <span className="text-2xl leading-7 font-extrabold text-[#F4B400]">{plan.price}€</span>
+                        <p className="mt-1 text-[11px] font-bold uppercase tracking-wide text-[#F4B400]">{wedding.limitedOffer.replace(/^−35\s*%?\s*·\s*/,"")}</p>
+                      </> : <>
+                        <span className="text-2xl leading-7 font-extrabold text-gray-900">{plan.price}€</span>
+                        <p className="mt-1 text-sm leading-5 font-medium text-gray-600">{u.vatIncluded}</p>
+                      </>}
                     </div>
                   </button>
 
                   {isSelected && plan.id !== "free" && (
                     <div className="px-5 pb-5">
-                      {plan.id === "premium" && <div className="mb-4 grid gap-2 rounded-xl bg-amber-50 p-4 text-sm font-semibold text-stone-800">{[wedding.schedule,wedding.menu,wedding.songs,wedding.bingo].map(label => <p key={label}>✓ {label}</p>)}</div>}
-                      <ul className="border-t border-gray-100 pt-4 space-y-2.5">
+                      {plan.id === "premium" && <div className="mb-4 grid gap-2 rounded-xl border border-[#F4B400]/40 bg-[#F4B400]/10 p-4 text-sm font-semibold text-white">{[wedding.schedule,wedding.menu,wedding.songs,wedding.bingo].map(label => <p key={label} className="flex gap-2"><span className="text-[#F4B400]">✓</span>{label}</p>)}</div>}
+                      <ul className={`border-t pt-4 space-y-2.5 ${isPremium ? "border-white/10" : "border-gray-100"}`}>
                         {visibleFeatures.map((fk) => (
-                          <li key={fk} className="flex items-start gap-3 text-[17px] leading-6 font-medium text-gray-700">
-                            <svg className="mt-0.5 w-5 h-5 text-green-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+                          <li key={fk} className={`flex items-start gap-3 text-[17px] leading-6 font-medium ${isPremium ? "text-white/80" : "text-gray-700"}`}>
+                            <svg className={`mt-0.5 w-5 h-5 flex-shrink-0 ${isPremium ? "text-[#F4B400]" : "text-green-600"}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
                               <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                             </svg>
                             <span>{u[fk] as string}</span>
@@ -297,7 +306,7 @@ export function UpgradePage({ album, lang = "sl", initialDiscount = null }: Prop
                             ...current,
                             [plan.id]: !isExpanded,
                           }))}
-                          className="mt-4 min-h-11 w-full inline-flex items-center justify-center gap-2 rounded-xl bg-gray-100 px-4 py-2.5 text-sm font-bold text-gray-800 transition-colors hover:bg-gray-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#C9820A]"
+                          className={`mt-4 min-h-11 w-full inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-bold transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#C9820A] ${isPremium ? "bg-white/10 text-white hover:bg-white/15" : "bg-gray-100 text-gray-800 hover:bg-gray-200"}`}
                         >
                           {isExpanded ? u.showFewerFeatures : u.showAllFeatures}
                           <svg

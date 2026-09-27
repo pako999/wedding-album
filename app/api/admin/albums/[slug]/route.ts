@@ -3,6 +3,7 @@ import { db } from "@/lib/db";
 import { albums } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { requireAdmin } from "@/lib/admin";
+import { PREMIUM_MEDIA_LIMIT } from "@/lib/plan-entitlements";
 
 export const dynamic = "force-dynamic";
 
@@ -29,9 +30,9 @@ const PLAN_CONFIG: Record<AdminPlan, {
   free:       { effectivePlan: "free",    maxPhotos: 20,      daysAccess: 30  },
   basic:      { effectivePlan: "basic",   maxPhotos: 1000,    daysAccess: 90  },
   plus:       { effectivePlan: "plus",    maxPhotos: 999_999, daysAccess: 365 },
-  premium:    { effectivePlan: "premium", maxPhotos: 999_999, daysAccess: 365 },
-  influencer: { effectivePlan: "premium", maxPhotos: 999_999, daysAccess: 365, compTag: "comp:influencer" },
-  sponsor:    { effectivePlan: "premium", maxPhotos: 999_999, daysAccess: 365, compTag: "comp:sponsor" },
+  premium:    { effectivePlan: "premium", maxPhotos: PREMIUM_MEDIA_LIMIT, daysAccess: null },
+  influencer: { effectivePlan: "premium", maxPhotos: PREMIUM_MEDIA_LIMIT, daysAccess: null, compTag: "comp:influencer" },
+  sponsor:    { effectivePlan: "premium", maxPhotos: PREMIUM_MEDIA_LIMIT, daysAccess: null, compTag: "comp:sponsor" },
 };
 
 export async function PATCH(
@@ -69,7 +70,7 @@ export async function PATCH(
     .set({
       plan: config.effectivePlan,
       maxPhotos: config.maxPhotos,
-      expiresAt: expiresAt ?? undefined,
+      expiresAt,
       ...filmTierUpdate,
       ...sessionIdUpdate,
     })

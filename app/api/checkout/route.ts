@@ -1,4 +1,5 @@
 import { weddingCopy } from "@/lib/wedding/copy";
+import { PREMIUM_SALE_PRICE_CENTS } from "@/lib/plan-pricing";
 import { NextRequest, NextResponse } from "next/server";
 import {
   addOnTotalCents, quoteShipping, standsPriceCents,
@@ -24,7 +25,7 @@ export const runtime = "nodejs";
 const PLAN_CONFIG: Record<string, { name: string; amount: number }> = {
   basic:        { name: "Guestcam Basic",                   amount: 3900 },
   plus:         { name: "Guestcam Plus",                    amount: 4900 },
-  premium:      { name: "Guestcam Premium",                 amount: 9900 },
+  premium:      { name: "Guestcam Premium",                 amount: PREMIUM_SALE_PRICE_CENTS },
   film_pro:     { name: "Film Studio Pro (100 foto)",        amount: 1000 },
   film_premium: { name: "Film Studio Premium (300 foto)",    amount: 2000 },
 };

@@ -77,7 +77,7 @@
         [
           "Trajanje čuvanja",
           "Može da se izgubi u istoriji",
-          "Galerija traje od 30 dana do 2 godine"
+          "Galerija traje od 30 dana do neograničenog vremena uz Venčani premium"
         ]
       ]
     },
@@ -133,12 +133,12 @@
     {
       "type": "faq",
       "q": "Da li Guestcam košta više od WhatsAppa?",
-      "a": "Besplatan paket uključuje jednu galeriju i do 20 fotografija. Za veće događaje dostupni su Basic (39 €), Plus (49 €) i Venčani premium (99 €), svaki kao jednokratno plaćanje za jedan događaj."
+      "a": "Besplatan paket uključuje jednu galeriju i do 20 fotografija. Za veće događaje dostupni su Basic (39 €), Plus (49 €) i Venčani premium (84 €, redovna cena 129 €, −35 % ograničeno vreme), svaki kao jednokratno plaćanje za jedan događaj."
     },
     {
       "type": "faq",
       "q": "Šta se dešava sa WhatsApp grupom posle venčanja?",
-      "a": "Poruke i fotografije ostaju deo istorije razgovora. Guestcam galerija ostaje dostupna prema izabranom paketu, od 30 dana do 2 godine, a sadržaj možete preuzeti pre isteka."
+      "a": "Poruke i fotografije ostaju deo istorije razgovora. Guestcam galerija ostaje dostupna prema izabranom paketu, od 30 dana do neograničenog vremena uz Venčani premium, a sadržaj možete preuzeti u bilo kom trenutku."
     }
   ],
   "coverImage": "https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?w=1600&h=900&fit=crop&q=80&auto=format",

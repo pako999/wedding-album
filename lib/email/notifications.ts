@@ -102,8 +102,8 @@ export function welcomeEmailHtml({ ownerName, coupleName, weddingDate, albumSlug
           <table width="100%" cellpadding="0" cellspacing="0" style="background:#0F1729;border-radius:14px;">
             <tr><td style="padding:22px 24px;color:#ffffff;">
               <p style="margin:0 0 6px;font-size:11px;letter-spacing:2px;color:#FFC94D;font-weight:700;">💎 POROČNI PREMIUM</p>
-              <p style="margin:0 0 10px;font-size:16px;font-weight:700;">Neomejene fotografije, do 100 videoposnetkov in več</p>
-              <p style="margin:0 0 14px;font-size:13px;line-height:1.55;color:rgba(255,255,255,0.7);">Z nadgradnjo na Poročni premium dobite neomejeno fotografij, do 100 videoposnetkov, live galerijo, personalizirano stran, premium predloge in prioritetno podporo.</p>
+              <p style="margin:0 0 10px;font-size:16px;font-weight:700;">Neomejene fotografije in videoposnetki, brez časovne omejitve hrambe</p>
+              <p style="margin:0 0 14px;font-size:13px;line-height:1.55;color:rgba(255,255,255,0.7);">Z nadgradnjo na Poročni premium dobite neomejeno fotografij in videoposnetkov, neomejen čas hrambe in dostopa, live galerijo, personalizirano stran, premium predloge in prioritetno podporo.</p>
               <a href="${upgradeUrl}" style="display:inline-block;padding:11px 22px;background:#FFC94D;color:#0F1729;text-decoration:none;border-radius:10px;font-weight:700;font-size:13px;">Nadgradi paket →</a>
             </td></tr>
           </table>
@@ -1596,7 +1596,7 @@ const UPGRADE_COPY: Record<EmailLang, UpgradeCopy> = {
     bullets: {
       basic:   ["1000 fotografij", "90-dnevni dostop", "Personalizirane QR kartice"],
       plus:    ["Neomejene fotografije", "1-letni dostop", "Live galerija", "Personalizirane predloge"],
-      premium: ["Neomejene fotografije in videi", "1-letni dostop", "Live galerija + AI Film Studio", "Premium predloge", "Prioritetna podpora"],
+      premium: ["Neomejene fotografije in videi", "Neomejen čas hrambe in dostopa", "Live galerija + AI Film Studio", "Premium predloge", "Prioritetna podpora"],
     },
     cta: "Odprite nadzorno ploščo →",
     ctaRename: "Uredite svojo galerijo →",
@@ -1611,7 +1611,7 @@ const UPGRADE_COPY: Record<EmailLang, UpgradeCopy> = {
     bullets: {
       basic:   ["1000 fotografija", "90 dana pristupa", "Personalizirane QR kartice"],
       plus:    ["Neograničene fotografije", "1 godina pristupa", "Live galerija", "Personalizirani predlošci"],
-      premium: ["Neograničene fotografije i videozapisi", "1 godina pristupa", "Live galerija + AI Film Studio", "Premium predlošci", "Prioritetna podrška"],
+      premium: ["Neograničene fotografije i videozapisi", "Neograničeno vrijeme pohrane i pristupa", "Live galerija + AI Film Studio", "Premium predlošci", "Prioritetna podrška"],
     },
     cta: "Otvori nadzornu ploču →",
     ctaRename: "Uredi svoju galeriju →",
@@ -1626,7 +1626,7 @@ const UPGRADE_COPY: Record<EmailLang, UpgradeCopy> = {
     bullets: {
       basic:   ["1000 fotografija", "90 dana pristupa", "Personalizovane QR kartice"],
       plus:    ["Neograničene fotografije", "1 godina pristupa", "Live galerija", "Personalizovani šabloni"],
-      premium: ["Neograničene fotografije i video zapisi", "1 godina pristupa", "Live galerija + AI Film Studio", "Premium šabloni", "Prioritetna podrška"],
+      premium: ["Neograničene fotografije i video zapisi", "Neograničeno vreme čuvanja i pristupa", "Live galerija + AI Film Studio", "Premium šabloni", "Prioritetna podrška"],
     },
     cta: "Otvori kontrolnu tablu →",
     ctaRename: "Uredi svoju galeriju →",
@@ -1641,7 +1641,7 @@ const UPGRADE_COPY: Record<EmailLang, UpgradeCopy> = {
     bullets: {
       basic:   ["1000 Fotos", "90 Tage Zugriff", "Personalisierte QR-Karten"],
       plus:    ["Unbegrenzte Fotos", "1 Jahr Zugriff", "Live-Galerie", "Personalisierte Vorlagen"],
-      premium: ["Unbegrenzte Fotos und Videos", "1 Jahr Zugriff", "Live-Galerie + AI Film Studio", "Premium-Vorlagen", "Priorisierter Support"],
+      premium: ["Unbegrenzte Fotos und Videos", "Unbegrenzte Speicherdauer und Zugriff", "Live-Galerie + AI Film Studio", "Premium-Vorlagen", "Priorisierter Support"],
     },
     cta: "Dashboard öffnen →",
     ctaRename: "Galerie bearbeiten →",
@@ -1656,7 +1656,7 @@ const UPGRADE_COPY: Record<EmailLang, UpgradeCopy> = {
     bullets: {
       basic:   ["1,000 photos", "90 days of access", "Personalised QR cards"],
       plus:    ["Unlimited photos", "1 year of access", "Live gallery", "Personalised templates"],
-      premium: ["Unlimited photos and videos", "1 year of access", "Live gallery + AI Film Studio", "Premium templates", "Priority support"],
+      premium: ["Unlimited photos and videos", "Unlimited storage and access", "Live gallery + AI Film Studio", "Premium templates", "Priority support"],
     },
     cta: "Open the dashboard →",
     ctaRename: "Edit your gallery →",
@@ -1671,7 +1671,7 @@ const UPGRADE_COPY: Record<EmailLang, UpgradeCopy> = {
     bullets: {
       basic:   ["1.000 fotos", "90 días de acceso", "Tarjetas QR personalizadas"],
       plus:    ["Fotos ilimitadas", "1 año de acceso", "Galería en directo", "Plantillas personalizadas"],
-      premium: ["Fotos y vídeos ilimitados", "1 año de acceso", "Galería en directo + AI Film Studio", "Plantillas Premium para bodas", "Soporte prioritario"],
+      premium: ["Fotos y vídeos ilimitados", "Almacenamiento y acceso sin vencimiento", "Galería en directo + AI Film Studio", "Plantillas Premium para bodas", "Soporte prioritario"],
     },
     cta: "Abrir el panel →",
     ctaRename: "Editar mi galería →",
