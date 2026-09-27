@@ -9,13 +9,12 @@ const SUPPORTED = new Set<DashboardLang>(["sl", "hr", "sr", "en", "de", "es"]);
 
 export async function POST(req: Request) {
   const { userId } = await auth();
-  if (!userId) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const body = await req.json().catch(() => null);
   const lang = body?.lang as DashboardLang | undefined;
-  if (!lang || !SUPPORTED.has(lang)) {
+  const defaultAlbumLang = body?.defaultAlbumLang as DashboardLang | undefined;
+  if ((!lang && !defaultAlbumLang) || (lang && !SUPPORTED.has(lang)) || (defaultAlbumLang && !SUPPORTED.has(defaultAlbumLang))) {
     return NextResponse.json({ error: "Unsupported language" }, { status: 400 });
   }
 
@@ -25,10 +24,8 @@ export async function POST(req: Request) {
     await client.users.updateUserMetadata(userId, {
       publicMetadata: {
         ...(user.publicMetadata ?? {}),
-        dashboardLang: lang,
-        // Keep the general account language aligned as well so emails and
-        // other account-level surfaces can follow the owner's explicit choice.
-        lang,
+        ...(lang ? { dashboardLang: lang, lang } : {}),
+        ...(defaultAlbumLang ? { defaultAlbumLang } : {}),
       },
     });
   } catch (error) {
@@ -36,12 +33,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Could not save language" }, { status: 503 });
   }
 
-  const response = NextResponse.json({ ok: true, lang });
-  response.cookies.set(DASHBOARD_LANG_COOKIE, lang, {
-    path: "/",
-    maxAge: 365 * 24 * 60 * 60,
-    sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
-  });
+  const response = NextResponse.json({ ok: true, lang, defaultAlbumLang });
+  if (lang) response.cookies.set(DASHBOARD_LANG_COOKIE, lang, { path: "/", maxAge: 365 * 24 * 60 * 60, sameSite: "lax", secure: process.env.NODE_ENV === "production" });
   return response;
 }
