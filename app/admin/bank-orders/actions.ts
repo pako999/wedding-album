@@ -1,7 +1,5 @@
 "use server";
 
-import { PREMIUM_SALE_PRICE_EUR } from "@/lib/plan-pricing";
-
 import { db } from "@/lib/db";
 import { bankOrders } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
@@ -11,7 +9,7 @@ import { requireAdmin } from "@/lib/admin";
 const PLAN_LABELS: Record<string, { name: string; price: number }> = {
   basic:   { name: "Basic",   price: 39 },
   plus:    { name: "Plus",    price: 49 },
-  premium: { name: "Poročni premium", price: PREMIUM_SALE_PRICE_EUR },
+  premium: { name: "Poročni premium", price: 84 },
 };
 
 export async function addManualOrder(formData: FormData) {
