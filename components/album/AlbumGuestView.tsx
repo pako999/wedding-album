@@ -589,15 +589,27 @@ export function AlbumGuestView({ weddingEnabled = false, album, photos, moments,
     return Array.from(counts.entries()).sort((a, b) => b[1] - a[1]).map(([n]) => n);
   })();
 
+  // Defensive de-duplication: a stale refresh/poll response must never render
+  // the same media row twice. Preserve the first occurrence/order from the
+  // server and key strictly by the immutable photo id.
+  const uniquePhotos = useMemo(() => {
+    const seen = new Set<string>();
+    return photos.filter((photo) => {
+      if (seen.has(photo.id)) return false;
+      seen.add(photo.id);
+      return true;
+    });
+  }, [photos]);
+
   // ── Counts (total, not affected by filters) ───────────────────────────────
-  const photoCount = photos.filter(p => !p.mimeType?.startsWith("video/")).length;
-  const videoCount = photos.filter(p =>  p.mimeType?.startsWith("video/")).length;
+  const photoCount = uniquePhotos.filter(p => !p.mimeType?.startsWith("video/")).length;
+  const videoCount = uniquePhotos.filter(p =>  p.mimeType?.startsWith("video/")).length;
 
   // ── Filtered collection (type + person + my reactions) ────────────────────
   // upload_only events hide everyone's photos: guests land on the empty
   // gallery state, which is exactly the upload-first screen we want.
   const filteredPhotos = useMemo(() => {
-    const visibleSource = canView ? photos : [];
+    const visibleSource = canView ? uniquePhotos : [];
     return visibleSource
       .filter(p => {
         if (filter === "photos" &&  p.mimeType?.startsWith("video/")) return false;
@@ -1584,7 +1596,15 @@ export function AlbumGuestView({ weddingEnabled = false, album, photos, moments,
                       }}
                     >
                       {/* Image */}
-                      <div className="relative overflow-hidden bg-gray-100">
+                      <div
+                        className="relative overflow-hidden bg-gray-100"
+                        style={{
+                          aspectRatio:
+                            photo.width && photo.height && photo.width > 0 && photo.height > 0
+                              ? `${photo.width} / ${photo.height}`
+                              : "4 / 3",
+                        }}
+                      >
                         <img
                           src={bunnyDisplayUrl(photo.thumbnailUrl ?? photo.blobUrl, 800, 82)}
                           srcSet={[320, 480, 640, 800]
@@ -1592,7 +1612,7 @@ export function AlbumGuestView({ weddingEnabled = false, album, photos, moments,
                             .join(", ")}
                           sizes="(max-width: 639px) calc(50vw - 6px), (max-width: 1399px) calc(33vw - 20px), 430px"
                           alt={photo.caption ?? ""}
-                          className="w-full h-auto block transition-transform duration-500 group-hover:scale-[1.03]"
+                          className="absolute inset-0 w-full h-full block object-cover transition-transform duration-500 group-hover:scale-[1.03]"
                           loading="lazy"
                           onError={(e) => {
                             e.currentTarget.onerror = null;
