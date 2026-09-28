@@ -2114,14 +2114,14 @@ export function AlbumGuestView({ weddingEnabled = false, album, photos, moments,
               /* Inject the panel as a custom control (absolute positioned) */
               controls: () => lightboxPhoto ? (
                 <>
-                  {/* Reference-style close at top left and photo identity at
-                      bottom left, both outside the image interaction area. */}
+                  {/* Close stays in the top-right corner; photo identity
+                      remains bottom-left, both outside the image interaction area. */}
                   <button
                     type="button"
                     onClick={closeViewer}
                     title={t.close}
                     aria-label={t.close}
-                    className="absolute left-3 sm:left-5 top-3 sm:top-5 z-[3] w-11 h-11 rounded-full flex items-center justify-center text-white bg-black/45 backdrop-blur-md border border-white/15 transition-colors hover:bg-black/70"
+                    className="absolute right-3 sm:right-5 top-3 sm:top-5 z-[3] w-11 h-11 rounded-full flex items-center justify-center text-white bg-black/45 backdrop-blur-md border border-white/15 transition-colors hover:bg-black/70"
                   >
                     <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
