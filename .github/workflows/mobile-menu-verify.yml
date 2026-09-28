@@ -1,12 +1,5 @@
 name: Mobile menu verification
 on:
-  push:
-    branches: [fix/remove-custom-domains-20260928]
-    paths:
-      - components/HomeMobileMenu.tsx
-      - components/SiteHeader.tsx
-      - scripts/mobile-menu-browser-check.mjs
-      - .github/workflows/mobile-menu-verify.yml
   pull_request:
     paths:
       - components/HomeMobileMenu.tsx
@@ -37,10 +30,15 @@ jobs:
         run: npm run test:regression && npm run audit:i18n && npm run test:wedding && npm run test:premium-offer
       - name: Production build without deployment database mutation
         run: npx next build
-      - name: Install isolated browser-test tools (no manifest or lockfile changes)
-        run: npm install --no-save --package-lock=false --no-audit --no-fund playwright@1.55.1 esbuild@0.25.10
+      - name: Install browser tools in a separate temporary package
+        run: |
+          tools="$(mktemp -d)"
+          npm install --prefix "$tools" --no-save --package-lock=false --no-audit --no-fund playwright@1.55.1 esbuild@0.25.10
+          ln -s "$tools/node_modules/playwright" node_modules/playwright
+          if [ ! -e node_modules/esbuild ]; then ln -s "$tools/node_modules/esbuild" node_modules/esbuild; fi
+          echo "MOBILE_MENU_TOOLS=$tools" >> "$GITHUB_ENV"
       - name: Install Chromium and WebKit
-        run: npx playwright install --with-deps chromium webkit
+        run: node "$MOBILE_MENU_TOOLS/node_modules/playwright/cli.js" install --with-deps chromium webkit
       - name: Real component and production-CSS browser checks
         run: node scripts/mobile-menu-browser-check.mjs
       - name: Upload mobile screenshots and test results
