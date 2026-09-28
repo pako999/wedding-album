@@ -31,7 +31,11 @@ jobs:
           const original = execFileSync('git', ['show', 'f734ff98eb9c054745348d18d810a85ca01ff6d2:.github/workflows/retire-custom-domains-once.yml'], {encoding: 'utf8'});
           const match = original.match(/^          node <<'NODE'\n([\s\S]*?)^          NODE$/m);
           assert.ok(match, 'Pinned removal script is present');
-          const script = match[1].split('\n').map(line => line.startsWith('          ') ? line.slice(10) : line).join('\n');
+          let script = match[1].split('\n').map(line => line.startsWith('          ') ? line.slice(10) : line).join('\n');
+          // Also retire the business FAQ explicitly promising a customer domain.
+          assert.ok(script.includes("name(p) === 'title'"));
+          script = script.replace("name(p) === 'title'", "['title', 'q'].includes(name(p))");
+          script = script.replace('headOffer.test(title.initializer.text.trim())', 'offer.test(title.initializer.text.trim())');
           execFileSync(process.execPath, ['-e', script], {stdio: 'inherit'});
           const path = 'scripts/regression-check.mjs';
           const before = fs.readFileSync(path, 'utf8');
