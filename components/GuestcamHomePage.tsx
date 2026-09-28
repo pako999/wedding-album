@@ -49,7 +49,7 @@ const PLANS = [
   ["Free", "0 €", "Preizkusite brez tveganja", ["Unikatna QR koda", "Prenos slik v polni kakovosti", "Do 20 fotografij", "1 videoposnetek", "Dostop 30 dni", "Brez varnostne kopije"]],
   ["Basic", "39 €", "Za manjše dogodke", ["Unikatna QR koda", "Prenos slik v polni kakovosti", "Do 1000 fotografij", "Do 10 videoposnetkov", "Dostop do galerije 3 mesece", "Prenos vseh slik (ZIP)"]],
   ["Plus", "49 €", "Za poroke in večje dogodke", ["Unikatna QR koda", "Prenos slik v polni kakovosti", "Neomejeno število gostov", "Do 5000 fotografij", "Do 100 videoposnetkov", "Dostop do galerije 1 leto", "Prenos vseh slik (ZIP)", "Live galerija (projekcija)", "Personalizirana stran z imeni", "E-mail obvestila za par"]],
-  ["Premium", `${PREMIUM_SALE_PRICE_EUR} €`, "Za tiste, ki želite vse", ["Unikatna QR koda", "Prenos slik v polni kakovosti", "Neomejeno število gostov", "Neomejeno fotografij", "Neomejeno videoposnetkov", "Neomejen čas hrambe in dostopa", "Prenos vseh slik in videov (ZIP)", "Live galerija (projekcija)", "Personalizirana stran z imeni", "Foto stena za TV / projektor", "Lastna domena (foto.vase-ime.si)", "Premium design predloge", "Prioritetna podpora"]],
+  ["Premium", `${PREMIUM_SALE_PRICE_EUR} €`, "Za tiste, ki želite vse", ["Unikatna QR koda", "Prenos slik v polni kakovosti", "Neomejeno število gostov", "Neomejeno fotografij", "Neomejeno videoposnetkov", "Neomejen čas hrambe in dostopa", "Prenos vseh slik in videov (ZIP)", "Live galerija (projekcija)", "Personalizirana stran z imeni", "Foto stena za TV / projektor",  "Premium design predloge", "Prioritetna podpora"]],
 ] as const;
 
 async function Header() {

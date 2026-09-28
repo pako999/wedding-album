@@ -231,11 +231,7 @@ export default function QrKodaPoslovniDogodekPage() {
                 title: "Zasebno in GDPR-skladno",
                 desc: "Galerija ni javna in ni indeksirana. Podatki so shranjeni na strežnikih v EU (Bunny.net CDN + Neon PostgreSQL).",
               },
-              {
-                icon: "🏢",
-                title: "Lastna domena",
-                desc: "S paketom Poročni premium galerijo povežete z lastno domeno (npr. foto.vase-podjetje.si) za bolj profesionalen videz.",
-              },
+
             ].map(({ icon, title, desc }) => (
               <div
                 key={title}
@@ -367,10 +363,7 @@ export default function QrKodaPoslovniDogodekPage() {
                 q: "Kje se shranjujejo fotografije in ali je to skladno z GDPR?",
                 a: "Fotografije se shranjujejo na strežnikih v EU (Bunny.net CDN + Neon PostgreSQL). Galerija ni javna in ni indeksirana v iskalnikih.",
               },
-              {
-                q: "Ali lahko dodamo logotip podjetja ali lastno domeno?",
-                a: "S paketom Poročni premium lahko galerijo povežete z lastno domeno (npr. foto.vase-podjetje.si) za bolj profesionalen videz na dogodku.",
-              },
+
               {
                 q: "Ali morajo udeleženci prenesti aplikacijo?",
                 a: "Ne. Udeleženci odprejo galerijo neposredno v brskalniku telefona — ni potrebna nobena aplikacija ali osebni račun.",

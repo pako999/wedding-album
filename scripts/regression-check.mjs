@@ -1159,11 +1159,11 @@ requireMatch(
   "the owner must be able to choose the album and Photo Wall language",
 );
 
-requireMatch(
-  "custom domains require valid DNS before being shown as connected",
+requireAbsent(
+  "retired custom domain settings are not offered to album owners",
   files.albumAdminPanel,
-  /domainReady\s*=\s*status\?\.verified\s*===\s*true\s*&&\s*status\.misconfigured\s*!==\s*true[\s\S]*copy\.dnsMissing[\s\S]*!domainReady[\s\S]*domainReady/,
-  "verified ownership alone must not hide missing CNAME/A instructions or claim that the album domain is live",
+  /CustomDomainPanel|copy\.domainPlaceholder|copy\.dnsMissing/,
+  "no plan may expose domain registration or its premium upsell in user settings",
 );
 
 requireMatch(
