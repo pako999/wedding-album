@@ -163,9 +163,9 @@ export function HomeMobileMenu({ signedIn = false, lang, links, labels, hreflang
             <Link href={resolvedHome} aria-label="Guestcam" onClick={closeMenu} className="shrink-0">
               <GuestcamLogo size="sm" showMark />
             </Link>
-            <button type="button" autoFocus onClick={closeMenu} className="inline-flex min-h-12 shrink-0 items-center justify-center gap-2 rounded-xl border border-black/15 bg-white px-3 text-base font-bold hover:bg-black/5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8C6218]">
-              {labels.close}
-              <svg className="h-6 w-6" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+            <button type="button" autoFocus aria-label={labels.close} onClick={closeMenu} className="inline-flex min-h-12 min-w-12 shrink-0 items-center justify-center gap-2 rounded-xl border border-black/15 bg-white px-3 text-base font-bold hover:bg-black/5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8C6218]">
+              <span className="hidden sm:inline">{labels.close}</span>
+              <svg className="h-6 w-6 shrink-0" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
