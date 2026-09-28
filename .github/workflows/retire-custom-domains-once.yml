@@ -1,0 +1,219 @@
+name: Retire custom domains (isolated branch)
+on:
+  push:
+    branches: [fix/remove-custom-domains-20260928]
+    paths: [.github/workflows/retire-custom-domains-once.yml]
+permissions:
+  contents: write
+jobs:
+  retire-and-verify:
+    if: github.repository == 'pako999/wedding-album'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/remove-custom-domains-20260928
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - name: Remove the retired offering without changing other features
+        shell: bash
+        run: |
+          node <<'NODE'
+          const fs = require('node:fs');
+          const assert = require('node:assert/strict');
+          const ts = require('typescript');
+          const offer = /(?:custom|own)\s+domains?|(?:lastn\p{L}*|vlastit\p{L}*|sopstven\p{L}*)\s+domen\p{L}*|eigen\p{L}*\s+(?:web)?domain|dominios?\s+(?:propios?|personalizados?)/iu;
+          const headOffer = new RegExp('^(?:[✓✔]\\s*)?(?:' + offer.source + ')', 'iu');
+          function edit(path, visitor) {
+            const input = fs.readFileSync(path, 'utf8');
+            const source = ts.createSourceFile(path, input, ts.ScriptTarget.Latest, true, path.endsWith('.tsx') ? ts.ScriptKind.TSX : ts.ScriptKind.TS);
+            assert.equal(source.parseDiagnostics.length, 0, 'Existing parse errors: ' + path);
+            const edits = [];
+            function remove(node, listItem = true, trivia = false) {
+              const start = trivia ? node.getFullStart() : node.getStart(source);
+              let end = node.getEnd();
+              if (listItem) {
+                const comma = input.slice(end).match(/^\s*,/);
+                if (comma) end += comma[0].length;
+              }
+              edits.push({ start, end });
+            }
+            function walk(node) {
+              if (visitor(node, remove, source) !== false) ts.forEachChild(node, walk);
+            }
+            walk(source);
+            const ranges = edits.filter((item, i) => !edits.some((outer, j) => i !== j && outer.start <= item.start && outer.end >= item.end && (outer.start < item.start || outer.end > item.end || j < i))).sort((a,b) => b.start - a.start);
+            let output = input;
+            for (const range of ranges) output = output.slice(0, range.start) + output.slice(range.end);
+            const parsed = ts.createSourceFile(path, output, ts.ScriptTarget.Latest, true, path.endsWith('.tsx') ? ts.ScriptKind.TSX : ts.ScriptKind.TS);
+            assert.equal(parsed.parseDiagnostics.length, 0, 'Introduced parse errors: ' + path);
+            if (output !== input) fs.writeFileSync(path, output);
+            console.log(path + ': removed ' + ranges.length + ' retired entries');
+            return ranges.length;
+          }
+          function name(node) { return node.name && (node.name.text || node.name.getText()); }
+          const marketing = ['components/GuestcamHomePage.tsx', 'components/LocalizedHomePage.tsx', 'components/LocalizedGuestcamHomePageV3.tsx', 'app/sl/qr-koda-za-poslovne-dogodke/page.tsx'];
+          for (const path of marketing) {
+            const count = edit(path, (node, remove) => {
+              if (ts.isObjectLiteralExpression(node) && ts.isArrayLiteralExpression(node.parent)) {
+                const title = node.properties.find(p => ts.isPropertyAssignment(p) && name(p) === 'title');
+                if (title && ts.isStringLiteralLike(title.initializer) && headOffer.test(title.initializer.text.trim())) { remove(node); return false; }
+              }
+              if (ts.isStringLiteralLike(node) && ts.isArrayLiteralExpression(node.parent) && headOffer.test(node.text.trim())) remove(node);
+            });
+            assert.ok(count > 0, 'No expected offering removed from ' + path);
+          }
+          assert.equal(edit('lib/wedding/copy.ts', (node, remove) => {
+            if (ts.isPropertyAssignment(node) && name(node) === 'domainBenefit') { remove(node); return false; }
+          }), 6, 'Remove the benefit in all six languages');
+          const adminPath = 'components/dashboard/AlbumAdminPanel.tsx';
+          const removedNames = new Set();
+          let mounts = 0;
+          edit(adminPath, (node, remove) => {
+            if ((ts.isFunctionDeclaration(node) || ts.isInterfaceDeclaration(node)) && ['CustomDomainPanel','DnsRecord','DomainStatus'].includes(name(node))) {
+              removedNames.add(name(node)); remove(node, false, true); return false;
+            }
+            if (ts.isJsxSelfClosingElement(node) && node.tagName.getText() === 'CustomDomainPanel') { mounts++; remove(node, false); return false; }
+          });
+          assert.equal(mounts, 1, 'Expected one domain settings mount');
+          assert.ok(removedNames.has('CustomDomainPanel'), 'Expected domain settings component');
+          const retiredKeys = new Set(['domain','premiumOnly','enterDomain','domainPlaceholder','dnsMissing','dnsPending','dnsMismatch','addDns','dnsType','dnsName','dnsValue','dnsHelp','domainAccessible','removeDomainConfirm','removeDomainFailed','domainSaveFailed']);
+          assert.ok(edit('lib/i18n/admin-settings-copy.ts', (node, remove) => {
+            if (ts.isPropertyAssignment(node) && retiredKeys.has(name(node))) { remove(node); return false; }
+          }) >= retiredKeys.size * 6, 'Remove domain setup copy in all six admin languages');
+          const route = `import { NextRequest, NextResponse } from "next/server";
+          import { db } from "@/lib/db";
+          import { albums } from "@/lib/db/schema";
+          import { eq } from "drizzle-orm";
+          import { getDomainStatus, removeProjectDomain } from "@/lib/vercel-domains";
+          import { checkAlbumOwnership } from "@/lib/album-ownership";
+          
+          // Retired offering: no plan can register or replace an album domain.
+          // Preserve authenticated legacy inspection/removal and existing album URLs.
+          // No database migration, domain removal or DNS change runs on deployment.
+          async function loadOwnedAlbum(slug: string) {
+            const album = await db.query.albums.findFirst({ where: eq(albums.slug, slug) });
+            const owner = await checkAlbumOwnership(album);
+            if (!owner.ok) {
+              return { error: NextResponse.json({ error: owner.error }, { status: owner.status }) };
+            }
+            if (!album) {
+              return { error: NextResponse.json({ error: "Forbidden" }, { status: 403 }) };
+            }
+            return { album };
+          }
+          
+          export async function POST() {
+            return NextResponse.json(
+              { error: "Custom domain registration is no longer available.", code: "CUSTOM_DOMAINS_RETIRED" },
+              { status: 410 }
+            );
+          }
+          
+          // Legacy support only; ownership is still required.
+          export async function GET(
+            _req: NextRequest,
+            { params }: { params: Promise<{ slug: string }> }
+          ) {
+            const { slug } = await params;
+            const { album, error } = await loadOwnedAlbum(slug);
+            if (error) return error;
+            if (!album.customDomain) {
+              return NextResponse.json({ domain: null, status: null });
+            }
+            let status = null;
+            try {
+              status = await getDomainStatus(album.customDomain);
+            } catch {
+              // Best effort: keep the existing domain visible to its owner.
+            }
+            return NextResponse.json({ domain: album.customDomain, status });
+          }
+          
+          // Keep the owner's ability to remove a legacy domain without an upgrade.
+          export async function DELETE(
+            _req: NextRequest,
+            { params }: { params: Promise<{ slug: string }> }
+          ) {
+            const { slug } = await params;
+            const { album, error } = await loadOwnedAlbum(slug);
+            if (error) return error;
+            if (album.customDomain) {
+              try {
+                await removeProjectDomain(album.customDomain);
+              } catch (e) {
+                return NextResponse.json(
+                  { error: e instanceof Error ? e.message : "Napaka pri odstranjevanju domene." },
+                  { status: 502 }
+                );
+              }
+            }
+            await db.update(albums)
+              .set({ customDomain: null, updatedAt: new Date() })
+              .where(eq(albums.id, album.id));
+            return NextResponse.json({ ok: true });
+          }
+          `;
+          fs.writeFileSync('app/api/albums/[slug]/domain/route.ts', route);
+          const test = `import assert from 'node:assert/strict';
+          import fs from 'node:fs';
+          import path from 'node:path';
+          const offer = new RegExp(${JSON.stringify(offer.source)}, 'iu');
+          const read = file => fs.readFileSync(file, 'utf8');
+          const files = ${JSON.stringify([...marketing,'lib/wedding/copy.ts','lib/i18n/admin-settings-copy.ts'])};
+          for (const file of files) {
+            assert.ok(!offer.test(read(file)), 'Retired domain marketing remains in ' + file);
+          }
+          const admin = read('components/dashboard/AlbumAdminPanel.tsx');
+          assert.ok(!/CustomDomainPanel|interface DnsRecord|interface DomainStatus|albums\\/.*\\/domain/.test(admin), 'Domain setup must not ship in user admin');
+          assert.ok(!/domainBenefit/.test(read('lib/wedding/copy.ts')), 'Retired translated benefit must not remain');
+          const route = read('app/api/albums/[slug]/domain/route.ts');
+          assert.match(route, /export async function POST\\(\\)\\s*\\{[\\s\\S]*?status: 410/);
+          assert.ok(!route.includes('addProjectDomain'), 'No route may register a new domain');
+          assert.ok(!/album\\.plan/.test(route), 'No premium upsell for retired feature');
+          assert.match(route, /checkAlbumOwnership\\(album\\)/, 'Legacy domain access remains owner-checked');
+          assert.match(read('proxy.ts'), /eq\\(albums\\.customDomain, bareHost\\)/, 'Existing URLs remain compatible');
+          assert.match(read('lib/db/schema.ts'), /customDomain: text\\("custom_domain"\\)/, 'No destructive data migration');
+          function scan(dir) {
+            if (!fs.existsSync(dir)) return;
+            for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+              const file = path.join(dir, entry.name);
+              if (file === 'app/api') continue;
+              if (entry.isDirectory()) { scan(file); continue; }
+              if (!/\\.(tsx?|mdx?|json|txt)$/.test(file)) continue;
+              if (offer.test(read(file))) throw new Error('Review retired domain claim in public content: ' + file);
+            }
+          }
+          for (const dir of ['app','components','content','public']) scan(dir);
+          console.log('Custom-domain retirement: marketing, six locales, admin, API and legacy URL guards passed.');
+          `;
+          fs.writeFileSync('scripts/custom-domain-retirement-check.mjs', test);
+          const packagePath = 'package.json';
+          const pkg = JSON.parse(fs.readFileSync(packagePath, 'utf8'));
+          pkg.scripts['test:custom-domain-retirement'] = 'node scripts/custom-domain-retirement-check.mjs';
+          pkg.scripts['test:regression'] += ' && npm run test:custom-domain-retirement';
+          fs.writeFileSync(packagePath, JSON.stringify(pkg, null, 2) + '\n');
+          NODE
+      - name: Next route types
+        run: npx next typegen
+      - name: TypeScript verification
+        run: npx tsc --noEmit
+      - name: Regressions and retirement guards
+        run: npm run test:regression
+      - name: All language and wedding checks
+        run: npm run audit:i18n && npm run test:wedding && npm run test:premium-offer
+      - name: Production build without deployment database migration
+        run: npx next build
+      - name: Commit verified product changes to the isolated branch only
+        shell: bash
+        run: |
+          git diff --check
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add components/GuestcamHomePage.tsx components/LocalizedHomePage.tsx components/LocalizedGuestcamHomePageV3.tsx app/sl/qr-koda-za-poslovne-dogodke/page.tsx lib/wedding/copy.ts components/dashboard/AlbumAdminPanel.tsx lib/i18n/admin-settings-copy.ts 'app/api/albums/[slug]/domain/route.ts' scripts/custom-domain-retirement-check.mjs package.json
+          git commit -m 'fix: retire custom domains from packages and user admin'
+          git push origin HEAD:refs/heads/fix/remove-custom-domains-20260928
