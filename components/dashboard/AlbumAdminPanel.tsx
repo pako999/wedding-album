@@ -845,7 +845,7 @@ export function AlbumAdminPanel({ album, lang, photos, pendingCount, guestCount,
             />
           )}
 
-          {activeTab === "wedding" && <div className="max-w-3xl"><WeddingSettingsCard slug={album.slug} lang={lang} plan={album.plan} /></div>}
+          {activeTab === "wedding" && <WeddingSettingsCard slug={album.slug} lang={lang} plan={album.plan} albumName={album.coupleName} eventDate={album.weddingDate} />}
 
           {/* SETTINGS */}
           {activeTab === "settings" && (
