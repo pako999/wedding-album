@@ -8,7 +8,7 @@
     "start": "next start --port 3001",
     "lint": "eslint",
     "test": "npm run test:regression",
-    "test:regression": "node scripts/regression-check.mjs",
+    "test:regression": "node scripts/regression-check.mjs && npm run test:custom-domain-retirement",
     "audit:i18n": "node scripts/localized-site-audit.mjs",
     "db:generate": "drizzle-kit generate",
     "db:push": "drizzle-kit push --force",
@@ -16,7 +16,8 @@
     "db:studio": "drizzle-kit studio",
     "test:wedding": "node scripts/wedding-regression.mjs",
     "test:premium-offer": "node scripts/wedding-premium-offer-check.mjs",
-    "db:migrate:wedding": "node scripts/migrate-wedding-premium.mjs"
+    "db:migrate:wedding": "node scripts/migrate-wedding-premium.mjs",
+    "test:custom-domain-retirement": "node scripts/custom-domain-retirement-check.mjs"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1048.0",

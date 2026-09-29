@@ -1,0 +1,51 @@
+name: Mobile menu verification
+on:
+  pull_request:
+    paths:
+      - components/HomeMobileMenu.tsx
+      - components/SiteHeader.tsx
+      - scripts/mobile-menu-browser-check.mjs
+      - .github/workflows/mobile-menu-verify.yml
+permissions:
+  contents: read
+concurrency:
+  group: mobile-menu-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - name: Generate Next route types
+        run: npx next typegen
+      - name: TypeScript
+        run: npx tsc --noEmit
+      - name: Existing product regressions and all locale checks
+        run: npm run test:regression && npm run audit:i18n && npm run test:wedding && npm run test:premium-offer
+      - name: Production build without deployment database mutation
+        run: npx next build
+      - name: Install browser tools in a separate temporary package
+        run: |
+          tools="$(mktemp -d)"
+          npm install --prefix "$tools" --no-save --package-lock=false --no-audit --no-fund playwright@1.55.1 esbuild@0.25.10
+          ln -s "$tools/node_modules/playwright" node_modules/playwright
+          if [ ! -e node_modules/esbuild ]; then ln -s "$tools/node_modules/esbuild" node_modules/esbuild; fi
+          echo "MOBILE_MENU_TOOLS=$tools" >> "$GITHUB_ENV"
+      - name: Install Chromium and WebKit
+        run: node "$MOBILE_MENU_TOOLS/node_modules/playwright/cli.js" install --with-deps chromium webkit
+      - name: Real component and production-CSS browser checks
+        run: node scripts/mobile-menu-browser-check.mjs
+      - name: Upload mobile screenshots and test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mobile-menu-verification
+          path: artifacts/mobile-menu/
+          if-no-files-found: ignore
+          retention-days: 7

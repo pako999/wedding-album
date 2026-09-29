@@ -112,7 +112,7 @@ const dictionaries = {
     "storageBenefit": "Neomejen čas hrambe in dostopa",
     "zipBenefit": "Prenos vseh datotek v ZIP",
     "wallBenefit": "Foto stena za TV ali projektor",
-    "domainBenefit": "Lastna domena",
+
     "supportBenefit": "Prednostna podpora"
   },
   "hr": {
@@ -225,7 +225,7 @@ const dictionaries = {
     "storageBenefit": "Neograničeno vrijeme pohrane i pristupa",
     "zipBenefit": "Preuzimanje svih datoteka u ZIP-u",
     "wallBenefit": "Foto zid za TV ili projektor",
-    "domainBenefit": "Vlastita domena",
+
     "supportBenefit": "Prioritetna podrška"
   },
   "sr": {
@@ -338,7 +338,7 @@ const dictionaries = {
     "storageBenefit": "Neograničeno vreme čuvanja i pristupa",
     "zipBenefit": "Preuzimanje svih datoteka u ZIP-u",
     "wallBenefit": "Foto zid za TV ili projektor",
-    "domainBenefit": "Sopstveni domen",
+
     "supportBenefit": "Prioritetna podrška"
   },
   "en": {
@@ -451,7 +451,7 @@ const dictionaries = {
     "storageBenefit": "Unlimited storage and access time",
     "zipBenefit": "Download every file as a ZIP",
     "wallBenefit": "Photo Wall for TV or projector",
-    "domainBenefit": "Custom domain",
+
     "supportBenefit": "Priority support"
   },
   "de": {
@@ -564,7 +564,7 @@ const dictionaries = {
     "storageBenefit": "Unbegrenzte Speicherdauer und Zugriff",
     "zipBenefit": "Alle Dateien als ZIP herunterladen",
     "wallBenefit": "Fotowand für TV oder Beamer",
-    "domainBenefit": "Eigene Domain",
+
     "supportBenefit": "Bevorzugter Support"
   },
   "es": {
@@ -677,7 +677,7 @@ const dictionaries = {
     "storageBenefit": "Almacenamiento y acceso sin vencimiento",
     "zipBenefit": "Descarga de todos los archivos en ZIP",
     "wallBenefit": "Muro de fotos para TV o proyector",
-    "domainBenefit": "Dominio propio",
+
     "supportBenefit": "Soporte prioritario"
   }
 };
