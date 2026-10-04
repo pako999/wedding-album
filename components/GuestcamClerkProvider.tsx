@@ -37,6 +37,10 @@ export async function GuestcamClerkProvider({
       localization={localization}
       signInUrl="/sign-in"
       signUpUrl="/sign-up"
+      signInFallbackRedirectUrl="/dashboard"
+      signUpFallbackRedirectUrl="/dashboard"
+      signInForceRedirectUrl="/dashboard"
+      signUpForceRedirectUrl="/dashboard"
     >
       {children}
     </ClerkProvider>
