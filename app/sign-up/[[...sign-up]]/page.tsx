@@ -50,6 +50,7 @@ export default async function SignUpPage({
         </div>
         <SignUp
           unsafeMetadata={{ guestcamAttribution: signupSource }}
+          forceRedirectUrl="/dashboard"
           fallbackRedirectUrl="/dashboard"
           signInUrl="/sign-in"
           appearance={{
