@@ -576,7 +576,7 @@ export function AlbumAdminPanel({ album, lang, photos, pendingCount, guestCount,
         </div>
 
         {/* Nav items */}
-        <nav className="flex-1 px-3 space-y-0.5">
+        <nav className="px-3 space-y-0.5 lg:flex-1">
           {navItems.map((item) => {
             const isActive = activeTab === item.id;
             return (
@@ -613,7 +613,7 @@ export function AlbumAdminPanel({ album, lang, photos, pendingCount, guestCount,
         </nav>
 
         {/* Sign out — clear, visible button (not a faint text link) */}
-        <div className="px-4 pb-5 pt-3 border-t border-gray-100">
+        <div className="px-4 pb-5 pt-3 mt-2 border-t border-gray-100 lg:mt-0">
           <SignOutButton>
             <button className="w-full flex items-center justify-center gap-2 px-3 py-2.5 text-sm font-semibold text-[#0F1729] bg-white border border-gray-200 rounded-lg hover:bg-[#FFF9EC] hover:border-[#FFC94D] transition-colors">
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
