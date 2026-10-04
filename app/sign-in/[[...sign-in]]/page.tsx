@@ -16,6 +16,7 @@ export default function SignInPage() {
           <p className="text-sm text-gray-600">Prijavite se za dostop do vaših albumov</p>
         </div>
         <SignIn
+          forceRedirectUrl="/dashboard"
           fallbackRedirectUrl="/dashboard"
           signUpUrl="/sign-up"
           appearance={{
