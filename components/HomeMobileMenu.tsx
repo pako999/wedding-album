@@ -172,6 +172,31 @@ export function HomeMobileMenu({ signedIn = false, lang, links, labels, hreflang
           </div>
 
           <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-5 py-5" style={{ WebkitOverflowScrolling: "touch", paddingLeft: "max(1.25rem, env(safe-area-inset-left))", paddingRight: "max(1.25rem, env(safe-area-inset-right))" }}>
+            <section aria-label={labels.languageAria} className="mb-5">
+              <label className="block">
+                <span className="mb-2 block px-1 text-xs font-bold uppercase tracking-wider text-black/50">{labels.language}</span>
+                <div className="relative">
+                  <span aria-hidden="true" className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-lg">🌐</span>
+                  <select
+                    aria-label={labels.languageAria}
+                    value={lang}
+                    onChange={(event) => {
+                      const href = hreflang[event.target.value as LangCode];
+                      if (href) window.location.assign(href);
+                    }}
+                    className="min-h-14 w-full appearance-none rounded-2xl border border-black/15 bg-white py-3 pl-12 pr-12 text-lg font-bold text-black shadow-sm outline-none focus:border-[#DCA72A] focus:ring-2 focus:ring-[#F4B400]/25"
+                  >
+                    {(Object.keys(LANGUAGE_LABELS) as LangCode[]).map((code) => hreflang[code] && (
+                      <option key={code} value={code}>{LANGUAGE_LABELS[code]}</option>
+                    ))}
+                  </select>
+                  <svg aria-hidden="true" className="pointer-events-none absolute right-4 top-1/2 h-5 w-5 -translate-y-1/2 text-black/55" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 9l6 6 6-6" />
+                  </svg>
+                </div>
+              </label>
+            </section>
+
             <nav aria-label={labels.open} className="flex flex-col gap-1">
               {menuLinks.map((link) => {
                 const featured = link.href === weddingHref;
@@ -186,16 +211,6 @@ export function HomeMobileMenu({ signedIn = false, lang, links, labels, hreflang
               })}
             </nav>
 
-            <section aria-label={labels.languageAria} className="mt-6 border-t border-black/10 pt-5">
-              <p className="mb-3 px-1 text-sm font-bold uppercase tracking-wider text-black/55">{labels.language}</p>
-              <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-                {(Object.keys(LANGUAGE_LABELS) as LangCode[]).map((code) => hreflang[code] && (
-                  <a key={code} href={hreflang[code]} hrefLang={code} lang={code} onClick={closeMenu} aria-current={code === lang ? "true" : undefined} className={`flex min-h-12 items-center rounded-xl border px-3 py-2 text-base font-semibold ${code === lang ? "border-[#DCA72A] bg-[#FFF1C2] text-black" : "border-black/10 bg-white text-black/70 hover:border-black/30"}`}>
-                    {LANGUAGE_LABELS[code]}
-                  </a>
-                ))}
-              </div>
-            </section>
           </div>
 
           <div className="shrink-0 border-t border-black/10 bg-[#FFFDF8] px-5 pt-3" style={{ paddingBottom: "max(1rem, env(safe-area-inset-bottom))", paddingLeft: "max(1.25rem, env(safe-area-inset-left))", paddingRight: "max(1.25rem, env(safe-area-inset-right))" }}>
