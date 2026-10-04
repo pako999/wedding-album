@@ -42,7 +42,7 @@ export default async function NewAlbumPage({ searchParams }: { searchParams: Pro
     const returnParams = new URLSearchParams();
     if (initialPlan) returnParams.set("plan", initialPlan);
     returnParams.set("lang", initialDashboardLang);
-    redirect(`/sign-in?redirect_url=${encodeURIComponent(`/dashboard/new?${returnParams.toString()}`)}`);
+    redirect(`/sign-in?redirect_url=${encodeURIComponent(`/dashboard/new?${returnParams.toString()}`)}&force_redirect_url=${encodeURIComponent(`/dashboard/new?${returnParams.toString()}`)}`);
   }
   const clerkUser = await currentUser().catch(() => null);
 
