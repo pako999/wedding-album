@@ -350,6 +350,13 @@ requireMatch(
 );
 
 requireMatch(
+  "legacy ZIP photos recover full-size originals from Bunny S3",
+  files.legacyRead,
+  /res\.status === 404[\s\S]*isBunnyS3Configured\(\)[\s\S]*createBunnyS3PresignedRead[\s\S]*recovered legacy original from Bunny S3/,
+  "legacy /api/img rows must fall back to the untouched S3 original instead of leaving ZIP files missing",
+);
+
+requireMatch(
   "Bunny S3 ZIP mode streams the original file",
   files.s3Read,
   /downloadOriginal[\s\S]*createBunnyS3PresignedRead\(key, 900\)[\s\S]*return new Response\(original\.body/,

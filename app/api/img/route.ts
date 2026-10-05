@@ -12,6 +12,7 @@ import { albums } from "@/lib/db/schema";
 import { eq, or } from "drizzle-orm";
 import { hasAlbumRequestAccess } from "@/lib/album-request-access";
 import { checkAlbumOwnership } from "@/lib/album-ownership";
+import { createBunnyS3PresignedRead, isBunnyS3Configured } from "@/lib/storage/bunny-s3";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -75,6 +76,40 @@ export async function GET(req: NextRequest) {
     res = await fetch(storageUrl, { headers: { AccessKey: apiKey }, cache: "no-store" });
   } catch {
     return new NextResponse("Upstream fetch failed", { status: 502 });
+  }
+
+  if (!res.ok && res.status === 404 && isBunnyS3Configured()) {
+    // Some historical DB rows still point at the legacy Bunny Storage URL even
+    // though the original object now lives in the current Bunny S3 bucket.
+    // ZIP/download requests must still return the untouched original, so on a
+    // legacy 404 try the same object key in S3, then the album-id form used by
+    // current uploads. No image optimization or conversion is applied here.
+    const parts = key.split("/");
+    const alternateKey =
+      parts.length >= 3 && parts[1] !== album.id
+        ? ["albums", album.id, ...parts.slice(2)].join("/")
+        : null;
+    const candidates = [...new Set([key, alternateKey].filter((value): value is string => !!value))];
+
+    for (const candidateKey of candidates) {
+      try {
+        const signed = await createBunnyS3PresignedRead(candidateKey, 900);
+        const fallback = await fetch(signed, { cache: "no-store" });
+        if (fallback.ok && fallback.body) {
+          res = fallback;
+          console.info("[img] recovered legacy original from Bunny S3", {
+            album: album.slug,
+            keyMode: candidateKey === key ? "same-key" : "album-id-key",
+          });
+          break;
+        }
+      } catch (error) {
+        console.warn("[img] Bunny S3 original fallback failed", {
+          album: album.slug,
+          error: error instanceof Error ? error.message : String(error),
+        });
+      }
+    }
   }
 
   if (!res.ok) return new NextResponse(null, { status: res.status });
