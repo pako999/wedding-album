@@ -11,6 +11,8 @@ import {
 } from "@/lib/storage/bunny-s3";
 
 export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+export const maxDuration = 300;
 
 const DISPLAY_WIDTHS = new Set([
   320, 400, 480, 600, 640, 800, 960, 1200, 1280, 1600, 1800, 2000, 2048, 2400,
@@ -141,11 +143,36 @@ export async function GET(
   }
 
   const s3Cdn = normalizedPublicCdn();
+  const downloadOriginal = req.nextUrl.searchParams.get("download") === "1";
   const width = allowedNumber(req.nextUrl.searchParams.get("width"), DISPLAY_WIDTHS);
   const quality =
     allowedNumber(req.nextUrl.searchParams.get("quality"), DISPLAY_QUALITIES) ?? 82;
 
   try {
+    // ZIP creation happens in the browser. A redirect from this same-origin
+    // route to the Bunny CDN turns that fetch into a cross-origin request,
+    // which Safari/iOS can reject even though the image itself displays fine.
+    // For ZIP downloads keep the request on Guestcam and stream the untouched
+    // original through this authenticated route instead.
+    if (downloadOriginal) {
+      const signed = await createBunnyS3PresignedRead(key, 900);
+      const original = await fetch(signed, { cache: "no-store" });
+      if (!original.ok || !original.body) {
+        return NextResponse.json(
+          { error: "Original file read unavailable" },
+          { status: original.status || 502 },
+        );
+      }
+      const headers = new Headers();
+      headers.set("Content-Type", original.headers.get("content-type") ?? "application/octet-stream");
+      headers.set("Cache-Control", "private, no-store, max-age=0");
+      headers.set("Referrer-Policy", "no-referrer");
+      headers.set("X-Content-Type-Options", "nosniff");
+      const length = original.headers.get("content-length");
+      if (length) headers.set("Content-Length", length);
+      return new Response(original.body, { status: 200, headers });
+    }
+
     // For open published albums, retain the fast cacheable pull-zone redirect.
     if (s3Cdn && album.isPublished && !album.password) {
       const target = new URL(`${s3Cdn}/${key}`);

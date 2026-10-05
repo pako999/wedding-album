@@ -53,6 +53,7 @@ const files = {
   saveUpload: await read("app/api/albums/[slug]/save-upload/route.ts"),
   legacyGateway: await read("app/api/albums/[slug]/bunny-upload/route.ts"),
   legacyDownload: await read("app/api/albums/[slug]/download/route.ts"),
+  downloadUrls: await read("app/api/albums/[slug]/download-urls/route.ts"),
   albumPage: await read("app/[slug]/page.tsx"),
   albumDashboardPage: await read("app/dashboard/[slug]/page.tsx"),
   albumGuestView: await read("components/album/AlbumGuestView.tsx"),
@@ -339,6 +340,20 @@ requireMatch(
   files.s3,
   /DeleteObjectCommand/,
   "Bunny S3 helper must support DeleteObjectCommand",
+);
+
+requireMatch(
+  "ZIP downloader keeps Bunny S3 reads same-origin",
+  files.downloadUrls,
+  /url\.startsWith\("\/api\/bunny-s3-file\/"\)[\s\S]*download=1/,
+  "browser ZIP downloads must request the Guestcam S3 streaming mode instead of following a cross-origin CDN redirect",
+);
+
+requireMatch(
+  "Bunny S3 ZIP mode streams the original file",
+  files.s3Read,
+  /downloadOriginal[\s\S]*createBunnyS3PresignedRead\(key, 900\)[\s\S]*return new Response\(original\.body/,
+  "S3 originals must be streamed through the same-origin route for ZIP creation",
 );
 
 requireMatch(
