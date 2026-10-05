@@ -53,6 +53,7 @@ const files = {
   saveUpload: await read("app/api/albums/[slug]/save-upload/route.ts"),
   legacyGateway: await read("app/api/albums/[slug]/bunny-upload/route.ts"),
   legacyDownload: await read("app/api/albums/[slug]/download/route.ts"),
+  zipDownloader: await read("components/dashboard/ZipDownloader.tsx"),
   downloadUrls: await read("app/api/albums/[slug]/download-urls/route.ts"),
   albumPage: await read("app/[slug]/page.tsx"),
   albumDashboardPage: await read("app/dashboard/[slug]/page.tsx"),
@@ -347,6 +348,20 @@ requireMatch(
   files.downloadUrls,
   /url\.startsWith\("\/api\/bunny-s3-file\/"\)[\s\S]*download=1/,
   "browser ZIP downloads must request the Guestcam S3 streaming mode instead of following a cross-origin CDN redirect",
+);
+
+requireMatch(
+  "ZIP save picker is requested during the initial user click",
+  files.zipDownloader,
+  /showSaveFilePicker[\s\S]*suggestedFilename[\s\S]*try \{[\s\S]*Fetch the list of file URLs/,
+  "the browser save destination must be selected before network awaits consume the user gesture",
+);
+
+requireMatch(
+  "ZIP fallback uses a connected DOM download anchor",
+  files.zipDownloader,
+  /document\.body\.appendChild\(fallbackAnchor\)[\s\S]*a\.isConnected[\s\S]*a\.click\(\)/,
+  "Safari and hardened Chromium browsers can ignore detached synthetic download anchors",
 );
 
 requireMatch(

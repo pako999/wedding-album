@@ -69,6 +69,39 @@ export function ZipDownloader({ albumSlug, className, children }: Props) {
     setErrorMsg("");
     setSkippedNote(null);
 
+    let saveHandle: FileSystemFileHandle | null = null;
+    let fallbackAnchor: HTMLAnchorElement | null = null;
+    const suggestedFilename = `guestcam-${albumSlug}.zip`;
+
+    // Browser save APIs require a live user gesture. Ask for the destination
+    // immediately on the button click, BEFORE any network/ZIP awaits.
+    if ("showSaveFilePicker" in window) {
+      try {
+        saveHandle = await (window as Window & {
+          showSaveFilePicker: (opts: object) => Promise<FileSystemFileHandle>;
+        }).showSaveFilePicker({
+          suggestedName: suggestedFilename,
+          types: [{ description: "ZIP arhiv", accept: { "application/zip": [".zip"] } }],
+        });
+      } catch (err: unknown) {
+        if (err instanceof Error && err.name === "AbortError") {
+          setPhase("idle");
+          return;
+        }
+        // If the picker is unavailable/blocked, prepare a real DOM anchor
+        // while this click handler still owns the user's activation context.
+        fallbackAnchor = document.createElement("a");
+        fallbackAnchor.style.display = "none";
+        fallbackAnchor.download = suggestedFilename;
+        document.body.appendChild(fallbackAnchor);
+      }
+    } else {
+      fallbackAnchor = document.createElement("a");
+      fallbackAnchor.style.display = "none";
+      fallbackAnchor.download = suggestedFilename;
+      document.body.appendChild(fallbackAnchor);
+    }
+
     try {
       // 1. Fetch the list of file URLs from the server (lightweight JSON)
       const listRes = await fetch(`/api/albums/${albumSlug}/download-urls`);
@@ -163,39 +196,39 @@ export function ZipDownloader({ albumSlug, className, children }: Props) {
       const zipResponse = downloadZip(fileIterator());
       const filename = `guestcam-${slug}.zip`;
 
-      // 3a. Modern browsers — stream directly to disk (no RAM overhead)
-      if ("showSaveFilePicker" in window) {
-        try {
-          const handle = await (window as Window & {
-            showSaveFilePicker: (opts: object) => Promise<FileSystemFileHandle>;
-          }).showSaveFilePicker({ suggestedName: filename, types: [{ description: "ZIP arhiv", accept: { "application/zip": [".zip"] } }] });
-          const writable = await handle.createWritable();
-          await zipResponse.body!.pipeTo(writable);
-          setPhase("done");
-          return;
-        } catch (err: unknown) {
-          // User cancelled the save dialog — fall through to blob method
-          if (err instanceof Error && err.name === "AbortError") {
-            setPhase("idle");
-            return;
-          }
-          // Any other error — fall through to blob fallback
-        }
+      // 3a. Chrome/Edge: destination was selected synchronously at the first
+      // click. Now stream the ZIP straight to that file with zero extra RAM.
+      if (saveHandle) {
+        const writable = await saveHandle.createWritable();
+        await zipResponse.body!.pipeTo(writable);
+        setPhase("done");
+        return;
       }
 
-      // 3b. Fallback — buffer as Blob, then trigger <a download>
+      // 3b. Safari/Firefox fallback: buffer the ZIP, attach it to the DOM anchor
+      // prepared at click time, then perform the download. Detached anchors can
+      // be ignored by Safari and some hardened Chromium configurations.
       const blob = await zipResponse.blob();
-      const url  = URL.createObjectURL(blob);
-      const a    = document.createElement("a");
-      a.href     = url;
+      const url = URL.createObjectURL(blob);
+      const a = fallbackAnchor ?? document.createElement("a");
+      if (!a.isConnected) {
+        a.style.display = "none";
+        document.body.appendChild(a);
+      }
+      a.href = url;
       a.download = filename;
+      a.rel = "noopener";
       a.click();
-      setTimeout(() => URL.revokeObjectURL(url), 60_000);
+      setTimeout(() => {
+        URL.revokeObjectURL(url);
+        a.remove();
+      }, 60_000);
 
       setPhase("done");
       // The useEffect on `done` re-arms idle automatically (~3s), so we
       // don't need a manual reset timer here.
     } catch (err) {
+      fallbackAnchor?.remove();
       console.error("[ZipDownloader]", err);
       setErrorMsg(err instanceof Error ? err.message : "Prenos ni uspel");
       setPhase("error");
