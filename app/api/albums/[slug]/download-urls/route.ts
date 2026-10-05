@@ -83,6 +83,13 @@ export async function GET(
       extOverride = "mp4";
     } else {
       url = bunnyOriginalUrl(photo.blobUrl);
+      // New Bunny S3 files use a stable same-origin reader. Force the
+      // original-file streaming mode for browser ZIP fetches so Safari/iOS
+      // never follows a cross-origin CDN redirect that can fail CORS.
+      if (url.startsWith("/api/bunny-s3-file/")) {
+        const separator = url.includes("?") ? "&" : "?";
+        url = `${url}${separator}download=1`;
+      }
     }
 
     if (!url) continue;
