@@ -20,19 +20,19 @@ const slSI = {
   locale: "sl-SI",
   signIn: {
     start: {
-      title: "Prijava v {{applicationName}}",
+      title: "Prijava v CamLove",
       subtitle: "Dobrodošli nazaj! Prosimo, prijavite se za nadaljevanje",
       actionText: "Nimate računa?",
       actionLink: "Registrirajte se",
     },
     password: {
       title: "Vnesite geslo",
-      subtitle: "za nadaljevanje na {{applicationName}}",
+      subtitle: "za nadaljevanje v CamLove",
       actionLink: "Pozabljeno geslo",
     },
     emailCode: {
       title: "Preverite svoj email",
-      subtitle: "za nadaljevanje na {{applicationName}}",
+      subtitle: "za nadaljevanje v CamLove",
       formTitle: "Verifikacijska koda",
       resendButton: "Niste prejeli kode? Pošlji znova",
     },
