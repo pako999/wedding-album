@@ -1,7 +1,6 @@
 import { SignIn } from "@clerk/nextjs";
 import { safeAccountReturnPath } from "@/lib/urls";
 import type { Metadata } from "next";
-import { GuestcamLogo } from "@/components/GuestcamLogo";
 
 export const metadata: Metadata = {
   robots: { index: false, follow: false, nocache: true },
@@ -22,29 +21,33 @@ export default async function SignInPage({
   const signUpUrl = `/sign-up?${query.toString()}`;
 
   return (
-    <div className="min-h-screen bg-[#F2F4F8] flex items-center justify-center px-4 py-16">
-      <div className="w-full max-w-md">
-        {/* Brand header */}
-        <div className="text-center mb-8 flex flex-col items-center gap-2">
-          <GuestcamLogo size="md" showMark={true} />
-          <p className="text-sm text-gray-600">Prijavite se za dostop do vaših albumov</p>
-        </div>
+    <main className="flex min-h-[100svh] items-center justify-center bg-[#F2F4F8] px-4 py-8 sm:py-12">
+      {/* Match the registration page: one centered Clerk card, one title and
+          one built-in link to the complementary authentication flow. */}
+      <div className="mx-auto flex w-full max-w-[460px] min-w-0 justify-center">
         <SignIn
           forceRedirectUrl={afterAuth}
           fallbackRedirectUrl="/dashboard"
           signUpUrl={signUpUrl}
           signUpForceRedirectUrl={afterAuth}
           appearance={{
+            variables: {
+              colorPrimary: "#0F1729",
+              borderRadius: "0.75rem",
+            },
             elements: {
-              rootBox: "w-full",
-              card: "shadow-md rounded-2xl border border-[#C9820A]/15 bg-white",
-              headerTitle: "font-serif text-[#0F1729]",
-              formButtonPrimary: "bg-[#0F1729] hover:bg-[#C9820A] transition-colors rounded-xl",
-              footerActionLink: "text-[#C9820A] hover:text-[#152C66]",
+              rootBox: "flex w-full min-w-0 justify-center",
+              cardBox: "mx-auto w-full min-w-0 max-w-full",
+              card: "w-full min-w-0 overflow-hidden rounded-[22px] border border-[#E4E6EC] bg-white shadow-[0_18px_50px_rgba(15,23,41,0.10)]",
+              headerTitle: "font-bold text-[#0F1729]",
+              headerSubtitle: "text-[#596579]",
+              formFieldInput: "rounded-xl border-gray-200",
+              formButtonPrimary: "rounded-xl bg-[#0F1729] text-white transition-colors hover:bg-[#C9820A]",
+              footerActionLink: "font-semibold text-[#976100] hover:text-[#0F1729]",
             },
           }}
         />
       </div>
-    </div>
+    </main>
   );
 }
