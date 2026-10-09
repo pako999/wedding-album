@@ -45,7 +45,9 @@ export interface UpgradeCopy {
 
   // Billing form
   billingTitle: string;
-  billingCardTitle: string;   // heading when shown on the card path
+  billingCardTitle: string;   // legacy text for saved drafts
+  standsDeliveryTitle: string; // address needed only for physical stands with card payments
+  cardRedirectNotice: string; // hosted Mollie payment occurs after order confirmation
   billingCompanyToggle: string; // "I need a company invoice" checkbox
   billingName: string;
   billingCompany: string;
@@ -169,6 +171,8 @@ export const UPGRADE_COPY: Record<Lang, UpgradeCopy> = {
     paymentInvoiceSub: "Predračun prejmete v 24 urah",
     billingTitle: "Podatki za predračun",
     billingCardTitle: "Podatki za račun (za izdajo računa)",
+    standsDeliveryTitle: "Podatki za dostavo QR podstavkov",
+    cardRedirectNotice: "Po potrditvi naročila vas bomo preusmerili na varno plačilno stran Mollie. Tam vnesete podatke o kartici in zaključite plačilo.",
     billingName: "Ime in priimek *",
     billingCompanyToggle: "Potrebujem račun na podjetje",
     billingCompany: "Naziv podjetja (neobvezno)",
@@ -182,7 +186,7 @@ export const UPGRADE_COPY: Record<Lang, UpgradeCopy> = {
     onetimePayment: "Enkratno plačilo · brez naročnine",
     termsAcceptance: (link) => `Z nakupom se strinjate s ${link}. 30-dnevna garancija vračila denarja.`,
     termsLinkText: "pogoji uporabe",
-    ctaCard:    (p, price) => `Nadgradi na ${p} — ${price}€ →`,
+    ctaCard:    (_plan, price) => `Potrdi naročilo in nadaljuj na plačilo — ${price.toFixed(2).replace(".", ",")} € →`,
     ctaInvoice: (price) => `Oddaj naročilo po predračunu — ${price}€`,
     ctaSending: "Pošiljanje…",
     ctaRedirecting: "Preusmeritev na plačilo…",
@@ -267,6 +271,8 @@ export const UPGRADE_COPY: Record<Lang, UpgradeCopy> = {
     paymentInvoiceSub: "Predračun ćete primiti u 24 h",
     billingTitle: "Podaci za predračun",
     billingCardTitle: "Podaci za račun (za izdavanje računa)",
+    standsDeliveryTitle: "Podaci za dostavu QR stalaka",
+    cardRedirectNotice: "Nakon potvrde narudžbe bit ćete preusmjereni na sigurnu Mollie stranicu. Tamo unosite podatke kartice i dovršavate plaćanje.",
     billingName: "Ime i prezime *",
     billingCompanyToggle: "Trebam račun na tvrtku",
     billingCompany: "Naziv tvrtke (neobvezno)",
@@ -280,7 +286,7 @@ export const UPGRADE_COPY: Record<Lang, UpgradeCopy> = {
     onetimePayment: "Jednokratno plaćanje · bez pretplate",
     termsAcceptance: (link) => `Kupnjom prihvaćate ${link}. 30-dnevno jamstvo povrata novca.`,
     termsLinkText: "uvjete korištenja",
-    ctaCard:    (p, price) => `Nadogradi na ${p} — ${price}€ →`,
+    ctaCard:    (_plan, price) => `Potvrdi narudžbu i nastavi na plaćanje — ${price.toFixed(2).replace(".", ",")} € →`,
     ctaInvoice: (price) => `Pošalji narudžbu za predračun — ${price}€`,
     ctaSending: "Slanje…",
     ctaRedirecting: "Preusmjeravanje na plaćanje…",
@@ -365,6 +371,8 @@ export const UPGRADE_COPY: Record<Lang, UpgradeCopy> = {
     paymentInvoiceSub: "Predračun ćete primiti u 24 h",
     billingTitle: "Podaci za predračun",
     billingCardTitle: "Podaci za račun (za izdavanje računa)",
+    standsDeliveryTitle: "Podaci za isporuku QR stalaka",
+    cardRedirectNotice: "Nakon potvrde narudžbine bićete preusmereni na bezbednu Mollie stranicu. Tamo unosite podatke kartice i završavate plaćanje.",
     billingName: "Ime i prezime *",
     billingCompanyToggle: "Treba mi račun na firmu",
     billingCompany: "Naziv firme (opciono)",
@@ -378,7 +386,7 @@ export const UPGRADE_COPY: Record<Lang, UpgradeCopy> = {
     onetimePayment: "Jednokratna uplata · bez pretplate",
     termsAcceptance: (link) => `Kupovinom prihvatate ${link}. 30-dnevna garancija povrata novca.`,
     termsLinkText: "uslove korišćenja",
-    ctaCard:    (p, price) => `Nadogradi na ${p} — ${price}€ →`,
+    ctaCard:    (_plan, price) => `Potvrdi narudžbinu i nastavi na plaćanje — ${price.toFixed(2).replace(".", ",")} € →`,
     ctaInvoice: (price) => `Pošalji narudžbinu za predračun — ${price}€`,
     ctaSending: "Slanje…",
     ctaRedirecting: "Preusmeravanje na plaćanje…",
@@ -463,6 +471,8 @@ export const UPGRADE_COPY: Record<Lang, UpgradeCopy> = {
     paymentInvoiceSub: "You'll receive the invoice within 24 h",
     billingTitle: "Invoice details",
     billingCardTitle: "Billing details (for your invoice)",
+    standsDeliveryTitle: "Shipping details for printed QR stands",
+    cardRedirectNotice: "After confirming your order, you'll be redirected to Mollie's secure payment page to enter your card details and complete payment.",
     billingName: "Full name *",
     billingCompanyToggle: "I need a company invoice",
     billingCompany: "Company name (optional)",
@@ -476,7 +486,7 @@ export const UPGRADE_COPY: Record<Lang, UpgradeCopy> = {
     onetimePayment: "One-time payment · no subscription",
     termsAcceptance: (link) => `By purchasing you agree to the ${link}. 30-day money-back guarantee.`,
     termsLinkText: "terms of use",
-    ctaCard:    (p, price) => `Upgrade to ${p} — €${price} →`,
+    ctaCard:    (_plan, price) => `Confirm order & continue to payment — €${price.toFixed(2)} →`,
     ctaInvoice: (price) => `Submit invoice order — €${price}`,
     ctaSending: "Sending…",
     ctaRedirecting: "Redirecting to payment…",
@@ -561,6 +571,8 @@ export const UPGRADE_COPY: Record<Lang, UpgradeCopy> = {
     paymentInvoiceSub: "Rechnung erhalten Sie innerhalb von 24 h",
     billingTitle: "Rechnungsdaten",
     billingCardTitle: "Rechnungsdaten (für Ihre Rechnung)",
+    standsDeliveryTitle: "Lieferadresse für gedruckte QR-Aufsteller",
+    cardRedirectNotice: "Nach der Bestätigung Ihrer Bestellung werden Sie zur sicheren Mollie-Zahlungsseite weitergeleitet. Dort geben Sie Ihre Kartendaten ein und schließen die Zahlung ab.",
     billingName: "Vor- und Nachname *",
     billingCompanyToggle: "Ich benötige eine Firmenrechnung",
     billingCompany: "Firmenname (optional)",
@@ -574,7 +586,7 @@ export const UPGRADE_COPY: Record<Lang, UpgradeCopy> = {
     onetimePayment: "Einmalzahlung · kein Abo",
     termsAcceptance: (link) => `Mit dem Kauf akzeptieren Sie die ${link}. 30-Tage-Geld-zurück-Garantie.`,
     termsLinkText: "Nutzungsbedingungen",
-    ctaCard:    (p, price) => `Upgrade auf ${p} — ${price} € →`,
+    ctaCard:    (_plan, price) => `Bestellung bestätigen & zur Zahlung — ${price.toFixed(2).replace(".", ",")} € →`,
     ctaInvoice: (price) => `Rechnungsbestellung absenden — ${price} €`,
     ctaSending: "Wird gesendet…",
     ctaRedirecting: "Weiterleitung zur Zahlung…",
@@ -659,6 +671,8 @@ export const UPGRADE_COPY: Record<Lang, UpgradeCopy> = {
     paymentInvoiceSub: "Recibirás la factura en 24 h",
     billingTitle: "Datos de facturación",
     billingCardTitle: "Datos de facturación (para tu factura)",
+    standsDeliveryTitle: "Datos de envío para soportes QR impresos",
+    cardRedirectNotice: "Al confirmar el pedido, te redirigiremos a la página de pago segura de Mollie. Allí introduces los datos de tu tarjeta y completas el pago.",
     billingName: "Nombre y apellidos *",
     billingCompanyToggle: "Necesito factura de empresa",
     billingCompany: "Nombre de la empresa (opcional)",
@@ -672,7 +686,7 @@ export const UPGRADE_COPY: Record<Lang, UpgradeCopy> = {
     onetimePayment: "Pago único · sin suscripción",
     termsAcceptance: (link) => `Al comprar aceptas los ${link}. Garantía de devolución de 30 días.`,
     termsLinkText: "términos de uso",
-    ctaCard:    (p, price) => `Mejorar a ${p} — ${price}€ →`,
+    ctaCard:    (_plan, price) => `Confirmar pedido y continuar al pago — ${price.toFixed(2).replace(".", ",")} € →`,
     ctaInvoice: (price) => `Enviar pedido con factura — ${price}€`,
     ctaSending: "Enviando…",
     ctaRedirecting: "Redirigiendo al pago…",
