@@ -259,6 +259,35 @@ export default clerkMiddleware(
     return primaryAccountRedirect(req, countryLocale);
   }
 
+  // Public "Create album" and pricing CTAs target /dashboard/new. The
+  // dashboard layout would otherwise show the SIGN-IN form to a first-time
+  // visitor. Take anonymous visitors straight to Clerk SIGN-UP instead,
+  // retaining their selected plan and language after account creation.
+  // Signed-in users continue to the existing create-album wizard unchanged.
+  if (!countryLocale && pathname === "/dashboard/new") {
+    const session = await _auth().catch(() => null);
+    if (!session?.userId) {
+      const selectedPlan = req.nextUrl.searchParams.get("plan");
+      const requestedLang = req.nextUrl.searchParams.get("lang");
+      const afterParams = new URLSearchParams();
+      if (selectedPlan === "basic" || selectedPlan === "plus" || selectedPlan === "premium") {
+        afterParams.set("plan", selectedPlan);
+      }
+      if (requestedLang && SUPPORTED_LOCALES.has(requestedLang)) {
+        afterParams.set("lang", requestedLang);
+      }
+      const afterSignup = `/dashboard/new${afterParams.size ? `?${afterParams}` : ""}`;
+      const target = req.nextUrl.clone();
+      target.pathname = "/sign-up";
+      target.search = "";
+      target.searchParams.set("redirect_url", afterSignup);
+      if (requestedLang && SUPPORTED_LOCALES.has(requestedLang)) {
+        target.searchParams.set("lang", requestedLang);
+      }
+      return NextResponse.redirect(target, 307);
+    }
+  }
+
   // /demo is a real route only on the primary app. Country marketing pages
   // reuse the in-page demo modal, so bookmarked links should return to the
   // matching country homepage and open that modal instead of rewriting to the
