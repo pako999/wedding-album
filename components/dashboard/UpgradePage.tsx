@@ -523,14 +523,13 @@ export function UpgradePage({ album, lang = "sl", initialDiscount = null }: Prop
             </div>
           </div>
 
-          {/* ── Billing form ──────────────────────────────────────────────
-              Shown for BOTH payment methods now — Mollie's hosted card
-              checkout doesn't collect a billing address, so this form is
-              the only source of the data needed to issue an invoice. */}
-          {(paymentMethod === "invoice" || paymentMethod === "card") && (
+          {/* Bank transfer needs invoice details. Card checkout stays
+              frictionless for digital products; if printed stands are added,
+              collect the essential delivery address only. */}
+          {(paymentMethod === "invoice" || wantStands) && (
             <div className="bg-white rounded-2xl border border-gray-100 p-5 mb-4">
               <p className="text-sm font-bold uppercase tracking-wide text-gray-700 mb-3">
-                {paymentMethod === "invoice" ? u.billingTitle : u.billingCardTitle}
+                {paymentMethod === "invoice" ? u.billingTitle : u.standsDeliveryTitle}
               </p>
               <div className="space-y-2.5">
                 {/* Personal / always-required fields */}
@@ -553,7 +552,9 @@ export function UpgradePage({ album, lang = "sl", initialDiscount = null }: Prop
                   />
                 ))}
 
-                {/* Company invoice toggle — reveals company name + tax ID */}
+                {/* Company invoicing belongs to bank orders, not the
+                    streamlined card checkout for printed stand deliveries. */}
+                {paymentMethod === "invoice" && (
                 <label className="flex items-center gap-2.5 pt-1 cursor-pointer select-none">
                   <input
                     type="checkbox"
@@ -566,8 +567,9 @@ export function UpgradePage({ album, lang = "sl", initialDiscount = null }: Prop
                   />
                   <span className="text-base font-medium text-[#0F1729]">{u.billingCompanyToggle}</span>
                 </label>
+                )}
 
-                {companyInvoice && (
+                {paymentMethod === "invoice" && companyInvoice && (
                   <div className="space-y-2.5 pt-1">
                     {[
                       { key: "companyName", placeholder: u.billingCompany, type: "text" },
@@ -825,6 +827,20 @@ export function UpgradePage({ album, lang = "sl", initialDiscount = null }: Prop
               <span>{u.onetimePayment}</span>
             </div>
 
+            {/* A card selection creates a payment with Mollie, not an
+                embedded Guestcam card form. Explain that BEFORE confirmation. */}
+            {paymentMethod === "card" && !invoiceDone && (
+              <div role="status" className="mb-4 rounded-xl border border-[#E8D79F] bg-[#FFF9E8] px-4 py-3">
+                <div className="flex items-start gap-2.5">
+                  <svg className="mt-0.5 h-5 w-5 shrink-0 text-[#915A00]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} aria-hidden="true">
+                    <rect x="2.5" y="5" width="19" height="14" rx="2" />
+                    <path d="M2.5 10h19" />
+                  </svg>
+                  <p className="text-sm leading-6 font-medium text-[#46370E]">{u.cardRedirectNotice}</p>
+                </div>
+              </div>
+            )}
+
             {/* Terms acceptance checkbox */}
             {!invoiceDone && (
               <label className="flex items-start gap-2.5 mb-4 cursor-pointer group">
@@ -909,9 +925,12 @@ export function UpgradePage({ album, lang = "sl", initialDiscount = null }: Prop
                       setInvoiceDone(true);
                       setIsLoading(false);
                     } else {
-                      // Billing required on card too — it's the only source
-                      // of invoice data (Mollie doesn't collect an address).
-                      if (!billing.name.trim() || !billing.phone.trim() || !billing.address.trim() || !billing.postalCode.trim() || !billing.city.trim()) {
+                      // Digital card orders use the existing signed-in account
+                      // details server-side: no address or phone is required.
+                      // Printed stands still require delivery details.
+                      if (wantStands && (!billing.name.trim() || !billing.email.trim() ||
+                          !billing.phone.trim() || !billing.address.trim() ||
+                          !billing.postalCode.trim() || !billing.city.trim())) {
                         alert(u.alertMissingFields);
                         setIsLoading(false);
                         return;
@@ -938,17 +957,17 @@ export function UpgradePage({ album, lang = "sl", initialDiscount = null }: Prop
                           standsQty,
                           standsVariant,
                           discountCode: discountStatus === "valid" ? appliedCode : undefined,
-                          billing: {
-                            country:     shipCountry,
-                            name:        billing.name.trim(),
-                            companyName: billing.companyName.trim() || undefined,
-                            email:       billing.email.trim() || undefined,
-                            phone:       billing.phone.trim(),
-                            address:     billing.address.trim(),
-                            postalCode:  billing.postalCode.trim(),
-                            city:        billing.city.trim(),
-                            taxId:       billing.taxId.trim() || undefined,
-                          },
+                          // Only attach delivery fields for physical stands.
+                          // A normal digital-card purchase has no billing form.
+                          billing: wantStands ? {
+                            country: shipCountry,
+                            name: billing.name.trim(),
+                            email: billing.email.trim(),
+                            phone: billing.phone.trim(),
+                            address: billing.address.trim(),
+                            postalCode: billing.postalCode.trim(),
+                            city: billing.city.trim(),
+                          } : undefined,
                         }),
                       });
                       const data = await res.json() as { paymentUrl?: string; error?: string };
@@ -976,7 +995,7 @@ export function UpgradePage({ album, lang = "sl", initialDiscount = null }: Prop
                 ) : paymentMethod === "invoice" ? (
                   u.ctaInvoice(discountedPrice)
                 ) : (
-                  u.ctaCard(chosen.name, discountedPrice)
+                  u.ctaCard(chosen.name, grandTotalCents / 100)
                 )}
               </button>
             )}
