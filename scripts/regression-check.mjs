@@ -1491,6 +1491,34 @@ for (const locale of ["sl", "hr", "sr", "en", "de", "es"]) {
   );
 }
 
+requireMatch(
+  "digital card checkout omits redundant customer address fields",
+  files.upgradePage,
+  /\(paymentMethod === "invoice" \|\| wantStands\)[\s\S]*billing: wantStands \? \{[\s\S]*\} : undefined/,
+  "Mollie card payment must not require the bank-invoice form unless physical stands ship",
+);
+
+requireMatch(
+  "card order confirmation explains Mollie redirect",
+  files.upgradePage,
+  /paymentMethod === "card" && !invoiceDone[\s\S]*u\.cardRedirectNotice[\s\S]*u\.ctaCard\(chosen\.name, grandTotalCents \/ 100\)/,
+  "a buyer must see the redirect notice and the final amount before confirming",
+);
+
+requireMatch(
+  "server records signed-in customer contact for no-form card checkout",
+  files.checkout,
+  /currentUser\(\)\.catch\(\(\) => null\)[\s\S]*clerkAccount\?\.primaryEmailAddress\?\.emailAddress[\s\S]*db\.insert\(cardBilling\)/,
+  "admin payment and webhook notifications must retain the authenticated buyer's email",
+);
+
+requireMatch(
+  "printed stands require a delivery address before creating a card payment",
+  files.checkout,
+  /if \(tableStands && \([\s\S]*shipping_details_required[\s\S]*createPayment\(\{/,
+  "never charge a printed-stand order without a usable shipping address",
+);
+
 requireOccurrences(
   "card and invoice checkout requests both send the selected language",
   files.upgradePage,
