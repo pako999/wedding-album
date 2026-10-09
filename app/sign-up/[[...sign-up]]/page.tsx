@@ -23,6 +23,7 @@ export default function SignUpPage() {
           fallbackRedirectUrl="/dashboard"
           signInUrl="/sign-in"
           appearance={{
+            layout: { logoImageUrl: "/camlove-logo.svg" },
             elements: {
               rootBox: "w-full",
               card: "shadow-xl rounded-[28px] border border-black/10 bg-white",
