@@ -5,7 +5,7 @@ import {
   addOnTotalCents, quoteShipping, standsPriceCents,
   DEFAULT_STAND_QTY, DEFAULT_STAND_VARIANT, type StandVariant,
 } from "@/lib/print-service";
-import { auth } from "@clerk/nextjs/server";
+import { auth, currentUser } from "@clerk/nextjs/server";
 import { db } from "@/lib/db";
 import { albums, cardBilling } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
@@ -142,6 +142,17 @@ export async function POST(req: NextRequest) {
     }
   }
 
+  // Digital card checkout collects no billing form. Physical stand orders
+  // must still include a delivery address BEFORE the user is charged,
+  // otherwise the payment would succeed but the parcel could not ship.
+  if (tableStands && (
+    !billing?.name?.trim() || !billing?.email?.trim() ||
+    !billing?.phone?.trim() || !billing?.address?.trim() ||
+    !billing?.postalCode?.trim() || !billing?.city?.trim()
+  )) {
+    return NextResponse.json({ error: "shipping_details_required" }, { status: 400 });
+  }
+
   // Physical add-on. Priced SERVER-SIDE from the destination country —
   // the browser only says whether it wants stands and where to ship, the
   // same trust model the plan price already uses. A country we don't
@@ -207,24 +218,30 @@ export async function POST(req: NextRequest) {
       .set({ stripeSessionId: id })
       .where(eq(albums.slug, albumSlug));
 
-    // Persist the billing details for invoicing — Mollie's hosted checkout
-    // doesn't collect an address, so this form is the only source. Keyed by
-    // the Mollie payment id; admin/payments + the paid webhook read it back.
-    if (billing) {
-      const clean = (v?: string) => (v?.trim() ? v.trim() : null);
-      await db.insert(cardBilling).values({
-        molliePaymentId: id,
-        albumSlug,
-        name:        clean(billing.name),
-        email:       clean(billing.email),
-        phone:       clean(billing.phone),
-        address:     clean(billing.address),
-        postalCode:  clean(billing.postalCode),
-        city:        clean(billing.city),
-        companyName: clean(billing.companyName),
-        taxId:       clean(billing.taxId),
-      }).onConflictDoNothing().catch((err) => console.error("[checkout] billing insert failed:", err));
-    }
+    // No form is required for a digital card purchase. Keep the contact
+    // name/email from the authenticated Clerk account in payment records so
+    // the Mollie webhook and admin payments screen can identify the buyer.
+    // Never fabricate a billing address or infer one from the album.
+    const clerkAccount = billing ? null : await currentUser().catch(() => null);
+    const contactName = [clerkAccount?.firstName, clerkAccount?.lastName]
+      .filter(Boolean).join(" ").trim();
+    const paymentContact = billing ?? {
+      name: contactName || undefined,
+      email: clerkAccount?.primaryEmailAddress?.emailAddress ?? album.ownerEmail ?? undefined,
+    };
+    const clean = (v?: string) => (v?.trim() ? v.trim() : null);
+    await db.insert(cardBilling).values({
+      molliePaymentId: id,
+      albumSlug,
+      name:        clean(paymentContact.name),
+      email:       clean(paymentContact.email),
+      phone:       clean(paymentContact.phone),
+      address:     clean(paymentContact.address),
+      postalCode:  clean(paymentContact.postalCode),
+      city:        clean(paymentContact.city),
+      companyName: clean(paymentContact.companyName),
+      taxId:       clean(paymentContact.taxId),
+    }).onConflictDoNothing().catch((err) => console.error("[checkout] billing insert failed:", err));
 
     // Physical fulfilment record. Written here rather than on the paid
     // webhook so the parcel is on the books the moment it's ordered — a
