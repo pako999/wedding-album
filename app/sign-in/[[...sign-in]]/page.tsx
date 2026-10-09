@@ -36,9 +36,20 @@ export default async function SignInPage({
               borderRadius: "0.75rem",
             },
             elements: {
-              rootBox: "flex w-full min-w-0 justify-center",
-              cardBox: "mx-auto w-full min-w-0 max-w-full",
-              card: "w-full min-w-0 overflow-hidden rounded-[22px] border border-[#E4E6EC] bg-white shadow-[0_18px_50px_rgba(15,23,41,0.10)]",
+              // Inline Clerk element styles override internal component
+              // widths reliably even when Tailwind v4 styles load first.
+              rootBox: { width: "100%", minWidth: 0, display: "flex", justifyContent: "center" },
+              cardBox: {
+                width: "100%", maxWidth: "100%", minWidth: 0, margin: "0 auto",
+                borderRadius: "22px", border: "1px solid #E4E6EC",
+                backgroundColor: "#FFFFFF", overflow: "hidden",
+                boxShadow: "0 18px 50px rgba(15,23,41,0.10)",
+              },
+              card: {
+                width: "100%", maxWidth: "100%", minWidth: 0,
+                border: "none", borderRadius: 0,
+                boxShadow: "none", backgroundColor: "#FFFFFF",
+              },
               headerTitle: "font-bold text-[#0F1729]",
               headerSubtitle: "text-[#596579]",
               formFieldInput: "rounded-xl border-gray-200",
