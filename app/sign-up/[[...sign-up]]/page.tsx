@@ -1,9 +1,7 @@
 import { SignUp } from "@clerk/nextjs";
-import Link from "next/link";
 import { safeAccountReturnPath } from "@/lib/urls";
 import type { Metadata } from "next";
 import { cookies } from "next/headers";
-import { GuestcamLogo } from "@/components/GuestcamLogo";
 import { AFFILIATE_COOKIE } from "@/lib/affiliate/attribution";
 import {
   SIGNUP_ATTR_COOKIE,
@@ -52,53 +50,35 @@ export default async function SignUpPage({
   const signInParams = new URLSearchParams({ lang, redirect_url: afterAuth });
   const signInUrl = `/sign-in?${signInParams.toString()}`;
 
-  const copy: Record<string, { heading: string; subtitle: string; existing: string; login: string }> = {
-    sl: { heading: "Ustvarite svoj račun", subtitle: "Registrirajte se in ustvarite svojo prvo galerijo.", existing: "Že imate račun?", login: "Prijavite se" },
-    hr: { heading: "Izradite svoj račun", subtitle: "Registrirajte se i izradite svoju prvu galeriju.", existing: "Već imate račun?", login: "Prijavite se" },
-    sr: { heading: "Napravite svoj nalog", subtitle: "Registrujte se i napravite svoju prvu galeriju.", existing: "Već imate nalog?", login: "Prijavite se" },
-    en: { heading: "Create your account", subtitle: "Sign up to create your first photo gallery.", existing: "Already have an account?", login: "Sign in" },
-    de: { heading: "Konto erstellen", subtitle: "Registrieren Sie sich und erstellen Sie Ihre erste Galerie.", existing: "Sie haben bereits ein Konto?", login: "Anmelden" },
-    es: { heading: "Crea tu cuenta", subtitle: "Regístrate y crea tu primera galería.", existing: "¿Ya tienes una cuenta?", login: "Inicia sesión" },
-  };
-  const t = copy[lang];
-
   return (
-    <main className="min-h-screen bg-[#F2F4F8] flex items-center justify-center px-4 py-8 sm:py-12">
-      <div className="w-full max-w-lg">
-        <header className="mb-6 flex flex-col items-center gap-2 text-center">
-          <GuestcamLogo size="md" showMark={true} />
-          <h1 className="mt-3 text-2xl font-bold tracking-tight text-[#0F1729] sm:text-3xl">{t.heading}</h1>
-          <p className="max-w-sm text-sm leading-6 text-gray-600 sm:text-base">{t.subtitle}</p>
-        </header>
-
-        {/* New visitors see registration first, large and prominent. */}
-        <div className="rounded-[28px] border border-[#C9820A]/20 bg-white p-2 shadow-[0_18px_60px_rgba(15,23,41,.09)] sm:p-3">
-          <SignUp
-            unsafeMetadata={{ guestcamAttribution: signupSource }}
-            forceRedirectUrl={afterAuth}
-            fallbackRedirectUrl="/dashboard"
-            signInUrl={signInUrl}
-            signInForceRedirectUrl={afterAuth}
-            appearance={{
-              elements: {
-                rootBox: "w-full",
-                card: "w-full !max-w-none !rounded-[22px] !border-0 !shadow-none bg-white",
-                headerTitle: "text-[#0F1729] font-bold",
-                formButtonPrimary: "bg-[#0F1729] hover:bg-[#C9820A] transition-colors rounded-xl",
-                footerAction: "hidden",
-                footerActionLink: "text-[#C9820A] hover:text-[#152C66]",
-              },
-            }}
-          />
-        </div>
-
-        {/* Existing customers can still sign in, but it isn't the main CTA. */}
-        <div className="mt-4 flex flex-wrap items-center justify-center gap-x-2 gap-y-1 rounded-2xl border border-gray-200 bg-white px-4 py-4 text-sm shadow-sm">
-          <span className="text-gray-600">{t.existing}</span>
-          <Link href={signInUrl} className="font-bold text-[#915A00] underline underline-offset-4 hover:text-[#0F1729]">
-            {t.login} →
-          </Link>
-        </div>
+    <main className="flex min-h-[100svh] items-center justify-center bg-[#F2F4F8] px-4 py-8 sm:py-12">
+      {/* Clerk owns ONE complete centered card, including its built-in
+          "Already have an account? Sign in" link. No duplicate wrapper,
+          separate footer link, or second brand/title block. */}
+      <div className="mx-auto flex w-full max-w-[460px] min-w-0 justify-center">
+        <SignUp
+          unsafeMetadata={{ guestcamAttribution: signupSource }}
+          forceRedirectUrl={afterAuth}
+          fallbackRedirectUrl="/dashboard"
+          signInUrl={signInUrl}
+          signInForceRedirectUrl={afterAuth}
+          appearance={{
+            variables: {
+              colorPrimary: "#0F1729",
+              borderRadius: "0.75rem",
+            },
+            elements: {
+              rootBox: "flex w-full min-w-0 justify-center",
+              cardBox: "mx-auto w-full min-w-0 max-w-full",
+              card: "w-full min-w-0 overflow-hidden rounded-[22px] border border-[#E4E6EC] bg-white shadow-[0_18px_50px_rgba(15,23,41,0.10)]",
+              headerTitle: "font-bold text-[#0F1729]",
+              headerSubtitle: "text-[#596579]",
+              formFieldInput: "rounded-xl border-gray-200",
+              formButtonPrimary: "rounded-xl bg-[#0F1729] text-white transition-colors hover:bg-[#C9820A]",
+              footerActionLink: "font-semibold text-[#976100] hover:text-[#0F1729]",
+            },
+          }}
+        />
       </div>
     </main>
   );
