@@ -39,8 +39,8 @@ export async function GuestcamClerkProvider({
       signUpUrl="/sign-up"
       signInFallbackRedirectUrl="/dashboard"
       signUpFallbackRedirectUrl="/dashboard"
-      signInForceRedirectUrl="/dashboard"
-      signUpForceRedirectUrl="/dashboard"
+      // Keep dashboard fallbacks, but let account forms honor the selected
+      // gallery/plan after registration or sign-in.
     >
       {children}
     </ClerkProvider>
