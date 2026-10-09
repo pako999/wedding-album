@@ -225,7 +225,7 @@ export async function POST(req: NextRequest) {
     const clerkAccount = billing ? null : await currentUser().catch(() => null);
     const contactName = [clerkAccount?.firstName, clerkAccount?.lastName]
       .filter(Boolean).join(" ").trim();
-    const paymentContact = billing ?? {
+    const paymentContact: NonNullable<typeof billing> = billing ?? {
       name: contactName || undefined,
       email: clerkAccount?.primaryEmailAddress?.emailAddress ?? album.ownerEmail ?? undefined,
     };
