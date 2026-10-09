@@ -74,3 +74,46 @@ export function localizedAccountPath(locale: string, path: string): string {
   params.set("lang", locale);
   return `${pathname}?${params.toString()}${hash}`;
 }
+
+/**
+ * Preserve the customer's intended onboarding destination after Clerk auth.
+ * Only allow internal album/account destinations and known checkout options.
+ * This prevents an untrusted redirect_url from becoming an open redirect.
+ */
+export function safeAccountReturnPath(input: unknown): string {
+  const raw = Array.isArray(input) ? input[0] : input;
+  if (typeof raw !== "string" || raw.length > 512 || !raw.startsWith("/") ||
+      raw.startsWith("//") || raw.includes("\\") || raw.includes("#")) {
+    return "/dashboard";
+  }
+
+  let target: URL;
+  try {
+    target = new URL(raw, "https://www.guestcam.si");
+  } catch {
+    return "/dashboard";
+  }
+
+  if (target.pathname === "/dashboard") return "/dashboard";
+  if (target.pathname === "/admin") return "/admin";
+
+  const isNewAlbum = target.pathname === "/dashboard/new";
+  const isUpgrade = /^\/dashboard\/[a-z0-9-]{1,80}\/upgrade$/.test(target.pathname);
+  if (!isNewAlbum && !isUpgrade) return "/dashboard";
+
+  const safe = new URLSearchParams();
+  const plan = target.searchParams.get("plan");
+  if (plan === "basic" || plan === "plus" || plan === "premium") safe.set("plan", plan);
+
+  const lang = target.searchParams.get("lang");
+  if (lang && SUPPORTED_LOCALES.has(lang)) safe.set("lang", lang);
+
+  if (isUpgrade) {
+    const discount = target.searchParams.get("discount");
+    if (discount && /^[a-zA-Z0-9_-]{1,64}$/.test(discount)) safe.set("discount", discount);
+  }
+
+  const query = safe.toString();
+  return target.pathname + (query ? `?${query}` : "");
+}
+
