@@ -80,6 +80,7 @@ const slSI = {
   formFieldLabel__username: "Uporabniško ime",
   formFieldInputPlaceholder__emailAddress: "vase@email.si",
   formFieldInputPlaceholder__password: "Vnesite geslo",
+  formFieldInputPlaceholder__signUpPassword: "Ustvarite geslo",
   formButtonPrimary: "Nadaljuj",
   signInEnterPasswordTitle: "Vnesite geslo",
   socialButtonsBlockButton: "Nadaljuj z {{provider|titleize}}",
