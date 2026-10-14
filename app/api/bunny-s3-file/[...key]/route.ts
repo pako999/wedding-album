@@ -48,6 +48,7 @@ async function privateDisplayVariant(
   source: string,
   width: number,
   quality: number,
+  publicCache = false,
 ): Promise<NextResponse> {
   const original = await fetch(source, { cache: "no-store" });
   if (!original.ok) {
@@ -63,7 +64,9 @@ async function privateDisplayVariant(
 
   return new NextResponse(new Uint8Array(output), {
     headers: {
-      "Cache-Control": "private, no-store",
+      "Cache-Control": publicCache
+        ? "public, max-age=300, s-maxage=86400, stale-while-revalidate=86400"
+        : "private, no-store",
       "Content-Type": "image/webp",
       "Content-Length": String(output.byteLength),
       "Referrer-Policy": "no-referrer",
@@ -173,8 +176,12 @@ export async function GET(
       return new Response(original.body, { status: 200, headers });
     }
 
-    // For open published albums, retain the fast cacheable pull-zone redirect.
-    if (s3Cdn && album.isPublished && !album.password) {
+    // The public pull zone currently returns 403 ("domain suspended") even
+    // though signed S3 originals are accessible. Use signed S3 as the default
+    // image source until the Bunny pull zone is repaired and explicitly enabled.
+    // This avoids broken photos without changing gallery data or original files.
+    const usePublicCdn = process.env.BUNNY_S3_PUBLIC_CDN_ENABLED === "true";
+    if (usePublicCdn && s3Cdn && album.isPublished && !album.password) {
       const target = new URL(`${s3Cdn}/${key}`);
       // Bunny's pull-zone Image Optimizer is optional and is not enabled on
       // every zone. Route display variants through Next's optimizer so the
@@ -187,10 +194,13 @@ export async function GET(
       return response;
     }
 
-    // Protected/unpublished media gets a short-lived private S3 URL instead.
+    // When the public CDN is disabled, serve cacheable photo variants from
+    // the original signed S3 object; protected media remains non-cacheable.
     const signed = await createBunnyS3PresignedRead(key, 300);
     if (width !== null) {
-      return await privateDisplayVariant(signed, width, quality);
+      return await privateDisplayVariant(
+        signed, width, quality, album.isPublished && !album.password,
+      );
     }
     const response = NextResponse.redirect(signed, 307);
     response.headers.set("Cache-Control", "private, no-store");

@@ -689,14 +689,14 @@ requireMatch(
 requireMatch(
   "new Bunny S3 photos retain responsive display parameters",
   `${files.bunny}\n${files.s3Read}`,
-  /pathname\.startsWith\("\/api\/bunny-s3-file\/"\)[\s\S]*withDisplayParams\(normalized, width, quality\)[\s\S]*DISPLAY_WIDTHS[\s\S]*optimizerUrl\(req, target, width, quality\)/,
-  "S3-backed gallery photos must redirect to a resized CDN variant instead of the full original",
+  /pathname\.startsWith\("\/api\/bunny-s3-file\/"\)[\s\S]*withDisplayParams\(normalized, width, quality\)[\s\S]*DISPLAY_WIDTHS[\s\S]*BUNNY_S3_PUBLIC_CDN_ENABLED[\s\S]*privateDisplayVariant\(/,
+  "S3-backed gallery photos must use display variants even when the public CDN is suspended",
 );
 
 requireMatch(
   "protected Bunny S3 photos are resized without a public cache",
   files.s3Read,
-  /sharp\(input,[\s\S]*resize\(\{ width, withoutEnlargement: true \}\)[\s\S]*"Cache-Control": "private, no-store"[\s\S]*privateDisplayVariant\(signed, width, quality\)/,
+  /sharp\(input,[\s\S]*resize\(\{ width, withoutEnlargement: true \}\)[\s\S]*"Cache-Control": publicCache[\s\S]*"private, no-store"[\s\S]*album\.isPublished && !album\.password/,
   "password-protected galleries must not download originals or expose cached private variants",
 );
 
