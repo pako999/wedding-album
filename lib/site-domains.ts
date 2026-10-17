@@ -32,6 +32,8 @@ const LOCALIZED_ROUTE_CLUSTERS: Array<Record<MarketingLocale, string>> = [
   { sl: "/sl/blog/novosti-porocni-premium-paket-guestcam", hr: "/hr/blog/novosti-vjencani-premium-paket-guestcam", sr: "/sr/blog/novosti-vencani-premium-paket-guestcam", de: "/de/blog/hochzeits-premium-neue-funktionen-guestcam", en: "/en/blog/wedding-premium-new-features-guestcam", es: "/es/blog/novedades-premium-bodas-guestcam" },
   { sl: "/sl/blog/porocne-fotografije-ki-jih-gostje-pozabijo-deliti", hr: "/hr/blog/vjencanje-fotografije-gosti-zaborave-podijeliti", sr: "/sr/blog/vencanje-fotografije-gosti-zaborave-podeliti", de: "/de/blog/hochzeitsfotos-gaeste-vergessen-zu-teilen", en: "/en/blog/wedding-photos-guests-forget-to-share", es: "/es/blog/fotos-boda-invitados-olvidan-compartir" },
   { sl: "/sl/blog/seznam-porocnih-fotografij-2026", hr: "/hr/blog/checklista-vjencanje-fotografije-2026", sr: "/sr/blog/cheklista-vencanje-fotografije-2026", de: "/de/blog/hochzeitsfoto-checkliste-2026", en: "/en/blog/wedding-photo-checklist-2026", es: "/es/blog/lista-fotos-boda-2026" },
+  { sl: "/sl/blog/digitalni-foto-album-dogodek-qr-koda", hr: "/hr/blog/digitalni-foto-album-dogadaj-qr-kod", sr: "/sr/blog/digitalni-foto-album-dogadjaj-qr-kod", de: "/de/blog/digitales-fotoalbum-event-qr-code", en: "/en/blog/digital-photo-album-event-qr-code", es: "/es/blog/album-digital-eventos-codigo-qr" },
+  { sl: "/sl/blog/zbiranje-fotografij-dogodek-qr-koda", hr: "/hr/blog/prikupljanje-fotografija-dogadaj-qr-kod", sr: "/sr/blog/prikupljanje-fotografija-dogadjaj-qr-kod", de: "/de/blog/event-fotos-sammeln-qr-code", en: "/en/blog/collect-event-photos-qr-code", es: "/es/blog/recopilar-fotos-evento-codigo-qr" },
 ];
 
 const SAME_SLUG_ROUTES = new Set([
