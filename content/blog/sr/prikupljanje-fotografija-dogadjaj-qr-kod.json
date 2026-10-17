@@ -1,0 +1,147 @@
+{
+  "slug": "prikupljanje-fotografija-dogadjaj-qr-kod",
+  "lang": "sr",
+  "title": "Kako prikupiti fotografije gostiju na događaju pomoću QR koda",
+  "description": "Praktičan vodič za prikupljanje fotografija i video zapisa gostiju na venčanju, rođendanu ili događaju: jedan QR kod, zajednički album i bez aplikacije.",
+  "translationKey": "collect-event-photos-qr",
+  "publishedAt": "2026-10-17",
+  "updatedAt": "2026-10-17",
+  "author": "Guestcam Team",
+  "category": "vodnik",
+  "readingTime": 7,
+  "tags": [
+    "prikupljanje fotografija",
+    "fotografije gostiju",
+    "QR kod događaj",
+    "zajednički album",
+    "Guestcam"
+  ],
+  "tldr": "Za prikupljanje fotografija gostiju na jednom mestu napravite zajednički album i podelite QR kod. Najbolje radi kada je kod vidljiv na više mesta, uz jasnu poruku i direktan link poslat posle događaja.",
+  "coverImage": "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=1600&h=900&fit=crop&q=82&auto=format",
+  "coverAlt": "Gosti na proslavi fotografišu događaj mobilnim telefonima",
+  "content": [
+    {
+      "type": "h2",
+      "text": "Zašto fotografije gostiju ostanu razbacane posle događaja?"
+    },
+    {
+      "type": "p",
+      "text": "Na gotovo svakom događaju nastane više odvojenih zbirki: profesionalni fotograf, telefoni porodice i prijatelja i video zapisi iz različitih uglova. Problem nije nedostatak fotografija, već to što svako koristi svoj uređaj i svoj način deljenja."
+    },
+    {
+      "type": "p",
+      "text": "Ako gostima već tokom događaja date jedno jasno mesto za slanje, prikupljanje je mnogo jednostavnije. QR kod otvara isti album svima, a svaki gost sam bira šta želi da pošalje iz pregledača."
+    },
+    {
+      "type": "h2",
+      "text": "Najjednostavniji postupak za prikupljanje fotografija"
+    },
+    {
+      "type": "ol",
+      "items": [
+        "Pre događaja napravite album i testirajte slanje sa drugog telefona.",
+        "QR kod postavite na više mesta, ne samo na ulazu.",
+        "Dodajte kratko uputstvo: „Skeniraj i dodaj svoje fotografije u naš album.“",
+        "DJ, voditelj ili organizator neka jednom kratko pomene album u odgovarajućem trenutku.",
+        "Sledećeg dana pošaljite isti direktan link u grupu ili zahvalnicu gostima."
+      ]
+    },
+    {
+      "type": "h2",
+      "text": "Kako dobiti više fotografija bez ometanja gostiju"
+    },
+    {
+      "type": "ul",
+      "items": [
+        "Proces treba da bude jasan bez dodatnog objašnjavanja.",
+        "Koristite jedan QR kod za isti događaj kako sadržaj ne bi završio u više albuma.",
+        "Karticu stavite na sto, program ili foto-kutak gde je telefon već pri ruci.",
+        "Objasnite razlog: „Želimo da vidimo proslavu i iz vašeg ugla.“",
+        "Omogućite slanje posle događaja i ne tražite da svi šalju usred zabave."
+      ]
+    },
+    {
+      "type": "h2",
+      "text": "Tekst uz QR kod: kratko i jasno"
+    },
+    {
+      "type": "quote",
+      "text": "Uhvatili ste lep trenutak? Skenirajte QR i dodajte fotografiju u naš zajednički album."
+    },
+    {
+      "type": "p",
+      "text": "Na većem plakatu možete dodati: „Bez aplikacije. Otvorite album, izaberite fotografije i sačekajte da se slanje završi.“ Posle događaja pošaljite direktan link, jer ga je na istom telefonu lakše otvoriti nego skenirati sliku QR koda."
+    },
+    {
+      "type": "h2",
+      "text": "Za koje događaje ovaj pristup radi?"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Događaj",
+        "Šta gosti često zabeleže"
+      ],
+      "rows": [
+        [
+          "Venčanje",
+          "Stolove, ples, reakcije i spontane trenutke između profesionalnih fotografija"
+        ],
+        [
+          "Rođendan",
+          "Tortu, porodicu, prijatelje i video čestitke"
+        ],
+        [
+          "Krštenje ili porodična proslava",
+          "Različite generacije i spontane porodične trenutke"
+        ],
+        [
+          "Matura ili završna proslava",
+          "Grupe prijatelja, dodelu i zabavu"
+        ],
+        [
+          "Poslovni događaj",
+          "Učesnike, predavanja, networking i perspektivu publike"
+        ]
+      ]
+    },
+    {
+      "type": "h2",
+      "text": "Šta uraditi posle događaja"
+    },
+    {
+      "type": "p",
+      "text": "Ostavite vreme za naknadne prijenose, pregledajte sadržaj i uklonite ono što ne pripada albumu. Zatim preuzmite važne datoteke i sačuvajte rezervnu kopiju. Ako fotografije planirate da objavite javno, poštujte dozvole ljudi koji se na njima nalaze."
+    },
+    {
+      "type": "cta",
+      "text": "Isprobajte prikupljanje fotografija gostiju uz Guestcam",
+      "href": "/dashboard/new"
+    },
+    {
+      "type": "faq",
+      "q": "Mogu li gosti da dodaju fotografije bez registracije?",
+      "a": "Da. U Guestcamu gost otvara album preko QR koda ili linka i za slanje mu nije potreban nalog."
+    },
+    {
+      "type": "faq",
+      "q": "Koliko različitih QR kodova mi treba?",
+      "a": "Za isti album dovoljan je jedan kod koji možete odštampati na više kartica i mesta."
+    },
+    {
+      "type": "faq",
+      "q": "Šta ako je internet na lokaciji slab?",
+      "a": "Gosti mogu sačuvati fotografije na telefonu i poslati ih kasnije preko istog linka kada imaju stabilnu vezu."
+    },
+    {
+      "type": "faq",
+      "q": "Mogu li da prikupljam i video zapise?",
+      "a": "Da, ako izabrani paket i ograničenja datoteka omogućavaju video."
+    },
+    {
+      "type": "faq",
+      "q": "Da li je QR album samo za venčanja?",
+      "a": "Ne. Isti pristup radi za rođendane, krštenja, mature, zabave i poslovne događaje."
+    }
+  ]
+}

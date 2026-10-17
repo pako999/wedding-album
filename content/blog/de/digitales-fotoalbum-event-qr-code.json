@@ -1,0 +1,157 @@
+{
+  "slug": "digitales-fotoalbum-event-qr-code",
+  "lang": "de",
+  "title": "Digitales Fotoalbum für Events mit QR-Code: Anleitung [2026]",
+  "description": "Erstelle ein digitales Fotoalbum für Hochzeit, Geburtstag oder Event. Gäste scannen den QR-Code und laden Fotos und Videos ohne App-Installation hoch.",
+  "translationKey": "digital-photo-album-event-qr",
+  "publishedAt": "2026-10-17",
+  "updatedAt": "2026-10-17",
+  "author": "Guestcam Team",
+  "category": "vodnik",
+  "readingTime": 7,
+  "tags": [
+    "digitales Fotoalbum",
+    "QR-Code Fotos",
+    "Event Fotos",
+    "Gästealbum",
+    "Guestcam"
+  ],
+  "tldr": "Ein digitales Event-Fotoalbum funktioniert am einfachsten als gemeinsame Webgalerie mit QR-Code: Der Veranstalter erstellt das Album, Gäste scannen den Code und laden ausgewählte Fotos oder Videos direkt im Browser hoch.",
+  "coverImage": "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=1600&h=900&fit=crop&q=82&auto=format",
+  "coverAlt": "Gäste fotografieren eine Feier mit ihren Smartphones",
+  "content": [
+    {
+      "type": "h2",
+      "text": "Was ist ein digitales Fotoalbum für ein Event?"
+    },
+    {
+      "type": "p",
+      "text": "Ein digitales Event-Fotoalbum ist eine gemeinsame Webgalerie, in der Fotos und Videos von vielen Smartphones an einem Ort zusammenkommen. Statt nach der Feier Bilder aus WhatsApp-Chats, E-Mails und verschiedenen Cloud-Ordnern einzusammeln, teilst du einen einzigen QR-Code oder Link."
+    },
+    {
+      "type": "p",
+      "text": "Der QR-Code enthält nicht die Fotos selbst. Er öffnet lediglich die Galerie. Ein Gast scannt ihn mit der Handykamera, öffnet das Album und wählt selbst aus, welche Dateien er teilen möchte. Bei Guestcam müssen Gäste dafür keine App installieren und kein Konto anlegen."
+    },
+    {
+      "type": "h2",
+      "text": "Digitales Album mit QR-Code in 5 Schritten einrichten"
+    },
+    {
+      "type": "ol",
+      "items": [
+        "Event erstellen und dem Album einen leicht erkennbaren Namen geben.",
+        "Gästeansicht auf einem zweiten Smartphone testen.",
+        "QR-Code herunterladen oder den Gästelink kopieren.",
+        "QR-Code auf Tischkarten, Willkommensschild oder Programm platzieren; den Link zusätzlich per Nachricht teilen.",
+        "Nach dem Event denselben Link noch einmal senden, damit Gäste später weitere Fotos hochladen können."
+      ]
+    },
+    {
+      "type": "h2",
+      "text": "QR-Fotoalbum, WhatsApp oder Cloud-Ordner?"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Methode",
+        "Vorteil",
+        "Möglicher Nachteil"
+      ],
+      "rows": [
+        [
+          "Fotoalbum mit QR-Code",
+          "Ein Ziel für alle Bilder; läuft im Browser",
+          "Uploads benötigen Internet"
+        ],
+        [
+          "WhatsApp-Gruppe",
+          "Den meisten Gästen vertraut",
+          "Bilder vermischen sich mit Nachrichten und sind später schwerer zu sortieren"
+        ],
+        [
+          "Geteilter Cloud-Ordner",
+          "Gut für kleine, eingespielte Gruppen",
+          "Konten und Freigaberechte können zusätzliche Schritte erzeugen"
+        ],
+        [
+          "E-Mail",
+          "Keine neue Plattform nötig",
+          "Viele einzelne Nachrichten und große Anhänge"
+        ]
+      ]
+    },
+    {
+      "type": "callout",
+      "text": "Praktisch ist die Kombination: WhatsApp für die Erinnerung, das QR-Album als zentraler Ort für Fotos und Videos."
+    },
+    {
+      "type": "h2",
+      "text": "Wo sollte der QR-Code stehen?"
+    },
+    {
+      "type": "ul",
+      "items": [
+        "Auf den Tischen, wo Gäste ihn bequem im Sitzen scannen können.",
+        "Auf einem Willkommensschild mit einer eindeutigen Aufforderung wie „Teilt eure Fotos“.",
+        "Bei Fotobox, Bar oder anderen Bereichen, in denen Smartphones ohnehin genutzt werden.",
+        "Auf dem Bildschirm, wenn du Photo Wall oder Slideshow verwendest.",
+        "Am nächsten Tag zusätzlich als direkter Link in einer Nachricht."
+      ]
+    },
+    {
+      "type": "p",
+      "text": "Teste den gedruckten Code vorab in seiner tatsächlichen Größe und möglichst bei ähnlichem Licht wie am Veranstaltungsort. Lass rund um den QR-Code freien Raum und vermeide stark gemusterte oder spiegelnde Hintergründe."
+    },
+    {
+      "type": "h2",
+      "text": "Fotos während des Events live auf einem Bildschirm zeigen"
+    },
+    {
+      "type": "p",
+      "text": "Mit einer Photo Wall oder Slideshow kann die gemeinsame Galerie auch auf einem Fernseher, Projektor oder einer Event-Leinwand laufen. So sehen Gäste, dass Beiträge ankommen. Wenn Moderation aktiviert ist, werden neue Bilder erst nach Freigabe angezeigt."
+    },
+    {
+      "type": "h2",
+      "text": "Privatsphäre und Backup sinnvoll planen"
+    },
+    {
+      "type": "ul",
+      "items": [
+        "QR-Code und Link vor allem mit eingeladenen Personen teilen.",
+        "Bei Bedarf verfügbare Zugriffs- oder Moderationseinstellungen nutzen.",
+        "Gästen klar sagen, dass sie selbst auswählen, was sie hochladen.",
+        "Wichtige Dateien nach dem Event zusätzlich selbst sichern."
+      ]
+    },
+    {
+      "type": "cta",
+      "text": "Kostenloses Testalbum mit QR-Code erstellen",
+      "href": "/dashboard/new"
+    },
+    {
+      "type": "faq",
+      "q": "Müssen Gäste eine App installieren?",
+      "a": "Nein. Guestcam öffnet sich für Gäste über QR-Code oder Link direkt im Browser."
+    },
+    {
+      "type": "faq",
+      "q": "Kann derselbe QR-Code von allen Gästen genutzt werden?",
+      "a": "Ja. Du kannst denselben Code mehrfach drucken; alle gelangen in dasselbe Event-Album."
+    },
+    {
+      "type": "faq",
+      "q": "Funktioniert der QR-Code ohne Internet?",
+      "a": "Die Kamera kann den Code erkennen, aber zum Öffnen der Galerie und Hochladen von Dateien ist eine Internetverbindung nötig."
+    },
+    {
+      "type": "faq",
+      "q": "Für welche Events eignet sich ein QR-Fotoalbum?",
+      "a": "Zum Beispiel für Hochzeiten, Geburtstage, Taufen, Abschlussfeiern, Firmenveranstaltungen, Jubiläen und private Feiern."
+    },
+    {
+      "type": "faq",
+      "q": "Kann ich die hochgeladenen Fotos live zeigen?",
+      "a": "Ja. Mit Photo Wall oder Slideshow kann das Album während des Events auf einem Bildschirm dargestellt werden."
+    }
+  ]
+}

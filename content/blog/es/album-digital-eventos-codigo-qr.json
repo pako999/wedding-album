@@ -1,0 +1,157 @@
+{
+  "slug": "album-digital-eventos-codigo-qr",
+  "lang": "es",
+  "title": "Álbum digital para eventos con código QR: guía 2026",
+  "description": "Crea un álbum digital compartido para boda, cumpleaños o evento. Los invitados escanean un QR y suben fotos y vídeos desde el navegador, sin instalar una app.",
+  "translationKey": "digital-photo-album-event-qr",
+  "publishedAt": "2026-10-17",
+  "updatedAt": "2026-10-17",
+  "author": "Guestcam Team",
+  "category": "vodnik",
+  "readingTime": 7,
+  "tags": [
+    "álbum digital",
+    "código QR fotos",
+    "fotos de eventos",
+    "álbum de invitados",
+    "Guestcam"
+  ],
+  "tldr": "La forma más sencilla de crear un álbum digital para un evento es usar una galería web compartida con código QR: el organizador crea el álbum, los invitados escanean el código y suben las fotos o vídeos que elijan desde el navegador.",
+  "coverImage": "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=1600&h=900&fit=crop&q=82&auto=format",
+  "coverAlt": "Invitados tomando fotos con sus teléfonos durante un evento",
+  "content": [
+    {
+      "type": "h2",
+      "text": "¿Qué es un álbum digital para eventos?"
+    },
+    {
+      "type": "p",
+      "text": "Un álbum digital para eventos es una galería web compartida en la que se reúnen fotos y vídeos de muchos teléfonos. En vez de pedir archivos después por WhatsApp, correo o varias carpetas, compartes un solo código QR o enlace para que todos los invitados lleguen al mismo álbum."
+    },
+    {
+      "type": "p",
+      "text": "El código QR no contiene las fotos. Solo abre la galería. El invitado lo escanea con la cámara, entra al álbum y elige qué archivos quiere compartir. En Guestcam no necesita instalar una aplicación ni crear una cuenta para subir contenido."
+    },
+    {
+      "type": "h2",
+      "text": "Cómo crear un álbum con QR en 5 pasos"
+    },
+    {
+      "type": "ol",
+      "items": [
+        "Crea el evento y pon al álbum un nombre que tus invitados reconozcan.",
+        "Abre la vista de invitados y pruébala desde otro teléfono.",
+        "Descarga el código QR o copia el enlace para invitados.",
+        "Coloca el QR en las mesas, en el cartel de bienvenida o en el programa; comparte también el enlace directo por mensaje.",
+        "Después del evento, envía el mismo enlace otra vez para recoger las fotos que no se subieron durante la celebración."
+      ]
+    },
+    {
+      "type": "h2",
+      "text": "Álbum con QR, WhatsApp o carpeta compartida"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Método",
+        "Ventaja",
+        "Posible fricción"
+      ],
+      "rows": [
+        [
+          "Álbum con código QR",
+          "Un único destino; se abre en el navegador",
+          "Las subidas necesitan conexión a internet"
+        ],
+        [
+          "Grupo de WhatsApp",
+          "Los invitados ya lo conocen",
+          "Las fotos se mezclan con la conversación y luego cuesta más organizarlas"
+        ],
+        [
+          "Carpeta en la nube",
+          "Útil para grupos pequeños que ya usan el servicio",
+          "Cuentas y permisos pueden añadir pasos"
+        ],
+        [
+          "Correo electrónico",
+          "No requiere otra plataforma",
+          "Muchos mensajes separados y archivos adjuntos grandes"
+        ]
+      ]
+    },
+    {
+      "type": "callout",
+      "text": "Una combinación práctica: WhatsApp para recordar a los invitados que participen y el álbum QR como destino único de las fotos y vídeos."
+    },
+    {
+      "type": "h2",
+      "text": "Dónde colocar el código QR para que se use"
+    },
+    {
+      "type": "ul",
+      "items": [
+        "En las mesas, en un lugar fácil de escanear sentado.",
+        "En la bienvenida con una instrucción clara como «Comparte tus fotos».",
+        "Cerca del photocall, bar u otra zona donde ya se usan los móviles.",
+        "En una pantalla si utilizas Photo Wall o slideshow.",
+        "En el mensaje del día siguiente, añade también el enlace directo."
+      ]
+    },
+    {
+      "type": "p",
+      "text": "Antes de imprimir todas las tarjetas, prueba el código al tamaño final y con una luz parecida a la del lugar. Deja margen libre alrededor del QR y evita fondos con fotografías, patrones detallados o reflejos que reduzcan el contraste."
+    },
+    {
+      "type": "h2",
+      "text": "Cómo mostrar las fotos durante el evento"
+    },
+    {
+      "type": "p",
+      "text": "Con Photo Wall o slideshow, el álbum puede mostrarse en un televisor, proyector u otra pantalla durante la celebración. Los invitados ven que sus aportaciones llegan y el QR puede permanecer visible. Si activas moderación, las imágenes se muestran después de aprobarlas."
+    },
+    {
+      "type": "h2",
+      "text": "Privacidad y copia de seguridad"
+    },
+    {
+      "type": "ul",
+      "items": [
+        "Comparte el QR y el enlace principalmente con personas invitadas.",
+        "Usa los controles de acceso o moderación disponibles cuando los necesites.",
+        "Aclara que cada invitado decide qué archivos quiere subir.",
+        "Descarga los recuerdos importantes y conserva tu propia copia de seguridad."
+      ]
+    },
+    {
+      "type": "cta",
+      "text": "Crear un álbum de prueba gratis con código QR",
+      "href": "/dashboard/new"
+    },
+    {
+      "type": "faq",
+      "q": "¿Los invitados tienen que descargar una aplicación?",
+      "a": "No. Guestcam se abre desde el código QR o enlace en el navegador del móvil."
+    },
+    {
+      "type": "faq",
+      "q": "¿Todos pueden usar el mismo código QR?",
+      "a": "Sí. Puedes imprimir el mismo QR en varias tarjetas y todos acceden al mismo álbum del evento."
+    },
+    {
+      "type": "faq",
+      "q": "¿Funciona el QR sin internet?",
+      "a": "La cámara puede reconocer el código, pero para abrir la galería y subir archivos hace falta conexión a internet."
+    },
+    {
+      "type": "faq",
+      "q": "¿Para qué eventos sirve?",
+      "a": "Bodas, cumpleaños, bautizos, graduaciones, baby showers, aniversarios, fiestas y eventos de empresa."
+    },
+    {
+      "type": "faq",
+      "q": "¿Se pueden mostrar las fotos en directo?",
+      "a": "Sí. Con Photo Wall o slideshow puedes mostrar el álbum compartido en una pantalla durante el evento."
+    }
+  ]
+}

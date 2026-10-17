@@ -1,0 +1,147 @@
+{
+  "slug": "collect-event-photos-qr-code",
+  "lang": "en",
+  "title": "How to Collect Event Photos From Guests With a QR Code",
+  "description": "A practical guide to collecting guest photos and videos at a wedding, birthday or event: one QR code, one shared album, and no app download.",
+  "translationKey": "collect-event-photos-qr",
+  "publishedAt": "2026-10-17",
+  "updatedAt": "2026-10-17",
+  "author": "Guestcam Team",
+  "category": "vodnik",
+  "readingTime": 7,
+  "tags": [
+    "collect event photos",
+    "guest photos",
+    "event QR code",
+    "shared photo album",
+    "Guestcam"
+  ],
+  "tldr": "To collect guest photos in one place, create a shared album and give guests a QR code. Participation is usually easiest when the code appears in several visible places, the instruction is obvious, and you send the same direct link again after the event.",
+  "coverImage": "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=1600&h=900&fit=crop&q=82&auto=format",
+  "coverAlt": "Guests using smartphones and taking photos at a celebration",
+  "content": [
+    {
+      "type": "h2",
+      "text": "Why do guest photos stay scattered after an event?"
+    },
+    {
+      "type": "p",
+      "text": "Most events create several separate photo collections: the professional photographer, family phones, friends’ phones and videos captured from different angles. The problem is rarely a lack of photos. The files simply stay across many devices, chats and inboxes."
+    },
+    {
+      "type": "p",
+      "text": "Giving guests one clear destination during the event makes collection much easier. A QR code opens the same shared album for everyone, and each guest chooses which photos or videos to upload from the browser."
+    },
+    {
+      "type": "h2",
+      "text": "The simplest workflow for collecting guest photos"
+    },
+    {
+      "type": "ol",
+      "items": [
+        "Create the album before the event and test an upload from a second phone.",
+        "Place the QR code in several useful locations, not only at the entrance.",
+        "Add a short instruction: “Scan and add your photos to our album.”",
+        "Ask the DJ, MC or host to mention the album once at a natural moment.",
+        "The next day, send the same direct link in a thank-you message or group."
+      ]
+    },
+    {
+      "type": "h2",
+      "text": "How to get more photos without pestering guests"
+    },
+    {
+      "type": "ul",
+      "items": [
+        "Make the upload flow understandable without extra explanation.",
+        "Use one QR code for the same event so submissions do not split across several galleries.",
+        "Put cards where phones are already easy to reach: tables, programmes or the photo area.",
+        "Explain why you want the photos: “We’d love to see the event from your point of view.”",
+        "Allow uploads after the event so guests do not feel they have to stop enjoying the celebration."
+      ]
+    },
+    {
+      "type": "h2",
+      "text": "What should the sign next to the QR code say?"
+    },
+    {
+      "type": "quote",
+      "text": "Captured a great moment? Scan the QR code and add your photo to our shared album."
+    },
+    {
+      "type": "p",
+      "text": "On a larger sign, you can add: “No app needed. Open the album, choose your photos and wait for the upload to finish.” After the event, send the direct link rather than only an image of the QR code, because a guest can tap the link on the same phone."
+    },
+    {
+      "type": "h2",
+      "text": "Which events can use this approach?"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Event",
+        "What guests often capture"
+      ],
+      "rows": [
+        [
+          "Wedding",
+          "Tables, dance floor, reactions and candid moments between professional shots"
+        ],
+        [
+          "Birthday",
+          "Cake, family, friends and short video messages"
+        ],
+        [
+          "Christening or family celebration",
+          "Different generations and spontaneous family moments"
+        ],
+        [
+          "Graduation or prom",
+          "Friend groups, arrivals, ceremony and party"
+        ],
+        [
+          "Corporate event",
+          "Attendees, sessions, networking and the audience perspective"
+        ]
+      ]
+    },
+    {
+      "type": "h2",
+      "text": "What to do after the event"
+    },
+    {
+      "type": "p",
+      "text": "Leave some time for late uploads, review the gallery and remove anything that does not belong. Then download the files you want to keep and store your own backup. If you plan to publish guest photos publicly, respect the permissions and privacy of the people shown."
+    },
+    {
+      "type": "cta",
+      "text": "Try collecting guest photos with Guestcam",
+      "href": "/dashboard/new"
+    },
+    {
+      "type": "faq",
+      "q": "Can guests upload photos without registering?",
+      "a": "Yes. With Guestcam, guests open the album through the QR code or link and do not need their own account to upload."
+    },
+    {
+      "type": "faq",
+      "q": "How many different QR codes do I need?",
+      "a": "One code is enough for the same album. You can print it on several cards and place it around the venue."
+    },
+    {
+      "type": "faq",
+      "q": "What if the venue has poor internet?",
+      "a": "Guests can keep the photos on their phone and use the same link later when they have a stable connection."
+    },
+    {
+      "type": "faq",
+      "q": "Can I collect videos too?",
+      "a": "Yes, when the selected plan and file limits allow video uploads."
+    },
+    {
+      "type": "faq",
+      "q": "Is a QR photo album only for weddings?",
+      "a": "No. The same approach works for birthdays, christenings, graduations, parties and corporate events."
+    }
+  ]
+}

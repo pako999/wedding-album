@@ -1,0 +1,157 @@
+{
+  "slug": "digitalni-foto-album-dogadaj-qr-kod",
+  "lang": "hr",
+  "title": "Digitalni foto album za događaj s QR kodom: kako ga napraviti [2026]",
+  "description": "Napravite digitalni album za vjenčanje, rođendan ili drugi događaj. Gosti skeniraju QR kod i dodaju fotografije i videozapise bez instaliranja aplikacije.",
+  "translationKey": "digital-photo-album-event-qr",
+  "publishedAt": "2026-10-17",
+  "updatedAt": "2026-10-17",
+  "author": "Guestcam Team",
+  "category": "vodnik",
+  "readingTime": 7,
+  "tags": [
+    "digitalni foto album",
+    "QR kod za fotografije",
+    "fotografije događaja",
+    "album za goste",
+    "Guestcam"
+  ],
+  "tldr": "Najjednostavniji digitalni album za događaj je zajednička web galerija s QR kodom: organizator napravi album, gosti skeniraju kod i fotografije ili videozapise dodaju izravno iz preglednika.",
+  "coverImage": "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=1600&h=900&fit=crop&q=82&auto=format",
+  "coverAlt": "Gosti na događaju fotografiraju proslavu mobitelima",
+  "content": [
+    {
+      "type": "h2",
+      "text": "Što je digitalni foto album za događaj?"
+    },
+    {
+      "type": "p",
+      "text": "Digitalni foto album za događaj jedna je zajednička web galerija u kojoj organizator i gosti mogu skupiti fotografije i videozapise s različitih mobitela. Umjesto da nakon proslave tražite slike po WhatsApp razgovorima, e-pošti i privatnim mapama, svima dajete jedan QR kod ili poveznicu do istog albuma."
+    },
+    {
+      "type": "p",
+      "text": "QR kod ne sadrži fotografije. On samo otvara galeriju. Gost ga skenira kamerom mobitela, otvori album i sam odabere datoteke koje želi podijeliti. U Guestcamu gost za slanje ne mora instalirati aplikaciju niti otvarati račun."
+    },
+    {
+      "type": "h2",
+      "text": "Kako napraviti album s QR kodom u 5 koraka"
+    },
+    {
+      "type": "ol",
+      "items": [
+        "Napravite događaj i dajte albumu prepoznatljivo ime.",
+        "Otvorite prikaz za goste i testirajte ga na drugom mobitelu.",
+        "Preuzmite QR kod ili kopirajte poveznicu albuma.",
+        "QR stavite na kartice za stolove, znak dobrodošlice ili program; poveznicu pošaljite i porukom.",
+        "Nakon događaja pošaljite isti link još jednom kako bi gosti dodali fotografije koje nisu stigli poslati tijekom proslave."
+      ]
+    },
+    {
+      "type": "h2",
+      "text": "QR album, WhatsApp ili zajednička mapa?"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Način",
+        "Prednost",
+        "Mogući problem"
+      ],
+      "rows": [
+        [
+          "Album s QR kodom",
+          "Jedno mjesto za fotografije; otvara se u pregledniku",
+          "Za slanje je potrebna internetska veza"
+        ],
+        [
+          "WhatsApp grupa",
+          "Gosti je već poznaju",
+          "Fotografije se miješaju s razgovorom i teže ih je kasnije organizirati"
+        ],
+        [
+          "Zajednička cloud mapa",
+          "Dobra za malu grupu koja već koristi servis",
+          "Prijave i dozvole mogu zbuniti dio gostiju"
+        ],
+        [
+          "E-pošta",
+          "Ne treba nova usluga",
+          "Veliki privici i mnogo odvojenih poruka"
+        ]
+      ]
+    },
+    {
+      "type": "callout",
+      "text": "Praktična kombinacija: WhatsApp koristite za podsjetnik, a QR album kao jedno odredište za fotografije i videozapise."
+    },
+    {
+      "type": "h2",
+      "text": "Gdje postaviti QR kod da ga gosti zaista koriste?"
+    },
+    {
+      "type": "ul",
+      "items": [
+        "Na stolove, na mjestu koje se lako skenira iz sjedećeg položaja.",
+        "Na znak dobrodošlice s jasnom porukom „Dodaj svoje fotografije“.",
+        "Kod foto-kutka, bara ili drugog mjesta gdje su mobiteli već u rukama.",
+        "Na ekran ili projekciju ako koristite Photo Wall ili slideshow.",
+        "U poruci sljedeći dan pošaljite izravnu poveznicu, ne samo sliku QR koda."
+      ]
+    },
+    {
+      "type": "p",
+      "text": "Prije ispisa testirajte kod u konačnoj veličini i pri sličnom osvjetljenju kao na lokaciji. Ostavite prazan rub oko koda i nemojte ga stavljati preko fotografije, uzorka ili sjajne podloge koja smanjuje kontrast."
+    },
+    {
+      "type": "h2",
+      "text": "Možete li fotografije prikazivati na ekranu tijekom događaja?"
+    },
+    {
+      "type": "p",
+      "text": "Da. Zajednički album možete prikazati kroz Photo Wall ili slideshow na televizoru, projektoru ili drugom ekranu. Gosti odmah vide da njihove fotografije stižu, a QR kod može ostati vidljiv na zaslonu. Ako koristite moderaciju, sadržaj se prikazuje nakon odobrenja."
+    },
+    {
+      "type": "h2",
+      "text": "Privatnost i sigurnost"
+    },
+    {
+      "type": "ul",
+      "items": [
+        "QR i poveznicu dijelite prvenstveno s pozvanim osobama.",
+        "Po potrebi uključite dostupne postavke pristupa ili moderaciju.",
+        "Gostima jasno recite da sami biraju datoteke koje šalju.",
+        "Nakon događaja preuzmite važne uspomene i spremite vlastitu sigurnosnu kopiju."
+      ]
+    },
+    {
+      "type": "cta",
+      "text": "Napravite besplatni testni album s QR kodom",
+      "href": "/dashboard/new"
+    },
+    {
+      "type": "faq",
+      "q": "Moraju li gosti instalirati aplikaciju?",
+      "a": "Ne. Guestcam se gostima otvara u pregledniku mobitela preko QR koda ili poveznice."
+    },
+    {
+      "type": "faq",
+      "q": "Radi li isti QR kod za sve goste?",
+      "a": "Da. Isti kod možete ispisati na više kartica i svi dolaze u isti album događaja."
+    },
+    {
+      "type": "faq",
+      "q": "Radi li QR kod bez interneta?",
+      "a": "Kamera može prepoznati kod bez veze, ali za otvaranje albuma i slanje datoteka potreban je internet."
+    },
+    {
+      "type": "faq",
+      "q": "Za koje je događaje album prikladan?",
+      "a": "Za vjenčanja, rođendane, krštenja, mature, baby showere, godišnjice, zabave i poslovne događaje."
+    },
+    {
+      "type": "faq",
+      "q": "Mogu li fotografije prikazivati uživo?",
+      "a": "Da, uz Photo Wall ili slideshow album se može prikazivati na ekranu tijekom događaja."
+    }
+  ]
+}

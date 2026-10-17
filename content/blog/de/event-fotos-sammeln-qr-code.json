@@ -1,0 +1,147 @@
+{
+  "slug": "event-fotos-sammeln-qr-code",
+  "lang": "de",
+  "title": "Event-Fotos von Gästen mit QR-Code sammeln: So geht’s",
+  "description": "Praktischer Leitfaden zum Sammeln von Gästefotos und Videos bei Hochzeit, Geburtstag oder Event: ein QR-Code, ein gemeinsames Album, keine App.",
+  "translationKey": "collect-event-photos-qr",
+  "publishedAt": "2026-10-17",
+  "updatedAt": "2026-10-17",
+  "author": "Guestcam Team",
+  "category": "vodnik",
+  "readingTime": 7,
+  "tags": [
+    "Event Fotos sammeln",
+    "Gästefotos",
+    "QR-Code Event",
+    "gemeinsames Fotoalbum",
+    "Guestcam"
+  ],
+  "tldr": "Wenn du Gästefotos an einem Ort sammeln möchtest, erstelle ein gemeinsames Album und teile einen QR-Code. Besonders gut funktioniert es, wenn der Code an mehreren sichtbaren Stellen steht, die Anweisung eindeutig ist und nach dem Event zusätzlich der direkte Link verschickt wird.",
+  "coverImage": "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=1600&h=900&fit=crop&q=82&auto=format",
+  "coverAlt": "Gäste fotografieren eine Feier mit ihren Smartphones",
+  "content": [
+    {
+      "type": "h2",
+      "text": "Warum bleiben Gästefotos nach Events oft verstreut?"
+    },
+    {
+      "type": "p",
+      "text": "Bei fast jeder Feier entstehen mehrere getrennte Sammlungen: die Bilder des Fotografen, Smartphones von Familie und Freunden sowie Videos aus unterschiedlichen Perspektiven. Das Problem ist selten, dass es zu wenige Aufnahmen gibt. Sie liegen nur auf vielen Geräten und in verschiedenen Chats."
+    },
+    {
+      "type": "p",
+      "text": "Ein gemeinsames Ziel schon während des Events macht das Einsammeln leichter. Der QR-Code öffnet für alle dasselbe Album, und jeder Gast wählt selbst aus, welche Fotos oder Videos er über den Browser hochladen möchte."
+    },
+    {
+      "type": "h2",
+      "text": "Der einfachste Ablauf zum Sammeln von Event-Fotos"
+    },
+    {
+      "type": "ol",
+      "items": [
+        "Vor dem Event ein Album erstellen und den Upload mit einem zweiten Smartphone testen.",
+        "Den QR-Code an mehreren Stellen platzieren, nicht nur am Eingang.",
+        "Eine klare Anweisung ergänzen: „Scannen und eure Fotos zu unserem Album hinzufügen.“",
+        "DJ, Moderator oder Gastgeber erwähnt das Album einmal kurz zu einem passenden Zeitpunkt.",
+        "Am nächsten Tag denselben direkten Link in einer Dankesnachricht oder Gruppe senden."
+      ]
+    },
+    {
+      "type": "h2",
+      "text": "So bekommst du mehr Beiträge, ohne Gäste zu nerven"
+    },
+    {
+      "type": "ul",
+      "items": [
+        "Der Ablauf sollte ohne zusätzliche Erklärung verständlich sein.",
+        "Für ein Event einen einheitlichen QR-Code verwenden, damit keine parallelen Galerien entstehen.",
+        "Karten dort platzieren, wo das Handy ohnehin griffbereit ist: Tisch, Programm oder Fotobereich.",
+        "Kurz erklären, warum die Bilder wichtig sind: „Wir möchten das Event auch aus eurer Perspektive sehen.“",
+        "Uploads nach dem Event zulassen, damit niemand während der Feier Zeit dafür opfern muss."
+      ]
+    },
+    {
+      "type": "h2",
+      "text": "Text neben dem QR-Code: kurz gewinnt"
+    },
+    {
+      "type": "quote",
+      "text": "Schönen Moment festgehalten? QR-Code scannen und das Foto zu unserem gemeinsamen Album hinzufügen."
+    },
+    {
+      "type": "p",
+      "text": "Auf einem größeren Schild kannst du ergänzen: „Keine App nötig. Album öffnen, Fotos auswählen und warten, bis der Upload abgeschlossen ist.“ Nach dem Event ist ein direkter Link praktischer als nur ein Bild des QR-Codes."
+    },
+    {
+      "type": "h2",
+      "text": "Für welche Events funktioniert das?"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Event",
+        "Typische Gästefotos"
+      ],
+      "rows": [
+        [
+          "Hochzeit",
+          "Tische, Tanzfläche, Reaktionen und spontane Momente"
+        ],
+        [
+          "Geburtstag",
+          "Kuchen, Familie, Freunde und kurze Videogrüße"
+        ],
+        [
+          "Taufe oder Familienfeier",
+          "Mehrere Generationen und spontane Familienmomente"
+        ],
+        [
+          "Abschlussfeier",
+          "Freundesgruppen, Zeremonie und Party"
+        ],
+        [
+          "Firmenevent",
+          "Teilnehmende, Vorträge, Networking und Publikums-Perspektiven"
+        ]
+      ]
+    },
+    {
+      "type": "h2",
+      "text": "Nach dem Event: prüfen, herunterladen, sichern"
+    },
+    {
+      "type": "p",
+      "text": "Gib Gästen etwas Zeit für spätere Uploads, prüfe die Galerie und entferne Inhalte, die nicht dorthin gehören. Lade wichtige Dateien herunter und bewahre zusätzlich eine eigene Sicherung auf. Wenn du Bilder öffentlich veröffentlichen möchtest, beachte die Einwilligung der abgebildeten Personen."
+    },
+    {
+      "type": "cta",
+      "text": "Gästefotos mit Guestcam kostenlos testen",
+      "href": "/dashboard/new"
+    },
+    {
+      "type": "faq",
+      "q": "Können Gäste Fotos ohne Registrierung hochladen?",
+      "a": "Ja. Bei Guestcam öffnen Gäste das Album über QR-Code oder Link und brauchen für den Upload kein eigenes Konto."
+    },
+    {
+      "type": "faq",
+      "q": "Wie viele verschiedene QR-Codes brauche ich?",
+      "a": "Für dasselbe Album reicht ein Code. Du kannst ihn auf mehreren Karten und an verschiedenen Stellen drucken."
+    },
+    {
+      "type": "faq",
+      "q": "Was passiert bei schlechtem Internet am Veranstaltungsort?",
+      "a": "Gäste können die Fotos auf dem Smartphone behalten und sie später über denselben Link bei stabiler Verbindung hochladen."
+    },
+    {
+      "type": "faq",
+      "q": "Kann ich auch Videos sammeln?",
+      "a": "Ja, sofern der gewählte Tarif und die Dateigrenzen Video-Uploads zulassen."
+    },
+    {
+      "type": "faq",
+      "q": "Ist ein QR-Fotoalbum nur für Hochzeiten gedacht?",
+      "a": "Nein. Es eignet sich ebenso für Geburtstage, Taufen, Abschlussfeiern, Partys und Firmenevents."
+    }
+  ]
+}

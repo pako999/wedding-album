@@ -1,0 +1,147 @@
+{
+  "slug": "zbiranje-fotografij-dogodek-qr-koda",
+  "lang": "sl",
+  "title": "Kako zbrati fotografije gostov na dogodku z QR kodo",
+  "description": "Praktičen vodič za zbiranje fotografij in videov gostov na poroki, rojstnem dnevu ali dogodku: ena QR koda, skupni album in brez aplikacije.",
+  "translationKey": "collect-event-photos-qr",
+  "publishedAt": "2026-10-17",
+  "updatedAt": "2026-10-17",
+  "author": "Guestcam Team",
+  "category": "vodnik",
+  "readingTime": 7,
+  "tags": [
+    "zbiranje fotografij",
+    "fotografije gostov",
+    "QR koda dogodek",
+    "skupni album",
+    "Guestcam"
+  ],
+  "tldr": "Če želiš zbrati fotografije gostov na enem mestu, ustvari skupni album in gostom pokaži QR kodo. Najboljši rezultat dosežeš, če QR postaviš na več vidnih mest, jasno napišeš, kaj naj naredijo, in dan po dogodku pošlješ še neposredno povezavo.",
+  "coverImage": "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=1600&h=900&fit=crop&q=82&auto=format",
+  "coverAlt": "Gostje na praznovanju uporabljajo telefone in fotografirajo dogodek",
+  "content": [
+    {
+      "type": "h2",
+      "text": "Zakaj fotografije gostov po dogodku ostanejo razpršene?"
+    },
+    {
+      "type": "p",
+      "text": "Na skoraj vsakem dogodku nastane več različnih zbirk fotografij: uradni fotograf, telefoni družine, prijateljev, sodelavcev in videi iz različnih kotov. Težava ni v tem, da fotografij ni, ampak da vsak uporablja svoj telefon in svoj način deljenja."
+    },
+    {
+      "type": "p",
+      "text": "Če gostu daš en jasen cilj že med dogodkom, je zbiranje veliko enostavnejše. QR koda odpre isti album vsem povabljenim, gost pa izbere fotografije ali videe in jih pošlje neposredno iz brskalnika."
+    },
+    {
+      "type": "h2",
+      "text": "Najbolj preprost postopek za zbiranje fotografij"
+    },
+    {
+      "type": "ol",
+      "items": [
+        "Pred dogodkom ustvari album in testiraj oddajo z drugega telefona.",
+        "QR kodo natisni na več mestih, ne samo pri vhodu.",
+        "Dodaj kratko navodilo: »Skeniraj in dodaj svoje fotografije v naš album.«",
+        "DJ, voditelj ali organizator naj QR enkrat na kratko omeni v primernem trenutku.",
+        "Naslednji dan pošlji isti neposredni link v skupino ali zahvalo gostom."
+      ]
+    },
+    {
+      "type": "h2",
+      "text": "Kako povečati število oddanih fotografij brez nadlegovanja gostov"
+    },
+    {
+      "type": "ul",
+      "items": [
+        "Naj bo postopek razumljiv brez dodatne razlage.",
+        "Uporabi eno QR kodo za isti dogodek, da ne nastane več različnih albumov.",
+        "Kartico postavi blizu telefona gosta: na mizo, program ali foto kotiček.",
+        "Povej, zakaj si želiš fotografije: »Radi bi videli dogodek tudi iz vašega zornega kota.«",
+        "Omogoči oddajo tudi po dogodku in ne zahtevaj, da vsi nalagajo med praznovanjem."
+      ]
+    },
+    {
+      "type": "h2",
+      "text": "Besedilo ob QR kodi: kratko je boljše"
+    },
+    {
+      "type": "quote",
+      "text": "Ujel/a si lep trenutek? Skeniraj QR in dodaj fotografijo v naš skupni album."
+    },
+    {
+      "type": "p",
+      "text": "Na večjem plakatu lahko dodaš še: »Brez aplikacije. Odpri album, izberi fotografije in počakaj, da je nalaganje končano.« Za sporočilo po dogodku je boljši neposredni link kot slika QR kode, ker ga lahko gost odpre na istem telefonu."
+    },
+    {
+      "type": "h2",
+      "text": "Za katere dogodke deluje ta pristop?"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Dogodek",
+        "Kaj gostje pogosto ujamejo"
+      ],
+      "rows": [
+        [
+          "Poroka",
+          "Mize, ples, reakcije, zakulisje in trenutke med uradnimi fotografijami"
+        ],
+        [
+          "Rojstni dan",
+          "Torto, družino, prijatelje in videe voščil"
+        ],
+        [
+          "Krst ali družinsko praznovanje",
+          "Različne generacije in spontane družinske trenutke"
+        ],
+        [
+          "Matura ali zaključek",
+          "Skupine prijateljev, prihod, podelitev in zabavo"
+        ],
+        [
+          "Poslovni dogodek",
+          "Udeležence, predavanja, mreženje in dogajanje iz publike"
+        ]
+      ]
+    },
+    {
+      "type": "h2",
+      "text": "Kaj narediš po dogodku"
+    },
+    {
+      "type": "p",
+      "text": "Pusti nekaj časa za pozne oddaje, preglej vsebino in odstrani fotografije, ki ne sodijo v album. Nato prenesi datoteke, ki jih želiš dolgoročno hraniti, in shrani varnostno kopijo. Če nameravaš fotografije javno objaviti, upoštevaj dovoljenja ljudi, ki so na njih."
+    },
+    {
+      "type": "cta",
+      "text": "Preizkusi zbiranje fotografij gostov z Guestcam",
+      "href": "/dashboard/new"
+    },
+    {
+      "type": "faq",
+      "q": "Ali lahko gostje dodajo fotografije brez registracije?",
+      "a": "Da. V Guestcam gost odpre album prek QR kode ali povezave in za oddajo ne potrebuje svojega računa."
+    },
+    {
+      "type": "faq",
+      "q": "Kolikokrat moram natisniti QR kodo?",
+      "a": "Ni treba, da je za vsakega gosta drugačna. Isto kodo lahko ponoviš na več mizah in vidnih mestih."
+    },
+    {
+      "type": "faq",
+      "q": "Kaj če je na lokaciji slab internet?",
+      "a": "Gostje lahko fotografije ohranijo na telefonu in jih po istem linku dodajo pozneje, ko imajo stabilno povezavo."
+    },
+    {
+      "type": "faq",
+      "q": "Ali lahko zbiram tudi videe?",
+      "a": "Da, če izbrani paket in omejitve datotek omogočajo video nalaganje."
+    },
+    {
+      "type": "faq",
+      "q": "Ali je QR album samo za poroke?",
+      "a": "Ne. Enak pristop deluje za rojstne dneve, krste, mature, zabave in poslovne dogodke."
+    }
+  ]
+}

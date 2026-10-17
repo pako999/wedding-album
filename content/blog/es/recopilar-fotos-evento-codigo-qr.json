@@ -1,0 +1,147 @@
+{
+  "slug": "recopilar-fotos-evento-codigo-qr",
+  "lang": "es",
+  "title": "Cómo recopilar las fotos de un evento con código QR",
+  "description": "Guía práctica para reunir fotos y vídeos de invitados en una boda, cumpleaños o evento: un código QR, un álbum compartido y sin descargar una app.",
+  "translationKey": "collect-event-photos-qr",
+  "publishedAt": "2026-10-17",
+  "updatedAt": "2026-10-17",
+  "author": "Guestcam Team",
+  "category": "vodnik",
+  "readingTime": 7,
+  "tags": [
+    "recopilar fotos evento",
+    "fotos de invitados",
+    "código QR evento",
+    "álbum compartido",
+    "Guestcam"
+  ],
+  "tldr": "Para recopilar las fotos de los invitados en un solo lugar, crea un álbum compartido y muestra un código QR. Funciona mejor cuando el código aparece en varios puntos visibles, la instrucción es clara y al día siguiente envías también el enlace directo.",
+  "coverImage": "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=1600&h=900&fit=crop&q=82&auto=format",
+  "coverAlt": "Invitados usando móviles y tomando fotos durante una celebración",
+  "content": [
+    {
+      "type": "h2",
+      "text": "¿Por qué las fotos de los invitados quedan repartidas después del evento?"
+    },
+    {
+      "type": "p",
+      "text": "En casi cualquier celebración aparecen varias colecciones separadas: el fotógrafo profesional, los móviles de la familia, los amigos y vídeos grabados desde distintos lugares. El problema no suele ser que falten fotos, sino que los archivos quedan en muchos dispositivos, chats y bandejas de entrada."
+    },
+    {
+      "type": "p",
+      "text": "Dar un único destino durante el evento simplifica la recopilación. El código QR abre el mismo álbum para todos y cada invitado decide qué fotos o vídeos quiere subir desde el navegador."
+    },
+    {
+      "type": "h2",
+      "text": "El proceso más sencillo para reunir las fotos"
+    },
+    {
+      "type": "ol",
+      "items": [
+        "Crea el álbum antes del evento y prueba una subida desde otro teléfono.",
+        "Coloca el código QR en varios puntos útiles, no solo en la entrada.",
+        "Añade una instrucción corta: «Escanea y añade tus fotos a nuestro álbum».",
+        "Pide al DJ, maestro de ceremonias u organizador que mencione el álbum una vez en un momento natural.",
+        "Al día siguiente, envía el mismo enlace directo en el mensaje de agradecimiento o en el grupo."
+      ]
+    },
+    {
+      "type": "h2",
+      "text": "Cómo recibir más fotos sin molestar a los invitados"
+    },
+    {
+      "type": "ul",
+      "items": [
+        "Haz que el proceso se entienda sin tener que explicarlo persona por persona.",
+        "Usa un solo QR para el mismo evento y evita crear galerías paralelas.",
+        "Pon la tarjeta donde el móvil ya está a mano: mesa, programa o photocall.",
+        "Explica el motivo: «Nos encantará ver la celebración desde vuestro punto de vista».",
+        "Permite subir después del evento para que nadie tenga que dejar de disfrutar de la fiesta."
+      ]
+    },
+    {
+      "type": "h2",
+      "text": "Qué texto poner junto al código QR"
+    },
+    {
+      "type": "quote",
+      "text": "¿Has capturado un gran momento? Escanea el QR y añade tu foto a nuestro álbum compartido."
+    },
+    {
+      "type": "p",
+      "text": "En un cartel grande puedes añadir: «Sin app. Abre el álbum, elige tus fotos y espera a que termine la subida». Después del evento, comparte el enlace directo y no solo una imagen del QR, porque se puede abrir con un toque desde el mismo teléfono."
+    },
+    {
+      "type": "h2",
+      "text": "¿Para qué eventos sirve?"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Evento",
+        "Qué suelen captar los invitados"
+      ],
+      "rows": [
+        [
+          "Boda",
+          "Mesas, baile, reacciones y momentos espontáneos entre las fotos profesionales"
+        ],
+        [
+          "Cumpleaños",
+          "Tarta, familia, amigos y mensajes en vídeo"
+        ],
+        [
+          "Bautizo o reunión familiar",
+          "Diferentes generaciones y momentos familiares espontáneos"
+        ],
+        [
+          "Graduación o fiesta de fin de curso",
+          "Grupos de amigos, ceremonia y celebración"
+        ],
+        [
+          "Evento de empresa",
+          "Asistentes, sesiones, networking y la perspectiva del público"
+        ]
+      ]
+    },
+    {
+      "type": "h2",
+      "text": "Qué hacer después del evento"
+    },
+    {
+      "type": "p",
+      "text": "Deja un margen para las subidas tardías, revisa la galería y elimina lo que no corresponda. Después descarga los archivos importantes y conserva una copia de seguridad propia. Si quieres publicar las fotos de los invitados de forma pública, respeta los permisos y la privacidad de las personas que aparecen."
+    },
+    {
+      "type": "cta",
+      "text": "Probar la recopilación de fotos de invitados con Guestcam",
+      "href": "/dashboard/new"
+    },
+    {
+      "type": "faq",
+      "q": "¿Los invitados pueden subir fotos sin registrarse?",
+      "a": "Sí. En Guestcam abren el álbum mediante el QR o enlace y no necesitan una cuenta propia para subir."
+    },
+    {
+      "type": "faq",
+      "q": "¿Cuántos códigos QR diferentes necesito?",
+      "a": "Para el mismo álbum basta un código. Puedes imprimirlo en varias tarjetas y colocarlo en diferentes puntos."
+    },
+    {
+      "type": "faq",
+      "q": "¿Qué pasa si hay mala conexión en el lugar?",
+      "a": "Los invitados pueden conservar las fotos en el móvil y usar el mismo enlace más tarde cuando tengan una conexión estable."
+    },
+    {
+      "type": "faq",
+      "q": "¿También puedo recopilar vídeos?",
+      "a": "Sí, cuando el plan elegido y los límites de archivo permitan subir vídeos."
+    },
+    {
+      "type": "faq",
+      "q": "¿Un álbum QR sirve solo para bodas?",
+      "a": "No. El mismo sistema funciona para cumpleaños, bautizos, graduaciones, fiestas y eventos de empresa."
+    }
+  ]
+}
