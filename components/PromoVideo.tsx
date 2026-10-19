@@ -18,12 +18,12 @@ export function PromoVideo() {
             Poglejte, kako deluje
           </h2>
           <p className="mx-auto mt-4 max-w-md leading-relaxed text-gray-600">
-            V 25 sekundah: gost skenira QR kodo, naloži fotografije in vsi
+            V 25 sekundah gost skenira QR kodo, naloži fotografije in vsi
             spomini se zberejo v vaši zasebni galeriji.
           </p>
           <ul className="mx-auto mt-6 max-w-md space-y-2 text-left text-sm text-gray-600">
             <li className="flex gap-2.5"><span className="font-bold text-[color:var(--honey)]">1.</span>Natisnite QR kartice in jih postavite na mize.</li>
-            <li className="flex gap-2.5"><span className="font-bold text-[color:var(--honey)]">2.</span>Gostje skenirajo in nalagajo, brez aplikacije.</li>
+            <li className="flex gap-2.5"><span className="font-bold text-[color:var(--honey)]">2.</span>Gostje skenirajo QR kodo in nalagajo brez aplikacije.</li>
             <li className="flex gap-2.5"><span className="font-bold text-[color:var(--honey)]">3.</span>Vse fotografije vas čakajo v polni kakovosti.</li>
           </ul>
         </div>
@@ -62,7 +62,7 @@ export function PromoVideo() {
           {[
             ["1.", "Natisnite QR kartice", "Postavite jih na mize ali pri vhodu."],
             ["2.", "Gostje skenirajo QR", "Brez aplikacije in brez prijave."],
-            ["3.", "Fotografije so pri vas", "Vse zbrane na enem mestu v polni kakovosti."],
+            ["3.", "Fotografije so zbrane pri vas", "Vse so zbrane na enem mestu v polni kakovosti."],
           ].map(([number, title, text]) => (
             <div key={number} className="flex items-start gap-3 border-t border-black/10 pt-4 text-left">
               <span className="text-base font-extrabold text-[color:var(--honey)]">{number}</span>
