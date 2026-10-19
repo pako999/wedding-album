@@ -1805,10 +1805,10 @@ export function getEventTopic(locale: EventLocale, key: EventTopicKey): EventTop
 export function localesForTopic(key: EventTopicKey): EventLocale[] {
   const out: EventLocale[] = [];
   for (const loc of ["sl", "hr", "sr", "de", "en", "es"] as EventLocale[]) {
-    // HR/SR each have a stronger, older primary wedding-QR landing. Their
+    // SL/HR/SR each have a stronger primary wedding-QR landing. Their
     // near-duplicate how-to URLs permanently redirect there, so they must not
-    // remain in sitemap or hreflang clusters.
-    if (key === "qr-koda-za-poroko" && (loc === "hr" || loc === "sr")) continue;
+    // remain as indexable sitemap entries.
+    if (key === "qr-koda-za-poroko" && (loc === "sl" || loc === "hr" || loc === "sr")) continue;
     if (EVENT_TOPICS[loc]?.[key]) out.push(loc);
   }
   return out;
