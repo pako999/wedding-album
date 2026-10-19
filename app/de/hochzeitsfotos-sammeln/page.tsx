@@ -11,7 +11,7 @@ import { OG_IMAGE_URL, ogImage } from "@/lib/og";
 export const metadata: Metadata = {
   title: "Hochzeitsfotos sammeln per QR-Code • Ohne App",
   description:
-    "Hochzeitsfotos der Gäste per QR-Code sammeln: private Galerie, keine App und keine Anmeldung. Fotos und Videos direkt vom Smartphone hochladen."
+    "Hochzeitsfotos der Gäste per QR-Code sammeln: private Galerie, keine App und keine Anmeldung. Fotos und Videos direkt vom Smartphone hochladen.",
   openGraph: {
     url: `${SITE_URL}/de/hochzeitsfotos-sammeln`,
     title: "Hochzeitsfotos sammeln per QR-Code • Ohne App",
