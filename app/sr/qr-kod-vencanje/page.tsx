@@ -12,7 +12,7 @@ import { serbianGuestcamUrl } from "@/lib/site-domains";
 export const metadata: Metadata = {
   title: "QR kod za svadbu i venčanje • Slike gostiju",
   description:
-    "QR kod za svadbu i venčanje: sakupite slike i video snimke gostiju u privatnu galeriju. Bez aplikacije i registracije."
+    "QR kod za svadbu i venčanje: sakupite slike i video snimke gostiju u privatnu galeriju. Bez aplikacije i registracije.",
   openGraph: {
     url: serbianGuestcamUrl("/sr/qr-kod-vencanje"),
     title: "QR kod za svadbu i venčanje • Slike gostiju",
