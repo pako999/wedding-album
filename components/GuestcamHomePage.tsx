@@ -22,7 +22,7 @@ export const HOME_FAQS = [
   ["V kakšni kakovosti se shranjujejo fotografije?", "Fotografije se shranjujejo v izvirni kakovosti, brez zmanjševanja ločljivosti."],
   ["Ali Guestcam podpira videe?", "Da. Plus vključuje do 100 videoposnetkov, Poročni premium pa vključuje neomejeno videoposnetkov."],
   ["Kaj se zgodi po dogodku?", "Organizator lahko fotografije in videe prenese ter jih varno arhivira. Poročni premium vključuje neomejen čas hrambe in dostopa."],
-  ["Kaj pa, če je internet na dogodku počasen?", "Brez skrbi. Fotografije in videe lahko naložite tudi pozneje, ko imate boljšo internetno povezavo. Shranite si povezavo do albuma ali v albumu vpišite svoj e-poštni naslov. Guestcam vam bo povezavo poslal na e-pošto, zato lahko album kadar koli ponovno odprete in dodate svoje fotografije ali videe."],
+  ["Kaj pa, če je internet na dogodku počasen?", "Brez skrbi. Fotografije in videe lahko naložite tudi pozneje, ko imate boljšo internetno povezavo. Shranite si povezavo do albuma ali v album vnesite svoj e-poštni naslov. Guestcam vam bo povezavo poslal po e-pošti, zato lahko album kadar koli ponovno odprete in dodate svoje fotografije ali videe."],
   ["Ali lahko Guestcam pripravi QR kartice in podstavke?", "Da. Ob paketu lahko naročite fizične QR kartice z lesenimi ali zlatimi namiznimi podstavki."],
 ] as const;
 
