@@ -27,14 +27,14 @@ export const HOME_FAQS = [
 ] as const;
 
 const EVENTS = [
-  ["Poroke", "/hero/wedding-avenue.webp", "Vsi spontani trenutki gostov v enem poročnem albumu."],
-  ["Rojstni dnevi", "/events/birthday-party.webp", "Fotografije družine in prijateljev brez kaosa v WhatsAppu."],
-  ["Baby shower", "/events/babyshower.webp", "Nežni trenutki in fotografije vseh povabljenih."],
-  ["Dekliščine in fantovščine", "/events/gromparty.webp", "Ena QR-koda za celotno zabavo in vse telefone."],
-  ["Zabave", "/events/party.webp", "Najboljši utrinki večera se sproti zbirajo v galeriji."],
-  ["Poslovni dogodki", "/events/organizacija-dogodkov-dogodek.webp", "Konference, promocije, sejmi in promocijske aktivacije."],
-  ["Krsti in praznovanja", "/events/krst.webp", "Zasebni album za družino in prijatelje."],
-  ["Mature in diplome", "/events/matura.webp", "Skupinska galerija za večer, ki ga želite ohraniti."],
+  ["Poroke", "/hero/wedding-avenue.webp", "Vsi spontani trenutki gostov v enem poročnem albumu.", "/sl/qr-koda-poroka"],
+  ["Rojstni dnevi", "/events/birthday-party.webp", "Fotografije družine in prijateljev brez kaosa v WhatsAppu.", "/sl/slike-z-rojstnega-dne"],
+  ["Baby shower", "/events/babyshower.webp", "Nežni trenutki in fotografije vseh povabljenih.", "/sl/baby-shower-slike"],
+  ["Dekliščine in fantovščine", "/events/gromparty.webp", "Ena QR-koda za celotno zabavo in vse telefone.", ""],
+  ["Zabave", "/events/party.webp", "Najboljši utrinki večera se sproti zbirajo v galeriji.", ""],
+  ["Poslovni dogodki", "/events/organizacija-dogodkov-dogodek.webp", "Konference, promocije, sejmi in promocijske aktivacije.", "/sl/qr-koda-za-poslovne-dogodke"],
+  ["Krsti in praznovanja", "/events/krst.webp", "Zasebni album za družino in prijatelje.", ""],
+  ["Mature in diplome", "/events/matura.webp", "Skupinska galerija za večer, ki ga želite ohraniti.", ""],
 ] as const;
 
 const FEATURES = [
@@ -113,7 +113,7 @@ export async function GuestcamHomePage() {
 
     <section id="how" className="bg-[#F4B400] py-24 sm:py-32"><div className="mx-auto max-w-[1320px] px-5 sm:px-8"><SectionTitle eyebrow="Kako deluje" title="Trije koraki. To je vse." text="Galerijo pripravite v nekaj minutah, gostje pa potrebujejo samo telefon." /><div className="mt-14 grid gap-4 lg:grid-cols-3">{[["01","Ustvarite dogodek","Takoj dobite zasebno galerijo, povezavo in QR-kodo."],["02","Postavite QR-kodo","Dodajte jo na mize, pri vhodu, na vabilo, jedilnik ali zaslon."],["03","Gostje nalagajo","Fotografije in videi se sproti zbirajo v albumu."]].map(([n,t,d]) => <article key={n} className="rounded-[30px] bg-[#FFFDF8] p-8 shadow-lg"><div className="flex h-12 w-12 items-center justify-center rounded-full bg-black text-sm font-black text-white">{n}</div><h3 className="mt-8 text-2xl font-black">{t}</h3><p className="mt-3 leading-7 text-black/55">{d}</p></article>)}</div></div></section>
 
-    <section id="events" className="bg-[#111111] py-24 text-white sm:py-32"><div className="mx-auto max-w-[1320px] px-5 sm:px-8"><SectionTitle eyebrow="QR-galerija za dogodke" title="Ena QR-koda za fotografije gostov. Za skoraj vsak dogodek." text="Poroke, rojstni dnevi, baby showerji, zabave, koncerti, mature, krsti in poslovni dogodki." light /><div className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">{EVENTS.map(([title,image,desc]) => <article key={title} className="group overflow-hidden rounded-[28px] border border-white/10 bg-white/[.04]"><div className="relative aspect-[4/5]"><Image src={image} alt={`${title} — Guestcam QR-galerija`} fill sizes="(max-width:640px) 100vw, 25vw" className="object-cover transition-transform duration-500 group-hover:scale-[1.03]" /></div><div className="p-5"><h3 className="text-xl font-black">{title}</h3><p className="mt-2 text-sm leading-6 text-white/50">{desc}</p></div></article>)}</div></div></section>
+    <section id="events" className="bg-[#111111] py-24 text-white sm:py-32"><div className="mx-auto max-w-[1320px] px-5 sm:px-8"><SectionTitle eyebrow="QR-galerija za dogodke" title="Ena QR-koda za fotografije gostov. Za skoraj vsak dogodek." text="Poroke, rojstni dnevi, baby showerji, zabave, koncerti, mature, krsti in poslovni dogodki." light /><div className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">{EVENTS.map(([title,image,desc,href]) => { const card = <article className="group h-full overflow-hidden rounded-[28px] border border-white/10 bg-white/[.04]"><div className="relative aspect-[4/5]"><Image src={image} alt={`${title} — Guestcam QR-galerija`} fill sizes="(max-width:640px) 100vw, 25vw" className="object-cover transition-transform duration-500 group-hover:scale-[1.03]" /></div><div className="p-5"><h3 className="text-xl font-black">{title}</h3><p className="mt-2 text-sm leading-6 text-white/50">{desc}</p>{href ? <span className="mt-4 inline-flex text-xs font-black text-[#F4B400]">Preberite več →</span> : null}</div></article>; return href ? <Link key={title} href={href} className="block h-full">{card}</Link> : <div key={title}>{card}</div>; })}</div></div></section>
 
     <section id="templates" className="border-y border-black/5 bg-[#FFFDF8] py-20 sm:py-24 lg:py-28"><div className="mx-auto max-w-[1480px] px-5 sm:px-8">
       <div className="grid items-center gap-5 lg:grid-cols-[auto_1fr_auto]"><p className="text-center text-xs font-black uppercase tracking-[.19em] text-[#8F6900]">Predloge za tisk</p><div className="flex flex-wrap justify-center gap-5 text-xs font-bold text-black/52 sm:text-sm">{["Postavitev v treh korakih","Brez aplikacije","Brezplačen preizkus","Brez prijave za goste"].map(x => <span key={x}>✓ {x}</span>)}</div><Link href="#template-showcase" className="mx-auto rounded-full border-2 border-[#F4B400] bg-white px-5 py-3 text-sm font-black hover:bg-[#F4B400]">Poglejte predloge kartic</Link></div>
