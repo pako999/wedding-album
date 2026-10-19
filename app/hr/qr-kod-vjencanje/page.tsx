@@ -9,22 +9,22 @@ import { safeJsonLd } from "@/lib/seo/jsonld-safe";
 import { withRegionalHreflang } from "@/lib/seo/hreflang";
 
 export const metadata: Metadata = {
-  title: "QR kod za vjenčanje — fotografije gostiju 2026",
+  title: "QR kod za vjenčanje i svadbu • Fotografije gostiju",
   description:
-    "Aplikacija za fotografije s vjenčanja preko QR koda: gosti skeniraju, vi dobivate sve slike u punoj kvaliteti. Bez instalacije. Postavite za 2 minute.",
+    "QR kod za vjenčanje ili svadbu: gosti skeniraju i šalju fotografije i videozapise u privatnu galeriju. Bez aplikacije i registracije."
   openGraph: {
     url: `${SITE_URL}/hr/qr-kod-vjencanje`,
-    title: "QR kod za vjenčanje — fotografije gostiju 2026",
+    title: "QR kod za vjenčanje i svadbu • Fotografije gostiju",
     description:
-      "Skupite sve fotografije s vjenčanja od gostiju jednim QR kodom. Bez aplikacije, u punoj kvaliteti.",
+      "Skupite fotografije i videozapise gostiju s vjenčanja ili svadbe jednim QR kodom. Bez aplikacije i registracije."
     type: "article",
     locale: "hr_HR",
     images: [ogImage("QR kod za vjenčanje — skupite fotografije gostiju")],
   },
   twitter: {
     card: "summary_large_image",
-    title: "QR kod za vjenčanje — fotografije gostiju 2026",
-    description: "Skupite sve fotografije s vjenčanja jednim QR kodom. Bez aplikacije.",
+    title: "QR kod za vjenčanje i svadbu • Fotografije gostiju",
+    description: "Skupite fotografije gostiju s vjenčanja ili svadbe jednim QR kodom. Bez aplikacije i registracije.",
     images: [OG_IMAGE_URL],
   },
   alternates: {
@@ -47,7 +47,7 @@ const articleSchema = {
   headline: "QR kod za vjenčanje — potpuni vodič 2026",
   description: "Kako prikupiti fotografije gostiju s vjenčanja u privatnu galeriju s pomoću QR koda, bez aplikacije i registracije.",
   inLanguage: "hr-HR",
-  dateModified: "2026-08-28",
+  dateModified: "2026-10-19",
   author: { "@type": "Organization", name: "Guestcam" },
   publisher: {
     "@type": "Organization",
@@ -107,11 +107,10 @@ export default function QrKodVjencanjePage() {
             Vodič · Hrvatska · 2026
           </div>
           <h1 className="font-serif text-4xl md:text-5xl font-bold text-[#0F1729] leading-tight mb-5">
-            QR kod za vjenčanje — skupite sve fotografije gostiju
+            QR kod za vjenčanje ili svadbu — fotografije gostiju bez aplikacije
           </h1>
           <p className="text-lg text-gray-600 leading-relaxed mb-6">
-            Aplikacija za fotografije s vjenčanja preko QR koda — najpametniji
-            način da skupite slike svih gostiju. Umjesto da fotografije ostanu
+            QR kod za vjenčanje ili svadbu jednostavan je način da skupite fotografije i videozapise svih gostiju. Umjesto da fotografije ostanu
             zarobljene na telefonima, gosti ih jednim skeniranjem šalju izravno
             u vašu privatnu galeriju — bez aplikacije, bez registracije, bez stresa.
           </p>
