@@ -49,7 +49,6 @@ const COPY: Record<Lang, FooterCopy> = {
     altLabel: "Primerjava aplikacij", altUrl: "/sl/alternative-aplikacije",
     extraGuides: [
       { label: "Slike s poroke",         url: "/sl/slike-s-poroke" },
-      { label: "QR koda za poroko",      url: "/sl/qr-koda-za-poroko" },
       { label: "Poročni album",          url: "/sl/porocni-album" },
       { label: "Zbiranje slik s poroke", url: "/sl/zbiranje-slik-s-poroke" },
       { label: "Slike z rojstnega dne",  url: "/sl/slike-z-rojstnega-dne" },
