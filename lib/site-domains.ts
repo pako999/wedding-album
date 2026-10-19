@@ -15,7 +15,7 @@ const LOCALIZED_ROUTE_CLUSTERS: Array<Record<MarketingLocale, string>> = [
   { sl: "/sl/qr-koda-poroka", hr: "/hr/qr-kod-vjencanje", sr: "/sr/qr-kod-vencanje", de: "/de/hochzeitsfotos-sammeln", en: "/en/wedding-photo-sharing", es: "/es/fotos-boda-qr" },
   { sl: "/sl/alternative-aplikacije", hr: "/hr/alternativne-aplikacije", sr: "/sr/alternativne-aplikacije", de: "/de/alternativen", en: "/en/alternatives", es: "/es/alternativas" },
   { sl: "/sl/slike-s-poroke", hr: "/hr/fotografije-s-vjencanja", sr: "/sr/slike-sa-vencanja", de: "/de/hochzeitsfotos-gaeste", en: "/en/wedding-photos-from-guests", es: "/es/fotos-boda-invitados" },
-  { sl: "/sl/qr-koda-za-poroko", hr: "/hr/qr-kod-za-vjencanje-kako", sr: "/sr/qr-kod-za-vencanje-kako", de: "/de/qr-code-hochzeit-erstellen", en: "/en/how-to-make-wedding-qr-code", es: "/es/como-hacer-codigo-qr-boda" },
+  { sl: "/sl/qr-koda-poroka", hr: "/hr/qr-kod-vjencanje", sr: "/sr/qr-kod-vencanje", de: "/de/qr-code-hochzeit-erstellen", en: "/en/how-to-make-wedding-qr-code", es: "/es/como-hacer-codigo-qr-boda" },
   { sl: "/sl/porocni-album", hr: "/hr/vjencani-album", sr: "/sr/vencani-album", de: "/de/digitales-hochzeitsalbum", en: "/en/digital-wedding-album", es: "/es/album-de-boda-digital" },
   { sl: "/sl/zbiranje-slik-s-poroke", hr: "/hr/skupljanje-fotografija-vjencanje", sr: "/sr/skupljanje-fotografija-vencanje", de: "/de/hochzeitsfotos-von-gaesten-sammeln", en: "/en/collect-wedding-photos-guests", es: "/es/recopilar-fotos-boda-invitados" },
   { sl: "/sl/slike-z-rojstnega-dne", hr: "/hr/fotografije-s-rodjendana", sr: "/sr/slike-sa-rodjendana", de: "/de/geburtstagsfotos-sammeln", en: "/en/birthday-photos-guests", es: "/es/fotos-cumpleanos-invitados" },
