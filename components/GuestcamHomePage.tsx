@@ -1,4 +1,6 @@
 import { weddingCopy } from "@/lib/wedding/copy";
+import { WEDDING_PATHS } from "@/lib/wedding/contracts";
+import { localePublicPath } from "@/lib/urls";
 import Image from "next/image";
 import Link from "next/link";
 import { auth } from "@clerk/nextjs/server";
