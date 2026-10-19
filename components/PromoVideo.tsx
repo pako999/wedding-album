@@ -18,12 +18,12 @@ export function PromoVideo() {
             Poglejte, kako deluje
           </h2>
           <p className="mx-auto mt-4 max-w-md leading-relaxed text-gray-600">
-            V 25 sekundah gost skenira QR kodo, naloži fotografije in vsi
+            V 25 sekundah gost skenira QR-kodo, naloži fotografije in vsi
             spomini se zberejo v vaši zasebni galeriji.
           </p>
           <ul className="mx-auto mt-6 max-w-md space-y-2 text-left text-sm text-gray-600">
-            <li className="flex gap-2.5"><span className="font-bold text-[color:var(--honey)]">1.</span>Natisnite QR kartice in jih postavite na mize.</li>
-            <li className="flex gap-2.5"><span className="font-bold text-[color:var(--honey)]">2.</span>Gostje skenirajo QR kodo in nalagajo brez aplikacije.</li>
+            <li className="flex gap-2.5"><span className="font-bold text-[color:var(--honey)]">1.</span>Natisnite QR-kartice in jih postavite na mize.</li>
+            <li className="flex gap-2.5"><span className="font-bold text-[color:var(--honey)]">2.</span>Gostje skenirajo QR-kodo in nalagajo brez aplikacije.</li>
             <li className="flex gap-2.5"><span className="font-bold text-[color:var(--honey)]">3.</span>Vse fotografije vas čakajo v polni kakovosti.</li>
           </ul>
         </div>
@@ -36,7 +36,7 @@ export function PromoVideo() {
               preload="metadata"
               poster="/promo/kako-deluje-poster.webp"
               className="block h-auto w-full"
-              aria-label="Predstavitveni video: kako Guestcam zbira fotografije gostov prek QR kode"
+              aria-label="Predstavitveni video: kako Guestcam zbira fotografije gostov prek QR-kode"
             >
               <source src="/promo/kako-deluje.mp4" type="video/mp4" />
             </video>
@@ -54,13 +54,13 @@ export function PromoVideo() {
             Poglejte Guestcam v akciji
           </h2>
           <p className="mx-auto mt-5 max-w-2xl text-lg leading-8 text-gray-600">
-            V manj kot pol minute gost skenira QR kodo, naloži fotografije in vsi spomini se samodejno zberejo v vaši zasebni galeriji.
+            V manj kot pol minute gost skenira QR-kodo, naloži fotografije in vsi spomini se samodejno zberejo v vaši zasebni galeriji.
           </p>
         </div>
 
         <div className="mx-auto mt-9 grid max-w-5xl grid-cols-3 gap-8 text-sm text-gray-600">
           {[
-            ["1.", "Natisnite QR kartice", "Postavite jih na mize ali pri vhodu."],
+            ["1.", "Natisnite QR-kartice", "Postavite jih na mize ali pri vhodu."],
             ["2.", "Gostje skenirajo QR", "Brez aplikacije in brez prijave."],
             ["3.", "Fotografije so zbrane pri vas", "Vse so zbrane na enem mestu v polni kakovosti."],
           ].map(([number, title, text]) => (
