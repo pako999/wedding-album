@@ -12,7 +12,7 @@ import { withRegionalHreflang } from "@/lib/seo/hreflang";
 export const metadata: Metadata = {
   title: "App para compartir fotos de boda con QR • Sin registro",
   description:
-    "App para compartir fotos de boda con QR: crea una galería privada para invitados, sin registro ni descargas. Fotos y vídeos en un solo lugar."
+    "App para compartir fotos de boda con QR: crea una galería privada para invitados, sin registro ni descargas. Fotos y vídeos en un solo lugar.",
   openGraph: {
     url: spanishGuestcamUrl("/es/fotos-boda-qr"),
     title: "App para compartir fotos de boda con QR • Sin registro",
