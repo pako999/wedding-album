@@ -7,23 +7,24 @@ import { GuestcamLogo } from "@/components/GuestcamLogo";
 import { SeoFooter } from "@/components/SeoFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { OG_IMAGE_URL, ogImage } from "@/lib/og";
+import { safeJsonLd } from "@/lib/seo/jsonld-safe";
 
 export const metadata: Metadata = {
-  title: "QR koda za poroko — fotografije gostov 2026",
+  title: "QR-koda za poroko • Fotografije gostov | Guestcam",
   description:
-    "Aplikacija za poročne fotografije s QR kodo: gostje skenirajo, vi dobite vse fotografije v polni kakovosti. Brez aplikacije. Postavite v 2 minutah.",
+    "Z eno QR-kodo zberite fotografije in videe gostov v zasebni poročni galeriji. Brez aplikacije in registracije, v polni kakovosti.",
   openGraph: {
     url: `${SITE_URL}/sl/qr-koda-poroka`,
-    title: "QR koda za poroko — fotografije gostov 2026",
+    title: "QR-koda za poroko • Fotografije gostov | Guestcam",
     description:
-      "Zberite vse fotografije gostov z eno samo QR kodo. Brez aplikacije, v polni kakovosti.",
+      "Zberite fotografije in videe gostov z eno QR-kodo. Brez aplikacije in registracije, v polni kakovosti.",
     type: "article",
-    images: [ogImage("QR koda za poroko — zberite fotografije gostov")],
+    images: [ogImage("QR-koda za poroko — fotografije gostov")],
   },
   twitter: {
     card: "summary_large_image",
-    title: "QR koda za poroko — fotografije gostov 2026",
-    description: "Zberite vse fotografije gostov z eno samo QR kodo. Brez aplikacije.",
+    title: "QR-koda za poroko • Fotografije gostov | Guestcam",
+    description: "Z eno QR-kodo zberite fotografije in videe gostov. Brez aplikacije in registracije.",
     images: [OG_IMAGE_URL],
   },
   alternates: {
@@ -41,11 +42,27 @@ export const metadata: Metadata = {
 };
 
 
+const articleSchema = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  headline: "QR-koda za poroko: zberite fotografije in videe gostov",
+  description: "Kako z eno QR-kodo zbrati fotografije in videe poročnih gostov v zasebni galeriji brez aplikacije in registracije.",
+  inLanguage: "sl-SI",
+  dateModified: "2026-10-19",
+  author: { "@type": "Organization", name: "Guestcam" },
+  publisher: {
+    "@type": "Organization",
+    name: "Guestcam",
+    logo: `${SITE_URL}/icon-512.png`,
+  },
+  mainEntityOfPage: `${SITE_URL}/sl/qr-koda-poroka`,
+};
+
 function SiteFooter() {
   return (
     <footer className="bg-[#0F1729] text-white py-8 mt-20">
       <div className="max-w-5xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-gray-400">
-        <p>© 2025 Sport group d.o.o. · SI72133449</p>
+        <p>© 2026 Sport group d.o.o. · SI72133449</p>
         <div className="flex items-center gap-5">
           <Link href="/privacy" className="hover:text-white transition-colors">
             Zasebnost
@@ -79,10 +96,10 @@ function CtaBox() {
       }}
     >
       <p className="font-serif text-2xl font-bold text-[#0F1729] mb-3">
-        Pripravite QR kodo za vašo poroko
+        Pripravite QR-kodo za svojo poroko
       </p>
       <p className="text-gray-600 mb-6 max-w-md mx-auto">
-        Ustvarite personalizirano galerijo v 2 minutah. Brezplačno za vedno —
+        Ustvarite prilagojeno galerijo v nekaj minutah. Začnete lahko brezplačno —
         brez kreditne kartice.
       </p>
       <Link
@@ -93,7 +110,7 @@ function CtaBox() {
           boxShadow: "0 10px 30px rgba(255,201,77,0.35)",
         }}
       >
-        Začni brezplačno zdaj →
+        Začnite brezplačno →
       </Link>
     </div>
   );
@@ -102,6 +119,10 @@ function CtaBox() {
 export default function QrKodaPorokaPage() {
   return (
     <div className="min-h-screen bg-[#F2F4F8] text-[#0F1729] font-sans">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: safeJsonLd(articleSchema) }}
+      />
       <SiteHeader lang="sl" hreflang={GUIDE_HREFLANG} />
 
       <main className="max-w-3xl mx-auto px-6 py-16">
@@ -109,13 +130,13 @@ export default function QrKodaPorokaPage() {
         <div className="mb-12">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold mb-5 uppercase tracking-widest"
             style={{ background: "rgba(255,201,77,0.1)", color: "#C9820A" }}>
-            Vodnik · Slovenija · 2025
+            Vodnik · Slovenija · 2026
           </div>
           <h1 className="font-serif text-4xl md:text-5xl font-bold text-[#0F1729] leading-tight mb-5">
-            QR koda za poroko: zberite vse fotografije gostov (brez aplikacije)
+            QR-koda za poroko: zberite fotografije in videe gostov
           </h1>
           <p className="text-lg text-gray-600 leading-relaxed mb-6">
-            QR koda za poroko je danes eden najpametnejših načinov za zbiranje
+            QR-koda za poroko je preprost način za zbiranje
             fotografij gostov. Namesto da slike ostanejo zaklenjene na telefonih,
             jih gostje z enim skeniranjem pošljejo neposredno v vaš osebni
             poročni album — brez aplikacije, brez prijave, brez stresa.
@@ -131,7 +152,7 @@ export default function QrKodaPorokaPage() {
               <svg className="w-4 h-4 text-[#C9820A]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z" />
               </svg>
-              Posodobljeno: januar 2025
+              Posodobljeno: oktober 2026
             </span>
           </div>
         </div>
@@ -139,17 +160,17 @@ export default function QrKodaPorokaPage() {
         {/* Section 1 */}
         <section className="mb-10">
           <h2 className="font-serif text-2xl font-bold text-[#0F1729] mb-4">
-            Kaj je QR koda za poroko?
+            Kaj je QR-koda za poroko?
           </h2>
           <p className="text-gray-600 leading-relaxed mb-4">
-            QR koda za poroko je posebna koda, ki jo natisnite na mize, povabila
+            QR-koda za poroko je koda, ki jo natisnete na kartice za mize, vabila
             ali stojala na poročnem prizorišču. Ko jo gost skenira s pametnim
             telefonom, ga ta samodejno preusmeri na vašo osebno poročno galerijo,
             kjer naložena fotografija ali videoposnetek takoj pristane v vaši zbirki.
           </p>
           <p className="text-gray-600 leading-relaxed">
             Za razliko od skupinskih klepetov (WhatsApp, Messenger) ali platform,
-            kot je Google Photos, QR koda za poroko deluje brezhibno za vse
+            kot je Google Photos, QR-koda za poroko gostom omogoči preprost dostop do galerije
             goste — od starejše gospe z osnovnim pametnim telefonom do digitalnega
             domorodca z najnovejšim iPhoneom. Ni potrebna nobena aplikacija, ni
             registracije, ni gesla.
@@ -161,12 +182,10 @@ export default function QrKodaPorokaPage() {
         {/* Section 2 */}
         <section className="mb-10">
           <h2 className="font-serif text-2xl font-bold text-[#0F1729] mb-4">
-            Zakaj QR koda na poroki resnično deluje
+            Zakaj QR-koda na poroki deluje
           </h2>
           <p className="text-gray-600 leading-relaxed mb-6">
-            Statistike so jasne: na povprečni poroki s 100 gosti vsak gost posname
-            vsaj 15–30 fotografij. To je 1.500 do 3.000 fotografij, ki nikoli ne
-            pridejo do para. Razlogi so vedno enaki:
+            Gostje na poroki posnamejo veliko fotografij in videov, vendar jih po dogodku pogosto ne delijo z mladoporočencema. Najpogostejši razlogi so preprosti:
           </p>
           <div className="grid gap-4 mb-6">
             {[
@@ -176,15 +195,15 @@ export default function QrKodaPorokaPage() {
               },
               {
                 title: "Kompresija v aplikacijah",
-                desc: "WhatsApp slike stisne za do 70 %. Prejeli bi le slike slabe kakovosti, ki jih ne morete natisniti.",
+                desc: "Aplikacije za klepet lahko fotografije stisnejo, zato niso vedno primerne za arhiviranje ali tisk.",
               },
               {
                 title: "Kaos z e-poštnimi naslovi",
-                desc: "Zbirati e-poštne naslove od 100 gostov in čakati, da vam vsak pošlje fotografije, je logistična mora.",
+                desc: "Zbiranje e-poštnih naslovov in čakanje, da vsak gost posebej pošlje fotografije, je zamudno.",
               },
               {
                 title: "Prostorske omejitve",
-                desc: "Google Photos in Dropbox zahtevata prijavo, dovolj prostora in prenos aplikacije.",
+                desc: "Deljene galerije drugih ponudnikov pogosto zahtevajo račun, prijavo ali dodatne korake, ki del gostov odvrnejo od nalaganja.",
               },
             ].map(({ title, desc }) => (
               <div
@@ -214,22 +233,21 @@ export default function QrKodaPorokaPage() {
             ))}
           </div>
           <p className="text-gray-600 leading-relaxed">
-            QR koda za poroko reši vse te težave naenkrat. Gost posname fotografijo,
-            skenira kodo, naložena je — v polni kakovosti, brez strmin, brez aplikacij.
+            QR-koda za poroko zmanjša število korakov. Gost odpre galerijo, izbere fotografije ali videe in jih naloži neposredno iz brskalnika — brez aplikacije in brez stiskanja datotek.
           </p>
         </section>
 
         {/* Section 3 */}
         <section className="mb-10">
           <h2 className="font-serif text-2xl font-bold text-[#0F1729] mb-4">
-            Prednosti QR kode za poroko
+            Prednosti QR-kode za poroko
           </h2>
           <div className="grid sm:grid-cols-2 gap-4">
             {[
               {
                 icon: "📸",
                 title: "Polna kakovost",
-                desc: "Vsaka fotografija je shranjena v originalni ločljivosti — primerna za tisk in fotografske knjige.",
+                desc: "Vsaka fotografija je shranjena v izvirni ločljivosti — primerna za tisk in fotografske knjige.",
               },
               {
                 icon: "📱",
@@ -238,23 +256,23 @@ export default function QrKodaPorokaPage() {
               },
               {
                 icon: "⚡",
-                title: "V realnem času",
-                desc: "Med poroko že vidite fotografije, ki jih nalagajo gostje. Idealno za live projekcijo.",
+                title: "V živo",
+                desc: "Med poroko lahko sproti spremljate fotografije, ki jih nalagajo gostje, in jih prikažete na foto steni v živo.",
               },
               {
                 icon: "🌍",
                 title: "Večjezično",
-                desc: "Galerija se prilagodi jeziku gosta — slovensko, hrvaško, angleško, nemško…",
+                desc: "Galerija podpira slovenščino, hrvaščino, srbščino, angleščino, nemščino in španščino.",
               },
               {
                 icon: "🔒",
                 title: "Zasebno",
-                desc: "Album ni javen. Dostopen je samo z vašo QR kodo ali direktno povezavo.",
+                desc: "Album ni javno izpostavljen. Dostopen je prek QR-kode ali neposredne povezave, po želji pa ga zaščitite z geslom.",
               },
               {
                 icon: "💾",
                 title: "Prenos v enem kliku",
-                desc: "Po poroki prenesete vse fotografije kot ZIP arhiv — v polni kakovosti, v sekundi.",
+                desc: "Po poroki prenesete fotografije in videe v ZIP-arhivu — v polni kakovosti in z enim klikom.",
               },
             ].map(({ icon, title, desc }) => (
               <div
@@ -272,7 +290,7 @@ export default function QrKodaPorokaPage() {
         {/* Section 4 — Step by step */}
         <section className="mb-10">
           <h2 className="font-serif text-2xl font-bold text-[#0F1729] mb-4">
-            Kako nastavite QR kodo za poroko z Guestcam — korak za korakom
+            Kako nastavite QR-kodo za poroko z Guestcam — korak za korakom
           </h2>
           <p className="text-gray-600 leading-relaxed mb-6">
             Z Guestcam je postopek hiter in intuitiven. Sledite tem korakom:
@@ -292,7 +310,7 @@ export default function QrKodaPorokaPage() {
               {
                 step: "03",
                 title: "Izberite predlogo za tisk",
-                desc: "Guestcam ponuja 8 elegantnih predlog za QR kartice — od klasičnih do botaničnih in skandinavskih. Vsaka predloga se samodejno prilagodi z vašim imenom in datumom.",
+                desc: "Guestcam ponuja predloge za QR-kartice — od klasičnih do botaničnih in skandinavskih. Vsaka predloga se samodejno prilagodi z vašim imenom in datumom.",
               },
               {
                 step: "04",
@@ -307,7 +325,7 @@ export default function QrKodaPorokaPage() {
               {
                 step: "06",
                 title: "Gostje skenirajo in nalagajo",
-                desc: "Gostje s telefonom skenirajo QR kodo in takoj vidijo obrazec za nalaganje fotografij. Ni aplikacije, ni prijave — le skeniranje in nalaganje.",
+                desc: "Gostje s telefonom skenirajo QR-kodo in takoj odprejo stran za nalaganje fotografij in videov. Ni aplikacije, ni prijave — le skeniranje in nalaganje.",
               },
               {
                 step: "07",
@@ -339,11 +357,11 @@ export default function QrKodaPorokaPage() {
           <ul className="space-y-3 text-gray-600">
             {[
               "Natisnite vsaj eno kartico na vsako mizo — ne samo eno pri vhodu.",
-              "Prosnik ali MC naj gostom na kratko razloži QR kodo ob začetku poroke.",
+              "Poročni voditelj ali DJ naj gostom na kratko razloži uporabo QR-kode.",
               "Večje kartice (A5 ali A4) so bolj vidne in jih gostje hitreje opazijo.",
               "Na kartico dodajte kratko navodilo v slovenščini in morda angleščini za tuje goste.",
-              "Preizkusite QR kodo pred poroko — sami jo skenirajte in naložite testno fotografijo.",
-              "Za live projekcijo med pogostitvijo vklopite funkcijo »Prikaži fotografije v živo« v nastavitvah.",
+              "Preizkusite QR-kodo pred poroko — skenirajte jo in naložite testno fotografijo.",
+              "Za prikaz fotografij med dogodkom uporabite funkcijo Foto stena v živo.",
             ].map((tip, i) => (
               <li key={i} className="flex gap-3">
                 <div
@@ -370,13 +388,13 @@ export default function QrKodaPorokaPage() {
         {/* Section 6 */}
         <section className="mb-10">
           <h2 className="font-serif text-2xl font-bold text-[#0F1729] mb-4">
-            Pogosta vprašanja o QR kodah za poroko
+            Pogosta vprašanja o QR-kodah za poroko
           </h2>
           <div className="space-y-3">
             {[
               {
-                q: "Ali je QR koda za poroko res brezplačna?",
-                a: "Z Guestcam je ustvarjanje galerije in QR kode brezplačno za vedno (do določenih omejitev). Za večje poroke so na voljo plačljivi paketi z neomejenimi fotografijami.",
+                q: "Ali lahko QR-kodo za poroko preizkusim brezplačno?",
+                a: "Da. Brezplačni paket vključuje 1 dogodek, 1 galerijo, do 20 fotografij in 1 videoposnetek. Za več prostora in dodatne funkcije so na voljo plačljivi paketi.",
               },
               {
                 q: "Ali morajo gostje prenesti aplikacijo?",
@@ -384,15 +402,15 @@ export default function QrKodaPorokaPage() {
               },
               {
                 q: "V kakšni kakovosti se shranjujejo fotografije?",
-                a: "V polni originalni ločljivosti. Guestcam fotografij ne stisne ali zmanjša. Prejeli boste natanko tisto, kar je gost posnel.",
+                a: "V polni izvirni ločljivosti. Guestcam fotografij pri shranjevanju ne zmanjša, zato so primerne tudi za tisk.",
               },
               {
                 q: "Kaj se zgodi s fotografijami po poroki?",
-                a: "Galerija ostane aktivna toliko časa, kolikor traja vaš paket. Kadarkoli prenesete vse fotografije kot ZIP arhiv.",
+                a: "Galerija ostane aktivna toliko časa, kolikor omogoča vaš paket. Kadar koli lahko prenesete fotografije in videe v ZIP-arhivu.",
               },
               {
                 q: "Ali je album zaseben?",
-                a: "Da. Album je dostopen zgolj z vašo QR kodo ali direktno povezavo. Nobena iskalna baza ga ne bo indeksirala.",
+                a: "Da. Album je dostopen prek QR-kode ali neposredne povezave. Strani albumov so označene tako, da jih iskalniki ne indeksirajo.",
               },
             ].map(({ q, a }) => (
               <details
@@ -428,7 +446,7 @@ export default function QrKodaPorokaPage() {
             Vaša poroka si zasluži vse spomine
           </p>
           <p className="text-gray-400 mb-6 max-w-md mx-auto">
-            Ustvarite galerijo z QR kodo v 2 minutah — brezplačno, brez
+            Ustvarite galerijo s QR-kodo v nekaj minutah — začnete lahko brezplačno, brez
             kreditne kartice.
           </p>
           <Link
@@ -436,10 +454,10 @@ export default function QrKodaPorokaPage() {
             className="inline-flex items-center gap-2 px-8 py-4 rounded-full font-bold text-base transition-all duration-200 hover:scale-[1.02]"
             style={{ background: "#FFC94D", color: "#0F1729" }}
           >
-            Začni brezplačno →
+            Začnite brezplačno →
           </Link>
           <p className="mt-4 text-xs text-gray-500">
-            Galerija pripravljena v 2 minutah · SSL zaščita · GDPR skladno
+            Galerija pripravljena v nekaj minutah · zaščitena povezava · skladno z GDPR
           </p>
         </div>
       </main>

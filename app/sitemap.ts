@@ -29,8 +29,8 @@ const LOCALES: Locale[] = ["sl", "hr", "sr", "de", "en", "es"];
 /** Stable dates only. Never replace an unknown lastmod with `new Date()`:
  * doing so tells crawlers every page changed on every sitemap generation. */
 const LAST_EDITED = {
-  homepage: "2026-09-26",
-  seoLandings: "2026-08-30",
+  homepage: "2026-10-19",
+  seoLandings: "2026-10-19",
   alternatives: "2026-08-28",
   legalSl: "2026-07-01",
   legalIntl: "2026-08-28",

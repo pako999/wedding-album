@@ -100,6 +100,14 @@ const EVENT_IMAGES = [
   "/events/matura.webp",
 ] as const;
 
+const EVENT_LINKS: Record<Lang, readonly (string | null)[]> = {
+  hr: ["/hr/qr-kod-vjencanje", "/hr/fotografije-s-rodjendana", "/hr/baby-shower-fotografije", null, null, null, null, null],
+  sr: ["/sr/qr-kod-vencanje", "/sr/slike-sa-rodjendana", "/sr/baby-shower-fotografije", null, null, null, null, null],
+  en: ["/en/wedding-photo-sharing", "/en/birthday-photos-guests", "/en/baby-shower-photos-guests", null, null, null, null, null],
+  de: ["/de/hochzeitsfotos-sammeln", "/de/geburtstagsfotos-sammeln", "/de/babyparty-fotos", null, null, null, null, null],
+  es: ["/es/fotos-boda-qr", "/es/fotos-cumpleanos-invitados", "/es/fotos-baby-shower", null, null, null, null, null],
+};
+
 const COMMON_FEATURE_IMAGES = ["No app", "Quality", "Privacy", "Media", "Live", "Languages", "ZIP", "Print"] as const;
 
 const COPY: Record<Lang, LocaleCopy> = {
@@ -248,7 +256,7 @@ export async function LocalizedGuestcamHomePageV3({ lang }: { lang: Lang }) {
 
     <section id="how" className="bg-[#F4B400] py-24 sm:py-32"><div className="mx-auto max-w-[1320px] px-5 sm:px-8"><SectionTitle eyebrow={t.howEyebrow} title={t.howTitle} text={t.howLead} /><div className="mt-14 grid gap-4 lg:grid-cols-3">{t.howSteps.map(([title, desc], i) => <article key={title} className="rounded-[30px] bg-[#FFFDF8] p-8 shadow-lg"><div className="flex h-12 w-12 items-center justify-center rounded-full bg-black text-sm font-black text-white">0{i + 1}</div><h3 className="mt-8 text-2xl font-black">{title}</h3><p className="mt-3 leading-7 text-black/55">{desc}</p></article>)}</div></div></section>
 
-    <section id="events" className="bg-[#111111] py-24 text-white sm:py-32"><div className="mx-auto max-w-[1320px] px-5 sm:px-8"><SectionTitle eyebrow={t.eventsEyebrow} title={t.eventsTitle} text={t.eventsLead} light /><div className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">{t.eventTitles.map((title, i) => <article key={title} className="group overflow-hidden rounded-[28px] border border-white/10 bg-white/[.04]"><div className="relative aspect-[4/5]"><Image src={EVENT_IMAGES[i]} alt={`${title} — Guestcam`} fill sizes="(max-width:640px) 100vw, 25vw" className="object-cover transition-transform duration-500 group-hover:scale-[1.03]" /></div><div className="p-5"><h3 className="text-xl font-black">{title}</h3><p className="mt-2 text-sm leading-6 text-white/50">{t.eventDescriptions[i]}</p></div></article>)}</div></div></section>
+    <section id="events" className="bg-[#111111] py-24 text-white sm:py-32"><div className="mx-auto max-w-[1320px] px-5 sm:px-8"><SectionTitle eyebrow={t.eventsEyebrow} title={t.eventsTitle} text={t.eventsLead} light /><div className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">{t.eventTitles.map((title, i) => { const href = EVENT_LINKS[lang][i]; const card = <article className="group h-full overflow-hidden rounded-[28px] border border-white/10 bg-white/[.04]"><div className="relative aspect-[4/5]"><Image src={EVENT_IMAGES[i]} alt={`${title} — Guestcam`} fill sizes="(max-width:640px) 100vw, 25vw" className="object-cover transition-transform duration-500 group-hover:scale-[1.03]" /></div><div className="p-5"><h3 className="text-xl font-black">{title}</h3><p className="mt-2 text-sm leading-6 text-white/50">{t.eventDescriptions[i]}</p>{href ? <span className="mt-4 inline-flex text-xs font-black text-[#F4B400]">→</span> : null}</div></article>; return href ? <Link key={title} href={localePublicPath(lang, href)} className="block h-full">{card}</Link> : <div key={title}>{card}</div>; })}</div></div></section>
 
     <section id="templates" className="border-y border-black/5 bg-[#FFFDF8] py-20 sm:py-24"><div className="mx-auto max-w-[1480px] px-5 sm:px-8"><div className="mx-auto max-w-4xl text-center"><p className="text-xs font-black uppercase tracking-[.19em] text-[#8F6900]">{t.templatesEyebrow}</p><h2 className="mt-4 font-serif text-[clamp(3rem,7vw,5.8rem)] font-semibold leading-[.94] tracking-[-.05em]">{t.templatesTitle}</h2><p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-black/55">{t.templatesLead}</p></div><GuestcamShowcaseCarousel /><div className="mt-9 text-center"><Link href={createPath} className="inline-flex rounded-full bg-black px-7 py-4 font-black text-white">{t.templatesCta}</Link></div></div></section>
 
