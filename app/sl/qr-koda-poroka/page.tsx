@@ -7,6 +7,7 @@ import { GuestcamLogo } from "@/components/GuestcamLogo";
 import { SeoFooter } from "@/components/SeoFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { OG_IMAGE_URL, ogImage } from "@/lib/og";
+import { safeJsonLd } from "@/lib/seo/jsonld-safe";
 
 export const metadata: Metadata = {
   title: "QR-koda za poroko • Fotografije gostov | Guestcam",
@@ -41,11 +42,27 @@ export const metadata: Metadata = {
 };
 
 
+const articleSchema = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  headline: "QR-koda za poroko: zberite fotografije in videe gostov",
+  description: "Kako z eno QR-kodo zbrati fotografije in videe poročnih gostov v zasebni galeriji brez aplikacije in registracije.",
+  inLanguage: "sl-SI",
+  dateModified: "2026-10-19",
+  author: { "@type": "Organization", name: "Guestcam" },
+  publisher: {
+    "@type": "Organization",
+    name: "Guestcam",
+    logo: `${SITE_URL}/icon-512.png`,
+  },
+  mainEntityOfPage: `${SITE_URL}/sl/qr-koda-poroka`,
+};
+
 function SiteFooter() {
   return (
     <footer className="bg-[#0F1729] text-white py-8 mt-20">
       <div className="max-w-5xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-gray-400">
-        <p>© 2025 Sport group d.o.o. · SI72133449</p>
+        <p>© 2026 Sport group d.o.o. · SI72133449</p>
         <div className="flex items-center gap-5">
           <Link href="/privacy" className="hover:text-white transition-colors">
             Zasebnost
@@ -102,6 +119,10 @@ function CtaBox() {
 export default function QrKodaPorokaPage() {
   return (
     <div className="min-h-screen bg-[#F2F4F8] text-[#0F1729] font-sans">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: safeJsonLd(articleSchema) }}
+      />
       <SiteHeader lang="sl" hreflang={GUIDE_HREFLANG} />
 
       <main className="max-w-3xl mx-auto px-6 py-16">
