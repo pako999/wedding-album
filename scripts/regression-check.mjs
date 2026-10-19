@@ -147,6 +147,7 @@ const files = {
   homePage: await read("app/page.tsx"),
   srHomePage: await read("app/sr/page.tsx"),
   esHomePage: await read("app/es/page.tsx"),
+  slHomePage: await read("app/page.tsx"),
   homeComponent: await read("components/GuestcamHomePage.tsx"),
   localizedHomeComponent: await read(
     "components/LocalizedGuestcamHomePageV3.tsx",
@@ -1348,6 +1349,20 @@ requireMatch(
   files.seoFooter,
   /localePublicPath\(lang, lang === "sl" \? "\/affiliate\/apply" : `\/\$\{lang\}\/affiliate\/apply`\)/,
   "the footer must link to the application page in the current language",
+);
+
+requireMatch(
+  "Slovenian homepage targets QR codes for all events",
+  `${files.slHomePage}\n${files.homeComponent}`,
+  /QR-koda za dogodke[\s\S]*Vse fotografije gostov z vašega dogodka/,
+  "the Slovenian homepage must stay event-first while wedding-specific intent lives on /porocni-paket",
+);
+
+requireAbsent(
+  "Slovenian homepage contains no known copy defects",
+  files.homeComponent,
+  /(?:Premium design predloge|QR upload|varen link|po skenu QR|\/kos|E-mail obvestila|Live galerija|WhatsApp kaosa)/i,
+  "homepage copy must retain corrected Slovenian grammar, terminology and spacing",
 );
 
 requireMatch(
