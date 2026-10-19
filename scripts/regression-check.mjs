@@ -1608,7 +1608,7 @@ for (const guide of [files.hrGuide, files.srGuide]) {
   requireMatch(
     "regional guide has a current modification date",
     guide,
-    /2026-08-28/,
+    /2026-10-19/,
     "structured article metadata must expose the current modification date",
   );
 }
