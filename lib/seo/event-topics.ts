@@ -178,28 +178,28 @@ export const EVENT_TOPICS: Partial<Record<EventLocale, Record<EventTopicKey, Eve
       cluster: "porocni-album",
       slug: "porocni-album",
       category: "wedding",
-      title: "Poročni album — digitalna galerija, ki zbere vse slike",
-      description: "Kako narediti digitalni poročni album, kamor gostje sami dodajo slike. Primerjava klasični vs digitalni album — in kdaj katerega izbrati.",
-      h1: "Poročni album: klasični, digitalni in hibridni pristopi",
+      title: "Poročni album za slike gostov • Digitalna QR-galerija",
+      description: "Digitalni poročni album za slike gostov: fotografije in videi v eni zasebni QR-galeriji. Brez aplikacije, z možnostjo prenosa ZIP.",
+      h1: "Poročni album za slike gostov: digitalna galerija s QR-kodo",
       intro:
-        "Poročni album je bolj ali manj obvezni del vsake poroke — a se je oblika v zadnjih letih spremenila. Danes večina parov kombinira klasičen tiskan album z digitalno galerijo, kamor gostje sami dodajo slike. Ta vodnik primerja tri glavne pristope in razlaga, kdaj kateri deluje bolje.",
+        "Digitalni poročni album zbere fotografije in videe, ki jih posnamejo gostje, v eni zasebni galeriji. Tako lahko profesionalne fotografije fotografa dopolnite s spontanimi trenutki z različnih telefonov in po poroki vse prenesete v ZIP-arhivu."
       sections: [
         {
           h2: "Klasični poročni album: kdaj ga vzeti",
           paragraphs: [
-            "Tiskani album je odlična dediščina, a stane 300–1200 € in vsebuje le fotografe fotografije — nič od tega, kar so posneli gostje. Če želite le vrhunske profesionalne posnetke v elegantni obliki, tiskan album pokrije vaše potrebe.",
+            "Tiskani album je odličen za izbor profesionalnih fotografij, vendar običajno ne vključuje vseh spontanih posnetkov gostov. Digitalni album zato dobro dopolnjuje klasično foto knjigo."
           ],
         },
         {
           h2: "Digitalni poročni album: prednosti in slabosti",
           paragraphs: [
-            "Digitalna galerija zbere slike vseh gostov, ne le fotografa. To pomeni 500–2000 dodatnih fotografij, ki bi jih drugače izgubili. Slabost: nič ni fizičnega, dokler ne natisnete izbora sami.",
+            "Digitalna galerija zbere fotografije in videe gostov na enem mestu. Po dogodku lahko izbrane fotografije prenesete in jih uporabite za tiskano foto knjigo ali arhiv."
           ],
           bullets: [
-            "Neomejeno število slik.",
+            "Fotografije in videi gostov v eni galeriji."
             "Vsi gostje dostopajo prek povezave ali QR kode.",
             "Prenos vseh slik v ZIP za tisk kadar koli.",
-            "Cena: brezplačno do 20 slik, Plus 49€.",
+            "Začnete lahko z brezplačnim paketom in po potrebi nadgradite."
           ],
         },
         {
@@ -211,7 +211,7 @@ export const EVENT_TOPICS: Partial<Record<EventLocale, Record<EventTopicKey, Eve
         {
           h2: "Kako začeti digitalni poročni album",
           paragraphs: [
-            "Z Guestcamom se galerija postavi pod 2 minutah:",
+            "Z Guestcam galerijo pripravite v nekaj minutah:"
           ],
           bullets: [
             "1. Ime para, datum, kraj — to je vse, kar je obvezno.",
@@ -230,7 +230,7 @@ export const EVENT_TOPICS: Partial<Record<EventLocale, Record<EventTopicKey, Eve
           a: "Da. Prenesete vse slike v ZIP-u in izbor pošljete v katero koli spletno tiskarno (Saal Digital, CEWE, Photobox itd.)." },
       ],
       ctaHeading: "Postavite svoj digitalni poročni album",
-      ctaBody: "V 2 minutah. Vsi gostje pošljejo slike prek QR kode. Iz zbranih slik izberete najboljše za tiskano foto knjigo.",
+      ctaBody: "Gostje dodajo slike prek QR-kode brez aplikacije. Po poroki prenesete vsebine in izberete najboljše fotografije za tiskano foto knjigo.",
       ctaButton: "Ustvari poročni album",
     },
     "zbiranje-slik-s-poroke": {
@@ -298,11 +298,11 @@ export const EVENT_TOPICS: Partial<Record<EventLocale, Record<EventTopicKey, Eve
       cluster: "slike-z-rojstnega-dne",
       slug: "slike-z-rojstnega-dne",
       category: "birthday",
-      title: "Slike z rojstnega dne — enotna galerija za gostitelja",
-      description: "Kako zbrati slike z rojstnega dne od vseh gostov v enotno galerijo. QR koda, brez aplikacije, primerno za otroke in odrasle.",
-      h1: "Slike z rojstnega dne: kako narediti skupno galerijo",
+      title: "Slike z rojstnega dne • QR-galerija za goste",
+      description: "Slike z rojstnega dne zberite od vseh gostov v eni QR-galeriji. Brez aplikacije in registracije. Fotografije in videi na enem mestu.",
+      h1: "Slike z rojstnega dne: vse fotografije gostov v enem albumu",
       intro:
-        "Rojstni dan je vedno bolj razpršen po telefonih gostov kot poroka — vsak posname 20 slik in vse ostanejo pri njem. Če ste jubilarni slavljenec ali starš, ki organizira otrokovo praznovanje, je enotna galerija najbolj enostaven način, da dobite vse skupaj na enem mestu.",
+        "Na rojstnem dnevu fotografira skoraj vsak gost, fotografije pa po dogodku pogosto ostanejo na različnih telefonih. Skupna QR-galerija omogoči, da slike in videe z rojstnega dne zberete na enem mestu — brez aplikacije in brez pošiljanja po klepetih."
       sections: [
         {
           h2: "Zakaj se slike z rojstnega dne izgubljajo",
@@ -311,15 +311,15 @@ export const EVENT_TOPICS: Partial<Record<EventLocale, Record<EventTopicKey, Eve
           ],
         },
         {
-          h2: "Kako QR koda deluje za rojstni dan",
+          h2: "Kako zbrati slike za rojstni dan od gostov z QR-kodo",
           paragraphs: [
-            "Postavite kartico s QR kodo na mizo. Gostje skenirajo, izberejo slike in videe iz galerije telefona, pošljejo. Slike se pojavijo v vaši privatni spletni galeriji v realnem času.",
+            "Postavite kartico s QR-kodo na mizo ali pri vhodu. Gostje jo skenirajo, izberejo fotografije in videe iz telefona ter jih naložijo v vašo zasebno galerijo. Vsebine se sproti zbirajo na enem mestu."
           ],
           bullets: [
             "Brez aplikacije — deluje v vsakem brskalniku.",
-            "Otroci prek 8 let brez težav skenirajo QR kodo.",
+            "Gostje QR-kodo odprejo neposredno s kamero telefona."
             "Video posnetki so podprti (do 100 posnetkov s Plus paketom).",
-            "Slike se pojavijo takoj, tudi na projekciji, če jo želite.",
+            "Fotografije lahko po želji prikažete tudi na Foto steni v živo."
           ],
         },
         {
@@ -339,12 +339,12 @@ export const EVENT_TOPICS: Partial<Record<EventLocale, Record<EventTopicKey, Eve
         { q: "Ali otroci lahko naložijo slike z rojstnega dne?",
           a: "Da, otroci prek 8 let brez težav skenirajo QR kodo s telefonom staršev. Nalaganje je enostavno — izberejo slike, potisnejo »Pošlji«." },
         { q: "Ali lahko rojstnodnevno galerijo prikažemo na TV med praznovanjem?",
-          a: "Da, Guestcam Poročni premium omogoča Live prikaz na velikem zaslonu. Slike se pojavijo takoj, ko jih gostje pošljejo." },
+          a: "Da. Foto stena v živo omogoča prikaz novih fotografij na televizorju ali projektorju med praznovanjem." },
         { q: "Koliko časa ostanejo slike na voljo?",
           a: "Odvisno od paketa — od 30 dni pri brezplačnem do neomejenega časa hrambe in dostopa pri Poročni premium. Vedno lahko prenesete vse v ZIP." },
       ],
       ctaHeading: "Ustvarite galerijo za rojstni dan",
-      ctaBody: "V 2 minutah. Ime slavljenca, datum, QR koda za mize — gostje pošljejo slike brez aplikacije.",
+      ctaBody: "Ustvarite galerijo, prenesite QR-kodo in jo postavite na mize — gostje dodajo fotografije in videe brez aplikacije.",
       ctaButton: "Ustvari galerijo",
     },
     "baby-shower-slike": {
