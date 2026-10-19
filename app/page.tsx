@@ -5,7 +5,7 @@ import { withRegionalHreflang } from "@/lib/seo/hreflang";
 import { PREMIUM_SALE_PRICE_EUR } from "@/lib/plan-pricing";
 
 export const metadata: Metadata = {
-  title: "QR-koda za dogodke • Fotografije in videi gostov | Guestcam",
+  title: "Guestcam: QR-koda za dogodke • Fotografije gostov",
   description: "Z Guestcam QR-kodo zberite fotografije in videe gostov v eni zasebni galeriji. Brez aplikacije in registracije. Za poroke, rojstne dneve, zabave, koncerte in poslovne dogodke.",
   alternates: {
     canonical: SITE_URL,
@@ -15,11 +15,11 @@ export const metadata: Metadata = {
   },
   openGraph: {
     type: "website", url: SITE_URL, siteName: "Guestcam", locale: "sl_SI",
-    title: "QR-koda za dogodke • Fotografije gostov | Guestcam",
+    title: "Guestcam: QR-koda za dogodke • Fotografije gostov",
     description: "Fotografije in videi gostov z dogodka v eni zasebni galeriji. Gostje skenirajo QR-kodo — brez aplikacije in registracije.",
     images: [{ url: "/og-image.png?v=2", width: 910, height: 1200, alt: "Guestcam — QR-koda za fotografije in videe gostov na dogodkih" }],
   },
-  twitter: { card: "summary_large_image", title: "QR-koda za dogodke • Fotografije gostov | Guestcam", description: "Z eno QR-kodo zberite fotografije in videe gostov z dogodka v zasebni galeriji.", images: ["/og-image.png?v=2"] },
+  twitter: { card: "summary_large_image", title: "Guestcam: QR-koda za dogodke • Fotografije gostov", description: "Z eno QR-kodo zberite fotografije in videe gostov z dogodka v zasebni galeriji.", images: ["/og-image.png?v=2"] },
 };
 
 const jsonLd = {

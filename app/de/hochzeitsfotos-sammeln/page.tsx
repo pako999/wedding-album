@@ -9,12 +9,12 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { OG_IMAGE_URL, ogImage } from "@/lib/og";
 
 export const metadata: Metadata = {
-  title: "QR-Code Hochzeit: Fotos der Gäste sammeln 2026",
+  title: "Hochzeitsfotos sammeln per QR-Code • Ohne App",
   description:
-    "Hochzeitsfotos sammeln per QR-Code: Gäste scannen, Sie bekommen jedes Foto in voller Qualität. Keine App. In 2 Minuten eingerichtet.",
+    "Hochzeitsfotos der Gäste per QR-Code sammeln: private Galerie, keine App und keine Anmeldung. Fotos und Videos direkt vom Smartphone hochladen.",
   openGraph: {
     url: `${SITE_URL}/de/hochzeitsfotos-sammeln`,
-    title: "QR-Code Hochzeit: Fotos der Gäste sammeln 2026",
+    title: "Hochzeitsfotos sammeln per QR-Code • Ohne App",
     description:
       "Sammeln Sie alle Hochzeitsfotos Ihrer Gäste mit einem QR-Code. Keine App, volle Auflösung, privat.",
     type: "article",
@@ -22,7 +22,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "QR-Code Hochzeit: Fotos der Gäste sammeln 2026",
+    title: "Hochzeitsfotos sammeln per QR-Code • Ohne App",
     description: "Sammeln Sie alle Hochzeitsfotos Ihrer Gäste mit einem QR-Code.",
     images: [OG_IMAGE_URL],
   },
@@ -72,10 +72,10 @@ function CtaBox() {
       }}
     >
       <p className="font-serif text-2xl font-bold text-[#0F1729] mb-3">
-        Ihre Hochzeitsgalerie in 2 Minuten erstellen
+        Private Hochzeitsgalerie mit QR-Code erstellen
       </p>
       <p className="text-gray-600 mb-6 max-w-md mx-auto">
-        Kostenlos für immer — keine Kreditkarte erforderlich.
+        Kostenlos testen — keine Kreditkarte erforderlich.
       </p>
       <Link
         href="/dashboard/new?lang=de"
@@ -100,17 +100,16 @@ export default function HochzeitsfotosSammelnPage() {
             className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold mb-5 uppercase tracking-widest"
             style={{ background: "rgba(255,201,77,0.1)", color: "#C9820A" }}
           >
-            Ratgeber · Deutschland · 2025
+            Ratgeber · Deutschland · 2026
           </div>
           <h1 className="font-serif text-4xl md:text-5xl font-bold text-[#0F1729] leading-tight mb-5">
-            QR-Code Hochzeit: alle Hochzeitsfotos der Gäste sammeln (ohne App)
+            Hochzeitsfotos der Gäste sammeln: QR-Code ohne App
           </h1>
           <p className="text-lg text-gray-600 leading-relaxed mb-6">
             Jeder Gast auf Ihrer Hochzeit macht Fotos. Spontane Momente,
             emotionale Umarmungen, lustige Tanzflächen-Aufnahmen. Aber wie
             viele davon kommen am Ende wirklich bei Ihnen an? Mit einer
-            QR-Code-Hochzeitsgalerie-App ändern Sie das — einfach, elegant und
-            ohne dass Gäste eine App herunterladen müssen.
+            privaten Hochzeitsgalerie mit QR-Code sammeln Sie diese Aufnahmen an einem Ort — ohne App-Download und ohne Anmeldung.
           </p>
           <div className="flex flex-wrap gap-4 text-sm text-gray-500">
             <span className="flex items-center gap-1.5">
@@ -274,7 +273,7 @@ export default function HochzeitsfotosSammelnPage() {
           </h2>
           <div className="space-y-3">
             {[
-              { q: "Ist Guestcam wirklich kostenlos?", a: "Ja, der Grundplan ist für immer kostenlos — Sie erhalten einen einzigartigen QR-Code und eine Galerie für bis zu 50 Gäste und 200 Fotos. Kostenpflichtige Pläne bieten unbegrenzte Gäste, unbegrenzte Fotos und zusätzliche Funktionen." },
+              { q: "Ist Guestcam wirklich kostenlos?", a: "Ja. Der kostenlose Tarif umfasst 1 Event, 1 Galerie, bis zu 20 Fotos und 1 Video. Für mehr Speicher und zusätzliche Funktionen können Sie auf einen kostenpflichtigen Tarif wechseln." },
               { q: "Müssen Gäste eine App herunterladen?", a: "Nein. Die Galerie öffnet sich direkt im mobilen Browser. Keine Installation, kein Konto, kein Passwort." },
               { q: "In welcher Qualität werden Fotos gespeichert?", a: "In voller Originalauflösung. Wir komprimieren oder verkleinern Gastfotos niemals. Jede Datei wird exakt so gespeichert, wie sie hochgeladen wurde." },
               { q: "Wie lange bleiben die Fotos gespeichert?", a: "Abhängig vom gewählten Paket — 1 Monat (Basic), 1 Jahr (Plus) oder 2 Jahre (Hochzeits-Premium). Sie können alle Fotos jederzeit als ZIP-Archiv herunterladen." },
