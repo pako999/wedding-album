@@ -42,7 +42,7 @@ interface FooterCopy {
 
 const COPY: Record<Lang, FooterCopy> = {
   sl: {
-    brandDesc: "QR galerija za dogodke — brez aplikacije. Gostje dodajo fotografije in videe, vi pa vse spomine zberete na enem mestu.",
+    brandDesc: "QR-galerija za dogodke — brez aplikacije. Gostje dodajo fotografije in videe, vi pa vse spomine zberete na enem mestu.",
     product: "Produkt", howWorks: "Kako deluje", features: "Funkcionalnosti", pricing: "Cenik", faq: "Pogosta vprašanja", createAlbum: "Ustvari album", login: "Prijava",
     blog: "Blog", affiliateProgram: "Partnerski program", guides: "Vodniki",
     guideLabel: "QR koda za poroko", guideUrl: "/sl/qr-koda-poroka",
