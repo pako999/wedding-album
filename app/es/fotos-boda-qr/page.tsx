@@ -10,12 +10,12 @@ import { localizedOgImageUrl, ogImage } from "@/lib/og";
 import { withRegionalHreflang } from "@/lib/seo/hreflang";
 
 export const metadata: Metadata = {
-  title: "Código QR para boda: fotos de tus invitados 2026",
+  title: "App para compartir fotos de boda con QR • Sin registro",
   description:
-    "App para fotos de boda con código QR: los invitados escanean, tú recibes todas las fotos en calidad original. Sin instalar nada. Configura en 2 minutos.",
+    "App para compartir fotos de boda con QR: crea una galería privada para invitados, sin registro ni descargas. Fotos y vídeos en un solo lugar."
   openGraph: {
     url: spanishGuestcamUrl("/es/fotos-boda-qr"),
-    title: "Código QR para boda: fotos de tus invitados 2026",
+    title: "App para compartir fotos de boda con QR • Sin registro",
     description:
       "Recopila todas las fotos de tus invitados con un código QR. Sin app, resolución completa, privado y seguro.",
     type: "article",
@@ -73,17 +73,17 @@ function CtaBox() {
       }}
     >
       <p className="font-serif text-2xl font-bold text-[#0F1729] mb-3">
-        Crea tu galería de boda en 2 minutos
+        Crea tu galería privada de boda
       </p>
       <p className="text-gray-600 mb-6 max-w-md mx-auto">
-        Gratis para siempre — sin tarjeta de crédito.
+        Empieza gratis — sin tarjeta de crédito.
       </p>
       <Link
         href="/dashboard/new?lang=es"
         className="inline-flex items-center gap-2 px-8 py-4 rounded-full text-white font-bold text-base transition-all duration-200 hover:scale-[1.02]"
         style={{ background: "#FFC94D", boxShadow: "0 10px 30px rgba(255,201,77,0.35)" }}
       >
-        Empezar gratis ahora →
+        Empezar gratis →
       </Link>
     </div>
   );
@@ -101,16 +101,13 @@ export default function FotosBodaQrPage() {
             className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold mb-5 uppercase tracking-widest"
             style={{ background: "rgba(255,201,77,0.1)", color: "#C9820A" }}
           >
-            Guía · España · 2025
+            Guía · España · 2026
           </div>
           <h1 className="font-serif text-4xl md:text-5xl font-bold text-[#0F1729] leading-tight mb-5">
-            Código QR para boda: recopila todas las fotos de tus invitados (sin app)
+            Comparte fotos de boda con tus invitados mediante QR, sin registro
           </h1>
           <p className="text-lg text-gray-600 leading-relaxed mb-6">
-            Cada invitado en tu boda hace fotos. Momentos espontáneos, abrazos
-            emotivos, risas en la pista de baile — todo captado en docenas de
-            teléfonos distintos. Pero, ¿cuántas de esas fotos llegan realmente
-            a ti? Con un código QR para bodas, la respuesta es: todas.
+            Crea una galería privada de fotos de boda y deja que tus invitados suban fotos y vídeos con un código QR. No necesitan registrarse ni instalar una app: escanean, seleccionan y comparten desde el navegador.
           </p>
           <div className="flex flex-wrap gap-4 text-sm text-gray-500">
             <span className="flex items-center gap-1.5">
