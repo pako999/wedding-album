@@ -1366,6 +1366,20 @@ requireAbsent(
 );
 
 requireMatch(
+  "Slovenian duplicate wedding QR URL redirects to primary landing",
+  files.nextConfig,
+  /source:\s*"\/sl\/qr-koda-za-poroko"[\s\S]*destination:\s*"\/sl\/qr-koda-poroka"[\s\S]*permanent:\s*true/,
+  "GSC-visible duplicate Slovenian wedding QR URLs must consolidate ranking signals",
+);
+
+requireMatch(
+  "homepage links priority event cards to SEO landings",
+  files.homeComponent,
+  /\/sl\/qr-koda-poroka[\s\S]*\/sl\/slike-z-rojstnega-dne[\s\S]*\/sl\/baby-shower-slike[\s\S]*\/sl\/qr-koda-za-poslovne-dogodke/,
+  "high-impression event landing pages should receive direct homepage internal links",
+);
+
+requireMatch(
   "homepage sitemap date reflects the latest meaningful edit",
   files.sitemap,
   /homepage:\s*"2026-09-26"/,
@@ -1445,7 +1459,7 @@ requireMatch(
 requireMatch(
   "duplicate regional guides stay out of SEO clusters",
   files.eventTopics,
-  /key === "qr-koda-za-poroko" && \(loc === "hr" \|\| loc === "sr"\)/,
+  /key === "qr-koda-za-poroko" && \(loc === "sl" \|\| loc === "hr" \|\| loc === "sr"\)/,
   "sitemap and hreflang clusters must not include URLs that redirect",
 );
 
