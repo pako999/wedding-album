@@ -1592,6 +1592,20 @@ requireMatch(
 );
 
 requireAbsent(
+  "persistent discount banner is removed from the root layout",
+  files.rootLayout,
+  /<DiscountBanner\b/,
+  "WELCOME15 must appear only in the exit-intent popup, not as a permanent top banner",
+);
+
+requireMatch(
+  "exit-intent discount remains enabled on marketing pages",
+  files.rootLayout,
+  /showPromo\s*&&\s*<ExitIntentPopup\s+lang=\{lang\}/,
+  "removing the persistent banner must not remove the exit-intent offer",
+);
+
+requireAbsent(
   "discount copy action is not hardcoded in English",
   files.discountBanner,
   />copy</,
