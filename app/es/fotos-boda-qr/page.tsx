@@ -246,7 +246,7 @@ export default function FotosBodaQrPage() {
           </h2>
           <div className="space-y-3">
             {[
-              { q: "¿Es Guestcam realmente gratis?", a: "Sí, el plan básico es gratuito para siempre: obtienes un código QR único y una galería para hasta 50 invitados y 200 fotos. Los planes de pago desbloquean invitados y fotos ilimitados, y más funciones." },
+              { q: "¿Es Guestcam realmente gratis?", a: "Sí. El plan gratuito incluye 1 evento, 1 galería, hasta 20 fotos y 1 vídeo. Si necesitas más capacidad o funciones, puedes actualizar a un plan de pago." },
               { q: "¿Tienen que descargar una app los invitados?", a: "No. La galería se abre directamente en el navegador del móvil. Sin instalación, sin cuenta, sin contraseña." },
               { q: "¿Con qué calidad se almacenan las fotos?", a: "En resolución original completa. Nunca comprimimos ni redimensionamos las fotos de los invitados. Cada archivo se almacena exactamente como se subió." },
               { q: "¿Es privada la galería?", a: "Sí. Tu galería solo es accesible mediante tu código QR único o enlace directo. Ningún buscador la indexará jamás." },
