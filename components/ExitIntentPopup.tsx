@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import type { LangCode } from "@/components/LanguageSwitcher";
 import { localizedAccountPath } from "@/lib/urls";
@@ -77,7 +78,10 @@ const COPY: Record<LangCode, Copy> = {
 };
 
 export function ExitIntentPopup({ lang }: { lang: LangCode }) {
-  const t = COPY[lang] ?? COPY.en;
+  const pathname = usePathname();
+  const seg = pathname.split("/").filter(Boolean)[0] ?? "";
+  const effectiveLang = (seg in COPY ? seg : lang) as LangCode;
+  const t = COPY[effectiveLang] ?? COPY.en;
   const [visible, setVisible] = useState(false);
   const [copied, setCopied] = useState(false);
   const readyRef = useRef(false);
@@ -197,7 +201,7 @@ export function ExitIntentPopup({ lang }: { lang: LangCode }) {
 
           {/* CTA */}
           <Link
-            href={localizedAccountPath(lang, "/dashboard/new")}
+            href={localizedAccountPath(effectiveLang, "/dashboard/new")}
             onClick={close}
             className="block w-full text-center py-3.5 rounded-xl font-bold text-[#0F1729] text-sm transition-opacity hover:opacity-90"
             style={{ background: "linear-gradient(135deg, #FFD966 0%, #FFC94D 55%, #F0B429 100%)" }}
