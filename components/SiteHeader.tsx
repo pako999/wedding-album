@@ -54,7 +54,7 @@ export async function SiteHeader({
   } catch { /* Clerk hiccup — render signed-out */ }
 
   return (
-    <header className="sticky top-3 z-40 mx-3 rounded-2xl border border-[#FFC94D]/30 bg-white/90 shadow-[0_12px_32px_rgba(15,23,41,.10)] backdrop-blur-md sm:top-4 sm:mx-4 lg:mx-6">
+    <><header className="fixed left-3 right-3 top-3 z-40 rounded-2xl border border-[#FFC94D]/30 bg-white/90 shadow-[0_12px_32px_rgba(15,23,41,.10)] backdrop-blur-md sm:left-4 sm:right-4 sm:top-4 lg:left-6 lg:right-6">
       <nav className="max-w-7xl mx-auto px-5 sm:px-8 h-16 flex items-center justify-between gap-3">
         <Link href={resolvedHome} aria-label="Guestcam" className="flex shrink-0 items-center transition-transform duration-200 hover:scale-[1.03]">
           <GuestcamLogo size="sm" showMark={true} />
@@ -90,6 +90,6 @@ export async function SiteHeader({
           labels={{ open: mobile.open, close: mobile.close, language: mobile.language, languageAria: copy.switcherAria, signIn: mobile.signIn, dashboard: mobile.dashboard, cta: copy.cta }}
         />
       </nav>
-    </header>
+    </header><div aria-hidden="true" className="h-[84px] sm:h-[96px]" /></>
   );
 }
