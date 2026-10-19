@@ -5,7 +5,6 @@ import Script from "next/script";
 import { auth } from "@clerk/nextjs/server";
 import { clerkLocaleFor } from "@/lib/clerk-locales";
 import { ExitIntentPopup } from "@/components/ExitIntentPopup";
-import { DiscountBanner } from "@/components/DiscountBanner";
 import { GuestcamProcessHowOverride } from "@/components/GuestcamProcessHowOverride";
 import { GuestcamClerkProvider } from "@/components/GuestcamClerkProvider";
 import MetaPixel from "@/components/MetaPixel";
@@ -159,8 +158,9 @@ export default async function RootLayout({
   const lang = await detectLang();
   const clerkLocalization = clerkLocaleFor(lang);
 
-  // Only show promo banners on public marketing pages to visitors
-  // who have not yet purchased a plan.
+  // Only show the exit-intent promotion on public marketing pages to visitors
+  // who have not yet purchased a plan. The persistent discount banner was removed
+  // so the public header stays clean on desktop and mobile.
   const h = await headers();
   const pathname = h.get("x-pathname") ?? "";
   // Affiliate paths are matched in any locale: /affiliate/*, /hr/affiliate/*,
@@ -286,7 +286,6 @@ export default async function RootLayout({
             />
           )}
           {!isPrivateSurface && <MetaPixel />}
-          {showPromo && <DiscountBanner lang={lang} />}
           {children}
           {!isPrivateSurface && <GuestcamProcessHowOverride lang={lang} />}
           {showPromo && <ExitIntentPopup lang={lang} />}
