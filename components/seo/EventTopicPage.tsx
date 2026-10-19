@@ -14,6 +14,15 @@ import { localeAbsoluteUrl, localizedAccountPath, SITE_URL } from "@/lib/urls";
 import { safeJsonLd } from "@/lib/seo/jsonld-safe";
 import { withRegionalHreflang } from "@/lib/seo/hreflang";
 
+function eventTopicCanonicalPath(locale: EventLocale, key: EventTopicKey, slug: string): string {
+  if (key === "qr-koda-za-poroko") {
+    if (locale === "sl") return "/sl/qr-koda-poroka";
+    if (locale === "hr") return "/hr/qr-kod-vjencanje";
+    if (locale === "sr") return "/sr/qr-kod-vencanje";
+  }
+  return `/${locale}/${slug}`;
+}
+
 /** Build metadata for a topic + locale. Handles canonical + hreflang. */
 export function eventTopicMetadata(
   locale: EventLocale,
@@ -26,15 +35,20 @@ export function eventTopicMetadata(
   // pointed canonicals + hreflang at root URLs that resolve as 404
   // album slugs — Ahrefs flagged 6 broken canonicals, 8 404s and 40+
   // hreflang-to-broken-page errors from exactly this line.
-  const localePath = `/${locale}/${entry.slug}`;
+  const localePath = eventTopicCanonicalPath(locale, key, entry.slug);
   const canonicalUrl = localeAbsoluteUrl(locale, localePath);
 
   // Assemble hreflang alternates only for locales that ACTUALLY have this
   // topic — Google doesn't like alternates pointing at 404s.
   const languages: Record<string, string> = {};
+  if (key === "qr-koda-za-poroko") {
+    languages.sl = localeAbsoluteUrl("sl", "/sl/qr-koda-poroka");
+    languages.hr = localeAbsoluteUrl("hr", "/hr/qr-kod-vjencanje");
+    languages.sr = localeAbsoluteUrl("sr", "/sr/qr-kod-vencanje");
+  }
   for (const loc of localesForTopic(key)) {
     const e = getEventTopic(loc, key)!;
-    languages[loc] = localeAbsoluteUrl(loc, `/${loc}/${e.slug}`);
+    languages[loc] = localeAbsoluteUrl(loc, eventTopicCanonicalPath(loc, key, e.slug));
   }
   const xDefault = languages.sl ?? languages.en ?? Object.values(languages)[0];
 
@@ -80,6 +94,10 @@ export function EventTopicPage({ locale, topicKey }: Props) {
   const ALL_LOCALES = ["sl", "hr", "sr", "de", "en", "es"] as const;
   const translated = new Set(localesForTopic(topicKey));
   const hreflang = ALL_LOCALES.reduce((acc, loc) => {
+    if (topicKey === "qr-koda-za-poroko" && loc === "sl") {
+      acc[loc] = localeAbsoluteUrl("sl", "/sl/qr-koda-poroka");
+      return acc;
+    }
     if (topicKey === "qr-koda-za-poroko" && loc === "hr") {
       acc[loc] = localeAbsoluteUrl("hr", "/hr/qr-kod-vjencanje");
       return acc;
@@ -115,7 +133,7 @@ export function EventTopicPage({ locale, topicKey }: Props) {
     },
     // Must match the canonical (every locale lives under its prefix,
     // including /sl — the old no-prefix SL URL 404s as an album slug).
-    mainEntityOfPage: localeAbsoluteUrl(locale, `/${locale}/${entry.slug}`),
+    mainEntityOfPage: localeAbsoluteUrl(locale, eventTopicCanonicalPath(locale, topicKey, entry.slug)),
   };
   const faqSchema = {
     "@context": "https://schema.org",
