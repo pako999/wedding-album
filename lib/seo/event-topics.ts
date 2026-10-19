@@ -182,7 +182,7 @@ export const EVENT_TOPICS: Partial<Record<EventLocale, Record<EventTopicKey, Eve
       description: "Digitalni poročni album za slike gostov: fotografije in videi v eni zasebni QR-galeriji. Brez aplikacije, z možnostjo prenosa ZIP.",
       h1: "Poročni album za slike gostov: digitalna galerija s QR-kodo",
       intro:
-        "Digitalni poročni album zbere fotografije in videe, ki jih posnamejo gostje, v eni zasebni galeriji. Tako lahko profesionalne fotografije fotografa dopolnite s spontanimi trenutki z različnih telefonov in po poroki vse prenesete v ZIP-arhivu."
+        "Digitalni poročni album zbere fotografije in videe, ki jih posnamejo gostje, v eni zasebni galeriji. Tako lahko profesionalne fotografije fotografa dopolnite s spontanimi trenutki z različnih telefonov in po poroki vse prenesete v ZIP-arhivu.",
       sections: [
         {
           h2: "Klasični poročni album: kdaj ga vzeti",
@@ -196,10 +196,10 @@ export const EVENT_TOPICS: Partial<Record<EventLocale, Record<EventTopicKey, Eve
             "Digitalna galerija zbere fotografije in videe gostov na enem mestu. Po dogodku lahko izbrane fotografije prenesete in jih uporabite za tiskano foto knjigo ali arhiv."
           ],
           bullets: [
-            "Fotografije in videi gostov v eni galeriji."
-            "Vsi gostje dostopajo prek povezave ali QR kode.",
+            "Fotografije in videi gostov v eni galeriji.",
+            "Vsi gostje dostopajo prek povezave ali QR-kode.",
             "Prenos vseh slik v ZIP za tisk kadar koli.",
-            "Začnete lahko z brezplačnim paketom in po potrebi nadgradite."
+            "Začnete lahko z brezplačnim paketom in po potrebi nadgradite.",
           ],
         },
         {
@@ -302,7 +302,7 @@ export const EVENT_TOPICS: Partial<Record<EventLocale, Record<EventTopicKey, Eve
       description: "Slike z rojstnega dne zberite od vseh gostov v eni QR-galeriji. Brez aplikacije in registracije. Fotografije in videi na enem mestu.",
       h1: "Slike z rojstnega dne: vse fotografije gostov v enem albumu",
       intro:
-        "Na rojstnem dnevu fotografira skoraj vsak gost, fotografije pa po dogodku pogosto ostanejo na različnih telefonih. Skupna QR-galerija omogoči, da slike in videe z rojstnega dne zberete na enem mestu — brez aplikacije in brez pošiljanja po klepetih."
+        "Na rojstnem dnevu fotografira skoraj vsak gost, fotografije pa po dogodku pogosto ostanejo na različnih telefonih. Skupna QR-galerija omogoči, da slike in videe z rojstnega dne zberete na enem mestu — brez aplikacije in brez pošiljanja po klepetih.",
       sections: [
         {
           h2: "Zakaj se slike z rojstnega dne izgubljajo",
@@ -317,9 +317,9 @@ export const EVENT_TOPICS: Partial<Record<EventLocale, Record<EventTopicKey, Eve
           ],
           bullets: [
             "Brez aplikacije — deluje v vsakem brskalniku.",
-            "Gostje QR-kodo odprejo neposredno s kamero telefona."
-            "Video posnetki so podprti (do 100 posnetkov s Plus paketom).",
-            "Fotografije lahko po želji prikažete tudi na Foto steni v živo."
+            "Gostje QR-kodo odprejo neposredno s kamero telefona.",
+            "Videoposnetki so podprti v skladu z omejitvami izbranega paketa.",
+            "Fotografije lahko po želji prikažete tudi na Foto steni v živo.",
           ],
         },
         {
@@ -337,7 +337,7 @@ export const EVENT_TOPICS: Partial<Record<EventLocale, Record<EventTopicKey, Eve
       ],
       faq: [
         { q: "Ali otroci lahko naložijo slike z rojstnega dne?",
-          a: "Da, otroci prek 8 let brez težav skenirajo QR kodo s telefonom staršev. Nalaganje je enostavno — izberejo slike, potisnejo »Pošlji«." },
+          a: "Da, če uporabljajo telefon staršev ali skrbnika. Nalaganje je preprosto: odprejo QR-kodo, izberejo fotografije in jih pošljejo v galerijo." },
         { q: "Ali lahko rojstnodnevno galerijo prikažemo na TV med praznovanjem?",
           a: "Da. Foto stena v živo omogoča prikaz novih fotografij na televizorju ali projektorju med praznovanjem." },
         { q: "Koliko časa ostanejo slike na voljo?",
