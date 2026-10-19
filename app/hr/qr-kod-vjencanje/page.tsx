@@ -11,12 +11,12 @@ import { withRegionalHreflang } from "@/lib/seo/hreflang";
 export const metadata: Metadata = {
   title: "QR kod za vjenčanje i svadbu • Fotografije gostiju",
   description:
-    "QR kod za vjenčanje ili svadbu: gosti skeniraju i šalju fotografije i videozapise u privatnu galeriju. Bez aplikacije i registracije."
+    "QR kod za vjenčanje ili svadbu: gosti skeniraju i šalju fotografije i videozapise u privatnu galeriju. Bez aplikacije i registracije.",
   openGraph: {
     url: `${SITE_URL}/hr/qr-kod-vjencanje`,
     title: "QR kod za vjenčanje i svadbu • Fotografije gostiju",
     description:
-      "Skupite fotografije i videozapise gostiju s vjenčanja ili svadbe jednim QR kodom. Bez aplikacije i registracije."
+      "Skupite fotografije i videozapise gostiju s vjenčanja ili svadbe jednim QR kodom. Bez aplikacije i registracije.",
     type: "article",
     locale: "hr_HR",
     images: [ogImage("QR kod za vjenčanje — skupite fotografije gostiju")],
