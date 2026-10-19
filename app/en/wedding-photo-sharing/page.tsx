@@ -249,7 +249,7 @@ export default function WeddingPhotoSharingPage() {
           </h2>
           <div className="space-y-3">
             {[
-              { q: "Is Guestcam really free?", a: "Yes, the basic plan is free forever — you get a unique QR code and gallery for up to 50 guests and 200 photos. Paid plans unlock unlimited guests, unlimited photos, and extra features." },
+              { q: "Is Guestcam really free?", a: "Yes. The free plan includes 1 event, 1 gallery, up to 20 photos and 1 video. You can upgrade when you need more capacity or additional features." },
               { q: "Do guests need to download an app?", a: "No. The gallery opens directly in the mobile browser. No installation, no account, no password." },
               { q: "What photo quality is stored?", a: "Full original resolution. We never compress or resize guest photos. Every file is stored exactly as uploaded." },
               { q: "Is the gallery private?", a: "Yes. Your gallery is accessible only via your unique QR code or direct link. It is never indexed by Google or other search engines." },
