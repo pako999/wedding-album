@@ -39,7 +39,7 @@ for (const phrase of [
 ]) assert(weddingCopy.includes(phrase), `missing localized benefit: ${phrase}`);
 
 const slHome = await read("components/GuestcamHomePage.tsx");
-assert(slHome.includes("QR koda za poroko · baby shower · rojstni dnevi · dogodki · fotografije gostov"), "Slovenian homepage eyebrow is not current");
+assert(slHome.includes("QR-koda za dogodke · fotografije gostov · poroke · rojstni dnevi · poslovni dogodki"), "Slovenian homepage eyebrow is not current");
 assert(slHome.includes("PREMIUM_REGULAR_PRICE_EUR") && slHome.includes("PREMIUM_SALE_PERCENT"), "Slovenian Premium card must show regular price and limited-time sale");
 assert(slHome.includes('bg-[#111111]') && slHome.includes('ring-4 ring-[#F4B400]'), "Slovenian Premium card must use black-gold styling");
 
