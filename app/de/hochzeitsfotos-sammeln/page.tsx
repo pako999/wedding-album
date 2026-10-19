@@ -273,7 +273,7 @@ export default function HochzeitsfotosSammelnPage() {
           </h2>
           <div className="space-y-3">
             {[
-              { q: "Ist Guestcam wirklich kostenlos?", a: "Ja, der Grundplan ist für immer kostenlos — Sie erhalten einen einzigartigen QR-Code und eine Galerie für bis zu 50 Gäste und 200 Fotos. Kostenpflichtige Pläne bieten unbegrenzte Gäste, unbegrenzte Fotos und zusätzliche Funktionen." },
+              { q: "Ist Guestcam wirklich kostenlos?", a: "Ja. Der kostenlose Tarif umfasst 1 Event, 1 Galerie, bis zu 20 Fotos und 1 Video. Für mehr Speicher und zusätzliche Funktionen können Sie auf einen kostenpflichtigen Tarif wechseln." },
               { q: "Müssen Gäste eine App herunterladen?", a: "Nein. Die Galerie öffnet sich direkt im mobilen Browser. Keine Installation, kein Konto, kein Passwort." },
               { q: "In welcher Qualität werden Fotos gespeichert?", a: "In voller Originalauflösung. Wir komprimieren oder verkleinern Gastfotos niemals. Jede Datei wird exakt so gespeichert, wie sie hochgeladen wurde." },
               { q: "Wie lange bleiben die Fotos gespeichert?", a: "Abhängig vom gewählten Paket — 1 Monat (Basic), 1 Jahr (Plus) oder 2 Jahre (Hochzeits-Premium). Sie können alle Fotos jederzeit als ZIP-Archiv herunterladen." },
