@@ -11,7 +11,7 @@ import { OG_IMAGE_URL, ogImage } from "@/lib/og";
 export const metadata: Metadata = {
   title: "Wedding Photo Gallery QR Code • No App | Guestcam",
   description:
-    "Wedding photo gallery with QR code: guests upload photos and videos without an app or login. Private sharing from any phone, with full-quality downloads."
+    "Wedding photo gallery with QR code: guests upload photos and videos without an app or login. Private sharing from any phone, with full-quality downloads.",
   openGraph: {
     url: `${SITE_URL}/en/wedding-photo-sharing`,
     title: "Wedding Photo Gallery QR Code • No App | Guestcam",
