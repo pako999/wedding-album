@@ -9,12 +9,12 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { OG_IMAGE_URL, ogImage } from "@/lib/og";
 
 export const metadata: Metadata = {
-  title: "Wedding QR Code: Collect Guest Photos 2026",
+  title: "Wedding Photo Gallery QR Code • No App | Guestcam",
   description:
-    "Wedding QR code for photos: guests scan, you get every photo in full quality. No app, no logins. Collect every guest photo. Set up in 2 minutes.",
+    "Wedding photo gallery with QR code: guests upload photos and videos without an app or login. Private sharing from any phone, with full-quality downloads."
   openGraph: {
     url: `${SITE_URL}/en/wedding-photo-sharing`,
-    title: "Wedding QR Code: Collect Guest Photos 2026",
+    title: "Wedding Photo Gallery QR Code • No App | Guestcam",
     description:
       "Collect every wedding photo from your guests with one QR code. No app downloads, full resolution, private and secure.",
     type: "article",
@@ -75,7 +75,7 @@ function CtaBox() {
         Ready to collect all your wedding photos?
       </p>
       <p className="text-gray-600 mb-6 max-w-md mx-auto">
-        Create your gallery in 2 minutes. Free forever — no credit card required.
+        Create your private gallery in minutes. Start free — no credit card required.
       </p>
       <Link
         href="/dashboard/new?lang=en"
@@ -100,10 +100,10 @@ export default function WeddingPhotoSharingPage() {
             className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold mb-5 uppercase tracking-widest"
             style={{ background: "rgba(255,201,77,0.1)", color: "#C9820A" }}
           >
-            Guide · English · 2025
+            Guide · English · 2026
           </div>
           <h1 className="font-serif text-4xl md:text-5xl font-bold text-[#0F1729] leading-tight mb-5">
-            Wedding QR Code: collect every guest photo (no app required)
+            Wedding photo gallery with QR code — no app required
           </h1>
           <p className="text-lg text-gray-600 leading-relaxed mb-6">
             Every guest at your wedding takes photos. Beautiful candid moments,
