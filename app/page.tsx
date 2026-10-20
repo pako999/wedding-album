@@ -5,28 +5,28 @@ import { withRegionalHreflang } from "@/lib/seo/hreflang";
 import { PREMIUM_SALE_PRICE_EUR } from "@/lib/plan-pricing";
 
 export const metadata: Metadata = {
-  title: "Guestcam: QR-koda za dogodke • Fotografije gostov",
-  description: "Z Guestcam QR-kodo zberite fotografije in videe gostov v eni zasebni galeriji. Brez aplikacije in registracije. Za poroke, rojstne dneve, zabave, koncerte in poslovne dogodke.",
+  title: "Guestcam.si | QR galerija za dogodke in fotografije gostov",
+  description: "Guestcam.si je slovenska QR galerija za dogodke. Zberite fotografije in videe gostov v enem zasebnem albumu brez aplikacije in registracije. Za poroke, rojstne dneve in poslovne dogodke.",
   alternates: {
-    canonical: SITE_URL,
+    canonical: `${SITE_URL}/`,
     languages: withRegionalHreflang({
       sl: `${SITE_URL}/`, hr: `${SITE_URL}/hr`, sr: `${SITE_URL}/sr`, de: `${SITE_URL}/de`, en: `${SITE_URL}/en`, es: `${SITE_URL}/es`, "x-default": `${SITE_URL}/`,
     }),
   },
   openGraph: {
-    type: "website", url: SITE_URL, siteName: "Guestcam", locale: "sl_SI",
-    title: "Guestcam: QR-koda za dogodke • Fotografije gostov",
+    type: "website", url: `${SITE_URL}/`, siteName: "Guestcam.si", locale: "sl_SI",
+    title: "Guestcam.si | QR galerija za dogodke in fotografije gostov",
     description: "Fotografije in videi gostov z dogodka v eni zasebni galeriji. Gostje skenirajo QR-kodo — brez aplikacije in registracije.",
     images: [{ url: "/og-image.jpg?v=6", width: 1200, height: 630, alt: "Guestcam — QR-koda za fotografije in videe gostov na dogodkih" }],
   },
-  twitter: { card: "summary_large_image", title: "Guestcam: QR-koda za dogodke • Fotografije gostov", description: "Z eno QR-kodo zberite fotografije in videe gostov z dogodka v zasebni galeriji.", images: ["/og-image.jpg?v=6"] },
+  twitter: { card: "summary_large_image", title: "Guestcam.si | QR galerija za dogodke in fotografije gostov", description: "Z eno QR-kodo zberite fotografije in videe gostov z dogodka v zasebni galeriji.", images: ["/og-image.jpg?v=6"] },
 };
 
 const jsonLd = {
   "@context": "https://schema.org",
   "@graph": [
     { "@type": "Organization", "@id": `${SITE_URL}/#organization`, name: "Guestcam", url: SITE_URL, logo: `${SITE_URL}/icon-512.png` },
-    { "@type": "WebSite", "@id": `${SITE_URL}/#website`, name: "Guestcam", url: SITE_URL, inLanguage: "sl-SI", publisher: { "@id": `${SITE_URL}/#organization` } },
+    { "@type": "WebSite", "@id": `${SITE_URL}/#website`, name: "Guestcam.si", alternateName: "Guestcam", url: `${SITE_URL}/`, inLanguage: "sl-SI", publisher: { "@id": `${SITE_URL}/#organization` } },
     {
       "@type": "SoftwareApplication", "@id": `${SITE_URL}/#app`, name: "Guestcam", applicationCategory: "PhotographyApplication", operatingSystem: "Web", url: SITE_URL,
       description: "Spletna platforma za zbiranje fotografij in videov gostov z dogodkov prek QR-kode v zasebni galeriji, brez aplikacije in registracije gostov.",
