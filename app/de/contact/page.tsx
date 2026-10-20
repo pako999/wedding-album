@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     url: `${SITE_URL}/de/contact`,
     title: "Kontakt",
     description: "Schreiben Sie uns — E-Mail, WhatsApp, Premium-Support für Ihre Hochzeitsgalerie.",
-    images: ["/og-image.jpg?v=5"],
+    images: ["/og-image.jpg?v=6"],
   },
   robots: { index: true, follow: true },
 };

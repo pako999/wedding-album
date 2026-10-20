@@ -17,6 +17,13 @@ export const metadata: Metadata = {
     description: `QR album in foto stena v živo. En dogodek za ${BUSINESS_PRICE_EUR} € brez naročnine.`,
     url: absoluteUrl("/za-podjetja"),
     type: "website",
+    images: [{ url: absoluteUrl("/og-image-business.jpg?v=1"), width: 1200, height: 630, type: "image/jpeg", alt: "Guestcam za podjetja — QR album za poslovne dogodke" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Guestcam za podjetja — vsi utrinki poslovnega dogodka",
+    description: `QR album in foto stena v živo. En dogodek za ${BUSINESS_PRICE_EUR} € brez naročnine.`,
+    images: [absoluteUrl("/og-image-business.jpg?v=1")],
   },
 };
 

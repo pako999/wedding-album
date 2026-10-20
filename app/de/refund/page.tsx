@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   title: "Rückerstattungsrichtlinie",
   description: "Regeln und Ablauf für Rückerstattungen beim ersten Kauf eines kostenpflichtigen Guestcam-Pakets.",
   alternates: { canonical: `${SITE_URL}/de/refund`, languages: legalAlternates("refund") },
-  openGraph: { url: `${SITE_URL}/de/refund`, title: "Rückerstattungsrichtlinie", description: "Wann und wie Sie eine Rückerstattung für ein Guestcam-Paket beantragen können.", images: ["/og-image.jpg?v=5"] },
+  openGraph: { url: `${SITE_URL}/de/refund`, title: "Rückerstattungsrichtlinie", description: "Wann und wie Sie eine Rückerstattung für ein Guestcam-Paket beantragen können.", images: ["/og-image.jpg?v=6"] },
   robots: { index: true, follow: true },
 };
 
