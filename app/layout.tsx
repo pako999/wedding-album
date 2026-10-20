@@ -120,11 +120,11 @@ export const metadata: Metadata = {
     // weeks because crawlers cache aggressively.
     images: [
       {
-        url: "/og-image.png?v=2",
+        url: "/og-image.jpg?v=4",
         width: 910,
         height: 1200,
         alt: "QR koda za dogodke • Fotografije gostov v živo | Guestcam",
-        type: "image/png",
+        type: "image/jpeg",
       },
     ],
   },
@@ -133,7 +133,7 @@ export const metadata: Metadata = {
     title: "QR koda za dogodke • Fotografije gostov v živo | Guestcam",
     description:
       "Z eno QR kodo zberite vse fotografije in videe gostov v zasebni galeriji. Brez aplikacije, polna kakovost, brezplačen začetek.",
-    images: ["/og-image.png?v=2"],
+    images: ["/og-image.jpg?v=4"],
   },
 };
 

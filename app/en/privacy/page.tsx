@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   title: "Privacy Policy",
   description: "Learn how Guestcam collects, uses and protects personal data belonging to users and guests under the GDPR.",
   alternates: { canonical: `${SITE_URL}/en/privacy`, languages: legalAlternates("privacy") },
-  openGraph: { url: `${SITE_URL}/en/privacy`, title: "Privacy Policy", description: "How Guestcam processes and protects personal data.", images: ["/og-image.png?v=2"] },
+  openGraph: { url: `${SITE_URL}/en/privacy`, title: "Privacy Policy", description: "How Guestcam processes and protects personal data.", images: ["/og-image.jpg?v=4"] },
   robots: { index: true, follow: true },
 };
 

@@ -15,6 +15,9 @@ const nextConfig: NextConfig = {
   },
   async redirects() {
     return [
+      // Older shared links still point to the large PNG; send them to the
+      // smaller JPEG while preserving the preview for existing shares.
+      { source: "/og-image.png", destination: "/og-image.jpg", permanent: true },
       // /favicon.ico → Next.js dynamic icon route so Google finds a favicon
       // at the conventional path (in addition to the <link rel="icon"> tag).
       { source: "/favicon.ico", destination: "/icon", permanent: false },

@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   title: "Uvjeti korištenja",
   description: "Uvjeti korištenja platforme Guestcam za privatne galerije, prijenos fotografija i plaćene pakete.",
   alternates: { canonical: `${SITE_URL}/hr/terms`, languages: legalAlternates("terms") },
-  openGraph: { url: `${SITE_URL}/hr/terms`, title: "Uvjeti korištenja", description: "Pravila korištenja Guestcam galerija, prijenosa fotografija i plaćenih paketa.", images: ["/og-image.png?v=2"] },
+  openGraph: { url: `${SITE_URL}/hr/terms`, title: "Uvjeti korištenja", description: "Pravila korištenja Guestcam galerija, prijenosa fotografija i plaćenih paketa.", images: ["/og-image.jpg?v=4"] },
   robots: { index: true, follow: true },
 };
 

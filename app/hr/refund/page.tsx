@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   title: "Politika povrata novca",
   description: "Pravila i postupak povrata novca za prvu kupnju Guestcam plaćenog paketa.",
   alternates: { canonical: `${SITE_URL}/hr/refund`, languages: legalAlternates("refund") },
-  openGraph: { url: `${SITE_URL}/hr/refund`, title: "Politika povrata novca", description: "Kada i kako možete zatražiti povrat novca za Guestcam paket.", images: ["/og-image.png?v=2"] },
+  openGraph: { url: `${SITE_URL}/hr/refund`, title: "Politika povrata novca", description: "Kada i kako možete zatražiti povrat novca za Guestcam paket.", images: ["/og-image.jpg?v=4"] },
   robots: { index: true, follow: true },
 };
 

@@ -17,10 +17,10 @@ import {
  * WhatsApp, Slack, LinkedIn, etc. re-scrape instead of serving the
  * cached old card.
  */
-export const OG_IMAGE_VERSION = 3;
+export const OG_IMAGE_VERSION = 4;
 
 export const OG_IMAGE_URL =
-  `${SITE_URL}/og-image.png?v=${OG_IMAGE_VERSION}`;
+  `${SITE_URL}/og-image.jpg?v=${OG_IMAGE_VERSION}`;
 
 /** Social cards must match the language of the country domain being shared. */
 export function localizedOgImageUrl(locale: string): string {
@@ -38,12 +38,11 @@ export const OG_IMAGE_HEIGHT = 1200;
 
 /** Object form for `openGraph.images`. Accepts a custom alt per-page. */
 export function ogImage(alt: string, locale = "sl") {
-  const isCountryCard = locale === "sr" || locale === "es";
   return {
     url: localizedOgImageUrl(locale),
     width: OG_IMAGE_WIDTH,
     height: OG_IMAGE_HEIGHT,
     alt,
-    type: (isCountryCard ? "image/jpeg" : "image/png") as "image/jpeg" | "image/png",
+    type: "image/jpeg" as const,
   };
 }
