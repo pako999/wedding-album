@@ -71,7 +71,7 @@ export async function SiteHeader({
         </Link>
 
         <div className="hidden items-center gap-2 lg:flex xl:gap-4">
-          {lang === "sl" ? slNav.map(({ href, label }) => <Link key={href} href={href} className="whitespace-nowrap text-xs font-semibold text-gray-700 hover:text-[#0F1729] xl:text-sm">{label}</Link>) : <Link href={localePublicPath(lang, WEDDING_PATHS[lang])} className="whitespace-nowrap text-sm font-semibold text-gray-700">{weddingCopy(lang).nav}</Link>}
+          {lang === "sl" ? slNav.filter(({ href }) => href !== "/#templates" && href !== "/#wall").map(({ href, label }) => <Link key={href} href={href} className="whitespace-nowrap text-xs font-semibold text-gray-700 hover:text-[#0F1729] xl:text-sm">{label}</Link>) : <Link href={localePublicPath(lang, WEDDING_PATHS[lang])} className="whitespace-nowrap text-sm font-semibold text-gray-700">{weddingCopy(lang).nav}</Link>}
           <LanguageSwitcher current={lang} languages={hreflang} ariaLabel={copy.switcherAria} />
           {lang !== "sl" && <><Link href={resolvedHome} className="text-sm font-medium text-gray-600 hover:text-[#0F1729] transition-colors">{copy.home}</Link><a href={blogHref} className="text-sm font-medium text-gray-600 hover:text-[#0F1729] transition-colors">{copy.blog}</a></>}
           <HeaderAuthButtons lang={lang} />
