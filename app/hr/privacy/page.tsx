@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   title: "Politika privatnosti",
   description: "Saznajte kako Guestcam prikuplja, koristi i štiti osobne podatke korisnika i gostiju u skladu s GDPR-om.",
   alternates: { canonical: `${SITE_URL}/hr/privacy`, languages: legalAlternates("privacy") },
-  openGraph: { url: `${SITE_URL}/hr/privacy`, title: "Politika privatnosti", description: "Kako Guestcam obrađuje i štiti osobne podatke korisnika i gostiju.", images: ["/og-image.jpg?v=4"] },
+  openGraph: { url: `${SITE_URL}/hr/privacy`, title: "Politika privatnosti", description: "Kako Guestcam obrađuje i štiti osobne podatke korisnika i gostiju.", images: ["/og-image.jpg?v=5"] },
   robots: { index: true, follow: true },
 };
 

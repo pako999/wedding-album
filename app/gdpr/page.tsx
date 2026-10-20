@@ -14,7 +14,7 @@ export const metadata: Metadata = {
     url: `${SITE_URL}/gdpr`,
     title: "Pravice po GDPR",
     description: "Vaše pravice po GDPR pri uporabi storitve Guestcam: dostop, popravek, izbris, prenosljivost, pritožba.",
-    images: ["/og-image.jpg?v=4"],
+    images: ["/og-image.jpg?v=5"],
   },
   robots: { index: true, follow: true },
 };

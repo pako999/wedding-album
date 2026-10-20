@@ -17,7 +17,7 @@ import {
  * WhatsApp, Slack, LinkedIn, etc. re-scrape instead of serving the
  * cached old card.
  */
-export const OG_IMAGE_VERSION = 4;
+export const OG_IMAGE_VERSION = 5;
 
 export const OG_IMAGE_URL =
   `${SITE_URL}/og-image.jpg?v=${OG_IMAGE_VERSION}`;

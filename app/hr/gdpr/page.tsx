@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   title: "Prava prema GDPR-u",
   description: "Pregled vaših prava prema GDPR-u i upute za pristup, ispravak ili brisanje osobnih podataka u Guestcam sustavu.",
   alternates: { canonical: `${SITE_URL}/hr/gdpr`, languages: legalAlternates("gdpr") },
-  openGraph: { url: `${SITE_URL}/hr/gdpr`, title: "Prava prema GDPR-u", description: "Kako ostvariti prava na pristup, ispravak ili brisanje osobnih podataka.", images: ["/og-image.jpg?v=4"] },
+  openGraph: { url: `${SITE_URL}/hr/gdpr`, title: "Prava prema GDPR-u", description: "Kako ostvariti prava na pristup, ispravak ili brisanje osobnih podataka.", images: ["/og-image.jpg?v=5"] },
   robots: { index: true, follow: true },
 };
 

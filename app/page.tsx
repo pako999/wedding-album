@@ -17,9 +17,9 @@ export const metadata: Metadata = {
     type: "website", url: SITE_URL, siteName: "Guestcam", locale: "sl_SI",
     title: "Guestcam: QR-koda za dogodke • Fotografije gostov",
     description: "Fotografije in videi gostov z dogodka v eni zasebni galeriji. Gostje skenirajo QR-kodo — brez aplikacije in registracije.",
-    images: [{ url: "/og-image.jpg?v=4", width: 910, height: 1200, alt: "Guestcam — QR-koda za fotografije in videe gostov na dogodkih" }],
+    images: [{ url: "/og-image.jpg?v=5", width: 910, height: 1200, alt: "Guestcam — QR-koda za fotografije in videe gostov na dogodkih" }],
   },
-  twitter: { card: "summary_large_image", title: "Guestcam: QR-koda za dogodke • Fotografije gostov", description: "Z eno QR-kodo zberite fotografije in videe gostov z dogodka v zasebni galeriji.", images: ["/og-image.jpg?v=4"] },
+  twitter: { card: "summary_large_image", title: "Guestcam: QR-koda za dogodke • Fotografije gostov", description: "Z eno QR-kodo zberite fotografije in videe gostov z dogodka v zasebni galeriji.", images: ["/og-image.jpg?v=5"] },
 };
 
 const jsonLd = {

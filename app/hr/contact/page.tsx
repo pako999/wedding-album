@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     url: `${SITE_URL}/hr/contact`,
     title: "Kontakt",
     description: "Pišite nam — email, WhatsApp, Premium podrška za vašu vjenčanu galeriju.",
-    images: ["/og-image.jpg?v=4"],
+    images: ["/og-image.jpg?v=5"],
   },
   robots: { index: true, follow: true },
 };

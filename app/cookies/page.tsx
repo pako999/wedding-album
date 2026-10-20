@@ -14,7 +14,7 @@ export const metadata: Metadata = {
     url: `${SITE_URL}/cookies`,
     title: "Politika piškotkov",
     description: "Politika piškotkov Guestcam — uporabljamo le tehnično nujne piškotke, brez oglaševalskih ali sledilnih.",
-    images: ["/og-image.jpg?v=4"],
+    images: ["/og-image.jpg?v=5"],
   },
   robots: { index: true, follow: true },
 };
