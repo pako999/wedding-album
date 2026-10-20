@@ -47,6 +47,16 @@ export async function SiteHeader({
   const mobile = MOBILE_COPY[lang];
   const resolvedHome = homeHref ?? localePublicPath(lang, lang === "sl" ? "/" : `/${lang}`);
   const blogHref = localePublicPath(lang, lang === "sl" ? "/blog" : `/${lang}/blog`);
+  const slNav = [
+    { href: "/#how", label: "Kako deluje" },
+    { href: "/#events", label: "Dogodki" },
+    { href: "/#templates", label: "Predloge" },
+    { href: "/#wall", label: "Live Wall" },
+    { href: "/#pricing", label: "Cenik" },
+    { href: localePublicPath("sl", WEDDING_PATHS.sl), label: weddingCopy("sl").nav },
+    { href: "/za-podjetja", label: "Za podjetja" },
+    { href: blogHref, label: copy.blog },
+  ];
   let signedIn = false;
   try {
     const session = await auth();
@@ -60,13 +70,10 @@ export async function SiteHeader({
           <GuestcamLogo size="sm" showMark={true} />
         </Link>
 
-        <div className="hidden items-center gap-3 lg:flex xl:gap-5">
-          <Link href={localePublicPath(lang, WEDDING_PATHS[lang])} className="hidden text-sm font-semibold text-gray-700 lg:inline">{weddingCopy(lang).nav}</Link>
-          {lang === "sl" && <Link href="/za-podjetja" className="text-sm font-semibold text-gray-700 hover:text-[#0F1729]">Za podjetja</Link>}
+        <div className="hidden items-center gap-2 lg:flex xl:gap-4">
+          {lang === "sl" ? slNav.map(({ href, label }) => <Link key={href} href={href} className="whitespace-nowrap text-xs font-semibold text-gray-700 hover:text-[#0F1729] xl:text-sm">{label}</Link>) : <Link href={localePublicPath(lang, WEDDING_PATHS[lang])} className="whitespace-nowrap text-sm font-semibold text-gray-700">{weddingCopy(lang).nav}</Link>}
           <LanguageSwitcher current={lang} languages={hreflang} ariaLabel={copy.switcherAria} />
-          <Link href={resolvedHome} className="text-sm font-medium text-gray-600 hover:text-[#0F1729] transition-colors">{copy.home}</Link>
-          {/* Content pages intentionally perform a full document load. */}
-          <a href={blogHref} className="text-sm font-medium text-gray-600 hover:text-[#0F1729] transition-colors">{copy.blog}</a>
+          {lang !== "sl" && <><Link href={resolvedHome} className="text-sm font-medium text-gray-600 hover:text-[#0F1729] transition-colors">{copy.home}</Link><a href={blogHref} className="text-sm font-medium text-gray-600 hover:text-[#0F1729] transition-colors">{copy.blog}</a></>}
           <HeaderAuthButtons lang={lang} />
           {!signedIn && (
             <Link href={localizedAccountPath(lang, "/dashboard/new")} className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full text-sm font-bold transition-all duration-200 hover:scale-[1.03]" style={{ background: "linear-gradient(135deg, #FFD966 0%, #FFC94D 55%, #F0B429 100%)", boxShadow: "0 6px 18px rgba(255,201,77,0.45)", color: "#0F1729" }}>
@@ -80,14 +87,13 @@ export async function SiteHeader({
           lang={lang}
           homeHref={resolvedHome}
           hreflang={hreflang}
-          links={[
+          links={lang === "sl" ? slNav.filter(({ href }) => href !== localePublicPath("sl", WEDDING_PATHS.sl)) : [
             { href: resolvedHome, label: copy.home },
             { href: `${resolvedHome}#how`, label: mobile.how },
             { href: `${resolvedHome}#pricing`, label: mobile.pricing },
-            ...(lang === "sl" ? [{ href: "/za-podjetja", label: "Za podjetja" }] : []),
             { href: blogHref, label: copy.blog },
             { href: `${resolvedHome}#faq`, label: "FAQ" },
-            { href: localePublicPath(lang, lang === "sl" ? "/contact" : `/${lang}/contact`), label: mobile.contact },
+            { href: localePublicPath(lang, `/${lang}/contact`), label: mobile.contact },
           ]}
           labels={{ open: mobile.open, close: mobile.close, language: mobile.language, languageAria: copy.switcherAria, signIn: mobile.signIn, dashboard: mobile.dashboard, cta: copy.cta }}
         />

@@ -43,7 +43,9 @@ for (const language of WEDDING_LANGS) {
   const before = JSON.stringify(legacy);
   const withDuplicate = [...legacy, {href:WEDDING_PATHS[language],label:'duplicate'}, {href:'https://example.test'+expected,label:'duplicate'}];
   const result = buildHomeMobileMenuLinks(language, withDuplicate);
-  if (result.filter(link => link.href === expected).length !== 1 || result[0].label !== weddingCopy(language).nav) throw new Error('Wedding link missing/duplicated: '+language);
+  if (result.filter(link => link.href === expected).length !== 1 || result.find(link => link.href === expected)?.label !== weddingCopy(language).nav) throw new Error('Wedding link missing/duplicated: '+language);
+  const priced = buildHomeMobileMenuLinks(language, [{href:'#pricing',label:'Pricing'}, ...withDuplicate]);
+  if (priced[1]?.href !== expected) throw new Error('Wedding link must follow pricing: '+language);
   if (!legacy.every(link => result.some(item => item.href === link.href))) throw new Error('Supplied navigation was lost: '+language);
   if (JSON.stringify(legacy) !== before) throw new Error('Input links were mutated');
 }

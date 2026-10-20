@@ -42,7 +42,7 @@ const LANGUAGE_LABELS: Record<LangCode, string> = {
   sl: "Slovenščina", hr: "Hrvatski", sr: "Srpski", en: "English", de: "Deutsch", es: "Español",
 };
 
-/** Preserve every supplied link and always expose the localized wedding page. */
+/** Preserve every supplied link and place the localized wedding page after pricing. */
 export function buildHomeMobileMenuLinks(lang: LangCode, links: MenuLink[]): MenuLink[] {
   let expanded = [...links];
   const copy = LOCALIZED_SECTION_LABELS[lang];
@@ -57,17 +57,17 @@ export function buildHomeMobileMenuLinks(lang: LangCode, links: MenuLink[]): Men
   }
   const weddingHref = localePublicPath(lang, WEDDING_PATHS[lang]);
   const seen = new Set([weddingHref]);
-  return [
-    { href: weddingHref, label: weddingCopy(lang).nav },
-    ...expanded.filter((link) => {
+  const uniqueLinks = expanded.filter((link) => {
       // Deduplicate internal, canonical, and country-domain wedding URLs.
       let pathname = link.href;
       try { pathname = new URL(link.href, "https://navigation.invalid").pathname.replace(/\/$/, "") || "/"; } catch { /* keep the original link */ }
       if (localePublicPath(lang, pathname) === weddingHref || seen.has(link.href)) return false;
       seen.add(link.href);
       return true;
-    }),
-  ];
+    });
+  const pricingIndex = uniqueLinks.findIndex((link) => link.href === "#pricing" || link.href.endsWith("#pricing"));
+  uniqueLinks.splice(pricingIndex >= 0 ? pricingIndex + 1 : uniqueLinks.length, 0, { href: weddingHref, label: weddingCopy(lang).nav });
+  return uniqueLinks;
 }
 
 /** Shared mobile/tablet navigation. The desktop headers start at lg (1024px). */
