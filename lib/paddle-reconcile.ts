@@ -7,6 +7,7 @@ const PLAN_CONFIG: Record<string, { maxPhotos: number; daysAccess: number | null
   basic:   { maxPhotos: 1000,    daysAccess: 90  }, // 3 months
   plus:    { maxPhotos: 999_999, daysAccess: 365 }, // 1 year
   premium: { maxPhotos: PREMIUM_MEDIA_LIMIT, daysAccess: null }, // no expiry
+  business: { maxPhotos: PREMIUM_MEDIA_LIMIT, daysAccess: 365 }, // one event, one year
 };
 
 /**
@@ -34,6 +35,7 @@ export async function applyPlanToAlbum(
   const existing = await db.query.albums.findFirst({
     where: eq(albums.slug, albumSlug),
   });
+  if (!existing) return null;
 
   // "Already applied" = same payment ref AND the intended effect is present:
   //  • film purchase → filmTier already at the target tier
@@ -67,12 +69,12 @@ export async function applyPlanToAlbum(
   const expiresAt = config.daysAccess
     ? new Date(Date.now() + config.daysAccess * 24 * 60 * 60 * 1000)
     : null;
-  const filmTierUpdate = planId === "premium" ? { filmTier: "premium" as const } : {};
+  const filmTierUpdate = planId === "premium" || planId === "business" ? { filmTier: "premium" as const } : {};
 
   await db
     .update(albums)
     .set({
-      plan: planId as "basic" | "plus" | "premium",
+      plan: planId as "basic" | "plus" | "premium" | "business",
       stripeSessionId: paymentRef,
       maxPhotos: config.maxPhotos,
       expiresAt,

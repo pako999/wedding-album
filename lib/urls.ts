@@ -103,7 +103,7 @@ export function safeAccountReturnPath(input: unknown): string {
 
   const safe = new URLSearchParams();
   const plan = target.searchParams.get("plan");
-  if (plan === "basic" || plan === "plus" || plan === "premium") safe.set("plan", plan);
+  if (plan === "basic" || plan === "plus" || plan === "premium" || plan === "business") safe.set("plan", plan);
 
   const lang = target.searchParams.get("lang");
   if (lang && SUPPORTED_LOCALES.has(lang)) safe.set("lang", lang);

@@ -89,7 +89,7 @@ export function CoverPhotoSettings({ album, lang, photos, initialPositionY }: Pr
   const [positionY, setPositionY] = useState(safeInitialPosition);
   const [isDragging, setIsDragging] = useState(false);
 
-  const canUpload = album.plan === "plus" || album.plan === "premium";
+  const canUpload = album.plan === "plus" || album.plan === "premium" || album.plan === "business";
 
   // Only published, image (not video) media is eligible as a cover.
   const eligible = photos.filter(

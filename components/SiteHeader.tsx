@@ -62,6 +62,7 @@ export async function SiteHeader({
 
         <div className="hidden items-center gap-3 lg:flex xl:gap-5">
           <Link href={localePublicPath(lang, WEDDING_PATHS[lang])} className="hidden text-sm font-semibold text-gray-700 lg:inline">{weddingCopy(lang).nav}</Link>
+          {lang === "sl" && <Link href="/za-podjetja" className="text-sm font-semibold text-gray-700 hover:text-[#0F1729]">Za podjetja</Link>}
           <LanguageSwitcher current={lang} languages={hreflang} ariaLabel={copy.switcherAria} />
           <Link href={resolvedHome} className="text-sm font-medium text-gray-600 hover:text-[#0F1729] transition-colors">{copy.home}</Link>
           {/* Content pages intentionally perform a full document load. */}
@@ -83,6 +84,7 @@ export async function SiteHeader({
             { href: resolvedHome, label: copy.home },
             { href: `${resolvedHome}#how`, label: mobile.how },
             { href: `${resolvedHome}#pricing`, label: mobile.pricing },
+            ...(lang === "sl" ? [{ href: "/za-podjetja", label: "Za podjetja" }] : []),
             { href: blogHref, label: copy.blog },
             { href: `${resolvedHome}#faq`, label: "FAQ" },
             { href: localePublicPath(lang, lang === "sl" ? "/contact" : `/${lang}/contact`), label: mobile.contact },

@@ -109,7 +109,7 @@ function EventIcon({ id, className }: { id: string; className?: string }) {
   );
 }
 
-type PaidPlanId = "basic" | "plus" | "premium";
+type PaidPlanId = "basic" | "plus" | "premium" | "business";
 
 export function CreateEventWizard({ initialPlan, lang = "sl", defaultAlbumLang }: { initialPlan?: PaidPlanId; lang?: Lang; defaultAlbumLang?: Lang } = {}) {
   const copy = CREATE_EVENT_COPY[lang];

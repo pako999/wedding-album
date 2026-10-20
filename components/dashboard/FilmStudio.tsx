@@ -54,7 +54,7 @@ export function FilmStudio({ album }: { album: Album }) {
   // is purchased, but treat the plan as the source of truth at render time
   // so a missed webhook never leaves a paying customer locked out.
   const effectiveFilmTier: "free" | "pro" | "premium" =
-    album.plan === "premium" && rawFilmTier === "free" ? "premium" : rawFilmTier;
+    (album.plan === "premium" || album.plan === "business") && rawFilmTier === "free" ? "premium" : rawFilmTier;
 
   if (effectiveFilmTier === "free") {
     return <FreeTierGate album={album} />;

@@ -64,7 +64,7 @@ export default async function UpgradePageRoute({ params, searchParams }: Props) 
     acceptLanguage: h.get("accept-language"),
   });
 
-  const initialPlan = sp.plan === "basic" || sp.plan === "premium" ? sp.plan : "plus";
+  const initialPlan = sp.plan === "basic" || sp.plan === "premium" || sp.plan === "business" ? sp.plan : "plus";
   const requestedCode = sp.discount?.trim().toUpperCase();
   let initialDiscount: { code: string; percentOff: number } | null = null;
   if (requestedCode) {

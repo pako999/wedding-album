@@ -7,7 +7,7 @@ export type AlbumCreationGate =
   | { allowed: true }
   | { allowed: false; mostRecentSlug: string };
 
-type PaidPlan = "basic" | "plus" | "premium";
+type PaidPlan = "basic" | "plus" | "premium" | "business";
 
 const PLAN_CONFIG: Record<PaidPlan, {
   maxPhotos: number;
@@ -17,9 +17,10 @@ const PLAN_CONFIG: Record<PaidPlan, {
   basic: { maxPhotos: 1_000, daysAccess: 90, filmTier: "free" },
   plus: { maxPhotos: 999_999, daysAccess: 365, filmTier: "free" },
   premium: { maxPhotos: PREMIUM_MEDIA_LIMIT, daysAccess: null, filmTier: "premium" },
+  business: { maxPhotos: PREMIUM_MEDIA_LIMIT, daysAccess: 365, filmTier: "premium" },
 };
 
-const PLAN_RANK: Record<PaidPlan, number> = { basic: 1, plus: 2, premium: 3 };
+const PLAN_RANK: Record<PaidPlan, number> = { basic: 1, plus: 2, premium: 3, business: 4 };
 
 export function albumOwnerWhere(userId: string, verifiedOwnerEmails: string[] = []) {
   const emails = [...new Set(verifiedOwnerEmails.map((email) => email.trim().toLowerCase()).filter(Boolean))];

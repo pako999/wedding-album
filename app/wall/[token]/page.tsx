@@ -190,7 +190,7 @@ export default async function PhotoWallPage({ params, searchParams }: Props) {
       sponsors={sponsors}
       settings={settings}
       t={t}
-      isPremium={album.plan === "premium"}
+      isPremium={album.plan === "premium" || album.plan === "business"}
     />
   );
 }

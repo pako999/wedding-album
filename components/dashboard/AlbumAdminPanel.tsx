@@ -41,10 +41,11 @@ import { ADMIN_SETTINGS_COPY } from "@/lib/i18n/admin-settings-copy";
  * codes can reduce the amount charged, but for the Pixel we report the
  * headline plan price so ad ROAS comparisons match campaign expectations.
  */
-const PLAN_PRICES_EUR: Record<"basic" | "plus" | "premium", number> = {
+const PLAN_PRICES_EUR: Record<"basic" | "plus" | "premium" | "business", number> = {
   basic:   39,
   plus:    49,
   premium: PREMIUM_SALE_PRICE_EUR,
+  business: 149,
 };
 
 const DASHBOARD_DATE_LOCALE: Record<DashboardLang, string> = {
@@ -92,7 +93,7 @@ interface Props {
   /** When the owner came from a homepage pricing card, this is the plan
    *  they picked. The onboarding success screen finishes by routing them
    *  straight into Paddle checkout for that plan. */
-  paidPlan?: "basic" | "plus" | "premium";
+  paidPlan?: "basic" | "plus" | "premium" | "business";
   /** Logged-in user's primary email — shown in the Settings tab so the
    *  owner can confirm which account this album is attached to. */
   ownerEmail?: string | null;
@@ -150,7 +151,7 @@ const DRIVE_BANNER_STYLES: Record<"success" | "warning" | "neutral" | "error", {
 
 // ─── Success Screen ───────────────────────────────────────────────────────────
 
-function NewAlbumSuccess({ album, paidPlan, lang }: { album: Album; paidPlan?: "basic" | "plus" | "premium"; lang: DashboardLang }) {
+function NewAlbumSuccess({ album, paidPlan, lang }: { album: Album; paidPlan?: "basic" | "plus" | "premium" | "business"; lang: DashboardLang }) {
   const copy = ALBUM_ADMIN_COPY[lang].success;
   const dashboardCopy = DASHBOARD_COPY[lang];
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? SITE_URL;
@@ -459,13 +460,14 @@ export function AlbumAdminPanel({ album, lang, photos, pendingCount, guestCount,
   };
 
   const planLabel =
+    album.plan === "business" ? "Poslovni" :
     album.plan === "premium" ? weddingCopy(lang).plan :
     album.plan === "plus"    ? "Plus"    :
     album.plan === "basic"   ? "Basic"   :
     copy.freePlan;
 
   const planBadgeClass =
-    album.plan === "premium"
+    album.plan === "premium" || album.plan === "business"
       ? "bg-rose-500 text-white"
       : album.plan === "plus"
       ? "bg-gray-900 text-white"

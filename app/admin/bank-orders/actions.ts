@@ -5,11 +5,14 @@ import { bankOrders } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { requireAdmin } from "@/lib/admin";
+import { applyPlanToAlbum } from "@/lib/paddle-reconcile";
+import { BUSINESS_PRICE_EUR } from "@/lib/plan-pricing";
 
 const PLAN_LABELS: Record<string, { name: string; price: number }> = {
   basic:   { name: "Basic",   price: 39 },
   plus:    { name: "Plus",    price: 49 },
   premium: { name: "Poročni premium", price: 84 },
+  business: { name: "Poslovni", price: BUSINESS_PRICE_EUR },
 };
 
 export async function addManualOrder(formData: FormData) {
@@ -17,7 +20,8 @@ export async function addManualOrder(formData: FormData) {
   if (!admin) throw new Error("Unauthorized");
 
   const planId = formData.get("planId") as string;
-  const plan = PLAN_LABELS[planId] ?? { name: planId, price: 0 };
+  const plan = PLAN_LABELS[planId];
+  if (!plan) throw new Error("Neznan paket");
 
   await db.insert(bankOrders).values({
     albumSlug:          (formData.get("albumSlug") as string).trim(),
@@ -41,6 +45,12 @@ export async function updateOrderStatus(id: string, status: "pending" | "paid" |
   const admin = await requireAdmin();
   if (!admin) throw new Error("Unauthorized");
 
+  const order = await db.query.bankOrders.findFirst({ where: eq(bankOrders.id, id) });
+  if (!order) throw new Error("Naročilo ne obstaja");
+  if (status === "paid" && order.status !== "paid") {
+    const applied = await applyPlanToAlbum(order.albumSlug, order.planId, `bank:${order.id}`);
+    if (!applied) throw new Error("Paket ni bil aktiviran; preverite album in naročilo");
+  }
   await db.update(bankOrders).set({ status }).where(eq(bankOrders.id, id));
   revalidatePath("/admin/bank-orders");
 }

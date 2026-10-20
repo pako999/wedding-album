@@ -55,7 +55,7 @@ const ORIENTATIONS = [
 ] as const;
 
 export function PhotoWallCard({ wallUrl, hasPassword, albumSlug, moderationEnabled, pendingCount, plan }: Props) {
-  const isPremium = plan === "premium";
+  const isPremium = plan === "premium" || plan === "business";
   const [seconds, setSeconds] = useState(DEFAULT_SECONDS);
   const [showSides, setShowSides] = useState(true);
   const [showQr, setShowQr] = useState(true);

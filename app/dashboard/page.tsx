@@ -265,13 +265,13 @@ export default async function DashboardPage({
                   </div>
                   <div className="absolute top-3 left-3">
                     <span className={`text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full ${
-                      album.plan === "premium" ? "text-white" :
+                      album.plan === "premium" || album.plan === "business" ? "text-white" :
                       album.plan === "plus"    ? "text-white bg-[#0F1729]" :
                       album.plan === "basic"   ? "text-[color:var(--ink)] bg-[color:var(--hairline)]" :
                       "bg-white/80 text-[color:var(--muted)]"
                     }`}
-                    style={album.plan === "premium" ? { background: "var(--honey)", color: "#FFFFFF" } : undefined}>
-                      {album.plan === "free" ? "Free" : album.plan === "basic" ? "Basic" : album.plan === "plus" ? "Plus" : weddingCopy(lang).plan}
+                    style={album.plan === "premium" || album.plan === "business" ? { background: "var(--honey)", color: "#FFFFFF" } : undefined}>
+                      {album.plan === "free" ? "Free" : album.plan === "basic" ? "Basic" : album.plan === "plus" ? "Plus" : album.plan === "business" ? "Poslovni" : weddingCopy(lang).plan}
                     </span>
                   </div>
                 </Link>

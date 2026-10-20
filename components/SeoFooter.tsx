@@ -173,6 +173,7 @@ export function SeoFooter({ lang }: { lang: Lang }) {
               <li><a href={`${home}#how`} className="hover:text-white transition-colors">{t.howWorks}</a></li>
               <li><a href={`${home}#features`} className="hover:text-white transition-colors">{t.features}</a></li>
               <li><a href={`${home}#pricing`} className="hover:text-white transition-colors">{t.pricing}</a></li>
+              {lang === "sl" && <li><Link href="/za-podjetja" className="hover:text-white transition-colors">Za podjetja</Link></li>}
               <li><a href={`${home}#faq`} className="hover:text-white transition-colors">{t.faq}</a></li>
               <li><Link href={localizedAccountPath(lang, "/dashboard/new")} className="hover:text-white transition-colors">{t.createAlbum}</Link></li>
               <li><Link href={localePublicPath(lang, lang === "sl" ? "/blog" : `/${lang}/blog`)} className="hover:text-white transition-colors">{t.blog}</Link></li>

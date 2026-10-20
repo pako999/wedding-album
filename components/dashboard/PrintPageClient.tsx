@@ -258,7 +258,7 @@ function TableCard({
 export function PrintPageClient({ slug, coupleName, weddingDate, location, qrUrl, albumUrl, plan, customText }: Props) {
   const [selected, setSelected] = useState(TEMPLATES[0]);
 
-  const isPremium = plan === "premium";
+  const isPremium = plan === "premium" || plan === "business";
   const [customHeadline, setCustomHeadline] = useState(customText.headline);
   const [customSubtitle, setCustomSubtitle] = useState(customText.subtitle);
   const [customCta, setCustomCta] = useState(customText.cta);

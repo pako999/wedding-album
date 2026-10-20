@@ -1,5 +1,5 @@
 import { weddingCopy } from "@/lib/wedding/copy";
-import { PREMIUM_SALE_PRICE_CENTS } from "@/lib/plan-pricing";
+import { BUSINESS_PRICE_CENTS, PREMIUM_SALE_PRICE_CENTS } from "@/lib/plan-pricing";
 import { NextRequest, NextResponse } from "next/server";
 import {
   addOnTotalCents, quoteShipping, standsPriceCents,
@@ -26,11 +26,12 @@ const PLAN_CONFIG: Record<string, { name: string; amount: number }> = {
   basic:        { name: "Guestcam Basic",                   amount: 3900 },
   plus:         { name: "Guestcam Plus",                    amount: 4900 },
   premium:      { name: "Guestcam Premium",                 amount: PREMIUM_SALE_PRICE_CENTS },
+  business:     { name: "Guestcam Poslovni",                amount: BUSINESS_PRICE_CENTS },
   film_pro:     { name: "Film Studio Pro (100 foto)",        amount: 1000 },
   film_premium: { name: "Film Studio Premium (300 foto)",    amount: 2000 },
 };
 
-type PlanId = "basic" | "plus" | "premium" | "film_pro" | "film_premium";
+type PlanId = "basic" | "plus" | "premium" | "business" | "film_pro" | "film_premium";
 
 export async function POST(req: NextRequest) {
   if (!mollieConfigured()) {

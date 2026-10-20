@@ -60,14 +60,14 @@ function CtaBox() {
         kartice.
       </p>
       <Link
-        href="/dashboard/new?lang=sl"
+        href="/za-podjetja#cenik"
         className="inline-flex items-center gap-2 px-8 py-4 rounded-full text-white font-bold text-base transition-all duration-200 hover:scale-[1.02]"
         style={{
           background: "#FFC94D",
           boxShadow: "0 10px 30px rgba(255,201,77,0.35)",
         }}
       >
-        Začni brezplačno zdaj →
+        Poglejte poslovni paket in cenik →
       </Link>
     </div>
   );

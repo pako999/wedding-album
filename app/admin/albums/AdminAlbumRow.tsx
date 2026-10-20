@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 
-type Plan = "free" | "basic" | "plus" | "premium";
+type Plan = "free" | "basic" | "plus" | "premium" | "business";
 type AdminPlan = Plan | "influencer" | "sponsor";
 
 interface Props {
@@ -19,7 +19,7 @@ interface Props {
   stripeSessionId?: string | null;
 }
 
-const PLANS: AdminPlan[] = ["free", "basic", "plus", "premium", "influencer", "sponsor"];
+const PLANS: AdminPlan[] = ["free", "basic", "plus", "premium", "business", "influencer", "sponsor"];
 
 function initialAdminPlan(plan: Plan, sid?: string | null): AdminPlan {
   if (sid === "comp:influencer") return "influencer";

@@ -61,7 +61,7 @@ export default async function AlbumAdminPage({ params, searchParams }: Props) {
     return Number.isFinite(n) && n > 0 && n < 10_000 ? n : undefined;
   })();
   const paidPlan =
-    planParam === "basic" || planParam === "plus" || planParam === "premium"
+    planParam === "basic" || planParam === "plus" || planParam === "premium" || planParam === "business"
       ? planParam
       : undefined;
 

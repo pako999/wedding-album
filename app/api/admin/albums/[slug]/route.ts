@@ -17,10 +17,10 @@ export const dynamic = "force-dynamic";
  *   influencer  → free comp account given to a content creator
  *   sponsor     → free comp account given to a brand/wedding-venue partner
  */
-type AdminPlan = "free" | "basic" | "plus" | "premium" | "influencer" | "sponsor";
+type AdminPlan = "free" | "basic" | "plus" | "premium" | "business" | "influencer" | "sponsor";
 
 const PLAN_CONFIG: Record<AdminPlan, {
-  effectivePlan: "free" | "basic" | "plus" | "premium";
+  effectivePlan: "free" | "basic" | "plus" | "premium" | "business";
   maxPhotos: number;
   daysAccess: number | null;
   /** When set, the album's stripeSessionId is overwritten with this sentinel
@@ -31,6 +31,7 @@ const PLAN_CONFIG: Record<AdminPlan, {
   basic:      { effectivePlan: "basic",   maxPhotos: 1000,    daysAccess: 90  },
   plus:       { effectivePlan: "plus",    maxPhotos: 999_999, daysAccess: 365 },
   premium:    { effectivePlan: "premium", maxPhotos: PREMIUM_MEDIA_LIMIT, daysAccess: null },
+  business:   { effectivePlan: "business", maxPhotos: PREMIUM_MEDIA_LIMIT, daysAccess: 365 },
   influencer: { effectivePlan: "premium", maxPhotos: PREMIUM_MEDIA_LIMIT, daysAccess: null, compTag: "comp:influencer" },
   sponsor:    { effectivePlan: "premium", maxPhotos: PREMIUM_MEDIA_LIMIT, daysAccess: null, compTag: "comp:sponsor" },
 };
@@ -57,7 +58,7 @@ export async function PATCH(
   // Premium plan + comp-as-premium pseudo-plans auto-unlock Film Studio,
   // matching the Stripe webhook's behaviour for real premium purchases.
   const filmTierUpdate =
-    config.effectivePlan === "premium" ? { filmTier: "premium" as const } : {};
+    config.effectivePlan === "premium" || config.effectivePlan === "business" ? { filmTier: "premium" as const } : {};
 
   // Stamp the comp tag so revenue stats can exclude it. For real plans,
   // leave stripeSessionId alone (don't blow away a real cs_ id).

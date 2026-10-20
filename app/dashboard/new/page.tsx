@@ -21,7 +21,7 @@ export const dynamic = "force-dynamic";
 export default async function NewAlbumPage({ searchParams }: { searchParams: Promise<{ plan?: string; lang?: string }> }) {
   const [sp, h, cookieStore] = await Promise.all([searchParams, headers(), cookies()]);
   const initialPlan =
-    sp.plan === "basic" || sp.plan === "plus" || sp.plan === "premium"
+    sp.plan === "basic" || sp.plan === "plus" || sp.plan === "premium" || sp.plan === "business"
       ? sp.plan
       : undefined;
   const initialDashboardLang = resolveDashboardLang({

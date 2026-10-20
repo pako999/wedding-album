@@ -7,7 +7,7 @@ import type { Channel } from "@/lib/attribution/signup";
 
 export const dynamic = "force-dynamic";
 
-type PlanTier = "free" | "basic" | "plus" | "premium";
+type PlanTier = "free" | "basic" | "plus" | "premium" | "business";
 type PlanSource = "none" | "paid" | "admin" | "inherit";
 
 /** Acquisition-source row surfaced per user (null = signed up before we
@@ -42,7 +42,7 @@ interface UserRow {
   source: SourceInfo | null;
 }
 
-const PLAN_RANK: Record<PlanTier, number> = { free: 0, basic: 1, plus: 2, premium: 3 };
+const PLAN_RANK: Record<PlanTier, number> = { free: 0, basic: 1, plus: 2, premium: 3, business: 4 };
 
 export default async function AdminUsers() {
   // Source of truth = Clerk (every registered user, even if they never
@@ -98,7 +98,7 @@ export default async function AdminUsers() {
 
     // Classify the payment source for this album.
     const isRealPaid = plan !== "free" &&
-      (sid.startsWith("tr_") || sid.startsWith("txn_") || sid.startsWith("cs_"));
+      (sid.startsWith("tr_") || sid.startsWith("txn_") || sid.startsWith("cs_") || sid.startsWith("bank:"));
     const isComp    = sid === "comp:influencer" || sid === "comp:sponsor";
     const isAdmin   = isComp || sid.startsWith("admin-grant:") || sid.startsWith("admin-override:") || sid.startsWith("manual_fix");
     const isInherit = sid.startsWith("inherit:");
@@ -358,6 +358,7 @@ function PlanBadge({
     basic:   "bg-blue-100 text-blue-700",
     plus:    "bg-emerald-100 text-emerald-700",
     premium: "bg-amber-100 text-amber-700",
+    business: "bg-violet-100 text-violet-700",
   };
   const labelBySource: Record<PlanSource, string> = {
     paid:    "plačan",

@@ -56,7 +56,7 @@ export async function createAlbum(formData: FormData) {
   const passwordRaw = (formData.get("password")   as string ?? "").trim();
   const password = passwordRaw ? await hashAlbumPassword(passwordRaw) : null;
   const planRaw    = (formData.get("plan")        as string ?? "").trim();
-  const plan       = (planRaw === "basic" || planRaw === "plus" || planRaw === "premium") ? planRaw : null;
+  const plan       = (planRaw === "basic" || planRaw === "plus" || planRaw === "premium" || planRaw === "business") ? planRaw : null;
 
   if (!coupleName || !eventDate) {
     throw new Error("Ime in datum sta obvezni polji.");
@@ -75,7 +75,7 @@ export async function createAlbum(formData: FormData) {
   const suffix = Math.random().toString(36).slice(2, 6);
   const slug   = `${slugify(coupleName)}-${suffix}`;
 
-  let inheritedPlan: "free" | "basic" | "plus" | "premium" = "free";
+  let inheritedPlan: "free" | "basic" | "plus" | "premium" | "business" = "free";
   let inheritedMax = 20;
   let inheritedFilm: "free" | "pro" | "premium" = "free";
   let inheritedExpiry: Date | null = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);

@@ -13,7 +13,7 @@ import { translations, type Lang } from "@/lib/i18n/translations";
 import { UPGRADE_COPY, PLAN_FEATURE_KEYS } from "@/lib/i18n/upgrade-translations";
 import { checkoutRegionName } from "@/lib/i18n/checkout-locale";
 import { DASHBOARD_COPY } from "@/lib/i18n/dashboard-language";
-import { PREMIUM_REGULAR_PRICE_EUR, PREMIUM_SALE_PERCENT, PREMIUM_SALE_PRICE_EUR } from "@/lib/plan-pricing";
+import { BUSINESS_PRICE_EUR, PREMIUM_REGULAR_PRICE_EUR, PREMIUM_SALE_PERCENT, PREMIUM_SALE_PRICE_EUR } from "@/lib/plan-pricing";
 import {
   SHIPPING_COUNTRIES, STAND_VARIANTS, DEFAULT_STAND_QTY, DEFAULT_STAND_VARIANT,
   MAX_STAND_QTY, VOLUME_BREAKS, LEAD_TIME_DAYS, quoteShipping, standsPriceCents, effectiveUnitCents,
@@ -21,7 +21,7 @@ import {
   volumeDiscountPercent, eur, type StandVariant,
 } from "@/lib/print-service";
 
-type PlanId = "free" | "basic" | "plus" | "premium";
+type PlanId = "free" | "basic" | "plus" | "premium" | "business";
 
 // Plan prices and product-tier metadata are locale-independent —
 // only the display copy (tagline / features / badge) is localised via
@@ -37,6 +37,7 @@ const PLANS: PlanMeta[] = [
   { id: "basic",   name: "Basic",   price: 39 },
   { id: "plus",    name: "Plus",    price: 49, hasBadge: true },
   { id: "premium", name: "Premium", price: PREMIUM_SALE_PRICE_EUR },
+  { id: "business", name: "Poslovni", price: BUSINESS_PRICE_EUR },
 ];
 
 interface Props {
@@ -56,12 +57,13 @@ export function UpgradePage({ album, lang = "sl", initialDiscount = null }: Prop
     if (id === "basic")   return u.taglineBasic;
     if (id === "plus")    return u.taglinePlus;
     if (id === "premium") return u.taglinePremium;
+    if (id === "business") return lang === "sl" ? "Za poslovni dogodek · 1 leto dostopa" : "For a business event · 1 year access";
     return "";
   };
   const searchParams = useSearchParams();
   const initialPlan: PlanId = (() => {
     const p = searchParams.get("plan");
-    return p === "basic" || p === "plus" || p === "premium" ? p : "plus";
+    return p === "basic" || p === "plus" || p === "premium" || p === "business" ? p : "plus";
   })();
   const [selectedPlan, setSelectedPlan] = useState<PlanId>(initialPlan);
   const [expandedPlans, setExpandedPlans] = useState<Partial<Record<PlanId, boolean>>>({});
@@ -227,7 +229,9 @@ export function UpgradePage({ album, lang = "sl", initialDiscount = null }: Prop
             {plans.map((plan) => {
               const isSelected = selectedPlan === plan.id;
               const isPremium = plan.id === "premium";
-              const features = PLAN_FEATURE_KEYS[plan.id as "basic" | "plus" | "premium"];
+              const features = plan.id === "business"
+                ? ["1 poslovni dogodek in do 5 galerij", "Neomejeno fotografij in videov", "Dostop do albuma 1 leto", "Foto stena v živo in diaprojekcija", "Moderacija objav", "Zajem kontaktov ob privolitvi", "Sponzorske slike in prilagoditev zaslona", "Prenos vseh datotek (ZIP)"]
+                : PLAN_FEATURE_KEYS[plan.id as "basic" | "plus" | "premium"];
               const canCollapse = features.length > 6;
               const isExpanded = expandedPlans[plan.id] === true;
               const visibleFeatures = canCollapse && !isExpanded ? features.slice(0, 6) : features;
@@ -293,7 +297,7 @@ export function UpgradePage({ album, lang = "sl", initialDiscount = null }: Prop
                             <svg className={`mt-0.5 w-5 h-5 flex-shrink-0 ${isPremium ? "text-[#F4B400]" : "text-green-600"}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
                               <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                             </svg>
-                            <span>{u[fk] as string}</span>
+                            <span>{plan.id === "business" ? fk : u[fk as keyof typeof u] as string}</span>
                           </li>
                         ))}
                       </ul>

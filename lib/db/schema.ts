@@ -43,7 +43,7 @@ export const albums = pgTable(
     isPublished: boolean("is_published").notNull().default(false),
 
     // Plan
-    plan: text("plan", { enum: ["free", "basic", "plus", "premium"] }).notNull().default("free"),
+    plan: text("plan", { enum: ["free", "basic", "plus", "premium", "business"] }).notNull().default("free"),
 
     // Film generation tier (separate add-on from album plan)
     filmTier: text("film_tier", { enum: ["free", "pro", "premium"] }).notNull().default("free"),
@@ -573,7 +573,7 @@ export const uploadReminders = pgTable(
 
 export const userPlanOverrides = pgTable("user_plan_overrides", {
   clerkId: text("clerk_id").primaryKey(),
-  plan: text("plan", { enum: ["free", "basic", "plus", "premium"] }).notNull(),
+  plan: text("plan", { enum: ["free", "basic", "plus", "premium", "business"] }).notNull(),
   maxPhotos: integer("max_photos").notNull(),
   filmTier: text("film_tier", { enum: ["free", "pro", "premium"] }).notNull().default("free"),
   daysAccess: integer("days_access"), // null = never expires

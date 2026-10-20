@@ -183,6 +183,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { path: "/en/wedding-photo-sharing", priority: 0.8, changeFrequency: "monthly", lastModified: LAST_EDITED.seoLandings, alternates: SEO_LANDING_CLUSTER },
     { path: "/es/fotos-boda-qr", priority: 0.8, changeFrequency: "monthly", lastModified: LAST_EDITED.seoLandings, alternates: SEO_LANDING_CLUSTER },
     { path: "/sl/qr-koda-za-poslovne-dogodke", priority: 0.7, changeFrequency: "monthly", lastModified: LAST_EDITED.corporateLandings, alternates: CORPORATE_LANDING_CLUSTER },
+    { path: "/za-podjetja", priority: 0.85, changeFrequency: "monthly", lastModified: "2026-10-20" },
 
     ...WEDDING_LANGS.map(lang => ({path: WEDDING_PATHS[lang], priority: 0.85, changeFrequency: "monthly" as ChangeFreq, lastModified: "2026-09-26", alternates: clusterLinks(WEDDING_PATHS)})),
     ...eventTopicEntries(),

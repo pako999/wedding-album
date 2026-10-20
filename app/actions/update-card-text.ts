@@ -29,7 +29,7 @@ export async function updateCardText(
   if (!album || album.ownerClerkId !== userId) {
     return { ok: false, error: "Galerija ni najdena." };
   }
-  if (album.plan !== "premium") {
+  if (album.plan !== "premium" && album.plan !== "business") {
     return { ok: false, error: "Urejanje besedila je na voljo samo v paketu Poročni premium." };
   }
 

@@ -1,6 +1,6 @@
 import { isPaidStatus, type MolliePayment } from "@/lib/mollie";
 
-export const PAID_PLAN_IDS = ["basic", "plus", "premium"] as const;
+export const PAID_PLAN_IDS = ["basic", "plus", "premium", "business"] as const;
 export type PaidPlanId = (typeof PAID_PLAN_IDS)[number];
 
 export interface PaidBankOrder {
@@ -83,6 +83,7 @@ export function summarizePaidPlanSales(
     basic: emptyPlanSales(),
     plus: emptyPlanSales(),
     premium: emptyPlanSales(),
+    business: emptyPlanSales(),
   };
 
   for (const payment of molliePayments) {

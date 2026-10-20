@@ -1,4 +1,4 @@
-export type GalleryPlan = "free" | "basic" | "plus" | "premium";
+export type GalleryPlan = "free" | "basic" | "plus" | "premium" | "business";
 
 /**
  * Each Guestcam package is sold for one event. Within that event the owner
@@ -12,10 +12,11 @@ export const GALLERY_LIMIT_BY_PLAN: Record<GalleryPlan, number> = {
   basic: 1,
   plus: 3,
   premium: 5,
+  business: 5,
 };
 
 export function galleryLimitForPlan(plan: string | null | undefined): number {
-  if (plan === "basic" || plan === "plus" || plan === "premium") {
+  if (plan === "basic" || plan === "plus" || plan === "premium" || plan === "business") {
     return GALLERY_LIMIT_BY_PLAN[plan];
   }
   return GALLERY_LIMIT_BY_PLAN.free;
