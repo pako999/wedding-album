@@ -1,7 +1,7 @@
 import { SignUp } from "@clerk/nextjs";
 import { safeAccountReturnPath } from "@/lib/urls";
 import type { Metadata } from "next";
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { AFFILIATE_COOKIE } from "@/lib/affiliate/attribution";
 import {
   SIGNUP_ATTR_COOKIE,
@@ -11,6 +11,10 @@ import {
   parseSignupSourceParam,
 } from "@/lib/attribution/signup";
 import { GUEST_REF_COOKIE } from "@/lib/referral/attribution";
+import {
+  DASHBOARD_LANG_COOKIE,
+  resolveDashboardLang,
+} from "@/lib/i18n/dashboard-language";
 
 export const metadata: Metadata = {
   robots: { index: false, follow: false, nocache: true },
@@ -26,7 +30,7 @@ export default async function SignUpPage({
   const transferredSource = parseSignupSourceParam(
     Array.isArray(transferredValue) ? transferredValue[0] : transferredValue,
   );
-  const jar = await cookies();
+  const [jar, requestHeaders] = await Promise.all([cookies(), headers()]);
   const localSource = buildSignupSourceSnapshot(
     parseAttr(jar.get(SIGNUP_ATTR_COOKIE)?.value),
     {
@@ -44,10 +48,16 @@ export default async function SignUpPage({
   // creation go back to that exact flow, not to a generic dashboard page.
   const afterAuth = safeAccountReturnPath(params.redirect_url);
   const requestedLang = Array.isArray(params.lang) ? params.lang[0] : params.lang;
-  const lang = ["sl", "hr", "sr", "en", "de", "es"].includes(requestedLang ?? "")
-    ? requestedLang!
-    : "sl";
-  const signInParams = new URLSearchParams({ lang, redirect_url: afterAuth });
+  const lang = resolveDashboardLang({
+    requested: requestedLang,
+    saved: jar.get(DASHBOARD_LANG_COOKIE)?.value,
+    country: requestHeaders.get("x-vercel-ip-country"),
+    acceptLanguage: requestHeaders.get("accept-language"),
+  });
+  const afterAuthUrl = new URL(afterAuth, "https://www.guestcam.si");
+  afterAuthUrl.searchParams.set("lang", lang);
+  const localizedAfterAuth = `${afterAuthUrl.pathname}${afterAuthUrl.search}`;
+  const signInParams = new URLSearchParams({ lang, redirect_url: localizedAfterAuth });
   const signInUrl = `/sign-in?${signInParams.toString()}`;
 
   return (
@@ -58,10 +68,10 @@ export default async function SignUpPage({
       <div className="mx-auto flex w-full max-w-[460px] min-w-0 justify-center">
         <SignUp
           unsafeMetadata={{ guestcamAttribution: signupSource }}
-          forceRedirectUrl={afterAuth}
-          fallbackRedirectUrl="/dashboard"
+          forceRedirectUrl={localizedAfterAuth}
+          fallbackRedirectUrl={`/dashboard?lang=${lang}`}
           signInUrl={signInUrl}
-          signInForceRedirectUrl={afterAuth}
+          signInForceRedirectUrl={localizedAfterAuth}
           appearance={{
             variables: {
               colorPrimary: "#0F1729",

@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import Link from "next/link";
 import { UserButton } from "@clerk/nextjs";
 import { DashboardLanguageSwitcher } from "@/components/dashboard/DashboardLanguageSwitcher";
@@ -7,6 +8,25 @@ import { DASHBOARD_COPY, type DashboardLang } from "@/lib/i18n/dashboard-languag
 
 export function DashboardNav({ lang }: { lang: DashboardLang }) {
   const copy = DASHBOARD_COPY[lang];
+  useEffect(() => {
+    const key = "guestcam-dashboard-language-initialized";
+    try {
+      if (window.sessionStorage.getItem(key)) return;
+    } catch {
+      // Continue with the idempotent server-side preference initialization.
+    }
+    document.cookie = `guestcam_dashboard_lang=${lang}; Path=/; Max-Age=31536000; SameSite=Lax; Secure`;
+    fetch("/api/account/language", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ lang, initializeOnly: true }),
+    }).then((response) => {
+      if (response.ok) {
+        try { window.sessionStorage.setItem(key, "1"); } catch { /* no-op */ }
+      }
+    }).catch(() => {});
+  }, [lang]);
+
   return (
     <nav className="bg-white border-b sticky top-0 z-40" style={{ borderColor: "rgba(255,201,77,0.15)" }}>
       <div className="max-w-5xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between gap-4">

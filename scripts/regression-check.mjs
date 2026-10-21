@@ -79,6 +79,7 @@ const files = {
   vercelConfig: await read("vercel.json"),
   clerkWebhook: await read("app/api/webhooks/clerk/route.ts"),
   signUpPage: await read("app/sign-up/[[...sign-up]]/page.tsx"),
+  signInPage: await read("app/sign-in/[[...sign-in]]/page.tsx"),
   signupAttribution: await read("lib/attribution/signup.ts"),
   signupAttributionRecord: await read("lib/attribution/record.ts"),
   signupAttributionTelegram: await read("lib/attribution/telegram.ts"),
@@ -935,6 +936,27 @@ requireMatch(
   files.dashboardLanguage,
   /browserDashboardLang\(acceptLanguage\) \?\?[\s\S]*"en"/,
   "the account UI must support all six site languages and use English as its safe fallback",
+);
+
+requireMatch(
+  "sign-up detects the selected or local language and falls back to English",
+  files.signUpPage,
+  /resolveDashboardLang\([\s\S]*requested: requestedLang[\s\S]*x-vercel-ip-country[\s\S]*accept-language[\s\S]*localizedAfterAuth[\s\S]*forceRedirectUrl=\{localizedAfterAuth\}/,
+  "registration must carry the resolved locale through Clerk and default to English when no locale is known",
+);
+
+requireMatch(
+  "sign-in carries the resolved language through Clerk",
+  files.signInPage,
+  /resolveDashboardLang\([\s\S]*requested: requestedLang[\s\S]*x-vercel-ip-country[\s\S]*accept-language[\s\S]*afterAuthUrl\.searchParams\.set\("lang", lang\)/,
+  "existing users must return to their dashboard in the same resolved language after signing in",
+);
+
+requireMatch(
+  "first dashboard visit saves its detected language without replacing an existing preference",
+  `${files.dashboardNav}\n${files.dashboardLanguagePreference}`,
+  /initializeOnly:\s*true[\s\S]*savedCookieLang\s*\?\?\s*accountLang\s*\?\?\s*lang[\s\S]*dashboardLang:\s*preferredLang/,
+  "the first detected locale must persist across dashboard navigation, while an existing manual preference remains intact",
 );
 
 requireMatch(
