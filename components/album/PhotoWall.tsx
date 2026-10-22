@@ -24,22 +24,8 @@ import { bunnyDisplayUrl } from "@/lib/storage/bunny";
 import { GuestcamLogo } from "@/components/GuestcamLogo";
 import type { WallCopy } from "@/lib/i18n/wall-translations";
 
-/**
- * Adaptive polling.
- *
- * The gap between a guest tapping upload and their photo hitting the big
- * screen is almost entirely this interval, and that moment is what makes
- * the room keep shooting — so while photos are actually flowing we poll
- * fast. When the album goes quiet (speeches, dinner, the small hours) we
- * back off instead of hammering the endpoint all night from a TV that
- * nobody is watching. Any new arrival snaps straight back to FAST.
- */
-const POLL_FAST_MS = 3_000;
-const POLL_IDLE_MS = 8_000;
-const POLL_QUIET_MS = 20_000;
-/** Empty polls before stepping down a gear. */
-const IDLE_AFTER = 5;
-const QUIET_AFTER = 20;
+/** Check for new uploads every two seconds while the Photo Wall is open. */
+const POLL_INTERVAL_MS = 2_000;
 
 export interface WallPhoto {
   id: string;
@@ -244,28 +230,22 @@ export function PhotoWall({
   });
 
   // ── Poll for new uploads ────────────────────────────────────────────
-  // setTimeout-chained rather than setInterval so the delay can change
-  // between ticks, and so a slow request can never stack up behind the
-  // previous one on flaky venue wifi.
+  // Keep one request in flight at a time. Closing/navigating away from
+  // the Photo Wall clears the timer and aborts any active request.
   useEffect(() => {
     const pollUrl = `/api/wall/${token}${pw ? `?pw=${encodeURIComponent(pw)}` : ""}`;
     let timer: ReturnType<typeof setTimeout>;
     let cancelled = false;
-    let emptyPolls = 0;
-
-    const nextDelay = () =>
-      emptyPolls >= QUIET_AFTER ? POLL_QUIET_MS
-      : emptyPolls >= IDLE_AFTER ? POLL_IDLE_MS
-      : POLL_FAST_MS;
+    let controller: AbortController | null = null;
 
     const tick = async () => {
+      controller = new AbortController();
       try {
-        const res = await fetch(pollUrl, { cache: "no-store" });
+        const res = await fetch(pollUrl, { cache: "no-store", signal: controller.signal });
         if (res.ok) {
           const data = (await res.json()) as { photos: WallPhoto[] };
           const fresh = data.photos.filter((p) => !knownIds.current.has(p.id));
           if (fresh.length > 0) {
-            emptyPolls = 0; // back to fast polling
             fresh.forEach((p) => knownIds.current.add(p.id));
             // API returns newest first — flip so they play in upload order.
             const arrivals = fresh.reverse();
@@ -290,18 +270,23 @@ export function PhotoWall({
               setCenterKey(nextKey());
             }, 900);
             promoteTimers.current.push(t);
-          } else {
-            emptyPolls += 1;
           }
         }
       } catch {
-        // Offline TV / flaky venue wifi — just try again on the next tick.
+        // Closing the wall aborts this request. Other network errors are
+        // retried on the next tick while the wall remains open.
+      } finally {
+        controller = null;
       }
-      if (!cancelled) timer = setTimeout(tick, nextDelay());
+      if (!cancelled) timer = setTimeout(tick, POLL_INTERVAL_MS);
     };
 
-    timer = setTimeout(tick, POLL_FAST_MS);
-    return () => { cancelled = true; clearTimeout(timer); };
+    timer = setTimeout(tick, POLL_INTERVAL_MS);
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+      controller?.abort();
+    };
   }, [token, pw]);
 
   // ── Centre stage rotation ───────────────────────────────────────────
