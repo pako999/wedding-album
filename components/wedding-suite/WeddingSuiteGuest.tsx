@@ -6,6 +6,7 @@ import { FEATURES, localized, suiteLang, rsvpIsOpen, type SuiteLang, type Featur
 import type { SuiteGuestData } from '@/lib/wedding-suite/dto';
 import { WeddingPanel, fieldClass, buttonClass, secondaryClass } from '@/components/wedding/WeddingViews';
 import { LanguageSelect } from './LanguageSelect';
+import { LANGUAGE_NAMES } from '@/lib/wedding-suite/copy';
 import { VideoRecorder } from './VideoRecorder';
 import { EntryMedia } from './EntryMedia';
 const UploadModal = dynamic(() => import('@/components/album/UploadModal').then(module => module.UploadModal));
@@ -34,7 +35,7 @@ export function WeddingSuiteGuest({ slug, initialLang }: { slug: string; initial
    if (!response.ok) throw new Error(result.error); setData(result);
    if (first) {
     let chosen = initialLang || result.language;
-    try { chosen = suiteLang(localStorage.getItem(`gc-suite-language:${slug}`), chosen); } catch {}
+    if (!initialLang) try { chosen = suiteLang(localStorage.getItem(`gc-suite-language:${slug}`), chosen); } catch {}
     languageRef.current = chosen; setLang(chosen); setNotifyLang(result.attendee?.language || chosen); setNotifications(result.attendee?.notifications ?? true);
     setName(result.attendee?.name || ''); const section = new URLSearchParams(window.location.search).get('section') as Feature; setTab(FEATURES.includes(section) && result.config.features[section] ? section : result.config.features.story ? 'story' : FEATURES.find(key => result.config.features[key]) || 'story');
    }
@@ -52,6 +53,7 @@ export function WeddingSuiteGuest({ slug, initialLang }: { slug: string; initial
  function changeLang(value: SuiteLang) {
   languageRef.current = value; setLang(value); setNotifyLang(value);
   try { localStorage.setItem(`gc-suite-language:${slug}`, value); } catch {}
+  const url = new URL(window.location.href); url.searchParams.set('lang', value); window.history.replaceState(null, '', `${url.pathname}${url.search}${url.hash}`);
   if (data?.attendee) void request({ action: 'preferences', language: value, notifications }, value);
  }
  async function rsvp(event: FormEvent<HTMLFormElement>) {
@@ -78,7 +80,7 @@ export function WeddingSuiteGuest({ slug, initialLang }: { slug: string; initial
  </form>;
  const date = data?.album.date && new Intl.DateTimeFormat(lang, { dateStyle: 'long', timeZone: 'UTC' }).format(new Date(`${data.album.date.slice(0,10)}T12:00:00Z`));
  return <main lang={lang} className="min-h-screen bg-[#fcfaf6] px-4 py-6 text-stone-900 sm:py-10"><div className="mx-auto max-w-5xl space-y-6">
-  <header className="flex flex-wrap items-end justify-between gap-4"><a className={secondaryClass} href={`/${encodeURIComponent(slug)}?lang=${lang}`}>← {t.back}</a><div className="min-w-44"><LanguageSelect label={t.language} value={lang} onChange={changeLang} /></div></header>
+  <header className="sticky top-0 z-30 -mx-4 flex flex-wrap items-end justify-between gap-4 border-b border-stone-200 bg-[#fcfaf6]/95 px-4 py-3 backdrop-blur sm:rounded-b-2xl"><a className={secondaryClass} href={`/${encodeURIComponent(slug)}?lang=${lang}`}>← {t.back}</a><div className="min-w-44"><LanguageSelect label={t.language} value={lang} onChange={changeLang} /></div></header>
   <div className="rounded-3xl bg-stone-900 px-6 py-10 text-white sm:px-10"><p className="text-xs uppercase tracking-[.2em] text-amber-300">GuestCam</p><h1 className="mt-4 break-words font-serif text-4xl sm:text-6xl">{data?.album.name || t.title}</h1>{date && <p className="mt-4">{date}</p>}{data && <p className="mt-5 whitespace-pre-line leading-7 text-stone-200">{localized(data.config.welcome, lang)}</p>}</div>
   {loading && <p role="status">{t.loading}</p>}{error && <div role="alert" className="rounded-xl bg-red-50 p-4 text-red-800">{error}<button type="button" className="ml-3 underline" onClick={() => void load(true)}>{t.refresh}</button></div>}{message && <p role="status" className="rounded-xl bg-emerald-50 p-4 text-emerald-800">{message}</p>}
   {data && <>{data.album.passwordProtected && <label className="block text-sm font-medium">{t.password}<input type="password" autoComplete="current-password" className={fieldClass} value={albumPassword} onChange={event => setAlbumPassword(event.target.value)} /></label>}<nav className="grid grid-cols-2 gap-2 rounded-2xl border bg-white p-2 sm:grid-cols-4" aria-label={t.title}>{FEATURES.filter(key => data.config.features[key]).map(key => <button type="button" aria-pressed={tab === key} key={key} onClick={() => { setTab(key); setPhotoId(null); setMessage(''); }} className={`min-h-12 rounded-xl px-2 py-3 text-sm font-semibold ${tab === key ? 'bg-stone-900 text-white' : 'hover:bg-amber-50'}`}>{t[key]}</button>)}</nav>
@@ -98,7 +100,7 @@ export function WeddingSuiteGuest({ slug, initialLang }: { slug: string; initial
   {(tab === 'guestbook' || tab === 'video' || tab === 'capsule') && <WeddingPanel title={t[tab]}>
    {tab === 'capsule' && data.config.capsuleUnlockAt && <p className="mb-5 rounded-xl bg-amber-50 p-4 text-sm">{t.unlockAt}: {new Intl.DateTimeFormat(lang, { dateStyle: 'long', timeStyle: 'short' }).format(new Date(data.config.capsuleUnlockAt))}</p>}
    {entryForm(tab)}<div className="mt-8 space-y-4">{data.entries.filter(row => row.kind === tab).map(row => <article className="space-y-3 rounded-2xl border p-5" key={row.id}>
-    {row.locked ? <p>{t.locked}</p> : <><h3 className="font-bold">{row.name}</h3><p className="whitespace-pre-wrap leading-7">{row.message}</p><EntryMedia entry={row} slug={slug} lang={lang} password={albumPassword} /></>}
+    {row.locked ? <p>{t.locked}</p> : <><h3 className="font-bold">{row.name}</h3>{row.language && row.language !== lang && <p className="text-xs text-stone-500">{t.contentLanguage}: {LANGUAGE_NAMES[row.language]}</p>}<p className="whitespace-pre-wrap leading-7">{row.message}</p><EntryMedia entry={row} slug={slug} lang={lang} password={albumPassword} /></>}
    </article>)}</div>{tab === 'guestbook' && <a href={`/${encodeURIComponent(slug)}/celebrate/guestbook?lang=${lang}`} target="_blank" rel="noreferrer" className={`${secondaryClass} mt-4 inline-block`}>{t.export}</a>}
   </WeddingPanel>}
   {tab === 'thanks' && <WeddingPanel title={t.thanks}>{data.config.thankYouPhotoUrl && <img className="mb-6 max-h-96 w-full rounded-2xl object-cover" src={data.config.thankYouPhotoUrl} alt={data.album.name} />}<p className="whitespace-pre-wrap leading-7">{localized(data.config.thankYou, lang) || t.thanksIntro}</p><a href={`/${encodeURIComponent(slug)}?lang=${lang}`} className={`${buttonClass} mt-5 inline-block`}>{t.back}</a></WeddingPanel>}
