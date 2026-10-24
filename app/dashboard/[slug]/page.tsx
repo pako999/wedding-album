@@ -12,6 +12,8 @@ import { toOwnerAlbum } from "@/lib/album-view";
 import { getOrCreateWallToken } from "@/lib/wall-token";
 import { getAlbumFlags } from "@/lib/album-flags";
 import { getAlbumHeaderSettings } from "@/lib/album-header-settings";
+import { suiteEnabled } from "@/lib/wedding-suite/server";
+import { SITE_URL } from "@/lib/urls";
 import {
   DASHBOARD_LANG_COOKIE,
   resolveDashboardLang,
@@ -188,6 +190,7 @@ export default async function AlbumAdminPage({ params, searchParams }: Props) {
     getAlbumHeaderSettings(album.id),
     getOrCreateWallToken(album.id, album.wallToken),
   ]);
+  const hasWeddingSuite = await suiteEnabled(album);
 
 
   // Settings tab shows "you're signed in as …". When admin-impersonating
@@ -221,6 +224,7 @@ export default async function AlbumAdminPage({ params, searchParams }: Props) {
       guestDataCapture={albumFlags.guestDataCapture}
       flags={albumFlags}
       headerSettings={headerSettings}
+      qrTargetUrl={`${process.env.NEXT_PUBLIC_APP_URL ?? SITE_URL}/${album.slug}${hasWeddingSuite ? "/celebrate" : ""}`}
     />
   );
 }
