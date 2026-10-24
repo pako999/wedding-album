@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { adminPlanLabel } from "@/lib/admin-plan-labels";
 
 type Plan = "free" | "basic" | "plus" | "premium" | "business";
 type AdminPlan = Plan | "influencer" | "sponsor";
@@ -91,10 +92,10 @@ export function AdminAlbumRow({ slug, coupleName, ownerEmail, plan, filmTier, ma
           value={currentPlan}
           onChange={(e) => changePlan(e.target.value as AdminPlan)}
           disabled={saving}
-          className="text-xs font-bold uppercase tracking-wide px-2 py-1 rounded border border-gray-200 bg-white disabled:opacity-50"
+          className="text-xs font-bold tracking-wide px-2 py-1 rounded border border-gray-200 bg-white disabled:opacity-50"
         >
           {PLANS.map((p) => (
-            <option key={p} value={p}>{p}</option>
+            <option key={p} value={p}>{adminPlanLabel(p)}</option>
           ))}
         </select>
         {isComp && compLabel && (

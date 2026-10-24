@@ -1,3 +1,4 @@
+import { adminPlanLabel } from "@/lib/admin-plan-labels";
 import { db } from "@/lib/db";
 import { albums, photos, referralConversions, guestEmails, bankOrders } from "@/lib/db/schema";
 import { sql, desc, count, eq, isNotNull } from "drizzle-orm";
@@ -149,7 +150,7 @@ export default async function AdminOverview() {
             const real = paid?.count ?? 0;
             return (
               <div key={row.plan} className="flex items-center justify-between gap-2 text-sm flex-wrap">
-                <span className="font-medium capitalize text-gray-700">{row.plan}</span>
+                <span className="font-medium capitalize text-gray-700">{adminPlanLabel(row.plan)}</span>
                 <span className="text-gray-500 text-right">
                   {row.n} galerij{" "}
                   {row.plan !== "free" && (
@@ -261,8 +262,8 @@ export function PlanPill({ plan }: { plan: string }) {
     premium: "bg-violet-50 text-violet-700",
   };
   return (
-    <span className={`text-[10px] uppercase font-bold tracking-wide px-2 py-0.5 rounded ${styles[plan] ?? styles.free}`}>
-      {plan}
+    <span className={`text-[10px] font-bold tracking-wide px-2 py-0.5 rounded ${styles[plan] ?? styles.free}`}>
+      {adminPlanLabel(plan)}
     </span>
   );
 }

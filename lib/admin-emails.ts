@@ -17,6 +17,7 @@ export interface AdminEmailResult {
   emails: AdminEmailRow[];
   hasMore: boolean;
   error: string | null;
+  setupRequired?: boolean;
 }
 
 const READ_EVENTS = new Set<ListEmail["last_event"]>(["opened", "clicked"]);
@@ -65,9 +66,9 @@ export function matchesAdminEmailStatus(email: AdminEmailRow, status: AdminEmail
  * page fast even after the account contains thousands of emails.
  */
 export async function listAdminEmails(after?: string): Promise<AdminEmailResult> {
-  const apiKey = process.env.RESEND_API_KEY;
+  const apiKey = process.env.RESEND_HISTORY_API_KEY || process.env.RESEND_API_KEY;
   if (!apiKey) {
-    return { emails: [], hasMore: false, error: "RESEND_API_KEY ni nastavljen." };
+    return { emails: [], hasMore: false, error: "Ključ za povezavo z Resend ni nastavljen.", setupRequired: true };
   }
 
   try {
@@ -77,7 +78,9 @@ export async function listAdminEmails(after?: string): Promise<AdminEmailResult>
     });
     if (error) {
       console.error("[admin/emails] Resend list failed:", error);
-      return { emails: [], hasMore: false, error: error.message };
+      const restricted = error.name === 'restricted_api_key';
+      return { emails: [], hasMore: false, setupRequired: restricted,
+        error: restricted ? 'Trenutni Resend ključ dovoljuje samo pošiljanje. Za prikaz zgodovine nastavite RESEND_HISTORY_API_KEY s pravico Full access.' : 'Resend trenutno ne omogoča branja zgodovine. Poskusite znova pozneje.' };
     }
 
     const emails = (data?.data ?? []).map((email) => ({

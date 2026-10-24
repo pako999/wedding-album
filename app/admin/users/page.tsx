@@ -1,3 +1,4 @@
+import { adminPlanLabel } from "@/lib/admin-plan-labels";
 import { db } from "@/lib/db";
 import { albums, userPlanOverrides, userMeta, userAttribution } from "@/lib/db/schema";
 import { clerkClient } from "@clerk/nextjs/server";
@@ -350,7 +351,7 @@ function PlanBadge({
   if (isComp) {
     return (
       <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide bg-fuchsia-100 text-fuchsia-700">
-        {plan} <span className="opacity-60">· comp</span>
+        {adminPlanLabel(plan)} <span className="opacity-60">· comp</span>
       </span>
     );
   }
@@ -368,8 +369,8 @@ function PlanBadge({
   };
   return (
     <div className="flex flex-col gap-0.5">
-      <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide ${paletteByPlan[plan]} w-fit`}>
-        {plan}
+      <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold tracking-wide ${paletteByPlan[plan]} w-fit`}>
+        {adminPlanLabel(plan)}
       </span>
       {labelBySource[source] && (
         <span className="text-[10px] text-gray-400 lowercase">{labelBySource[source]}</span>

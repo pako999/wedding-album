@@ -23,6 +23,8 @@ interface Props {
   onNameChange?: (name: string) => void;
   /** Files pre-selected before the modal opened (e.g. camera capture). */
   initialFiles?: FileList | null;
+  /** Optional wedding-suite attachment callback after metadata is persisted. */
+  onMediaUploaded?: (media: { id: string; mimeType: string; name: string }) => void;
   /** Event-specific accent color for accent elements (dropzone, progress, button). */
   accent?: string;
   /** Album password (if the album is password-protected) — sent with upload requests. */
@@ -111,6 +113,7 @@ async function uploadFile(
   albumPassword: string,
   momentId: string | null,
   bingoChallengeId?: string,
+  onUploaded?: (id: string) => void,
 ): Promise<UploadResult> {
   // Preserve the original bytes. No browser-side resize or JPEG re-encode.
   const file = rawFile;
@@ -140,12 +143,13 @@ async function uploadFile(
     | { type: "r2";            presignedUrl: string; publicUrl: string; key: string }
     | { type: "stream";        uploadUrl: string; videoId: string }
     | { type: "vercel-blob" }
-    | { type: "duplicate"; status?: "pending" | "published" };
+    | { type: "duplicate"; status?: "pending" | "published"; photoId?: string };
 
   const urlData = await urlRes.json() as UrlData;
 
   // Server detected an identical file already in this album — skip it.
   if (urlData.type === "duplicate") {
+    if (urlData.photoId) onUploaded?.(urlData.photoId);
     return { type: "duplicate", status: urlData.status === "pending" ? "pending" : "published" };
   }
 
@@ -164,7 +168,7 @@ async function uploadFile(
       sizeBytes: file.size,
       uploaderName,
       momentId,
-    }, albumPassword);
+    }, albumPassword, onUploaded);
     onProgress(100);
     return { type: "uploaded" };
   }
@@ -190,7 +194,7 @@ async function uploadFile(
       sizeBytes: file.size,
       uploaderName,
       momentId,
-    }, albumPassword);
+    }, albumPassword, onUploaded);
     onProgress(100);
     return { type: "uploaded" };
   }
@@ -216,7 +220,7 @@ async function uploadFile(
       sizeBytes: file.size,
       uploaderName,
       momentId,
-    }, albumPassword);
+    }, albumPassword, onUploaded);
     onProgress(100);
     return { type: "uploaded" };
   }
@@ -242,7 +246,7 @@ async function uploadFile(
       sizeBytes: file.size,
       uploaderName,
       momentId,
-    }, albumPassword);
+    }, albumPassword, onUploaded);
     onProgress(100);
     return { type: "uploaded" };
   }
@@ -258,7 +262,7 @@ async function uploadFile(
       sizeBytes: file.size,
       uploaderName,
       momentId,
-    }, albumPassword);
+    }, albumPassword, onUploaded);
     onProgress(100);
     return { type: "uploaded" };
   }
@@ -290,7 +294,7 @@ async function uploadFile(
     sizeBytes: file.size,
     uploaderName,
     momentId,
-  }, albumPassword);
+  }, albumPassword, onUploaded);
   onProgress(100);
   return { type: "uploaded" };
 }
@@ -509,7 +513,7 @@ function xhrUpload(
   });
 }
 
-async function saveUpload(slug: string, body: object, albumPassword = "") {
+async function saveUpload(slug: string, body: object, albumPassword = "", onUploaded?: (id: string) => void) {
   const headers: Record<string, string> = { "Content-Type": "application/json" };
   if (albumPassword) headers["x-album-password"] = albumPassword;
   const res = await fetch(`/api/albums/${slug}/save-upload`, {
@@ -518,11 +522,12 @@ async function saveUpload(slug: string, body: object, albumPassword = "") {
     body: JSON.stringify(body),
   });
   if (!res.ok) throw new Error(`Save failed: ${res.status}`);
+  if (onUploaded) { const saved = await res.json(); if (typeof saved.photoId === "string") onUploaded(saved.photoId); }
 }
 
 // ── Component ─────────────────────────────────────────────────────────────────
 
-export function UploadModal({ bingoChallengeId, albumSlug, albumId, uploaderName, maxPhotos, currentCount, lang, onClose, onSuccess, onNameChange: _onNameChange, initialFiles, accent = "#C9820A", albumPassword = "", moments = [], defaultMomentId = null, referralCode = null, requireGuestData = false, organiserName = "", moderationEnabled = false }: Props) {
+export function UploadModal({ bingoChallengeId, albumSlug, albumId, uploaderName, maxPhotos, currentCount, lang, onClose, onSuccess, onNameChange: _onNameChange, initialFiles, onMediaUploaded, accent = "#C9820A", albumPassword = "", moments = [], defaultMomentId = null, referralCode = null, requireGuestData = false, organiserName = "", moderationEnabled = false }: Props) {
   const t = translations[lang];
   const lead = LEAD_COPY[lang];
 
@@ -706,6 +711,7 @@ export function UploadModal({ bingoChallengeId, albumSlug, albumId, uploaderName
           albumPassword,
           momentId || null,
           bingoChallengeId,
+          onMediaUploaded ? id => onMediaUploaded({ id, mimeType: f.file.type, name: f.file.name }) : undefined,
         );
         updateFile(f.id, {
           status: result.type === "duplicate" ? "skipped" : "done",
@@ -793,7 +799,7 @@ export function UploadModal({ bingoChallengeId, albumSlug, albumId, uploaderName
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-6 overflow-x-hidden">
       <div className="absolute inset-0 bg-[#0F1729]/70 backdrop-blur-sm" onClick={!uploading ? onClose : undefined} />
 
-      <div className="relative box-border w-full min-w-0 max-w-[100vw] sm:max-w-lg bg-white rounded-t-3xl sm:rounded-2xl shadow-xl max-h-[92vh] flex flex-col overflow-hidden"
+      <div className="relative w-full max-w-[100vw] sm:max-w-lg bg-white rounded-t-3xl sm:rounded-2xl shadow-xl max-h-[92vh] flex flex-col overflow-hidden"
         style={{ maxHeight: "92dvh", paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
       >
         <div className="px-4 sm:px-6 py-4 border-b border-gray-100 shrink-0 overflow-hidden">
@@ -805,7 +811,7 @@ export function UploadModal({ bingoChallengeId, albumSlug, albumId, uploaderName
               </svg>
             </button>
           </div>
-          <div className="flex min-w-0 items-center gap-x-2 gap-y-1 mt-1.5 flex-wrap">
+          <div className="flex items-center gap-2 mt-1.5 flex-wrap">
             <span className="text-[10px] text-[#0F1729]/40 px-2 py-0.5 rounded-full font-medium whitespace-nowrap" style={{ background: `${accent}1A` }}>📷 {t.maxImageSize(MAX_IMAGE_MB)}</span>
             <span className="text-[10px] text-[#0F1729]/40 px-2 py-0.5 rounded-full font-medium whitespace-nowrap" style={{ background: `${accent}1A` }}>📹 {t.maxVideoSize(MAX_VIDEO_MB)}</span>
             <span className="text-[10px] text-green-600 font-medium whitespace-nowrap">{t.fullQuality}</span>

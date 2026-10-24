@@ -4,10 +4,11 @@
   "private": true,
   "scripts": {
     "dev": "next dev --port 3001",
-    "build": "npm run test:regression && npm run audit:i18n && npm run test:wedding && npm run test:premium-offer && npm run db:migrate:wedding && next build",
+    "build": "npm run test:regression && npm run audit:i18n && npm run test:wedding && npm run test:wedding-suite && npm run test:premium-offer && npm run db:migrate:wedding && next build",
     "start": "next start --port 3001",
     "lint": "eslint",
     "test": "npm run test:regression",
+    "test:wedding-suite": "node --test tests/wedding-suite.test.mjs",
     "test:regression": "node scripts/regression-check.mjs && npm run test:custom-domain-retirement",
     "audit:i18n": "node scripts/localized-site-audit.mjs",
     "db:generate": "drizzle-kit generate",
