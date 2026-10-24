@@ -2161,7 +2161,7 @@ export function AlbumGuestView({ weddingEnabled = false, album, photos, moments,
                       they never cover the right side of a portrait photo.
                       Desktop retains the familiar vertical action rail. */}
                   {!lightboxPanelOpen && (
-                    <div className={`absolute left-16 right-3 top-3 z-[3] flex flex-row items-start justify-end gap-2 lg:left-auto lg:right-5 lg:top-1/2 lg:-translate-y-1/2 lg:flex-col lg:items-center lg:justify-start lg:gap-3 ${lightboxDesktopPanelOpen ? "lg:hidden" : ""}`}>
+                    <div className={`absolute left-16 right-16 top-3 z-[3] flex flex-row items-start justify-end gap-2 lg:left-auto lg:right-5 lg:top-1/2 lg:-translate-y-1/2 lg:flex-col lg:items-center lg:justify-start lg:gap-3 ${lightboxDesktopPanelOpen ? "lg:hidden" : ""}`}>
                       {likesOn && (
                         <button
                           type="button"
