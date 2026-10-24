@@ -1,6 +1,3 @@
-Warning: truncated output (original token count: 31289)
-Total output lines: 2643
-
 "use client";
 import { WeddingSettingsCard } from "@/components/wedding/WeddingSettingsCard";
 import { weddingCopy } from "@/lib/wedding/copy";
@@ -573,7 +570,1292 @@ export function AlbumAdminPanel({ album, lang, photos, pendingCount, guestCount,
         {/* New gallery button */}
         <div className="px-4 pb-4">
           <Link
-    …15289 tokens truncated…   </div>
+            href="/dashboard/new"
+            className="flex items-center justify-center gap-1.5 w-full py-2 text-sm text-gray-500 rounded-lg border border-dashed border-gray-300 hover:border-gray-400 hover:text-gray-700 transition-colors"
+          >
+            <span className="text-base leading-none">+</span>
+            {copy.addGallery}
+          </Link>
+        </div>
+
+        {/* Nav items */}
+        <nav className="px-3 space-y-0.5 lg:flex-1">
+          {navItems.map((item) => {
+            const isActive = activeTab === item.id;
+            return (
+              <button
+                key={item.id}
+                onClick={() => navigateTab(item.id)}
+                className={`w-full flex items-center gap-2.5 px-4 py-2.5 rounded-lg mx-0 text-sm font-medium transition-colors text-left ${
+                  isActive
+                    ? "border-l-2 border-[#FFC94D] bg-[#FFF9EC] text-[#C9820A]"
+                    : "text-gray-600 hover:bg-gray-50 hover:text-gray-800"
+                }`}
+              >
+                <span className="text-base leading-none">{item.icon}</span>
+                {item.label}
+              </button>
+            );
+          })}
+          {pendingCount > 0 && (
+            <button
+              onClick={() => navigateTab("pending")}
+              className={`w-full flex items-center gap-2.5 px-4 py-2.5 rounded-lg text-sm font-medium transition-colors text-left ${
+                activeTab === "pending"
+                  ? "border-l-2 border-[#FFC94D] bg-[#FFF9EC] text-[#C9820A]"
+                  : "text-gray-600 hover:bg-gray-50 hover:text-gray-800"
+              }`}
+            >
+              <span className="text-base leading-none">⏳</span>
+              {copy.tabs.pending}
+              <span className="ml-auto flex items-center justify-center min-w-[20px] h-5 bg-amber-400 text-white text-[10px] font-bold rounded-full px-1">
+                {pendingCount}
+              </span>
+            </button>
+          )}
+        </nav>
+
+        {/* Sign out — clear, visible button (not a faint text link) */}
+        <div className="px-4 pb-5 pt-3 mt-2 border-t border-gray-100 lg:mt-0">
+          <SignOutButton>
+            <button className="w-full flex items-center justify-center gap-2 px-3 py-2.5 text-sm font-semibold text-[#0F1729] bg-white border border-gray-200 rounded-lg hover:bg-[#FFF9EC] hover:border-[#FFC94D] transition-colors">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+              </svg>
+              {copy.signOut}
+            </button>
+          </SignOutButton>
+        </div>
+      </aside>
+
+      {/* ── MAIN CONTENT ─────────────────────────────────────────────── */}
+      <main className="flex-1 flex flex-col min-w-0">
+        <div className="sticky top-0 z-30 flex justify-end border-b border-gray-100 bg-white/95 px-4 py-2 backdrop-blur sm:px-8">
+          <DashboardLanguageSwitcher current={lang} ariaLabel={dashboardCopy.language} />
+        </div>
+        {/* Upgrade success banner */}
+        {isUpgraded && (
+          <div
+            className="flex items-center justify-between px-4 sm:px-6 py-3 gap-4"
+            style={{ background: "#F0FDF4" }}
+          >
+            <p className="text-sm text-green-700 font-medium">
+              {copy.planActivated}
+            </p>
+          </div>
+        )}
+
+        {/* Upgrade banner (free plan only) */}
+        {album.plan === "free" && (() => {
+          const used = album.photoCount ?? 0;
+          const max  = album.maxPhotos ?? 20;
+          const pct  = Math.min(100, Math.round((used / max) * 100));
+          const atLimit = used >= max;
+          return (
+            <div
+              className="flex items-center justify-between px-4 sm:px-6 py-2.5 gap-4"
+              style={{ background: atLimit ? "#FEF2F2" : "#EEF2FF" }}
+            >
+              <div className="flex items-center gap-3 min-w-0">
+                <div className="flex items-center gap-2 shrink-0">
+                  <span className="text-sm font-bold" style={{ color: atLimit ? "#DC2626" : "#FFC94D" }}>
+                    {used} / {max}
+                  </span>
+                  <span className="text-xs" style={{ color: atLimit ? "#DC2626" : "#FFC94D" }}>{copy.photosShort}</span>
+                </div>
+                <div className="w-28 h-1.5 rounded-full bg-gray-200 hidden sm:block">
+                  <div
+                    className="h-full rounded-full transition-all"
+                    style={{
+                      width: `${pct}%`,
+                      background: atLimit ? "#DC2626" : pct > 70 ? "#F59E0B" : "#FFC94D",
+                    }}
+                  />
+                </div>
+                <span className="text-xs hidden md:block" style={{ color: atLimit ? "#DC2626" : "#FFC94D" }}>
+                  {atLimit ? copy.limitReached : copy.freePlan}
+                </span>
+              </div>
+              <Link
+                href={`/dashboard/${album.slug}/upgrade`}
+                className="flex-shrink-0 px-4 py-1.5 rounded-lg text-white text-xs font-bold transition-opacity hover:opacity-90 whitespace-nowrap"
+                style={{ background: atLimit ? "#DC2626" : "#FFC94D" }}
+              >
+                {atLimit ? copy.unlockNow : copy.unlockGallery}
+              </Link>
+            </div>
+          );
+        })()}
+
+        {/* Page header */}
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between px-4 sm:px-8 pt-5 sm:pt-7 pb-4">
+          <div className="flex items-start gap-3 min-w-0">
+            <button
+              onClick={() => setSidebarOpen(true)}
+              className="lg:hidden p-2 -ml-1 rounded-lg hover:bg-gray-100 text-gray-600 flex-shrink-0"
+              aria-label={copy.openMenu}
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+              </svg>
+            </button>
+            <div className="min-w-0">
+              <h1 className="gc-admin-page-title text-gray-900 truncate">
+                {activeTab === "wedding" ? weddingCopy(lang).nav : copy.titles[activeTab]}
+              </h1>
+              <p className="text-sm text-gray-400 mt-0.5">{copy.subtitle}</p>
+            </div>
+          </div>
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              onClick={handleCopyLink}
+              className="flex items-center gap-1.5 px-3 py-2 text-sm border rounded-lg transition-all"
+              style={linkCopied
+                ? { background: "#f0fdf4", borderColor: "#86efac", color: "#15803d" }
+                : { background: "white", borderColor: "#e5e7eb", color: "#4b5563" }
+              }
+              title={copy.copyTitle}
+            >
+              {linkCopied ? (
+                <>
+                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                  {copy.copied}
+                </>
+              ) : (
+                <>
+                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+                  </svg>
+                  {copy.copyLink}
+                </>
+              )}
+            </button>
+            <a
+              href={albumUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="flex items-center gap-1.5 px-3 py-2 text-sm text-gray-600 border border-gray-200 rounded-lg hover:border-gray-300 transition-colors bg-white"
+            >
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+              </svg>
+              {copy.guestView}
+            </a>
+            <ZipDownloader
+              albumSlug={album.slug}
+              className="flex items-center gap-1.5 px-3 py-2 text-sm text-gray-600 border border-gray-200 rounded-lg hover:border-gray-300 transition-colors bg-white"
+            >
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+              </svg>
+              {copy.downloadZip}
+            </ZipDownloader>
+            <a
+              href={`/api/google-drive/auth?slug=${album.slug}`}
+              className="flex items-center gap-1.5 px-3 py-2 text-sm text-gray-600 border border-gray-200 rounded-lg hover:border-gray-300 transition-colors bg-white"
+              title={copy.saveDriveTitle}
+            >
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3 15a4 4 0 001 7.874M3 15a4 4 0 011-7.874M3 15h13.5M17 22a4 4 0 002-7.472M17 22a4 4 0 01-2-7.472m2 7.472H8m9-14.945A5.5 5.5 0 008.5 7.528M17 7.055A5.5 5.5 0 0110.5 12" />
+              </svg>
+              {copy.saveDrive}
+            </a>
+          </div>
+        </div>
+
+        {driveBanner && (() => {
+          const bannerCopy = driveBannerCopy(driveBanner, driveCount, lang);
+          const style = DRIVE_BANNER_STYLES[bannerCopy.tone];
+          return (
+            <div
+              className="mx-4 sm:mx-8 mb-4 flex items-start gap-3 rounded-2xl border px-5 py-4"
+              style={{ background: style.bg, borderColor: style.border }}
+            >
+              <span className="text-lg shrink-0">{style.icon}</span>
+              <p className="text-sm flex-1" style={{ color: style.text }}>{bannerCopy.text}</p>
+              <button
+                onClick={() => setDriveBanner(undefined)}
+                className="shrink-0 p-1 rounded-lg hover:bg-black/5"
+                style={{ color: style.text }}
+                aria-label={CLOSE_LABEL[lang]}
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+          );
+        })()}
+
+
+        {/* ── TAB CONTENT ── */}
+        <div className="flex-1 px-4 sm:px-8 pb-8">
+
+          {/* OVERVIEW */}
+          {activeTab === "overview" && (
+            <OverviewTab
+              album={album}
+              lang={lang}
+              photos={photos}
+              albumUrl={albumUrl}
+              qrTargetUrl={qrTargetUrl}
+              lastUploadDate={lastUploadDate}
+              guestCount={guestCount}
+              hasPassword={!!hasPassword}
+              wallToken={wallToken}
+              guestDataCapture={guestDataCapture}
+            />
+          )}
+
+          {/* GALLERY */}
+          {(activeTab === "gallery" || activeTab === "pending") && (
+            <GalleryTab
+              album={album}
+              lang={lang}
+              photos={photos}
+              activeTab={activeTab}
+              approvePhoto={approvePhoto}
+              rejectPhoto={rejectPhoto}
+              deletePhoto={deletePhoto}
+              setCoverPhoto={setCoverPhoto}
+            />
+          )}
+
+          {/* FILM STUDIO */}
+          {activeTab === "film" && (
+            <FilmStudio album={album} />
+          )}
+
+          {/* QR */}
+          {activeTab === "qr" && (
+            <QrTab album={album} albumUrl={qrTargetUrl} copyToClipboard={copyToClipboard} lang={lang} />
+          )}
+
+          {/* EVENTS — all "running an event" controls in one place, in
+              sub-tabs: wall, moderation & permissions, lead capture,
+              collaborators. */}
+          {activeTab === "events" && (
+            <EventsTab
+              album={album}
+              lang={lang}
+              wallToken={wallToken}
+              hasPassword={!!hasPassword}
+              guestDataCapture={guestDataCapture}
+              flags={flags}
+              ownerEmail={ownerEmail ?? null}
+            />
+          )}
+
+          {activeTab === "wedding" && <WeddingSettingsCard slug={album.slug} lang={lang} plan={album.plan} albumName={album.coupleName} eventDate={album.weddingDate} />}
+
+          {/* SETTINGS */}
+          {activeTab === "settings" && (
+            <div className="max-w-lg space-y-6">
+              <AccountInfoCard ownerEmail={ownerEmail ?? null} lang={lang} />
+              <AlbumSettingsForm album={album} lang={lang} wallToken={wallToken} hasPassword={!!hasPassword} headerSettings={headerSettings}>
+                {/* Cover-photo picker injected into the settings form so it
+                    sits inside the same card chrome, between the password
+                    field and the theme picker. */}
+                <CoverPhotoSettings
+                  album={album}
+                  lang={lang}
+                  photos={photos}
+                  initialPositionY={headerSettings.coverPositionY}
+                />
+              </AlbumSettingsForm>
+              <MomentsManager album={album} lang={lang} />
+
+              <DangerZone album={album} lang={lang} />
+            </div>
+          )}
+        </div>
+      </main>
+    </div>
+  );
+}
+
+// ─── Overview Tab ────────────────────────────────────────────────────────────
+
+// Renders a thumbnail tile for a photo OR a video. Videos used to render
+// as a plain <img src={blobUrl}> in the owner dashboard, which produced
+// a broken-image fallback because video blob URLs don't decode as images.
+// The public guest view handled videos correctly with <video>, so owners
+// were the only ones seeing missing videos.
+//
+//   - Photos: <img> with the Bunny thumbnailUrl (or blobUrl as fallback).
+//   - Videos with a thumbnailUrl: <img> on the still + play-icon overlay.
+//   - Videos without a thumbnailUrl: <video preload="metadata" muted
+//     playsInline> which renders the first frame as the poster, plus
+//     the same play-icon overlay so the owner knows it's playable.
+function MediaThumb({
+  photo,
+  heightClass,
+}: {
+  photo: Photo;
+  /** Tailwind height class — e.g. "h-40" for gallery grid, "h-28" for the
+   *  recent-uploads card. Wraps the image so videos and photos line up. */
+  heightClass: string;
+}) {
+  const isVideo = photo.mimeType?.startsWith("video/") ?? false;
+  const onError: React.ReactEventHandler<HTMLImageElement> = (e) => {
+    const t = e.currentTarget;
+    t.onerror = null;
+    t.style.objectFit = "none";
+    t.src =
+      "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 24 24' fill='none' stroke='%23d1d5db' stroke-width='1.5'%3E%3Crect x='2' y='7' width='20' height='14' rx='3'/%3E%3Ccircle cx='12' cy='14' r='3'/%3E%3Cpath d='M8 7V5a2 2 0 0 1 4 0v2'/%3E%3C/svg%3E";
+  };
+
+  // Prefer thumbnailUrl (Bunny generates one for both Storage and Stream
+  // videos). Fall back to the raw blobUrl only when there's no thumb.
+  const thumbSrc = photo.thumbnailUrl ?? photo.blobUrl;
+
+  return (
+    <div className={`relative w-full ${heightClass}`}>
+      {isVideo && !photo.thumbnailUrl ? (
+        <video
+          src={bunnyDisplayUrl(photo.blobUrl)}
+          preload="metadata"
+          muted
+          playsInline
+          className={`w-full ${heightClass} object-cover rounded-xl bg-gray-100 pointer-events-none`}
+        />
+      ) : (
+        <img
+          src={bunnyDisplayUrl(thumbSrc)}
+          alt={photo.caption ?? ""}
+          loading="lazy"
+          onError={onError}
+          className={`w-full ${heightClass} object-cover rounded-xl bg-gray-100`}
+        />
+      )}
+      {isVideo && (
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <span className="w-10 h-10 rounded-full bg-black/55 text-white flex items-center justify-center">
+            <svg className="w-5 h-5 translate-x-[1px]" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M8 5v14l11-7z" />
+            </svg>
+          </span>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function OverviewTab({
+  album,
+  lang,
+  photos,
+  albumUrl,
+  qrTargetUrl,
+  lastUploadDate,
+  guestCount,
+  hasPassword,
+  wallToken,
+  guestDataCapture,
+}: {
+  album: Album;
+  lang: DashboardLang;
+  photos: Photo[];
+  albumUrl: string;
+  qrTargetUrl: string;
+  lastUploadDate: string;
+  guestCount: number;
+  hasPassword: boolean;
+  wallToken: string;
+  guestDataCapture: boolean;
+}) {
+  const copy = ALBUM_ADMIN_COPY[lang];
+  const overview = copy.overview;
+  const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(qrTargetUrl)}&bgcolor=ffffff&color=1a1a2e&qzone=2&format=png`;
+  const last4 = photos.slice(0, 4);
+  const usedPct = album.plan === "free" ? Math.min(100, Math.round(((album.photoCount ?? 0) / (album.maxPhotos ?? 20)) * 100)) : 0;
+  // A dedicated token-based link, deliberately separate from the main
+  // gallery's slug-based albumUrl — see lib/wall-token.ts.
+  const wallAppUrl = process.env.NEXT_PUBLIC_APP_URL ?? SITE_URL;
+  const wallUrl = `${wallAppUrl}/wall/${wallToken}`;
+
+  return (
+    <div className="space-y-6">
+      {/* Upgrade nudge card — free plan only */}
+      {album.plan === "free" && (
+        <div className="bg-[#FFF9EC] border border-indigo-100 rounded-2xl p-5 flex flex-col sm:flex-row sm:items-center gap-4">
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 mb-1">
+              <span className="text-sm font-bold text-indigo-800">{overview.freePlan}</span>
+              <span className="text-xs bg-[#FFF3CC] text-[#C9820A] px-2 py-0.5 rounded-full font-medium">
+                {album.photoCount ?? 0} / {album.maxPhotos ?? 20} {copy.photosShort}
+              </span>
+            </div>
+            <div className="w-full h-2 bg-[#FFF3CC] rounded-full mb-2">
+              <div
+                className="h-full rounded-full transition-all"
+                style={{
+                  width: `${usedPct}%`,
+                  background: usedPct >= 100 ? "#DC2626" : usedPct > 70 ? "#F59E0B" : "#FFC94D",
+                }}
+              />
+            </div>
+            <p className="text-xs text-[#C9820A]">
+              {usedPct >= 100
+                ? overview.limit
+                : overview.upgrade}
+            </p>
+          </div>
+          <Link
+            href={`/dashboard/${album.slug}/upgrade`}
+            className="flex-shrink-0 px-5 py-2.5 rounded-xl text-white text-sm font-bold transition-all hover:opacity-90 hover:brightness-95 shadow-sm"
+            style={{ background: "#FFC94D" }}
+          >
+            {overview.plans}
+          </Link>
+        </div>
+      )}
+
+      {/* Stat cards — one per row on phones so numbers + labels aren't
+          cramped; three across from sm up. */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+        {[
+          {
+            icon: (
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M1.5 18.75h21M3.75 9h.008v.008H3.75V9zm0 3h.008v.008H3.75V12z" />
+              </svg>
+            ),
+            label: overview.uploaded,
+            value: album.photoCount,
+          },
+          {
+            icon: (
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" />
+              </svg>
+            ),
+            label: overview.guests,
+            value: guestCount,
+          },
+          {
+            icon: (
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            ),
+            label: overview.lastPhoto,
+            value: lastUploadDate,
+          },
+        ].map((card) => (
+          <div
+            key={card.label}
+            className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm flex items-start justify-between gap-3"
+          >
+            <div>
+              <p className="text-3xl font-bold text-gray-900">{card.value}</p>
+              <p className="text-xs font-medium uppercase tracking-wide text-gray-400 mt-1">{card.label}</p>
+            </div>
+            <div className="w-9 h-9 rounded-lg flex items-center justify-center text-[#C9820A] bg-[#FFF9EC] shrink-0">
+              {card.icon}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* QR code + recent uploads — stacked on phones (each full width so
+          the QR and the download buttons aren't squeezed), side by side
+          from lg up. */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6 items-start">
+        {/* QR Card */}
+        <div className="rounded-2xl border border-gray-100 p-5 flex flex-col gap-4" style={{ background: "linear-gradient(180deg,#FFF9EC 0%,#FFFFFF 45%)" }}>
+          <div>
+            <h3 className="font-bold text-gray-900 text-base">{overview.gallery}</h3>
+            <p className="text-xs text-gray-400 mt-0.5">{overview.galleryHint}</p>
+          </div>
+          <a
+            href={qrTargetUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs text-[#C9820A] border border-[#FFE08A] rounded-lg hover:bg-[#FFF9EC] transition-colors self-start"
+          >
+            {overview.testQr}
+          </a>
+          <div className="flex flex-col items-center gap-3">
+            <div className="text-gray-300 text-xl select-none">↓</div>
+            <img
+              src={qrUrl}
+              alt={overview.qrAlt}
+              className="w-48 h-48 rounded-lg border border-gray-100"
+            />
+          </div>
+          <div className="flex gap-2">
+            <a
+              href={`/api/albums/${album.slug}/qr?format=png&design=1`}
+              download={`qr-design-${album.slug}.png`}
+              className="flex-1 py-2 text-xs text-center text-gray-600 border border-gray-200 rounded-lg hover:border-gray-300 transition-colors bg-white"
+            >
+              {overview.qrDesign}
+            </a>
+            <a
+              href={`/api/albums/${album.slug}/qr?format=png`}
+              download={`qr-${album.slug}.png`}
+              className="flex-1 py-2 text-xs text-center text-gray-600 border border-gray-200 rounded-lg hover:border-gray-300 transition-colors bg-white"
+            >
+              {overview.qrOnly}
+            </a>
+          </div>
+
+          {/* Sits directly under the two "download it yourself" buttons —
+              the alternative to doing it by hand belongs next to the
+              by-hand option, not on a page they may never open. */}
+          <Link
+            href={`/dashboard/${album.slug}/upgrade#stands`}
+            className="flex items-center gap-3 rounded-xl border p-3 hover:brightness-[0.98] transition-all"
+            style={{ background: "#FFF9EC", borderColor: "rgba(255,201,77,0.5)" }}
+          >
+            <img
+              src="/print/stand-wood.webp"
+              alt=""
+              width={44}
+              height={62}
+              loading="lazy"
+              className="w-11 h-14 object-contain rounded-md shrink-0"
+            />
+            <span className="flex-1 min-w-0">
+              <span className="block text-sm font-bold text-gray-900">{overview.printTitle}</span>
+              <span className="block text-xs text-gray-500 mt-0.5">
+          {overview.printBody} — {PRINT_PRICE_COPY[lang].from} {eur(Math.min(...STAND_VARIANTS.map((v) => v.unitCents)))} {PRINT_PRICE_COPY[lang].each}.
+              </span>
+            </span>
+            <svg className="w-4 h-4 text-[#C9820A] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+            </svg>
+          </Link>
+        </div>
+
+        {/* Events pointer — the wall, moderation, leads and collaborators
+            now live under the Eventi tab; the overview keeps a compact
+            door to them instead of the full settings cards. */}
+        <Link
+          href={`/dashboard/${album.slug}?tab=events`}
+          className="rounded-2xl border border-gray-100 p-5 flex flex-col justify-between gap-3 hover:border-[#FFC94D] transition-colors"
+          style={{ background: "linear-gradient(180deg,#0F1729 0%,#1B2842 100%)" }}
+        >
+          <div>
+            <h3 className="font-bold text-white text-base">{overview.eventsTitle}</h3>
+            <p className="text-xs text-gray-300 mt-1">
+              {overview.eventsBody}
+            </p>
+          </div>
+          <span className="inline-flex items-center gap-1.5 text-sm font-bold text-[#FFC94D]">
+            {overview.eventsCta}
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+            </svg>
+          </span>
+        </Link>
+      </div>
+
+      <div className="grid grid-cols-1">
+        {/* Recent photos card */}
+        <div className="bg-white rounded-2xl border border-gray-100 p-5 flex flex-col gap-3">
+          <div className="flex items-center justify-between">
+            <h3 className="font-semibold text-gray-900 text-sm">{overview.recent}</h3>
+            <Link href={`/dashboard/${album.slug}?tab=gallery`} className="text-xs text-[#8C6218] hover:underline">
+              {overview.viewAll}
+            </Link>
+          </div>
+          {last4.length > 0 ? (
+            /* This card spans the full content width, so fixed h-28 tiles in
+               two columns became ~7:1 letterbox strips. Aspect-ratio tiles,
+               four across (2x2 on phones), keep the photos photo-shaped at
+               any card width. */
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 flex-1">
+              {last4.map((photo) => (
+                <MediaThumb key={photo.id} photo={photo} heightClass="aspect-[4/3]" />
+              ))}
+            </div>
+          ) : (
+            <div className="flex-1 flex items-center justify-center text-sm text-gray-400">
+              {overview.empty}
+            </div>
+          )}
+        </div>
+      </div>
+
+    </div>
+  );
+}
+
+// ─── Events Tab ──────────────────────────────────────────────────────────────
+// One home for every "running an event" control, in sub-tabs — the wall
+// itself, moderation & permissions, guest lead capture, and wall-scoped
+// collaborators.
+
+function EventsTab({
+  album,
+  lang,
+  wallToken,
+  hasPassword,
+  guestDataCapture,
+  flags,
+  ownerEmail,
+}: {
+  album: Album & { pendingCount?: number };
+  lang: DashboardLang;
+  wallToken: string;
+  hasPassword: boolean;
+  guestDataCapture: boolean;
+  flags?: AlbumFlags;
+  ownerEmail: string | null;
+}) {
+  const [sub, setSub] = useState<"wall" | "appearance" | "moderation" | "leads" | "collab">("wall");
+  const wallAppUrl = process.env.NEXT_PUBLIC_APP_URL ?? SITE_URL;
+  const wallUrl = `${wallAppUrl}/wall/${wallToken}`;
+  const SUBTABS = ["wall", "appearance", "moderation", "leads", "collab"] as const;
+  return (
+    <div className="max-w-3xl">
+      <div className="flex gap-1 mb-5 border-b border-gray-200 overflow-x-auto">
+        {SUBTABS.map((id, index) => (
+          <button
+            key={id}
+            onClick={() => setSub(id)}
+            className={`px-4 py-2.5 text-sm font-semibold whitespace-nowrap border-b-2 -mb-px transition-colors ${
+              sub === id
+                ? "border-[#FFC94D] text-[#C9820A]"
+                : "border-transparent text-gray-500 hover:text-gray-800"
+            }`}
+          >
+            {ADMIN_SETTINGS_COPY[lang].eventSubtabs[index]}
+          </button>
+        ))}
+      </div>
+
+      {sub === "wall" && (
+        <PhotoWallCard
+          wallUrl={wallUrl}
+          hasPassword={hasPassword}
+          albumSlug={album.slug}
+          moderationEnabled={album.moderationEnabled}
+          pendingCount={album.pendingCount ?? 0}
+          plan={album.plan}
+        />
+      )}
+      {sub === "appearance" && (
+        <EventAppearanceCard albumSlug={album.slug} coupleName={album.coupleName} />
+      )}
+      {sub === "moderation" && (
+        <EventModerationCard
+          albumSlug={album.slug}
+          initialFlags={flags ?? {
+            guestDataCapture,
+            allowPhotos: true,
+            allowVideos: true,
+            albumPermission: "view_upload",
+            disableDownload: false,
+            disableLikes: false,
+          }}
+          initialModeration={album.moderationEnabled}
+        />
+      )}
+      {sub === "leads" && (
+        <EventLeadsCard albumSlug={album.slug} initialEnabled={guestDataCapture} />
+      )}
+      {sub === "collab" && (
+        <WallCollaboratorsCard albumSlug={album.slug} ownerEmail={ownerEmail} />
+      )}
+    </div>
+  );
+}
+
+// ─── Gallery Tab ─────────────────────────────────────────────────────────────
+
+function GalleryTab({
+  album,
+  lang,
+  photos,
+  activeTab,
+  approvePhoto,
+  rejectPhoto,
+  deletePhoto,
+  setCoverPhoto,
+}: {
+  album: Album;
+  lang: DashboardLang;
+  photos: Photo[];
+  activeTab: Tab;
+  approvePhoto: (id: string) => void;
+  rejectPhoto: (id: string) => void;
+  deletePhoto: (id: string) => void;
+  setCoverPhoto: (photoId: string) => void;
+}) {
+  const copy = ADMIN_SETTINGS_COPY[lang];
+  const [viewPhoto, setViewPhoto] = useState<Photo | null>(null);
+  const [selectionMode, setSelectionMode] = useState(false);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [confirmBulkDelete, setConfirmBulkDelete] = useState(false);
+  const [bulkDeleteAcknowledged, setBulkDeleteAcknowledged] = useState(false);
+  const [bulkDeleting, setBulkDeleting] = useState(false);
+  const [bulkProgress, setBulkProgress] = useState({ deleted: 0, total: 0 });
+  const [bulkError, setBulkError] = useState<string | null>(null);
+  const router = useRouter();
+
+  const togglePhotoSelection = (photoId: string) => {
+    setSelectedIds((current) => {
+      const next = new Set(current);
+      if (next.has(photoId)) next.delete(photoId);
+      else next.add(photoId);
+      return next;
+    });
+  };
+
+  const leaveSelectionMode = () => {
+    if (bulkDeleting) return;
+    setSelectionMode(false);
+    setSelectedIds(new Set());
+    setBulkError(null);
+  };
+
+  const deleteSelectedPhotos = async () => {
+    const ids = Array.from(selectedIds);
+    if (ids.length === 0 || bulkDeleting || !bulkDeleteAcknowledged) return;
+
+    setBulkDeleting(true);
+    setBulkError(null);
+    setBulkProgress({ deleted: 0, total: ids.length });
+    const remaining = new Set(ids);
+
+    try {
+      // Small sequential requests prevent hundreds of storage deletions from
+      // competing at once and keep every request inside the function timeout.
+      for (let offset = 0; offset < ids.length; offset += 25) {
+        const batch = ids.slice(offset, offset + 25);
+        const response = await fetch(`/api/albums/${album.slug}/moderate`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ photoIds: batch, action: "delete_many" }),
+        });
+        const result = await response.json().catch(() => null) as {
+          deletedIds?: string[];
+          failedIds?: string[];
+          error?: string;
+        } | null;
+
+        if (!response.ok && response.status !== 207) {
+          throw new Error(result?.error ?? "Bulk delete failed");
+        }
+
+        for (const deletedId of result?.deletedIds ?? []) remaining.delete(deletedId);
+        setBulkProgress({ deleted: ids.length - remaining.size, total: ids.length });
+      }
+
+      setConfirmBulkDelete(false);
+      setBulkDeleteAcknowledged(false);
+      if (remaining.size === 0) {
+        setSelectionMode(false);
+        setSelectedIds(new Set());
+      } else {
+        setSelectedIds(new Set(remaining));
+        setBulkError(copy.bulkDeleted.replace("{ok}", String(ids.length - remaining.size)).replace("{failed}", String(remaining.size)));
+      }
+      router.refresh();
+    } catch (error) {
+      console.error("[dashboard-gallery] Bulk delete failed", error);
+      setSelectedIds(new Set(remaining));
+      setConfirmBulkDelete(false);
+      setBulkDeleteAcknowledged(false);
+      setBulkError(copy.bulkDeleteFailed);
+      router.refresh();
+    } finally {
+      setBulkDeleting(false);
+    }
+  };
+
+  return (
+    <div>
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-4">
+        <h2 className="font-semibold text-gray-900">
+          {activeTab === "pending" ? copy.galleryPending : copy.galleryAll}
+        </h2>
+        {activeTab === "gallery" && photos.length > 0 && (
+          <div className="flex flex-wrap items-center gap-2">
+            {!selectionMode ? (
+              <button
+                type="button"
+                onClick={() => { setSelectionMode(true); setBulkError(null); }}
+                className="inline-flex items-center gap-2 rounded-xl border border-gray-300 bg-white px-3.5 py-2 text-sm font-semibold text-gray-700 transition-colors hover:border-gray-400 hover:bg-gray-50"
+              >
+                <span className="flex h-4 w-4 items-center justify-center rounded border-2 border-gray-400" />
+                {copy.chooseMany}
+              </button>
+            ) : (
+              <>
+                <span className="rounded-full bg-gray-100 px-3 py-2 text-sm font-semibold text-gray-700">
+                  {copy.selectedCount.replace("{count}", String(selectedIds.size))}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setSelectedIds(new Set(photos.map((photo) => photo.id)))}
+                  className="rounded-xl border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+                >
+                  {copy.selectAll}
+                </button>
+                {selectedIds.size > 0 && (
+                  <button
+                    type="button"
+                    onClick={() => setSelectedIds(new Set())}
+                    className="rounded-xl border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+                  >
+                    {copy.clearSelection}
+                  </button>
+                )}
+                <button
+                  type="button"
+                  onClick={() => { setBulkDeleteAcknowledged(false); setConfirmBulkDelete(true); }}
+                  disabled={selectedIds.size === 0}
+                  className="inline-flex items-center gap-2 rounded-xl bg-red-600 px-3.5 py-2 text-sm font-bold text-white transition-colors hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-40"
+                >
+                  {copy.deleteSelected.replace("{count}", String(selectedIds.size))}
+                </button>
+                <button
+                  type="button"
+                  onClick={leaveSelectionMode}
+                  className="rounded-xl px-3 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-800"
+                >
+                  {copy.cancel}
+                </button>
+              </>
+            )}
+          </div>
+        )}
+      </div>
+
+      {bulkError && (
+        <div className="mb-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-800" role="alert">
+          {bulkError}
+        </div>
+      )}
+
+      {photos.length === 0 ? (
+        <div className="flex items-center justify-center h-48 text-gray-400 text-sm bg-white rounded-2xl border border-gray-100">
+          {copy.noCategoryPhotos}
+        </div>
+      ) : (
+        <>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+            {photos.map((photo) => (
+              <div
+                key={photo.id}
+                onClick={() => selectionMode && activeTab === "gallery" ? togglePhotoSelection(photo.id) : setViewPhoto(photo)}
+                className={`group relative bg-white border rounded-xl overflow-hidden cursor-pointer transition-all ${
+                  selectedIds.has(photo.id)
+                    ? "border-red-500 ring-2 ring-red-500 ring-offset-2"
+                    : "border-gray-100"
+                }`}
+              >
+                {selectionMode && activeTab === "gallery" && (
+                  <button
+                    type="button"
+                    onClick={(event) => { event.stopPropagation(); togglePhotoSelection(photo.id); }}
+                    aria-label={selectedIds.has(photo.id) ? copy.clearSelection : copy.chooseMany}
+                    aria-pressed={selectedIds.has(photo.id)}
+                    className={`absolute left-2 top-2 z-20 flex h-8 w-8 items-center justify-center rounded-full border-2 shadow-md transition-colors ${
+                      selectedIds.has(photo.id)
+                        ? "border-red-600 bg-red-600 text-white"
+                        : "border-white bg-white/95 text-transparent"
+                    }`}
+                  >
+                    <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={3}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
+                  </button>
+                )}
+                <MediaThumb photo={photo} heightClass="h-40" />
+                <div className="px-2 py-1.5">
+                  <p className="text-xs text-gray-500 truncate">{photo.uploaderName ?? "Gost"}</p>
+                </div>
+                {/* Actions overlay */}
+                {!selectionMode && <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100">
+                  {activeTab === "pending" && (
+                    <>
+                      <button
+                        onClick={(e) => { e.stopPropagation(); approvePhoto(photo.id); }}
+                        title={copy.approve}
+                        className="w-9 h-9 rounded-full bg-green-500 text-white flex items-center justify-center hover:bg-green-600 transition-colors"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                        </svg>
+                      </button>
+                      <button
+                        onClick={(e) => { e.stopPropagation(); rejectPhoto(photo.id); }}
+                        title={copy.reject}
+                        className="w-9 h-9 rounded-full bg-red-500 text-white flex items-center justify-center hover:bg-red-600 transition-colors"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                      </button>
+                    </>
+                  )}
+                  {activeTab === "gallery" && !photo.mimeType?.startsWith("video/") && (
+                    <button
+                      onClick={(e) => { e.stopPropagation(); setCoverPhoto(photo.id); }}
+                      title={copy.setAsCover}
+                      className="w-9 h-9 rounded-full bg-white/90 text-gray-800 flex items-center justify-center hover:bg-white transition-colors"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5z" />
+                      </svg>
+                    </button>
+                  )}
+                  {activeTab === "gallery" && (
+                    <button
+                      onClick={(e) => { e.stopPropagation(); deletePhoto(photo.id); }}
+                        title={copy.delete}
+                      className="w-9 h-9 rounded-full bg-red-500/90 text-white flex items-center justify-center hover:bg-red-600 transition-colors"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                      </svg>
+                    </button>
+                  )}
+                </div>}
+              </div>
+            ))}
+          </div>
+          <div className="flex justify-center mt-6">
+            <a
+              href={`/${album.slug}`}
+              target="_blank"
+              rel="noreferrer"
+              className="px-6 py-2.5 text-sm text-gray-600 border border-gray-300 rounded-full hover:border-gray-400 transition-colors"
+            >
+              Naloži več
+            </a>
+          </div>
+        </>
+      )}
+
+      {/* Larger-view lightbox — opens when a photo is clicked */}
+      {viewPhoto && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80"
+          onClick={() => setViewPhoto(null)}
+        >
+          <div className="relative flex flex-col items-center" onClick={(e) => e.stopPropagation()}>
+            {viewPhoto.mimeType?.startsWith("video/") ? (
+              <video
+                src={bunnyDisplayUrl(viewPhoto.blobUrl)}
+                controls
+                autoPlay
+                className="max-h-[78vh] max-w-[90vw] rounded-2xl bg-black"
+              />
+            ) : (
+              /* eslint-disable-next-line @next/next/no-img-element */
+              <img
+                src={bunnyDisplayUrl(viewPhoto.blobUrl, 1800, 90)}
+                alt={viewPhoto.caption ?? ""}
+                className="max-h-[78vh] max-w-[90vw] rounded-2xl object-contain"
+              />
+            )}
+            <div className="flex items-center justify-center flex-wrap gap-2 mt-4">
+              {!viewPhoto.mimeType?.startsWith("video/") && (
+                <button
+                  onClick={() => { setCoverPhoto(viewPhoto.id); setViewPhoto(null); }}
+                  className="px-4 py-2 rounded-xl bg-white text-gray-800 text-sm font-medium hover:bg-gray-100 transition-colors"
+                >
+                  {copy.setAsCover}
+                </button>
+              )}
+              <button
+                onClick={() => { deletePhoto(viewPhoto.id); setViewPhoto(null); }}
+                className="px-4 py-2 rounded-xl bg-red-500 text-white text-sm font-medium hover:bg-red-600 transition-colors"
+              >
+                {copy.delete}
+              </button>
+              <button
+                onClick={() => setViewPhoto(null)}
+                className="px-4 py-2 rounded-xl border border-white/40 text-white text-sm font-medium hover:bg-white/10 transition-colors"
+              >
+                {copy.close}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Destructive bulk-delete confirmation */}
+      {confirmBulkDelete && (
+        <div className="fixed inset-0 z-[70] flex items-center justify-center bg-black/60 p-4" role="dialog" aria-modal="true" aria-labelledby="bulk-delete-title">
+          <div className="w-full max-w-lg overflow-hidden rounded-2xl bg-white shadow-2xl">
+            <div className="border-b border-red-200 bg-red-600 px-6 py-5 text-white">
+              <div className="flex items-center gap-3">
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white/20 text-2xl" aria-hidden="true">⚠</span>
+                <div>
+                  <p className="text-xs font-black uppercase tracking-[0.16em] text-red-100">Pozor – trajni izbris</p>
+                  <h3 id="bulk-delete-title" className="mt-1 text-xl font-black">
+                    Izbrisali boste {selectedIds.size} datotek
+                  </h3>
+                </div>
+              </div>
+            </div>
+            <div className="space-y-4 px-6 py-5">
+              <div className="rounded-xl border-2 border-red-200 bg-red-50 p-4 text-red-900">
+                <p className="font-black uppercase">Izbrisane bodo vse izbrane slike in videoposnetki.</p>
+                <p className="mt-2 text-sm leading-6">
+                  Datoteke bodo trajno odstranjene iz albuma in shrambe. Tega dejanja ni mogoče razveljaviti ali obnoviti.
+                </p>
+              </div>
+              <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-red-200 px-4 py-3 text-sm font-semibold text-red-900">
+                <input
+                  type="checkbox"
+                  checked={bulkDeleteAcknowledged}
+                  onChange={(event) => setBulkDeleteAcknowledged(event.target.checked)}
+                  disabled={bulkDeleting}
+                  className="mt-0.5 h-5 w-5 shrink-0 accent-red-600"
+                />
+                <span>Potrjujem, da želim trajno izbrisati vse izbrane slike in videoposnetke.</span>
+              </label>
+              {bulkDeleting && (
+                <div>
+                  <div className="mb-1.5 flex justify-between text-xs font-semibold text-gray-600">
+                    <span>Brisanje datotek …</span>
+                    <span>{bulkProgress.deleted} / {bulkProgress.total}</span>
+                  </div>
+                  <div className="h-2 overflow-hidden rounded-full bg-gray-200">
+                    <div
+                      className="h-full rounded-full bg-red-600 transition-all"
+                      style={{ width: `${bulkProgress.total > 0 ? (bulkProgress.deleted / bulkProgress.total) * 100 : 0}%` }}
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+            <div className="flex flex-col-reverse gap-2 border-t border-gray-100 bg-gray-50 px-6 py-4 sm:flex-row sm:justify-end">
+              <button
+                type="button"
+                onClick={() => { setConfirmBulkDelete(false); setBulkDeleteAcknowledged(false); }}
+                disabled={bulkDeleting}
+                className="rounded-xl border border-gray-300 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-50 disabled:opacity-50"
+              >
+                Ne, prekliči
+              </button>
+              <button
+                type="button"
+                onClick={deleteSelectedPhotos}
+                disabled={bulkDeleting || selectedIds.size === 0 || !bulkDeleteAcknowledged}
+                className="rounded-xl bg-red-600 px-4 py-2.5 text-sm font-black text-white hover:bg-red-700 disabled:cursor-wait disabled:opacity-60"
+              >
+                {bulkDeleting ? "Brišem …" : `Da, trajno izbriši vseh ${selectedIds.size}`}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── QR Tab ──────────────────────────────────────────────────────────────────
+
+function QrTab({
+  album,
+  albumUrl,
+  copyToClipboard,
+  lang,
+}: {
+  album: Album;
+  albumUrl: string;
+  copyToClipboard: (text: string) => void;
+  lang: DashboardLang;
+}) {
+  const qrCopy = ({
+    sl: { copied: "Kopirano!", copy: "Kopiraj", design: "Prenesi QR kodo z dizajnom", plain: "Prenesi samo QR kodo", description: "Prilagodite kartico s QR-kodo za goste — izberite med 8 predlogami za tisk.", templates: "Odpri predloge za tisk" },
+    hr: { copied: "Kopirano!", copy: "Kopiraj", design: "Preuzmi QR kod s dizajnom", plain: "Preuzmi samo QR kod", description: "Prilagodite karticu s QR kodom za goste — odaberite među 8 predložaka za tisak.", templates: "Otvori predloške za tisak" },
+    sr: { copied: "Копирано!", copy: "Копирај", design: "Преузми QR код са дизајном", plain: "Преузми само QR код", description: "Прилагодите QR картицу за госте — изаберите један од 8 шаблона за штампу.", templates: "Отвори шаблоне за штампу" },
+    en: { copied: "Copied!", copy: "Copy", design: "Download designed QR code", plain: "Download QR code only", description: "Personalise a QR card for your guests — choose from 8 print templates.", templates: "Open print templates" },
+    de: { copied: "Kopiert!", copy: "Kopieren", design: "QR-Code mit Design herunterladen", plain: "Nur QR-Code herunterladen", description: "Gestalten Sie eine QR-Karte für Ihre Gäste — wählen Sie aus 8 Druckvorlagen.", templates: "Druckvorlagen öffnen" },
+    es: { copied: "¡Copiado!", copy: "Copiar", design: "Descargar QR con diseño", plain: "Descargar solo el QR", description: "Personaliza una tarjeta QR para tus invitados — elige entre 8 plantillas de impresión.", templates: "Abrir plantillas de impresión" },
+  } satisfies Record<DashboardLang, { copied: string; copy: string; design: string; plain: string; description: string; templates: string }>)[lang];
+  const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=${encodeURIComponent(albumUrl)}&bgcolor=ffffff&color=1a1a2e&qzone=2&format=png`;
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = () => {
+    copyToClipboard(albumUrl);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1800);
+  };
+
+  return (
+    <div className="max-w-lg">
+      <div className="bg-white rounded-2xl border border-gray-100 p-6 flex flex-col items-center gap-5">
+        <img
+          src={qrUrl}
+          alt="QR koda"
+          className="w-52 h-52 rounded-xl border border-gray-100"
+        />
+
+        {/* URL input + copy */}
+        <div className="w-full flex items-center gap-2">
+          <input
+            readOnly
+            value={albumUrl}
+            className="flex-1 px-3 py-2.5 border border-gray-200 rounded-lg text-sm text-gray-700 bg-gray-50 outline-none select-all"
+          />
+          <button
+            onClick={handleCopy}
+            className="px-4 py-2.5 text-sm font-semibold rounded-lg text-white transition-colors whitespace-nowrap"
+            style={{ background: copied ? "#22c55e" : "#FFC94D" }}
+          >
+            {copied ? qrCopy.copied : qrCopy.copy}
+          </button>
+        </div>
+
+        {/* Download buttons — stacked full-width on phones so the labels
+            don't wrap to three cramped lines; side by side from sm up. */}
+        <div className="w-full flex flex-col sm:flex-row gap-2">
+          <a
+            href={`/api/albums/${album.slug}/qr?format=png&design=1`}
+            download={`qr-design-${album.slug}.png`}
+            className="flex-1 py-2.5 px-3 text-sm text-center text-gray-600 border border-gray-200 rounded-lg hover:border-gray-300 transition-colors"
+          >
+            {qrCopy.design}
+          </a>
+          <a
+            href={`/api/albums/${album.slug}/qr?format=png`}
+            download={`qr-${album.slug}.png`}
+            className="flex-1 py-2.5 px-3 text-sm text-center text-gray-600 border border-gray-200 rounded-lg hover:border-gray-300 transition-colors"
+          >
+            {qrCopy.plain}
+          </a>
+        </div>
+
+        <div className="w-full pt-2 text-center">
+          <p className="text-xs text-gray-500 mb-3 max-w-xs mx-auto leading-relaxed">
+            {qrCopy.description}
+          </p>
+          <Link
+            href={`/dashboard/${album.slug}/print`}
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#FFC94D] text-white text-sm font-semibold hover:bg-[#F0B429] transition-colors shadow-sm"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6.72 13.829c-.24.03-.48.062-.72.096m.72-.096a42.415 42.415 0 0110.56 0m-10.56 0L6.34 18m10.94-4.171c.24.03.48.062.72.096m-.72-.096L17.66 18m0 0l.229 2.523a1.125 1.125 0 01-1.12 1.227H7.231c-.662 0-1.18-.568-1.12-1.227L6.34 18m11.318 0h1.091A2.25 2.25 0 0021 15.75V9.456c0-1.081-.768-2.015-1.837-2.175a48.055 48.055 0 00-1.913-.247M6.34 18H5.25A2.25 2.25 0 013 15.75V9.456c0-1.081.768-2.015 1.837-2.175a48.041 48.041 0 011.913-.247m10.5 0a48.536 48.536 0 00-10.5 0m10.5 0V3.375c0-.621-.504-1.125-1.125-1.125h-8.25c-.621 0-1.125.504-1.125 1.125v3.659M18 10.5h.008v.008H18V10.5zm-3 0h.008v.008H15V10.5z" />
+            </svg>
+            {qrCopy.templates}
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+            </svg>
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── Settings Form ────────────────────────────────────────────────────────────
+
+function DeleteAlbumModal({
+  album,
+  lang,
+  onClose,
+}: {
+  album: Album;
+  lang: DashboardLang;
+  onClose: () => void;
+}) {
+  const copy = ADMIN_SETTINGS_COPY[lang];
+  const router = useRouter();
+  const [confirmText, setConfirmText] = useState("");
+  const [deleting, setDeleting] = useState(false);
+  const [error, setError] = useState("");
+
+  const slug = album.slug;
+  const ready = confirmText === slug;
+
+  const handleDelete = async () => {
+    if (!ready) return;
+    setDeleting(true);
+    setError("");
+    try {
+      const res = await fetch(`/api/albums/${slug}/delete`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ confirm: slug }),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error ?? "Brisanje ni uspelo");
+      }
+      router.push("/dashboard");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Napaka");
+      setDeleting(false);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: "rgba(0,0,0,0.55)" }}>
+      <div className="bg-white rounded-2xl shadow-lg w-full max-w-md p-6 space-y-5">
+        {/* Header */}
+        <div className="flex items-start gap-3">
+          <div className="flex-shrink-0 w-10 h-10 rounded-full bg-red-100 flex items-center justify-center">
+            <svg className="w-5 h-5 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+            </svg>
+          </div>
+          <div>
+          <h2 className="font-semibold text-gray-900 text-base">{copy.deleteGallery}</h2>
+            <p className="text-sm text-gray-500 mt-0.5">{lang === "en" ? <>This action is <strong>irreversible</strong>. All photos, videos, and data will be permanently deleted.</> : lang === "de" ? <>Diese Aktion ist <strong>unwiderruflich</strong>. Alle Fotos, Videos und Daten werden dauerhaft gelöscht.</> : lang === "es" ? <>Esta acción es <strong>irreversible</strong>. Todas las fotos, vídeos y datos se eliminarán permanentemente.</> : <>To dejanje je <strong>nepovratno</strong>. Vse fotografije, videoposnetki in podatki bodo trajno izbrisani.</>}</p>
+          </div>
+        </div>
+
+        {/* Confirmation input */}
+        <div className="bg-red-50 border border-red-200 rounded-xl p-4 space-y-3">
+          <p className="text-sm text-red-700">
+            {lang === "en" ? "Enter the gallery name to confirm:" : lang === "de" ? "Geben Sie zur Bestätigung den Galerienamen ein:" : lang === "es" ? "Escribe el nombre de la galería para confirmar:" : "Za potrditev vpišite ime galerije:"}
+            <span className="ml-1 font-mono font-bold text-red-800 select-all">{slug}</span>
+          </p>
+          <input
+            type="text"
+            value={confirmText}
+            onChange={(e) => setConfirmText(e.target.value)}
+            placeholder={slug}
+            autoFocus
+            className="w-full px-3 py-2.5 border rounded-xl text-sm bg-white outline-none transition-colors font-mono"
+            style={{ borderColor: confirmText && !ready ? "#f87171" : ready ? "#22c55e" : "#e5e7eb" }}
+          />
+          {confirmText && !ready && (
+            <p className="text-xs text-red-600">{lang === "en" ? "The text does not match" : lang === "de" ? "Der Text stimmt nicht überein" : lang === "es" ? "El texto no coincide" : "Besedilo se ne ujema"}</p>
+          )}
+          {ready && (
+            <p className="text-xs text-green-600 font-medium">✓ {lang === "en" ? "Confirmation matches" : lang === "de" ? "Bestätigung stimmt" : lang === "es" ? "Confirmación correcta" : "Potrditev pravilna"}</p>
+          )}
+        </div>
+
+        {error && (
+          <p className="text-sm text-red-600 bg-red-50 rounded-xl px-4 py-2">{error}</p>
+        )}
+
+        {/* Actions */}
+        <div className="flex gap-3 pt-1">
+          <button
+            onClick={onClose}
+            disabled={deleting}
+            className="flex-1 py-2.5 rounded-xl border border-gray-200 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors disabled:opacity-50"
+          >
+            {copy.cancel}
+          </button>
+          <button
+            onClick={handleDelete}
+            disabled={!ready || deleting}
+            className="flex-1 py-2.5 rounded-xl text-sm font-semibold text-white transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+            style={{ background: ready ? "#dc2626" : "#fca5a5" }}
+          >
+            {deleting ? (lang === "en" ? "Deleting…" : lang === "de" ? "Wird gelöscht…" : lang === "es" ? "Eliminando…" : "Brišem…") : copy.deleteGallery}
+          </button>
+        </div>
+      </div>
+    </div>
   );
 }
 
