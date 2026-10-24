@@ -1271,8 +1271,8 @@ requireMatch(
 requireMatch(
   "album viewer keeps mobile actions above the photo",
   `${files.albumGuestView}\n${files.globalStyles}`,
-  /Mobile\/tablet: keep actions in a horizontal top bar[\s\S]*left-16 right-3 top-3[\s\S]*flex-row[\s\S]*lg:top-1\/2[\s\S]*lg:flex-col[\s\S]*handleLightboxLike[\s\S]*openDiscussion[\s\S]*saveImageToDevice/,
-  "mobile lightbox actions must stay in the top bar while desktop keeps the right-side rail",
+  /Mobile\/tablet: keep actions in a horizontal top bar[\s\S]*left-16 right-16 top-3[\s\S]*flex-row[\s\S]*lg:top-1\/2[\s\S]*lg:flex-col[\s\S]*handleLightboxLike[\s\S]*openDiscussion[\s\S]*saveImageToDevice/,
+  "mobile lightbox actions must stay in the top bar, clear the close button, and preserve the desktop right-side rail",
 );
 
 requireMatch(
