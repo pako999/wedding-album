@@ -793,7 +793,7 @@ export function UploadModal({ bingoChallengeId, albumSlug, albumId, uploaderName
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-6 overflow-x-hidden">
       <div className="absolute inset-0 bg-[#0F1729]/70 backdrop-blur-sm" onClick={!uploading ? onClose : undefined} />
 
-      <div className="relative w-full max-w-[100vw] sm:max-w-lg bg-white rounded-t-3xl sm:rounded-2xl shadow-xl max-h-[92vh] flex flex-col overflow-hidden"
+      <div className="relative box-border w-full min-w-0 max-w-[100vw] sm:max-w-lg bg-white rounded-t-3xl sm:rounded-2xl shadow-xl max-h-[92vh] flex flex-col overflow-hidden"
         style={{ maxHeight: "92dvh", paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
       >
         <div className="px-4 sm:px-6 py-4 border-b border-gray-100 shrink-0 overflow-hidden">
@@ -805,7 +805,7 @@ export function UploadModal({ bingoChallengeId, albumSlug, albumId, uploaderName
               </svg>
             </button>
           </div>
-          <div className="flex items-center gap-2 mt-1.5 flex-wrap">
+          <div className="flex min-w-0 items-center gap-x-2 gap-y-1 mt-1.5 flex-wrap">
             <span className="text-[10px] text-[#0F1729]/40 px-2 py-0.5 rounded-full font-medium whitespace-nowrap" style={{ background: `${accent}1A` }}>📷 {t.maxImageSize(MAX_IMAGE_MB)}</span>
             <span className="text-[10px] text-[#0F1729]/40 px-2 py-0.5 rounded-full font-medium whitespace-nowrap" style={{ background: `${accent}1A` }}>📹 {t.maxVideoSize(MAX_VIDEO_MB)}</span>
             <span className="text-[10px] text-green-600 font-medium whitespace-nowrap">{t.fullQuality}</span>
