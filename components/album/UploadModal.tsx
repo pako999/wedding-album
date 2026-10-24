@@ -43,6 +43,8 @@ interface Props {
   referralCode?: string | null;
   /** When enabled, uploaded media remains hidden until the owner approves it. */
   moderationEnabled?: boolean;
+  /** Guest can upload, but the album owner has disabled gallery viewing. */
+  uploadOnlyMode?: boolean;
 }
 
 interface UploadFile {
@@ -522,7 +524,7 @@ async function saveUpload(slug: string, body: object, albumPassword = "") {
 
 // ── Component ─────────────────────────────────────────────────────────────────
 
-export function UploadModal({ bingoChallengeId, albumSlug, albumId, uploaderName, maxPhotos, currentCount, lang, onClose, onSuccess, onNameChange: _onNameChange, initialFiles, accent = "#C9820A", albumPassword = "", moments = [], defaultMomentId = null, referralCode = null, requireGuestData = false, organiserName = "", moderationEnabled = false }: Props) {
+export function UploadModal({ bingoChallengeId, albumSlug, albumId, uploaderName, maxPhotos, currentCount, lang, onClose, onSuccess, onNameChange: _onNameChange, initialFiles, accent = "#C9820A", albumPassword = "", moments = [], defaultMomentId = null, referralCode = null, requireGuestData = false, organiserName = "", moderationEnabled = false, uploadOnlyMode = false }: Props) {
   const t = translations[lang];
   const lead = LEAD_COPY[lang];
 
