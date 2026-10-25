@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type CSSProperties, type ReactNode, type RefObject } from 'react';
 import { translations, type Lang } from '@/lib/i18n/translations';
 
 export function isEmbeddedMobileBrowser(ua: string) {
@@ -21,21 +21,23 @@ const HELP: Record<Lang, { title: string; body: string; gallery: string; retry: 
 export function PhotoCaptureButton({lang,onFiles,onChooseExisting,children,className,style}: {
  lang:Lang;onFiles:(files:FileList)=>void;onChooseExisting:()=>void;children:ReactNode;className?:string;style?:CSSProperties;
 }) {
- const input=useRef<HTMLInputElement>(null);const dialog=useRef<HTMLDialogElement>(null);const [helpOpen,setHelpOpen]=useState(false);const help=HELP[lang];
+ const input=useRef<HTMLInputElement>(null);const dialogInput=useRef<HTMLInputElement>(null);const dialog=useRef<HTMLDialogElement>(null);const [helpOpen,setHelpOpen]=useState(false);const help=HELP[lang];
  useEffect(()=>{const node=dialog.current;if(!node)return;if(helpOpen&&!node.open)node.showModal();else if(!helpOpen&&node.open)node.close();},[helpOpen]);
- function capture(){input.current?.click();}
- return <>
-  <button type="button" aria-label={translations[lang].takePhoto} className={className} style={style} onClick={()=>{
-   if(isEmbeddedMobileBrowser(navigator.userAgent))setHelpOpen(true);else capture();
-  }}>{children}</button>
-  <input ref={input} aria-label={translations[lang].takePhoto} data-photo-capture type="file" accept="image/*" capture="environment" className="hidden" onClick={event=>{event.currentTarget.value='';}} onChange={event=>{
+ function capture(){(helpOpen?dialogInput.current:input.current)?.click();}
+ const picker=(ref:RefObject<HTMLInputElement|null>)=><input ref={ref} aria-label={translations[lang].takePhoto} data-photo-capture type="file" accept="image/*" capture="environment" className="hidden" onClick={event=>{event.currentTarget.value='';}} onChange={event=>{
    const files=event.currentTarget.files;if(!files?.length)return;
    // Copy before the input can be reused; camera files continue through UploadModal.
    const copy=typeof DataTransfer!=='undefined'?new DataTransfer():null;
    if(copy)copy.items.add(files[0]);
    setHelpOpen(false);onFiles(copy?copy.files:files);
-  }}/>
+  }}/>;
+ return <>
+  <button type="button" aria-label={translations[lang].takePhoto} className={className} style={style} onClick={()=>{
+   if(isEmbeddedMobileBrowser(navigator.userAgent))setHelpOpen(true);else capture();
+  }}>{children}</button>
+  {picker(input)}
   <dialog ref={dialog} aria-label={help.title} onCancel={()=>setHelpOpen(false)} className="fixed inset-0 m-auto w-[calc(100%_-_2rem)] max-w-md rounded-3xl border border-stone-200 bg-white p-6 text-stone-900 shadow-2xl backdrop:bg-black/60">
+   {picker(dialogInput)}
    <h2 className="text-xl font-bold">{help.title}</h2><p className="mt-3 text-sm leading-6">{help.body}</p>
    <div className="mt-5 grid gap-3"><button type="button" className="min-h-12 rounded-xl bg-stone-900 px-4 py-3 font-semibold text-white" onClick={()=>{setHelpOpen(false);onChooseExisting();}}>{help.gallery}</button>
    <button type="button" className="min-h-12 rounded-xl border px-4 py-3 font-semibold" onClick={capture}>{help.retry}</button>
