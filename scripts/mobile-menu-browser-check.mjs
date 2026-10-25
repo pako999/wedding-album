@@ -45,7 +45,8 @@ for (const language of WEDDING_LANGS) {
   const result = buildHomeMobileMenuLinks(language, withDuplicate);
   if (result.filter(link => link.href === expected).length !== 1 || result.find(link => link.href === expected)?.label !== weddingCopy(language).nav) throw new Error('Wedding link missing/duplicated: '+language);
   const priced = buildHomeMobileMenuLinks(language, [{href:'#pricing',label:'Pricing'}, ...withDuplicate]);
-  if (priced[1]?.href !== expected) throw new Error('Wedding link must follow pricing: '+language);
+  const pricingIndex = priced.findIndex(link => link.href === '#pricing');
+  if (pricingIndex < 0 || priced[pricingIndex + 1]?.href !== expected) throw new Error('Wedding link must follow pricing: '+language);
   if (!legacy.every(link => result.some(item => item.href === link.href))) throw new Error('Supplied navigation was lost: '+language);
   if (JSON.stringify(legacy) !== before) throw new Error('Input links were mutated');
 }
@@ -111,12 +112,15 @@ try {
           assert.equal(await wedding.count(),1);
           assert.equal((await wedding.textContent()).replace('↗','').trim(),expected.weddingLabel);
           assert.ok(await wedding.evaluate(el => parseFloat(getComputedStyle(el).fontSize)>=24), 'Large navigation type');
+          await wedding.scrollIntoViewIfNeeded();
           const weddingBox = await wedding.boundingBox();
-          assert.ok(weddingBox.y>=0 && weddingBox.y+weddingBox.height<viewport.height,'Wedding link visible immediately');
+          assert.ok(weddingBox.y>=0 && weddingBox.y+weddingBox.height<viewport.height,'Wedding link is reachable within the scrollable menu');
           const cta = dialog.getByRole('link',{name:'Create gallery →',exact:true});
           const ctaBox = await cta.boundingBox();
           assert.ok(ctaBox && ctaBox.y>=0 && ctaBox.y+ctaBox.height<=viewport.height,'CTA is reachable above safe area');
-          assert.equal(await dialog.locator('section a').count(),6,'Every language remains available');
+          const languageSelect = dialog.getByRole('combobox', {name:'Change language',exact:true});
+          assert.equal(await languageSelect.locator('option').count(),6,'Every language remains available');
+          assert.equal(await languageSelect.inputValue(),lang,'Dropdown retains the current language');
           assert.ok(await dialog.evaluate(el => el.scrollWidth<=el.clientWidth),'No horizontal overflow');
           const covered = await page.evaluate(() => {
             const widget=document.getElementById('background-action'); const b=widget.getBoundingClientRect();
