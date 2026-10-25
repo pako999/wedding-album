@@ -23,13 +23,13 @@ cd /workspace/wedding-album
 node scripts/migrate-wedding-launch-offer.mjs --apply
 ```
 
-The script refuses an unreviewed/mismatched hostname or a different Vercel project. This is an explicit migration, never part of an ordinary application build. No real staging/production connection was available in the cloud task, so it was executed only against the isolated test database engine. Until the reviewed migration is applied to the deployment's database, the offer stays inactive and the package displays its standard price. Production promotion still needs the release checks in `wedding-suite-release-review.md`.
+The script refuses an unreviewed/mismatched hostname or a different Vercel project. Production migration remains explicit. The cloud task has no directly connected staging/production database. Preview builds can bootstrap inventory only through `prepare-wedding-offer-preview.mjs`: the Vercel project and exact preview branch must match, DATABASE_URL must match the existing WEDDING_SUITE_DB_HOST pin, the database must contain no albums beyond at most the synthetic wedding-suite-demo, and there must be zero bank invoices. Any failed check skips initialization. Production never takes this path. The initializer is covered by guard tests and an actual PostgreSQL test proving that rebuilds do not reset a used place. Until the deployed API reports verified inventory, the offer stays unverified and the package displays its standard price. Production promotion still needs the release checks in `wedding-suite-release-review.md`.
 
 For any uncertain reservation, inspect the provider/order record before changing it. Never release a place merely because a cookie disappeared or a local timer elapsed. Invoice abandonment requires an admin-confirmed cancellation. Do not clear paid rows or reseed a new campaign to fabricate availability.
 
 ## Validation and limits
 
-- Full build, TypeScript, existing regressions/localization/wedding checks, offer audit and 31 suite/checkout tests.
+- Full build, TypeScript, existing regressions/localization/wedding checks, offer audit and 34 suite/checkout tests.
 - `node scripts/wedding-offer-database-check.cjs`: actual PostgreSQL engine; forty competing claims capped at twenty; same-account collisions; idempotent paid/cancel processing; exact decimal invoices; historical values preserved; existing albums unchanged; safe behavior when inventory is missing.
 - `node scripts/wedding-suite-database-check.cjs`: real suite routes and Drizzle/PostgreSQL queries for authorization, signed invitations, RSVP capacity, seating, moderation, video/foreign-photo handling, capsules, language preferences, preview mail and album passwords. Synthetic identity/rate-limit/mail transport substitutes are used; no real Clerk login, mail delivery or customer database access is claimed.
 - Both database scripts use an isolated `@electric-sql/pglite@0.3.14` installation, without changing application dependencies: `npm install --prefix /tmp/wedding-db-check --cache /workspace/.npm-cache --no-audit --no-fund @electric-sql/pglite@0.3.14`. `PGLITE_MODULE_PATH` can select another installation of the same test dependency.

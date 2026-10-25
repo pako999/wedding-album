@@ -55,6 +55,21 @@ function load(file) {
     assert.equal((await store.quote()).verified, false); assert.equal((await store.quote()).remaining, null);
     assert.equal((await store.quote()).priceCents, 18900);
     assert.deepEqual((await pg.query('SELECT * FROM albums')).rows, [{ id: 'existing', plan: 'premium' }]);
-    console.log('PASS offer database: real PostgreSQL engine, idempotent migration, exact €132.30, forty competing attempts capped at twenty, account uniqueness, paid/cancel idempotency, verified releases, safe unavailable fallback and unchanged existing albums.');
+    const clean = new PGlite();
+    try {
+      await clean.exec("CREATE TABLE albums(slug text); INSERT INTO albums VALUES ('wedding-suite-demo'); CREATE TABLE bank_orders(id text, plan_price integer NOT NULL);");
+      const tagged = (strings, ...values) => ({ text: strings.map((text, index) => text + (index < values.length ? '$' + (index + 1) : '')).join(''), values });
+      tagged.query = text => ({ text, values: [] });
+      tagged.transaction = statements => clean.transaction(async tx => { const results = []; for (const statement of statements) results.push((await tx.query(statement.text, statement.values)).rows); return results; });
+      const { prepareWeddingOfferPreview } = await import(require('node:url').pathToFileURL(path.join(root, 'scripts/prepare-wedding-offer-preview.mjs')).href);
+      const env = { VERCEL_ENV:'preview', VERCEL_GIT_COMMIT_REF:'feat/wedding-suite-multilingual-preview', VERCEL_PROJECT_ID:'prj_EDblP7nig2nLLZTQlxnrkusvxoSj', DATABASE_URL:'postgresql://isolated/preview', WEDDING_SUITE_DB_HOST:'isolated' };
+      assert.equal((await prepareWeddingOfferPreview({ env, connect: () => tagged })).prepared, true);
+      await clean.exec("UPDATE wedding_offer_slots SET state='paid', customer_id='verified-test-customer', attempt_id='verified-test-attempt' WHERE slot=1");
+      assert.equal((await prepareWeddingOfferPreview({ env, connect: () => tagged })).prepared, true);
+      assert.equal((await clean.query("SELECT count(*)::int AS available FROM wedding_offer_slots WHERE state='available'")).rows[0].available, 19, 'preview rebuild must never reset paid inventory');
+      await clean.exec("INSERT INTO albums VALUES ('non-demo-album')");
+      assert.equal((await prepareWeddingOfferPreview({ env, connect: () => tagged })).reason, 'existing-data-requires-manual-review');
+    } finally { await clean.close(); }
+    console.log('PASS offer database: real PostgreSQL engine, idempotent migration, exact €132.30, forty competing attempts capped at twenty, account uniqueness, paid/cancel idempotency, verified releases, safe unavailable fallback, unchanged existing albums and guarded preview rebuilds preserving used inventory.');
   } finally { await pg.close(); }
 })().catch(error => { console.error(error); process.exitCode = 1; });

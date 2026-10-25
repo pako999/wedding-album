@@ -89,3 +89,34 @@ test('webhooks settle campaign inventory only after fetching the provider paymen
   assert.deepEqual(transitions, [[attemptId, 'tr_test123', 'demo', ['paid','refunded'].includes(status)]]);
  }
 });
+
+test('preview initializer never connects in production, on other branches or to an unpinned host', async () => {
+ const { prepareWeddingOfferPreview } = await import('../scripts/prepare-wedding-offer-preview.mjs');
+ let calls = 0;
+ const base = { VERCEL_ENV: 'preview', VERCEL_GIT_COMMIT_REF: 'feat/wedding-suite-multilingual-preview', VERCEL_PROJECT_ID: 'prj_EDblP7nig2nLLZTQlxnrkusvxoSj', DATABASE_URL: 'postgresql://isolated/preview', WEDDING_SUITE_DB_HOST: 'isolated' };
+ for (const patch of [{ VERCEL_ENV: 'production' }, { VERCEL_GIT_COMMIT_REF: 'main' }, { WEDDING_SUITE_DB_HOST: 'other-host' }, { VERCEL_PROJECT_ID: 'other-project' }]) {
+  const result = await prepareWeddingOfferPreview({ env: { ...base, ...patch }, connect: () => { calls++; throw new Error('must not connect'); } });
+  assert.equal(result.prepared, false);
+ }
+ assert.equal(calls, 0);
+});
+
+test('preview initializer refuses databases containing non-demo albums or invoices', async () => {
+ const { prepareWeddingOfferPreview } = await import('../scripts/prepare-wedding-offer-preview.mjs');
+ const env = { VERCEL_ENV: 'preview', VERCEL_GIT_COMMIT_REF: 'feat/wedding-suite-multilingual-preview', VERCEL_PROJECT_ID: 'prj_EDblP7nig2nLLZTQlxnrkusvxoSj', DATABASE_URL: 'postgresql://isolated/preview', WEDDING_SUITE_DB_HOST: 'isolated' };
+ for (const counts of [[{ total: 2, demo: 1 }, { total: 0 }], [{ total: 1, demo: 1 }, { total: 1 }]]) {
+  const sql = () => ({}); sql.transaction = async () => counts.map(row => [row]);
+  const result = await prepareWeddingOfferPreview({ env, connect: () => sql, readFile: async () => { throw new Error('migration must not be read'); } });
+  assert.equal(result.reason, 'existing-data-requires-manual-review');
+ }
+});
+
+test('only the verified empty/demo preview can apply the idempotent inventory migration', async () => {
+ const { prepareWeddingOfferPreview } = await import('../scripts/prepare-wedding-offer-preview.mjs');
+ const env = { VERCEL_ENV: 'preview', VERCEL_GIT_COMMIT_REF: 'feat/wedding-suite-multilingual-preview', VERCEL_PROJECT_ID: 'prj_EDblP7nig2nLLZTQlxnrkusvxoSj', DATABASE_URL: 'postgresql://isolated/preview', WEDDING_SUITE_DB_HOST: 'isolated' };
+ let transactions = 0, statements = 0;
+ const sql = () => ({}); sql.query = () => { statements++; return {}; };
+ sql.transaction = async () => ++transactions === 1 ? [[{ total: 1, demo: 1 }], [{ total: 0 }]] : [];
+ const result = await prepareWeddingOfferPreview({ env, connect: () => sql, readFile: async () => 'CREATE TABLE test_only(id text); INSERT INTO test_only VALUES (1);' });
+ assert.equal(result.prepared, true); assert.equal(transactions, 2); assert.equal(statements, 2);
+});
