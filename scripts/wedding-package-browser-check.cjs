@@ -48,12 +48,12 @@ const { build } = req('esbuild'); const { chromium, webkit } = req('playwright')
   }
   // The public demo is the real editor and renderer in all six languages.
   const labels = [
-   ['sl','Preizkusita urejevalnik','Pogled za goste','Naslov poročne strani','Brezčasna eleganca','Telefon','Kratek podnaslov'],
-   ['hr','Isprobajte uređivač','Prikaz za goste','Naslov stranice vjenčanja','Bezvremenska elegancija','Telefon','Kratki podnaslov'],
-   ['sr','Isprobajte uređivač','Prikaz za goste','Naslov stranice venčanja','Bezvremenska elegancija','Telefon','Kratak podnaslov'],
-   ['en','Try the editor','Guest view','Wedding page title','Timeless elegance','Phone','Short subtitle'],
-   ['de','Editor ausprobieren','Gästeansicht','Titel der Hochzeitsseite','Zeitlose Eleganz','Handy','Kurzer Untertitel'],
-   ['es','Probar el editor','Vista de invitados','Título de la página de boda','Elegancia atemporal','Móvil','Subtítulo breve'],
+   ['sl','Urejevalnik','Pogled za goste','Naslov poročne strani','Brezčasna eleganca','Telefon','Kratek podnaslov'],
+   ['hr','Uređivač','Prikaz za goste','Naslov stranice vjenčanja','Bezvremenska elegancija','Telefon','Kratki podnaslov'],
+   ['sr','Uređivač','Prikaz za goste','Naslov stranice venčanja','Bezvremenska elegancija','Telefon','Kratak podnaslov'],
+   ['en','Editor','Guest view','Wedding page title','Timeless elegance','Phone','Short subtitle'],
+   ['de','Editor','Gästeansicht','Titel der Hochzeitsseite','Zeitlose Eleganz','Handy','Kurzer Untertitel'],
+   ['es','Editor','Vista de invitados','Título de la página de boda','Elegancia atemporal','Móvil','Subtítulo breve'],
   ];
   const mutations=[];page.on('request',request=>{if(request.url().includes('/api/')&&request.method()!=='GET')mutations.push(request.method());});
   for(const [lang,edit,guest,title,timeless,phone,subtitle] of labels){

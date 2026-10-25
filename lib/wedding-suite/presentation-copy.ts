@@ -8,7 +8,7 @@ const rows = {
  sampleLabel: ['Primer poročne strani z vzorčnimi podatki','Primjer stranice vjenčanja s oglednim podacima','Primer stranice venčanja sa probnim podacima','Example wedding website with sample content','Beispiel einer Hochzeitswebsite mit Musterdaten','Ejemplo de web de boda con contenido de muestra'],
  sample: ['Primer z vzorčnimi podatki. Spremembe v tem prikazu ostanejo samo tukaj.','Primjer s oglednim podacima. Promjene u ovom prikazu ostaju samo ovdje.','Primer sa probnim podacima. Izmene u ovom prikazu ostaju samo ovde.','Sample content. Changes in this demo stay here only.','Beispieldaten. Änderungen in dieser Vorschau bleiben nur hier.','Contenido de ejemplo. Los cambios en esta demostración solo se aplican aquí.'],
  guestView: ['Pogled za goste','Prikaz za goste','Prikaz za goste','Guest view','Gästeansicht','Vista de invitados'],
- editorView: ['Preizkusita urejevalnik','Isprobajte uređivač','Isprobajte uređivač','Try the editor','Editor ausprobieren','Probar el editor'],
+ editorView: ['Urejevalnik','Uređivač','Uređivač','Editor','Editor','Editor'],
  content: ['Vsebina strani','Sadržaj stranice','Sadržaj stranice','Page content','Seiteninhalt','Contenido de la página'],
  appearance: ['Videz strani','Izgled stranice','Izgled stranice','Page design','Seitendesign','Diseño de la página'],
  templates: ['Izberita začetni slog','Odaberite početni stil','Izaberite početni stil','Choose a starting style','Wählt einen Ausgangsstil','Elegid un estilo inicial'],

@@ -24,7 +24,8 @@ const until = async (predicate, message) => {
   browser = await playwright[engine].launch(engine === 'chromium' ? { executablePath: process.env.CHROMIUM_EXECUTABLE_PATH || (fs.existsSync('/usr/bin/chromium') ? '/usr/bin/chromium' : undefined), args: ['--no-sandbox'] } : {});
   const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
   page.on('dialog', dialog => dialog.accept());
-  const errors = []; page.on('pageerror', error => { errors.push(error.message); console.error('Browser error:', error.message); });
+  let stage='load/retry';
+  const errors = []; page.on('pageerror', error => { errors.push(stage+': '+error.message); console.error('Browser error:', error.message); });
   let config = { enabled: false, defaultLang: 'en', features: { guestbook: true, video: true, seating: true, rsvp: true, capsule: true, story: true, travel: true, thanks: true }, welcome: {}, invitation: {}, thankYou: {}, story: [], travel: [], menuOptions: [], tables: [], seatingMapUrl: '', thankYouPhotoUrl: '', capsuleUnlockAt: null, rsvpDeadline: null, maxCompanions: 1 };
   let failLoad = true, failSave = false, holdSave, holdTranslation, active = 0, peak = 0;
   const writes = [], actions = [];
@@ -64,6 +65,7 @@ const until = async (predicate, message) => {
   await saved(); assert.equal(config.enabled, true); assert.equal(config.capsuleUnlockAt, null);
   await page.getByText('The time capsule is a draft until you set its opening date. Other changes still save automatically.', { exact: true }).waitFor();
 
+  stage='typing';
   const beforeTyping = writes.length;
   await welcome().pressSequentially('Welcome to our wedding', { delay: 15 });
   await saved(); assert.equal(writes.length, beforeTyping + 1, 'Typing must be debounced');
@@ -81,6 +83,7 @@ const until = async (predicate, message) => {
   await menu.getByRole('textbox').fill('Vegetarian');
   await saved(); assert.equal(config.tables.length, 2); assert.equal(config.menuOptions[0].title.en, 'Vegetarian');
 
+  stage='saving while editing';
   let release;
   holdSave = new Promise(resolve => { release = resolve; });
   const beforeSlow = writes.length;
@@ -94,6 +97,7 @@ const until = async (predicate, message) => {
   const seating = page.locator('section').filter({ has: page.getByRole('heading', { name: 'Find your table', exact: true }) }).last();
   await seating.getByRole('button', { name: 'Remove', exact: true }).last().click();
   await saved(); assert.equal(config.tables.length, 2, 'Removing a table must autosave');
+  stage='invalid draft/reload';
   await page.getByLabel('Seats', { exact: true }).first().fill('0');
   await page.waitForSelector('[data-autosave-state="invalid"]');
   const invalidWrites = writes.length;
@@ -106,6 +110,7 @@ const until = async (predicate, message) => {
   await saved(); assert.equal(writes.length, invalidWrites + 1); assert.equal(config.tables[0].capacity, 6);
 
   failSave = true;
+  stage='failed save/reload';
   await welcome().fill('Recover me after a failed save');
   await page.waitForSelector('[data-autosave-state="error"]');
   await page.getByRole('button', { name: 'Retry saving', exact: true }).waitFor();
@@ -114,9 +119,11 @@ const until = async (predicate, message) => {
   failSave = false; await page.reload(); await saved();
   assert.equal(config.welcome.en, 'Recover me after a failed save');
   failSave = true;
+  stage='reconnect';
   await welcome().fill('Retry on reconnection'); await page.waitForSelector('[data-autosave-state="error"]');
   failSave = false; await page.evaluate(() => window.dispatchEvent(new Event('online'))); await saved();
   assert.equal(config.welcome.en, 'Retry on reconnection');
+  stage='tab resume';
   failSave = true; await welcome().fill('Retry when returning to the tab'); await page.waitForSelector('[data-autosave-state="error"]');
   const hiddenWrites = writes.length;
   await page.evaluate(() => { Object.defineProperty(document, 'visibilityState', { value: 'hidden', configurable: true }); document.dispatchEvent(new Event('visibilitychange')); });
@@ -126,6 +133,7 @@ const until = async (predicate, message) => {
   await saved(); assert.equal(config.welcome.en, 'Retry when returning to the tab');
 
   // A newer server version must never be silently replaced by an old local draft.
+  stage='conflicting draft/reload';
   failSave = true; await welcome().fill('My local draft'); await page.waitForSelector('[data-autosave-state="error"]');
   config.welcome.en = 'A newer server edit'; failSave = false;
   const conflictWrites = writes.length;
@@ -134,6 +142,7 @@ const until = async (predicate, message) => {
   await page.getByRole('button', { name: 'Keep saved version', exact: true }).click();
   await saved(); assert.equal(await welcome().inputValue(), 'A newer server edit');
 
+  stage='translation';
   let releaseTranslation;
   holdTranslation = new Promise(resolve => { releaseTranslation = resolve; });
   await page.getByRole('checkbox', { name: /Translate missing text/ }).check();
@@ -152,6 +161,7 @@ const until = async (predicate, message) => {
    assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), `Editor overflow at ${width}px`);
   }
   // Slovenian review image uses the real editor and synthetic fixture data.
+  stage='screenshots';
   await page.goto(base + '/?lang=sl'); await saved();
   const output = path.join(root, 'artifacts/mobile-menu'); fs.mkdirSync(output, { recursive: true });
   await page.setViewportSize({ width: 1280, height: 900 });

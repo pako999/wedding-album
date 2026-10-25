@@ -44,7 +44,7 @@ export function WeddingPageBuilder({ value, lang, editLang, onChange }: {
       <div className="grid min-w-0 gap-6 xl:grid-cols-2">
         <div className="min-w-0 space-y-5">
           <div className="space-y-3"><h3 className="text-sm font-semibold">{p.templates}</h3><div className="grid grid-cols-3 gap-3">{(Object.keys(PAGE_STYLES) as PageStyle[]).map(style => <button key={style} type="button" className="min-w-0 overflow-hidden rounded-xl border border-stone-300 bg-white text-left transition hover:border-stone-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-700" onClick={() => onChange(applyPageStyle(page, style))}>
-            <img src={PAGE_STYLES[style].image} alt="" width={320} height={240} loading="lazy" className="aspect-[4/3] w-full object-cover" /><span className="block px-2 py-3 text-xs font-semibold leading-5">{p[style]}</span>
+            <img src={PAGE_STYLES[style].image} alt="" width={320} height={240} loading="lazy" className="aspect-[4/3] w-full object-cover" /><span className="block px-2 py-3 text-xs font-semibold leading-5 [overflow-wrap:anywhere]">{p[style]}</span>
           </button>)}</div></div>
           <label className="block text-sm font-semibold">{t.pageTitle}<input className={fieldClass} maxLength={180} value={page.title[editLang] ?? ''} onChange={event => onChange({ ...page, title: { ...page.title, [editLang]: event.target.value } })} /></label>
           <label className="block text-sm">{p.subtitle}<input className={fieldClass} maxLength={180} value={page.subtitle?.[editLang] ?? ''} onChange={event => onChange({ ...page, subtitle: { ...page.subtitle, [editLang]: event.target.value } })} /></label>

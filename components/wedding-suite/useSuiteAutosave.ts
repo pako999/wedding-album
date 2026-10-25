@@ -18,6 +18,7 @@ export function useSuiteAutosave(endpoint: string, initial: SuiteConfig, onSaved
  const ready = useRef(false);
  const conflict = useRef<Draft | null>(null);
  const flight = useRef<Promise<boolean> | null>(null);
+ const controller = useRef<AbortController | null>(null);
  // Config drafts only: never persist the guest list, invitation tokens or email queue.
  const storageKey = `wedding-suite-draft:${endpoint}`;
  const persist = useCallback(() => {
@@ -62,9 +63,11 @@ export function useSuiteAutosave(endpoint: string, initial: SuiteConfig, onSaved
   if (serialized === saved.current) { setStatus('saved'); return true; }
   if (!configSchema.safeParse(snapshot).success) { setStatus('invalid'); return false; }
   setStatus('saving'); setError('');
+  const requestController = new AbortController(); controller.current = requestController;
+  const timeout = setTimeout(() => requestController.abort(), 20_000);
   const pending = (async () => {
    try {
-    const response = await fetch(`${endpoint}?translate=0`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: serialized, signal: AbortSignal.timeout(20_000) });
+    const response = await fetch(`${endpoint}?translate=0`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: serialized, signal: requestController.signal });
     const result = await response.json();
     if (!response.ok) throw new Error(result.error || 'unavailable');
     const parsed = configSchema.safeParse(result.config);
@@ -77,6 +80,8 @@ export function useSuiteAutosave(endpoint: string, initial: SuiteConfig, onSaved
     return true;
    } catch (cause) {
     setError(cause instanceof Error ? cause.message : 'unavailable'); setStatus('error'); persist(); return false;
+   } finally {
+    clearTimeout(timeout); if (controller.current === requestController) controller.current = null;
    }
   })();
   flight.current = pending;
@@ -96,9 +101,15 @@ export function useSuiteAutosave(endpoint: string, initial: SuiteConfig, onSaved
   };
   // WebKit rejects new fetches from a document being dismissed. Keep its draft
   // locally, and retry when the tab becomes visible rather than during unload.
-  const visibility = () => { persist(); if (document.visibilityState === 'visible') void flush(); };
-  window.addEventListener('online', online); window.addEventListener('beforeunload', leaving); document.addEventListener('visibilitychange', visibility);
-  return () => { window.removeEventListener('online', online); window.removeEventListener('beforeunload', leaving); document.removeEventListener('visibilitychange', visibility); };
+  let resumeTimer: ReturnType<typeof setTimeout> | undefined;
+  const hiding = () => { clearTimeout(resumeTimer); persist(); controller.current?.abort(); };
+  const visibility = () => {
+   persist(); clearTimeout(resumeTimer);
+   // Closing a beforeunload prompt can briefly report "visible" before pagehide.
+   if (document.visibilityState === 'visible') resumeTimer = setTimeout(() => { void flush(); }, 800);
+  };
+  window.addEventListener('online', online); window.addEventListener('beforeunload', leaving); window.addEventListener('pagehide', hiding); document.addEventListener('visibilitychange', visibility);
+  return () => { clearTimeout(resumeTimer); window.removeEventListener('online', online); window.removeEventListener('beforeunload', leaving); window.removeEventListener('pagehide', hiding); document.removeEventListener('visibilitychange', visibility); };
  }, [flush, persist]);
  return { config, setConfig, initialize, status, error, flush, recovery, resolveRecovery };
 }
