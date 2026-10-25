@@ -85,7 +85,15 @@
   50%      { transform: translate(-50%, -50%) scale(1.045); }
 }
 
+html {
+  width: 100%;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
 html, body {
+  min-width: 0;
+  width: 100%;
   background: #ffffff;
   color: var(--charcoal);
   /* Site-wide guard against horizontal overflow on mobile — a single

@@ -4,6 +4,11 @@ on:
     paths:
       - components/HomeMobileMenu.tsx
       - components/SiteHeader.tsx
+      - components/wedding/WeddingLandingPage.tsx
+      - components/wedding/WeddingOfferPrice.tsx
+      - components/wedding/WeddingOfferBanner.tsx
+      - app/globals.css
+      - scripts/wedding-package-browser-check.cjs
       - components/album/AlbumGuestView.tsx
       - components/album/UploadModal.tsx
       - components/album/PhotoCaptureButton.tsx
@@ -47,6 +52,8 @@ jobs:
       - name: Real component and production-CSS browser checks
         run: |
           node scripts/mobile-menu-browser-check.mjs
+          node scripts/wedding-package-browser-check.cjs
+          PACKAGE_BROWSER_ENGINE=webkit node scripts/wedding-package-browser-check.cjs
           node scripts/photo-capture-browser-check.cjs
           PHOTO_CAPTURE_ENGINE=webkit node scripts/photo-capture-browser-check.cjs
       - name: Upload mobile screenshots and test results
