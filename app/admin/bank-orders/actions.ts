@@ -6,12 +6,13 @@ import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { requireAdmin } from "@/lib/admin";
 import { applyPlanToAlbum } from "@/lib/paddle-reconcile";
-import { BUSINESS_PRICE_EUR } from "@/lib/plan-pricing";
+import { weddingOffer } from '@/lib/wedding-offer';
+import { BUSINESS_PRICE_EUR, PREMIUM_REGULAR_PRICE_EUR } from "@/lib/plan-pricing";
 
 const PLAN_LABELS: Record<string, { name: string; price: number }> = {
   basic:   { name: "Basic",   price: 39 },
   plus:    { name: "Plus",    price: 49 },
-  premium: { name: "Poročni premium", price: 84 },
+  premium: { name: "Poročni premium", price: PREMIUM_REGULAR_PRICE_EUR },
   business: { name: "Poslovni", price: BUSINESS_PRICE_EUR },
 };
 
@@ -52,5 +53,7 @@ export async function updateOrderStatus(id: string, status: "pending" | "paid" |
     if (!applied) throw new Error("Paket ni bil aktiviran; preverite album in naročilo");
   }
   await db.update(bankOrders).set({ status }).where(eq(bankOrders.id, id));
+  if (status === 'paid' || order.status === 'paid') await weddingOffer.settleBank(id, true);
+  else if (status === 'cancelled') await weddingOffer.settleBank(id, false);
   revalidatePath("/admin/bank-orders");
 }

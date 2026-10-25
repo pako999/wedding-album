@@ -2,9 +2,9 @@
 
 import { useState } from "react";
 import { addManualOrder } from "./actions";
-import { BUSINESS_PRICE_EUR, PREMIUM_SALE_PRICE_EUR } from "@/lib/plan-pricing";
+import { BUSINESS_PRICE_EUR, PREMIUM_REGULAR_PRICE_EUR } from "@/lib/plan-pricing";
 
-const PLAN_PRICES: Record<string, number> = { basic: 39, plus: 49, premium: PREMIUM_SALE_PRICE_EUR, business: BUSINESS_PRICE_EUR };
+const PLAN_PRICES: Record<string, number> = { basic: 39, plus: 49, premium: PREMIUM_REGULAR_PRICE_EUR, business: BUSINESS_PRICE_EUR };
 
 export function AddOrderForm() {
   const [open, setOpen]       = useState(false);
@@ -114,7 +114,7 @@ export function AddOrderForm() {
           >
             <option value="basic">Basic — 39€</option>
             <option value="plus">Plus — 49€</option>
-            <option value="premium">Poročni premium — {PREMIUM_SALE_PRICE_EUR}€</option>
+            <option value="premium">Poročni premium — {PREMIUM_REGULAR_PRICE_EUR}€</option>
             <option value="business">Poslovni — {BUSINESS_PRICE_EUR}€</option>
           </select>
         </div>

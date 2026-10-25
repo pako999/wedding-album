@@ -1,14 +1,16 @@
-export const PREMIUM_REGULAR_PRICE_EUR = 129;
-export const PREMIUM_SALE_PERCENT = 35;
-/** 129 € × 65% = 83.85 €, presented and charged as 84 €. */
-export const PREMIUM_SALE_PRICE_EUR = 84;
-export const PREMIUM_SALE_PRICE_CENTS = PREMIUM_SALE_PRICE_EUR * 100;
+export const PREMIUM_REGULAR_PRICE_EUR = 189;
+export const PREMIUM_REGULAR_PRICE_CENTS = PREMIUM_REGULAR_PRICE_EUR * 100;
+export const PREMIUM_SALE_PERCENT = 30;
+export const PREMIUM_SALE_PRICE_CENTS = Math.round(PREMIUM_REGULAR_PRICE_CENTS * (100 - PREMIUM_SALE_PERCENT) / 100);
+export const PREMIUM_SALE_PRICE_EUR = PREMIUM_SALE_PRICE_CENTS / 100;
+export const WEDDING_OFFER_CAPACITY = 20;
+export const WEDDING_OFFER_ID = 'wedding-launch-189-30-20261025';
 export const BUSINESS_PRICE_EUR = 149;
 export const BUSINESS_PRICE_CENTS = BUSINESS_PRICE_EUR * 100;
 
 export const PLAN_SALE_PRICES_EUR = {
   basic: 39,
   plus: 49,
-  premium: PREMIUM_SALE_PRICE_EUR,
+  premium: PREMIUM_REGULAR_PRICE_EUR,
   business: BUSINESS_PRICE_EUR,
 } as const;

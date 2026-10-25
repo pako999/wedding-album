@@ -10,6 +10,8 @@ export function VideoRecorder({ lang, onFile }: { lang: SuiteLang; onFile: (file
  const video = useRef<HTMLVideoElement>(null);
  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
  const alive = useRef(true);
+ const starting = useRef(false);
+ const [preparing, setPreparing] = useState(false);
  const [recording, setRecording] = useState(false);
  const [error, setError] = useState('');
  const stop = () => { if (recorder.current?.state === 'recording') recorder.current.stop(); };
@@ -18,8 +20,10 @@ export function VideoRecorder({ lang, onFile }: { lang: SuiteLang; onFile: (file
   return () => { alive.current = false; if (timer.current) clearTimeout(timer.current); stop(); stream.current?.getTracks().forEach(track => track.stop()); };
  }, []);
  async function record() {
+  if (starting.current || recorder.current?.state === 'recording') return;
   setError('');
   if (!navigator.mediaDevices?.getUserMedia || typeof MediaRecorder === 'undefined') { setError(t.recorderUnsupported); return; }
+  starting.current = true; setPreparing(true);
   try {
    stream.current = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' }, audio: true });
    if (!alive.current) { stream.current.getTracks().forEach(track => track.stop()); return; }
@@ -39,12 +43,13 @@ export function VideoRecorder({ lang, onFile }: { lang: SuiteLang; onFile: (file
     if (blob.size) onFile(new File([blob], `wedding-wish-${Date.now()}.${type.includes('mp4') ? 'mp4' : 'webm'}`, { type: type.split(';')[0] }));
    };
    instance.start(); setRecording(true); timer.current = setTimeout(stop, 60_000);
-  } catch { stream.current?.getTracks().forEach(track => track.stop()); setError(t.recordPermission); }
+  } catch { stream.current?.getTracks().forEach(track => track.stop()); if (alive.current) setError(t.recordPermission); }
+  finally { starting.current = false; if (alive.current) setPreparing(false); }
  }
  return <div className="space-y-3"><p className="text-sm text-stone-600">{t.videoPrompt}</p>
   <video ref={video} autoPlay playsInline muted className={recording ? 'aspect-video w-full rounded-2xl bg-black' : 'hidden'} />
-  {recording ? <button className={secondaryClass} type="button" onClick={stop}>{t.stopRecording}</button> : <button className={buttonClass} type="button" onClick={() => void record()}>{t.record} · 60 s</button>}
-  <label className="block text-sm font-medium">{t.uploadVideo}<input type="file" accept="video/*" capture="user" className="mt-2 block max-w-full" disabled={recording} onChange={event => { const file = event.target.files?.[0]; if (file) onFile(file); event.target.value = ''; }} /></label>
+  {recording ? <button className={secondaryClass} type="button" onClick={stop}>{t.stopRecording}</button> : <button className={buttonClass} type="button" disabled={preparing} onClick={() => void record()}>{preparing ? t.loading : `${t.record} · 60 s`}</button>}
+  <label className="block text-sm font-medium">{t.uploadVideo}<input type="file" accept="video/*" capture="user" className="mt-2 block max-w-full" disabled={recording || preparing} onChange={event => { const file = event.target.files?.[0]; if (file) onFile(file); event.target.value = ''; }} /></label>
   {error && <p role="alert" className="text-sm text-red-700">{error}</p>}
  </div>;
 }

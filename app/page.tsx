@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { SITE_URL } from "@/lib/urls";
 import { GuestcamHomePage, HOME_FAQS } from "@/components/GuestcamHomePage";
 import { withRegionalHreflang } from "@/lib/seo/hreflang";
-import { PREMIUM_SALE_PRICE_EUR } from "@/lib/plan-pricing";
+import { PREMIUM_REGULAR_PRICE_EUR } from "@/lib/plan-pricing";
 
 export const metadata: Metadata = {
   title: "Guestcam.si | QR galerija za dogodke in fotografije gostov",
@@ -34,7 +34,7 @@ const jsonLd = {
         { "@type": "Offer", name: "Free", price: "0", priceCurrency: "EUR" },
         { "@type": "Offer", name: "Basic", price: "39", priceCurrency: "EUR" },
         { "@type": "Offer", name: "Plus", price: "49", priceCurrency: "EUR" },
-        { "@type": "Offer", name: "Poročni premium", price: String(PREMIUM_SALE_PRICE_EUR), priceCurrency: "EUR" },
+        { "@type": "Offer", name: "Poročni premium", price: String(PREMIUM_REGULAR_PRICE_EUR), priceCurrency: "EUR" },
       ],
     },
     {

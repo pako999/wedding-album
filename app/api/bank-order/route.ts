@@ -1,3 +1,4 @@
+import { weddingOffer, type OfferClaim } from '@/lib/wedding-offer';
 import { weddingCopy } from "@/lib/wedding/copy";
 import { NextRequest, NextResponse } from "next/server";
 import {
@@ -14,14 +15,14 @@ import { validateDiscount, incrementDiscountUsage } from "@/lib/discount";
 import { recordStandOrder } from "@/lib/stand-orders";
 import { checkAlbumOwnership } from "@/lib/album-ownership";
 import { normalizeCheckoutLang } from "@/lib/i18n/checkout-locale";
-import { BUSINESS_PRICE_EUR, PREMIUM_SALE_PRICE_EUR } from "@/lib/plan-pricing";
+import { BUSINESS_PRICE_EUR, PREMIUM_REGULAR_PRICE_EUR } from "@/lib/plan-pricing";
 
 export const runtime = "nodejs";
 
 const PLAN_LABELS = {
   basic:   { name: "Basic",   price: 39 },
   plus:    { name: "Plus",    price: 49 },
-  premium: { name: "Premium", price: PREMIUM_SALE_PRICE_EUR },
+  premium: { name: "Premium", price: PREMIUM_REGULAR_PRICE_EUR },
   business: { name: "Poslovni", price: BUSINESS_PRICE_EUR },
 } as const;
 
@@ -51,6 +52,7 @@ export async function POST(req: NextRequest) {
     standsQty?: number;
     standsVariant?: StandVariant;
     planId?: unknown;
+    expectedPlanCents?: number;
     albumSlug?: unknown;
     locale?: unknown;
     billing?: BillingDetails;
@@ -122,12 +124,15 @@ export async function POST(req: NextRequest) {
   }
 
   const planBase = PLAN_LABELS[planId];
-  let finalPrice: number = planBase.price;
+  const premiumQuote = planId === 'premium' ? await weddingOffer.quote(album.ownerClerkId) : null;
+  if (premiumQuote?.pending) return NextResponse.json({ error: 'premium_checkout_pending' }, { status: 409 });
+  let finalPrice: number = premiumQuote ? premiumQuote.priceCents / 100 : planBase.price;
   let discountCodeId: string | undefined;
   let discountPercent: number | undefined;
 
   if (discountCode) {
-    const disc = await validateDiscount(discountCode, planId);
+    const disc = await validateDiscount(discountCode, planId, Math.round(finalPrice * 100));
+    if (!disc.valid) return NextResponse.json({ error: disc.error }, { status: 409 });
     if (disc.valid) {
       finalPrice = disc.finalPrice;
       discountCodeId = disc.discountCodeId;
@@ -136,7 +141,15 @@ export async function POST(req: NextRequest) {
   }
   const plan = { name: planId === "premium" ? weddingCopy(checkoutLang).plan : planBase.name, price: finalPrice };
 
-  await db.insert(bankOrders).values({
+  if (planId === 'premium' && (!Number.isSafeInteger(body.expectedPlanCents) || body.expectedPlanCents! < Math.round(plan.price * 100))) {
+    return NextResponse.json({ error: 'price_changed', priceCents: Math.round(plan.price * 100) }, { status: 409 });
+  }
+  let offerClaim: OfferClaim | null = null;
+  if (premiumQuote?.eligible) {
+    try { offerClaim = await weddingOffer.reserve(album.ownerClerkId, albumSlug, 'invoice'); } catch { /* no confirmed slot */ }
+    if (!offerClaim) return NextResponse.json({ error: 'price_changed' }, { status: 409 });
+  }
+  const [order] = await db.insert(bankOrders).values({
     albumSlug,
     email,
     planId,
@@ -148,7 +161,8 @@ export async function POST(req: NextRequest) {
     billingAddress: billing?.address ?? null,
     billingCity: billing?.city ?? null,
     billingTaxId: billing?.taxId ?? null,
-  });
+  }).returning({ id: bankOrders.id });
+  if (offerClaim) await weddingOffer.bind(offerClaim.attemptId, `bank:${order.id}`);
 
   await sendBankOrderConfirmation({
     to: email,
@@ -173,7 +187,7 @@ export async function POST(req: NextRequest) {
       orderRef: null,
       planId,
       planName: plan.name,
-      planCents: plan.price * 100,
+      planCents: Math.round(plan.price * 100),
       variant: standsV,
       qty: standsQ,
       standsCents: goods,
@@ -181,7 +195,7 @@ export async function POST(req: NextRequest) {
       shipCarrier: standsQuote.carrier,
       shipCountry: (billing?.country ?? "").toUpperCase() || null,
       shipCustoms: standsQuote.customs,
-      totalCents: plan.price * 100 + goods + standsQuote.cents,
+      totalCents: Math.round(plan.price * 100) + goods + standsQuote.cents,
       recipientName:  clean(billing?.name),
       recipientPhone: clean(billing?.phone),
       recipientEmail: clean(billing?.email) ?? email,

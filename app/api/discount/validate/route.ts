@@ -1,3 +1,5 @@
+import { auth } from '@clerk/nextjs/server';
+import { weddingOffer } from '@/lib/wedding-offer';
 import { NextRequest, NextResponse } from "next/server";
 import { validateDiscount } from "@/lib/discount";
 import { checkRateLimit } from "@/lib/rate-limit";
@@ -14,6 +16,8 @@ export async function POST(req: NextRequest) {
   if (!code || !planId) {
     return NextResponse.json({ valid: false, error: "Manjkajoči parametri." }, { status: 400 });
   }
-  const result = await validateDiscount(code, planId);
+  let premiumBase: number | undefined;
+  if (planId === 'premium') { const session = await auth().catch(() => ({ userId: null })); premiumBase = (await weddingOffer.quote(session.userId || '')).priceCents; }
+  const result = await validateDiscount(code, planId, premiumBase);
   return NextResponse.json(result);
 }

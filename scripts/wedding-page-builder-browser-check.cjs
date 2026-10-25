@@ -67,6 +67,13 @@ const { chromium } = req('playwright');
     await page.reload();
     await editor.getByLabel('Wedding page title', { exact: true }).waitFor();
     assert.equal(await editor.getByLabel('Wedding page title', { exact: true }).inputValue(), 'Ana & Marko');
+    if (process.env.WEDDING_GUIDE_OUTPUT_DIR) {
+      fs.mkdirSync(process.env.WEDDING_GUIDE_OUTPUT_DIR, { recursive: true });
+      await page.setViewportSize({ width: 1280, height: 900 });
+      await editor.getByRole('complementary', { name: 'Page preview' }).screenshot({ path: path.join(process.env.WEDDING_GUIDE_OUTPUT_DIR, 'wedding-page-guide.png') });
+      await editor.locator('details').first().screenshot({ path: path.join(process.env.WEDDING_GUIDE_OUTPUT_DIR, 'wedding-style-guide.png') });
+      await page.setViewportSize({ width: 390, height: 900 });
+    }
     await page.getByLabel('Content language', { exact: true }).selectOption('de');
     await editor.getByLabel('Category title', { exact: true }).fill('Unsere Trauung');
     await fields.nth(0).locator('textarea, input:not([type="color"])').first().fill('Wir sehen uns im Garten.');

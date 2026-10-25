@@ -2,7 +2,7 @@
 import { formatEuropeanDate } from "@/lib/date-format";
 import { WeddingSettingsCard } from "@/components/wedding/WeddingSettingsCard";
 import { weddingCopy } from "@/lib/wedding/copy";
-import { PREMIUM_SALE_PRICE_EUR } from "@/lib/plan-pricing";
+import { PREMIUM_REGULAR_PRICE_EUR } from "@/lib/plan-pricing";
 
 import { SITE_URL } from "@/lib/urls";
 import { useState, useEffect, useRef } from "react";
@@ -45,7 +45,7 @@ import { ADMIN_SETTINGS_COPY } from "@/lib/i18n/admin-settings-copy";
 const PLAN_PRICES_EUR: Record<"basic" | "plus" | "premium" | "business", number> = {
   basic:   39,
   plus:    49,
-  premium: PREMIUM_SALE_PRICE_EUR,
+  premium: PREMIUM_REGULAR_PRICE_EUR,
   business: 149,
 };
 
