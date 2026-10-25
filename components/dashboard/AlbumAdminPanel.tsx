@@ -1,4 +1,5 @@
 "use client";
+import { formatEuropeanDate } from "@/lib/date-format";
 import { WeddingSettingsCard } from "@/components/wedding/WeddingSettingsCard";
 import { weddingCopy } from "@/lib/wedding/copy";
 import { PREMIUM_SALE_PRICE_EUR } from "@/lib/plan-pricing";
@@ -561,7 +562,7 @@ export function AlbumAdminPanel({ album, lang, photos, pendingCount, guestCount,
         <div className="px-5 pb-4">
           <p className="text-[11px] font-semibold uppercase tracking-wider text-gray-400 mb-2">{copy.yourGallery}</p>
           <p className="font-bold text-sm text-gray-900 leading-tight truncate">{album.coupleName}</p>
-          <p className="text-xs text-gray-400 mt-0.5">{album.weddingDate}</p>
+          <p className="text-xs text-gray-400 mt-0.5">{formatEuropeanDate(album.weddingDate)}</p>
           <span className={`inline-block mt-2 px-2 py-0.5 rounded-full text-[11px] font-semibold ${planBadgeClass}`}>
             {planLabel}
           </span>
