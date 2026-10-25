@@ -25,7 +25,7 @@ export function useWeddingOffer(customer = false) {
 export function WeddingOfferPrice({ lang, compact = false }: { lang: Lang; compact?: boolean }) {
   const { quote } = useWeddingOffer(); const t = OFFER_COPY[lang];
   const money = (cents: number) => new Intl.NumberFormat(lang, { style: 'currency', currency: 'EUR' }).format(cents / 100);
-  return <div data-wedding-offer className={compact ? 'my-3' : 'my-5 space-y-3 rounded-3xl bg-stone-950 p-6 text-white'}>
+  return <div data-wedding-offer className={compact ? 'my-3 min-w-0 max-w-full [overflow-wrap:anywhere]' : 'my-5 min-w-0 max-w-full [overflow-wrap:anywhere] space-y-3 rounded-3xl bg-stone-950 p-6 text-white'}>
     <p className="text-xs font-bold uppercase tracking-wide">{quote?.eligible ? t.launch : t.standard}</p>
     {quote?.verified && quote.eligible && <div className="mt-3 flex flex-wrap items-center gap-3"><span className="rounded-full bg-[#F4B400] px-3 py-1 text-sm font-black text-black">−{PREMIUM_SALE_PERCENT}%</span><del className="text-lg opacity-60">{money(PREMIUM_REGULAR_PRICE_CENTS)}</del></div>}
     <p className="mt-2 text-4xl font-black">{money(quote?.priceCents ?? PREMIUM_REGULAR_PRICE_CENTS)}</p>
