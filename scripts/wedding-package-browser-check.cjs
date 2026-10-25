@@ -61,7 +61,10 @@ const { build } = req('esbuild'); const { chromium, webkit } = req('playwright')
   await page.getByText('4 of 8 discounted packages available',{exact:true}).first().waitFor();
   assert.equal(remaining,4,'Returning visits never fabricate or decrement inventory');
   await page.evaluate(()=>{window.Cookiebot.consent.marketing=false;window.dispatchEvent(new Event('CookiebotOnDecline'));});
-  assert.ok(!(await page.context().cookies()).some(cookie=>cookie.name==='gc_wedding_offer_seen'));
+  await page.waitForFunction(()=>!document.cookie.split(';').some(cookie=>cookie.trim().startsWith('gc_wedding_offer_seen=')));
+  let remembered;
+  for(let attempt=0;attempt<20;attempt++){remembered=(await page.context().cookies()).some(cookie=>cookie.name==='gc_wedding_offer_seen');if(!remembered)break;await page.waitForTimeout(50);}
+  assert.equal(remembered,false,'Consent withdrawal must remove the returning-visitor cookie');
   remaining = 0; await page.reload(); await page.getByText('Standard package price', { exact: true }).first().waitFor();
   assert.ok(!await page.locator('[data-wedding-offer]').first().innerText().then(text => text.includes('113')));
   available = false; await page.reload(); await page.getByText('Standard package price', { exact: true }).first().waitFor();
