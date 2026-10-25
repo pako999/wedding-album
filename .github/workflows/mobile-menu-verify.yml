@@ -4,6 +4,9 @@ on:
     paths:
       - components/HomeMobileMenu.tsx
       - components/SiteHeader.tsx
+      - components/album/AlbumGuestView.tsx
+      - components/album/PhotoCaptureButton.tsx
+      - scripts/photo-capture-browser-check.cjs
       - scripts/mobile-menu-browser-check.mjs
       - .github/workflows/mobile-menu-verify.yml
 permissions:
@@ -40,7 +43,10 @@ jobs:
       - name: Install Chromium and WebKit
         run: node "$MOBILE_MENU_TOOLS/node_modules/playwright/cli.js" install --with-deps chromium webkit
       - name: Real component and production-CSS browser checks
-        run: node scripts/mobile-menu-browser-check.mjs
+        run: |
+          node scripts/mobile-menu-browser-check.mjs
+          node scripts/photo-capture-browser-check.cjs
+          PHOTO_CAPTURE_ENGINE=webkit node scripts/photo-capture-browser-check.cjs
       - name: Upload mobile screenshots and test results
         if: always()
         uses: actions/upload-artifact@v4
