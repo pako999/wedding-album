@@ -5,6 +5,8 @@ on:
       - components/HomeMobileMenu.tsx
       - components/SiteHeader.tsx
       - components/wedding/WeddingLandingPage.tsx
+      - components/wedding/WeddingFeatureDetails.tsx
+      - lib/wedding/feature-details-sl.ts
       - components/wedding/WeddingOfferPrice.tsx
       - components/wedding/WeddingOfferBanner.tsx
       - app/globals.css
