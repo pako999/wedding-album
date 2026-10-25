@@ -1,3 +1,4 @@
+import { formatEuropeanDate } from "@/lib/date-format";
 import { weddingCopy } from "@/lib/wedding/copy";
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
@@ -280,7 +281,7 @@ export default async function DashboardPage({
                 <div className="p-5 flex flex-col flex-1">
                   <h3 className="text-lg font-semibold text-[color:var(--ink)] mb-0.5">{album.coupleName}</h3>
                   <p className="text-xs text-[color:var(--muted)] mb-3">
-                    {album.weddingDate}{album.location ? ` · ${album.location}` : ""}
+                    {formatEuropeanDate(album.weddingDate)}{album.location ? ` · ${album.location}` : ""}
                   </p>
                   <div className="flex items-center gap-4 mb-4">
                     <div className="flex items-center gap-1.5">

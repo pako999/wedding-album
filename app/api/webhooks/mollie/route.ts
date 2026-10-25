@@ -1,3 +1,4 @@
+import { weddingOffer } from '@/lib/wedding-offer';
 import { SITE_URL } from "@/lib/urls";
 import { NextRequest, NextResponse } from "next/server";
 import { getPayment, isPaidStatus, isRefundedStatus, mollieConfigured } from "@/lib/mollie";
@@ -96,6 +97,7 @@ export async function POST(req: NextRequest) {
     (parseFloat(payment.amountRefunded?.value ?? "0") > 0);
   if (refunded) {
     try {
+      if (payment.metadata?.planId === 'premium' && payment.metadata.weddingOfferAttempt && payment.metadata.albumSlug) await weddingOffer.settle(payment.metadata.weddingOfferAttempt, paymentId, payment.metadata.albumSlug, true);
       await clawbackAffiliateCommission(paymentId);
       return NextResponse.json(
         { received: true },
@@ -110,6 +112,10 @@ export async function POST(req: NextRequest) {
   }
 
   if (!isPaidStatus(payment.status)) {
+    if (['canceled', 'expired', 'failed'].includes(payment.status) && payment.metadata?.weddingOfferAttempt && payment.metadata.albumSlug) {
+      try { await weddingOffer.settle(payment.metadata.weddingOfferAttempt, paymentId, payment.metadata.albumSlug, false); }
+      catch { return NextResponse.json({ error: 'Offer reconciliation failed' }, { status: 503 }); }
+    }
     return NextResponse.json(
       { received: true },
       { headers: { "Cache-Control": "no-store" } },
@@ -122,6 +128,11 @@ export async function POST(req: NextRequest) {
   if (!albumSlug || !planId) {
     console.error("[mollie webhook] missing metadata", payment.metadata);
     return NextResponse.json({ error: "Missing metadata" }, { status: 400 });
+  }
+
+  if (planId === 'premium' && payment.metadata?.weddingOfferAttempt) {
+    try { await weddingOffer.settle(payment.metadata.weddingOfferAttempt, paymentId, albumSlug, true); }
+    catch { return NextResponse.json({ error: 'Offer reconciliation failed' }, { status: 503 }); }
   }
 
   // Migration-safe retry marker. Why this exists in addition to the per-action

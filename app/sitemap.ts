@@ -36,7 +36,7 @@ const LAST_EDITED = {
   legalIntl: "2026-08-28",
   contact: "2026-07-01",
   corporateLandings: "2026-08-11",
-  blogIndex: "2026-08-27",
+  blogIndex: "2026-10-25",
 };
 
 function clusterLinks(paths: Record<Locale, string>): Record<string, string> {

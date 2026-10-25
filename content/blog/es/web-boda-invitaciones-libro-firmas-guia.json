@@ -1,0 +1,104 @@
+{
+  "slug": "web-boda-invitaciones-libro-firmas-guia",
+  "lang": "es",
+  "title": "Toda vuestra boda en un enlace: guía de las nuevas funciones de Premium",
+  "description": "Diseñad vuestra web de boda, recibid confirmaciones, organizad las mesas y guardad los mensajes de los invitados. Novedades y guía en tres pasos.",
+  "translationKey": "wedding-website-suite-guide-2026",
+  "publishedAt": "2026-10-25",
+  "updatedAt": "2026-10-25",
+  "author": "Equipo de Guestcam",
+  "category": "novice",
+  "readingTime": 5,
+  "tags": [
+    "1. Una página a vuestro gusto",
+    "2. Invitaciones, confirmaciones y mesas",
+    "Guestcam"
+  ],
+  "tldr": "Una boda necesita algo más que una colección de fotos. Los invitados quieren saber dónde ir, qué pasa después y cómo confirmar su asistencia. El paquete Premium de boda reúne vuestra página, invitaciones y recuerdos. Vosotros elegís qué funciones activar.",
+  "coverImage": "/hero/wedding-page-guide.png",
+  "coverAlt": "Editor de la web de boda con categorías, textos y vista previa",
+  "content": [
+    {
+      "type": "p",
+      "text": "Una boda necesita algo más que una colección de fotos. Los invitados quieren saber dónde ir, qué pasa después y cómo confirmar su asistencia. El paquete Premium de boda reúne vuestra página, invitaciones y recuerdos. Vosotros elegís qué funciones activar."
+    },
+    {
+      "type": "h2",
+      "text": "1. Una página a vuestro gusto"
+    },
+    {
+      "type": "p",
+      "text": "Añadid categorías para la ceremonia, celebración, transporte o alojamiento, o cread las vuestras. Elegid campos de título, texto y enlace en los menús desplegables. Ordenadlos arrastrándolos o con las flechas. Seleccionad fuentes, fondo y color de acento y revisad la vista previa. Ocultad las categorías que todavía no estén listas."
+    },
+    {
+      "type": "image",
+      "src": "/hero/wedding-style-guide.png",
+      "alt": "Controles de fuentes y colores de la web de boda",
+      "caption": "Diseño de ejemplo: sustituid los textos de muestra por los detalles de vuestra boda."
+    },
+    {
+      "type": "h2",
+      "text": "2. Invitaciones, confirmaciones y mesas"
+    },
+    {
+      "type": "p",
+      "text": "Cread enlaces personales de invitación. Los invitados pueden confirmar su asistencia, añadir acompañantes permitidos, elegir menú y enviaros una nota privada. Definid el plazo de respuesta y gestionad las plazas y la asignación de mesas. Cada invitado encuentra su mesa desde su invitación. Las respuestas privadas quedan separadas de la información pública del viaje."
+    },
+    {
+      "type": "h2",
+      "text": "3. Recuerdos más allá de las fotos"
+    },
+    {
+      "type": "p",
+      "text": "Activad el libro de firmas con moderación, las aportaciones fotográficas y las felicitaciones breves en vídeo. Los invitados pueden grabar con un dispositivo compatible o subir una grabación. Una cápsula del tiempo mantiene los mensajes escritos cerrados hasta la fecha elegida. Añadid vuestra historia, información práctica y agradecimientos. El libro se puede imprimir o guardar como PDF desde el navegador."
+    },
+    {
+      "type": "image",
+      "src": "/hero/scan.webp",
+      "alt": "Ver el paquete de boda",
+      "caption": "Diseño de ejemplo: sustituid los textos de muestra por los detalles de vuestra boda."
+    },
+    {
+      "type": "h2",
+      "text": "4. Una boda en los idiomas de vuestros invitados"
+    },
+    {
+      "type": "p",
+      "text": "La interfaz admite esloveno, croata, serbio, inglés, alemán y español. Cuando la traducción automática está configurada, al guardar puede completar traducciones que falten en la página, el programa, el menú y otros contenidos compatibles. Elegid cada idioma del contenido para revisar o corregir el texto. Las traducciones manuales existentes se conservan. Si el servicio no está disponible, el texto original se guarda igualmente."
+    },
+    {
+      "type": "h2",
+      "text": "Configuración en tres pasos"
+    },
+    {
+      "type": "ol",
+      "items": [
+        "Elegid el paquete Premium de boda y abrid los ajustes. Añadid vuestros nombres, historia, detalles del evento y las funciones que queráis utilizar.",
+        "Diseñad la página con los desplegables de categorías y campos. Elegid fuentes y colores, comprobad la vista móvil y revisad los idiomas que compartiréis.",
+        "Añadid invitados, comprobad una invitación personal y compartid el enlace o QR correspondiente. Gestionad respuestas y aportaciones desde el panel."
+      ]
+    },
+    {
+      "type": "h2",
+      "text": "¿Qué incluye y cuánto cuesta?"
+    },
+    {
+      "type": "p",
+      "text": "El programa de la boda, el menú digital, las peticiones musicales para el DJ y el bingo fotográfico siguen incluidos. El paquete Premium también ofrece subidas ilimitadas de fotos y vídeos, almacenamiento y acceso sin límite, descarga ZIP, Photo Wall en directo y Film Studio. Activad las herramientas opcionales que necesitéis; la galería sigue siendo el lugar de las fotos de vuestros invitados."
+    },
+    {
+      "type": "callout",
+      "text": "El precio habitual es de 189 €. Cuando la promoción de lanzamiento está activa y quedan plazas, el descuento del 30 % deja el precio en 132,30 € para las próximas 20 cuentas de clientes elegibles, con un paquete de lanzamiento por cuenta. La página del paquete muestra la disponibilidad compartida verificada. Volver a visitarla o borrar las cookies no crea un nuevo descuento. Comprobad el precio mostrado antes de pagar."
+    },
+    {
+      "type": "faq",
+      "q": "¿Podemos corregir las traducciones?",
+      "a": "Sí. Elegid el idioma del contenido, editad el texto y guardad. La traducción automática completa los textos que faltan sin sustituir vuestras correcciones."
+    },
+    {
+      "type": "cta",
+      "text": "Ver el paquete de boda",
+      "href": "/es/paquete-boda"
+    }
+  ]
+}

@@ -1,7 +1,8 @@
 "use client";
+import { formatEuropeanDate } from "@/lib/date-format";
 import { WeddingSettingsCard } from "@/components/wedding/WeddingSettingsCard";
 import { weddingCopy } from "@/lib/wedding/copy";
-import { PREMIUM_SALE_PRICE_EUR } from "@/lib/plan-pricing";
+import { PREMIUM_REGULAR_PRICE_EUR } from "@/lib/plan-pricing";
 
 import { SITE_URL } from "@/lib/urls";
 import { useState, useEffect, useRef } from "react";
@@ -44,7 +45,7 @@ import { ADMIN_SETTINGS_COPY } from "@/lib/i18n/admin-settings-copy";
 const PLAN_PRICES_EUR: Record<"basic" | "plus" | "premium" | "business", number> = {
   basic:   39,
   plus:    49,
-  premium: PREMIUM_SALE_PRICE_EUR,
+  premium: PREMIUM_REGULAR_PRICE_EUR,
   business: 149,
 };
 
@@ -123,6 +124,7 @@ interface Props {
   flags?: AlbumFlags;
   /** Controls which event details guests see in the public gallery header. */
   headerSettings: AlbumHeaderSettings;
+  qrTargetUrl: string;
 }
 
 /** Copy + tone for the one-time Google Drive result banner. */
@@ -343,7 +345,7 @@ function NewAlbumSuccess({ album, paidPlan, lang }: { album: Album; paidPlan?: "
 
 // ─── Main Panel ───────────────────────────────────────────────────────────────
 
-export function AlbumAdminPanel({ album, lang, photos, pendingCount, guestCount, activeTab, isNew, isUpgraded, paidAmount, paidPlan, ownerEmail, viewingAsAdmin, driveResult, driveCount, hasPassword, wallToken, guestDataCapture = false, flags, headerSettings }: Props) {
+export function AlbumAdminPanel({ album, lang, photos, pendingCount, guestCount, activeTab, isNew, isUpgraded, paidAmount, paidPlan, ownerEmail, viewingAsAdmin, driveResult, driveCount, hasPassword, wallToken, guestDataCapture = false, flags, headerSettings, qrTargetUrl }: Props) {
   const copy = ALBUM_ADMIN_COPY[lang];
   const dashboardCopy = DASHBOARD_COPY[lang];
   const router = useRouter();
@@ -560,7 +562,7 @@ export function AlbumAdminPanel({ album, lang, photos, pendingCount, guestCount,
         <div className="px-5 pb-4">
           <p className="text-[11px] font-semibold uppercase tracking-wider text-gray-400 mb-2">{copy.yourGallery}</p>
           <p className="font-bold text-sm text-gray-900 leading-tight truncate">{album.coupleName}</p>
-          <p className="text-xs text-gray-400 mt-0.5">{album.weddingDate}</p>
+          <p className="text-xs text-gray-400 mt-0.5">{formatEuropeanDate(album.weddingDate)}</p>
           <span className={`inline-block mt-2 px-2 py-0.5 rounded-full text-[11px] font-semibold ${planBadgeClass}`}>
             {planLabel}
           </span>
@@ -800,6 +802,7 @@ export function AlbumAdminPanel({ album, lang, photos, pendingCount, guestCount,
               lang={lang}
               photos={photos}
               albumUrl={albumUrl}
+              qrTargetUrl={qrTargetUrl}
               lastUploadDate={lastUploadDate}
               guestCount={guestCount}
               hasPassword={!!hasPassword}
@@ -829,7 +832,7 @@ export function AlbumAdminPanel({ album, lang, photos, pendingCount, guestCount,
 
           {/* QR */}
           {activeTab === "qr" && (
-            <QrTab album={album} albumUrl={albumUrl} copyToClipboard={copyToClipboard} lang={lang} />
+            <QrTab album={album} albumUrl={qrTargetUrl} copyToClipboard={copyToClipboard} lang={lang} />
           )}
 
           {/* EVENTS — all "running an event" controls in one place, in
@@ -947,6 +950,7 @@ function OverviewTab({
   lang,
   photos,
   albumUrl,
+  qrTargetUrl,
   lastUploadDate,
   guestCount,
   hasPassword,
@@ -957,6 +961,7 @@ function OverviewTab({
   lang: DashboardLang;
   photos: Photo[];
   albumUrl: string;
+  qrTargetUrl: string;
   lastUploadDate: string;
   guestCount: number;
   hasPassword: boolean;
@@ -965,7 +970,7 @@ function OverviewTab({
 }) {
   const copy = ALBUM_ADMIN_COPY[lang];
   const overview = copy.overview;
-  const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(albumUrl)}&bgcolor=ffffff&color=1a1a2e&qzone=2&format=png`;
+  const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(qrTargetUrl)}&bgcolor=ffffff&color=1a1a2e&qzone=2&format=png`;
   const last4 = photos.slice(0, 4);
   const usedPct = album.plan === "free" ? Math.min(100, Math.round(((album.photoCount ?? 0) / (album.maxPhotos ?? 20)) * 100)) : 0;
   // A dedicated token-based link, deliberately separate from the main
@@ -1068,7 +1073,7 @@ function OverviewTab({
             <p className="text-xs text-gray-400 mt-0.5">{overview.galleryHint}</p>
           </div>
           <a
-            href={albumUrl}
+            href={qrTargetUrl}
             target="_blank"
             rel="noreferrer"
             className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs text-[#C9820A] border border-[#FFE08A] rounded-lg hover:bg-[#FFF9EC] transition-colors self-start"

@@ -1,3 +1,4 @@
+import { suiteEnabled } from '@/lib/wedding-suite/server';
 import { bunnyDisplayUrl } from '@/lib/storage/bunny';
 import { randomUUID } from 'node:crypto';
 import { NextRequest } from 'next/server';
@@ -21,7 +22,7 @@ export async function GET(req: NextRequest, {params}: Context) {
    getAlbumFlags(data.album.id),
   ]);
   const latest = flags.albumPermission === 'upload_only' ? [] : await db.selectDistinctOn([weddingBingoSubmissions.challengeId], {challengeId: weddingBingoSubmissions.challengeId, blobUrl: photos.blobUrl, thumbnailUrl: photos.thumbnailUrl}).from(weddingBingoSubmissions).innerJoin(photos, and(eq(photos.id, weddingBingoSubmissions.photoId), eq(photos.albumId, data.album.id))).where(and(eq(weddingBingoSubmissions.albumId, data.album.id), eq(photos.status, 'published'))).orderBy(weddingBingoSubmissions.challengeId, desc(weddingBingoSubmissions.createdAt)).limit(25);
-  const response = reply({...safeSettings(data.settings), name: data.album.coupleName, date: data.album.weddingDate, albumId: data.album.id, maxPhotos: data.album.maxPhotos, photoCount: data.album.photoCount + data.album.pendingCount, moderationEnabled: data.album.moderationEnabled, requireGuestData: flags.guestDataCapture, allowBingoUpload: flags.allowPhotos && flags.albumPermission !== 'view_only', latestPhotos: Object.fromEntries(latest.map(row => [row.challengeId, bunnyDisplayUrl(row.thumbnailUrl ?? row.blobUrl, 480, 82)])), completed: Object.fromEntries(counts.map(r => [r.id, Number(r.total)])), mine: Object.fromEntries(counts.map(r => [r.id, Number(r.mine)])), myRequests: songs});
+  const response = reply({...safeSettings(data.settings), name: data.album.coupleName, date: data.album.weddingDate, albumId: data.album.id, maxPhotos: data.album.maxPhotos, photoCount: data.album.photoCount + data.album.pendingCount, moderationEnabled: data.album.moderationEnabled, requireGuestData: flags.guestDataCapture, allowBingoUpload: flags.allowPhotos && flags.albumPermission !== 'view_only', latestPhotos: Object.fromEntries(latest.map(row => [row.challengeId, bunnyDisplayUrl(row.thumbnailUrl ?? row.blobUrl, 480, 82)])), completed: Object.fromEntries(counts.map(r => [r.id, Number(r.total)])), mine: Object.fromEntries(counts.map(r => [r.id, Number(r.mine)])), myRequests: songs, hasSuite: await suiteEnabled(data.album)});
   return setGuestCookie(response, req, token);
  } catch (error) { console.error('[wedding/guest]', error); return failure('unavailable', 503); }
 }

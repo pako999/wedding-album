@@ -1,5 +1,6 @@
+import { weddingOffer, type OfferClaim } from '@/lib/wedding-offer';
 import { weddingCopy } from "@/lib/wedding/copy";
-import { BUSINESS_PRICE_CENTS, PREMIUM_SALE_PRICE_CENTS } from "@/lib/plan-pricing";
+import { BUSINESS_PRICE_CENTS, PREMIUM_REGULAR_PRICE_CENTS } from "@/lib/plan-pricing";
 import { NextRequest, NextResponse } from "next/server";
 import {
   addOnTotalCents, quoteShipping, standsPriceCents,
@@ -25,7 +26,7 @@ export const runtime = "nodejs";
 const PLAN_CONFIG: Record<string, { name: string; amount: number }> = {
   basic:        { name: "Guestcam Basic",                   amount: 3900 },
   plus:         { name: "Guestcam Plus",                    amount: 4900 },
-  premium:      { name: "Guestcam Premium",                 amount: PREMIUM_SALE_PRICE_CENTS },
+  premium:      { name: "Guestcam Premium",                 amount: PREMIUM_REGULAR_PRICE_CENTS },
   business:     { name: "Guestcam Poslovni",                amount: BUSINESS_PRICE_CENTS },
   film_pro:     { name: "Film Studio Pro (100 foto)",        amount: 1000 },
   film_premium: { name: "Film Studio Premium (300 foto)",    amount: 2000 },
@@ -51,6 +52,7 @@ export async function POST(req: NextRequest) {
 
   const body = await req.json() as {
     planId: PlanId;
+    expectedPlanCents?: number;
     albumSlug: string;
     locale?: unknown;
     tableStands?: boolean;
@@ -93,7 +95,9 @@ export async function POST(req: NextRequest) {
     normalizeCheckoutLang(album.defaultLang) ??
     "sl";
 
-  const plan = {...PLAN_CONFIG[planId], ...(planId === "premium" ? {name: `Guestcam ${weddingCopy(checkoutLang).plan}`} : {})};
+  const premiumQuote = planId === 'premium' ? await weddingOffer.quote(userId) : null;
+  if (premiumQuote?.pending) return NextResponse.json({ error: 'premium_checkout_pending' }, { status: 409 });
+  const plan = {...PLAN_CONFIG[planId], ...(premiumQuote ? { amount: premiumQuote.priceCents } : {}), ...(planId === "premium" ? {name: `Guestcam ${weddingCopy(checkoutLang).plan}`} : {})};
   let baseCents = plan.amount;
   let discountCodeId: string | undefined;
   // Pull the referral code from the cookie. May be overridden below if
@@ -102,7 +106,7 @@ export async function POST(req: NextRequest) {
   let affiliateRef = await getAffiliateRefFromCookie();
 
   if (discountCode) {
-    const disc = await validateDiscount(discountCode, planId);
+    const disc = await validateDiscount(discountCode, planId, plan.amount);
     if (!disc.valid) {
       return NextResponse.json({ error: disc.error ?? "Discount code is no longer valid." }, { status: 409 });
     }
@@ -179,8 +183,17 @@ export async function POST(req: NextRequest) {
   const redirectUrl = `${baseUrl}/api/mollie-return?slug=${encodeURIComponent(albumSlug)}&lang=${checkoutLang}`;
   const webhookUrl = `${baseUrl}/api/webhooks/mollie`;
 
+  if (planId === 'premium' && (!Number.isSafeInteger(body.expectedPlanCents) || body.expectedPlanCents! < baseCents)) {
+    return NextResponse.json({ error: 'price_changed', priceCents: baseCents }, { status: 409 });
+  }
+  let offerClaim: OfferClaim | null = null;
+  if (premiumQuote?.eligible) {
+    try { offerClaim = await weddingOffer.reserve(userId, albumSlug, 'card'); } catch { /* competing claim or inventory unavailable */ }
+    if (!offerClaim) return NextResponse.json({ error: 'price_changed' }, { status: 409 });
+  }
   try {
     const { id, checkoutUrl } = await createPayment({
+      ...(offerClaim ? { idempotencyKey: offerClaim.attemptId } : {}),
       amountCents: totalCents,
       description,
       redirectUrl,
@@ -189,6 +202,7 @@ export async function POST(req: NextRequest) {
       metadata: {
         albumSlug,
         planId,
+        ...(offerClaim ? { weddingOfferAttempt: offerClaim.attemptId } : {}),
         locale: checkoutLang,
         ...(discountCodeId ? { discountCodeId } : {}),
         ...(affiliateRef ? { affiliateRef } : {}),
@@ -213,6 +227,8 @@ export async function POST(req: NextRequest) {
           : {}),
       },
     });
+
+    if (offerClaim) await weddingOffer.bind(offerClaim.attemptId, id);
 
     // Persist payment ID so /api/mollie-return can reconcile if webhook hasn't fired yet.
     await db.update(albums)
@@ -279,6 +295,8 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ paymentUrl: checkoutUrl });
   } catch (err) {
+    // Only a definitive provider rejection proves no payment was created.
+    if (offerClaim && err instanceof MollieError && err.status >= 400 && err.status < 500) await weddingOffer.releaseRejected(offerClaim.attemptId).catch(() => {});
     const status = err instanceof MollieError ? err.status : 500;
     const detail = err instanceof MollieError ? err.message : "Checkout failed";
     console.error("[mollie checkout] create payment failed:", err);

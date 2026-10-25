@@ -1,4 +1,4 @@
-import { localeAbsoluteUrl, localePublicPath } from "@/lib/urls";
+import { absoluteUrl, localeAbsoluteUrl, localePublicPath } from "@/lib/urls";
 import fs from "node:fs/promises";
 import path from "node:path";
 import type { LangCode } from "@/components/LanguageSwitcher";
@@ -65,6 +65,16 @@ export interface BlogPost {
 
 const BLOG_DIR = path.join(process.cwd(), "content", "blog");
 
+/** First-party illustrations also need absolute URLs in article/social schemas. */
+function resolvePostImages(post: BlogPost): BlogPost {
+  const resolve = (src: string) => src.startsWith("/") && !src.startsWith("//") ? absoluteUrl(src) : src;
+  return {
+    ...post,
+    coverImage: post.coverImage ? resolve(post.coverImage) : undefined,
+    content: post.content.map(block => block.type === "image" ? { ...block, src: resolve(block.src) } : block),
+  };
+}
+
 /** Load every published post for a given UI language, newest first. */
 export async function getAllPosts(lang: LangCode): Promise<BlogPost[]> {
   const dir = path.join(BLOG_DIR, lang);
@@ -79,7 +89,7 @@ export async function getAllPosts(lang: LangCode): Promise<BlogPost[]> {
     if (!file.endsWith(".json")) continue;
     try {
       const raw = await fs.readFile(path.join(dir, file), "utf8");
-      posts.push(JSON.parse(raw) as BlogPost);
+      posts.push(resolvePostImages(JSON.parse(raw) as BlogPost));
     } catch {
       // Skip malformed file rather than break the whole index
     }
@@ -92,7 +102,7 @@ export async function getPost(lang: LangCode, slug: string): Promise<BlogPost | 
   const file = path.join(BLOG_DIR, lang, `${slug}.json`);
   try {
     const raw = await fs.readFile(file, "utf8");
-    return JSON.parse(raw) as BlogPost;
+    return resolvePostImages(JSON.parse(raw) as BlogPost);
   } catch {
     return null;
   }

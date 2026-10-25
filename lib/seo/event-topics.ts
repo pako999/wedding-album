@@ -164,7 +164,7 @@ export const EVENT_TOPICS: Partial<Record<EventLocale, Record<EventTopicKey, Eve
       ],
       faq: [
         { q: "Ali je QR koda za poroko brezplačna?",
-          a: "Z Guestcamom je osnovni paket brezplačen — do 20 slik. Za polni doživeti večer priporočamo Plus paket (49€) ali Poročni premium (84 €, redna cena 129 €, −35 % za omejen čas)." },
+          a: "Z Guestcamom je osnovni paket brezplačen — do 20 slik. Za polni doživeti večer priporočamo Plus paket (49€) ali Poročni premium (189 €)." },
         { q: "Kdo lahko vidi slike, ki jih pošljejo gostje?",
           a: "Samo vi (organizator) in osebe, ki imajo neposredno povezavo do galerije. Galerija ni javno indeksirana in ne pojavi se v Googlu." },
         { q: "Koliko časa ostanejo slike na voljo?",
@@ -501,7 +501,7 @@ export const EVENT_TOPICS: Partial<Record<EventLocale, Record<EventTopicKey, Eve
       ],
       faq: [
         { q: "Je li QR kod za vjenčanje besplatan?",
-          a: "S Guestcamom je osnovni paket besplatan — do 20 fotografija. Za cijelu večer preporučujemo Plus paket (49€) ili Vjenčani premium (84 €, redovna cijena 129 €, −35 % ograničeno vrijeme)." },
+          a: "S Guestcamom je osnovni paket besplatan — do 20 fotografija. Za cijelu večer preporučujemo Plus paket (49€) ili Vjenčani premium (189 €)." },
         { q: "Tko može vidjeti fotografije koje pošalju gosti?",
           a: "Samo vi (organizator) i osobe koje imaju izravnu poveznicu do galerije. Galerija nije javno indeksirana i ne pojavljuje se u Googleu." },
         { q: "Koliko dugo fotografije ostaju dostupne?",
@@ -778,7 +778,7 @@ export const EVENT_TOPICS: Partial<Record<EventLocale, Record<EventTopicKey, Eve
       ],
       faq: [
         { q: "Da li je QR kod za venčanje besplatan?",
-          a: "Sa Guestcamom je osnovni paket besplatan — do 20 slika. Za celu večer preporučujemo Plus paket (49€) ili Venčani premium (84 €, redovna cena 129 €, −35 % ograničeno vreme)." },
+          a: "Sa Guestcamom je osnovni paket besplatan — do 20 slika. Za celu večer preporučujemo Plus paket (49€) ili Venčani premium (189 €)." },
         { q: "Ko može da vidi slike koje pošalju gosti?",
           a: "Samo vi (organizator) i osobe koje imaju direktan link do galerije. Galerija nije javno indeksirana i ne pojavljuje se u Google-u." },
         { q: "Koliko dugo slike ostaju dostupne?",
@@ -1055,7 +1055,7 @@ export const EVENT_TOPICS: Partial<Record<EventLocale, Record<EventTopicKey, Eve
       ],
       faq: [
         { q: "Ist der QR-Code für die Hochzeit kostenlos?",
-          a: "Mit Guestcam ist das Basis-Paket kostenlos — bis zu 20 Fotos. Für den vollen Abend empfehlen wir Plus (49 €) oder Hochzeits-Premium (84 €, regulär 129 €, −35 % nur für kurze Zeit)." },
+          a: "Mit Guestcam ist das Basis-Paket kostenlos — bis zu 20 Fotos. Für den vollen Abend empfehlen wir Plus (49 €) oder Hochzeits-Premium (189 €)." },
         { q: "Wer sieht die von Gästen hochgeladenen Fotos?",
           a: "Nur Sie (Veranstalter) und Personen mit direktem Link zur Galerie. Die Galerie wird nicht öffentlich indexiert und erscheint nicht bei Google." },
         { q: "Wie lange bleiben Fotos verfügbar?",
@@ -1332,7 +1332,7 @@ export const EVENT_TOPICS: Partial<Record<EventLocale, Record<EventTopicKey, Eve
       ],
       faq: [
         { q: "Is a wedding QR code free?",
-          a: "With Guestcam the basic plan is free — up to 20 photos. For a full evening we recommend Plus (€49) or Wedding Premium (€84, regular €129, 35% off for a limited time)." },
+          a: "With Guestcam the basic plan is free — up to 20 photos. For a full evening we recommend Plus (€49) or Wedding Premium (189 €)." },
         { q: "Who can see photos that guests upload?",
           a: "Only you (the organiser) and people who have the direct gallery link. The gallery is never publicly indexed and does not appear in Google." },
         { q: "How long do the photos stay available?",
@@ -1609,7 +1609,7 @@ export const EVENT_TOPICS: Partial<Record<EventLocale, Record<EventTopicKey, Eve
       ],
       faq: [
         { q: "¿Es gratis el código QR para boda?",
-          a: "Con Guestcam el plan básico es gratis — hasta 20 fotos. Para la noche completa recomendamos Plus (49 €) o Premium para bodas (84 €, precio habitual 129 €, −35 % por tiempo limitado)." },
+          a: "Con Guestcam el plan básico es gratis — hasta 20 fotos. Para la noche completa recomendamos Plus (49 €) o Premium para bodas (189 €)." },
         { q: "¿Quién puede ver las fotos que suben los invitados?",
           a: "Sólo tú (organizador) y las personas con enlace directo a la galería. La galería no se indexa públicamente y no aparece en Google." },
         { q: "¿Cuánto tiempo están disponibles las fotos?",

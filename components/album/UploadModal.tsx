@@ -23,6 +23,8 @@ interface Props {
   onNameChange?: (name: string) => void;
   /** Files pre-selected before the modal opened (e.g. camera capture). */
   initialFiles?: FileList | null;
+  /** Optional wedding-suite attachment callback after metadata is persisted. */
+  onMediaUploaded?: (media: { id: string; mimeType: string; name: string }) => void;
   /** Event-specific accent color for accent elements (dropzone, progress, button). */
   accent?: string;
   /** Album password (if the album is password-protected) — sent with upload requests. */
@@ -113,6 +115,7 @@ async function uploadFile(
   albumPassword: string,
   momentId: string | null,
   bingoChallengeId?: string,
+  onUploaded?: (id: string) => void,
 ): Promise<UploadResult> {
   // Preserve the original bytes. No browser-side resize or JPEG re-encode.
   const file = rawFile;
@@ -142,12 +145,13 @@ async function uploadFile(
     | { type: "r2";            presignedUrl: string; publicUrl: string; key: string }
     | { type: "stream";        uploadUrl: string; videoId: string }
     | { type: "vercel-blob" }
-    | { type: "duplicate"; status?: "pending" | "published" };
+    | { type: "duplicate"; status?: "pending" | "published"; photoId?: string };
 
   const urlData = await urlRes.json() as UrlData;
 
   // Server detected an identical file already in this album — skip it.
   if (urlData.type === "duplicate") {
+    if (urlData.photoId) onUploaded?.(urlData.photoId);
     return { type: "duplicate", status: urlData.status === "pending" ? "pending" : "published" };
   }
 
@@ -166,7 +170,7 @@ async function uploadFile(
       sizeBytes: file.size,
       uploaderName,
       momentId,
-    }, albumPassword);
+    }, albumPassword, onUploaded);
     onProgress(100);
     return { type: "uploaded" };
   }
@@ -192,7 +196,7 @@ async function uploadFile(
       sizeBytes: file.size,
       uploaderName,
       momentId,
-    }, albumPassword);
+    }, albumPassword, onUploaded);
     onProgress(100);
     return { type: "uploaded" };
   }
@@ -218,7 +222,7 @@ async function uploadFile(
       sizeBytes: file.size,
       uploaderName,
       momentId,
-    }, albumPassword);
+    }, albumPassword, onUploaded);
     onProgress(100);
     return { type: "uploaded" };
   }
@@ -244,7 +248,7 @@ async function uploadFile(
       sizeBytes: file.size,
       uploaderName,
       momentId,
-    }, albumPassword);
+    }, albumPassword, onUploaded);
     onProgress(100);
     return { type: "uploaded" };
   }
@@ -260,7 +264,7 @@ async function uploadFile(
       sizeBytes: file.size,
       uploaderName,
       momentId,
-    }, albumPassword);
+    }, albumPassword, onUploaded);
     onProgress(100);
     return { type: "uploaded" };
   }
@@ -292,7 +296,7 @@ async function uploadFile(
     sizeBytes: file.size,
     uploaderName,
     momentId,
-  }, albumPassword);
+  }, albumPassword, onUploaded);
   onProgress(100);
   return { type: "uploaded" };
 }
@@ -511,7 +515,7 @@ function xhrUpload(
   });
 }
 
-async function saveUpload(slug: string, body: object, albumPassword = "") {
+async function saveUpload(slug: string, body: object, albumPassword = "", onUploaded?: (id: string) => void) {
   const headers: Record<string, string> = { "Content-Type": "application/json" };
   if (albumPassword) headers["x-album-password"] = albumPassword;
   const res = await fetch(`/api/albums/${slug}/save-upload`, {
@@ -520,11 +524,12 @@ async function saveUpload(slug: string, body: object, albumPassword = "") {
     body: JSON.stringify(body),
   });
   if (!res.ok) throw new Error(`Save failed: ${res.status}`);
+  if (onUploaded) { const saved = await res.json(); if (typeof saved.photoId === "string") onUploaded(saved.photoId); }
 }
 
 // ── Component ─────────────────────────────────────────────────────────────────
 
-export function UploadModal({ bingoChallengeId, albumSlug, albumId, uploaderName, maxPhotos, currentCount, lang, onClose, onSuccess, onNameChange: _onNameChange, initialFiles, accent = "#C9820A", albumPassword = "", moments = [], defaultMomentId = null, referralCode = null, requireGuestData = false, organiserName = "", moderationEnabled = false, uploadOnlyMode = false }: Props) {
+export function UploadModal({ bingoChallengeId, albumSlug, albumId, uploaderName, maxPhotos, currentCount, lang, onClose, onSuccess, onNameChange: _onNameChange, initialFiles, onMediaUploaded, accent = "#C9820A", albumPassword = "", moments = [], defaultMomentId = null, referralCode = null, requireGuestData = false, organiserName = "", moderationEnabled = false, uploadOnlyMode = false }: Props) {
   const t = translations[lang];
   const lead = LEAD_COPY[lang];
 
@@ -708,6 +713,7 @@ export function UploadModal({ bingoChallengeId, albumSlug, albumId, uploaderName
           albumPassword,
           momentId || null,
           bingoChallengeId,
+          onMediaUploaded ? id => onMediaUploaded({ id, mimeType: f.file.type, name: f.file.name }) : undefined,
         );
         updateFile(f.id, {
           status: result.type === "duplicate" ? "skipped" : "done",
@@ -904,9 +910,11 @@ export function UploadModal({ bingoChallengeId, albumSlug, albumId, uploaderName
               }`} role={moderationEnabled ? "status" : undefined}>
                 {isDemo
                   ? t.demoUploadNote
-                  : moderationEnabled
-                    ? t.moderationPendingNote
-                    : t.approvalNote}
+                  : uploadOnlyMode
+                    ? t.uploadOnlyNote
+                    : moderationEnabled
+                      ? t.moderationPendingNote
+                      : t.approvalNote}
               </p>
               <button
                 onClick={() => onSuccess({ emailCaptured: saveLinkSent })}

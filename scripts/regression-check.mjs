@@ -1509,8 +1509,15 @@ requireMatch(
 requireMatch(
   "Serbian pricing shows informative RSD equivalents",
   files.localizedHomeComponent,
-  /39 €[\s\S]*≈ 4\.580 RSD[\s\S]*49 €[\s\S]*≈ 5\.750 RSD[\s\S]*(?:84 €|PREMIUM_SALE_PRICE_EUR)[\s\S]*≈ 9\.860 RSD[\s\S]*Plaćanje se obračunava u EUR preko Mollie/,
+  /39 €[\s\S]*≈ 4\.580 RSD[\s\S]*49 €[\s\S]*≈ 5\.750 RSD[\s\S]*Plaćanje se obračunava u EUR preko Mollie/,
   "the .rs pricing grid must show local context without presenting RSD as the charged currency",
+);
+
+requireMatch(
+  "Serbian wedding offer uses the current verified price for its RSD estimate",
+  await read("components/wedding/WeddingOfferPrice.tsx"),
+  /lang === 'sr'[\s\S]*quote\?\.priceCents[\s\S]*117\.4[\s\S]*RSD/,
+  "the limited offer must not retain the old fixed RSD price",
 );
 
 requireMatch(

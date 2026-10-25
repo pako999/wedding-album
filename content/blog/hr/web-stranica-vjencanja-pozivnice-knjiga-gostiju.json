@@ -1,0 +1,104 @@
+{
+  "slug": "web-stranica-vjencanja-pozivnice-knjiga-gostiju",
+  "lang": "hr",
+  "title": "Vaše vjenčanje na jednoj poveznici: vodič kroz nove Premium funkcije",
+  "description": "Uredite web-stranicu vjenčanja, prikupite potvrde dolaska, rasporedite stolove i sačuvajte čestitke gostiju. Novi alati i vodič u tri koraka.",
+  "translationKey": "wedding-website-suite-guide-2026",
+  "publishedAt": "2026-10-25",
+  "updatedAt": "2026-10-25",
+  "author": "Tim Guestcam",
+  "category": "novice",
+  "readingTime": 5,
+  "tags": [
+    "1. Stranica uređena po vašem ukusu",
+    "2. Pozivnice, potvrde dolaska i raspored stolova",
+    "Guestcam"
+  ],
+  "tldr": "Vjenčanje treba više od zbirke fotografija. Gosti žele znati kamo doći, što slijedi i kako potvrditi dolazak. Vjenčani premium povezuje vašu stranicu, pozivnice i uspomene, a vi birate funkcije koje želite uključiti.",
+  "coverImage": "/hero/wedding-page-guide.png",
+  "coverAlt": "Uređivač stranice vjenčanja s kategorijama, tekstovima i pregledom",
+  "content": [
+    {
+      "type": "p",
+      "text": "Vjenčanje treba više od zbirke fotografija. Gosti žele znati kamo doći, što slijedi i kako potvrditi dolazak. Vjenčani premium povezuje vašu stranicu, pozivnice i uspomene, a vi birate funkcije koje želite uključiti."
+    },
+    {
+      "type": "h2",
+      "text": "1. Stranica uređena po vašem ukusu"
+    },
+    {
+      "type": "p",
+      "text": "Dodajte kategorije za obred, slavlje, prijevoz ili smještaj ili napravite vlastite. U padajućem izborniku odaberite naslov, tekst ili poveznicu. Polja rasporedite povlačenjem ili strelicama. Odaberite fontove, pozadinu i naglašenu boju te provjerite pregled uživo. Sakrijte kategoriju koja još nije spremna."
+    },
+    {
+      "type": "image",
+      "src": "/hero/wedding-style-guide.png",
+      "alt": "Postavke fontova i boja stranice vjenčanja",
+      "caption": "Primjer izgleda: ogledni tekst zamijenite vlastitim detaljima."
+    },
+    {
+      "type": "h2",
+      "text": "2. Pozivnice, potvrde dolaska i raspored stolova"
+    },
+    {
+      "type": "p",
+      "text": "Izradite osobne poveznice za pozivnice. Gosti mogu potvrditi dolazak, dodati dopuštenu pratnju, odabrati jelovnik i poslati privatnu poruku. Postavite rok za odgovor te uredite kapacitete i raspored stolova. Gost putem svoje pozivnice pronalazi stol. Privatni odgovori odvojeni su od javnih informacija o dolasku."
+    },
+    {
+      "type": "h2",
+      "text": "3. Uspomene uz fotografije"
+    },
+    {
+      "type": "p",
+      "text": "Uključite moderiranu knjigu gostiju, fotografije i kratke video čestitke. Gosti mogu snimiti video na podržanom uređaju ili učitati postojeći. Vremenska kapsula čuva pisane poruke do odabranog datuma. Dodajte svoju priču, praktične informacije i zahvalu. Knjigu gostiju možete ispisati ili u pregledniku spremiti kao PDF."
+    },
+    {
+      "type": "image",
+      "src": "/hero/scan.webp",
+      "alt": "Pogledajte paket za vjenčanje",
+      "caption": "Primjer izgleda: ogledni tekst zamijenite vlastitim detaljima."
+    },
+    {
+      "type": "h2",
+      "text": "4. Vjenčanje na jezicima vaših gostiju"
+    },
+    {
+      "type": "p",
+      "text": "Sučelje podržava slovenski, hrvatski, srpski, engleski, njemački i španjolski. Kada je automatsko prevođenje postavljeno, spremanje može dopuniti prijevode stranice, rasporeda, jelovnika i drugog podržanog sadržaja koji nedostaju. Odaberite jezik sadržaja i sami pregledajte ili ispravite tekst. Postojeće ručne izmjene ostaju sačuvane. Ako prevođenje nije dostupno, izvorni tekst ipak se sprema."
+    },
+    {
+      "type": "h2",
+      "text": "Postavljanje u tri koraka"
+    },
+    {
+      "type": "ol",
+      "items": [
+        "Odaberite Vjenčani premium i otvorite postavke vjenčanja. Dodajte imena, priču, detalje događaja i željene funkcije.",
+        "Sastavite stranicu pomoću izbornika kategorija i polja. Odaberite fontove i boje, provjerite mobilni pregled i pregledajte jezike koje ćete dijeliti.",
+        "Dodajte goste, provjerite osobnu pozivnicu i podijelite odgovarajuću poveznicu ili QR kod. Odgovore i priloge uređujte na nadzornoj ploči."
+      ]
+    },
+    {
+      "type": "h2",
+      "text": "Što paket uključuje i koliko stoji?"
+    },
+    {
+      "type": "p",
+      "text": "Raspored vjenčanja, digitalni jelovnik, glazbene želje za DJ-a i foto bingo ostaju dio paketa. Vjenčani premium uključuje i neograničeno učitavanje fotografija i videa, neograničenu pohranu i pristup, ZIP preuzimanje, Photo Wall i Film Studio. Uključite dodatne alate koje trebate; galerija ostaje mjesto za fotografije gostiju."
+    },
+    {
+      "type": "callout",
+      "text": "Redovna cijena je 189 €. Kada je uvodna ponuda aktivna i ima slobodnih mjesta, popust od 30 % znači cijenu od 132,30 € za sljedećih 20 prihvatljivih korisničkih računa, najviše jedan uvodni paket po računu. Stranica paketa prikazuje provjerenu zajedničku dostupnost. Ponovni posjet ili brisanje kolačića ne stvara novi popust. Prije plaćanja provjerite prikazanu cijenu."
+    },
+    {
+      "type": "faq",
+      "q": "Možemo li sami ispraviti prijevode?",
+      "a": "Da. Odaberite jezik sadržaja, uredite tekst i spremite. Automatsko prevođenje dopunjuje tekstove koji nedostaju bez prepisivanja vaših izmjena."
+    },
+    {
+      "type": "cta",
+      "text": "Pogledajte paket za vjenčanje",
+      "href": "/hr/vjencani-paket"
+    }
+  ]
+}

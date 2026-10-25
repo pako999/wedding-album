@@ -29,7 +29,7 @@ stored in the EU.
 - **Free** — up to 20 photos, 30-day access, feature preview
 - **Basic** — €39 · up to 1000 photos, 10 videos, 3-month access
 - **Plus** — €49 · up to 5000 photos, 100 videos, 1-year access, live gallery, custom page, premium templates
-- **Wedding Premium** — €84 promotional price (regular €129, 35% off for a limited time) · unlimited photos and videos · unlimited storage/access · wedding schedule · menu · song requests · photo bingo · live wall · cinematic AI film · custom QR-card text · priority support
+- **Wedding Premium** — €189 standard price  · unlimited photos and videos · unlimited storage/access · wedding website editor · custom categories, fields, fonts and colors · personal invitations · RSVP, companions and meal choices · seating lookup · moderated guestbook · video wishes · time capsule · story and travel details · thank-you page · six-language editable translations · wedding schedule · menu · song requests · photo bingo · live wall · cinematic AI film · custom QR-card text · priority support
 
 All plans are one-time payments (no subscription), include VAT, and
 carry a 30-day money-back guarantee. Payment by card or bank transfer.

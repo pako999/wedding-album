@@ -1,12 +1,12 @@
 import { db } from "@/lib/db";
 import { discountCodes } from "@/lib/db/schema";
 import { and, eq, isNull, or, sql } from "drizzle-orm";
-import { BUSINESS_PRICE_EUR, PREMIUM_SALE_PRICE_EUR } from "@/lib/plan-pricing";
+import { BUSINESS_PRICE_EUR, PREMIUM_REGULAR_PRICE_EUR } from "@/lib/plan-pricing";
 
 export const PLAN_PRICES: Record<string, number> = {
   basic:   39,
   plus:    49,
-  premium: PREMIUM_SALE_PRICE_EUR,
+  premium: PREMIUM_REGULAR_PRICE_EUR,
   business: BUSINESS_PRICE_EUR,
 };
 
@@ -30,8 +30,9 @@ export interface DiscountError {
 export async function validateDiscount(
   code: string,
   planId: string,
+  basePriceCents?: number,
 ): Promise<DiscountResult | DiscountError> {
-  const originalPrice = PLAN_PRICES[planId];
+  const originalPrice = basePriceCents === undefined ? PLAN_PRICES[planId] : basePriceCents / 100;
   if (originalPrice === undefined) {
     return { valid: false, error: "Neznan paket." };
   }
@@ -45,8 +46,8 @@ export async function validateDiscount(
   if (row.expiresAt && row.expiresAt < new Date()) return { valid: false, error: "Koda je potekla." };
   if (row.maxUses !== null && row.usedCount >= row.maxUses) return { valid: false, error: "Koda je bila že v celoti izkoriščena." };
 
-  const finalPrice = Math.round(originalPrice * (1 - row.percentOff / 100));
-  const finalCents = finalPrice * 100;
+  const finalCents = planId === 'premium' ? Math.round(originalPrice * 100 * (1 - row.percentOff / 100)) : Math.round(originalPrice * (1 - row.percentOff / 100)) * 100;
+  const finalPrice = finalCents / 100;
 
   return {
     valid: true,

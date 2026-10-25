@@ -132,7 +132,7 @@ export async function POST(
         photoId: dup.id,
         status: dup.status,
       });
-      return NextResponse.json({ type: "duplicate", status: dup.status });
+      return NextResponse.json({ type: "duplicate", status: dup.status, photoId: dup.id });
     }
   }
 

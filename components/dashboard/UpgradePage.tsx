@@ -1,4 +1,7 @@
 "use client";
+import { weddingFeatures } from '@/lib/wedding/package-copy';
+import { useWeddingOffer } from '@/components/wedding/WeddingOfferPrice';
+import { OFFER_COPY } from '@/lib/wedding-offer-copy';
 import { weddingCopy } from "@/lib/wedding/copy";
 
 import { useState } from "react";
@@ -13,7 +16,7 @@ import { translations, type Lang } from "@/lib/i18n/translations";
 import { UPGRADE_COPY, PLAN_FEATURE_KEYS } from "@/lib/i18n/upgrade-translations";
 import { checkoutRegionName } from "@/lib/i18n/checkout-locale";
 import { DASHBOARD_COPY } from "@/lib/i18n/dashboard-language";
-import { BUSINESS_PRICE_EUR, PREMIUM_REGULAR_PRICE_EUR, PREMIUM_SALE_PERCENT, PREMIUM_SALE_PRICE_EUR } from "@/lib/plan-pricing";
+import { BUSINESS_PRICE_EUR, PREMIUM_REGULAR_PRICE_EUR, PREMIUM_SALE_PERCENT } from "@/lib/plan-pricing";
 import {
   SHIPPING_COUNTRIES, STAND_VARIANTS, DEFAULT_STAND_QTY, DEFAULT_STAND_VARIANT,
   MAX_STAND_QTY, VOLUME_BREAKS, LEAD_TIME_DAYS, quoteShipping, standsPriceCents, effectiveUnitCents,
@@ -36,7 +39,7 @@ interface PlanMeta {
 const PLANS: PlanMeta[] = [
   { id: "basic",   name: "Basic",   price: 39 },
   { id: "plus",    name: "Plus",    price: 49, hasBadge: true },
-  { id: "premium", name: "Premium", price: PREMIUM_SALE_PRICE_EUR },
+  { id: "premium", name: "Premium", price: PREMIUM_REGULAR_PRICE_EUR },
   { id: "business", name: "Poslovni", price: BUSINESS_PRICE_EUR },
 ];
 
@@ -50,7 +53,9 @@ export function UpgradePage({ album, lang = "sl", initialDiscount = null }: Prop
   const t = translations[lang];
   const u = UPGRADE_COPY[lang];
   const wedding = weddingCopy(lang);
-  const plans = PLANS.map(plan => plan.id === "premium" ? {...plan, name: wedding.plan} : plan);
+  const formatPrice = (value: number) => new Intl.NumberFormat(lang, { style: 'currency', currency: 'EUR', minimumFractionDigits: value % 1 ? 2 : 0, maximumFractionDigits: 2 }).format(value);
+  const { quote: offer, refresh: refreshOffer } = useWeddingOffer(true);
+  const plans = PLANS.map(plan => plan.id === "premium" ? {...plan, name: wedding.plan, price: (offer?.priceCents ?? PREMIUM_REGULAR_PRICE_EUR * 100) / 100} : plan);
 
   // Localised tagline lookup, keyed by plan id → UPGRADE_COPY key.
   const planTagline = (id: PlanId): string => {
@@ -117,12 +122,12 @@ export function UpgradePage({ album, lang = "sl", initialDiscount = null }: Prop
   };
 
   const discountedPrice = discountStatus === "valid"
-    ? Math.round(chosen.price * (1 - discountPercent / 100))
+    ? (selectedPlan === "premium" ? Math.round(chosen.price * 100 * (1 - discountPercent / 100)) / 100 : Math.round(chosen.price * (1 - discountPercent / 100)))
     : chosen.price;
   /** What the customer is actually charged: plan (post-discount) plus the
    *  physical add-on. Discounts apply to the PLAN only — never to
    *  shipping or printed goods, which are at cost. */
-  const grandTotalCents = discountedPrice * 100 + standsCents;
+  const grandTotalCents = Math.round(discountedPrice * 100) + standsCents;
 
   async function applyDiscount(codeOverride?: string) {
     const candidate = (codeOverride ?? discountInput).trim().toUpperCase();
@@ -276,13 +281,13 @@ export function UpgradePage({ album, lang = "sl", initialDiscount = null }: Prop
 
                     {/* Price */}
                     <div className="text-right flex-shrink-0">
-                      {isPremium ? <>
+                      {isPremium && offer?.eligible ? <>
                         <span className="inline-flex rounded-full bg-[#F4B400] px-2.5 py-1 text-[10px] font-black uppercase text-black">−{PREMIUM_SALE_PERCENT}%</span>
                         <p className="mt-1 text-xs font-semibold text-white/45 line-through">{PREMIUM_REGULAR_PRICE_EUR}€</p>
-                        <span className="text-2xl leading-7 font-extrabold text-[#F4B400]">{plan.price}€</span>
-                        <p className="mt-1 text-[11px] font-bold uppercase tracking-wide text-[#F4B400]">{wedding.limitedOffer.replace(/^−35\s*%?\s*·\s*/,"")}</p>
+                        <span className="text-2xl leading-7 font-extrabold text-[#F4B400]">{formatPrice(plan.price)}</span>
+                        <p className="mt-1 text-[11px] font-bold uppercase tracking-wide text-[#F4B400]">{OFFER_COPY[lang].available.replace('{n}', String(offer?.remaining))}</p>
                       </> : <>
-                        <span className="text-2xl leading-7 font-extrabold text-gray-900">{plan.price}€</span>
+                        <span className="text-2xl leading-7 font-extrabold text-gray-900">{formatPrice(plan.price)}</span>
                         <p className="mt-1 text-sm leading-5 font-medium text-gray-600">{u.vatIncluded}</p>
                       </>}
                     </div>
@@ -290,7 +295,7 @@ export function UpgradePage({ album, lang = "sl", initialDiscount = null }: Prop
 
                   {isSelected && plan.id !== "free" && (
                     <div className="px-5 pb-5">
-                      {plan.id === "premium" && <div className="mb-4 grid gap-2 rounded-xl border border-[#F4B400]/40 bg-[#F4B400]/10 p-4 text-sm font-semibold text-white">{[wedding.schedule,wedding.menu,wedding.songs,wedding.bingo].map(label => <p key={label} className="flex gap-2"><span className="text-[#F4B400]">✓</span>{label}</p>)}</div>}
+                      {plan.id === "premium" && <div className="mb-4 grid gap-2 rounded-xl border border-[#F4B400]/40 bg-[#F4B400]/10 p-4 text-sm font-semibold text-white">{weddingFeatures(lang).map(feature=>feature.title).map(label => <p key={label} className="flex gap-2"><span className="text-[#F4B400]">✓</span>{label}</p>)}</div>}
                       <ul className={`border-t pt-4 space-y-2.5 ${isPremium ? "border-white/10" : "border-gray-100"}`}>
                         {visibleFeatures.map((fk) => (
                           <li key={fk} className={`flex items-start gap-3 text-[17px] leading-6 font-medium ${isPremium ? "text-white/80" : "text-gray-700"}`}>
@@ -469,6 +474,8 @@ export function UpgradePage({ album, lang = "sl", initialDiscount = null }: Prop
             )}
           </div>
 
+          {selectedPlan === 'premium' && offer?.pending && <p role="status" className="mb-4 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm">{OFFER_COPY[lang].pending}</p>}
+          {selectedPlan === 'premium' && offer?.eligible && <p className="mb-4 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm">{OFFER_COPY[lang].terms}</p>}
           {/* ── Payment method ────────────────────────────────────────── */}
           <div className="bg-white rounded-2xl border border-gray-100 p-5 mb-4">
             <p className="text-sm font-bold uppercase tracking-wide text-gray-700 mb-3">{u.paymentMethod}</p>
@@ -800,7 +807,7 @@ export function UpgradePage({ album, lang = "sl", initialDiscount = null }: Prop
                 {discountStatus === "valid" && (
                   <p className="text-sm text-gray-400 line-through">{chosen.price}€</p>
                 )}
-                <span className="text-2xl font-bold text-gray-900">{discountedPrice}€</span>
+                <span className="text-2xl font-bold text-gray-900">{formatPrice(discountedPrice)}</span>
                 {discountStatus === "valid" && (
                   <p className="text-xs font-bold text-green-700">{t.discountOff(discountPercent)}</p>
                 )}
@@ -904,6 +911,7 @@ export function UpgradePage({ album, lang = "sl", initialDiscount = null }: Prop
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({
                           planId: selectedPlan,
+                          expectedPlanCents: Math.round(discountedPrice * 100),
                           albumSlug: album.slug,
                           locale: lang,
                           tableStands: wantStands,
@@ -925,7 +933,7 @@ export function UpgradePage({ album, lang = "sl", initialDiscount = null }: Prop
                         }),
                       });
                       const data = await res.json() as { success?: boolean; error?: string };
-                      if (!res.ok || !data.success) throw new Error(data.error ?? "Napaka");
+                      if (!res.ok || !data.success) { if (data.error === 'price_changed' || data.error === 'premium_checkout_pending') { await refreshOffer(); alert(OFFER_COPY[lang][data.error === 'price_changed' ? 'changed' : 'pending']); setIsLoading(false); return; } throw new Error(data.error ?? 'Napaka'); }
                       setInvoiceDone(true);
                       setIsLoading(false);
                     } else {
@@ -954,6 +962,7 @@ export function UpgradePage({ album, lang = "sl", initialDiscount = null }: Prop
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({
                           planId: selectedPlan,
+                          expectedPlanCents: Math.round(discountedPrice * 100),
                           albumSlug: album.slug,
                           locale: lang,
                           tableStands: wantStands,
@@ -975,7 +984,7 @@ export function UpgradePage({ album, lang = "sl", initialDiscount = null }: Prop
                         }),
                       });
                       const data = await res.json() as { paymentUrl?: string; error?: string };
-                      if (!res.ok || !data.paymentUrl) throw new Error(data.error ?? "no payment URL");
+                      if (!res.ok || !data.paymentUrl) { if (data.error === 'price_changed' || data.error === 'premium_checkout_pending') { await refreshOffer(); alert(OFFER_COPY[lang][data.error === 'price_changed' ? 'changed' : 'pending']); setIsLoading(false); return; } throw new Error(data.error ?? 'no payment URL'); }
                       // assign() rather than `location.href = …`: same
                       // navigation, but not a write to a value the React
                       // Compiler treats as immutable.

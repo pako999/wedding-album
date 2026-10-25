@@ -34,6 +34,7 @@ export interface MolliePayment {
     locale?: string;
     discountCodeId?: string;
     affiliateRef?: string;
+    weddingOfferAttempt?: string;
     // Physical add-on. Mollie stores metadata as strings, so the flag is
     // "1" rather than a boolean. /api/checkout writes these; the webhook
     // and admin/payments read them back.
@@ -79,6 +80,7 @@ async function mollieFetch<T>(path: string, init?: RequestInit): Promise<T> {
 
 export async function createPayment(opts: {
   amountCents: number;
+  idempotencyKey?: string;
   currency?: string;
   description: string;
   redirectUrl: string;
@@ -91,6 +93,7 @@ export async function createPayment(opts: {
 
   const payment = await mollieFetch<MolliePayment>("/payments", {
     method: "POST",
+    ...(opts.idempotencyKey ? { headers: { "Idempotency-Key": opts.idempotencyKey } } : {}),
     body: JSON.stringify({
       amount: { value, currency },
       description: opts.description,

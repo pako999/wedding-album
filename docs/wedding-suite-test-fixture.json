@@ -1,0 +1,93 @@
+{
+  "enabled": true,
+  "defaultLang": "sl",
+  "features": {
+    "guestbook": true,
+    "video": true,
+    "seating": true,
+    "rsvp": true,
+    "capsule": true,
+    "story": true,
+    "travel": true,
+    "thanks": true
+  },
+  "welcome": {
+    "sl": "Dobrodošli na najini testni poroki.",
+    "hr": "Dobrodošli na naše probno vjenčanje.",
+    "sr": "Dobro došli na naše probno venčanje.",
+    "en": "Welcome to our test wedding.",
+    "de": "Willkommen zu unserer Testhochzeit.",
+    "es": "Bienvenidos a nuestra boda de prueba."
+  },
+  "invitation": {},
+  "thankYou": {},
+  "story": [
+    {
+      "id": "8290faf3-fb3a-43d7-9d14-87e45a142453",
+      "date": "2024-06-15",
+      "title": {
+        "sl": "Najino prvo srečanje",
+        "hr": "Naš prvi susret",
+        "sr": "Naš prvi susret",
+        "en": "Our first meeting",
+        "de": "Unser erstes Treffen",
+        "es": "Nuestro primer encuentro"
+      },
+      "text": {
+        "sl": "Tukaj se je začela najina zgodba.",
+        "hr": "Ovdje je počela naša priča.",
+        "sr": "Ovde je počela naša priča.",
+        "en": "This is where our story began.",
+        "de": "Hier begann unsere Geschichte.",
+        "es": "Aquí empezó nuestra historia."
+      },
+      "url": "https://www.guestcam.si/hero/wedding-walk.webp"
+    }
+  ],
+  "travel": [
+    {
+      "id": "e305cce6-759a-4259-b382-4df1d4ac8896",
+      "title": {
+        "sl": "Prihod in prenočišče",
+        "hr": "Dolazak i smještaj",
+        "sr": "Dolazak i smeštaj",
+        "en": "Arrival and accommodation",
+        "de": "Anreise und Unterkunft",
+        "es": "Llegada y alojamiento"
+      },
+      "text": {
+        "sl": "Vzorčni podatki za preizkus: prihod ob 15. uri.",
+        "hr": "Primjer za testiranje: dolazak u 15 sati.",
+        "sr": "Primer za testiranje: dolazak u 15 časova.",
+        "en": "Sample details for testing: arrive at 3 pm.",
+        "de": "Beispieldaten zum Testen: Anreise um 15 Uhr.",
+        "es": "Datos de ejemplo: llegada a las 15:00."
+      }
+    }
+  ],
+  "menuOptions": [
+    {
+      "id": "c8f0a2a8-b7bb-4c75-9d4c-7be4c60fda56",
+      "title": {
+        "sl": "Vegetarijanski meni",
+        "hr": "Vegetarijanski jelovnik",
+        "sr": "Vegetarijanski meni",
+        "en": "Vegetarian menu",
+        "de": "Vegetarisches Menü",
+        "es": "Menú vegetariano"
+      }
+    }
+  ],
+  "tables": [
+    {
+      "id": "4fa8851c-dc53-4fbc-b3b9-fcf82d36d89f",
+      "name": "A · 1",
+      "capacity": 8
+    }
+  ],
+  "seatingMapUrl": "",
+  "thankYouPhotoUrl": "https://www.guestcam.si/hero/wedding-walk.webp",
+  "capsuleUnlockAt": "2027-10-30T12:00:00Z",
+  "rsvpDeadline": "2026-10-29T12:00:00Z",
+  "maxCompanions": 1
+}

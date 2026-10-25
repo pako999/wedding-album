@@ -130,6 +130,12 @@ export default async function AdminEmailsPage({
           <div className="px-5 py-12 text-center">
             <p className="font-bold text-red-700">Zgodovine trenutno ni mogoče naložiti.</p>
             <p className="mt-2 text-sm text-gray-500">{result.error}</p>
+            {result.setupRequired && <ol className="mx-auto mt-4 max-w-xl list-decimal space-y-2 pl-5 text-left text-sm text-gray-600">
+              <li>V Resend → API Keys ustvarite ločen ključ za dnevnik z dovoljenjem Full access.</li>
+              <li>Ključ shranite neposredno v nastavitve Vercela kot <code>RESEND_HISTORY_API_KEY</code> za želeno okolje. Ključa ne vnašajte v ta obrazec.</li>
+              <li>Ponovno objavite to okolje in osvežite stran. Obstoječi ključ za pošiljanje lahko ostane omejen.</li>
+            </ol>}
+            <Link href={filterHref(status, params.after)} className="mt-5 inline-block rounded-lg border border-gray-200 px-4 py-2 text-sm font-bold">Poskusi znova</Link>
           </div>
         ) : visible.length === 0 ? (
           <p className="px-5 py-12 text-center text-sm text-gray-400">

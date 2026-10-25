@@ -5,6 +5,7 @@ import { db } from "@/lib/db";
 import { albums } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { PrintPageClient } from "@/components/dashboard/PrintPageClient";
+import { suiteEnabled } from "@/lib/wedding-suite/server";
 
 export const dynamic = "force-dynamic";
 
@@ -34,7 +35,7 @@ export default async function PrintPage({ params }: Props) {
 
   // Build URLs
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? SITE_URL;
-  const albumUrl = `${appUrl}/${slug}`;
+  const albumUrl = `${appUrl}/${slug}${await suiteEnabled(album) ? "/celebrate" : ""}`;
   const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=${encodeURIComponent(albumUrl)}&bgcolor=ffffff&color=1C1917&qzone=2&format=png`;
 
   return (
