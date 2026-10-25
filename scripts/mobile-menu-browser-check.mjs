@@ -168,6 +168,10 @@ try {
   }
   fs.writeFileSync(path.join(artifacts,'results.json'),JSON.stringify(results,null,2));
   console.log(`PASS: ${results.length} mobile-menu viewport/language and interaction checks.`);
+} catch (error) {
+  const detail = String(error?.stack || error).replaceAll('%', '%25').replaceAll('\r', '%0D').replaceAll('\n', '%0A');
+  console.error(`::error title=Mobile navigation browser check::${detail}`);
+  throw error;
 } finally {
   await new Promise(resolve => server.close(resolve));
   fs.rmSync(temp,{recursive:true,force:true});
