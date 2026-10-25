@@ -2,9 +2,20 @@ import type { Lang } from '@/lib/i18n/translations';
 import { WEDDING_LANGS } from './contracts';
 import { weddingCopy } from './copy';
 import { suiteCopy } from '@/lib/wedding-suite/copy';
-import { builderCopy } from '@/lib/wedding-suite/builder-copy';
+import { presentationCopy } from '@/lib/wedding-suite/presentation-copy';
 export const WEDDING_GUIDE_PATHS: Record<Lang, string> = {"sl": "/blog/porocna-spletna-stran-vabila-knjiga-gostov", "hr": "/hr/blog/web-stranica-vjencanja-pozivnice-knjiga-gostiju", "sr": "/sr/blog/sajt-za-vencanje-pozivnice-knjiga-gostiju", "en": "/en/blog/wedding-website-rsvp-guestbook-guide", "de": "/de/blog/hochzeitswebsite-einladungen-gaestebuch-ratgeber", "es": "/es/blog/web-boda-invitaciones-libro-firmas-guia"};
 const rows = {
+  storyBody: ['Predstavita vajino skupno pot z zapisi, datumi in fotografijami, ki jih želita deliti z gosti.','Predstavite svoju zajedničku priču zapisima, datumima i fotografijama koje želite podijeliti s gostima.','Predstavite svoju zajedničku priču zapisima, datumima i fotografijama koje želite da podelite sa gostima.','Tell your story through entries, dates and photos you want to share with your guests.','Erzählt eure gemeinsame Geschichte mit Einträgen, Daten und Fotos, die ihr mit euren Gästen teilen möchtet.','Contad vuestra historia con entradas, fechas y fotos que queráis compartir con los invitados.'],
+  travelBody: ['Zberita navodila za prihod, parkiranje, prevoz in prenočišča, da imajo gostje vse pri roki.','Prikupite upute za dolazak, parkiranje, prijevoz i smještaj kako bi gostima sve bilo pri ruci.','Prikupite uputstva za dolazak, parking, prevoz i smeštaj kako bi gostima sve bilo pri ruci.','Keep directions, parking, transport and accommodation details together so guests can find them easily.','Bündelt Anreise, Parkplätze, Transport und Unterkünfte, damit Gäste alles leicht finden.','Reunid indicaciones, aparcamiento, transporte y alojamiento para que los invitados lo tengan todo a mano.'],
+  thanksBody: ['Po poroki dodajta osebno zahvalo in fotografijo. Ista povezava postane tudi prostor za vajino zahvalo gostom.','Nakon vjenčanja dodajte osobnu zahvalu i fotografiju. Ista poveznica postaje i mjesto za vašu poruku gostima.','Posle venčanja dodajte ličnu zahvalnicu i fotografiju. Isti link postaje i mesto za vašu poruku gostima.','After the wedding, add a personal thank-you and a photo. The same link becomes a place to thank your guests.','Ergänzt nach der Hochzeit eine persönliche Danksagung und ein Foto. Derselbe Link wird zum Ort für euren Dank.','Después de la boda, añadid un agradecimiento personal y una foto. El mismo enlace sirve para dar las gracias a los invitados.'],
+  invitationBody: ['Vsakemu povabljenemu namenita osebno povezavo z vabilom, njegovim jezikom in odgovorom na udeležbo.','Svakom pozvanom pošaljite osobnu poveznicu s pozivnicom, njegovim jezikom i odgovorom na dolazak.','Svakom pozvanom pošaljite lični link sa pozivnicom, njegovim jezikom i odgovorom na dolazak.','Give each invitee a personal link with their invitation, language and RSVP.','Gebt jeder eingeladenen Person einen persönlichen Link mit Einladung, Sprache und Zu- oder Absage.','Dad a cada invitado un enlace personal con su invitación, idioma y confirmación de asistencia.'],
+  scheduleBody: ['Od obreda do prvega plesa: gostom prikažita ure, lokacije in pojasnila za pomembne trenutke dneva.','Od obreda do prvog plesa: prikažite gostima vrijeme, lokacije i pojašnjenja važnih trenutaka dana.','Od obreda do prvog plesa: prikažite gostima vreme, lokacije i objašnjenja važnih trenutaka dana.','From the ceremony to the first dance, show guests times, locations and notes for the important moments.','Von der Trauung bis zum ersten Tanz: Zeigt euren Gästen Zeiten, Orte und Hinweise zu den wichtigen Momenten.','Desde la ceremonia hasta el primer baile: mostrad horarios, lugares y notas para los momentos importantes.'],
+  rsvpTitle: ['Potrditve udeležbe in izbira menija','Potvrde dolaska i izbor jelovnika','Potvrde dolaska i izbor menija','RSVPs and meal choices','Zusagen und Menüauswahl','Confirmaciones y elección de menú'],
+  seatingTitle: ['Pregleden razpored gostov po mizah','Pregledan raspored gostiju po stolovima','Pregledan raspored gostiju po stolovima','A clear seating plan for your guests','Ein übersichtlicher Sitzplan für eure Gäste','Un plano de mesas claro para los invitados'],
+  bookTitle: ['Digitalna knjiga gostov z voščili in fotografijami','Digitalna knjiga gostiju s čestitkama i fotografijama','Digitalna knjiga gostiju sa čestitkama i fotografijama','A digital guestbook with messages and photos','Ein digitales Gästebuch mit Wünschen und Fotos','Un libro de firmas con mensajes y fotos'],
+  videoTitle: ['Osebna video voščila vajinih gostov','Osobne video čestitke vaših gostiju','Lične video čestitke vaših gostiju','Personal video wishes from your guests','Persönliche Videogrüße eurer Gäste','Felicitaciones en vídeo de vuestros invitados'],
+  capsuleTitle: ['Časovna kapsula s sporočili za prihodnost','Vremenska kapsula s porukama za budućnost','Vremenska kapsula sa porukama za budućnost','A time capsule with messages for the future','Eine Zeitkapsel mit Nachrichten für die Zukunft','Una cápsula del tiempo con mensajes para el futuro'],
+  languagesTitle: ['Poročna stran v 6 jezikih z urejanjem prevodov','Stranica vjenčanja na 6 jezika s uređivanjem prijevoda','Stranica venčanja na 6 jezika sa uređivanjem prevoda','Your wedding page in 6 languages, with editable translations','Eure Hochzeitsseite in 6 Sprachen mit bearbeitbaren Übersetzungen','Vuestra página en 6 idiomas con traducciones editables'],
   readGuide: ['Preberita celoten vodnik','Pročitajte cijeli vodič','Pročitajte ceo vodič','Read the full guide','Vollständigen Ratgeber lesen','Leed la guía completa'],
   all: ['Celotna poroka. Ena zasebna povezava.','Cijelo vjenčanje. Jedna privatna poveznica.','Celo venčanje. Jedan privatan link.','Your whole wedding. One private link.','Eure ganze Hochzeit. Ein privater Link.','Toda vuestra boda. Un enlace privado.'],
   intro: ['Od prvega vabila do zadnjega spomina — stran uredita sama, gostje pa sodelujejo brez aplikacije.','Od prve pozivnice do posljednje uspomene — sami uredite stranicu, a gosti sudjeluju bez aplikacije.','Od prve pozivnice do poslednje uspomene — sami uredite stranicu, a gosti učestvuju bez aplikacije.','From the first invitation to the last memory: design your page yourselves, and let guests join without an app.','Von der ersten Einladung bis zur letzten Erinnerung: Gestaltet eure Seite selbst. Gäste machen ohne App mit.','Desde la primera invitación hasta el último recuerdo: diseñad vuestra página y dejad que los invitados participen sin una app.'],
@@ -26,22 +37,13 @@ export function packageCopy(lang: Lang) {
   return Object.fromEntries(Object.entries(rows).map(([key, values]) => [key, values[index]])) as Record<keyof typeof rows, string>;
 }
 export function weddingFeatures(lang: Lang) {
-  const p = packageCopy(lang), s = suiteCopy(lang), w = weddingCopy(lang), b = builderCopy(lang);
-  // Marketing benefits describe the package; form labels such as "Jezik" stay short in the editor.
-  const labels = lang === 'sl' ? {
-    editor: 'Poročna spletna stran po vajinem okusu',
-    rsvp: 'Potrditve udeležbe, spremljevalci in izbira menija',
-    seating: 'Pregleden razpored gostov po mizah',
-    guestbook: 'Digitalna knjiga gostov z voščili in fotografijami',
-    video: 'Osebna video voščila vajinih gostov',
-    capsule: 'Časovna kapsula s sporočili za prihodnost',
-    language: 'Poročna stran v 6 jezikih z urejanjem prevodov',
-  } : {editor:b.editor,rsvp:s.rsvp,seating:s.seating,guestbook:s.guestbook,video:s.video,capsule:s.capsule,language:s.language};
+  const p = packageCopy(lang), s = suiteCopy(lang), w = weddingCopy(lang);
+  const labels = {editor:presentationCopy(lang).website,rsvp:p.rsvpTitle,seating:p.seatingTitle,guestbook:p.bookTitle,video:p.videoTitle,capsule:p.capsuleTitle,language:p.languagesTitle};
   return [
     { title: labels.editor, body: p.design }, { title: labels.rsvp, body: p.rsvp }, { title: labels.seating, body: p.seating },
     { title: labels.guestbook, body: p.book }, { title: labels.video, body: p.video }, { title: labels.capsule, body: p.capsule },
-    { title: s.story, body: p.details }, { title: s.travel, body: p.details }, { title: s.thanks, body: p.details },
-    { title: s.invitation, body: p.rsvp }, { title: labels.language, body: p.languages },
-    { title: w.schedule, body: w.setupHint }, { title: w.menu, body: w.menuHint }, { title: w.songs, body: w.songHint }, { title: w.bingo, body: w.bingoHint },
+    { title: s.story, body: p.storyBody }, { title: s.travel, body: p.travelBody }, { title: s.thanks, body: p.thanksBody },
+    { title: s.invitation, body: p.invitationBody }, { title: labels.language, body: p.languages },
+    { title: w.schedule, body: p.scheduleBody }, { title: w.menu, body: w.menuHint }, { title: w.songs, body: w.songHint }, { title: w.bingo, body: w.bingoHint },
   ];
 }

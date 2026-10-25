@@ -103,6 +103,7 @@ export async function translateSuite(config: SuiteConfig, translate: Translator 
   for (const row of result.menuOptions) fields.push({ text: row.title, maxLength: 180 });
   if (result.page) {
     fields.push({ text: result.page.title, maxLength: 180 });
+    if (result.page.subtitle) fields.push({ text: result.page.subtitle, maxLength: 5000 });
     for (const section of result.page.sections) {
       fields.push({ text: section.title, maxLength: 180 });
       for (const field of section.fields) fields.push({ text: field.text, maxLength: field.type === 'text' ? 5000 : 180 });

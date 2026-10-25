@@ -10,7 +10,7 @@ const req = createRequire(path.join(root, 'package.json'));
 const { build } = req('esbuild');
 const { chromium } = req('playwright');
 (async () => {
-  const bundle = await build({ stdin: { contents: `import React from 'react';import {createRoot} from 'react-dom/client';import {WeddingSuiteManager} from './components/wedding-suite/WeddingSuiteManager';import {WeddingSuiteGuest} from './components/wedding-suite/WeddingSuiteGuest';createRoot(document.getElementById('root')).render(location.search.includes('guest')?<WeddingSuiteGuest slug="builder-fixture" initialLang="en"/>:<WeddingSuiteManager slug="builder-fixture" lang="en" plan="premium"/>);`, resolveDir: root, loader: 'tsx' }, bundle: true, write: false, platform: 'browser', format: 'iife', jsx: 'automatic', define: { 'process.env.NODE_ENV': '"production"' }, tsconfig: path.join(root, 'tsconfig.json') });
+  const bundle = await build({ stdin: { contents: `import React from 'react';import {createRoot} from 'react-dom/client';import {WeddingSuiteManager} from './components/wedding-suite/WeddingSuiteManager';import {WeddingSuiteGuest} from './components/wedding-suite/WeddingSuiteGuest';createRoot(document.getElementById('root')).render(location.search.includes('guest')?<WeddingSuiteGuest slug="builder-fixture" initialLang="en"/>:<WeddingSuiteManager slug="builder-fixture" lang="en" plan="premium"/>);`, resolveDir: root, loader: 'tsx' }, bundle: true, write: false, platform: 'browser', format: 'iife', jsx: 'automatic', define: { 'process.env.NODE_ENV': '"production"', 'process.env.NEXT_PUBLIC_APP_URL': '"https://www.guestcam.si"' }, tsconfig: path.join(root, 'tsconfig.json') });
   const css = fs.readdirSync(root + '/.next/static/chunks').filter(x => x.endsWith('.css')).map(x => fs.readFileSync(root + '/.next/static/chunks/' + x, 'utf8')).join('\n');
   const server = http.createServer((request, response) => {
     if (request.url === '/fixture.js') { response.setHeader('content-type', 'application/javascript'); response.end(bundle.outputFiles[0].text); }
@@ -35,6 +35,7 @@ const { chromium } = req('playwright');
     const editor = page.locator('[data-wedding-builder]');
     await page.getByRole('checkbox', { name: /Translate missing text/ }).uncheck();
     await editor.getByLabel('Wedding page title', { exact: true }).fill('Ana & Marko');
+    await editor.locator('summary').filter({hasText:'Fonts and colors'}).click();
     await editor.getByLabel('Heading font', { exact: true }).selectOption('classic');
     await editor.getByLabel('Background color', { exact: true }).fill('#f8e8ef');
     await editor.getByLabel('Accent color', { exact: true }).fill('#78324a');
@@ -44,6 +45,7 @@ const { chromium } = req('playwright');
     await editor.getByRole('button', { name: '+ Add field', exact: true }).click();
     let fields = editor.locator('[data-page-field]');
     await fields.nth(0).locator('textarea, input:not([type="color"])').first().fill('Meet us in the garden at 18:00.');
+    await fields.nth(0).locator('details summary').click();
     await fields.nth(0).getByLabel('Font 1', { exact: true }).selectOption('handwritten');
     await fields.nth(0).getByLabel('Text color 1', { exact: true }).fill('#123456');
     await editor.getByLabel('Field type', { exact: true }).selectOption('heading');
@@ -52,7 +54,19 @@ const { chromium } = req('playwright');
     await fields.nth(1).getByRole('button', { name: 'Move up 2', exact: true }).click();
     assert.equal(await fields.nth(0).locator('textarea, input:not([type="color"])').first().inputValue(), 'A day to remember');
     // Actual HTML drag/drop must preserve the field's text and formatting.
-    await fields.nth(1).getByRole('button', { name: 'Drag to reorder 2', exact: true }).dragTo(fields.nth(0));
+    await page.setViewportSize({ width: 1280, height: 1800 });
+    await fields.nth(1).evaluate(element=>element.scrollIntoView({block:'center'}));
+    const source = fields.nth(1).getByRole('button', { name: 'Drag to reorder 2', exact: true });
+    const target = fields.nth(0).getByRole('button', { name: 'Drag to reorder 1', exact: true });
+    const sourceBox = await source.boundingBox(), targetBox = await target.boundingBox();
+    assert.ok(sourceBox && targetBox, 'Drag handles must be visible');
+    await page.mouse.move(sourceBox.x + sourceBox.width/2, sourceBox.y + sourceBox.height/2);
+    await page.mouse.down();
+    await page.mouse.move(sourceBox.x + sourceBox.width/2 + 8, sourceBox.y + sourceBox.height/2 + 8, {steps:4});
+    await page.mouse.move(targetBox.x + targetBox.width/2, targetBox.y + targetBox.height/2, {steps:12});
+    await page.mouse.move(targetBox.x + targetBox.width/2 + 1, targetBox.y + targetBox.height/2 + 1, {steps:2});
+    await page.mouse.up();
+    await page.setViewportSize({ width: 390, height: 900 });
     assert.equal(await fields.nth(0).locator('textarea, input:not([type="color"])').first().inputValue(), 'Meet us in the garden at 18:00.');
     await editor.getByLabel('Field type', { exact: true }).selectOption('link');
     await editor.getByRole('button', { name: '+ Add field', exact: true }).click();
@@ -105,4 +119,4 @@ const { chromium } = req('playwright');
     assert.equal(await page.getByText('Our ceremony', { exact: true }).count(), 0);
     console.log('PASS page builder browser: categories, typed fields, fonts/colors, arrow and drag reordering, save/reload, manual languages, guest styling and hidden sections at 390px.');
   } finally { await browser?.close(); await new Promise(resolve => server.close(resolve)); }
-})().catch(error => { console.error(error); process.exitCode = 1; });
+})().catch(error => { console.error(error); if(process.env.GITHUB_ACTIONS)console.error('::error::'+String(error).replace(/%/g,'%25').replace(/\r/g,'%0D').replace(/\n/g,'%0A')); process.exitCode = 1; });

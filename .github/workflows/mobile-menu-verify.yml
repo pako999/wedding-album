@@ -13,6 +13,10 @@ on:
       - tests/wedding-suite.test.mjs
       - components/wedding/WeddingFeatureDetails.tsx
       - lib/wedding/feature-details-sl.ts
+      - lib/wedding/feature-details.ts
+      - lib/wedding/package-copy.ts
+      - components/wedding/WeddingWebsiteShowcase.tsx
+      - public/hero/wedding-garden-template.webp
       - components/wedding/WeddingOfferPrice.tsx
       - components/wedding/WeddingOfferBanner.tsx
       - app/globals.css
@@ -64,6 +68,8 @@ jobs:
           PACKAGE_BROWSER_ENGINE=webkit node scripts/wedding-package-browser-check.cjs
           node scripts/photo-capture-browser-check.cjs
           PHOTO_CAPTURE_ENGINE=webkit node scripts/photo-capture-browser-check.cjs
+      - name: Wedding builder and autosave in Chromium and WebKit
+        run: |
           node scripts/wedding-page-builder-browser-check.cjs
           node scripts/wedding-autosave-browser-check.cjs
           AUTOSAVE_BROWSER_ENGINE=webkit node scripts/wedding-autosave-browser-check.cjs

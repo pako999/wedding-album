@@ -11,7 +11,7 @@ const until = async (predicate, message) => {
  while (!predicate()) { if (Date.now() > deadline) throw new Error(message); await new Promise(resolve => setTimeout(resolve, 30)); }
 };
 (async () => {
- const bundle = await build({ stdin: { contents: `import React from 'react';import {createRoot} from 'react-dom/client';import {WeddingSuiteManager} from './components/wedding-suite/WeddingSuiteManager';createRoot(document.getElementById('root')).render(<WeddingSuiteManager slug="autosave-fixture" lang={new URLSearchParams(location.search).get('lang')||'en'} plan="premium"/>);`, resolveDir: root, loader: 'tsx' }, bundle: true, write: false, platform: 'browser', format: 'iife', jsx: 'automatic', define: { 'process.env.NODE_ENV': '"production"' }, tsconfig: path.join(root, 'tsconfig.json') });
+ const bundle = await build({ stdin: { contents: `import React from 'react';import {createRoot} from 'react-dom/client';import {WeddingSuiteManager} from './components/wedding-suite/WeddingSuiteManager';createRoot(document.getElementById('root')).render(<WeddingSuiteManager slug="autosave-fixture" lang={new URLSearchParams(location.search).get('lang')||'en'} plan="premium"/>);`, resolveDir: root, loader: 'tsx' }, bundle: true, write: false, platform: 'browser', format: 'iife', jsx: 'automatic', define: { 'process.env.NODE_ENV': '"production"', 'process.env.NEXT_PUBLIC_APP_URL': '"https://www.guestcam.si"' }, tsconfig: path.join(root, 'tsconfig.json') });
  const css = fs.readdirSync(root + '/.next/static/chunks').filter(x => x.endsWith('.css')).map(x => fs.readFileSync(root + '/.next/static/chunks/' + x, 'utf8')).join('\n');
  const server = http.createServer((request, response) => {
   if (request.url === '/fixture.js') { response.setHeader('content-type', 'application/javascript'); response.end(bundle.outputFiles[0].text); }
@@ -156,4 +156,4 @@ const until = async (predicate, message) => {
   assert.deepEqual(errors, []);
   console.log(`PASS autosave (${engine}): load retry, debounce, enabled capsule draft, tables/menu, sequential writes while editing, validation, failure/reload recovery, online retry, conflict choice, AI/manual-edit safety, no email or guest mutations, and 320–1280px layouts.`);
  } finally { await browser?.close(); await new Promise(resolve => server.close(resolve)); }
-})().catch(error => { console.error(error); process.exitCode = 1; });
+})().catch(error => { console.error(error); if(process.env.GITHUB_ACTIONS)console.error('::error::'+String(error).replace(/%/g,'%25').replace(/\r/g,'%0D').replace(/\n/g,'%0A')); process.exitCode = 1; });

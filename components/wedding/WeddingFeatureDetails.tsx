@@ -1,18 +1,18 @@
-import Image from 'next/image';
-import { WEDDING_DETAILS_SL } from '@/lib/wedding/feature-details-sl';
+import type { Lang } from '@/lib/i18n/translations';
+import { weddingFeatureDetails } from '@/lib/wedding/feature-details';
+import { presentationCopy } from '@/lib/wedding-suite/presentation-copy';
+import { weddingCopy } from '@/lib/wedding/copy';
 
-export function WeddingFeatureDetails() {
+export function WeddingFeatureDetails({ lang = 'sl' }: { lang?: Lang } = {}) {
+ const t = presentationCopy(lang), w = weddingCopy(lang);
  return <>
-  <p className="mt-5 max-w-3xl text-lg leading-8 text-stone-600">Kaj lahko pripravita pred poroko, kako sodelujejo gostje in kaj vama ostane po slavju? Spoznajta vsako funkcijo, njen potek in konkreten primer uporabe. Dodatne poročne funkcije vključita po svojih željah.</p>
-  <p className="mt-4 max-w-3xl text-base leading-7 text-stone-600">Gost skenira skupno QR-kodo na mizi ali drugem vidnem mestu in na telefonu odpre vajin poročni pogled. Od tam dostopa do albuma in vključenih vsebin: doda fotografije, preveri program ali pošlje glasbeno željo DJ-ju. Brez nameščanja aplikacije.</p>
-  <nav aria-label="Poiščita funkcijo" className="mt-6 flex flex-wrap gap-2">{[['urejevalnik','Urejanje strani'],['vabila','Vabila in odgovori'],['urnik','Na poročni dan'],['galerija','Fotografije in spomini']].map(([id,label])=><a key={id} href={`#funkcija-${id}`} className="rounded-full border border-stone-300 bg-white px-4 py-3 text-sm font-semibold">{label} ↓</a>)}</nav>
-  <div className="mt-10 grid min-w-0 grid-cols-1 gap-7 lg:grid-cols-2">{WEDDING_DETAILS_SL.map((feature,index)=>{
-   const screenshot=!feature.image.startsWith('/');
-   const image=screenshot?`/hero/wedding-features/${feature.image}.png`:feature.image;
-   return <article id={`funkcija-${feature.id}`} data-wedding-feature-detail key={feature.id} className="min-w-0 scroll-mt-48 overflow-hidden rounded-3xl border border-stone-200 bg-white [overflow-wrap:anywhere]">
-    <figure className="border-b border-stone-100 bg-[#f7f3ed]"><a href={image} target="_blank" rel="noreferrer" aria-label={`Povečaj sliko: ${feature.title}`} className="relative block aspect-[4/3]"><Image src={image} alt={feature.alt} fill sizes="(max-width:1023px) 90vw, 46vw" className={screenshot?'object-contain p-3 sm:p-5':'object-cover'}/></a><figcaption className="px-5 pb-4 text-xs leading-5 text-stone-500">{screenshot?'Primer dejanskega vmesnika z vzorčnimi podatki. Kliknita za večji prikaz.':'Fotografija za ponazoritev uporabe funkcije.'}</figcaption></figure>
-    <div className="p-5 sm:p-8"><p className="text-xs font-bold tracking-widest text-rose-800">{String(index+1).padStart(2,'0')}</p><h3 className="mt-3 font-serif text-3xl leading-tight">{feature.title}</h3><p className="mt-4 text-base leading-7 text-stone-600">{feature.body}</p><h4 className="mt-6 text-sm font-bold">Kako jo uporabita</h4><ul className="mt-3 space-y-3 text-sm leading-6 text-stone-700">{feature.points.map(point=><li className="flex items-start gap-2" key={point}><span aria-hidden="true" className="shrink-0 text-rose-800">✓</span><span className="min-w-0">{point}</span></li>)}</ul><div className="mt-6 rounded-2xl bg-[#fff8eb] p-4 text-sm leading-6"><p className="font-bold text-amber-900">Ideja za vajino poroko</p><p className="mt-1 text-stone-700">{feature.example}</p></div></div>
-   </article>;
-  })}</div>
+  <p className="mt-5 max-w-3xl text-base leading-8 text-stone-600">{t.detailsIntro}</p>
+  <p className="mt-4 text-sm font-semibold text-stone-700">{t.openDetails}</p>
+  <div className="mt-7 grid min-w-0 items-start gap-x-10 md:grid-cols-2">{weddingFeatureDetails(lang).map(feature => <article id={`funkcija-${feature.id}`} data-wedding-feature-detail key={feature.id} className="min-w-0 scroll-mt-44 border-b border-stone-300 py-2 [overflow-wrap:anywhere]">
+   <details className="group">
+    <summary className="flex min-h-20 cursor-pointer list-none items-center justify-between gap-4 py-4 [&::-webkit-details-marker]:hidden"><h3 className="text-lg font-semibold leading-7 sm:text-xl">{feature.title}</h3><span aria-hidden="true" className="shrink-0 text-2xl font-light text-stone-600 transition-transform group-open:rotate-45">+</span></summary>
+    <div className="space-y-5 pb-6"><p className="text-base leading-8 text-stone-600">{feature.body}</p><div><h4 className="text-sm font-semibold">{t.how}</h4><ul className="mt-3 space-y-3 text-sm leading-7 text-stone-700">{feature.points.map(point => <li className="flex items-start gap-3" key={point}><span aria-hidden="true" className="shrink-0 text-amber-800">✓</span><span className="min-w-0">{point}</span></li>)}</ul></div>{feature.example && <div className="rounded-xl bg-stone-100 p-4 text-sm leading-7"><p className="font-semibold">{t.idea}</p><p className="mt-1 text-stone-700">{feature.example}</p></div>}<a href={['urnik','meni','glasbene-zelje','foto-bingo'].includes(feature.id) ? '#experience' : '#guide'} className="inline-flex min-h-11 items-center gap-2 text-sm font-semibold underline underline-offset-4">{w.preview} →</a></div>
+   </details>
+  </article>)}</div>
  </>;
 }

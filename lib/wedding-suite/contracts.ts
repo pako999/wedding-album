@@ -21,6 +21,7 @@ const pageFieldSchema = z.object({ id, type: z.enum(PAGE_FIELD_TYPES), text: loc
 }).strict().refine(field => field.type !== 'link' || !!field.url || !Object.values(field.text).some(value => value?.trim()), 'invalid');
 export const pageDesignSchema = z.object({
   title: localeTextSchema, headingFont: z.enum(PAGE_FONTS), bodyFont: z.enum(PAGE_FONTS),
+  coverImageUrl: safeUrl.optional(), subtitle: localeTextSchema.optional(),
   background: color, textColor: color, accent: color,
   sections: z.array(z.object({ id, category: z.enum(PAGE_CATEGORIES), title: localeTextSchema,
     visible: z.boolean(), fields: z.array(pageFieldSchema).max(12),

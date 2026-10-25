@@ -20,7 +20,7 @@ const { build } = req('esbuild'); const { chromium, webkit } = req('playwright')
  try {
   browser = await (process.env.PACKAGE_BROWSER_ENGINE==='webkit'?webkit:chromium).launch(process.env.PACKAGE_BROWSER_ENGINE==='webkit'?{}:{ executablePath: process.env.CHROMIUM_EXECUTABLE_PATH || (fs.existsSync('/usr/bin/chromium')?'/usr/bin/chromium':undefined), headless: true, args: ['--no-sandbox'] });
   let remaining = 8; let available = true; const errors = [];
-  async function context() { const ctx = await browser.newContext(); await ctx.route('**/api/wedding-offer', route => route.fulfill({ json: { verified: available, remaining: available ? remaining : null, capacity: 8, eligible: available && remaining > 0, pending: false, priceCents: available && remaining > 0 ? 11340 : 18900 } })); return ctx; }
+  async function context() { const ctx = await browser.newContext(); await ctx.route(/^https:\/\/[^/]+\/hero\//, route => { const filename=path.resolve(root,'public','.'+new URL(route.request().url()).pathname); if(!filename.startsWith(root+'/public/hero/')||!fs.existsSync(filename))return route.fulfill({status:404,body:''}); return route.fulfill({body:fs.readFileSync(filename),contentType:filename.endsWith('.png')?'image/png':'image/webp'}); }); await ctx.route('**/api/wedding-offer', route => route.fulfill({ json: { verified: available, remaining: available ? remaining : null, capacity: 8, eligible: available && remaining > 0, pending: false, priceCents: available && remaining > 0 ? 11340 : 18900 } })); return ctx; }
   const first = await context(); const page = await first.newPage(); page.on('pageerror', error => { errors.push(error.message); console.error('Browser error:', error.message); });
   const base = `http://127.0.0.1:${server.address().port}`;
   for (const lang of ['sl','hr','sr','en','de','es']) for (const width of [320,375,390,430,1280]) for (const largeText of [false,true]) {
@@ -30,20 +30,57 @@ const { build } = req('esbuild'); const { chromium, webkit } = req('playwright')
    await page.waitForFunction(() => /113[,.]40/.test(document.querySelector('[data-wedding-offer]')?.textContent || ''), {timeout:10000}).catch(async error => { console.error('Rendered content:', (await page.locator('body').innerText()).slice(0,1000)); throw error; });
    assert.equal(await page.locator('[data-wedding-offer-banner]').count(), 1);
    assert.ok((await page.locator('[data-wedding-offer-banner]').innerText()).includes('40%'));
-   assert.equal(await page.locator('#features article').count(), lang==='sl'?20:15); assert.equal(await page.locator('#guide article').count(), 3);
-   if(lang==='sl'){assert.ok((await page.locator('#guide article img').nth(0).getAttribute('src')).includes('/wedding-features/page-preview.png'));assert.ok((await page.locator('#guide article img').nth(1).getAttribute('src')).includes('/wedding-features/editor.png'));assert.ok((await page.locator('#guide article img').nth(2).getAttribute('src')).includes('/hero/cards.webp'));}
+   assert.equal(await page.locator('#features article').count(), 20); assert.equal(await page.locator('#guide ol > li').count(), 3);
+   assert.equal(await page.locator('[data-wedding-showcase]').count(),1);
+   if(lang==='sl')assert.equal(await page.locator('main h1').innerText(),'Vaša spletna poročna stran');
    const guideLink = await page.locator('#guide > div > a').getAttribute('href');
    assert.ok(guideLink.startsWith(['sl','sr','es'].includes(lang) ? '/blog/' : `/${lang}/blog/`), `${lang} guide link uses the wrong public language path`);
    assert.ok(await page.locator('[data-wedding-offer]').first().innerText().then(text => /113[,.]40/.test(text)));
    for(const img of await page.locator('img').all()){await img.scrollIntoViewIfNeeded();await img.evaluate(image=>image.decode());}
    assert.ok(await page.evaluate(() => Array.from(document.images).every(image => image.complete && image.naturalWidth > 0)));
-   if(lang==='sl'&&width===390&&!largeText&&process.env.WEDDING_DETAILS_SCREENSHOT)await page.locator('[data-wedding-feature-detail]').first().screenshot({path:process.env.WEDDING_DETAILS_SCREENSHOT});
-   if(lang==='sl'){assert.equal(await page.locator('[data-wedding-feature-detail] img').count(),20);assert.equal(await page.locator('[data-wedding-feature-detail] li').count(),60);}
+   if(lang==='sl'&&width===390&&!largeText&&process.env.WEDDING_DETAILS_SCREENSHOT)await page.locator('[data-wedding-showcase]').screenshot({path:process.env.WEDDING_DETAILS_SCREENSHOT});
+   assert.equal(await page.locator('[data-wedding-feature-detail] details').count(),20);
+   assert.ok(await page.locator('[data-wedding-feature-detail] li').count()>=55);
    const clipped=await page.locator('header, header nav, main > section:first-child, main h1, main > section:first-child > div, [data-wedding-offer], [data-wedding-offer-banner], [data-wedding-feature-detail]').evaluateAll(nodes=>nodes.map(node=>({tag:node.tagName,x:node.getBoundingClientRect().x,right:node.getBoundingClientRect().right,width:node.getBoundingClientRect().width})).filter(box=>box.x < -1 || box.right > innerWidth+1));
    assert.deepEqual(clipped,[],`${lang}/${width}px/largeText=${largeText} content is clipped even if the body hides overflow`);
    if(width<1024)assert.ok(await page.locator('header').first().locator('button[aria-haspopup="dialog"]').first().isVisible());
    assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), `${lang} page overflows at ${width}px`);
   }
+  // The public demo is the real editor and renderer in all six languages.
+  const labels = [
+   ['sl','Preizkusita urejevalnik','Pogled za goste','Naslov poročne strani','Brezčasna eleganca','Telefon','Kratek podnaslov'],
+   ['hr','Isprobajte uređivač','Prikaz za goste','Naslov stranice vjenčanja','Bezvremenska elegancija','Telefon','Kratki podnaslov'],
+   ['sr','Isprobajte uređivač','Prikaz za goste','Naslov stranice venčanja','Bezvremenska elegancija','Telefon','Kratak podnaslov'],
+   ['en','Try the editor','Guest view','Wedding page title','Timeless elegance','Phone','Short subtitle'],
+   ['de','Editor ausprobieren','Gästeansicht','Titel der Hochzeitsseite','Zeitlose Eleganz','Handy','Kurzer Untertitel'],
+   ['es','Probar el editor','Vista de invitados','Título de la página de boda','Elegancia atemporal','Móvil','Subtítulo breve'],
+  ];
+  const mutations=[];page.on('request',request=>{if(request.url().includes('/api/')&&request.method()!=='GET')mutations.push(request.method());});
+  for(const [lang,edit,guest,title,timeless,phone,subtitle] of labels){
+   await page.setViewportSize({width:1280,height:1000});await page.goto(base+'/?lang='+lang);
+   const showcase=page.locator('[data-wedding-showcase]');
+   await showcase.getByRole('button',{name:edit,exact:true}).click();
+   const builder=showcase.locator('[data-wedding-builder]');
+   const originalText=await builder.locator('[data-page-field] textarea').first().inputValue();
+   await builder.getByLabel(title,{exact:true}).fill('Maja & Luka');
+   await builder.getByLabel(subtitle,{exact:true}).fill('31. 07. 2027');
+   await builder.getByRole('button',{name:timeless,exact:true}).click();
+   assert.equal(await builder.locator('[data-page-field] textarea').first().inputValue(),originalText,'A style change must preserve written content');
+   await builder.getByRole('button',{name:phone,exact:true}).click();
+   assert.ok(await builder.locator('aside [data-wedding-page-content]').evaluate(el=>el.getBoundingClientRect().width<=391));
+   for(const width of [320,390,768,1280]){
+    await page.setViewportSize({width,height:1000});
+    assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),lang+' editor overflow at '+width);
+   }
+   await showcase.getByRole('button',{name:guest,exact:true}).click();
+   await showcase.getByRole('heading',{name:'Maja & Luka',exact:true}).waitFor();
+   assert.ok((await showcase.locator('[data-wedding-page-content] img').getAttribute('src')).endsWith('/hero/wedding-castle.webp'));
+   assert.ok((await showcase.locator('[data-wedding-page-content]').innerText()).includes('31. 07. 2027'));
+   const output=path.join(root,'artifacts/mobile-menu');fs.mkdirSync(output,{recursive:true});
+   await page.setViewportSize({width:390,height:844});await page.addStyleTag({content:'header{visibility:hidden!important}'});
+   await showcase.screenshot({path:path.join(output,'wedding-website-'+lang+'.png')});
+  }
+  assert.deepEqual(mutations,[],'The marketing demo must never save an album, send invitations or create payments');
   // A stale client router must not be required for the public offer link.
   await page.goto(base + '/?lang=en');
   await page.locator('[data-wedding-offer-banner] a').waitFor();
@@ -74,6 +111,6 @@ const { build } = req('esbuild'); const { chromium, webkit } = req('playwright')
   available = false; await page.reload(); await page.getByText('Standard package price', { exact: true }).first().waitFor();
   assert.ok(!await page.locator('[data-wedding-offer]').first().innerText().then(text => text.includes('of 8')));
   assert.deepEqual(errors,[]);
-  console.log('PASS package browser: six languages at five widths from 320–1280px, real header/footer, default/larger text and unclipped content bounds, twenty illustrated Slovenian features and fifteen localized summaries, three illustrated guides, exact launch price, shared availability across cookie jars, exhaustion and unavailable-inventory fallback.');
+  console.log('PASS package browser: six languages at five widths from 320–1280px, real header/footer, default/larger text and unclipped content bounds, twenty detailed features in every language, a real wedding website preview and three setup steps, exact launch price, shared availability across cookie jars, exhaustion and unavailable-inventory fallback.');
  } finally { await browser?.close(); await new Promise(resolve => server.close(resolve)); }
 })().catch(error => { console.error('::error title=Wedding page layout::'+String(error.stack||error).replaceAll('%','%25').replaceAll('\r','%0D').replaceAll('\n','%0A')); process.exitCode = 1; });

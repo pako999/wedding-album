@@ -33,6 +33,40 @@ const tokens = load('lib/wedding-suite/tokens.ts');
 const config = { ...contracts.EMPTY_SUITE, enabled: true, capsuleUnlockAt: '2027-10-01T00:00:00Z' };
 const uuid = 'a2c41a03-a4ef-44dc-a332-0c8909770111';
 
+test('wedding templates preserve content and starter sections never publish invented event details', () => {
+ const templates = load('lib/wedding-suite/page-templates.ts');
+ const { DEFAULT_PAGE } = load('lib/wedding-suite/page-design.ts');
+ const input = { ...structuredClone(DEFAULT_PAGE), title: { en: 'Our names' }, sections: [{ id: uuid, category: 'custom', title: { de: 'Original' }, visible: false, fields: [] }] };
+ const original = structuredClone(input);
+ for (const style of Object.keys(templates.PAGE_STYLES)) {
+  const result = templates.applyPageStyle(input, style);
+  assert.deepEqual(input, original); assert.deepEqual(result.sections, input.sections); assert.deepEqual(result.title, input.title);
+  assert.ok(contracts.pageDesignSchema.safeParse(result).success); assert.match(result.coverImageUrl, /^https:\/\//);
+ }
+ const starter = templates.starterSections(() => require('node:crypto').randomUUID());
+ assert.equal(starter.length, 3); assert.ok(starter.every(section => section.fields.every(field => Object.keys(field.text).length === 0)));
+ const demo = templates.sampleWeddingPage(); assert.ok(contracts.pageDesignSchema.safeParse(demo).success);
+ for (const lang of contracts.SUITE_LANGS) {
+  assert.ok(demo.title[lang]); assert.ok(demo.subtitle[lang]); assert.ok(demo.sections.every(section => section.title[lang] && section.fields[0].text[lang]));
+ }
+ assert.equal(contracts.pageDesignSchema.safeParse({ ...demo, coverImageUrl: 'javascript:bad' }).success, false);
+});
+
+test('professional wedding presentation and all twenty feature explanations are complete in six languages', () => {
+ const { presentationCopy } = load('lib/wedding-suite/presentation-copy.ts');
+ const { weddingFeatureDetails } = load('lib/wedding/feature-details.ts');
+ const keys = Object.keys(presentationCopy('en'));
+ const identifiers = weddingFeatureDetails('sl').map(feature => feature.id);
+ for (const lang of contracts.SUITE_LANGS) {
+  assert.deepEqual(Object.keys(presentationCopy(lang)), keys);
+  assert.ok(Object.values(presentationCopy(lang)).every(text => typeof text === 'string' && text.trim()));
+  const features = weddingFeatureDetails(lang);
+  assert.equal(features.length, 20); assert.deepEqual(features.map(feature => feature.id), identifiers);
+  for (const feature of features) { assert.ok(feature.title && feature.body); assert.ok(feature.points.length >= 2 && feature.points.every(Boolean)); }
+ }
+ assert.equal(presentationCopy('sl').website, 'Vaša spletna poročna stran');
+});
+
 test('autosave compares normalized content independently of PostgreSQL jsonb key order', () => {
  const { suiteSnapshot } = load('lib/wedding-suite/autosave.ts');
  const original = { ...structuredClone(contracts.EMPTY_SUITE), welcome: { en: 'Welcome ', sl: 'Pozdrav' } };

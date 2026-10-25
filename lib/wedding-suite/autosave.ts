@@ -17,6 +17,7 @@ export function isRecoverableSuiteDraft(value: unknown): value is SuiteConfig {
   const last = path.at(-1);
   if (issue.code === 'custom') {
    return (path.length === 1 && (last === 'seatingMapUrl' || last === 'thankYouPhotoUrl')) ||
+    (path.length === 2 && path[0] === 'page' && last === 'coverImageUrl') ||
     (path.length === 3 && (path[0] === 'story' || path[0] === 'travel') && last === 'url') ||
     (path[0] === 'page' && path[1] === 'sections' && path[3] === 'fields' && (path.length === 5 || (path.length === 6 && last === 'url')));
   }
@@ -33,6 +34,7 @@ function textFields(config: SuiteConfig): Map<string, LocaleText> {
  }
  if (config.page) {
   fields.set('page:title', config.page.title);
+  if (config.page.subtitle) fields.set('page:subtitle', config.page.subtitle);
   for (const section of config.page.sections) {
    fields.set(`section:${section.id}:title`, section.title);
    for (const field of section.fields) fields.set(`section:${section.id}:field:${field.id}`, field.text);
