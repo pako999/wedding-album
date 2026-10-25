@@ -13,6 +13,7 @@ import Counter from "yet-another-react-lightbox/plugins/counter";
 import "yet-another-react-lightbox/plugins/counter.css";
 import Zoom from "yet-another-react-lightbox/plugins/zoom";
 import { UploadModal } from "./UploadModal";
+import { PhotoCaptureButton } from "./PhotoCaptureButton";
 import { ReminderModal } from "./ReminderModal";
 import { CountdownTimer } from "./CountdownTimer";
 import { Slideshow } from "./Slideshow";
@@ -241,10 +242,7 @@ export function AlbumGuestView({ weddingEnabled = false, album, photos, moments,
   const eventTime = headerVisibility?.eventTime ?? null;
   const coverPositionY = Math.min(100, Math.max(0, headerVisibility?.coverPositionY ?? 50));
   const eventDateLabel = `${formatEventDate(album.weddingDate)}${eventTime ? ` · ${eventTime}` : ""}`;
-  const uploadAccept = [
-    eventFlags?.allowPhotos === false ? null : "image/*",
-    eventFlags?.allowVideos === false ? null : "video/*",
-  ].filter(Boolean).join(",");
+  const canTakePhoto = canUpload && eventFlags?.allowPhotos !== false;
   const router = useRouter();
   const [lang, setLang]                 = useState<Lang>(initialLang);
   const [lightboxIndex, setLightboxIndex] = useState(-1);
@@ -1072,19 +1070,13 @@ export function AlbumGuestView({ weddingEnabled = false, album, photos, moments,
                       <AvatarBubble name={uploaderName} size={7} accent={theme.accent} />
                       <button onClick={() => setNameConfirmed(false)} className="text-xs underline" style={{ color: BRAND.muted }}>{uploaderName}</button>
                     </div>
-                    {canUpload && (<label className="relative flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-semibold text-white cursor-pointer transition-all hover:opacity-90" style={{ background: BRAND.dark }}>
+                    {canTakePhoto && (<PhotoCaptureButton className="relative flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-semibold text-white cursor-pointer transition-all hover:opacity-90" style={{ background: BRAND.dark }} lang={lang} onChooseExisting={openUpload} onFiles={files => { if (!canTakePhoto) return; setCameraFiles(files); setUploadOpen(true); }}>
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z" />
                         <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0z" />
                       </svg>
                       <span className="hidden sm:inline">{t.takePhoto}</span>
-                      <input type="file" accept={uploadAccept} capture="environment" multiple className="absolute inset-0 opacity-0 cursor-pointer"
-                        onChange={(e) => {
-                          if (!canUpload || !e.target.files?.length) return;
-                          setCameraFiles(e.target.files);
-                          setUploadOpen(true);
-                        }} />
-                    </label>)}
+                      </PhotoCaptureButton>)}
                     {canUpload && (<button onClick={openUpload}
                       className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-sm font-semibold transition-all hover:bg-gray-50"
                       style={{ borderColor: BRAND.border, color: BRAND.dark }}
@@ -1497,20 +1489,14 @@ export function AlbumGuestView({ weddingEnabled = false, album, photos, moments,
                   </div>
                 ) : (
                   <div className="flex flex-col sm:flex-row items-center justify-center gap-2.5">
-                    {canUpload && (<label className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-3 rounded-2xl text-sm font-semibold text-white cursor-pointer transition-all hover:opacity-90 relative"
-                      style={{ background: theme.accent }}>
+                    {canTakePhoto && (<PhotoCaptureButton className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-3 rounded-2xl text-sm font-semibold text-white cursor-pointer transition-all hover:opacity-90 relative"
+                      style={{ background: theme.accent }} lang={lang} onChooseExisting={openUpload} onFiles={files => { if (!canTakePhoto) return; setCameraFiles(files); setUploadOpen(true); }}>
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z" />
                         <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0z" />
                       </svg>
                       {t.takePhoto}
-                      <input type="file" accept={uploadAccept} capture="environment" multiple className="absolute inset-0 opacity-0 cursor-pointer"
-                        onChange={(e) => {
-                          if (!canUpload || !e.target.files?.length) return;
-                          setCameraFiles(e.target.files);
-                          setUploadOpen(true);
-                        }} />
-                    </label>)}
+                      </PhotoCaptureButton>)}
                     {canUpload && (<button
                       onClick={openUpload}
                       className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-3 rounded-2xl border text-sm font-semibold transition-all hover:bg-gray-50"
@@ -1676,19 +1662,13 @@ export function AlbumGuestView({ weddingEnabled = false, album, photos, moments,
       {/* ── Mobile floating upload FAB ────────────────────────────────────── */}
       {!albumFull && nameConfirmed && photos.length > 0 && (
         <div className="sm:hidden fixed bottom-5 right-5 z-30 flex flex-col items-end gap-2">
-          {canUpload && (<label className="relative w-14 h-14 rounded-full flex items-center justify-center text-white shadow-lg cursor-pointer transition-all active:scale-95 hover:brightness-95"
-            style={{ background: theme.accent }}>
+          {canTakePhoto && (<PhotoCaptureButton className="relative w-14 h-14 rounded-full flex items-center justify-center text-white shadow-lg cursor-pointer transition-all active:scale-95 hover:brightness-95"
+            style={{ background: theme.accent }} lang={lang} onChooseExisting={openUpload} onFiles={files => { if (!canTakePhoto) return; setCameraFiles(files); setUploadOpen(true); }}>
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z" />
               <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0z" />
             </svg>
-            <input type="file" accept={uploadAccept} capture="environment" multiple className="absolute inset-0 opacity-0 cursor-pointer"
-              onChange={(e) => {
-                if (!canUpload || !e.target.files?.length) return;
-                setCameraFiles(e.target.files);
-                setUploadOpen(true);
-              }} />
-          </label>)}
+            </PhotoCaptureButton>)}
           {canUpload && (<button onClick={openUpload}
             className="w-14 h-14 rounded-full flex items-center justify-center text-white shadow-lg transition-all active:scale-95"
             style={{ background: BRAND.dark }}>
