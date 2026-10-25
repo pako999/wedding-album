@@ -33,6 +33,13 @@ const { build } = req('esbuild'); const { chromium } = req('playwright');
    assert.ok(await page.evaluate(() => Array.from(document.images).every(image => image.complete && image.naturalWidth > 0)));
    assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), `${lang} page overflows at ${width}px`);
   }
+  // A stale client router must not be required for the public offer link.
+  await page.goto(base + '/?lang=en');
+  await page.locator('[data-wedding-offer-banner] a').waitFor();
+  await page.evaluate(() => { window.__oldDocument = true; });
+  await page.locator('[data-wedding-offer-banner] a').click();
+  await page.waitForURL('**/en/wedding-package');
+  assert.equal(await page.evaluate(() => window.__oldDocument), undefined, 'Public offer click must create a fresh document');
   // A second cookie jar sees the same global inventory, and visits never decrement it.
   const second = await context(); const visitor = await second.newPage(); await visitor.goto(base + '/?lang=en');
   await visitor.getByText('8 of 8 discounted packages available', { exact: true }).first().waitFor(); assert.equal(remaining,8);

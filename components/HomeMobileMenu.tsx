@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useState, useEffect, useMemo, useRef, useId, useCallback } from "react";
 import { HOME_HREFLANG, type LangCode } from "./LanguageSwitcher";
 import { GuestcamLogo } from "./GuestcamLogo";
@@ -160,9 +159,9 @@ export function HomeMobileMenu({ signedIn = false, lang, links, labels, hreflang
             className="flex shrink-0 items-center justify-between gap-3 border-b border-black/10 px-5 pb-4"
             style={{ paddingTop: "max(1rem, env(safe-area-inset-top))", paddingLeft: "max(1.25rem, env(safe-area-inset-left))", paddingRight: "max(1.25rem, env(safe-area-inset-right))" }}
           >
-            <Link href={resolvedHome} aria-label="Guestcam" onClick={closeMenu} className="shrink-0">
+            <a href={resolvedHome} aria-label="Guestcam" onClick={closeMenu} className="shrink-0">
               <GuestcamLogo size="sm" showMark />
-            </Link>
+            </a>
             <button type="button" autoFocus aria-label={labels.close} onClick={closeMenu} className="inline-flex min-h-12 min-w-12 shrink-0 items-center justify-center gap-2 rounded-xl border border-black/15 bg-white px-3 text-base font-bold hover:bg-black/5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8C6218]">
               <span className="hidden sm:inline">{labels.close}</span>
               <svg className="h-6 w-6 shrink-0" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
@@ -202,12 +201,8 @@ export function HomeMobileMenu({ signedIn = false, lang, links, labels, hreflang
                 const featured = link.href === weddingHref;
                 const className = `flex min-h-14 items-center justify-between gap-3 rounded-2xl px-4 py-3 font-bold leading-tight tracking-tight transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8C6218] ${featured ? "mb-2 border border-[#DCA72A] bg-[#F4B400] text-black hover:bg-[#FFD966]" : "text-[#111111] hover:bg-black/5"}`;
                 const contents = <><span className="min-w-0 break-words">{link.label}</span>{featured && <span aria-hidden="true" className="shrink-0">↗</span>}</>;
-                // Keep full document navigation for blog pages, as elsewhere.
-                return link.href.startsWith("#") || /\/blog(?:\/|$)/.test(link.href) ? (
-                  <a key={link.href} href={link.href} onClick={closeMenu} className={className} style={{ fontSize: "clamp(1.5rem, 6.4vw, 2rem)" }}>{contents}</a>
-                ) : (
-                  <Link key={link.href} href={link.href} onClick={closeMenu} className={className} style={{ fontSize: "clamp(1.5rem, 6.4vw, 2rem)" }} prefetch={false}>{contents}</Link>
-                );
+                // A document navigation also initializes the destination's root/auth context.
+                return <a key={link.href} href={link.href} onClick={closeMenu} className={className} style={{ fontSize: "clamp(1.5rem, 6.4vw, 2rem)" }}>{contents}</a>;
               })}
             </nav>
 
@@ -215,11 +210,11 @@ export function HomeMobileMenu({ signedIn = false, lang, links, labels, hreflang
 
           <div className="shrink-0 border-t border-black/10 bg-[#FFFDF8] px-5 pt-3" style={{ paddingBottom: "max(1rem, env(safe-area-inset-bottom))", paddingLeft: "max(1.25rem, env(safe-area-inset-left))", paddingRight: "max(1.25rem, env(safe-area-inset-right))" }}>
             {signedIn ? (
-              <Link href={localizedAccountPath(lang, "/dashboard")} onClick={closeMenu} className="flex min-h-14 items-center justify-center rounded-2xl bg-black px-4 py-3 text-center text-lg font-bold text-white">{labels.dashboard} →</Link>
+              <a href={localizedAccountPath(lang, "/dashboard")} onClick={closeMenu} className="flex min-h-14 items-center justify-center rounded-2xl bg-black px-4 py-3 text-center text-lg font-bold text-white">{labels.dashboard} →</a>
             ) : (
               <div className="flex flex-col gap-2">
-                <Link href={localizedAccountPath(lang, "/sign-in")} onClick={closeMenu} className="flex min-h-11 items-center justify-center rounded-xl px-4 py-2 text-lg font-semibold text-black/70 hover:bg-black/5">{labels.signIn}</Link>
-                <Link href={localizedAccountPath(lang, "/dashboard/new")} onClick={closeMenu} className="flex min-h-14 items-center justify-center rounded-2xl bg-black px-4 py-3 text-center text-lg font-bold text-white">{labels.cta} →</Link>
+                <a href={localizedAccountPath(lang, "/sign-in")} onClick={closeMenu} className="flex min-h-11 items-center justify-center rounded-xl px-4 py-2 text-lg font-semibold text-black/70 hover:bg-black/5">{labels.signIn}</a>
+                <a href={localizedAccountPath(lang, "/dashboard/new")} onClick={closeMenu} className="flex min-h-14 items-center justify-center rounded-2xl bg-black px-4 py-3 text-center text-lg font-bold text-white">{labels.cta} →</a>
               </div>
             )}
           </div>

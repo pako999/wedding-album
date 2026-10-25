@@ -1,7 +1,6 @@
 import { WeddingOfferBanner } from '@/components/wedding/WeddingOfferBanner';
 import { weddingCopy } from "@/lib/wedding/copy";
 import { WEDDING_PATHS } from "@/lib/wedding/contracts";
-import Link from "next/link";
 import { auth } from "@clerk/nextjs/server";
 import { GuestcamLogo } from "@/components/GuestcamLogo";
 import { LanguageSwitcher, HOME_HREFLANG, type LangCode } from "@/components/LanguageSwitcher";
@@ -67,19 +66,19 @@ export async function SiteHeader({
   return (
     <header className="sticky top-3 z-40 mx-3 mt-3 rounded-2xl border border-[#FFC94D]/30 bg-white/95 shadow-[0_12px_32px_rgba(15,23,41,.10)] backdrop-blur-md sm:top-4 sm:mx-4 sm:mt-4 lg:mx-6">
       <nav className="max-w-7xl mx-auto px-5 sm:px-8 h-16 flex items-center justify-between gap-3">
-        <Link href={resolvedHome} aria-label="Guestcam" className="flex shrink-0 items-center transition-transform duration-200 hover:scale-[1.03]">
+        <a href={resolvedHome} aria-label="Guestcam" className="flex shrink-0 items-center transition-transform duration-200 hover:scale-[1.03]">
           <GuestcamLogo size="sm" showMark={true} />
-        </Link>
+        </a>
 
         <div className="hidden items-center gap-2 lg:flex xl:gap-4">
-          {lang === "sl" ? slNav.filter(({ href }) => href !== "/#templates" && href !== "/#wall").map(({ href, label }) => <Link key={href} href={href} className="whitespace-nowrap text-xs font-semibold text-gray-700 hover:text-[#0F1729] xl:text-sm">{label}</Link>) : <Link href={localePublicPath(lang, WEDDING_PATHS[lang])} className="whitespace-nowrap text-sm font-semibold text-gray-700">{weddingCopy(lang).nav}</Link>}
+          {lang === "sl" ? slNav.filter(({ href }) => href !== "/#templates" && href !== "/#wall").map(({ href, label }) => <a key={href} href={href} className="whitespace-nowrap text-xs font-semibold text-gray-700 hover:text-[#0F1729] xl:text-sm">{label}</a>) : <a href={localePublicPath(lang, WEDDING_PATHS[lang])} className="whitespace-nowrap text-sm font-semibold text-gray-700">{weddingCopy(lang).nav}</a>}
           <LanguageSwitcher current={lang} languages={hreflang} ariaLabel={copy.switcherAria} />
-          {lang !== "sl" && <><Link href={resolvedHome} className="text-sm font-medium text-gray-600 hover:text-[#0F1729] transition-colors">{copy.home}</Link><a href={blogHref} className="text-sm font-medium text-gray-600 hover:text-[#0F1729] transition-colors">{copy.blog}</a></>}
+          {lang !== "sl" && <><a href={resolvedHome} className="text-sm font-medium text-gray-600 hover:text-[#0F1729] transition-colors">{copy.home}</a><a href={blogHref} className="text-sm font-medium text-gray-600 hover:text-[#0F1729] transition-colors">{copy.blog}</a></>}
           <HeaderAuthButtons lang={lang} />
           {!signedIn && (
-            <Link href={localizedAccountPath(lang, "/dashboard/new")} className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full text-sm font-bold transition-all duration-200 hover:scale-[1.03]" style={{ background: "linear-gradient(135deg, #FFD966 0%, #FFC94D 55%, #F0B429 100%)", boxShadow: "0 6px 18px rgba(255,201,77,0.45)", color: "#0F1729" }}>
+            <a href={localizedAccountPath(lang, "/dashboard/new")} className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full text-sm font-bold transition-all duration-200 hover:scale-[1.03]" style={{ background: "linear-gradient(135deg, #FFD966 0%, #FFC94D 55%, #F0B429 100%)", boxShadow: "0 6px 18px rgba(255,201,77,0.45)", color: "#0F1729" }}>
               {copy.cta} →
-            </Link>
+            </a>
           )}
         </div>
 

@@ -1,5 +1,4 @@
 import { localeAbsoluteUrl, localePublicPath, localizedAccountPath, SITE_URL } from "@/lib/urls";
-import Link from "next/link";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SeoFooter } from "@/components/SeoFooter";
 import type { LangCode } from "@/components/LanguageSwitcher";
@@ -59,7 +58,7 @@ function RenderBlock({ block, lang }: { block: BlogBlock; lang: LangCode }) {
     case "callout": return <div className="my-7 rounded-[24px] border border-[#D6A400]/30 bg-[#FFF1B8] p-5 sm:p-6 text-[16px] leading-relaxed text-black/75">{block.text}</div>;
     case "stat": return <div className="my-8 flex flex-col sm:flex-row sm:items-center gap-4 rounded-[28px] bg-[#111111] p-6 sm:p-7 text-white"><p className="text-4xl sm:text-5xl font-black tracking-[-.05em] text-[#F4B400]">{block.value}</p><div><p className="text-sm sm:text-base font-bold leading-snug">{block.label}</p>{block.source && <p className="text-xs text-white/45 mt-1">{block.source}</p>}</div></div>;
     case "table": return <div className="overflow-x-auto mb-7 rounded-[20px] border border-black/10 bg-white"><table className="w-full text-sm border-collapse"><thead><tr className="bg-[#F4B400]">{block.headers.map((h, i) => <th key={i} className="text-left p-3.5 font-black border-b border-black/10">{h}</th>)}</tr></thead><tbody>{block.rows.map((row, i) => <tr key={i} className={i % 2 === 0 ? "bg-white" : "bg-[#FFFDF8]"}>{row.map((cell, j) => <td key={j} className="p-3.5 border-t border-black/10 text-black/65">{cell}</td>)}</tr>)}</tbody></table></div>;
-    case "cta": return <div className="my-10 rounded-[30px] bg-[#F4B400] p-7 sm:p-9"><p className="text-2xl sm:text-3xl font-black tracking-[-.035em] leading-tight text-black mb-5">{block.text}</p><Link href={localizedBlogCtaHref(lang, block.href)} className="inline-flex rounded-full bg-[#111111] px-5 py-3 text-sm font-black text-white hover:scale-[1.02] transition-transform">{block.text} →</Link></div>;
+    case "cta": return <div className="my-10 rounded-[30px] bg-[#F4B400] p-7 sm:p-9"><p className="text-2xl sm:text-3xl font-black tracking-[-.035em] leading-tight text-black mb-5">{block.text}</p><a href={localizedBlogCtaHref(lang, block.href)} className="inline-flex rounded-full bg-[#111111] px-5 py-3 text-sm font-black text-white hover:scale-[1.02] transition-transform">{block.text} →</a></div>;
     case "image": return <figure className="my-9">{/* eslint-disable-next-line @next/next/no-img-element */}<img src={block.src} alt={block.alt} loading="lazy" decoding="async" className="w-full h-auto rounded-[26px] border border-black/10 object-cover" />{(block.caption || block.credit) && <figcaption className="mt-2.5 flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1.5 text-xs text-black/45">{block.caption && <span className="leading-relaxed">{block.caption}</span>}{block.credit && <span className="shrink-0">{block.credit}</span>}</figcaption>}</figure>;
     case "faq": return null;
   }
@@ -114,7 +113,7 @@ export async function BlogPostPage({ post }: Props) {
       <article>
         <header className="border-b border-black/10">
           <div className="max-w-5xl mx-auto px-5 sm:px-8 py-10 sm:py-16">
-            <Link href={blogUrl(post.lang)} className="inline-flex text-sm font-bold text-black/50 hover:text-black transition-colors">{t.back}</Link>
+            <a href={blogUrl(post.lang)} className="inline-flex text-sm font-bold text-black/50 hover:text-black transition-colors">{t.back}</a>
             <div className="mt-8 flex flex-wrap items-center gap-3 text-xs text-black/45">
               <span className="rounded-full bg-[#FFF1B8] px-3 py-1 font-black uppercase tracking-[.13em] text-[#6F5000]">{CATEGORY_LABEL[post.lang][post.category]}</span>
               <time dateTime={post.publishedAt}>{new Date(post.publishedAt).toLocaleDateString(LOCALE[post.lang], { year: "numeric", month: "long", day: "numeric" })}</time>
@@ -144,10 +143,10 @@ export async function BlogPostPage({ post }: Props) {
             <p className="text-[10px] font-black uppercase tracking-[.18em] text-[#F4B400] mb-3">Guestcam</p>
             <h2 className="text-3xl sm:text-4xl font-black tracking-[-.045em] leading-[1.02]">{t.ctaTitle}</h2>
             <p className="mt-4 text-white/65 leading-relaxed max-w-xl">{t.ctaBody}</p>
-            <Link href={localizedAccountPath(post.lang, "/dashboard/new")} className="mt-7 inline-flex rounded-full bg-[#F4B400] px-6 py-3.5 text-sm font-black text-black hover:scale-[1.03] transition-transform">{t.ctaButton}</Link>
+            <a href={localizedAccountPath(post.lang, "/dashboard/new")} className="mt-7 inline-flex rounded-full bg-[#F4B400] px-6 py-3.5 text-sm font-black text-black hover:scale-[1.03] transition-transform">{t.ctaButton}</a>
           </section>
 
-          {related.length > 0 && <section className="mt-16"><h2 className="text-3xl sm:text-4xl font-black tracking-[-.045em] mb-6">{t.related}</h2><div className="grid sm:grid-cols-3 gap-4">{related.map((p) => <Link key={p.slug} href={blogUrl(p.lang, p.slug)} className="group block rounded-[22px] border border-black/10 bg-white p-5 hover:border-[#D6A400] hover:-translate-y-1 transition-all"><span className="text-[10px] font-black uppercase tracking-[.12em] text-[#8F6900]">{CATEGORY_LABEL[post.lang][p.category]}</span><h3 className="text-lg font-black tracking-[-.025em] mt-3 leading-snug group-hover:text-[#795900]">{p.title}</h3><p className="text-xs text-black/45 line-clamp-3 mt-2 leading-relaxed">{p.tldr}</p></Link>)}</div></section>}
+          {related.length > 0 && <section className="mt-16"><h2 className="text-3xl sm:text-4xl font-black tracking-[-.045em] mb-6">{t.related}</h2><div className="grid sm:grid-cols-3 gap-4">{related.map((p) => <a key={p.slug} href={blogUrl(p.lang, p.slug)} className="group block rounded-[22px] border border-black/10 bg-white p-5 hover:border-[#D6A400] hover:-translate-y-1 transition-all"><span className="text-[10px] font-black uppercase tracking-[.12em] text-[#8F6900]">{CATEGORY_LABEL[post.lang][p.category]}</span><h3 className="text-lg font-black tracking-[-.025em] mt-3 leading-snug group-hover:text-[#795900]">{p.title}</h3><p className="text-xs text-black/45 line-clamp-3 mt-2 leading-relaxed">{p.tldr}</p></a>)}</div></section>}
 
           {Object.keys(langMap).length > 1 && <section className="mt-14 pt-8 border-t border-black/10 text-center"><p className="text-[10px] font-black uppercase tracking-[.18em] text-black/40 mb-4">{t.languages}</p><div className="flex flex-wrap justify-center gap-2">{Object.entries(langMap).map(([lang, url]) => <a key={lang} href={url} hrefLang={lang} className={`px-3.5 py-2 text-xs font-black rounded-full border transition-colors ${lang === post.lang ? "bg-[#111111] text-white border-[#111111]" : "bg-white border-black/10 hover:border-[#D6A400]"}`}>{lang.toUpperCase()}</a>)}</div></section>}
         </div>

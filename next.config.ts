@@ -4,6 +4,8 @@ const APP_ORIGIN = "https://www.guestcam.si";
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
+  // Reload stale tabs instead of mixing navigation payloads/assets across releases.
+  deploymentId: process.env.NEXT_DEPLOYMENT_ID || process.env.VERCEL_DEPLOYMENT_ID || process.env.VERCEL_GIT_COMMIT_SHA,
   // Guestcam is the canonical production site/app. Do not allow an inherited
   // deployment environment variable to make public links or callbacks point
   // back to the retired CamLove domains.

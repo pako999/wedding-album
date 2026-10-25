@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SeoFooter } from "@/components/SeoFooter";
 import type { BlogPost, BlogCategory } from "@/lib/blog";
@@ -136,7 +135,7 @@ export function BlogIndexPage({ posts, lang }: { posts: BlogPost[]; lang: LangCo
           {posts.length === 0 && <p className="text-center text-black/50 py-20">{t.empty}</p>}
 
           {featured && (
-            <Link href={blogUrl(lang, featured.slug)} className="group block overflow-hidden rounded-[32px] bg-[#111111] text-white shadow-[0_24px_70px_rgba(17,17,17,.14)]">
+            <a href={blogUrl(lang, featured.slug)} className="group block overflow-hidden rounded-[32px] bg-[#111111] text-white shadow-[0_24px_70px_rgba(17,17,17,.14)]">
               <div className="grid lg:grid-cols-[1.05fr_.95fr] min-h-[420px]">
                 <div className="p-7 sm:p-11 lg:p-14 flex flex-col justify-between order-2 lg:order-1">
                   <div>
@@ -161,7 +160,7 @@ export function BlogIndexPage({ posts, lang }: { posts: BlogPost[]; lang: LangCo
                   )}
                 </div>
               </div>
-            </Link>
+            </a>
           )}
         </section>
 
@@ -174,7 +173,7 @@ export function BlogIndexPage({ posts, lang }: { posts: BlogPost[]; lang: LangCo
               </div>
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
                 {rest.map((p) => (
-                  <Link key={p.slug} href={blogUrl(lang, p.slug)} className="group flex flex-col overflow-hidden rounded-[26px] border border-black/10 bg-[#FFFDF8] transition-all hover:-translate-y-1 hover:shadow-[0_18px_45px_rgba(0,0,0,.12)]">
+                  <a key={p.slug} href={blogUrl(lang, p.slug)} className="group flex flex-col overflow-hidden rounded-[26px] border border-black/10 bg-[#FFFDF8] transition-all hover:-translate-y-1 hover:shadow-[0_18px_45px_rgba(0,0,0,.12)]">
                     {p.coverImage ? (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img src={p.coverImage} alt={p.coverAlt ?? p.title} className="w-full h-48 object-cover" loading="lazy" decoding="async" />
@@ -188,7 +187,7 @@ export function BlogIndexPage({ posts, lang }: { posts: BlogPost[]; lang: LangCo
                         <span className="font-bold text-black/65">{p.readingTime} min</span>
                       </div>
                     </div>
-                  </Link>
+                  </a>
                 ))}
               </div>
             </div>
@@ -202,9 +201,9 @@ export function BlogIndexPage({ posts, lang }: { posts: BlogPost[]; lang: LangCo
               <h2 className="text-3xl sm:text-5xl font-black tracking-[-.05em] leading-[1]">{t.ctaTitle}</h2>
               <p className="mt-4 text-white/65 leading-relaxed">{t.ctaBody}</p>
             </div>
-            <Link href={localizedAccountPath(lang, "/dashboard/new")} className="mt-7 sm:mt-0 inline-flex shrink-0 items-center rounded-full bg-[#F4B400] px-6 py-3.5 text-sm font-black text-black hover:scale-[1.03] transition-transform">
+            <a href={localizedAccountPath(lang, "/dashboard/new")} className="mt-7 sm:mt-0 inline-flex shrink-0 items-center rounded-full bg-[#F4B400] px-6 py-3.5 text-sm font-black text-black hover:scale-[1.03] transition-transform">
               {t.ctaButton}
-            </Link>
+            </a>
           </div>
         </section>
       </main>
