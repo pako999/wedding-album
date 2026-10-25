@@ -6,7 +6,7 @@ export type WeddingOfferQuote = { verified: boolean; remaining: number | null; c
 export type OfferClaim = { attemptId: string; slot: number };
 export class OfferConflict extends Error {}
 
-/** Exactly twenty durable slots; cookies and page views never consume inventory. */
+/** Eight durable slots for this campaign; cookies and page views never consume inventory. */
 export function createWeddingOfferStore(database: () => NeonQueryFunction<false, false>) {
   async function quote(customerId = ''): Promise<WeddingOfferQuote> {
     const unavailable: WeddingOfferQuote = { verified: false, remaining: null, capacity: WEDDING_OFFER_CAPACITY, eligible: false, pending: false, priceCents: PREMIUM_REGULAR_PRICE_CENTS };
@@ -47,12 +47,12 @@ export function createWeddingOfferStore(database: () => NeonQueryFunction<false,
     if (!attemptId) return; // Historical payments never touch the new campaign.
     if (paid) {
       await database()`UPDATE wedding_offer_slots SET state = 'paid', payment_ref = ${paymentRef}
-        WHERE campaign_id = ${WEDDING_OFFER_ID} AND attempt_id = ${attemptId} AND album_slug = ${albumSlug}
+        WHERE attempt_id = ${attemptId} AND album_slug = ${albumSlug}
         AND (payment_ref IS NULL OR payment_ref = ${paymentRef}) AND state = 'reserved'`;
     } else {
       await database()`UPDATE wedding_offer_slots SET state = 'available', customer_id = NULL, album_slug = NULL,
         method = NULL, attempt_id = NULL, payment_ref = NULL, reserved_at = NULL
-        WHERE campaign_id = ${WEDDING_OFFER_ID} AND attempt_id = ${attemptId} AND album_slug = ${albumSlug}
+        WHERE attempt_id = ${attemptId} AND album_slug = ${albumSlug}
         AND (payment_ref IS NULL OR payment_ref = ${paymentRef}) AND state = 'reserved'`;
     }
   }
@@ -60,7 +60,7 @@ export function createWeddingOfferStore(database: () => NeonQueryFunction<false,
     let rows;
     try {
       rows = await database()`SELECT attempt_id, album_slug FROM wedding_offer_slots
-        WHERE campaign_id = ${WEDDING_OFFER_ID} AND payment_ref = ${`bank:${orderId}`} LIMIT 1`;
+        WHERE payment_ref = ${`bank:${orderId}`} LIMIT 1`;
     } catch (cause) {
       // Existing invoices must still be payable before the optional campaign is installed.
       if (cause && typeof cause === 'object' && 'code' in cause && cause.code === '42P01') return;

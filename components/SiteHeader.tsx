@@ -1,3 +1,4 @@
+import { WeddingOfferBanner } from '@/components/wedding/WeddingOfferBanner';
 import { weddingCopy } from "@/lib/wedding/copy";
 import { WEDDING_PATHS } from "@/lib/wedding/contracts";
 import Link from "next/link";
@@ -98,6 +99,6 @@ export async function SiteHeader({
           labels={{ open: mobile.open, close: mobile.close, language: mobile.language, languageAria: copy.switcherAria, signIn: mobile.signIn, dashboard: mobile.dashboard, cta: copy.cta }}
         />
       </nav>
-    </header>
+    <WeddingOfferBanner lang={lang}/></header>
   );
 }

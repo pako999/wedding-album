@@ -14,6 +14,7 @@ export const cookiesDoc: Record<LangCode, LegalDoc> = {
         { type: "ul", items: [
           "__session, __client_uat — Clerk.com, vzdrževanje seje prijavljenega organizatorja. Obvezni.",
           "guestcam_consent — vaš izbor o piškotkih, da vas ne sprašujemo vedno znova. Neobvezen.",
+          "gc_wedding_offer_seen — po soglasju za trženje si 30 dni zapomni prvi obisk poročne ponudbe za pozdrav ob ponovnem obisku. Ne vpliva na ceno ali število paketov.",
         ] },
         { type: "h3", text: "1.2 Piškotki tretjih oseb" },
         { type: "p", text: "Paddle (naš preprodajalec za plačila) lahko ob plačilu nastavi lastne piškotke za preprečevanje zlorab. Ti piškotki niso nameščeni na guestcam.si samem — pojavijo se le v Paddlovem postopku plačila med dejansko transakcijo." },
@@ -50,6 +51,7 @@ export const cookiesDoc: Record<LangCode, LegalDoc> = {
         { type: "ul", items: [
           "__session, __client_uat — Clerk.com, održavanje sesije prijavljenog organizatora. Obvezni.",
           "guestcam_consent — vaš odabir o kolačićima, da vas ne pitamo svaki put. Neobvezni.",
+          "gc_wedding_offer_seen — uz privolu za marketing pamti prvi posjet ponudi vjenčanja 30 dana radi pozdrava pri povratku. Ne utječe na cijenu ni broj paketa.",
         ] },
         { type: "h3", text: "1.2 Kolačići trećih strana" },
         { type: "p", text: "Paddle (naš preprodavač za plaćanja) može tijekom plaćanja postaviti vlastite kolačiće radi sprječavanja zlouporabe. Ti se kolačići ne postavljaju na guestcam.si — pojavljuju se isključivo u Paddleovom postupku plaćanja tijekom stvarne transakcije." },
@@ -86,6 +88,7 @@ export const cookiesDoc: Record<LangCode, LegalDoc> = {
         { type: "ul", items: [
           "__session, __client_uat — Clerk.com, održavanje sesije prijavljenog organizatora. Obavezni.",
           "guestcam_consent — vaš izbor o kolačićima, da vas ne pitamo svaki put. Neobavezni.",
+          "gc_wedding_offer_seen — uz saglasnost za marketing pamti prvu posetu ponudi venčanja 30 dana radi pozdrava pri povratku. Ne utiče na cenu ni broj paketa.",
         ] },
         { type: "h3", text: "1.2 Kolačići trećih strana" },
         { type: "p", text: "Paddle (naš preprodavac za plaćanja) može tokom plaćanja postaviti sopstvene kolačiće radi sprečavanja zloupotreba. Ti kolačići se ne postavljaju na guestcam.si — pojavljuju se isključivo u Paddleovom postupku plaćanja tokom stvarne transakcije." },
@@ -122,6 +125,7 @@ export const cookiesDoc: Record<LangCode, LegalDoc> = {
         { type: "ul", items: [
           "__session, __client_uat — Clerk.com, Aufrechterhaltung der Sitzung des angemeldeten Organisators. Erforderlich.",
           "guestcam_consent — Ihre Cookie-Auswahl, damit wir nicht jedes Mal nachfragen. Optional.",
+          "gc_wedding_offer_seen — merkt sich nach Marketing-Einwilligung den ersten Angebotsbesuch für 30 Tage für einen Willkommensgruß. Verändert weder Preis noch Paketbestand.",
         ] },
         { type: "h3", text: "1.2 Cookies von Drittanbietern" },
         { type: "p", text: "Paddle (unser Zahlungs-Reseller) kann während des Zahlungsvorgangs eigene Cookies zur Betrugsprävention setzen. Diese Cookies werden nicht auf guestcam.si selbst gesetzt — sie erscheinen ausschließlich im Paddle-Checkout während der eigentlichen Transaktion." },
@@ -158,6 +162,7 @@ export const cookiesDoc: Record<LangCode, LegalDoc> = {
         { type: "ul", items: [
           "__session, __client_uat — Clerk.com, maintaining the organiser's sign-in session. Required.",
           "guestcam_consent — your cookie choice, so we don't ask again. Optional.",
+          "gc_wedding_offer_seen — with marketing consent, remembers the first wedding-offer visit for 30 days for a welcome-back greeting. It never changes the price or package inventory.",
         ] },
         { type: "h3", text: "1.2 Third-party cookies" },
         { type: "p", text: "Paddle (our payments reseller) may set its own cookies during payment for fraud prevention. These cookies are not set on guestcam.si itself — they only appear in the Paddle checkout during the actual transaction." },
@@ -194,6 +199,7 @@ export const cookiesDoc: Record<LangCode, LegalDoc> = {
         { type: "ul", items: [
           "__session, __client_uat — Clerk.com, mantenimiento de la sesión del organizador conectado. Obligatorias.",
           "guestcam_consent — tu elección sobre cookies, para no volver a preguntarte. Opcional.",
+          "gc_wedding_offer_seen — con consentimiento de marketing, recuerda la primera visita a la oferta de boda durante 30 días para un saludo de bienvenida. No cambia el precio ni las existencias.",
         ] },
         { type: "h3", text: "1.2 Cookies de terceros" },
         { type: "p", text: "Paddle (nuestro revendedor de pagos) puede establecer sus propias cookies durante el pago para prevenir fraudes. Estas cookies no se instalan en guestcam.si — solo aparecen en el proceso de pago de Paddle durante la transacción real." },

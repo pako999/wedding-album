@@ -16,7 +16,7 @@ export async function prepareWeddingOfferPreview({ env = process.env, connect = 
       sql`SELECT count(*)::int AS total FROM bank_orders`,
     ]);
     if (Number(albums[0]?.total) !== Number(albums[0]?.demo) || Number(albums[0]?.total) > 1 || Number(invoices[0]?.total) !== 0) return skip('existing-data-requires-manual-review');
-    const source = await readFile(new URL('./migrations/20261025-wedding-launch-offer.sql', import.meta.url), 'utf8');
+    const source = await readFile(new URL('./migrations/20261025-wedding-eight-offer.sql', import.meta.url), 'utf8');
     await sql.transaction(source.split(';').map(statement => statement.trim()).filter(Boolean).map(statement => sql.query(statement)));
     return { prepared: true, reason: 'isolated-preview-inventory-initialized' };
   } catch {

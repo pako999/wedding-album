@@ -5,7 +5,7 @@
   "description": "Guestcam Vjenčani premium dobio je nove interaktivne funkcije: program vjenčanja, digitalni jelovnik, glazbene želje za DJ-a, fotografski bingo te neograničene fotografije, videozapise i pohranu.",
   "translationKey": "wedding-premium-new-features-2026",
   "publishedAt": "2026-09-27",
-  "updatedAt": "2026-09-27",
+  "updatedAt": "2026-10-25",
   "author": "Guestcam Team",
   "category": "novice",
   "readingTime": 5,
@@ -87,7 +87,7 @@
     },
     {
       "type": "callout",
-      "text": "Redovna cijena Vjenčanog premium paketa je 189 €. Kada je uvodna ponuda aktivna, sljedećih 20 računa može ostvariti 30 % popusta (132,30 €). Provjerite dostupnost na stranici paketa. Jedan paket po uvodnoj cijeni po računu."
+      "text": "Redovna cijena Vjenčanog premium paketa je 189 €. Kada je uvodna ponuda aktivna, sljedećih 8 računa može ostvariti 40 % popusta (113,40 €). Provjerite dostupnost na stranici paketa. Jedan paket po uvodnoj cijeni po računu."
     },
     {
       "type": "h2",
@@ -120,7 +120,7 @@
     {
       "type": "faq",
       "q": "Koliko paket trenutno košta?",
-      "a": "Redovna cijena Vjenčanog premium paketa je 189 €. Kada je uvodna ponuda aktivna, sljedećih 20 računa može ostvariti 30 % popusta (132,30 €). Provjerite dostupnost na stranici paketa. Jedan paket po uvodnoj cijeni po računu."
+      "a": "Redovna cijena Vjenčanog premium paketa je 189 €. Kada je uvodna ponuda aktivna, sljedećih 8 računa može ostvariti 40 % popusta (113,40 €). Provjerite dostupnost na stranici paketa. Jedan paket po uvodnoj cijeni po računu."
     },
     {
       "type": "cta",
