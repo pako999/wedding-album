@@ -27,11 +27,21 @@ export function packageCopy(lang: Lang) {
 }
 export function weddingFeatures(lang: Lang) {
   const p = packageCopy(lang), s = suiteCopy(lang), w = weddingCopy(lang), b = builderCopy(lang);
+  // Marketing benefits describe the package; form labels such as "Jezik" stay short in the editor.
+  const labels = lang === 'sl' ? {
+    editor: 'Poročna spletna stran po vajinem okusu',
+    rsvp: 'Potrditve udeležbe, spremljevalci in izbira menija',
+    seating: 'Pregleden razpored gostov po mizah',
+    guestbook: 'Digitalna knjiga gostov z voščili in fotografijami',
+    video: 'Osebna video voščila vajinih gostov',
+    capsule: 'Časovna kapsula s sporočili za prihodnost',
+    language: 'Poročna stran v 6 jezikih z urejanjem prevodov',
+  } : {editor:b.editor,rsvp:s.rsvp,seating:s.seating,guestbook:s.guestbook,video:s.video,capsule:s.capsule,language:s.language};
   return [
-    { title: b.editor, body: p.design }, { title: s.rsvp, body: p.rsvp }, { title: s.seating, body: p.seating },
-    { title: s.guestbook, body: p.book }, { title: s.video, body: p.video }, { title: s.capsule, body: p.capsule },
+    { title: labels.editor, body: p.design }, { title: labels.rsvp, body: p.rsvp }, { title: labels.seating, body: p.seating },
+    { title: labels.guestbook, body: p.book }, { title: labels.video, body: p.video }, { title: labels.capsule, body: p.capsule },
     { title: s.story, body: p.details }, { title: s.travel, body: p.details }, { title: s.thanks, body: p.details },
-    { title: s.invitation, body: p.rsvp }, { title: s.language, body: p.languages },
+    { title: s.invitation, body: p.rsvp }, { title: labels.language, body: p.languages },
     { title: w.schedule, body: w.setupHint }, { title: w.menu, body: w.menuHint }, { title: w.songs, body: w.songHint }, { title: w.bingo, body: w.bingoHint },
   ];
 }

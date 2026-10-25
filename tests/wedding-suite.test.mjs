@@ -33,6 +33,71 @@ const tokens = load('lib/wedding-suite/tokens.ts');
 const config = { ...contracts.EMPTY_SUITE, enabled: true, capsuleUnlockAt: '2027-10-01T00:00:00Z' };
 const uuid = 'a2c41a03-a4ef-44dc-a332-0c8909770111';
 
+test('autosave compares normalized content independently of PostgreSQL jsonb key order', () => {
+ const { suiteSnapshot } = load('lib/wedding-suite/autosave.ts');
+ const original = { ...structuredClone(contracts.EMPTY_SUITE), welcome: { en: 'Welcome ', sl: 'Pozdrav' } };
+ const reordered = Object.fromEntries(Object.entries(original).reverse()); reordered.welcome = { sl: 'Pozdrav', en: 'Welcome' };
+ assert.equal(suiteSnapshot(original), suiteSnapshot(reordered));
+ assert.equal(original.welcome.en, 'Welcome ', 'Normalization must never mutate the typing buffer');
+ assert.notEqual(suiteSnapshot(original), suiteSnapshot({ ...original, welcome: { en: 'A real change' } }));
+});
+
+test('unfinished draft inputs survive reload but unsafe shapes never reach the editor or server', () => {
+ const { isRecoverableSuiteDraft } = load('lib/wedding-suite/autosave.ts');
+ const unfinished = { ...structuredClone(contracts.EMPTY_SUITE), seatingMapUrl: 'https://', tables: [{ id: uuid, name: '', capacity: 0 }] };
+ assert.equal(configSchemaSafe(unfinished), false);
+ assert.equal(isRecoverableSuiteDraft(unfinished), true);
+ assert.equal(isRecoverableSuiteDraft({ ...unfinished, tables: null }), false);
+ assert.equal(isRecoverableSuiteDraft({ ...unfinished, welcome: 'invalid' }), false);
+ assert.equal(isRecoverableSuiteDraft({ ...unfinished, unexpected: true }), false);
+ function configSchemaSafe(value) { return contracts.configSchema.safeParse(value).success; }
+});
+
+test('background translations preserve newer edits, removed rows, manual translations and page styling', () => {
+ const { mergeSuiteTranslations, translationFingerprint } = load('lib/wedding-suite/autosave.ts');
+ const source = { ...structuredClone(contracts.EMPTY_SUITE), welcome: { en: 'Welcome' }, invitation: { en: 'Join us' },
+  story: [{ id: uuid, title: { en: 'Story' }, text: { en: 'Our story' } }],
+  menuOptions: [{ id: uuid, title: { en: 'Dinner' } }],
+  page: { title: { en: 'Wedding' }, font: 'classic', headingFont: 'classic', backgroundColor: '#ffffff', accentColor: '#123456', textColor: '#000000', sections: [] } };
+ const translated = structuredClone(source);
+ translated.welcome.de = 'Willkommen'; translated.invitation.de = 'Kommt'; translated.menuOptions[0].title.de = 'Abendessen'; translated.page.title.de = 'Hochzeit';
+ const current = structuredClone(source); current.welcome.en = 'A newer source'; current.invitation.de = 'My correction'; current.story = [];
+ current.tables = [{ id: uuid, name: 'New table', capacity: 8 }]; current.page.accentColor = '#ffffff';
+ const original = structuredClone(current);
+ const merged = mergeSuiteTranslations(current, source, translated);
+ assert.deepEqual(current, original); assert.equal(merged.welcome.de, undefined); assert.equal(merged.invitation.de, 'My correction');
+ assert.equal(merged.menuOptions[0].title.de, 'Abendessen'); assert.equal(merged.page.title.de, 'Hochzeit');
+ assert.deepEqual(merged.story, []); assert.deepEqual(merged.tables, current.tables); assert.equal(merged.page.accentColor, '#ffffff');
+ assert.equal(translationFingerprint(contracts.EMPTY_SUITE), null);
+ assert.equal(translationFingerprint(source), translationFingerprint({ ...source, tables: current.tables }));
+ assert.notEqual(translationFingerprint(source), translationFingerprint(current));
+});
+
+test('background translation authorizes and rate-limits before AI, returns suggestions without writing settings', async () => {
+ let authorized = false, sameSite = true, rateAllowed = true, translations = 0, writes = 0;
+ const reply = (body, status = 200) => Response.json(body, { status });
+ class TestError extends Error { constructor(code, status = 400) { super(code); this.code = code; this.status = status; } }
+ const route = modules({
+  '@/lib/wedding/server': { sameOrigin: () => sameSite, reply },
+  '@/lib/wedding-suite/server': { SuiteError: TestError, suiteFailure: e => reply({ error: e.code || 'unavailable' }, e.status || 503), suiteOwner: async () => { if (!authorized) throw new TestError('guestOnly', 401); return { album: { id: 'album-a' }, config }; } },
+  '@/lib/rate-limit': { checkRateLimit: async key => key.startsWith('wedding-translate:') && !rateAllowed ? { ok: false, response: reply({ error: 'rate' }, 429) } : { ok: true } },
+  '@/lib/wedding/translate': { translateSuite: async value => { translations++; return { ...value, welcome: { en: 'Welcome', de: 'Willkommen' } }; } },
+  '@/lib/db': { db: { insert: () => { writes++; throw new Error('Translation must not write'); } } },
+ })('app/api/albums/[slug]/wedding-suite/manage/route.ts');
+ const context = { params: Promise.resolve({ slug: 'demo' }) };
+ const request = value => ({ json: async () => ({ action: 'translate', config: value }) });
+ assert.equal((await route.POST(request(config), context)).status, 401); assert.equal(translations, 0);
+ authorized = true; sameSite = false;
+ assert.equal((await route.POST(request(config), context)).status, 403); assert.equal(translations, 0);
+ sameSite = true; rateAllowed = false;
+ assert.equal((await route.POST(request(config), context)).status, 429); assert.equal(translations, 0);
+ rateAllowed = true;
+ assert.equal((await route.POST(request({ ...config, seatingMapUrl: 'javascript:bad' }), context)).status, 400); assert.equal(translations, 0);
+ const response = await route.POST(request(config), context);
+ assert.equal(response.status, 200); assert.equal((await response.json()).config.welcome.de, 'Willkommen');
+ assert.equal(translations, 1); assert.equal(writes, 0);
+});
+
 test('all six languages have complete interface and email copy', () => {
  const keys = Object.keys(suiteCopy('en'));
  for (const lang of contracts.SUITE_LANGS) {

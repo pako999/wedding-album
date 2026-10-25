@@ -12,6 +12,7 @@
 
 # testing
 /coverage
+/artifacts/mobile-menu/
 
 # next.js
 /.next/

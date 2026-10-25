@@ -38,7 +38,7 @@ export function WeddingPageBuilder({ value, lang, editLang, onChange }: {
       <p className="text-sm leading-6 text-stone-600">{t.hint}</p>
       <div className="grid min-w-0 gap-6 xl:grid-cols-2">
         <div className="min-w-0 space-y-5">
-          <label className="block text-sm font-semibold">{t.pageTitle}<input className={fieldClass} maxLength={180} value={localized(page.title, editLang)} onChange={event => onChange({ ...page, title: { ...page.title, [editLang]: event.target.value } })} /></label>
+          <label className="block text-sm font-semibold">{t.pageTitle}<input className={fieldClass} maxLength={180} value={page.title[editLang] ?? ''} onChange={event => onChange({ ...page, title: { ...page.title, [editLang]: event.target.value } })} /></label>
           <details className="rounded-2xl border border-stone-200 p-4" open>
             <summary className="cursor-pointer font-semibold">{t.design}</summary>
             <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -53,7 +53,7 @@ export function WeddingPageBuilder({ value, lang, editLang, onChange }: {
           </div>
           {section ? <div className="space-y-4 rounded-2xl border border-stone-200 p-4">
             <label className="block text-sm font-semibold">{t.category}<select aria-label={t.category} className={fieldClass} value={section.id} onChange={event => setSectionId(event.target.value)}>{page.sections.map((item, index) => <option value={item.id} key={item.id}>{index + 1}. {localized(item.title, editLang) || t[item.category]}</option>)}</select></label>
-            <label className="block text-sm">{t.sectionTitle}<input className={fieldClass} maxLength={180} value={localized(section.title, editLang)} onChange={event => updateSection({ ...section, title: { ...section.title, [editLang]: event.target.value } })} /></label>
+            <label className="block text-sm">{t.sectionTitle}<input className={fieldClass} maxLength={180} value={section.title[editLang] ?? ''} onChange={event => updateSection({ ...section, title: { ...section.title, [editLang]: event.target.value } })} /></label>
             <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={section.visible} onChange={event => updateSection({ ...section, visible: event.target.checked })} />{t.visible}</label>
             <div className="flex flex-wrap gap-2">
               <button type="button" className={secondaryClass} aria-label={`${t.moveUp} · ${t.category}`} disabled={page.sections[0].id === section.id} onClick={() => onChange({ ...page, sections: movePageItem(page.sections, section.id, page.sections.findIndex(item => item.id === section.id) - 1) })}>↑</button>
@@ -75,8 +75,8 @@ export function WeddingPageBuilder({ value, lang, editLang, onChange }: {
                 <button type="button" className="ml-auto min-h-11 text-sm text-red-700" onClick={() => updateSection({ ...section, fields: section.fields.filter(item => item.id !== field.id) })}>{t.remove}</button>
               </div>
               <label className="block text-sm">{t[field.type]}{field.type === 'text'
-                ? <textarea className={fieldClass} rows={3} maxLength={5000} value={localized(field.text, editLang)} onChange={event => updateField(field.id, { text: { ...field.text, [editLang]: event.target.value } })} />
-                : <input className={fieldClass} maxLength={180} value={localized(field.text, editLang)} onChange={event => updateField(field.id, { text: { ...field.text, [editLang]: event.target.value } })} />}</label>
+                ? <textarea aria-label={t[field.type]} className={fieldClass} rows={3} maxLength={5000} value={field.text[editLang] ?? ''} onChange={event => updateField(field.id, { text: { ...field.text, [editLang]: event.target.value } })} />
+                : <input className={fieldClass} maxLength={180} value={field.text[editLang] ?? ''} onChange={event => updateField(field.id, { text: { ...field.text, [editLang]: event.target.value } })} />}</label>
               {field.type === 'link' && <label className="block text-sm">{t.url}<input type="url" required placeholder="https://" className={fieldClass} value={field.url || ''} onChange={event => updateField(field.id, { url: event.target.value })} /></label>}
               <div className="grid gap-3 sm:grid-cols-2">
                 <label className="block text-sm">{t.font}<select aria-label={`${t.font} ${index + 1}`} className={fieldClass} value={field.font || ''} onChange={event => updateField(field.id, { font: event.target.value ? event.target.value as PageField['font'] : undefined })}><option value="">{t.inherit}</option>{PAGE_FONTS.map(font => <option key={font} value={font} style={{ fontFamily: FONT_FAMILIES[font] }}>{t[font]}</option>)}</select></label>

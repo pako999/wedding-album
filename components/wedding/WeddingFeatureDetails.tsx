@@ -4,6 +4,7 @@ import { WEDDING_DETAILS_SL } from '@/lib/wedding/feature-details-sl';
 export function WeddingFeatureDetails() {
  return <>
   <p className="mt-5 max-w-3xl text-lg leading-8 text-stone-600">Kaj lahko pripravita pred poroko, kako sodelujejo gostje in kaj vama ostane po slavju? Spoznajta vsako funkcijo, njen potek in konkreten primer uporabe. Dodatne poročne funkcije vključita po svojih željah.</p>
+  <p className="mt-4 max-w-3xl text-base leading-7 text-stone-600">Gost skenira skupno QR-kodo na mizi ali drugem vidnem mestu in na telefonu odpre vajin poročni pogled. Od tam dostopa do albuma in vključenih vsebin: doda fotografije, preveri program ali pošlje glasbeno željo DJ-ju. Brez nameščanja aplikacije.</p>
   <nav aria-label="Poiščita funkcijo" className="mt-6 flex flex-wrap gap-2">{[['urejevalnik','Urejanje strani'],['vabila','Vabila in odgovori'],['urnik','Na poročni dan'],['galerija','Fotografije in spomini']].map(([id,label])=><a key={id} href={`#funkcija-${id}`} className="rounded-full border border-stone-300 bg-white px-4 py-3 text-sm font-semibold">{label} ↓</a>)}</nav>
   <div className="mt-10 grid min-w-0 grid-cols-1 gap-7 lg:grid-cols-2">{WEDDING_DETAILS_SL.map((feature,index)=>{
    const screenshot=!feature.image.startsWith('/');

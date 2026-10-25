@@ -1,39 +1,70 @@
 'use client';
 import { TranslationOptions, TRANSLATION_COPY } from '@/components/wedding/TranslationOptions';
-import { useCallback, useEffect, useState, type FormEvent } from 'react';
-import { EMPTY_SUITE, FEATURES, localized, type SuiteConfig, type SuiteLang, type LocaleText } from '@/lib/wedding-suite/contracts';
+import { useCallback, useEffect, useRef, useState, type FormEvent } from 'react';
+import { EMPTY_SUITE, FEATURES, type SuiteLang, type SuiteConfig } from '@/lib/wedding-suite/contracts';
 import { suiteCopy, suiteError } from '@/lib/wedding-suite/copy';
 import type { AttendeeView, SuiteOwnerData } from '@/lib/wedding-suite/dto';
 import { WeddingPanel, fieldClass, buttonClass, secondaryClass } from '@/components/wedding/WeddingViews';
 import { LanguageSelect } from './LanguageSelect';
 import { WeddingPageBuilder } from './WeddingPageBuilder';
 import { EntryMedia } from './EntryMedia';
+import { useSuiteAutosave } from './useSuiteAutosave';
+import { mergeSuiteTranslations, translationFingerprint } from '@/lib/wedding-suite/autosave';
 
-export function WeddingSuiteManager({ slug, lang, plan }: { slug: string; lang: SuiteLang; plan: string }) {
+type ManagerProps = { slug: string; lang: SuiteLang; plan: string };
+export function WeddingSuiteManager(props: ManagerProps) {
+ return <WeddingSuiteEditor key={`${props.slug}:${props.lang}`} {...props} />;
+}
+function WeddingSuiteEditor({ slug, lang, plan }: ManagerProps) {
  const t = suiteCopy(lang); const endpoint = `/api/albums/${encodeURIComponent(slug)}/wedding-suite/manage`;
  const [autoTranslate, setAutoTranslate] = useState(true); const [translationWarning, setTranslationWarning] = useState(false);
  const [data, setData] = useState<SuiteOwnerData | null>(null);
- const [config, setConfig] = useState<SuiteConfig>({ ...EMPTY_SUITE, defaultLang: lang });
+ const onSaved = useCallback((value: SuiteConfig) => setData(current => current ? { ...current, config: value, configured: true } : current), []);
+ const autosave = useSuiteAutosave(endpoint, { ...EMPTY_SUITE, defaultLang: lang }, onSaved);
+ const { config, setConfig, initialize } = autosave;
+ const [translating, setTranslating] = useState(false); const [translationRetry, setTranslationRetry] = useState(0);
+ const translationFlight = useRef(false); const translationAttempt = useRef<string | null>(null);
+ const translationEnabled = useRef(autoTranslate);
+ useEffect(() => { translationEnabled.current = autoTranslate; }, [autoTranslate]);
  const [editLang, setEditLang] = useState<SuiteLang>(lang); const [guestLang, setGuestLang] = useState<SuiteLang>(lang);
  const [busy, setBusy] = useState(false); const [error, setError] = useState(''); const [message, setMessage] = useState('');
  const [selected, setSelected] = useState<string[]>([]);
  const load = useCallback(async (preserveConfig = false) => {
   if (plan !== 'premium') return;
   try { const response = await fetch(endpoint, { cache: 'no-store' }); const result = await response.json();
-   if (!response.ok) throw new Error(result.error); setData(result); if (!preserveConfig) { setConfig(result.configured ? result.config : { ...result.config, defaultLang: lang }); setGuestLang(result.configured ? result.config.defaultLang : lang); }
+   if (!response.ok) throw new Error(result.error); setError(''); setData(current => preserveConfig && current ? { ...result, config: current.config } : result); if (!preserveConfig) { initialize(result.configured ? result.config : { ...result.config, defaultLang: lang }); setGuestLang(result.configured ? result.config.defaultLang : lang); }
   } catch (cause) { setError(suiteError(lang, cause instanceof Error ? cause.message : '')); }
- }, [endpoint, lang, plan]);
- useEffect(() => { void load(); }, [load]);
- async function request(method: 'POST' | 'PUT', body: unknown) {
-  setBusy(true); setError(''); setMessage(''); if(method === 'PUT') setTranslationWarning(false);
-  try { const response = await fetch(method === 'PUT' ? `${endpoint}?translate=${autoTranslate ? '1' : '0'}` : endpoint, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
-   const result = await response.json(); if (!response.ok) throw new Error(result.error); setMessage(t.saved); if(method === 'PUT') setTranslationWarning(!!result.translationWarning); await load(method !== 'PUT'); return result;
+ }, [endpoint, lang, plan, initialize, setGuestLang]);
+ useEffect(() => { void Promise.resolve().then(() => load()); }, [load]);
+ // Translation has its own request: basic saving never waits for an AI provider.
+ useEffect(() => {
+  if (!autoTranslate || !data || autosave.status !== 'saved' || translationFlight.current || autosave.recovery) return;
+  const fingerprint = translationFingerprint(config);
+  if (!fingerprint || fingerprint === translationAttempt.current) return;
+  const timer = setTimeout(async () => {
+   translationAttempt.current = fingerprint; translationFlight.current = true; setTranslating(true); setTranslationWarning(false);
+   try {
+    const response = await fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'translate', config }), signal: AbortSignal.timeout(50_000) });
+    const result = await response.json(); if (!response.ok) throw new Error('translation');
+    if (translationEnabled.current) setConfig(current => mergeSuiteTranslations(current, config, result.config));
+   } catch { setTranslationWarning(true); }
+   finally { translationFlight.current = false; setTranslating(false); }
+  }, 2500);
+  return () => clearTimeout(timer);
+ }, [autoTranslate, data, config, autosave.status, autosave.recovery, endpoint, setConfig, translating, translationRetry]);
+ function saveNow() { translationAttempt.current = null; setTranslationRetry(value => value + 1); void autosave.flush(); }
+ async function request(method: 'POST', body: unknown) {
+  if (!await autosave.flush()) return null;
+  setBusy(true); setError(''); setMessage('');
+  try { const response = await fetch(endpoint, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+   const result = await response.json(); if (!response.ok) throw new Error(result.error); setMessage(t.saved); await load(true); return result;
   } catch (cause) { setError(suiteError(lang, cause instanceof Error ? cause.message : '')); return null; }
   finally { setBusy(false); }
  }
+ const saveStatus = autosave.status === 'saved' ? t.autoSaved : autosave.status === 'saving' ? t.autoSaving : autosave.status === 'pending' ? t.autoPending : autosave.status === 'invalid' ? t.autoInvalid : autosave.status === 'error' ? `${t.autoFailed} ${suiteError(lang, autosave.error)}` : t.loading;
  function textField(key: 'welcome' | 'invitation' | 'thankYou', label: string) {
-  return <label className="block space-y-1 text-sm font-medium" key={key}>{label}<textarea className={fieldClass} rows={3} maxLength={5000}
-   value={localized(config[key], editLang)} onChange={e => setConfig(c => ({ ...c, [key]: { ...c[key], [editLang]: e.target.value } }))} /></label>;
+  return <label className="block space-y-1 text-sm font-medium" key={key}>{label}<textarea aria-label={label} className={fieldClass} rows={3} maxLength={5000}
+   value={config[key][editLang] ?? ''} onChange={e => setConfig(c => ({ ...c, [key]: { ...c[key], [editLang]: e.target.value } }))} /></label>;
  }
  async function addGuest(event: FormEvent<HTMLFormElement>) {
   event.preventDefault(); const form = event.currentTarget; const fields = new FormData(form);
@@ -50,26 +81,30 @@ export function WeddingSuiteManager({ slug, lang, plan }: { slug: string; lang: 
  const rows = (key: 'story' | 'travel') => <WeddingPanel title={t[key]} key={key}><div className="space-y-4">{config[key].map((row, index) => <div className="space-y-2 rounded-xl border p-4" key={row.id}>
   <div className="flex justify-between"><span>{index + 1}</span><button type="button" className="min-h-10 text-sm text-red-700" onClick={() => setConfig(c => ({ ...c, [key]: c[key].filter(r => r.id !== row.id) }))}>{t.remove}</button></div>
   {key === 'story' && <label className="block text-sm">{t.date}<input type="date" className={fieldClass} value={row.date || ''} onChange={e => setConfig(c => ({ ...c, [key]: c[key].map(r => r.id === row.id ? { ...r, date: e.target.value } : r) }))} /></label>}
-  <label className="block text-sm">{t.message}<input className={fieldClass} maxLength={180} value={localized(row.title, editLang)} onChange={e => setConfig(c => ({ ...c, [key]: c[key].map(r => r.id === row.id ? { ...r, title: { ...r.title, [editLang]: e.target.value } } : r) }))} /></label>
-  <textarea aria-label={t.message} rows={3} className={fieldClass} maxLength={5000} value={localized(row.text, editLang)} onChange={e => setConfig(c => ({ ...c, [key]: c[key].map(r => r.id === row.id ? { ...r, text: { ...r.text, [editLang]: e.target.value } } : r) }))} />
+  <label className="block text-sm">{t.message}<input className={fieldClass} maxLength={180} value={row.title[editLang] ?? ''} onChange={e => setConfig(c => ({ ...c, [key]: c[key].map(r => r.id === row.id ? { ...r, title: { ...r.title, [editLang]: e.target.value } } : r) }))} /></label>
+  <textarea aria-label={t.message} rows={3} className={fieldClass} maxLength={5000} value={row.text[editLang] ?? ''} onChange={e => setConfig(c => ({ ...c, [key]: c[key].map(r => r.id === row.id ? { ...r, text: { ...r.text, [editLang]: e.target.value } } : r) }))} />
   {<label className="block text-sm">{key === 'story' ? t.photo : t.link}<input type="url" placeholder="https://" className={fieldClass} value={row.url || ''} onChange={e => setConfig(c => ({ ...c, [key]: c[key].map(r => r.id === row.id ? { ...r, url: e.target.value } : r) }))} /></label>}
  </div>)}</div><button type="button" className={`${secondaryClass} mt-3`} disabled={config[key].length >= 30} onClick={() => setConfig(c => ({ ...c, [key]: [...c[key], { id: crypto.randomUUID(), title: {}, text: {} }] }))}>+ {t.addRow}</button></WeddingPanel>;
  if (plan !== 'premium') return null;
- return <fieldset disabled={busy} className="space-y-6 border-t border-stone-200 pt-8" id="wedding-suite"><WeddingPanel title={t.title}>
+ return <section className="space-y-6 border-t border-stone-200 pt-8" id="wedding-suite">
+  {error && !data && <p role="alert" className="rounded-xl bg-red-50 p-4 text-red-800">{error}</p>}
+  {autosave.recovery && <div role="alert" className="space-y-3 rounded-xl border border-amber-300 bg-amber-50 p-4"><p>{t.draftConflict}</p><button type="button" className={secondaryClass} onClick={() => autosave.resolveRecovery(true)}>{t.restoreDraft}</button> <button type="button" className={secondaryClass} onClick={() => autosave.resolveRecovery(false)}>{t.keepSaved}</button></div>}
+  <fieldset disabled={!data || !!autosave.recovery} className="space-y-6"><WeddingPanel title={t.title}>
   {error && <p role="alert" className="mb-4 rounded-xl bg-red-50 p-4 text-red-800">{error}</p>}
   <p role="status" className="mb-3 text-sm text-emerald-700">{message}</p>
   {data?.preview && <p className="mb-4 rounded-xl bg-blue-50 p-4 text-sm text-blue-900">{t.deliveryPreview}</p>}
   <label className="flex items-center gap-3 font-semibold"><input type="checkbox" className="size-5" checked={config.enabled} onChange={e => setConfig(c => ({ ...c, enabled: e.target.checked }))} />{t.enabled}</label>
   <div className="my-5 grid gap-4 sm:grid-cols-2"><LanguageSelect label={t.defaultLanguage} value={config.defaultLang} onChange={value => setConfig(c => ({ ...c, defaultLang: value }))} /><LanguageSelect label={t.contentLanguage} value={editLang} onChange={setEditLang} /></div>
-  <p className="mb-4 text-sm text-stone-600">{t.languageHint}</p><TranslationOptions lang={lang} enabled={autoTranslate} onEnabled={setAutoTranslate}/>{translationWarning && <p role="status" className="my-3 text-sm text-amber-800">{TRANSLATION_COPY[lang].warning}</p>}
+  <p className="mb-4 text-sm text-stone-600">{t.languageHint}</p><TranslationOptions lang={lang} enabled={autoTranslate} onEnabled={setAutoTranslate}/>{translating && <p role="status" className="my-3 text-sm text-stone-600">{t.translating}</p>}{translationWarning && <p role="status" className="my-3 text-sm text-amber-800">{TRANSLATION_COPY[lang].warning}</p>}
   <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">{FEATURES.map(key => <label className="flex items-center gap-2 rounded-xl border p-3 text-sm" key={key}><input type="checkbox" checked={config.features[key]} onChange={e => setConfig(c => ({ ...c, features: { ...c.features, [key]: e.target.checked } }))} />{t[key]}</label>)}</div>
+  {config.features.capsule && !config.capsuleUnlockAt && <p className="mt-3 text-sm text-amber-800">{t.capsuleDraft}</p>}
   <div className="mt-5 grid gap-4">{textField('welcome', t.welcome)}{textField('invitation', t.invitation)}{textField('thankYou', t.thanks)}</div>
   <div className="mt-5 grid gap-4 sm:grid-cols-2"><label className="block text-sm">{t.unlockAt}<input type="datetime-local" className={fieldClass} value={config.capsuleUnlockAt ? new Date(new Date(config.capsuleUnlockAt).getTime() - new Date(config.capsuleUnlockAt).getTimezoneOffset() * 60000).toISOString().slice(0,16) : ''} onChange={e => setConfig(c => ({ ...c, capsuleUnlockAt: e.target.value ? new Date(e.target.value).toISOString() : null }))} /></label>
    <label className="block text-sm">{t.deadline}<input type="datetime-local" className={fieldClass} value={config.rsvpDeadline ? new Date(new Date(config.rsvpDeadline).getTime() - new Date(config.rsvpDeadline).getTimezoneOffset() * 60000).toISOString().slice(0,16) : ''} onChange={e => setConfig(c => ({ ...c, rsvpDeadline: e.target.value ? new Date(e.target.value).toISOString() : null }))} /></label>
    <label className="block text-sm">{t.companions}<input type="number" min={0} max={10} className={fieldClass} value={config.maxCompanions} onChange={e => setConfig(c => ({ ...c, maxCompanions: Number(e.target.value) }))} /></label>
    <label className="block text-sm">{t.photo} · {t.thanks}<input type="url" className={fieldClass} placeholder="https://" value={config.thankYouPhotoUrl} onChange={e => setConfig(c => ({ ...c, thankYouPhotoUrl: e.target.value }))} /></label>
   </div>
-  <div className="mt-5 flex flex-wrap gap-3"><button type="button" className={buttonClass} disabled={busy || !data} onClick={() => void request('PUT', config)}>{busy ? t.loading : t.save}</button>
+  <div className="mt-5 flex flex-wrap gap-3"><button type="button" className={buttonClass} disabled={!data || autosave.status === 'saving'} onClick={saveNow}>{autosave.status === 'saving' ? t.autoSaving : t.save}</button>
    {data && <a className={secondaryClass} href={`${data.guestPath}?lang=${editLang}`} target="_blank" rel="noreferrer">{t.guestLink} ↗</a>}
   </div></WeddingPanel>
   <WeddingPageBuilder value={config.page} lang={lang} editLang={editLang} onChange={page => setConfig(current => ({ ...current, page }))} />
@@ -79,11 +114,11 @@ export function WeddingSuiteManager({ slug, lang, plan }: { slug: string; lang: 
     <label className="text-xs">{t.table}<input className={fieldClass} maxLength={180} value={table.name} onChange={e => setConfig(c => ({ ...c, tables: c.tables.map(r => r.id === table.id ? { ...r, name: e.target.value } : r) }))} /></label>
     <label className="text-xs">{t.capacity}<input type="number" min={1} max={100} className={fieldClass} value={table.capacity} onChange={e => setConfig(c => ({ ...c, tables: c.tables.map(r => r.id === table.id ? { ...r, capacity: Number(e.target.value) } : r) }))} /></label>
     <button type="button" className="self-end min-h-11 px-2 text-sm text-red-700" onClick={() => setConfig(c => ({ ...c, tables: c.tables.filter(r => r.id !== table.id) }))}>{t.remove}</button>
-   </div>)}</div><button className={`${secondaryClass} mt-3`} type="button" onClick={() => setConfig(c => ({ ...c, tables: [...c.tables, { id: crypto.randomUUID(), name: `${t.table} ${c.tables.length + 1}`, capacity: 8 }] }))}>+ {t.addTable}</button>
+   </div>)}</div><button className={`${secondaryClass} mt-3`} type="button" disabled={config.tables.length >= 100} onClick={() => setConfig(c => ({ ...c, tables: [...c.tables, { id: crypto.randomUUID(), name: `${t.table} ${c.tables.length + 1}`, capacity: 8 }] }))}>+ {t.addTable}</button>
    <label className="mt-4 block text-sm">{t.seating} · {t.photo}<input type="url" placeholder="https://" className={fieldClass} value={config.seatingMapUrl} onChange={e => setConfig(c => ({ ...c, seatingMapUrl: e.target.value }))} /></label>
   </WeddingPanel><WeddingPanel title={t.menu}>
-   <div className="space-y-3">{config.menuOptions.map(row => <div className="flex items-center gap-2" key={row.id}><label className="flex-1 text-sm">{t.menu}<input className={fieldClass} maxLength={180} value={localized(row.title, editLang)} onChange={e => setConfig(c => ({ ...c, menuOptions: c.menuOptions.map(r => r.id === row.id ? { ...r, title: { ...r.title, [editLang]: e.target.value } } : r) }))} /></label><button type="button" className="text-sm text-red-700" onClick={() => setConfig(c => ({ ...c, menuOptions: c.menuOptions.filter(r => r.id !== row.id) }))}>{t.remove}</button></div>)}</div>
-   <button type="button" className={`${secondaryClass} mt-3`} onClick={() => setConfig(c => ({ ...c, menuOptions: [...c.menuOptions, { id: crypto.randomUUID(), title: {} }] }))}>+ {t.addRow}</button>
+   <div className="space-y-3">{config.menuOptions.map(row => <div className="flex items-center gap-2" key={row.id}><label className="flex-1 text-sm">{t.menu}<input className={fieldClass} maxLength={180} value={row.title[editLang] ?? ''} onChange={e => setConfig(c => ({ ...c, menuOptions: c.menuOptions.map(r => r.id === row.id ? { ...r, title: { ...r.title, [editLang]: e.target.value } } : r) }))} /></label><button type="button" className="text-sm text-red-700" onClick={() => setConfig(c => ({ ...c, menuOptions: c.menuOptions.filter(r => r.id !== row.id) }))}>{t.remove}</button></div>)}</div>
+   <button type="button" className={`${secondaryClass} mt-3`} disabled={config.menuOptions.length >= 20} onClick={() => setConfig(c => ({ ...c, menuOptions: [...c.menuOptions, { id: crypto.randomUUID(), title: {} }] }))}>+ {t.addRow}</button>
   </WeddingPanel></div>
   <WeddingPanel title={t.guests}><form onSubmit={addGuest} className="grid items-end gap-4 sm:grid-cols-2 lg:grid-cols-3">
    <label className="block text-sm">{t.name}<input name="name" required maxLength={180} className={fieldClass} /></label>
@@ -103,6 +138,10 @@ export function WeddingSuiteManager({ slug, lang, plan }: { slug: string; lang: 
   </WeddingPanel>
   <WeddingPanel title={t.entries}><div className="space-y-4">{data?.entries.map(entry => <article className="space-y-2 rounded-xl border p-4" key={entry.id}><h3 className="font-bold">{t[entry.kind]}</h3>{entry.locked ? <p>{t.locked}</p> : <><p className="font-semibold">{entry.name}</p><p className="whitespace-pre-wrap text-sm">{entry.message}</p><EntryMedia entry={entry} slug={slug} lang={lang} /><button type="button" className={secondaryClass} disabled={busy} onClick={() => void request('POST', { action: 'moderate', id: entry.id, approved: !entry.approved })}>{entry.approved ? t.reject : t.approve}</button></>}</article>)}</div><a href={`/${encodeURIComponent(slug)}/celebrate/guestbook?lang=${lang}`} className={`${secondaryClass} mt-4 inline-block`} target="_blank" rel="noreferrer">{t.export}</a></WeddingPanel>
   <WeddingPanel title={t.viewMail}><div className="space-y-3">{data?.emails.map(mail => <article className="flex flex-wrap items-center justify-between gap-3 rounded-xl border p-4" key={mail.id}><div><p className="font-semibold">{mail.subject}</p><p className="break-all text-xs text-stone-600">{mail.recipient} · {mail.language.toUpperCase()} · {mail.status === 'preview' ? t.preview : mail.status === 'failed' ? t.error : mail.status === 'sent' ? t.saved : t.loading}</p>{mail.status === 'preview' && <p className="text-xs text-blue-800">{t.deliveryPreview}</p>}</div><a href={`${endpoint}?mail=${mail.id}`} target="_blank" rel="noreferrer" className={secondaryClass}>{t.preview} ↗</a></article>)}</div></WeddingPanel>
-  <div className="sticky bottom-3 z-10 rounded-2xl border bg-white/95 p-3 shadow-lg backdrop-blur"><button type="button" className={`${buttonClass} w-full`} disabled={busy || !data} onClick={() => void request('PUT', config)}>{busy ? t.loading : t.save}</button></div>
- </fieldset>;
+  </fieldset>
+  <div data-autosave-state={autosave.status} className="sticky bottom-3 z-10 space-y-2 rounded-2xl border bg-white/95 p-3 shadow-lg backdrop-blur">
+   <p role="status" aria-live="polite" className={`text-sm ${autosave.status === 'error' || autosave.status === 'invalid' ? 'text-red-800' : 'text-stone-700'}`}>{saveStatus}</p>
+   {!data ? <button type="button" className={`${buttonClass} w-full`} onClick={() => void load()}>{t.retryLoad}</button> : <button type="button" className={`${buttonClass} w-full`} disabled={autosave.status === 'saving' || !!autosave.recovery} onClick={saveNow}>{autosave.status === 'saving' ? t.autoSaving : autosave.status === 'error' ? t.retrySave : t.save}</button>}
+  </div>
+ </section>;
 }
