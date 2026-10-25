@@ -87,9 +87,10 @@ export async function visibleEntries(album: Album, config: SuiteConfig, owner: b
 }
 export async function publicSuite(req: NextRequest, album: Album, config: SuiteConfig) {
  const [attendee, entries] = await Promise.all([attendeeFor(req, album), visibleEntries(album, config, false)]);
+ const publicConfig = config.page ? { ...config, page: { ...config.page, sections: config.page.sections.filter(section => section.visible) } } : config;
  return { album: { id: album.id, slug: album.slug, name: album.coupleName, date: album.weddingDate,
   maxPhotos: album.maxPhotos, photoCount: album.photoCount, passwordProtected: !!album.password, moderationEnabled: album.moderationEnabled },
-  config, attendee: safeAttendee(attendee), entries, language: attendee?.language || config.defaultLang };
+  config: publicConfig, attendee: safeAttendee(attendee), entries, language: attendee?.language || config.defaultLang };
 }
 export async function queueMail(req: NextRequest, album: Album, config: SuiteConfig, attendee: typeof suiteAttendees.$inferSelect, kind: MailKind, requestId: string) {
  if (!attendee.notifications && kind !== 'invitation') return null;

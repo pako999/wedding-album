@@ -6,6 +6,7 @@ import { suiteCopy, suiteError } from '@/lib/wedding-suite/copy';
 import type { AttendeeView, SuiteOwnerData } from '@/lib/wedding-suite/dto';
 import { WeddingPanel, fieldClass, buttonClass, secondaryClass } from '@/components/wedding/WeddingViews';
 import { LanguageSelect } from './LanguageSelect';
+import { WeddingPageBuilder } from './WeddingPageBuilder';
 import { EntryMedia } from './EntryMedia';
 
 export function WeddingSuiteManager({ slug, lang, plan }: { slug: string; lang: SuiteLang; plan: string }) {
@@ -71,6 +72,7 @@ export function WeddingSuiteManager({ slug, lang, plan }: { slug: string; lang: 
   <div className="mt-5 flex flex-wrap gap-3"><button type="button" className={buttonClass} disabled={busy || !data} onClick={() => void request('PUT', config)}>{busy ? t.loading : t.save}</button>
    {data && <a className={secondaryClass} href={`${data.guestPath}?lang=${editLang}`} target="_blank" rel="noreferrer">{t.guestLink} ↗</a>}
   </div></WeddingPanel>
+  <WeddingPageBuilder value={config.page} lang={lang} editLang={editLang} onChange={page => setConfig(current => ({ ...current, page }))} />
   <div className="grid gap-6 lg:grid-cols-2">{rows('story')}{rows('travel')}</div>
   <div className="grid gap-6 lg:grid-cols-2"><WeddingPanel title={t.seating}>
    <div className="space-y-3">{config.tables.map(table => <div className="grid grid-cols-[minmax(0,1fr)_90px_auto] gap-2" key={table.id}>

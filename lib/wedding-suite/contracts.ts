@@ -12,6 +12,29 @@ export const localeTextSchema = z.object({ sl: text.optional(), hr: text.optiona
 export type LocaleText = z.infer<typeof localeTextSchema>;
 const safeUrl = z.string().max(2000).refine(value => !value || (() => { try { const u = new URL(value); return u.protocol === 'https:' && !u.username && !u.password; } catch { return false; } })(), 'invalid');
 const translatedRow = z.object({ id, date: z.union([z.iso.date(), z.literal('')]).optional(), title: localeTextSchema, text: localeTextSchema, url: safeUrl.optional() }).strict();
+export const PAGE_FONTS = ['elegant', 'modern', 'classic', 'handwritten'] as const;
+export const PAGE_CATEGORIES = ['ceremony', 'reception', 'travel', 'accommodation', 'custom'] as const;
+export const PAGE_FIELD_TYPES = ['heading', 'text', 'link'] as const;
+const color = z.string().regex(/^#[0-9a-fA-F]{6}$/);
+const pageFieldSchema = z.object({ id, type: z.enum(PAGE_FIELD_TYPES), text: localeTextSchema,
+  url: safeUrl.optional(), font: z.enum(PAGE_FONTS).optional(), color: color.optional(),
+}).strict().refine(field => field.type !== 'link' || !!field.url || !Object.values(field.text).some(value => value?.trim()), 'invalid');
+export const pageDesignSchema = z.object({
+  title: localeTextSchema, headingFont: z.enum(PAGE_FONTS), bodyFont: z.enum(PAGE_FONTS),
+  background: color, textColor: color, accent: color,
+  sections: z.array(z.object({ id, category: z.enum(PAGE_CATEGORIES), title: localeTextSchema,
+    visible: z.boolean(), fields: z.array(pageFieldSchema).max(12),
+  }).strict()).max(12),
+}).strict().superRefine((page, ctx) => {
+  const ids = new Set<string>();
+  for (const section of page.sections) for (const entry of [section, ...section.fields]) {
+    if (ids.has(entry.id)) ctx.addIssue({ code: 'custom', message: 'Duplicate page item', path: ['sections'] });
+    ids.add(entry.id);
+  }
+});
+export type PageDesign = z.infer<typeof pageDesignSchema>;
+export type PageSection = PageDesign['sections'][number];
+export type PageField = PageSection['fields'][number];
 export const configSchema = z.object({
   enabled: z.boolean(), defaultLang: language,
   features: z.object({ guestbook: z.boolean(), video: z.boolean(), seating: z.boolean(), rsvp: z.boolean(), capsule: z.boolean(), story: z.boolean(), travel: z.boolean(), thanks: z.boolean() }).strict(),
@@ -23,6 +46,7 @@ export const configSchema = z.object({
   capsuleUnlockAt: z.iso.datetime({ offset: true }).nullable(),
   rsvpDeadline: z.iso.datetime({ offset: true }).nullable(),
   maxCompanions: z.number().int().min(0).max(10),
+  page: pageDesignSchema.optional(),
 }).strict();
 export type SuiteConfig = z.infer<typeof configSchema>;
 export const EMPTY_SUITE: SuiteConfig = { enabled: false, defaultLang: 'sl',

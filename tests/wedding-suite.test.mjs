@@ -344,3 +344,61 @@ test('wedding save authenticates first and saves original text with a warning if
  assert.equal(result.status, 200); assert.equal((await result.json()).translationWarning, true);
  assert.equal(translated, 1); assert.equal(saved.menu[0].title, 'Dinner');
 });
+
+test('page designs round-trip without affecting old configs and reject unsafe style, links and duplicate IDs', () => {
+ const { DEFAULT_PAGE } = load('lib/wedding-suite/page-design.ts');
+ const page = { ...structuredClone(DEFAULT_PAGE), title: { en: 'Our wedding' }, sections: [{ id: uuid, category: 'ceremony', title: { en: 'Ceremony' }, visible: true,
+  fields: [{ id: 'e305cce6-759a-4259-b382-4df1d4ac8896', type: 'link', text: { en: 'Directions' }, url: 'https://example.test/venue', font: 'classic', color: '#123456' }] }] };
+ assert.deepEqual(contracts.configSchema.parse(contracts.EMPTY_SUITE), contracts.EMPTY_SUITE);
+ assert.deepEqual(contracts.configSchema.parse({ ...contracts.EMPTY_SUITE, page }).page, page);
+ for (const patch of [{ accent: 'red;position:fixed' }, { headingFont: 'url(https://bad.test)' }, { textColor: '#fff' }]) assert.equal(contracts.configSchema.safeParse({ ...contracts.EMPTY_SUITE, page: { ...page, ...patch } }).success, false);
+ for (const url of ['javascript:alert(1)', 'http://example.test', 'https://user:secret@example.test']) {
+  const bad = structuredClone(page); bad.sections[0].fields[0].url = url;
+  assert.equal(contracts.configSchema.safeParse({ ...contracts.EMPTY_SUITE, page: bad }).success, false);
+ }
+ const duplicate = structuredClone(page); duplicate.sections[0].fields[0].id = uuid;
+ assert.equal(contracts.configSchema.safeParse({ ...contracts.EMPTY_SUITE, page: duplicate }).success, false);
+ const oversized = { ...page, sections: Array(13).fill(page.sections[0]) };
+ assert.equal(contracts.configSchema.safeParse({ ...contracts.EMPTY_SUITE, page: oversized }).success, false);
+});
+
+test('page field reordering preserves multilingual content, formatting and input arrays', () => {
+ const { movePageItem } = load('lib/wedding-suite/page-design.ts');
+ const input = [{ id: 'a', text: { en: 'First', sl: 'Prvo' }, color: '#123456' }, { id: 'b', text: { en: 'Second' }, font: 'classic' }];
+ const original = structuredClone(input);
+ const result = movePageItem(input, 'a', 1);
+ assert.deepEqual(input, original); assert.deepEqual(result.map(item => item.id), ['b', 'a']);
+ assert.deepEqual(result[1], original[0]);
+ assert.equal(movePageItem(input, 'missing', 1), input);
+ assert.equal(movePageItem(input, 'a', -1), input);
+});
+
+test('custom page text is translated while typography, visibility and URLs remain untouched', async () => {
+ const { translateSuite } = load('lib/wedding/translate.ts');
+ const { DEFAULT_PAGE } = load('lib/wedding-suite/page-design.ts');
+ const input = { ...structuredClone(contracts.EMPTY_SUITE), page: { ...structuredClone(DEFAULT_PAGE), accent: '#123456', title: { en: 'Our wedding', de: 'Unsere Hochzeit korrigiert' }, sections: [{ id: uuid, category: 'custom', title: { en: 'Details' }, visible: false,
+  fields: [{ id: 'e305cce6-759a-4259-b382-4df1d4ac8896', type: 'link', text: { en: 'Directions' }, url: 'https://example.test/venue', font: 'classic' }] }] } };
+ const result = await translateSuite(input, async tasks => {
+  assert.ok(!tasks.some(task => task.source === '#123456' || task.source.startsWith('https:')));
+  return tasks.map(task => ({ id: task.id, text: `${task.targetLanguage}: ${task.source}` }));
+ });
+ assert.equal(result.page.title.de, input.page.title.de);
+ assert.equal(result.page.accent, input.page.accent);
+ assert.equal(result.page.sections[0].visible, false);
+ assert.equal(result.page.sections[0].fields[0].url, input.page.sections[0].fields[0].url);
+ for (const lang of contracts.SUITE_LANGS) assert.ok(result.page.sections[0].fields[0].text[lang]);
+ assert.equal(input.page.sections[0].fields[0].text.de, undefined);
+});
+
+test('hidden page categories are withheld by the public API and unsafe unsaved links remain inert', async () => {
+ const { DEFAULT_PAGE, safePageLink } = load('lib/wedding-suite/page-design.ts');
+ const input = { ...structuredClone(contracts.EMPTY_SUITE), page: { ...structuredClone(DEFAULT_PAGE), sections: [{ id: uuid, category: 'custom', title: { en: 'Private draft' }, visible: false, fields: [] }] } };
+ const result = await fixture().server.publicSuite({ cookies: { get: () => undefined } }, { id: 'album-a', slug: 'demo' }, input);
+ assert.deepEqual(result.config.page.sections, []);
+ assert.ok(!JSON.stringify(result).includes('Private draft'));
+ assert.equal(input.page.sections.length, 1, 'owner draft must be preserved');
+ assert.equal(safePageLink('javascript:alert(1)'), undefined);
+ assert.equal(safePageLink('https://name:secret@example.test'), undefined);
+ assert.equal(safePageLink(''), undefined);
+ assert.equal(safePageLink('https://example.test/venue'), 'https://example.test/venue');
+});

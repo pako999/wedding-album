@@ -17,8 +17,9 @@ The prior production build script ran an entitlement backfill against `albums` a
 ## Verified locally
 
 - Complete production build, TypeScript and all existing regression/localization/wedding/pricing checks.
-- 20 suite tests, including payment-reference compatibility, duplicate callback behavior, original album-field preservation, missing optional settings, expired-plan QR fallback, upload-only suite privacy, and absence of album backfill updates in a normal production preflight. Database/provider-dependent tests use isolated mocks; no customer database was accessed.
+- 24 suite tests, including payment-reference compatibility, duplicate callback behavior, original album-field preservation, missing optional settings, expired-plan QR fallback, upload-only suite privacy, absence of album backfill updates in a normal production preflight, and page-builder validation/translation/privacy. Database/provider-dependent tests use isolated mocks; no customer database was accessed.
 - Real-component browser fixtures for 18 uploads in six languages and translation editing/guest preview. Network responses are intercepted; these do not exercise live storage or authentication.
+- Website builder browser fixture for categories, typed fields, fonts/colors, arrow/drag ordering, save/reload, language editing, guest output and hidden categories at mobile/desktop widths. Designs use an optional property of existing suite JSON; old configurations and album pages are unchanged by default.
 
 ## Blocking promotion
 
