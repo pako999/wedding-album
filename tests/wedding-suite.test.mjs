@@ -85,7 +85,7 @@ test('invitation tokens cannot be altered, transferred between albums, or reused
  assert.throws(() => tokens.invitationToken(attendee, 'short'));
 });
 
-function fixture(rows = []) {
+function fixture(rows = [], flags = { albumPermission: 'view_upload' }) {
  const inserts = []; let sendCalls = 0;
  const query = () => { let projection;
   const q = { from() { return q; }, where() { return q; }, limit() { return q; }, orderBy() { return q; }, leftJoin() { return q; },
@@ -96,7 +96,7 @@ function fixture(rows = []) {
   let payload;
   const q = { values(value) { payload=value; return q; }, onConflictDoNothing() { return q; }, returning() { inserts.push(payload); return Promise.resolve([{id:payload.id}]); } }; return q;
  } };
- const server = modules({ '@/lib/db':{ db }, '@/lib/wedding/server':{ digest:value=>require('node:crypto').createHash('sha256').update(value).digest('hex'), reply:Response.json },
+ const server = modules({ '@/lib/db':{ db }, '@/lib/album-flags': { getAlbumFlags: async () => flags }, '@/lib/wedding/server':{ digest:value=>require('node:crypto').createHash('sha256').update(value).digest('hex'), reply:Response.json },
   '@/lib/album-request-access':{}, '@/lib/storage/bunny':{ bunnyDisplayUrl:value=>value }, resend:{ Resend:class { constructor(){sendCalls++;throw new Error('Sending must not occur in preview');} } },
  })('lib/wedding-suite/server.ts');
  return { server, inserts, sendCalls:()=>sendCalls };
@@ -113,6 +113,57 @@ test('the actual entry reader withholds capsule text, names, and media from owne
  }
  const open=await f.server.visibleEntries({ id:'album-a' }, { ...config,capsuleUnlockAt:'2020-01-01T00:00:00Z' },true);
  assert.equal(open[0].message,'Hidden wish');
+});
+
+test('upload-only gallery policy also hides wedding-suite media while preserving owner access', async () => {
+ const rows = [
+  { id: 'photo-entry', kind: 'guestbook', name: 'Guest', message: 'Attached photo', photoId: uuid, blobUrl: 'https://example.test/private-photo.jpg', status: 'published', approved: true },
+  { id: 'text-entry', kind: 'guestbook', name: 'Guest', message: 'Text wish', photoId: null, approved: true },
+ ];
+ const hidden = fixture(rows, { albumPermission: 'upload_only' });
+ const publicEntries = await hidden.server.visibleEntries({ id: 'album-a' }, config, false);
+ assert.deepEqual(publicEntries.map(row => row.id), ['text-entry']);
+ assert.ok(!JSON.stringify(publicEntries).includes('private-photo'));
+ assert.equal((await hidden.server.visibleEntries({ id: 'album-a' }, config, true)).length, 2);
+ const visible = fixture(rows);
+ assert.equal((await visible.server.visibleEntries({ id: 'album-a' }, config, false)).length, 2);
+});
+
+test('QR suite eligibility falls back to existing album links for expired, downgraded or unavailable suites', async () => {
+ let reads = 0;
+ const query = { from() { return query; }, where() { return query; }, limit: async () => { reads++; throw new Error('missing optional table'); } };
+ const server = modules({
+  '@/lib/db': { db: { select: () => query } },
+  '@/lib/wedding/server': { activePremium: album => album.plan === 'premium' && (!album.expiresAt || album.expiresAt.getTime() > Date.now()) },
+ })('lib/wedding-suite/server.ts');
+ assert.equal(await server.suiteEnabled({ plan: 'free' }), false);
+ assert.equal(await server.suiteEnabled({ plan: 'premium', expiresAt: new Date('2020-01-01') }), false);
+ assert.equal(reads, 0);
+ assert.equal(await server.suiteEnabled({ id: 'existing-album', plan: 'premium' }), false);
+ assert.equal(reads, 1);
+});
+
+test('production deployment preflight never updates existing albums without an explicit repair argument', async () => {
+ const script = readFileSync(resolve(root, 'scripts/migrate-wedding-premium.mjs'), 'utf8')
+  .replace(/^import .*;\n/gm, '').replaceAll('import.meta.url', "'file:///isolated/scripts/migrate-wedding-premium.mjs'");
+ const migration = readFileSync(resolve(root, 'scripts/migrations/20260926-wedding-premium.sql'), 'utf8');
+ const columns = { wedding_settings: ['album_id','enabled','requests_open','schedule','menu','challenges','dj_token_hash','updated_at'], wedding_song_requests: ['id','album_id','guest_token_hash','title','artist','requested_by','note','status','created_at'], wedding_bingo_submissions: ['id','album_id','challenge_id','photo_id','guest_token_hash','created_at'] };
+ const queries = [];
+ const sql = (strings) => {
+  const source = strings.join('?'); queries.push(source);
+  if (source.includes('information_schema.columns')) return Promise.resolve(Object.entries(columns).flatMap(([table_name, values]) => values.map(column_name => ({ table_name, column_name }))));
+  if (source.includes('to_regclass')) return Promise.resolve([{ name: null }]);
+  return Promise.resolve([]);
+ };
+ sql.query = source => { queries.push(source); return Promise.resolve([]); };
+ sql.transaction = values => Promise.all(values);
+ const execute = new (Object.getPrototypeOf(async function(){}).constructor)('fs', 'neon', 'process', 'console', script);
+ const run = argv => execute({ readFile: async () => migration }, () => sql, { env: { VERCEL_ENV: 'production', DATABASE_URL: 'isolated-test-value' }, argv }, { log() {} });
+ await run([]);
+ assert.ok(!queries.some(query => /\bUPDATE\s+(albums|user_plan_overrides)\b/i.test(query)));
+ queries.length = 0;
+ await run(['--backfill-premium-entitlements']);
+ assert.ok(queries.some(query => /\bUPDATE\s+albums\b/i.test(query)));
 });
 
 test('mail preparation follows recipient language and preview never calls Resend even if sending flag is set', async () => {

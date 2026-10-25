@@ -8,6 +8,7 @@ import { albums, photos, type Album } from '@/lib/db/schema';
 import { activePremium, ownerAccess, digest, reply } from '@/lib/wedding/server';
 import { hasAlbumRequestAccess } from '@/lib/album-request-access';
 import { bunnyDisplayUrl } from '@/lib/storage/bunny';
+import { getAlbumFlags } from '@/lib/album-flags';
 import { suiteSettings, suiteAttendees, suiteEntries, suiteEmails } from './schema';
 import { EMPTY_SUITE, capsuleIsOpen, suiteLang, type SuiteConfig } from './contracts';
 import { invitationToken, validInvitation } from './tokens';
@@ -68,6 +69,7 @@ export function safeAttendee(attendee: typeof suiteAttendees.$inferSelect | null
  return safe;
 }
 export async function visibleEntries(album: Album, config: SuiteConfig, owner: boolean) {
+ const flags = owner ? null : await getAlbumFlags(album.id);
  const rows = await db.select({ id: suiteEntries.id, kind: suiteEntries.kind, name: suiteEntries.name, message: suiteEntries.message,
   photoId: suiteEntries.photoId, language: suiteEntries.language, approved: suiteEntries.approved, createdAt: suiteEntries.createdAt,
   url: photos.blobUrl, mimeType: photos.mimeType, videoId: photos.cfStreamVideoId, mediaStatus: photos.status,
@@ -77,6 +79,8 @@ export async function visibleEntries(album: Album, config: SuiteConfig, owner: b
  return rows.filter(row => owner || config.features[row.kind]).map(row => {
   if (row.kind === 'capsule' && !capsuleIsOpen(config.capsuleUnlockAt)) return { id: row.id, kind: row.kind, locked: true, createdAt: row.createdAt };
   if (!owner && row.photoId && row.mediaStatus !== 'published') return null;
+  // The wedding suite must not expose media hidden by the existing gallery policy.
+  if (!owner && row.photoId && flags?.albumPermission === 'upload_only') return null;
   const { mediaStatus: _, ...safe } = row;
   return { ...safe, url: row.url && !row.videoId ? bunnyDisplayUrl(row.url) : row.url, locked: false };
  }).filter(Boolean);
@@ -119,7 +123,7 @@ export async function queueMail(req: NextRequest, album: Album, config: SuiteCon
 }
 export function nextId() { return randomUUID(); }
 
-export async function suiteEnabled(album: Album) { try { return (await settingsFor(album)).enabled; } catch { return false; } }
+export async function suiteEnabled(album: Album) { if (!activePremium(album)) return false; try { return (await settingsFor(album)).enabled; } catch { return false; } }
 
 /** Serialize RSVP writes per album; capacity is checked after the lock, in a fresh statement snapshot. */
 export async function saveRsvp(album: Album, config: SuiteConfig, attendee: typeof suiteAttendees.$inferSelect,

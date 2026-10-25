@@ -17,9 +17,10 @@ if (isVercelPreview) {
   const expected = {wedding_settings: ['album_id','enabled','requests_open','schedule','menu','challenges','dj_token_hash','updated_at'], wedding_song_requests: ['id','album_id','guest_token_hash','title','artist','requested_by','note','status','created_at'], wedding_bingo_submissions: ['id','album_id','challenge_id','photo_id','guest_token_hash','created_at']};
   const rows = await sql`SELECT table_name, column_name FROM information_schema.columns WHERE table_schema='public' AND table_name IN ('wedding_settings','wedding_song_requests','wedding_bingo_submissions')`;
   for (const [table, columns] of Object.entries(expected)) for (const column of columns) if (!rows.some(r => r.table_name === table && r.column_name === column)) throw new Error(`Wedding schema mismatch: ${table}.${column}`);
-  // Data entitlement backfill is production-only. Preview builds can validate the
-  // schema, but must never mutate customer plan lifetimes.
-  if (process.env.VERCEL_ENV === 'production') {
+  // A normal deployment must never rewrite existing album limits or lifetimes.
+  // Historical entitlement repair requires an explicit, separate invocation:
+  // node scripts/migrate-wedding-premium.mjs --backfill-premium-entitlements
+  if (process.env.VERCEL_ENV === 'production' && process.argv.includes('--backfill-premium-entitlements')) {
     await sql`
       UPDATE albums
          SET max_photos = 2000000000,
