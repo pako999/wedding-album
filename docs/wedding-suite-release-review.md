@@ -25,6 +25,14 @@ The prior production build script ran an entitlement backfill against `albums` a
 - Real suite-route tests and the real launch-offer SQL executed on an isolated PostgreSQL engine. Marketing-page checks cover all six languages, fifteen feature groups, three visual guides, shared inventory across cookie jars, exhaustion and unavailable-inventory fallback. Checkout UI checks cover launch pricing, stale-price protection and decimal discounted invoice amounts.
 - Actual browser video recording with synthetic camera/audio, single-stream protection for rapid clicks, stopped tracks and denied/unsupported recording upload fallback. Guide images also returned HTTP 200 through the real Next.js image optimizer.
 
+## Localized article update — 25 October 2026
+
+Added a new illustrated wedding website/suite guide in all six supported languages, with matching translation keys and country-domain route mappings. Package pages link to their translated guide; blog package buttons use public country paths for Serbian and Spanish. First-party article images resolve through the canonical URL helper for social/article schemas. The blog index sitemap date reflects this actual publication. Localized FAQ labels no longer fall back to English “FAQ”.
+
+The localization audit passes 667 checks. A real-component article browser check covers six translations at 320/1280px, loaded guide pictures, translated package links, reciprocal alternates, newest-first listing and exact conditional launch pricing. Authentication/navigation shells are isolated. A direct local Next request remains unavailable without the Clerk environment bindings; no live authentication claim is made. This content update does not change album, upload, login or payment code.
+
+Run `node scripts/wedding-blog-browser-check.cjs` after a successful build to repeat the article check. The production promotion blockers below still apply.
+
 ## Blocking promotion
 
 - Verify the four `wedding_suite_*` tables and constraints in the production database using read-only checks. If absent, prepare and apply the reviewed additive migration separately; do not modify existing albums/photos.

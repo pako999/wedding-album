@@ -1,0 +1,104 @@
+{
+  "slug": "porocna-spletna-stran-vabila-knjiga-gostov",
+  "lang": "sl",
+  "title": "Vajina poroka na eni povezavi: vodnik po novih funkcijah Poročnega premium paketa",
+  "description": "Uredita poročno spletno stran, zberita potrditve udeležbe, razporedita mize in shranita voščila gostov. Vodnik po novih funkcijah v treh korakih.",
+  "translationKey": "wedding-website-suite-guide-2026",
+  "publishedAt": "2026-10-25",
+  "updatedAt": "2026-10-25",
+  "author": "Ekipa Guestcam",
+  "category": "novice",
+  "readingTime": 5,
+  "tags": [
+    "1. Uredita stran po svojem okusu",
+    "2. Vabila, potrditve udeležbe in razpored miz",
+    "Guestcam"
+  ],
+  "tldr": "Poroka potrebuje več kot zbirko fotografij. Gostje želijo vedeti, kam priti, kaj sledi in kako potrditi udeležbo. Poročni premium poveže vajino stran, vabila in spomine, vidva pa izbereta funkcije, ki jih želita vključiti.",
+  "coverImage": "/hero/wedding-page-guide.png",
+  "coverAlt": "Urejevalnik poročne strani s kategorijami, besedili in predogledom",
+  "content": [
+    {
+      "type": "p",
+      "text": "Poroka potrebuje več kot zbirko fotografij. Gostje želijo vedeti, kam priti, kaj sledi in kako potrditi udeležbo. Poročni premium poveže vajino stran, vabila in spomine, vidva pa izbereta funkcije, ki jih želita vključiti."
+    },
+    {
+      "type": "h2",
+      "text": "1. Uredita stran po svojem okusu"
+    },
+    {
+      "type": "p",
+      "text": "Dodajta kategorije za obred, slavje, prevoz ali prenočišča oziroma ustvarita svoje. V spustnem seznamu izberita naslov, besedilo ali povezavo. Polja razvrstita z vlečenjem ali puščicami. Nastavita pisavi za naslove in besedilo, ozadje ter poudarjeno barvo in preverita predogled. Kategorijo, ki še ni pripravljena, skrijta."
+    },
+    {
+      "type": "image",
+      "src": "/hero/wedding-style-guide.png",
+      "alt": "Nastavitve pisav in barv poročne strani",
+      "caption": "Primer postavitve: vzorčna besedila zamenjajta s svojimi podatki."
+    },
+    {
+      "type": "h2",
+      "text": "2. Vabila, potrditve udeležbe in razpored miz"
+    },
+    {
+      "type": "p",
+      "text": "Ustvarita osebne povezave do vabil. Gostje lahko potrdijo udeležbo, dodajo dovoljene spremljevalce, izberejo meni in pošljejo zasebno sporočilo. Določita rok za odgovor ter uredita število sedežev in razpored miz. Gost prek svojega vabila poišče mizo. Zasebni odgovori ostanejo ločeni od javnih informacij o prihodu."
+    },
+    {
+      "type": "h2",
+      "text": "3. Spomini, ki dopolnijo fotografije"
+    },
+    {
+      "type": "p",
+      "text": "Vključita knjigo gostov z moderiranjem, fotografske prispevke in kratka video voščila. Gost lahko na podprti napravi posname video ali naloži svoj posnetek. Časovna kapsula ohrani pisna sporočila zaprta do izbranega datuma. Dodajta svojo zgodbo, informacije o prihodu in zahvalo. Knjigo gostov lahko natisneta ali v brskalniku shranita kot PDF."
+    },
+    {
+      "type": "image",
+      "src": "/hero/scan.webp",
+      "alt": "Oglejta si poročni paket",
+      "caption": "Primer postavitve: vzorčna besedila zamenjajta s svojimi podatki."
+    },
+    {
+      "type": "h2",
+      "text": "4. Poročna stran v jezikih vajinih gostov"
+    },
+    {
+      "type": "p",
+      "text": "Vmesnik podpira slovenščino, hrvaščino, srbščino, angleščino, nemščino in španščino. Če je samodejno prevajanje nastavljeno, lahko ob shranjevanju dopolni manjkajoče prevode strani, časovnice, menija in drugih podprtih vsebin. Za vsak jezik vsebine lahko besedilo pregledata in popravita sama. Obstoječi ročni prevodi se ohranijo. Če prevajanje ni dosegljivo, se izvirno besedilo vseeno shrani."
+    },
+    {
+      "type": "h2",
+      "text": "Priprava v treh korakih"
+    },
+    {
+      "type": "ol",
+      "items": [
+        "Izberita Poročni premium in odprita poročne nastavitve. Dodajta imeni, zgodbo, podatke o dogodku in želene funkcije.",
+        "S spustnima seznamoma za kategorije in polja sestavita stran. Izberita pisave in barve, preverita mobilni predogled ter preglejta jezike, ki jih bosta delila.",
+        "Dodajta goste, preverita osebno vabilo in delita ustrezno povezavo ali QR-kodo. Odgovore in prispevke gostov urejajta v nadzorni plošči."
+      ]
+    },
+    {
+      "type": "h2",
+      "text": "Kaj vključuje paket in koliko stane?"
+    },
+    {
+      "type": "p",
+      "text": "Del paketa ostajajo poročni urnik, digitalni meni, glasbene želje za DJ-ja in foto bingo. Poročni premium vključuje tudi neomejeno nalaganje fotografij in videov, neomejeno hrambo in dostop, prenos ZIP, prikaz Photo Wall in Film Studio. Vključita želene dodatne funkcije; galerija ostaja prostor za fotografije vajinih gostov."
+    },
+    {
+      "type": "callout",
+      "text": "Redna cena paketa je 189 €. Ko je uvodna ponudba aktivna in so mesta še na voljo, 30 % popusta pomeni ceno 132,30 € za naslednjih 20 upravičenih uporabniških računov, največ en uvodni paket na račun. Stran paketa prikazuje preverjeno skupno razpoložljivost. Ponoven obisk ali brisanje piškotkov ne ustvari novega popusta. Pred plačilom preverita prikazano ceno."
+    },
+    {
+      "type": "faq",
+      "q": "Lahko prevode popraviva sama?",
+      "a": "Da. Izberita jezik vsebine, uredita besedilo in shranita. Samodejno prevajanje dopolni manjkajoča besedila in ne prepiše obstoječih popravkov."
+    },
+    {
+      "type": "cta",
+      "text": "Oglejta si poročni paket",
+      "href": "/porocni-paket"
+    }
+  ]
+}

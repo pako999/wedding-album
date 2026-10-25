@@ -1,0 +1,104 @@
+{
+  "slug": "wedding-website-rsvp-guestbook-guide",
+  "lang": "en",
+  "title": "Your wedding, one link: a guide to the new Wedding Premium features",
+  "description": "Build your wedding website, collect RSVPs, organise seating and save guest messages. Explore the new Wedding Premium tools and a three-step setup guide.",
+  "translationKey": "wedding-website-suite-guide-2026",
+  "publishedAt": "2026-10-25",
+  "updatedAt": "2026-10-25",
+  "author": "Guestcam Team",
+  "category": "novice",
+  "readingTime": 5,
+  "tags": [
+    "1. Design a page that feels like you",
+    "2. Invitations, RSVPs and table planning",
+    "Guestcam"
+  ],
+  "tldr": "A wedding needs more than a photo collection. Guests need to know where to arrive, what happens next and how to reply. Wedding Premium brings your wedding page, invitations and shared memories together, while you choose which features to enable.",
+  "coverImage": "/hero/wedding-page-guide.png",
+  "coverAlt": "Wedding page editor with custom categories, text and a live preview",
+  "content": [
+    {
+      "type": "p",
+      "text": "A wedding needs more than a photo collection. Guests need to know where to arrive, what happens next and how to reply. Wedding Premium brings your wedding page, invitations and shared memories together, while you choose which features to enable."
+    },
+    {
+      "type": "h2",
+      "text": "1. Design a page that feels like you"
+    },
+    {
+      "type": "p",
+      "text": "Add categories for the ceremony, reception, travel or accommodation, or create your own. Choose heading, text and link fields from dropdowns. Drag fields into order or use the arrows. Set heading and body fonts, background and accent colours, then check the live preview before saving. Hide a category when it is not ready to share."
+    },
+    {
+      "type": "image",
+      "src": "/hero/wedding-style-guide.png",
+      "alt": "Font and colour controls in the wedding page editor",
+      "caption": "Example layout: replace the sample text with your own wedding details."
+    },
+    {
+      "type": "h2",
+      "text": "2. Invitations, RSVPs and table planning"
+    },
+    {
+      "type": "p",
+      "text": "Create personal invitation links and let guests confirm attendance, add permitted companions, choose a meal and send you a private note. Set an RSVP deadline and manage table capacities and assignments. Guests can use their invitation to find their table. Keep public travel information separate from private guest replies."
+    },
+    {
+      "type": "h2",
+      "text": "3. Memories beyond the photo gallery"
+    },
+    {
+      "type": "p",
+      "text": "Enable a moderated guestbook, photo contributions and short video wishes. Guests can record on a supported device or upload a video. A time capsule keeps written messages sealed until your chosen opening date. Add your story, practical travel information and a thank-you message. Print the guestbook or use your browser’s Save as PDF option."
+    },
+    {
+      "type": "image",
+      "src": "/hero/scan.webp",
+      "alt": "Explore the wedding package",
+      "caption": "Example layout: replace the sample text with your own wedding details."
+    },
+    {
+      "type": "h2",
+      "text": "4. A wedding that speaks your guests’ languages"
+    },
+    {
+      "type": "p",
+      "text": "The interface supports Slovenian, Croatian, Serbian, English, German and Spanish. When automatic translation is configured, Save can fill missing translations for page text, the timeline, menu and other supported content. Select each content language to review or correct it yourself. Existing manual translations are preserved. If translation is unavailable, your original text is still saved."
+    },
+    {
+      "type": "h2",
+      "text": "Set it up in three steps"
+    },
+    {
+      "type": "ol",
+      "items": [
+        "Choose Wedding Premium and open the wedding settings. Add your names, story, event details and the features you want to use.",
+        "Use the category and field dropdowns to build your page. Choose fonts and colours, check the phone preview and review all six languages you intend to share.",
+        "Add your guests, check a personal invitation, then share the appropriate link or QR code. Review replies and moderate guest contributions from the dashboard."
+      ]
+    },
+    {
+      "type": "h2",
+      "text": "What is included, and what does it cost?"
+    },
+    {
+      "type": "p",
+      "text": "The wedding schedule, digital menu, DJ song requests and photo bingo remain part of the experience. Wedding Premium also includes unlimited photo and video uploads, unlimited storage and access, ZIP download, the live Photo Wall and Film Studio. Enable the optional wedding tools you need; your gallery remains the place for your guests’ photos."
+    },
+    {
+      "type": "callout",
+      "text": "The standard package price is €189. When the launch campaign is active and discounted places remain, 30% off brings it to €132.30 for the next 20 eligible customer accounts, with one launch package per account. The package page shows verified shared availability. Visiting again or clearing cookies does not create a new discount. Check the displayed price before checkout."
+    },
+    {
+      "type": "faq",
+      "q": "Can I correct translations myself?",
+      "a": "Yes. Choose the content language, edit the text and save. Automatic translation fills missing text without replacing your existing corrections."
+    },
+    {
+      "type": "cta",
+      "text": "Explore the wedding package",
+      "href": "/en/wedding-package"
+    }
+  ]
+}

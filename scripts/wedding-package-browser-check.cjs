@@ -25,6 +25,8 @@ const { build } = req('esbuild'); const { chromium } = req('playwright');
    await page.setViewportSize({ width, height: 900 }); await page.goto(base + '/?lang=' + lang);
    await page.waitForFunction(() => document.querySelector('[data-wedding-offer]')?.textContent.includes('20'), {timeout:10000}).catch(async error => { console.error('Rendered content:', (await page.locator('body').innerText()).slice(0,1000)); throw error; });
    assert.equal(await page.locator('#features article').count(), 15); assert.equal(await page.locator('#guide article').count(), 3);
+   const guideLink = await page.locator('#guide > div > a').getAttribute('href');
+   assert.ok(guideLink.startsWith(['sl','sr','es'].includes(lang) ? '/blog/' : `/${lang}/blog/`), `${lang} guide link uses the wrong public language path`);
    assert.ok(await page.locator('[data-wedding-offer]').first().innerText().then(text => /132[,.]30/.test(text)));
    assert.ok(await page.evaluate(() => Array.from(document.images).every(image => image.complete && image.naturalWidth > 0)));
    assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), `${lang} page overflows at ${width}px`);

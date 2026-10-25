@@ -1,4 +1,4 @@
-import { localeAbsoluteUrl, localizedAccountPath, SITE_URL } from "@/lib/urls";
+import { localeAbsoluteUrl, localePublicPath, localizedAccountPath, SITE_URL } from "@/lib/urls";
 import Link from "next/link";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SeoFooter } from "@/components/SeoFooter";
@@ -37,8 +37,10 @@ const T: Record<LangCode, {
 function localizedBlogCtaHref(lang: LangCode, href: string): string {
   try {
     const parsed = new URL(href, SITE_URL);
-    if ((parsed.hostname === SITE_HOSTNAME || parsed.hostname.endsWith("guestcam.si")) && parsed.pathname === "/dashboard/new") {
-      return localizedAccountPath(lang, `${parsed.pathname}${parsed.search}${parsed.hash}`);
+    if (parsed.hostname === SITE_HOSTNAME || parsed.hostname === "guestcam.si") {
+      const path = `${parsed.pathname}${parsed.search}${parsed.hash}`;
+      if (parsed.pathname === "/dashboard/new") return localizedAccountPath(lang, path);
+      return localePublicPath(lang, path);
     }
   } catch {
     // Preserve malformed or non-URL content rather than breaking the article.
@@ -136,7 +138,7 @@ export async function BlogPostPage({ post }: Props) {
 
           <div className="prose-content">{post.content.map((block, i) => <RenderBlock key={i} block={block} lang={post.lang} />)}</div>
 
-          {faqs.length > 0 && <section className="mt-16"><p className="text-xs font-black uppercase tracking-[.18em] text-[#8F6900] mb-3">Guestcam FAQ</p><h2 className="text-3xl sm:text-4xl font-black tracking-[-.045em] mb-6">{t.faq}</h2><div className="space-y-3">{faqs.map((f, i) => <details key={i} className="group rounded-[22px] bg-white border border-black/10 p-5 open:border-[#D6A400]"><summary className="font-black cursor-pointer list-none flex items-center justify-between gap-4"><span>{f.q}</span><span className="w-8 h-8 rounded-full bg-[#FFF1B8] flex items-center justify-center text-[#8F6900] transition-transform group-open:rotate-45">+</span></summary><p className="text-[15px] text-black/60 mt-4 leading-relaxed pr-10">{f.a}</p></details>)}</div></section>}
+          {faqs.length > 0 && <section className="mt-16"><p className="text-xs font-black uppercase tracking-[.18em] text-[#8F6900] mb-3">Guestcam · {t.faq}</p><h2 className="text-3xl sm:text-4xl font-black tracking-[-.045em] mb-6">{t.faq}</h2><div className="space-y-3">{faqs.map((f, i) => <details key={i} className="group rounded-[22px] bg-white border border-black/10 p-5 open:border-[#D6A400]"><summary className="font-black cursor-pointer list-none flex items-center justify-between gap-4"><span>{f.q}</span><span className="w-8 h-8 rounded-full bg-[#FFF1B8] flex items-center justify-center text-[#8F6900] transition-transform group-open:rotate-45">+</span></summary><p className="text-[15px] text-black/60 mt-4 leading-relaxed pr-10">{f.a}</p></details>)}</div></section>}
 
           <section className="mt-16 rounded-[32px] bg-[#111111] px-7 py-10 sm:px-10 sm:py-12 text-white">
             <p className="text-[10px] font-black uppercase tracking-[.18em] text-[#F4B400] mb-3">Guestcam</p>

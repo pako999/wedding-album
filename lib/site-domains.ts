@@ -20,6 +20,7 @@ const LOCALIZED_ROUTE_CLUSTERS: Array<Record<MarketingLocale, string>> = [
   { sl: "/sl/zbiranje-slik-s-poroke", hr: "/hr/skupljanje-fotografija-vjencanje", sr: "/sr/skupljanje-fotografija-vencanje", de: "/de/hochzeitsfotos-von-gaesten-sammeln", en: "/en/collect-wedding-photos-guests", es: "/es/recopilar-fotos-boda-invitados" },
   { sl: "/sl/slike-z-rojstnega-dne", hr: "/hr/fotografije-s-rodjendana", sr: "/sr/slike-sa-rodjendana", de: "/de/geburtstagsfotos-sammeln", en: "/en/birthday-photos-guests", es: "/es/fotos-cumpleanos-invitados" },
   { sl: "/sl/baby-shower-slike", hr: "/hr/baby-shower-fotografije", sr: "/sr/baby-shower-fotografije", de: "/de/babyparty-fotos", en: "/en/baby-shower-photos-guests", es: "/es/fotos-baby-shower" },
+  {"en": "/en/blog/wedding-website-rsvp-guestbook-guide", "sl": "/sl/blog/porocna-spletna-stran-vabila-knjiga-gostov", "hr": "/hr/blog/web-stranica-vjencanja-pozivnice-knjiga-gostiju", "sr": "/sr/blog/sajt-za-vencanje-pozivnice-knjiga-gostiju", "de": "/de/blog/hochzeitswebsite-einladungen-gaestebuch-ratgeber", "es": "/es/blog/web-boda-invitaciones-libro-firmas-guia"},
   // Blog translation clusters let old or accidentally cross-domain article
   // URLs redirect to the equivalent article, not merely to the blog index.
   { sl: "/sl/blog/aplikacija-za-porocne-fotografije-qr-koda", hr: "/hr/blog/aplikacija-za-vjencanje-fotografije-qr-kod", sr: "/sr/blog/aplikacija-za-vencanje-fotografije-qr-kod", de: "/de/blog/hochzeit-foto-app-qr-code", en: "/en/blog/wedding-photo-app-qr-code", es: "/es/blog/app-fotos-boda-qr-codigo" },
