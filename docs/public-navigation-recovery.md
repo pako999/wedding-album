@@ -1,0 +1,7 @@
+# Public navigation recovery — 25 October 2026
+
+Reported: iPhone in-app browser fails after clicking links, but a manual reload works. Repeated live Chromium home/wedding navigation did not reproduce the native iPhone failure. Browser diagnostics collected request failures; third-party tunnel failures are limitations of the cloud network, not evidence of a production outage. Private Vercel runtime logs are not available to this environment.
+
+Found a concrete route-context defect: root layout classified `/porocni-paket` as an album guest slug, disabling its Clerk client provider despite rendering account controls. It now recognizes that route and `/za-podjetja` as marketing pages. Public homepage, shared header/footer, mobile menu, blog and wedding-page links use native document navigation so the destination initializes its own root/auth/scripts instead of retaining the prior route's root layout. Dashboard and album internals are unchanged. Next's deployment ID uses the platform-provided ID, Vercel deployment ID or commit SHA so stale clients reload instead of mixing release assets.
+
+Validation: production build and existing regressions/localization checks; 37 suite/checkout tests including deployment-ID priority; package and article component browser checks in six languages/mobile/desktop. The offer-link test marks the previous window and verifies a click creates a new document. Mobile CI exercises Chromium and WebKit. No assertion that the native iPhone WebView crash has been reproduced; check the user's actual device after release.

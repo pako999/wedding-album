@@ -421,3 +421,17 @@ test('hidden page categories are withheld by the public API and unsafe unsaved l
  assert.equal(safePageLink(''), undefined);
  assert.equal(safePageLink('https://example.test/venue'), 'https://example.test/venue');
 });
+
+test('deployment identifiers keep old tabs from mixing release assets', () => {
+ const names=['NEXT_DEPLOYMENT_ID','VERCEL_DEPLOYMENT_ID','VERCEL_GIT_COMMIT_SHA'];
+ const original=Object.fromEntries(names.map(name=>[name,process.env[name]]));
+ try {
+  for(const name of names) delete process.env[name];
+  process.env.VERCEL_GIT_COMMIT_SHA='test-commit';
+  assert.equal(modules()('next.config.ts').default.deploymentId,'test-commit');
+  process.env.VERCEL_DEPLOYMENT_ID='test-deployment';
+  assert.equal(modules()('next.config.ts').default.deploymentId,'test-deployment');
+  process.env.NEXT_DEPLOYMENT_ID='platform-deployment';
+  assert.equal(modules()('next.config.ts').default.deploymentId,'platform-deployment');
+ } finally {for(const [name,value] of Object.entries(original)) {if(value===undefined)delete process.env[name];else process.env[name]=value;}}
+});

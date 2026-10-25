@@ -178,6 +178,8 @@ export default async function RootLayout({
     const segments = pathname.split("/").filter(Boolean);
     if (segments.length !== 1) return false;
     const RESERVED = new Set([
+      "porocni-paket",
+      "za-podjetja",
       "blog",
       "contact",
       "privacy",

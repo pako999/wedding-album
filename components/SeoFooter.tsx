@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { GuestcamLogo } from "@/components/GuestcamLogo";
 import { localePublicPath, localizedAccountPath } from "@/lib/urls";
 
@@ -173,12 +172,12 @@ export function SeoFooter({ lang }: { lang: Lang }) {
               <li><a href={`${home}#how`} className="hover:text-white transition-colors">{t.howWorks}</a></li>
               <li><a href={`${home}#features`} className="hover:text-white transition-colors">{t.features}</a></li>
               <li><a href={`${home}#pricing`} className="hover:text-white transition-colors">{t.pricing}</a></li>
-              {lang === "sl" && <li><Link href="/za-podjetja" className="hover:text-white transition-colors">Za podjetja</Link></li>}
+              {lang === "sl" && <li><a href="/za-podjetja" className="hover:text-white transition-colors">Za podjetja</a></li>}
               <li><a href={`${home}#faq`} className="hover:text-white transition-colors">{t.faq}</a></li>
-              <li><Link href={localizedAccountPath(lang, "/dashboard/new")} className="hover:text-white transition-colors">{t.createAlbum}</Link></li>
-              <li><Link href={localePublicPath(lang, lang === "sl" ? "/blog" : `/${lang}/blog`)} className="hover:text-white transition-colors">{t.blog}</Link></li>
-              <li><Link href={localePublicPath(lang, lang === "sl" ? "/affiliate/apply" : `/${lang}/affiliate/apply`)} className="hover:text-white transition-colors">{t.affiliateProgram}</Link></li>
-              <li><Link href={localizedAccountPath(lang, "/dashboard")} className="hover:text-white transition-colors">{t.login}</Link></li>
+              <li><a href={localizedAccountPath(lang, "/dashboard/new")} className="hover:text-white transition-colors">{t.createAlbum}</a></li>
+              <li><a href={localePublicPath(lang, lang === "sl" ? "/blog" : `/${lang}/blog`)} className="hover:text-white transition-colors">{t.blog}</a></li>
+              <li><a href={localePublicPath(lang, lang === "sl" ? "/affiliate/apply" : `/${lang}/affiliate/apply`)} className="hover:text-white transition-colors">{t.affiliateProgram}</a></li>
+              <li><a href={localizedAccountPath(lang, "/dashboard")} className="hover:text-white transition-colors">{t.login}</a></li>
             </ul>
           </div>
 
@@ -187,11 +186,11 @@ export function SeoFooter({ lang }: { lang: Lang }) {
           <div>
             <h3 className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4">{t.guides}</h3>
             <ul className="space-y-2.5 text-sm text-gray-400">
-              <li><Link href={localePublicPath(lang, t.guideUrl)} className="hover:text-white transition-colors">{t.guideLabel}</Link></li>
-              <li><Link href={localePublicPath(lang, t.altUrl)} className="hover:text-white transition-colors">{t.altLabel}</Link></li>
+              <li><a href={localePublicPath(lang, t.guideUrl)} className="hover:text-white transition-colors">{t.guideLabel}</a></li>
+              <li><a href={localePublicPath(lang, t.altUrl)} className="hover:text-white transition-colors">{t.altLabel}</a></li>
               {t.extraGuides?.map((g) => (
                 <li key={g.url}>
-                  <Link href={localePublicPath(lang, g.url)} className="hover:text-white transition-colors">{g.label}</Link>
+                  <a href={localePublicPath(lang, g.url)} className="hover:text-white transition-colors">{g.label}</a>
                 </li>
               ))}
             </ul>
@@ -201,12 +200,12 @@ export function SeoFooter({ lang }: { lang: Lang }) {
           <div>
             <h3 className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4">{t.legal}</h3>
             <ul className="space-y-2.5 text-sm text-gray-400">
-              <li><Link href={localePublicPath(lang, lang === "sl" ? "/privacy" : `/${lang}/privacy`)} className="hover:text-white transition-colors">{t.privacy}</Link></li>
-              <li><Link href={localePublicPath(lang, lang === "sl" ? "/terms"   : `/${lang}/terms`)}   className="hover:text-white transition-colors">{t.terms}</Link></li>
-              <li><Link href={localePublicPath(lang, lang === "sl" ? "/cookies" : `/${lang}/cookies`)} className="hover:text-white transition-colors">{t.cookies}</Link></li>
-              <li><Link href={localePublicPath(lang, lang === "sl" ? "/gdpr"    : `/${lang}/gdpr`)}    className="hover:text-white transition-colors">{t.gdpr}</Link></li>
-              <li><Link href={localePublicPath(lang, lang === "sl" ? "/refund"  : `/${lang}/refund`)}  className="hover:text-white transition-colors">{t.refund}</Link></li>
-              <li><Link href={localePublicPath(lang, lang === "sl" ? "/contact" : `/${lang}/contact`)} className="hover:text-white transition-colors">{t.contact}</Link></li>
+              <li><a href={localePublicPath(lang, lang === "sl" ? "/privacy" : `/${lang}/privacy`)} className="hover:text-white transition-colors">{t.privacy}</a></li>
+              <li><a href={localePublicPath(lang, lang === "sl" ? "/terms"   : `/${lang}/terms`)}   className="hover:text-white transition-colors">{t.terms}</a></li>
+              <li><a href={localePublicPath(lang, lang === "sl" ? "/cookies" : `/${lang}/cookies`)} className="hover:text-white transition-colors">{t.cookies}</a></li>
+              <li><a href={localePublicPath(lang, lang === "sl" ? "/gdpr"    : `/${lang}/gdpr`)}    className="hover:text-white transition-colors">{t.gdpr}</a></li>
+              <li><a href={localePublicPath(lang, lang === "sl" ? "/refund"  : `/${lang}/refund`)}  className="hover:text-white transition-colors">{t.refund}</a></li>
+              <li><a href={localePublicPath(lang, lang === "sl" ? "/contact" : `/${lang}/contact`)} className="hover:text-white transition-colors">{t.contact}</a></li>
             </ul>
           </div>
 

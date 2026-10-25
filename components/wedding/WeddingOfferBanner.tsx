@@ -1,6 +1,5 @@
 'use client';
 import { useEffect, useState } from 'react';
-import Link from 'next/link';
 import type { Lang } from '@/lib/i18n/translations';
 import { WEDDING_PATHS } from '@/lib/wedding/contracts';
 import { weddingCopy } from '@/lib/wedding/copy';
@@ -43,10 +42,10 @@ export function WeddingOfferBanner({ lang }: { lang: Lang }) {
  if (!quote?.verified || !quote.eligible) return null;
  const money = new Intl.NumberFormat(lang, { style: 'currency', currency: 'EUR' }).format(quote.priceCents / 100);
  return <div data-wedding-offer-banner className="rounded-b-2xl border-t border-amber-400/50 bg-[#F4B400] px-4 py-3 text-center text-black">
-  <Link href={localePublicPath(lang, WEDDING_PATHS[lang])} className="mx-auto flex max-w-6xl flex-wrap items-center justify-center gap-x-3 gap-y-1 text-sm font-bold leading-5">
+  <a href={localePublicPath(lang, WEDDING_PATHS[lang])} className="mx-auto flex max-w-6xl flex-wrap items-center justify-center gap-x-3 gap-y-1 text-sm font-bold leading-5">
    <span className="rounded-full bg-black px-3 py-1 text-xs font-black text-white">−{PREMIUM_SALE_PERCENT}%</span>
    <span>{weddingCopy(lang).plan} · {money}</span><span className="font-black underline underline-offset-4">{t.available.replace('{n}', String(quote.remaining))} →</span>
-  </Link>
+  </a>
   {returning && <p className="mt-1 text-xs font-medium">{RETURN_COPY[lang]}</p>}
  </div>;
 }

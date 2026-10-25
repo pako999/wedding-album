@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { auth } from "@clerk/nextjs/server";
 import { UserButton } from "@clerk/nextjs";
 import type { LangCode } from "@/components/LanguageSwitcher";
@@ -47,13 +46,13 @@ export async function HeaderAuthButtons({
   const demoBridge = <DemoButton variant="bridge" lang={lang} />;
 
   if (!signedIn) {
-    return <>{demoBridge}<Link href={localizedAccountPath(lang, "/sign-in")} className={linkClassName}>{t.login}</Link></>;
+    return <>{demoBridge}<a href={localizedAccountPath(lang, "/sign-in")} className={linkClassName}>{t.login}</a></>;
   }
 
   return (
     <>
       {demoBridge}
-      <Link href={localizedAccountPath(lang, "/dashboard")} className={linkClassName}>{t.dashboard}</Link>
+      <a href={localizedAccountPath(lang, "/dashboard")} className={linkClassName}>{t.dashboard}</a>
       <UserButton appearance={{ elements: { userButtonAvatarBox: { width: 30, height: 30 } } }} />
     </>
   );
