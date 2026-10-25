@@ -1,0 +1,9 @@
+# Slovenian wedding feature guide — 25 October 2026
+
+The Slovenian wedding landing page now explains twenty features with a purpose, three practical setup/use points and a concrete wedding example. It expands the fifteen existing wedding tools and adds illustrated explanations for the gallery, QR sharing, ZIP archives, Photo Wall and Film Studio. Five other languages retain their existing localized summaries. Prices, checkout, albums, authentication and wedding runtime APIs do not change.
+
+Seventeen PNGs under public/hero/wedding-features are captures of the actual page builder, guest forms/panels, translation controls, email template, timeline/menu/bingo/DJ views, Photo Wall and Film Studio. All use fictional local fixtures and existing repository photos; they contain no customer data. The page labels them as examples, allows full-size viewing, and labels the remaining three wedding photos as illustrative. Images are lazy-loaded through Next/Image.
+
+Regenerate explicitly after a build with `node scripts/capture-wedding-feature-guides.cjs`. The generator intercepts data requests locally, never generates a film or sends an invitation, and substitutes empty environment bindings in the fixture bundle. It is not part of normal builds or tests.
+
+Validation: full build/TypeScript/existing product checks; expanded package component fixture checks 20 illustrated Slovenian cards, 60 instructional points, loaded images and unclipped layouts at five widths with normal/larger text. The other five languages retain 15 summaries. CI runs the browser test in Chromium and WebKit with the real header/footer and bundled fonts. `WEDDING_DETAILS_SCREENSHOT=/tmp/wedding-detail.png node scripts/wedding-package-browser-check.cjs` optionally exports the first Slovenian feature card.

@@ -30,12 +30,15 @@ const { build } = req('esbuild'); const { chromium, webkit } = req('playwright')
    await page.waitForFunction(() => /113[,.]40/.test(document.querySelector('[data-wedding-offer]')?.textContent || ''), {timeout:10000}).catch(async error => { console.error('Rendered content:', (await page.locator('body').innerText()).slice(0,1000)); throw error; });
    assert.equal(await page.locator('[data-wedding-offer-banner]').count(), 1);
    assert.ok((await page.locator('[data-wedding-offer-banner]').innerText()).includes('40%'));
-   assert.equal(await page.locator('#features article').count(), 15); assert.equal(await page.locator('#guide article').count(), 3);
+   assert.equal(await page.locator('#features article').count(), lang==='sl'?20:15); assert.equal(await page.locator('#guide article').count(), 3);
    const guideLink = await page.locator('#guide > div > a').getAttribute('href');
    assert.ok(guideLink.startsWith(['sl','sr','es'].includes(lang) ? '/blog/' : `/${lang}/blog/`), `${lang} guide link uses the wrong public language path`);
    assert.ok(await page.locator('[data-wedding-offer]').first().innerText().then(text => /113[,.]40/.test(text)));
+   for(const img of await page.locator('img').all()){await img.scrollIntoViewIfNeeded();await img.evaluate(image=>image.decode());}
    assert.ok(await page.evaluate(() => Array.from(document.images).every(image => image.complete && image.naturalWidth > 0)));
-   const clipped=await page.locator('header, header nav, main > section:first-child, main h1, main > section:first-child > div, [data-wedding-offer], [data-wedding-offer-banner]').evaluateAll(nodes=>nodes.map(node=>({tag:node.tagName,x:node.getBoundingClientRect().x,right:node.getBoundingClientRect().right,width:node.getBoundingClientRect().width})).filter(box=>box.x < -1 || box.right > innerWidth+1));
+   if(lang==='sl'&&width===390&&!largeText&&process.env.WEDDING_DETAILS_SCREENSHOT)await page.locator('[data-wedding-feature-detail]').first().screenshot({path:process.env.WEDDING_DETAILS_SCREENSHOT});
+   if(lang==='sl'){assert.equal(await page.locator('[data-wedding-feature-detail] img').count(),20);assert.equal(await page.locator('[data-wedding-feature-detail] li').count(),60);}
+   const clipped=await page.locator('header, header nav, main > section:first-child, main h1, main > section:first-child > div, [data-wedding-offer], [data-wedding-offer-banner], [data-wedding-feature-detail]').evaluateAll(nodes=>nodes.map(node=>({tag:node.tagName,x:node.getBoundingClientRect().x,right:node.getBoundingClientRect().right,width:node.getBoundingClientRect().width})).filter(box=>box.x < -1 || box.right > innerWidth+1));
    assert.deepEqual(clipped,[],`${lang}/${width}px/largeText=${largeText} content is clipped even if the body hides overflow`);
    if(width<1024)assert.ok(await page.locator('header').first().locator('button[aria-haspopup="dialog"]').first().isVisible());
    assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), `${lang} page overflows at ${width}px`);
@@ -70,6 +73,6 @@ const { build } = req('esbuild'); const { chromium, webkit } = req('playwright')
   available = false; await page.reload(); await page.getByText('Standard package price', { exact: true }).first().waitFor();
   assert.ok(!await page.locator('[data-wedding-offer]').first().innerText().then(text => text.includes('of 8')));
   assert.deepEqual(errors,[]);
-  console.log('PASS package browser: six languages at five widths from 320–1280px, real header/footer, default/larger text and unclipped content bounds, fifteen feature groups, three illustrated guides, exact launch price, shared availability across cookie jars, exhaustion and unavailable-inventory fallback.');
+  console.log('PASS package browser: six languages at five widths from 320–1280px, real header/footer, default/larger text and unclipped content bounds, twenty illustrated Slovenian features and fifteen localized summaries, three illustrated guides, exact launch price, shared availability across cookie jars, exhaustion and unavailable-inventory fallback.');
  } finally { await browser?.close(); await new Promise(resolve => server.close(resolve)); }
 })().catch(error => { console.error('::error title=Wedding page layout::'+String(error.stack||error).replaceAll('%','%25').replaceAll('\r','%0D').replaceAll('\n','%0A')); process.exitCode = 1; });
