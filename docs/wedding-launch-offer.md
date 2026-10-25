@@ -33,7 +33,7 @@ For any uncertain reservation, inspect the provider/order record before changing
 
 ## Validation and limits
 
-- Full build, TypeScript, existing regressions/localization/wedding checks, offer audit and 35 suite/checkout tests.
+- Full build, TypeScript, existing regressions/localization/wedding checks, offer audit and 36 suite/checkout tests.
 - `node scripts/wedding-offer-database-check.cjs`: actual PostgreSQL engine; forty competing claims capped at eight; same-account collisions; idempotent paid/cancel processing; exact decimal invoices; historical values preserved; existing albums unchanged; safe behavior when inventory is missing.
 - `node scripts/wedding-suite-database-check.cjs`: real suite routes and Drizzle/PostgreSQL queries for authorization, signed invitations, RSVP capacity, seating, moderation, video/foreign-photo handling, capsules, language preferences, preview mail and album passwords. Synthetic identity/rate-limit/mail transport substitutes are used; no real Clerk login, mail delivery or customer database access is claimed.
 - Both database scripts use an isolated `@electric-sql/pglite@0.3.14` installation, without changing application dependencies: `npm install --prefix /tmp/wedding-db-check --cache /workspace/.npm-cache --no-audit --no-fund @electric-sql/pglite@0.3.14`. `PGLITE_MODULE_PATH` can select another installation of the same test dependency.
