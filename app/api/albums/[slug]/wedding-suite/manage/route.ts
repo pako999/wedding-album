@@ -1,3 +1,4 @@
+import { translateSuite } from '@/lib/wedding/translate';
 import { NextRequest, NextResponse } from 'next/server';
 import { and, desc, eq } from 'drizzle-orm';
 import { z } from 'zod';
@@ -8,6 +9,7 @@ import { suiteAttendees, suiteEmails, suiteEntries, suiteSettings } from '@/lib/
 import { configSchema, attendeeSchema, capsuleIsOpen } from '@/lib/wedding-suite/contracts';
 import { SuiteError, suiteFailure, suiteOwner, safeAttendee, invitationPath, visibleEntries, nextId, queueMail } from '@/lib/wedding-suite/server';
 export const runtime = 'nodejs';
+export const maxDuration = 60;
 type Context = { params: Promise<{ slug: string }> };
 export async function GET(req: NextRequest, { params }: Context) {
  try {
@@ -41,8 +43,16 @@ export async function PUT(req: NextRequest, { params }: Context) {
   }
   const attendeeTables = await db.select({ tableId: suiteAttendees.tableId }).from(suiteAttendees).where(eq(suiteAttendees.albumId, album.id));
   if (attendeeTables.some(row => row.tableId && !config.data.tables.some(table => table.id === row.tableId))) throw new SuiteError('invalid');
+  let translationWarning = false;
+  if (req.nextUrl.searchParams.get('translate') === '1') {
+   try {
+    const limit = await checkRateLimit(`wedding-translate:${album.id}`, 3, 60_000);
+    if (!limit.ok) throw new Error('rate_limited');
+    config.data = await translateSuite(config.data);
+   } catch { translationWarning = true; }
+  }
   await db.insert(suiteSettings).values({ albumId: album.id, config: config.data }).onConflictDoUpdate({ target: suiteSettings.albumId, set: { config: config.data, updatedAt: new Date() } });
-  return reply({ ok: true, config: config.data });
+  return reply({ ok: true, config: config.data, translationWarning });
  } catch (error) { return suiteFailure(error); }
 }
 export async function POST(req: NextRequest, { params }: Context) {

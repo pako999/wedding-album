@@ -184,3 +184,112 @@ test('paid upgrades preserve album data and apply once with Mollie, legacy Strip
   assert.equal(writes.length, 1);
  }
 });
+
+test('wedding menu and timeline translations validate and render without changing original data', async () => {
+ const { parseWeddingSettings, weddingRowText, EMPTY_WEDDING } = load('lib/wedding/contracts.ts');
+ const input = { ...EMPTY_WEDDING, schedule: [{ id: 'ceremony', title: 'Obred', detail: 'Na vrtu', time: '18:00', sourceLang: 'sl', translations: { en: { title: 'Our ceremony' } } }] };
+ const original = structuredClone(input);
+ const { translateWedding } = load('lib/wedding/translate.ts');
+ const result = await translateWedding(input, 'sl', async tasks => tasks.map(task => ({ id: task.id, text: `${task.targetLanguage}: ${task.source}` })));
+ assert.deepEqual(input, original);
+ assert.equal(result.schedule[0].time, '18:00');
+ assert.equal(result.schedule[0].id, 'ceremony');
+ assert.equal(weddingRowText(result.schedule[0], 'en', 'title'), 'Our ceremony');
+ for (const lang of contracts.SUITE_LANGS) {
+  assert.ok(weddingRowText(result.schedule[0], lang, 'detail').includes('Na vrtu'));
+  assert.ok(parseWeddingSettings(result));
+ }
+ assert.equal(parseWeddingSettings({ ...input, schedule: [{ ...input.schedule[0], translations: { xx: { title: 'Bad' } } }] }), null);
+ assert.equal(parseWeddingSettings({ ...input, schedule: [{ ...input.schedule[0], translations: { en: { title: 'x'.repeat(161) } } }] }), null);
+ assert.equal(weddingRowText({ id: 'old', title: 'Original', detail: '' }, 'de', 'title'), 'Original');
+});
+
+test('suite translation fills all supported languages and preserves manual corrections, links and table identities', async () => {
+ const { translateSuite } = load('lib/wedding/translate.ts');
+ const input = { ...structuredClone(contracts.EMPTY_SUITE), welcome: { sl: 'Dobrodošli', de: 'Persönlich korrigiert' }, story: [{ id: uuid, title: { sl: 'Najina zgodba' }, text: { sl: 'Skupaj od 2020' }, url: 'https://example.test/photo.jpg' }], tables: [{ id: uuid, name: 'Ana', capacity: 8 }] };
+ const original = structuredClone(input);
+ const result = await translateSuite(input, async tasks => {
+  assert.ok(!tasks.some(task => task.source === 'Ana' || task.source.startsWith('https:')));
+  return tasks.map(task => ({ id: task.id, text: `${task.targetLanguage}: ${task.source}` }));
+ });
+ assert.deepEqual(input, original);
+ assert.equal(result.welcome.de, 'Persönlich korrigiert');
+ assert.deepEqual(result.tables, input.tables);
+ assert.equal(result.story[0].url, input.story[0].url);
+ for (const lang of contracts.SUITE_LANGS) assert.ok(result.story[0].text[lang]);
+ let calls = 0;
+ await translateSuite(result, async () => { calls++; return []; });
+ assert.equal(calls, 0, 'fully translated content must not incur another AI call');
+});
+
+test('a manual translation of an empty optional detail never overwrites or repeatedly retranslates the original', async () => {
+ const { translateWedding } = load('lib/wedding/translate.ts');
+ const { EMPTY_WEDDING } = load('lib/wedding/contracts.ts');
+ const input = { ...EMPTY_WEDDING, menu: [{ id: 'dinner', title: 'Dinner', detail: '', sourceLang: 'en', translations: { de: { detail: 'Vegetarisch' } } }] };
+ const result = await translateWedding(input, 'en', async tasks => {
+  assert.ok(!tasks.some(task => task.targetLanguage === 'en'));
+  return tasks.map(task => ({ id: task.id, text: `${task.targetLanguage}: ${task.source}` }));
+ });
+ assert.equal(result.menu[0].detail, '');
+ let called = false;
+ await translateWedding(result, 'en', async () => { called = true; return []; });
+ assert.equal(called, false);
+});
+
+test('incomplete, duplicated and overlong model output never changes organizer data', async () => {
+ const { translateSuite } = load('lib/wedding/translate.ts');
+ const input = { ...structuredClone(contracts.EMPTY_SUITE), menuOptions: [{ id: uuid, title: { en: 'Dinner' } }] };
+ const original = structuredClone(input);
+ for (const transform of [tasks => [], tasks => tasks.map(() => ({ id: tasks[0].id, text: 'duplicate' })), tasks => tasks.map(task => ({ id: task.id, text: 'x'.repeat(181) }))]) {
+  await assert.rejects(translateSuite(input, async tasks => transform(tasks)));
+  assert.deepEqual(input, original);
+ }
+});
+
+test('gateway uses the server key and validates its JSON response; missing credentials fail without a request', async () => {
+ const originalFetch = globalThis.fetch; const key = process.env.AI_GATEWAY_API_KEY;
+ const { translateSuite } = load('lib/wedding/translate.ts');
+ const input = { ...structuredClone(contracts.EMPTY_SUITE), welcome: { en: 'Welcome' } };
+ let calls = 0;
+ try {
+  delete process.env.AI_GATEWAY_API_KEY;
+  globalThis.fetch = async () => { calls++; throw new Error('unexpected'); };
+  await assert.rejects(translateSuite(input), /not_configured/);
+  assert.equal(calls, 0);
+  process.env.AI_GATEWAY_API_KEY = 'test-only-gateway-key';
+  globalThis.fetch = async (url, options) => {
+   calls++; assert.equal(url, 'https://ai-gateway.vercel.sh/v1/chat/completions');
+   assert.equal(options.headers.Authorization, 'Bearer test-only-gateway-key');
+   const body = JSON.parse(options.body); const { tasks } = JSON.parse(body.messages[1].content);
+   assert.equal(body.model, 'openai/gpt-4.1-mini');
+   return Response.json({ choices: [{ finish_reason: 'stop', message: { content: JSON.stringify({ translations: tasks.map(task => ({ id: task.id, text: `${task.targetLanguage}: Welcome` })) }) } }] });
+  };
+  const result = await translateSuite(input);
+  assert.equal(calls, 1); assert.equal(result.welcome.de, 'de: Welcome');
+ } finally {
+  globalThis.fetch = originalFetch;
+  if (key === undefined) delete process.env.AI_GATEWAY_API_KEY; else process.env.AI_GATEWAY_API_KEY = key;
+ }
+});
+
+test('wedding save authenticates first and saves original text with a warning if translation is unavailable', async () => {
+ const { EMPTY_WEDDING } = load('lib/wedding/contracts.ts');
+ const draft = { ...EMPTY_WEDDING, menu: [{ id: 'dinner', title: 'Dinner', detail: '' }] };
+ let authorized = false, sameSite = true, saved, translated = 0;
+ const reply = (data, status = 200) => Response.json(data, { status });
+ const route = modules({
+  '@/lib/wedding/server': { ownerAccess: async () => authorized ? { album: { id: 'album-a', defaultLang: 'en' } } : { response: reply({ error: 'signIn' }, 401) }, activePremium: () => true, sameOrigin: () => sameSite, reply, failure: (error, status) => reply({ error }, status) },
+  '@/lib/rate-limit': { checkRateLimit: async () => ({ ok: true }) },
+  '@/lib/wedding/translate': { translateWedding: async () => { translated++; throw new Error('not_configured'); } },
+  '@/lib/db': { db: { insert: () => ({ values: value => ({ onConflictDoUpdate: async () => { saved = value; } }) }) } },
+ })('app/api/albums/[slug]/wedding/manage/route.ts');
+ const req = { nextUrl: new URL('https://preview.example/manage?translate=1'), json: async () => draft };
+ const context = { params: Promise.resolve({ slug: 'demo' }) };
+ assert.equal((await route.PUT(req, context)).status, 401); assert.equal(translated, 0);
+ authorized = true; sameSite = false;
+ assert.equal((await route.PUT(req, context)).status, 403); assert.equal(translated, 0);
+ sameSite = true;
+ const result = await route.PUT(req, context);
+ assert.equal(result.status, 200); assert.equal((await result.json()).translationWarning, true);
+ assert.equal(translated, 1); assert.equal(saved.menu[0].title, 'Dinner');
+});

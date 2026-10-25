@@ -1,6 +1,11 @@
 import type { Lang } from '@/lib/i18n/translations';
 
-export type WeddingRow = { id: string; title: string; detail: string; time?: string };
+export type WeddingRow = { id: string; title: string; detail: string; time?: string; sourceLang?: Lang; translations?: Partial<Record<Lang, { title?: string; detail?: string }>> };
+/** Older rows keep their original text until translations have been generated. */
+export function weddingRowText(row: WeddingRow, lang: Lang, field: 'title' | 'detail', fallback = true): string {
+  if (row.sourceLang === lang) return row[field];
+  return row.translations?.[lang]?.[field] ?? (fallback ? row[field] : '');
+}
 export type WeddingSettings = { enabled: boolean; requestsOpen: boolean; schedule: WeddingRow[]; menu: WeddingRow[]; challenges: WeddingRow[] };
 export type SongStatus = 'new' | 'accepted' | 'played' | 'declined';
 export type WeddingSong = { id: string; title: string; artist: string; requestedBy: string; note: string; status: SongStatus; createdAt: string };
@@ -19,9 +24,19 @@ export function parseWeddingSettings(value: unknown): WeddingSettings | null {
     const ids = new Set<string>(); const result: WeddingRow[] = [];
     for (const item of data) {
       if (!item || typeof item !== 'object') return null;
-      const {id, title, detail, time} = item;
+      const {id, title, detail, time, sourceLang, translations} = item;
       if (typeof id !== 'string' || !/^[a-zA-Z0-9_-]{1,80}$/.test(id) || ids.has(id) || typeof title !== 'string' || !title.trim() || title.length > 160 || typeof detail !== 'string' || detail.length > 1000 || (time !== undefined && (typeof time !== 'string' || !/^(?:[01]\d|2[0-3]):[0-5]\d$/.test(time)))) return null;
-      ids.add(id); result.push({id, title: title.trim(), detail: detail.trim(), ...(time ? {time} : {})});
+      if (sourceLang !== undefined && !WEDDING_LANGS.includes(sourceLang)) return null;
+      if (translations !== undefined) {
+        if (!translations || typeof translations !== 'object' || Array.isArray(translations)) return null;
+        for (const [lang, text] of Object.entries(translations)) {
+          if (!WEDDING_LANGS.includes(lang as Lang) || !text || typeof text !== 'object' || Array.isArray(text)) return null;
+          for (const [field, value] of Object.entries(text)) {
+            if ((field !== 'title' && field !== 'detail') || typeof value !== 'string' || value.length > (field === 'title' ? 160 : 1000)) return null;
+          }
+        }
+      }
+      ids.add(id); result.push({id, title: title.trim(), detail: detail.trim(), ...(time ? {time} : {}), ...(sourceLang ? {sourceLang} : {}), ...(translations ? {translations} : {})});
     }
     return result;
   }
