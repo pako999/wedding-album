@@ -130,3 +130,37 @@ test('production offer initializer only connects in the verified production proj
  await assert.rejects(prepareWeddingOfferProduction({env:{...env,VERCEL_PROJECT_ID:'prj_EDblP7nig2nLLZTQlxnrkusvxoSj'},connect}),/database is not configured/);
  assert.equal(connections,0);
 });
+
+test('production-target feature branch builds skip offer activation without touching the database', async () => {
+ const { prepareWeddingOfferProduction } = await import('../scripts/prepare-wedding-offer-production.mjs');
+ const env = { VERCEL_ENV: 'production', VERCEL_PROJECT_ID: 'prj_EDblP7nig2nLLZTQlxnrkusvxoSj', DATABASE_URL: 'postgresql://must-not-connect/production' };
+ const unexpected = () => { assert.fail('a non-main build must not access the campaign database or migration'); };
+ for (const branch of ['fix/wedding-autosave', 'feat/wedding-suite-multilingual-preview', '', undefined]) {
+  assert.deepEqual(await prepareWeddingOfferProduction({ env: { ...env, VERCEL_GIT_COMMIT_REF: branch }, connect: unexpected, readFile: unexpected }), {
+   prepared: false, reason: 'not-production-main-branch',
+  });
+ }
+ await assert.rejects(prepareWeddingOfferProduction({ env: { ...env, VERCEL_PROJECT_ID: 'other-project', VERCEL_GIT_COMMIT_REF: 'fix/wedding-autosave' }, connect: unexpected, readFile: unexpected }), /verified GuestCam/);
+});
+
+test('verified main builds still activate the offer with locks and propagate database failures', async () => {
+ const { prepareWeddingOfferProduction } = await import('../scripts/prepare-wedding-offer-production.mjs');
+ const env = { VERCEL_ENV: 'production', VERCEL_PROJECT_ID: 'prj_EDblP7nig2nLLZTQlxnrkusvxoSj', VERCEL_GIT_COMMIT_REF: 'main', DATABASE_URL: 'postgresql://test-only/production' };
+ let connections = 0, migrations = 0;
+ const statements = [];
+ const sql = (strings) => {
+  const statement = strings.join(''); statements.push(statement);
+  return statement.includes('information_schema.columns') ? [{ data_type: 'numeric', numeric_precision: 12, numeric_scale: 2 }] : {};
+ };
+ sql.query = statement => { statements.push(statement); return {}; };
+ sql.transaction = async queries => { assert.equal(queries.length, 4); migrations++; };
+ const args = { env, connect: url => { assert.equal(url, env.DATABASE_URL); connections++; return sql; }, readFile: async () => 'ALTER TABLE bank_orders ALTER COLUMN plan_price TYPE numeric(12,2); INSERT INTO test_campaign VALUES (1);' };
+ assert.deepEqual(await prepareWeddingOfferProduction(args), { prepared: true, reason: 'eight-place-offer-ready' });
+ assert.equal(connections, 1); assert.equal(migrations, 1);
+ assert.ok(statements.some(statement => statement.includes('pg_advisory_xact_lock')));
+ assert.ok(statements.some(statement => statement.includes('lock_timeout')));
+ assert.ok(statements.includes('INSERT INTO test_campaign VALUES (1)'));
+ assert.ok(!statements.some(statement => statement.startsWith('ALTER TABLE')));
+ sql.transaction = async () => { throw new Error('database unavailable'); };
+ await assert.rejects(prepareWeddingOfferProduction(args), /database unavailable/);
+});

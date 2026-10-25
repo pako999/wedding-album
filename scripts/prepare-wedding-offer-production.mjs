@@ -5,7 +5,10 @@ import { neon } from '@neondatabase/serverless';
 /** Activate the explicitly requested eight-place offer only on the real production build. */
 export async function prepareWeddingOfferProduction({ env = process.env, connect = neon, readFile = fs.readFile } = {}) {
   if (env.VERCEL_ENV !== 'production') return { prepared: false, reason: 'not-production' };
-  if (env.VERCEL_PROJECT_ID !== 'prj_EDblP7nig2nLLZTQlxnrkusvxoSj' || env.VERCEL_GIT_COMMIT_REF !== 'main') throw new Error('Offer activation requires the verified GuestCam project and main branch.');
+  if (env.VERCEL_PROJECT_ID !== 'prj_EDblP7nig2nLLZTQlxnrkusvxoSj') throw new Error('Offer activation requires the verified GuestCam project.');
+  // Vercel also permits production-target builds of feature branches. They may
+  // build the app, but must never activate or reseed the production campaign.
+  if (env.VERCEL_GIT_COMMIT_REF !== 'main') return { prepared: false, reason: 'not-production-main-branch' };
   if (!env.DATABASE_URL) throw new Error('Production offer database is not configured.');
   const sql = connect(env.DATABASE_URL);
   const columns = await sql`SELECT data_type, numeric_precision, numeric_scale FROM information_schema.columns WHERE table_schema='public' AND table_name='bank_orders' AND column_name='plan_price'`;
