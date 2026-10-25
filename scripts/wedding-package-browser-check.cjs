@@ -31,6 +31,7 @@ const { build } = req('esbuild'); const { chromium, webkit } = req('playwright')
    assert.equal(await page.locator('[data-wedding-offer-banner]').count(), 1);
    assert.ok((await page.locator('[data-wedding-offer-banner]').innerText()).includes('40%'));
    assert.equal(await page.locator('#features article').count(), lang==='sl'?20:15); assert.equal(await page.locator('#guide article').count(), 3);
+   if(lang==='sl'){assert.ok((await page.locator('#guide article img').nth(0).getAttribute('src')).includes('/wedding-features/page-preview.png'));assert.ok((await page.locator('#guide article img').nth(1).getAttribute('src')).includes('/wedding-features/editor.png'));assert.ok((await page.locator('#guide article img').nth(2).getAttribute('src')).includes('/hero/cards.webp'));}
    const guideLink = await page.locator('#guide > div > a').getAttribute('href');
    assert.ok(guideLink.startsWith(['sl','sr','es'].includes(lang) ? '/blog/' : `/${lang}/blog/`), `${lang} guide link uses the wrong public language path`);
    assert.ok(await page.locator('[data-wedding-offer]').first().innerText().then(text => /113[,.]40/.test(text)));
