@@ -3,6 +3,7 @@
 import { useState, useCallback, useRef, useEffect } from "react";
 import { translations, type Lang } from "@/lib/i18n/translations";
 import { LEAD_COPY } from "@/lib/i18n/lead-translations";
+import { CameraBrowserNotice } from "./PhotoCaptureButton";
 import { GuestReferralCta } from "@/components/album/GuestReferralCta";
 
 interface Props {
@@ -992,6 +993,8 @@ export function UploadModal({ bingoChallengeId, albumSlug, albumId, uploaderName
                   </select>
                 </div>
               )}
+
+              <CameraBrowserNotice lang={lang} />
 
               {files.length < remaining && (
                 <div

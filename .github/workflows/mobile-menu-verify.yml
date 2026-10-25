@@ -5,6 +5,7 @@ on:
       - components/HomeMobileMenu.tsx
       - components/SiteHeader.tsx
       - components/album/AlbumGuestView.tsx
+      - components/album/UploadModal.tsx
       - components/album/PhotoCaptureButton.tsx
       - scripts/photo-capture-browser-check.cjs
       - scripts/mobile-menu-browser-check.mjs
@@ -16,7 +17,10 @@ concurrency:
   cancel-in-progress: true
 jobs:
   verify:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    container:
+      image: mcr.microsoft.com/playwright:v1.55.1-noble
+      options: --ipc=host
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
@@ -40,8 +44,6 @@ jobs:
           ln -s "$tools/node_modules/playwright" node_modules/playwright
           if [ ! -e node_modules/esbuild ]; then ln -s "$tools/node_modules/esbuild" node_modules/esbuild; fi
           echo "MOBILE_MENU_TOOLS=$tools" >> "$GITHUB_ENV"
-      - name: Install Chromium and WebKit
-        run: node "$MOBILE_MENU_TOOLS/node_modules/playwright/cli.js" install --with-deps chromium webkit
       - name: Real component and production-CSS browser checks
         run: |
           node scripts/mobile-menu-browser-check.mjs

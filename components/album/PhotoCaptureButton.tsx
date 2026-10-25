@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useRef, useState, type CSSProperties, type ReactNode, type RefObject } from 'react';
+import { useEffect, useRef, useState, useSyncExternalStore, type CSSProperties, type ReactNode, type RefObject } from 'react';
 import { translations, type Lang } from '@/lib/i18n/translations';
 
 export function isEmbeddedMobileBrowser(ua: string) {
@@ -16,6 +16,13 @@ const HELP: Record<Lang, { title: string; body: string; gallery: string; retry: 
  de: {title:'Fotos im Browser aufnehmen',body:'Ein Browser innerhalb einer App kann eine schwarze Kameravorschau anzeigen. Öffne das Album über das App-Menü in Safari oder Chrome und prüfe die Kameraberechtigung. Du kannst auch mit der Kamera-App deines Handys fotografieren und das Foto anschließend aus der Mediathek hochladen.',gallery:'Aus Mediathek hochladen',retry:'Kamera trotzdem versuchen',close:'Schließen'},
  es: {title:'Hacer fotos en el navegador',body:'El navegador de una app puede mostrar la cámara en negro. Abre este álbum en Safari o Chrome desde el menú de la app y comprueba el permiso de cámara. También puedes hacer la foto con la app Cámara del teléfono y después subirla desde la galería.',gallery:'Subir desde la galería',retry:'Probar la cámara igualmente',close:'Cerrar'},
 };
+
+function subscribeToBrowser() { return () => {}; }
+function embeddedBrowserSnapshot() { return isEmbeddedMobileBrowser(navigator.userAgent); }
+export function CameraBrowserNotice({ lang }: { lang: Lang }) {
+ const embedded = useSyncExternalStore(subscribeToBrowser, embeddedBrowserSnapshot, () => false);
+ return embedded ? <p data-camera-browser-notice className="rounded-xl border border-amber-200 bg-amber-50 p-3 text-sm leading-6 text-stone-800">{HELP[lang].body}</p> : null;
+}
 
 /** Native single-photo capture; upload/storage permissions remain in the existing pipeline. */
 export function PhotoCaptureButton({lang,onFiles,onChooseExisting,children,className,style}: {
