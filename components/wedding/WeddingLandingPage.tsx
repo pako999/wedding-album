@@ -17,7 +17,7 @@ export function weddingMetadata(lang:Lang):Metadata{const t=weddingCopy(lang);co
 export function WeddingLandingPage({lang}: {lang:Lang}) {
  const t=weddingCopy(lang), p=packageCopy(lang), features=weddingFeatures(lang);
  const create=localizedAccountPath(lang,'/dashboard/new?plan=premium');
- const guides=[{title:p.one,body:p.details,image:'/hero/wedding-page-guide.png'},{title:p.two,body:p.design,image:'/hero/wedding-style-guide.png'},{title:p.three,body:p.rsvp,image:'/hero/scan.webp'}];
+ const guides=[{title:p.one,body:p.details,image:lang==='sl'?'/hero/wedding-features/page-preview.png':'/hero/wedding-page-guide.png'},{title:p.two,body:p.design,image:lang==='sl'?'/hero/wedding-features/editor.png':'/hero/wedding-style-guide.png'},{title:p.three,body:p.rsvp,image:lang==='sl'?'/hero/cards.webp':'/hero/scan.webp'}];
  return <><SiteHeader lang={lang} hreflang={weddingAlternates()}/><main className="w-full min-w-0 overflow-hidden bg-[#fffdf8] text-stone-900">
   <section className="mx-auto grid w-full min-w-0 max-w-7xl grid-cols-1 items-center gap-10 px-5 py-12 sm:px-8 sm:py-20 lg:grid-cols-2 [&>*]:min-w-0">
    <div><p className="text-xs font-bold uppercase tracking-[.2em] text-amber-800">{t.plan}</p><h1 className="mt-5 [overflow-wrap:anywhere] font-serif text-5xl leading-[1.04] sm:text-7xl">{p.all}</h1><p className="mt-6 max-w-xl [overflow-wrap:anywhere] text-lg leading-8 text-stone-600">{p.intro}</p><WeddingOfferPrice lang={lang}/><div className="flex flex-wrap gap-3"><a href={create} className="rounded-full bg-stone-900 px-7 py-4 font-bold text-white">{t.choose}</a><a href="#guide" className="rounded-full border border-stone-300 px-7 py-4 font-semibold">{t.preview} ↓</a></div></div>

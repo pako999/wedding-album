@@ -15,8 +15,8 @@
     "Guestcam"
   ],
   "tldr": "Poroka potrebuje več kot zbirko fotografij. Gostje želijo vedeti, kam priti, kaj sledi in kako potrditi udeležbo. Poročni premium poveže vajino stran, vabila in spomine, vidva pa izbereta funkcije, ki jih želita vključiti.",
-  "coverImage": "/hero/wedding-page-guide.png",
-  "coverAlt": "Urejevalnik poročne strani s kategorijami, besedili in predogledom",
+  "coverImage": "/hero/wedding-features/page-preview.png",
+  "coverAlt": "Predogled slovenske poročne strani z imenoma para in opisom obreda",
   "content": [
     {
       "type": "p",
@@ -32,7 +32,7 @@
     },
     {
       "type": "image",
-      "src": "/hero/wedding-style-guide.png",
+      "src": "/hero/wedding-features/editor.png",
       "alt": "Nastavitve pisav in barv poročne strani",
       "caption": "Primer postavitve: vzorčna besedila zamenjajta s svojimi podatki."
     },

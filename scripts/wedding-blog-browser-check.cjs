@@ -38,7 +38,7 @@ const { build } = req('esbuild'); const { chromium } = req('playwright');
    assert.ok(await page.evaluate(()=>Array.from(document.images).every(image=>image.complete&&image.naturalWidth>0)));
    assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),`${lang} article overflows at ${width}px`);
    const schema=await page.locator('script[type="application/ld+json"]').allTextContents();
-   assert.ok(schema.join('').includes('https://www.guestcam.si/hero/wedding-page-guide.png'),'Article schema needs an absolute first-party image');
+   assert.ok(schema.join('').includes(new URL(post.coverImage,'https://www.guestcam.si').href),'Article schema needs an absolute first-party image');
    assert.ok((await page.locator('body').innerText()).includes('189'));
    assert.ok((await page.locator('body').innerText()).match(/113[,.]40/));
   }
