@@ -94,9 +94,11 @@ export function useSuiteAutosave(endpoint: string, initial: SuiteConfig, onSaved
   const leaving = (event: BeforeUnloadEvent) => {
    if (ready.current && suiteSnapshot(latest.current) !== saved.current) { event.preventDefault(); event.returnValue = ''; }
   };
-  const hidden = () => { if (document.visibilityState === 'hidden') void flush(); };
-  window.addEventListener('online', online); window.addEventListener('beforeunload', leaving); document.addEventListener('visibilitychange', hidden);
-  return () => { window.removeEventListener('online', online); window.removeEventListener('beforeunload', leaving); document.removeEventListener('visibilitychange', hidden); };
- }, [flush]);
+  // WebKit rejects new fetches from a document being dismissed. Keep its draft
+  // locally, and retry when the tab becomes visible rather than during unload.
+  const visibility = () => { persist(); if (document.visibilityState === 'visible') void flush(); };
+  window.addEventListener('online', online); window.addEventListener('beforeunload', leaving); document.addEventListener('visibilitychange', visibility);
+  return () => { window.removeEventListener('online', online); window.removeEventListener('beforeunload', leaving); document.removeEventListener('visibilitychange', visibility); };
+ }, [flush, persist]);
  return { config, setConfig, initialize, status, error, flush, recovery, resolveRecovery };
 }

@@ -117,6 +117,13 @@ const until = async (predicate, message) => {
   await welcome().fill('Retry on reconnection'); await page.waitForSelector('[data-autosave-state="error"]');
   failSave = false; await page.evaluate(() => window.dispatchEvent(new Event('online'))); await saved();
   assert.equal(config.welcome.en, 'Retry on reconnection');
+  failSave = true; await welcome().fill('Retry when returning to the tab'); await page.waitForSelector('[data-autosave-state="error"]');
+  const hiddenWrites = writes.length;
+  await page.evaluate(() => { Object.defineProperty(document, 'visibilityState', { value: 'hidden', configurable: true }); document.dispatchEvent(new Event('visibilitychange')); });
+  await page.waitForTimeout(150); assert.equal(writes.length, hiddenWrites, 'A closing WebKit document must not start a new write');
+  failSave = false;
+  await page.evaluate(() => { Object.defineProperty(document, 'visibilityState', { value: 'visible', configurable: true }); document.dispatchEvent(new Event('visibilitychange')); });
+  await saved(); assert.equal(config.welcome.en, 'Retry when returning to the tab');
 
   // A newer server version must never be silently replaced by an old local draft.
   failSave = true; await welcome().fill('My local draft'); await page.waitForSelector('[data-autosave-state="error"]');

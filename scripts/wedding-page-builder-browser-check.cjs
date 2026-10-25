@@ -29,7 +29,7 @@ const { chromium } = req('playwright');
       if (route.request().method() === 'PUT') { config = route.request().postDataJSON(); saved++; return route.fulfill({ json: { ok: true, config } }); }
       return route.fulfill({ json: { configured: true, config, attendees: [], entries: [], emails: [], guestPath: '/builder-fixture/celebrate', preview: true } });
     });
-    await page.route('**/api/albums/builder-fixture/wedding-suite', route => route.fulfill({ json: { config, language: 'en', attendee: null, entries: [], album: { id: 'test', slug: 'builder-fixture', name: 'Original album name', date: '2027-07-31', maxPhotos: 1000, photoCount: 0, moderationEnabled: true, passwordProtected: false } } }));
+    await page.route('**/api/albums/builder-fixture/wedding-suite', route => route.fulfill({ json: { config, language: 'en', attendee: null, entries: [], hasWeddingProgram: true, album: { id: 'test', slug: 'builder-fixture', name: 'Original album name', date: '2027-07-31', maxPhotos: 1000, photoCount: 0, moderationEnabled: true, passwordProtected: false } } }));
     const base = `http://127.0.0.1:${server.address().port}`;
     await page.goto(base);
     const editor = page.locator('[data-wedding-builder]');
@@ -103,6 +103,7 @@ const { chromium } = req('playwright');
     await page.setViewportSize({ width: 390, height: 900 });
     await page.goto(base + '/?guest=1');
     await page.getByRole('heading', { name: 'Ana & Marko', exact: true }).waitFor();
+    assert.equal(await page.getByRole('link', { name: /Song requests/ }).getAttribute('href'), '/builder-fixture/wedding?lang=en#songs');
     await page.getByText('Meet us in the garden at 18:00.', { exact: true }).waitFor();
     assert.equal(await page.getByRole('link', { name: /Directions/ }).getAttribute('href'), 'https://example.test/venue');
     assert.equal(await page.locator('main').evaluate(el => getComputedStyle(el).backgroundColor), 'rgb(248, 232, 239)');

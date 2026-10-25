@@ -10,6 +10,7 @@ on:
       - app/api/albums/**/wedding-suite/**
       - scripts/wedding-autosave-browser-check.cjs
       - scripts/wedding-page-builder-browser-check.cjs
+      - scripts/wedding-suite-database-check.cjs
       - tests/wedding-suite.test.mjs
       - components/wedding/WeddingFeatureDetails.tsx
       - lib/wedding/feature-details-sl.ts
@@ -57,10 +58,12 @@ jobs:
       - name: Install browser tools in a separate temporary package
         run: |
           tools="$(mktemp -d)"
-          npm install --prefix "$tools" --no-save --package-lock=false --no-audit --no-fund playwright@1.55.1 esbuild@0.25.10
+          npm install --prefix "$tools" --no-save --package-lock=false --no-audit --no-fund playwright@1.55.1 esbuild@0.25.10 @electric-sql/pglite@0.3.14
           ln -s "$tools/node_modules/playwright" node_modules/playwright
           if [ ! -e node_modules/esbuild ]; then ln -s "$tools/node_modules/esbuild" node_modules/esbuild; fi
           echo "MOBILE_MENU_TOOLS=$tools" >> "$GITHUB_ENV"
+      - name: Wedding routes against an isolated PostgreSQL engine
+        run: PGLITE_MODULE_PATH="$MOBILE_MENU_TOOLS/node_modules/@electric-sql/pglite" node scripts/wedding-suite-database-check.cjs
       - name: Real component and production-CSS browser checks
         run: |
           node scripts/mobile-menu-browser-check.mjs

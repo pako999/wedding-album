@@ -26,6 +26,12 @@ const { drizzle } = req('drizzle-orm/pg-proxy'); const { getTableConfig } = req(
   const {EMPTY_SUITE}=load('lib/wedding-suite/contracts.ts');
   assert.equal((await invoke(manage,'PUT',{...EMPTY_SUITE,enabled:true})).status,200,'a default capsule with no date must not block other settings');
   assert.equal((await invoke(guest,'GET')).data.config.features.capsule,false,'an undated capsule stays unavailable to guests');
+  const legacyTable=getTableConfig(load('lib/wedding/schema.ts').weddingSettings);
+  await pg.exec('CREATE TABLE wedding_settings ('+legacyTable.columns.map(column=>'\"'+column.name+'\" '+column.getSQLType()).join(',')+')');
+  await pg.query('INSERT INTO wedding_settings (album_id,enabled) VALUES ($1,true)',['album-a']);
+  assert.equal((await invoke(guest,'GET')).data.hasWeddingProgram,true,'the shared QR page exposes enabled program and music links');
+  await pg.query('UPDATE wedding_settings SET enabled=false WHERE album_id=$1',['album-a']);
+  assert.equal((await invoke(guest,'GET')).data.hasWeddingProgram,false,'disabled program links stay hidden');
   assert.equal((await invoke(guest,'POST',{action:'entry',kind:'capsule',name:'Guest',message:'Not open yet',photoId:null,language:'en'})).status,403);
   const config=JSON.parse(fs.readFileSync(path.join(root,'docs/wedding-suite-test-fixture.json'),'utf8'));config.defaultLang='en';config.tables[0].capacity=2;config.rsvpDeadline=new Date(Date.now()+86400000).toISOString();config.capsuleUnlockAt=new Date(Date.now()+86400000*10).toISOString();
   assert.equal((await invoke(manage,'PUT',config)).status,200);

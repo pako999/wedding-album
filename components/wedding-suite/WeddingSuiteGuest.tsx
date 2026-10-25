@@ -10,6 +10,7 @@ import { LANGUAGE_NAMES } from '@/lib/wedding-suite/copy';
 import { VideoRecorder } from './VideoRecorder';
 import { WeddingPageContent } from './WeddingPageContent';
 import { pageTheme } from '@/lib/wedding-suite/page-design';
+import { weddingCopy } from '@/lib/wedding/copy';
 import { EntryMedia } from './EntryMedia';
 const UploadModal = dynamic(() => import('@/components/album/UploadModal').then(module => module.UploadModal));
 
@@ -86,6 +87,7 @@ export function WeddingSuiteGuest({ slug, initialLang }: { slug: string; initial
 
   {loading && <p role="status">{t.loading}</p>}{error && <div role="alert" className="rounded-xl bg-red-50 p-4 text-red-800">{error}<button type="button" className="ml-3 underline" onClick={() => void load(true)}>{t.refresh}</button></div>}{message && <p role="status" className="rounded-xl bg-emerald-50 p-4 text-emerald-800">{message}</p>}
   {data && <WeddingPageContent page={data.config.page} lang={lang} fallbackTitle={data.album.name} meta={date || undefined} intro={localized(data.config.welcome, lang)} headingLevel={1} idPrefix="guest-" />}
+  {data?.hasWeddingProgram && <nav aria-label={weddingCopy(lang).nav} className="flex flex-wrap gap-2 rounded-2xl border border-stone-200 bg-white p-3 text-stone-900">{(['schedule','menu','songs','bingo'] as const).map(key => <a key={key} href={`/${encodeURIComponent(slug)}/wedding?lang=${lang}#${key}`} className={secondaryClass}>{weddingCopy(lang)[key]} ↗</a>)}</nav>}
   {data && <>{data.album.passwordProtected && <label className="block text-sm font-medium">{t.password}<input type="password" autoComplete="current-password" className={fieldClass} value={albumPassword} onChange={event => setAlbumPassword(event.target.value)} /></label>}<nav className="grid grid-cols-2 gap-2 rounded-2xl border bg-white p-2 sm:grid-cols-4" aria-label={t.title}>{FEATURES.filter(key => data.config.features[key]).map(key => <button type="button" aria-pressed={tab === key} key={key} onClick={() => { setTab(key); setPhotoId(null); setMessage(''); }} className={`min-h-12 rounded-xl px-2 py-3 text-sm font-semibold ${tab === key ? 'bg-stone-900 text-white' : 'hover:bg-amber-50'}`}>{t[key]}</button>)}</nav>
   {(tab === 'story' || tab === 'travel') && <WeddingPanel title={t[tab]}><div className="space-y-6">{data.config[tab].map(row => <article className="rounded-2xl border border-stone-200 p-5" key={row.id}>
    {row.date && <p className="mb-2 text-xs text-stone-500">{new Intl.DateTimeFormat(lang, { dateStyle: 'long', timeZone: 'UTC' }).format(new Date(`${row.date}T12:00:00Z`))}</p>}

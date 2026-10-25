@@ -195,7 +195,7 @@ function fixture(rows = [], flags = { albumPermission: 'view_upload' }) {
   let payload;
   const q = { values(value) { payload=value; return q; }, onConflictDoNothing() { return q; }, returning() { inserts.push(payload); return Promise.resolve([{id:payload.id}]); } }; return q;
  } };
- const server = modules({ '@/lib/db':{ db }, '@/lib/album-flags': { getAlbumFlags: async () => flags }, '@/lib/wedding/server':{ digest:value=>require('node:crypto').createHash('sha256').update(value).digest('hex'), reply:Response.json },
+ const server = modules({ '@/lib/db':{ db }, '@/lib/album-flags': { getAlbumFlags: async () => flags }, '@/lib/wedding/server':{ digest:value=>require('node:crypto').createHash('sha256').update(value).digest('hex'), reply:Response.json, weddingForAlbum: async () => null },
   '@/lib/album-request-access':{}, '@/lib/storage/bunny':{ bunnyDisplayUrl:value=>value }, resend:{ Resend:class { constructor(){sendCalls++;throw new Error('Sending must not occur in preview');} } },
  })('lib/wedding-suite/server.ts');
  return { server, inserts, sendCalls:()=>sendCalls };
