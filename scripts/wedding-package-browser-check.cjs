@@ -11,7 +11,8 @@ const { build } = req('esbuild'); const { chromium, webkit } = req('playwright')
  const css = fs.readdirSync(root + '/.next/static/chunks').filter(x => x.endsWith('.css')).map(x => fs.readFileSync(root + '/.next/static/chunks/' + x, 'utf8')).join('\n');
  const server = http.createServer((request, response) => {
   if (request.url === '/fixture.js') { response.setHeader('content-type','application/javascript'); response.end(bundle.outputFiles[0].text); }
-  else if (request.url === '/fixture.css') { response.setHeader('content-type','text/css'); response.end(css); }
+  else if (request.url === '/fixture.css') { response.setHeader('content-type','text/css'); response.end(css+'\nhtml{--font-dm-sans:"DM Sans","DM Sans Fallback";--font-cormorant:"Cormorant Garamond","Cormorant Garamond Fallback"}'); }
+  else if (request.url.startsWith('/media/')) { const file=path.join(root,'.next/static/media',path.basename(request.url)); if(!fs.existsSync(file)){response.writeHead(404);response.end();return;} response.setHeader('content-type','font/woff2');response.end(fs.readFileSync(file)); }
   else if (request.url.startsWith('/hero/')) { const filename = path.resolve(root, 'public', '.' + request.url); if (!filename.startsWith(root + '/public/hero/') || !fs.existsSync(filename)) { response.writeHead(404); response.end(); return; } response.setHeader('content-type', filename.endsWith('.png') ? 'image/png' : 'image/webp'); response.end(fs.readFileSync(filename)); }
   else { response.setHeader('content-type','text/html'); response.end('<html><head><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="/fixture.css"></head><body><div id="root"></div><script src="/fixture.js"></script></body></html>'); }
  });
@@ -25,6 +26,7 @@ const { build } = req('esbuild'); const { chromium, webkit } = req('playwright')
   for (const lang of ['sl','hr','sr','en','de','es']) for (const width of [320,375,390,430,1280]) for (const largeText of [false,true]) {
    await page.setViewportSize({ width, height: 900 }); await page.goto(base + '/?lang=' + lang);
    if(largeText)await page.addStyleTag({content:'html{font-size:20px!important}'});
+   await page.evaluate(()=>document.fonts.ready);
    await page.waitForFunction(() => /113[,.]40/.test(document.querySelector('[data-wedding-offer]')?.textContent || ''), {timeout:10000}).catch(async error => { console.error('Rendered content:', (await page.locator('body').innerText()).slice(0,1000)); throw error; });
    assert.equal(await page.locator('[data-wedding-offer-banner]').count(), 1);
    assert.ok((await page.locator('[data-wedding-offer-banner]').innerText()).includes('40%'));
