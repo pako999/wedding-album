@@ -2311,6 +2311,7 @@ export function AlbumGuestView({ weddingEnabled = false, album, photos, moments,
           requireGuestData={requireGuestData}
           organiserName={album.coupleName}
           moderationEnabled={album.moderationEnabled}
+          uploadOnlyMode={eventFlags?.albumPermission === "upload_only"}
           onClose={() => { setCameraFiles(null); setUploadOpen(false); }}
           onNameChange={(name) => setUploaderName(name)}
           onSuccess={(info) => {

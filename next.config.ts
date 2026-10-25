@@ -7,11 +7,14 @@ const nextConfig: NextConfig = {
   // Guestcam is the canonical production site/app. Do not allow an inherited
   // deployment environment variable to make public links or callbacks point
   // back to the retired CamLove domains.
+  // Preview QR/share links must stay on their own deployment and test database.
   env: {
     NEXT_PUBLIC_APP_URL:
       process.env.NODE_ENV === "development"
-        ? (process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000")
-        : APP_ORIGIN,
+        ? (process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3001")
+        : process.env.VERCEL_ENV === "preview" && process.env.VERCEL_URL
+          ? `https://${process.env.VERCEL_URL}`
+          : APP_ORIGIN,
   },
   async redirects() {
     return [

@@ -140,3 +140,47 @@ test('admin email history prefers a separate key and explains send-only access w
   const result=await admin.listAdminEmails();assert.equal(key,'test-history');assert.equal(result.setupRequired,true);assert.match(result.error,/RESEND_HISTORY_API_KEY/);assert.equal(result.emails.length,0);
  } finally { for(const [env,value] of [['RESEND_HISTORY_API_KEY',old.history],['RESEND_API_KEY',old.send]]) { if(value===undefined)delete process.env[env];else process.env[env]=value; } }
 });
+
+test('preview QR and share origins stay on the deployment while production stays canonical', () => {
+ const names = ['NODE_ENV', 'VERCEL_ENV', 'VERCEL_URL', 'NEXT_PUBLIC_APP_URL'];
+ const previous = Object.fromEntries(names.map(name => [name, process.env[name]]));
+ try {
+  process.env.NODE_ENV = 'production';
+  process.env.VERCEL_ENV = 'preview';
+  process.env.VERCEL_URL = 'wedding-suite-preview.vercel.app';
+  process.env.NEXT_PUBLIC_APP_URL = 'https://retired.example';
+  assert.equal(modules()('next.config.ts').default.env.NEXT_PUBLIC_APP_URL, 'https://wedding-suite-preview.vercel.app');
+  process.env.VERCEL_ENV = 'production';
+  assert.equal(modules()('next.config.ts').default.env.NEXT_PUBLIC_APP_URL, 'https://www.guestcam.si');
+  process.env.NODE_ENV = 'development';
+  delete process.env.NEXT_PUBLIC_APP_URL;
+  assert.equal(modules()('next.config.ts').default.env.NEXT_PUBLIC_APP_URL, 'http://localhost:3001');
+ } finally {
+  for (const [name, value] of Object.entries(previous)) {
+   if (value === undefined) delete process.env[name]; else process.env[name] = value;
+  }
+ }
+});
+
+test('paid upgrades preserve album data and apply once with Mollie, legacy Stripe and Paddle references', async () => {
+ for (const paymentRef of ['tr_test123', 'cs_test_legacy', 'txn_legacy']) {
+  const existing = { slug: 'existing-album', plan: 'free', stripeSessionId: paymentRef, filmTier: null,
+   photoCount: 12, pendingCount: 3, ownerClerkId: 'existing-owner', password: 'existing-hash', isPublished: true };
+  const writes = [];
+  const db = {
+   query: { albums: { findFirst: async () => existing } },
+   update: () => ({ set: values => ({ where: async () => { writes.push(values); Object.assign(existing, values); } }) }),
+  };
+  const { applyPlanToAlbum } = modules({ '@/lib/db': { db } })('lib/paddle-reconcile.ts');
+  assert.deepEqual(await applyPlanToAlbum(existing.slug, 'premium', paymentRef), { plan: 'premium', status: 'applied' });
+  assert.equal(writes.length, 1);
+  assert.equal(existing.maxPhotos, 2_000_000_000);
+  assert.equal(existing.expiresAt, null);
+  assert.equal(existing.filmTier, 'premium');
+  for (const [key, value] of Object.entries({ photoCount: 12, pendingCount: 3, ownerClerkId: 'existing-owner', password: 'existing-hash', isPublished: true })) assert.equal(existing[key], value);
+  assert.deepEqual(await applyPlanToAlbum(existing.slug, 'premium', paymentRef), { plan: 'premium', status: 'already_applied' });
+  assert.equal(writes.length, 1, 'duplicate callbacks must not rewrite the album');
+  assert.equal(await applyPlanToAlbum(existing.slug, 'invalid-plan', paymentRef), null);
+  assert.equal(writes.length, 1);
+ }
+});

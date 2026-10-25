@@ -43,3 +43,13 @@ Production logs confirmed that Admin → E-mails fails with Resend `401 restrict
 - `npx tsc --noEmit`
 
 Preview browser verification is required for invitation exchange, guest preferences, RSVP, private table lookup, contributions and locked capsules. The camera recorder requires browser camera/microphone permission; file upload remains available when recording is unsupported.
+
+## Deployment compatibility checks (2026-10-25)
+
+The latest production (`3f8e619`) and preview (`6a21537`) have successful GitHub deployment statuses. Earlier preview commits temporarily changed dashboard callers before updating the component's props; one also removed most of the dashboard source. The latest preview restores that source. Hosting build logs are still needed to establish each historical failure's exact cause.
+
+This follow-up restores the production hero asset and mobile upload sizing safeguards in the preview, and restores and connects all six upload-only success messages. The suite's media attachment callback is retained. Preview builds now derive QR/share origins from `VERCEL_URL`; production continues to use its canonical origin. Local development defaults to the actual server port, 3001.
+
+Verified locally: locked dependency installation; the complete build (206 pages); TypeScript; all existing regression, locale, wedding and pricing checks; 11 wedding-suite tests, including payment-reference compatibility and idempotent upgrades preserving album data. `node scripts/upload-modal-browser-check.cjs` exercises 18 uploads across all six languages at 320px using the actual component and built CSS, with intercepted storage and metadata requests. It verifies normal, upload-only and moderated success messages and the suite attachment callback. Playwright is required separately, as with the existing browser scripts.
+
+These checks do not establish live payment, authentication, database or storage readiness. This cloud machine has no application service credentials. Production-mode requests through Clerk return a missing-publishable-key error here. The production server serves the restored hero and its optimized image successfully; development `/llms.txt` returns 200 and unconfigured checkout returns 503 as expected. Complete authenticated album/upload and test-mode payment/webhook checks against the isolated preview services before promotion. No production database migrations, real charges or invitation sends were performed.
