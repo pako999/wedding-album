@@ -1,3 +1,4 @@
+import { WeddingOfferBanner } from '@/components/wedding/WeddingOfferBanner';
 import { weddingFeatures } from '@/lib/wedding/package-copy';
 import { WeddingOfferPrice } from '@/components/wedding/WeddingOfferPrice';
 import { weddingCopy } from "@/lib/wedding/copy";
@@ -68,7 +69,7 @@ async function Header() {
       <div className="ml-auto hidden shrink-0 items-center gap-2 lg:flex"><LanguageSwitcher current="sl" languages={HOME_HREFLANG} ariaLabel="Spremeni jezik" /><HeaderAuthButtons lang="sl" signedIn={signedIn} />{!signedIn && <Link href="/dashboard/new" className="rounded-full bg-black px-5 py-3 text-sm font-black text-white">Ustvarite album</Link>}</div>
       <div className="ml-auto lg:hidden"><HomeMobileMenu signedIn={signedIn} lang="sl" links={nav.map(([href,label]) => ({href,label}))} labels={{open:"Odpri meni",close:"Zapri meni",language:"Jezik",languageAria:"Spremeni jezik",signIn:"Prijava",dashboard:"Nadzorna plošča",cta:"Ustvarite album"}} /></div>
     </nav>
-  </header>;
+  <WeddingOfferBanner lang="sl"/></header>;
 }
 
 function SectionTitle({ eyebrow, title, text, light=false }: { eyebrow:string; title:string; text?:string; light?:boolean }) {

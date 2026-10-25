@@ -101,7 +101,7 @@ function fixture(rows = [], flags = { albumPermission: 'view_upload' }) {
  })('lib/wedding-suite/server.ts');
  return { server, inserts, sendCalls:()=>sendCalls };
 }
-const oldEnv = { VERCEL_ENV:process.env.VERCEL_ENV, WEDDING_SUITE_SEND_EMAILS:process.env.WEDDING_SUITE_SEND_EMAILS, WEDDING_INVITE_SECRET:process.env.WEDDING_INVITE_SECRET };
+const oldEnv = { DATABASE_URL:process.env.DATABASE_URL, WEDDING_SUITE_DB_HOST:process.env.WEDDING_SUITE_DB_HOST, VERCEL_ENV:process.env.VERCEL_ENV, WEDDING_SUITE_SEND_EMAILS:process.env.WEDDING_SUITE_SEND_EMAILS, WEDDING_INVITE_SECRET:process.env.WEDDING_INVITE_SECRET };
 afterEach(() => { for (const [key,value] of Object.entries(oldEnv)) { if (value===undefined) delete process.env[key];else process.env[key]=value; } });
 
 test('the actual entry reader withholds capsule text, names, and media from owners and guests before release', async () => {
@@ -130,6 +130,8 @@ test('upload-only gallery policy also hides wedding-suite media while preserving
 });
 
 test('QR suite eligibility falls back to existing album links for expired, downgraded or unavailable suites', async () => {
+ // This tests the production fallback, independently of the deployment's Preview database pin.
+ process.env.VERCEL_ENV = 'production';
  let reads = 0;
  const query = { from() { return query; }, where() { return query; }, limit: async () => { reads++; throw new Error('missing optional table'); } };
  const server = modules({
@@ -141,6 +143,23 @@ test('QR suite eligibility falls back to existing album links for expired, downg
  assert.equal(reads, 0);
  assert.equal(await server.suiteEnabled({ id: 'existing-album', plan: 'premium' }), false);
  assert.equal(reads, 1);
+});
+
+test('preview suite access requires a matching database pin before reading settings', async () => {
+ process.env.VERCEL_ENV = 'preview';
+ process.env.DATABASE_URL = 'postgresql://test-only-host/test';
+ process.env.WEDDING_SUITE_DB_HOST = 'different-test-host';
+ let reads = 0;
+ const query = { from() { return query; }, where() { return query; }, limit: async () => { reads++; return [{config:{enabled:true}}]; } };
+ const server = modules({
+  '@/lib/db': { db: { select: () => query } },
+  '@/lib/wedding/server': { activePremium: () => true },
+ })('lib/wedding-suite/server.ts');
+ assert.equal(await server.suiteEnabled({id:'test-only'}),false);
+ assert.equal(reads,0);
+ process.env.WEDDING_SUITE_DB_HOST = 'test-only-host';
+ assert.equal(await server.suiteEnabled({id:'test-only'}),true);
+ assert.equal(reads,1);
 });
 
 test('production deployment preflight never updates existing albums without an explicit repair argument', async () => {

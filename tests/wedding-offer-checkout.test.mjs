@@ -27,7 +27,7 @@ const attemptId = 'a2c41a03-a4ef-44dc-a332-0c8909770111';
 class Rejection extends Error { constructor(status) { super('provider_rejected'); this.status = status; } }
 function fixture({ eligible = true, reserve = true, pending = false, authorized = true, failure = null, discountValid = false } = {}) {
  let calls = 0, reservations = 0, releases = 0, payment, invoice;
- const quote = { verified: true, remaining: eligible ? 1 : 0, capacity: 20, eligible, pending, priceCents: eligible ? 13230 : 18900 };
+ const quote = { verified: true, remaining: eligible ? 1 : 0, capacity: 8, eligible, pending, priceCents: eligible ? 11340 : 18900 };
  const album = { id: 'album-a', slug: 'demo', ownerClerkId: 'customer-a', ownerEmail: 'test@example.test', notifyEmail: 'test@example.test', defaultLang: 'en' };
  const offer = { quote: async () => quote, reserve: async () => { reservations++; return reserve ? { attemptId, slot: 20 } : null; }, bind: async () => {}, releaseRejected: async () => { releases++; } };
  const db = { query: { albums: { findFirst: async () => album } }, update: () => ({ set: () => ({ where: async () => {} }) }), insert: () => ({ values: value => ({ onConflictDoNothing: async () => {}, returning: async () => { invoice = value; return [{ id: 'invoice-a' }]; } }) }) };
@@ -36,18 +36,18 @@ function fixture({ eligible = true, reserve = true, pending = false, authorized 
   '@clerk/nextjs/server': { auth: async () => ({ userId: authorized ? 'customer-a' : null }), currentUser: async () => null },
   '@/lib/album-ownership': { checkAlbumOwnership: async () => ({ ok: authorized, status: 403, error: 'Forbidden' }) },
   '@/lib/mollie': { mollieConfigured: () => true, MollieError: Rejection, createPayment: async value => { calls++; payment = value; if (failure) throw failure; return { id: 'tr_test123', checkoutUrl: 'https://checkout.example.test/pay' }; } },
-  '@/lib/discount': { validateDiscount: async () => ({ valid: discountValid, error: 'invalid_code', finalCents: 11246, finalPrice: 112.46 }), incrementDiscountUsage: async () => {} },
+  '@/lib/discount': { validateDiscount: async () => ({ valid: discountValid, error: 'invalid_code', finalCents: 9639, finalPrice: 96.39 }), incrementDiscountUsage: async () => {} },
   '@/lib/affiliate/attribution': { getAffiliateRefFromCookie: async () => null }, '@/lib/referral/attribution': { getGuestRefFromCookie: async () => null },
   '@/lib/stand-orders': { recordStandOrder: async () => {} },
   '@/lib/email/notifications': { sendBankOrderConfirmation: async () => {}, sendAdminBankOrderEmail: async () => {} },
   '@/lib/telegram': { notifyTelegram: async () => true, htmlEscape: value => value },
  });
- const run = async (method, body = {}) => load(method === 'card' ? 'app/api/checkout/route.ts' : 'app/api/bank-order/route.ts').POST({ nextUrl: new URL('https://preview.example.test/api/checkout'), json: async () => ({ planId: 'premium', albumSlug: 'demo', locale: 'en', expectedPlanCents: 13230, ...body }) });
+ const run = async (method, body = {}) => load(method === 'card' ? 'app/api/checkout/route.ts' : 'app/api/bank-order/route.ts').POST({ nextUrl: new URL('https://preview.example.test/api/checkout'), json: async () => ({ planId: 'premium', albumSlug: 'demo', locale: 'en', expectedPlanCents: 11340, ...body }) });
  return { run, state: () => ({ calls, reservations, releases, payment, invoice }) };
 }
-test('card checkout charges exactly 13230 cents and binds its own offer metadata/idempotency key', async () => {
+test('card checkout charges exactly 11340 cents and binds its own offer metadata/idempotency key', async () => {
  const f = fixture(); assert.equal((await f.run('card')).status, 200);
- assert.equal(f.state().payment.amountCents, 13230);
+ assert.equal(f.state().payment.amountCents, 11340);
  assert.equal(f.state().payment.metadata.weddingOfferAttempt, attemptId);
  assert.equal(f.state().payment.idempotencyKey, attemptId);
  assert.equal(f.state().reservations, 1);
@@ -63,9 +63,9 @@ test('only a definitive provider rejection releases an unbound place; uncertain 
  const rejected = fixture({ failure: new Rejection(422) }); assert.equal((await rejected.run('card')).status, 422); assert.equal(rejected.state().releases, 1);
  const uncertain = fixture({ failure: new Error('connection_lost') }); assert.equal((await uncertain.run('card')).status, 500); assert.equal(uncertain.state().releases, 0);
 });
-test('invoices persist 132.30 euros and a decimal discount without truncation', async () => {
- const f = fixture(); assert.equal((await f.run('invoice')).status, 200); assert.equal(f.state().invoice.planPrice, 132.30);
- const discount = fixture({ discountValid: true }); assert.equal((await discount.run('invoice', { discountCode: 'TEST', expectedPlanCents: 11246 })).status, 200); assert.equal(discount.state().invoice.planPrice, 112.46);
+test('invoices persist 113.40 euros and a decimal discount without truncation', async () => {
+ const f = fixture(); assert.equal((await f.run('invoice')).status, 200); assert.equal(f.state().invoice.planPrice, 113.40);
+ const discount = fixture({ discountValid: true }); assert.equal((await discount.run('invoice', { discountCode: 'TEST', expectedPlanCents: 9639 })).status, 200); assert.equal(discount.state().invoice.planPrice, 96.39);
 });
 test('invalid invoice codes and stale quotes do not create invoices or reserve campaign stock', async () => {
  for (const [options, body] of [[{}, { discountCode: 'INVALID' }], [{ eligible: false }, {}], [{ authorized: false }, {}]]) {
@@ -119,4 +119,14 @@ test('only the verified empty/demo preview can apply the idempotent inventory mi
  sql.transaction = async () => ++transactions === 1 ? [[{ total: 1, demo: 1 }], [{ total: 0 }]] : [];
  const result = await prepareWeddingOfferPreview({ env, connect: () => sql, readFile: async () => 'CREATE TABLE test_only(id text); INSERT INTO test_only VALUES (1);' });
  assert.equal(result.prepared, true); assert.equal(transactions, 2); assert.equal(statements, 2);
+});
+
+test('production offer initializer only connects in the verified production project on main', async () => {
+ const { prepareWeddingOfferProduction } = await import('../scripts/prepare-wedding-offer-production.mjs');
+ let connections = 0; const connect = () => { connections++; throw new Error('must not connect'); };
+ assert.equal((await prepareWeddingOfferProduction({env:{VERCEL_ENV:'preview'},connect})).prepared,false);
+ const env = {VERCEL_ENV:'production',VERCEL_PROJECT_ID:'wrong',VERCEL_GIT_COMMIT_REF:'main'};
+ await assert.rejects(prepareWeddingOfferProduction({env,connect}),/verified GuestCam/);
+ await assert.rejects(prepareWeddingOfferProduction({env:{...env,VERCEL_PROJECT_ID:'prj_EDblP7nig2nLLZTQlxnrkusvxoSj'},connect}),/database is not configured/);
+ assert.equal(connections,0);
 });

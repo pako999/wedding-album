@@ -40,7 +40,7 @@ const { build } = req('esbuild'); const { chromium } = req('playwright');
    const schema=await page.locator('script[type="application/ld+json"]').allTextContents();
    assert.ok(schema.join('').includes('https://www.guestcam.si/hero/wedding-page-guide.png'),'Article schema needs an absolute first-party image');
    assert.ok((await page.locator('body').innerText()).includes('189'));
-   assert.ok((await page.locator('body').innerText()).match(/132[,.]30/));
+   assert.ok((await page.locator('body').innerText()).match(/113[,.]40/));
   }
   console.log('PASS wedding blog: all six translations render at 320/1280px, translated package links, real illustrations load, reciprocal alternates, newest-first blog listing, absolute schema images and accurate pricing. Clerk shell is isolated.');
  }finally{await browser?.close();await new Promise(resolve=>server.close(resolve));}
