@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { weddingCopy } from "@/lib/wedding/copy";
 import { SITE_URL } from "@/lib/urls";
 import { GuestcamHomePage, HOME_FAQS } from "@/components/GuestcamHomePage";
 import { withRegionalHreflang } from "@/lib/seo/hreflang";
@@ -34,7 +35,7 @@ const jsonLd = {
         { "@type": "Offer", name: "Free", price: "0", priceCurrency: "EUR" },
         { "@type": "Offer", name: "Basic", price: "39", priceCurrency: "EUR" },
         { "@type": "Offer", name: "Plus", price: "49", priceCurrency: "EUR" },
-        { "@type": "Offer", name: "Poročni premium", price: String(PREMIUM_REGULAR_PRICE_EUR), priceCurrency: "EUR" },
+        { "@type": "Offer", name: weddingCopy("sl").plan, price: String(PREMIUM_REGULAR_PRICE_EUR), priceCurrency: "EUR" },
       ],
     },
     {

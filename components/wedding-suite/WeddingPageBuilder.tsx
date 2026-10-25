@@ -1,5 +1,5 @@
 'use client';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { localized, PAGE_CATEGORIES, PAGE_FIELD_TYPES, PAGE_FONTS, type PageDesign, type PageField, type PageSection, type SuiteLang } from '@/lib/wedding-suite/contracts';
 import { DEFAULT_PAGE, FONT_FAMILIES, movePageItem } from '@/lib/wedding-suite/page-design';
 import { builderCopy } from '@/lib/wedding-suite/builder-copy';
@@ -13,6 +13,8 @@ export function WeddingPageBuilder({ value, lang, editLang, onChange }: {
 }) {
   const page = value ?? DEFAULT_PAGE; const t = builderCopy(lang); const p = presentationCopy(lang);
   const previewRef = useRef<HTMLElement>(null); const editorRef = useRef<HTMLDivElement>(null);
+  const previewScrollRef = useRef<HTMLDivElement>(null);
+  useEffect(() => { previewScrollRef.current?.scrollTo(0, 0); }, [page.coverImageUrl]);
   const [previewMode, setPreviewMode] = useState<'mobile' | 'desktop'>('desktop');
   const [category, setCategory] = useState<PageSection['category']>('ceremony');
   const [sectionId, setSectionId] = useState('');
@@ -43,12 +45,12 @@ export function WeddingPageBuilder({ value, lang, editLang, onChange }: {
       <button type="button" className={`${secondaryClass} xl:hidden`} onClick={() => previewRef.current?.scrollIntoView({ block: 'start' })}>{t.preview} ↓</button>
       <div className="grid min-w-0 gap-6 xl:grid-cols-2">
         <div className="min-w-0 space-y-5">
-          <div className="space-y-3"><h3 className="text-sm font-semibold">{p.templates}</h3><div className="grid grid-cols-3 gap-3">{(Object.keys(PAGE_STYLES) as PageStyle[]).map(style => <button key={style} type="button" className="min-w-0 overflow-hidden rounded-xl border border-stone-300 bg-white text-left transition hover:border-stone-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-700" onClick={() => onChange(applyPageStyle(page, style))}>
+          <div className="space-y-3"><h3 className="text-sm font-semibold">{p.templates}</h3><div className="grid grid-cols-3 gap-3">{(Object.keys(PAGE_STYLES) as PageStyle[]).map(style => <button key={style} type="button" className="min-w-0 overflow-hidden rounded-xl border border-stone-300 bg-white text-left transition hover:border-stone-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-700" onClick={() => { onChange(applyPageStyle(page, style)); previewScrollRef.current?.scrollTo(0, 0); }}>
             <img src={PAGE_STYLES[style].image} alt="" width={320} height={240} loading="lazy" className="aspect-[4/3] w-full object-cover" /><span className="block px-2 py-3 text-xs font-semibold leading-5 [overflow-wrap:anywhere]">{p[style]}</span>
           </button>)}</div></div>
           <label className="block text-sm font-semibold">{t.pageTitle}<input className={fieldClass} maxLength={180} value={page.title[editLang] ?? ''} onChange={event => onChange({ ...page, title: { ...page.title, [editLang]: event.target.value } })} /></label>
           <label className="block text-sm">{p.subtitle}<input className={fieldClass} maxLength={180} value={page.subtitle?.[editLang] ?? ''} onChange={event => onChange({ ...page, subtitle: { ...page.subtitle, [editLang]: event.target.value } })} /></label>
-          <details className="rounded-xl border border-stone-200 p-4"><summary className="cursor-pointer text-sm font-semibold">{p.cover}</summary><label className="mt-4 block text-sm">{p.cover}<input type="url" aria-label={p.cover} className={fieldClass} placeholder="https://" value={page.coverImageUrl || ''} onChange={event => onChange({ ...page, coverImageUrl: event.target.value })} /><span className="mt-2 block text-xs leading-5 text-stone-600">{p.coverHint}</span></label></details>
+          <details className="rounded-xl border border-stone-200 p-4"><summary className="cursor-pointer text-sm font-semibold">{p.cover}</summary><label className="mt-4 block text-sm">{p.cover}<input type="text" inputMode="url" aria-label={p.cover} className={fieldClass} placeholder="https://" value={page.coverImageUrl || ''} onChange={event => onChange({ ...page, coverImageUrl: event.target.value })} /><span className="mt-2 block text-xs leading-5 text-stone-600">{p.coverHint}</span></label></details>
           <details className="rounded-xl border border-stone-200 p-4">
             <summary className="cursor-pointer font-semibold">{t.design}</summary>
             <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -101,7 +103,7 @@ export function WeddingPageBuilder({ value, lang, editLang, onChange }: {
           <button type="button" className={`${secondaryClass} mb-4 xl:hidden`} onClick={() => editorRef.current?.scrollIntoView({ block: 'start' })}>↑ {p.content}</button>
           <div className="mb-3 flex flex-wrap items-center justify-between gap-3"><h3 className="font-semibold">{t.preview}</h3><div className="inline-flex rounded-lg bg-stone-100 p-1">{(['desktop', 'mobile'] as const).map(mode => <button type="button" key={mode} aria-pressed={previewMode === mode} className={`min-h-10 rounded-md px-3 text-xs font-semibold ${previewMode === mode ? 'bg-white text-stone-900 shadow-sm' : 'text-stone-600'}`} onClick={() => setPreviewMode(mode)}>{p[mode]}</button>)}</div></div>
           <p className="mb-4 text-xs leading-5 text-stone-600">{p.previewHint}</p>
-          <div className={`mx-auto max-h-[900px] overflow-y-auto rounded-2xl border border-stone-200 bg-white shadow-sm ${previewMode === 'mobile' ? 'max-w-[390px]' : ''}`}><WeddingPageContent page={page} lang={editLang} idPrefix="editor-" /></div>
+          <div ref={previewScrollRef} data-wedding-preview-scroll className={`mx-auto max-h-[900px] overflow-y-auto rounded-2xl border border-stone-200 bg-white shadow-sm ${previewMode === 'mobile' ? 'max-w-[390px]' : ''}`}><WeddingPageContent page={page} lang={editLang} idPrefix="editor-" /></div>
         </aside>
       </div>
     </div>

@@ -1,19 +1,18 @@
-import { absoluteUrl } from '@/lib/urls';
-import { SUITE_LANGS, type PageDesign, type LocaleText, type PageSection } from './contracts';
+import { PAGE_COVER_IMAGES, SUITE_LANGS, type PageDesign, type LocaleText, type PageSection } from './contracts';
 import { DEFAULT_PAGE } from './page-design';
 import { builderCopy } from './builder-copy';
 import { presentationCopy } from './presentation-copy';
 
 export const PAGE_STYLES = {
- garden: { headingFont: 'elegant', bodyFont: 'modern', background: '#ffffff', textColor: '#272b25', accent: '#465c42', image: '/hero/wedding-garden-template.webp' },
- timeless: { headingFont: 'classic', bodyFont: 'modern', background: '#fffdf8', textColor: '#292524', accent: '#805842', image: '/hero/wedding-castle.webp' },
- modern: { headingFont: 'modern', bodyFont: 'modern', background: '#ffffff', textColor: '#202625', accent: '#365c5b', image: '/hero/wedding-walk.webp' },
+ garden: { headingFont: 'elegant', bodyFont: 'modern', background: '#ffffff', textColor: '#272b25', accent: '#465c42', image: PAGE_COVER_IMAGES[0] },
+ timeless: { headingFont: 'classic', bodyFont: 'modern', background: '#fffdf8', textColor: '#292524', accent: '#805842', image: PAGE_COVER_IMAGES[1] },
+ modern: { headingFont: 'modern', bodyFont: 'modern', background: '#ffffff', textColor: '#202625', accent: '#365c5b', image: PAGE_COVER_IMAGES[2] },
 } as const;
 export type PageStyle = keyof typeof PAGE_STYLES;
 
 export function applyPageStyle(page: PageDesign, style: PageStyle): PageDesign {
  const { image, ...appearance } = PAGE_STYLES[style];
- return { ...page, ...appearance, coverImageUrl: absoluteUrl(image) };
+ return { ...page, ...appearance, coverImageUrl: image };
 }
 function translated(text: (lang: typeof SUITE_LANGS[number]) => string): LocaleText {
  return Object.fromEntries(SUITE_LANGS.map(lang => [lang, text(lang)]));

@@ -1,5 +1,5 @@
 import type { CSSProperties } from 'react';
-import type { PageDesign, PageField } from './contracts';
+import { PAGE_COVER_IMAGES, type PageDesign, type PageField } from './contracts';
 
 export const DEFAULT_PAGE: PageDesign = {
   title: {}, headingFont: 'elegant', bodyFont: 'modern',
@@ -25,6 +25,16 @@ export function safePageLink(value?: string): string | undefined {
     const url = new URL(value || '');
     return url.protocol === 'https:' && !url.username && !url.password ? url.href : undefined;
   } catch { return undefined; }
+}
+/** Keep saved template photos on this origin; customer HTTPS images remain unchanged. */
+export function pageCoverSource(value?: string): string | undefined {
+  const isBuiltin = (path: string) => PAGE_COVER_IMAGES.some(image => image === path);
+  if (value && isBuiltin(value)) return value;
+  const safe = safePageLink(value);
+  if (!safe) return undefined;
+  const url = new URL(safe);
+  const ownHost = /^(?:www\.)?guestcam\.si$/.test(url.hostname) || /^wedding-album(?:-[a-z0-9-]+)?\.vercel\.app$/.test(url.hostname);
+  return ownHost && isBuiltin(url.pathname) ? url.pathname : safe;
 }
 /** Keep both drag/drop and keyboard reordering immutable and bounded. */
 export function movePageItem<T extends { id: string }>(items: T[], id: string, destination: number): T[] {

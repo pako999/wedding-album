@@ -41,7 +41,7 @@ test('wedding templates preserve content and starter sections never publish inve
  for (const style of Object.keys(templates.PAGE_STYLES)) {
   const result = templates.applyPageStyle(input, style);
   assert.deepEqual(input, original); assert.deepEqual(result.sections, input.sections); assert.deepEqual(result.title, input.title);
-  assert.ok(contracts.pageDesignSchema.safeParse(result).success); assert.match(result.coverImageUrl, /^https:\/\//);
+  assert.ok(contracts.pageDesignSchema.safeParse(result).success); assert.ok(contracts.PAGE_COVER_IMAGES.includes(result.coverImageUrl));
  }
  const starter = templates.starterSections(() => require('node:crypto').randomUUID());
  assert.equal(starter.length, 3); assert.ok(starter.every(section => section.fields.every(field => Object.keys(field.text).length === 0)));
@@ -50,6 +50,22 @@ test('wedding templates preserve content and starter sections never publish inve
   assert.ok(demo.title[lang]); assert.ok(demo.subtitle[lang]); assert.ok(demo.sections.every(section => section.title[lang] && section.fields[0].text[lang]));
  }
  assert.equal(contracts.pageDesignSchema.safeParse({ ...demo, coverImageUrl: 'javascript:bad' }).success, false);
+});
+
+test('template covers stay on the current origin, including previously saved preview URLs', () => {
+ const { pageCoverSource, DEFAULT_PAGE } = load('lib/wedding-suite/page-design.ts');
+ for (const asset of contracts.PAGE_COVER_IMAGES) {
+  assert.equal(pageCoverSource(asset), asset);
+  assert.equal(pageCoverSource(`https://www.guestcam.si${asset}`), asset);
+  assert.equal(pageCoverSource(`https://wedding-album-old-protected.vercel.app${asset}`), asset);
+  assert.equal(contracts.pageDesignSchema.safeParse({ ...DEFAULT_PAGE, coverImageUrl: asset }).success, true);
+ }
+ for (const bad of ['/api/private', '//outside.example/photo.jpg', '/hero/../private', 'javascript:bad', 'https://name:secret@outside.example/photo.jpg']) {
+  assert.equal(contracts.pageDesignSchema.safeParse({ ...DEFAULT_PAGE, coverImageUrl: bad }).success, false);
+  assert.equal(pageCoverSource(bad), undefined);
+ }
+ const own = 'https://photos.example/couple.jpg'; assert.equal(pageCoverSource(own), own);
+ const samePath = 'https://photos.example/hero/wedding-castle.webp'; assert.equal(pageCoverSource(samePath), samePath);
 });
 
 test('professional wedding presentation and all twenty feature explanations are complete in six languages', () => {
@@ -298,7 +314,7 @@ test('admin plan labels match the same multilingual pricing names while plan IDs
  const { adminPlanLabel }=load('lib/admin-plan-labels.ts');
  const { weddingCopy }=load('lib/wedding/copy.ts');
  for (const lang of contracts.SUITE_LANGS) assert.equal(adminPlanLabel('premium',lang),weddingCopy(lang).plan);
- assert.equal(adminPlanLabel('premium','sl'),'Poročni premium');
+ assert.equal(adminPlanLabel('premium','sl'),'Poročni paket Premium');
 });
 
 test('admin email history prefers a separate key and explains send-only access without a crash', async () => {

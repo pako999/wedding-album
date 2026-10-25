@@ -11,6 +11,9 @@ const id = z.string().uuid();
 export const localeTextSchema = z.object({ sl: text.optional(), hr: text.optional(), sr: text.optional(), en: text.optional(), de: text.optional(), es: text.optional() }).strict();
 export type LocaleText = z.infer<typeof localeTextSchema>;
 const safeUrl = z.string().max(2000).refine(value => !value || (() => { try { const u = new URL(value); return u.protocol === 'https:' && !u.username && !u.password; } catch { return false; } })(), 'invalid');
+// Built-in photographs belong to the current deployment, including protected previews.
+export const PAGE_COVER_IMAGES = ['/hero/wedding-garden-template.webp', '/hero/wedding-castle.webp', '/hero/wedding-walk.webp'] as const;
+const coverImageUrl = z.string().max(2000).refine(value => PAGE_COVER_IMAGES.some(image => image === value) || safeUrl.safeParse(value).success, 'invalid');
 const translatedRow = z.object({ id, date: z.union([z.iso.date(), z.literal('')]).optional(), title: localeTextSchema, text: localeTextSchema, url: safeUrl.optional() }).strict();
 export const PAGE_FONTS = ['elegant', 'modern', 'classic', 'handwritten'] as const;
 export const PAGE_CATEGORIES = ['ceremony', 'reception', 'travel', 'accommodation', 'custom'] as const;
@@ -21,7 +24,7 @@ const pageFieldSchema = z.object({ id, type: z.enum(PAGE_FIELD_TYPES), text: loc
 }).strict().refine(field => field.type !== 'link' || !!field.url || !Object.values(field.text).some(value => value?.trim()), 'invalid');
 export const pageDesignSchema = z.object({
   title: localeTextSchema, headingFont: z.enum(PAGE_FONTS), bodyFont: z.enum(PAGE_FONTS),
-  coverImageUrl: safeUrl.optional(), subtitle: localeTextSchema.optional(),
+  coverImageUrl: coverImageUrl.optional(), subtitle: localeTextSchema.optional(),
   background: color, textColor: color, accent: color,
   sections: z.array(z.object({ id, category: z.enum(PAGE_CATEGORIES), title: localeTextSchema,
     visible: z.boolean(), fields: z.array(pageFieldSchema).max(12),

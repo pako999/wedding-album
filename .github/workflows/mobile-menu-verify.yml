@@ -3,6 +3,11 @@ on:
   pull_request:
     paths:
       - components/HomeMobileMenu.tsx
+      - components/GuestcamHomePage.tsx
+      - app/page.tsx
+      - lib/wedding/copy.ts
+      - lib/wedding-offer-copy.ts
+      - lib/i18n/upgrade-translations.ts
       - components/SiteHeader.tsx
       - components/wedding/WeddingLandingPage.tsx
       - components/wedding-suite/**
@@ -10,6 +15,7 @@ on:
       - app/api/albums/**/wedding-suite/**
       - scripts/wedding-autosave-browser-check.cjs
       - scripts/wedding-page-builder-browser-check.cjs
+      - scripts/wedding-cover-browser-check.cjs
       - scripts/wedding-suite-database-check.cjs
       - tests/wedding-suite.test.mjs
       - components/wedding/WeddingFeatureDetails.tsx
@@ -76,6 +82,8 @@ jobs:
           node scripts/wedding-page-builder-browser-check.cjs
           node scripts/wedding-autosave-browser-check.cjs
           AUTOSAVE_BROWSER_ENGINE=webkit node scripts/wedding-autosave-browser-check.cjs
+          node scripts/wedding-cover-browser-check.cjs
+          COVER_BROWSER_ENGINE=webkit node scripts/wedding-cover-browser-check.cjs
       - name: Upload mobile screenshots and test results
         if: always()
         uses: actions/upload-artifact@v4

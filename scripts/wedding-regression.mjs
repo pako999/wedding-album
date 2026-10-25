@@ -8,7 +8,7 @@ function loadTs(file){const code=ts.transpileModule(read(file),{compilerOptions:
 const contracts=loadTs('lib/wedding/contracts.ts');const copy=loadTs('lib/wedding/copy.ts');const keys=Object.keys(copy.WEDDING_COPY.sl).sort();let checks=0;
 function check(ok,label){assert.ok(ok,label);checks++;console.log(`PASS wedding: ${label}`);}
 for(const lang of contracts.WEDDING_LANGS){const t=copy.weddingCopy(lang);check(JSON.stringify(Object.keys(t).sort())===JSON.stringify(keys),`${lang}: complete translation keys`);check(Object.values(t).every(v=>typeof v==='string'?v.trim().length>0:Array.isArray(v)&&v.length===9),`${lang}: nonempty translations and nine bingo prompts`);check(fs.existsSync(`app${contracts.WEDDING_PATHS[lang]}/page.tsx`),`${lang}: dedicated landing page`);const settings={...contracts.EMPTY_WEDDING,challenges:copy.defaultChallenges(lang)};check(contracts.parseWeddingSettings(settings)?.challenges.length===9,`${lang}: default bingo rows validate`);}
-check(copy.weddingCopy('sl').plan==='Poročni premium','Slovenian plan name matches request');
+check(copy.weddingCopy('sl').plan==='Poročni paket Premium','Slovenian plan name matches request');
 check(contracts.parseWeddingSettings({...contracts.EMPTY_WEDDING,challenges:[{id:'a',title:'A',detail:''},{id:'a',title:'B',detail:''}]})===null,'reject duplicate challenge IDs');
 check(contracts.parseWeddingSettings({...contracts.EMPTY_WEDDING,schedule:[{id:'a',title:'A',detail:'',time:'29:80'}]})===null,'reject invalid times');
 check(contracts.parseWeddingSettings({...contracts.EMPTY_WEDDING,enabled:'true'})===null,'reject coerced booleans');
