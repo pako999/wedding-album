@@ -12,7 +12,9 @@ const { drizzle } = req('drizzle-orm/pg-proxy'); const { getTableConfig } = req(
   const schema=load('lib/db/schema.ts');
   // Synthetic core fixtures use actual column types, with only the identity constraint needed by real suite FKs.
   for(const table of [schema.albums,schema.photos,schema.albumFeatureFlags]){const info=getTableConfig(table);const cols=info.columns.map(column=>'"'+column.name+'" '+column.getSQLType()+(column.name==='id'?' PRIMARY KEY':''));await pg.exec('CREATE TABLE "'+info.name+'" ('+cols.join(',')+')');}
-  await pg.exec(fs.readFileSync(path.join(root,'scripts/migrations/20261024-wedding-suite.sql'),'utf8'));
+  await pg.exec(fs.readFileSync(path.join(root,'scripts/migrations/20260926-wedding-premium.sql'),'utf8'));
+  const productionMigration = fs.readFileSync(path.join(root,'scripts/migrations/20261026-wedding-suite-production.sql'),'utf8');
+  await pg.exec(productionMigration); await pg.exec(productionMigration);
   const db=drizzle(async(sql,params,method)=>{const result=await pg.query(sql,params);return {rows:method==='all'?result.rows.map(Object.values):result.rows}},{schema});
   overrides['@/lib/db']={db};
   const sql=(strings,...values)=>{const text=strings.map((part,index)=>part+(index<values.length?'$'+(index+1):'')).join('');return {text,values,then:(yes,no)=>pg.query(text,values).then(result=>result.rows).then(yes,no)}};
@@ -26,16 +28,27 @@ const { drizzle } = req('drizzle-orm/pg-proxy'); const { getTableConfig } = req(
   const {EMPTY_SUITE}=load('lib/wedding-suite/contracts.ts');
   assert.equal((await invoke(manage,'PUT',{...EMPTY_SUITE,enabled:true})).status,200,'a default capsule with no date must not block other settings');
   assert.equal((await invoke(guest,'GET')).data.config.features.capsule,false,'an undated capsule stays unavailable to guests');
-  const legacyTable=getTableConfig(load('lib/wedding/schema.ts').weddingSettings);
-  await pg.exec('CREATE TABLE wedding_settings ('+legacyTable.columns.map(column=>'\"'+column.name+'\" '+column.getSQLType()).join(',')+')');
   await pg.query('INSERT INTO wedding_settings (album_id,enabled) VALUES ($1,true)',['album-a']);
   assert.equal((await invoke(guest,'GET')).data.hasWeddingProgram,true,'the shared QR page exposes enabled program and music links');
+  const programManage = load('app/api/albums/[slug]/wedding/manage/route.ts');
+  const programRequest = (method, body) => new NextRequest('https://isolated-preview.test/api/albums/suite-db/wedding/manage?translate=0', { method, headers: { Origin: 'https://isolated-preview.test', 'Content-Type': 'application/json' }, ...(body ? { body: JSON.stringify(body) } : {}) });
+  const existingProgram = { enabled: true, requestsOpen: true, schedule: [{ id: 'ceremony', title: 'Ceremony', detail: 'Garden', time: '16:00' }], menu: [{ id: 'dinner', title: 'Dinner', detail: 'Seasonal' }], challenges: [] };
+  assert.equal((await programManage.PUT(programRequest('PUT', existingProgram), ctx)).status, 200);
+  const djResponse = await programManage.POST(programRequest('POST'), ctx); assert.equal(djResponse.status, 200);
+  const beforeRotation = (await programManage.GET(programRequest('GET'), ctx)).status; assert.equal(beforeRotation, 200);
+  assert.equal((await programManage.POST(programRequest('POST'), ctx)).status, 200);
+  const afterRotation = await (await programManage.GET(programRequest('GET'), ctx)).json();
+  assert.deepEqual(afterRotation.settings, existingProgram, 'rotating the DJ link never replaces existing program/menu');
+  assert.equal(afterRotation.hasDjLink, true);
   await pg.query('UPDATE wedding_settings SET enabled=false WHERE album_id=$1',['album-a']);
   assert.equal((await invoke(guest,'GET')).data.hasWeddingProgram,false,'disabled program links stay hidden');
   assert.equal((await invoke(guest,'POST',{action:'entry',kind:'capsule',name:'Guest',message:'Not open yet',photoId:null,language:'en'})).status,403);
   const config=JSON.parse(fs.readFileSync(path.join(root,'docs/wedding-suite-test-fixture.json'),'utf8'));config.defaultLang='en';config.tables[0].capacity=2;config.rsvpDeadline=new Date(Date.now()+86400000).toISOString();config.capsuleUnlockAt=new Date(Date.now()+86400000*10).toISOString();
   config.page=load('lib/wedding-suite/page-templates.ts').sampleWeddingPage();
   assert.equal((await invoke(manage,'PUT',config)).status,200);
+  const preserved = (await pg.query('SELECT * FROM wedding_suite_settings')).rows;
+  await pg.exec(productionMigration);
+  assert.deepEqual((await pg.query('SELECT * FROM wedding_suite_settings')).rows, preserved, 'repeated production migration preserves saved page content');
   assert.equal((await invoke(guest,'GET')).data.config.page.coverImageUrl,'/hero/wedding-garden-template.webp','built-in cover paths survive actual route/database round trips');
   const person=(await invoke(manage,'POST',{action:'attendee',attendee:{name:'Test guest',email:'guest@example.test',language:'en',tableId:config.tables[0].id,allowedCompanions:1}})).data.attendee;
   const deleteAssigned=await invoke(manage,'PUT',{...config,tables:[]});assert.equal(deleteAssigned.status,400);assert.equal(deleteAssigned.data.error,'tableInUse');
