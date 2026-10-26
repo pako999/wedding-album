@@ -1,5 +1,6 @@
 import { SITE_URL } from "@/lib/urls";
 import { STAND_VARIANTS, eur } from "@/lib/print-service";
+import { weddingPriceSummary, OFFER_COPY as WEDDING_OFFER_COPY } from '@/lib/wedding-offer-copy';
 
 /**
  * /llms.txt — the "cite this" file AI answer engines (ChatGPT Search,
@@ -89,7 +90,9 @@ export function GET() {
 - **Brezplačno** — do 20 fotografij, dostop 30 dni, osnovne funkcije za preizkus.
 - **Basic — 39 €** — do 1000 fotografij, do 10 videoposnetkov, dostop 3 mesece, prenos vseh fotografij v ZIP.
 - **Plus — 49 €** (najbolj priljubljen) — do 5000 fotografij, do 100 videoposnetkov, dostop 1 leto, Foto stena, personalizirana stran, e-mail obvestila.
-- **Poročni premium — 189 €**  — neomejeno fotografij in videoposnetkov, neomejen čas hrambe in dostopa, Foto stena, Film Studio, poročna spletna stran z lastnimi kategorijami, besedili, pisavami in barvami, osebna vabila, RSVP, spremljevalci in izbira menija, razporeditev miz, knjiga gostov, video voščila, časovna kapsula, zgodba, prevoz in prenočišča, zahvala, šest jezikov s popravki prevodov, poročni program, jedilnik, glasbene želje, fotografski bingo in prioritetna podpora.
+- **Poročni premium — 189 €** redna cena — neomejeno fotografij in videoposnetkov, neomejen čas hrambe in dostopa, Foto stena, Film Studio, poročna spletna stran z lastnimi kategorijami, besedili, pisavami in barvami, osebna vabila, RSVP, spremljevalci in izbira menija, razporeditev miz, knjiga gostov, video voščila, časovna kapsula, zgodba, prevoz in prenočišča, zahvala, šest jezikov s popravki prevodov, poročni program, jedilnik, glasbene želje, fotografski bingo in prioritetna podpora.
+
+Aktualna akcija: ${weddingPriceSummary('sl')} ${WEDDING_OFFER_COPY.sl.terms}
 
 Vsi paketi so **enkratno plačilo, brez naročnine**. 30-dnevna garancija vračila denarja. Vključen DDV. Plačilo s kartico ali predračun / bančno nakazilo. Paket velja za posamezno galerijo.
 

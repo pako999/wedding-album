@@ -16,8 +16,10 @@ import { GuestcamGuestFlowVisual } from "@/components/GuestcamGuestFlowVisual";
 import { GuestcamShowcaseCarousel } from "@/components/GuestcamShowcaseCarousel";
 import { PromoVideo } from "@/components/PromoVideo";
 import { PREMIUM_REGULAR_PRICE_EUR } from "@/lib/plan-pricing";
+import { weddingPricingFaq } from '@/lib/wedding-offer-copy';
 
 export const HOME_FAQS = [
+  weddingPricingFaq('sl'),
   ["Ali morajo gostje prenesti aplikacijo?", "Ne. Gostje skenirajo QR-kodo ter fotografije in videe naložijo neposredno v brskalniku — brez aplikacije in registracije."],
   ["Za katere dogodke je Guestcam primeren?", "Guestcam je primeren za poroke, rojstne dneve, baby showerje, krste, mature, zasebne zabave, koncerte, poslovne dogodke, konference in druge dogodke."],
   ["Ali so fotografije zasebne?", "Da. Album je dostopen prek zasebne povezave ali QR-kode, po želji pa ga lahko dodatno zaščitite z geslom."],

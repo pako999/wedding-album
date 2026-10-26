@@ -4,9 +4,17 @@ on:
     paths:
       - components/HomeMobileMenu.tsx
       - components/GuestcamHomePage.tsx
+      - components/LocalizedGuestcamHomePageV3.tsx
       - app/page.tsx
       - lib/wedding/copy.ts
       - lib/wedding-offer-copy.ts
+      - lib/wedding-offer-presentation.ts
+      - lib/mollie.ts
+      - lib/admin-sales.ts
+      - lib/email/event-upgrade-reminder.ts
+      - lib/seo/event-topics.ts
+      - app/api/checkout/route.ts
+      - app/api/bank-order/route.ts
       - lib/plan-pricing.ts
       - lib/wedding-offer.ts
       - scripts/prepare-wedding-offer-*.mjs
@@ -34,6 +42,7 @@ on:
       - lib/wedding/demo.ts
       - public/hero/wedding-garden-template.webp
       - components/wedding/WeddingOfferPrice.tsx
+      - components/wedding/WeddingOfferJsonLd.tsx
       - components/wedding/WeddingOfferBanner.tsx
       - app/globals.css
       - scripts/wedding-package-browser-check.cjs
