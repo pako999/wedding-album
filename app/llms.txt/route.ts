@@ -122,7 +122,7 @@ Da. Foto stena prikazuje nove fotografije v živo na TV-ju ali projektorju, z la
 Da. QR kartice in namizne podstavke (lesene ali zlate) natisnemo in dostavimo, že od ${standFrom} na kos, ob nakupu paketa.
 
 **Koliko stane?**
-Osnovna uporaba brezplačna (do 20 fotografij, 30 dni). Plačljivi paketi enkratno plačilo: Basic 39 €, Plus 49 €, Poročni premium 189 € . 30-dnevna garancija vračila denarja.
+Osnovna uporaba je brezplačna (do 20 fotografij, 30 dni). Enkratno plačilo: Basic 39 €, Plus 49 €. ${weddingPriceSummary('sl')} ${WEDDING_OFFER_COPY.sl.terms} 30-dnevna garancija vračila denarja.
 
 **Kje se hranijo podatki?**
 V EU. Galerija je privzeto zasebna, lahko zaščitena z geslom. GDPR skladno.
