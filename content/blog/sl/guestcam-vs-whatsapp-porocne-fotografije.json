@@ -5,7 +5,7 @@
   "description": "WhatsApp stisne fotografije na 50% kakovosti in skupina postane kaotična. Guestcam ohrani polno kakovost v eni zasebni galeriji.",
   "translationKey": "guestcam-vs-whatsapp",
   "publishedAt": "2026-05-22",
-  "updatedAt": "2026-10-25",
+  "updatedAt": "2026-10-26",
   "author": "Guestcam Team",
   "category": "primerjava",
   "readingTime": 5,
@@ -133,7 +133,7 @@
     {
       "type": "faq",
       "q": "Stane Guestcam več kot WhatsApp?",
-      "a": "Redna cena Poročnega premium paketa je 189 €. Ob aktivni uvodni ponudbi je za naslednjih 8 računov na voljo 40 % popust (113,40 €). Trenutno razpoložljivost preverita na strani paketa. En paket po uvodni ceni na račun."
+      "a": "Redna cena Poročnega premium paketa je 189 €. Ob aktivni uvodni ponudbi je za prvih 20 računov na voljo 40 % popust (113,40 €). Trenutno razpoložljivost preverita na strani paketa. En paket po uvodni ceni na račun."
     },
     {
       "type": "faq",

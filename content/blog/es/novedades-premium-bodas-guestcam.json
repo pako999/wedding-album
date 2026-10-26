@@ -5,7 +5,7 @@
   "description": "Guestcam Premium para bodas ahora incluye programa del evento, menú digital, peticiones de canciones para el DJ, bingo fotográfico, fotos y vídeos ilimitados y almacenamiento sin vencimiento.",
   "translationKey": "wedding-premium-new-features-2026",
   "publishedAt": "2026-09-27",
-  "updatedAt": "2026-10-25",
+  "updatedAt": "2026-10-26",
   "author": "Guestcam Team",
   "category": "novice",
   "readingTime": 5,
@@ -87,7 +87,7 @@
     },
     {
       "type": "callout",
-      "text": "El precio habitual de Premium para bodas es de 189 €. Cuando la oferta de lanzamiento está activa, las próximas 8 cuentas pueden obtener un 40 % de descuento (113,40 €). Consulta la disponibilidad en la página del paquete. Un paquete de lanzamiento por cuenta."
+      "text": "El precio habitual de Premium para bodas es de 189 €. Cuando la oferta de lanzamiento está activa, las primeras 20 cuentas pueden obtener un 40 % de descuento (113,40 €). Consulta la disponibilidad en la página del paquete. Un paquete de lanzamiento por cuenta."
     },
     {
       "type": "h2",
@@ -120,7 +120,7 @@
     {
       "type": "faq",
       "q": "¿Cuánto cuesta ahora Premium para bodas?",
-      "a": "El precio habitual de Premium para bodas es de 189 €. Cuando la oferta de lanzamiento está activa, las próximas 8 cuentas pueden obtener un 40 % de descuento (113,40 €). Consulta la disponibilidad en la página del paquete. Un paquete de lanzamiento por cuenta."
+      "a": "El precio habitual de Premium para bodas es de 189 €. Cuando la oferta de lanzamiento está activa, las primeras 20 cuentas pueden obtener un 40 % de descuento (113,40 €). Consulta la disponibilidad en la página del paquete. Un paquete de lanzamiento por cuenta."
     },
     {
       "type": "cta",

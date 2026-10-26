@@ -3,7 +3,7 @@ import type { WeddingRow } from './contracts';
 
 const dictionaries = {
   "sl": {
-    "plan": "Poročni premium",
+    "plan": "Poročni paket Premium",
     "nav": "Poročni paket",
     "eyebrow": "Več kot poročni album",
     "title": "Vajina poroka. Vsi gostje povezani.",

@@ -36,13 +36,14 @@ export async function PUT(req: NextRequest, { params }: Context) {
  try {
   const { album, config: old } = await suiteOwner((await params).slug);
   const config = configSchema.safeParse(await req.json()); if (!config.success) throw new SuiteError('invalid');
-  if (config.data.features.capsule && config.data.enabled && !config.data.capsuleUnlockAt) throw new SuiteError('invalid');
+  // An undated capsule is a draft, unavailable to guests. It must not block saving
+  // unrelated tables, menus or page content. Existing sealed messages stay locked below.
   if (old.capsuleUnlockAt && (!config.data.capsuleUnlockAt || new Date(config.data.capsuleUnlockAt) < new Date(old.capsuleUnlockAt))) {
    const [existing] = await db.select({ id: suiteEntries.id }).from(suiteEntries).where(and(eq(suiteEntries.albumId, album.id), eq(suiteEntries.kind, 'capsule'))).limit(1);
    if (existing) throw new SuiteError('locked', 409);
   }
   const attendeeTables = await db.select({ tableId: suiteAttendees.tableId }).from(suiteAttendees).where(eq(suiteAttendees.albumId, album.id));
-  if (attendeeTables.some(row => row.tableId && !config.data.tables.some(table => table.id === row.tableId))) throw new SuiteError('invalid');
+  if (attendeeTables.some(row => row.tableId && !config.data.tables.some(table => table.id === row.tableId))) throw new SuiteError('tableInUse');
   let translationWarning = false;
   if (req.nextUrl.searchParams.get('translate') === '1') {
    try {
@@ -60,6 +61,14 @@ export async function POST(req: NextRequest, { params }: Context) {
  const limit = await checkRateLimit('wedding-suite-manage', 60, 60_000); if (!limit.ok) return limit.response;
  try {
   const { album, config } = await suiteOwner((await params).slug); const body = await req.json(); if (!body || typeof body !== 'object') throw new SuiteError('invalid');
+  if (body.action === 'translate') {
+   const input = configSchema.safeParse(body.config); if (!input.success) throw new SuiteError('invalid');
+   const translationLimit = await checkRateLimit(`wedding-translate:${album.id}`, 3, 60_000);
+   if (!translationLimit.ok) return translationLimit.response;
+   // Return suggestions only. The editor merges unchanged text and saves through
+   // its normal queue, so a slow translation cannot overwrite a newer edit.
+   return reply({ ok: true, config: await translateSuite(input.data) });
+  }
   if (body.action === 'attendee') {
    const input = attendeeSchema.safeParse(body.attendee); if (!input.success) throw new SuiteError('invalid');
    if (input.data.tableId && !config.tables.some(t => t.id === input.data.tableId)) throw new SuiteError('invalid');

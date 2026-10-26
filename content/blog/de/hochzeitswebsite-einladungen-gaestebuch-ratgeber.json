@@ -5,7 +5,7 @@
   "description": "Gestaltet eure Hochzeitswebsite, sammelt Zusagen, plant die Tische und bewahrt Gästewünsche auf. Die neuen Funktionen und eine Anleitung in drei Schritten.",
   "translationKey": "wedding-website-suite-guide-2026",
   "publishedAt": "2026-10-25",
-  "updatedAt": "2026-10-25",
+  "updatedAt": "2026-10-26",
   "author": "Guestcam-Team",
   "category": "novice",
   "readingTime": 5,
@@ -88,7 +88,7 @@
     },
     {
       "type": "callout",
-      "text": "Der reguläre Paketpreis beträgt 189 €. Wenn die Einführungsaktion aktiv ist und noch Plätze verfügbar sind, kosten die nächsten 8 berechtigten Kundenkonten mit 40 % Rabatt jeweils 113,40 €. Pro Konto ist ein Einführungspaket möglich. Die Paketseite zeigt die geprüfte gemeinsame Verfügbarkeit. Ein erneuter Besuch oder gelöschte Cookies erzeugen keinen neuen Rabatt. Prüft den angezeigten Preis vor dem Bezahlen."
+      "text": "Der reguläre Paketpreis beträgt 189 €. Wenn die Einführungsaktion aktiv ist und noch Plätze verfügbar sind, kosten die ersten 20 berechtigten Kundenkonten mit 40 % Rabatt jeweils 113,40 €. Pro Konto ist ein Einführungspaket möglich. Die Paketseite zeigt die geprüfte gemeinsame Verfügbarkeit. Ein erneuter Besuch oder gelöschte Cookies erzeugen keinen neuen Rabatt. Prüft den angezeigten Preis vor dem Bezahlen."
     },
     {
       "type": "faq",

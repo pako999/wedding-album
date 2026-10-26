@@ -209,7 +209,7 @@ export const UPGRADE_COPY: Record<Lang, UpgradeCopy> = {
     footerNoRegistration: "Brez registracije za goste",
     taglineBasic: "Za manjše dogodke",
     taglinePlus:  "Najpopularnejši",
-    taglinePremium: "Vse vključeno",
+    taglinePremium: "Vse za vajino poroko na enem mestu",
     badgeRecommended: "PRIPOROČENO",
     showAllFeatures: "Prikaži vse funkcije",
     showFewerFeatures: "Prikaži manj",

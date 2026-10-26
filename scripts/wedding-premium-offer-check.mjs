@@ -9,6 +9,8 @@ assert(/PREMIUM_REGULAR_PRICE_EUR\s*=\s*189/.test(pricing), "regular price must 
 assert(/PREMIUM_SALE_PERCENT\s*=\s*40/.test(pricing), "sale must be 40 percent");
 assert(pricing.includes("PREMIUM_SALE_PRICE_CENTS / 100") && Math.round(18900 * 0.60) === 11340, "launch price must be exactly 113.40 EUR");
 
+assert(/WEDDING_OFFER_CAPACITY\s*=\s*20/.test(pricing), "launch offer must have twenty real places");
+
 const checkout = await read("app/api/checkout/route.ts");
 assert(/premium:[\s\S]*amount:\s*PREMIUM_REGULAR_PRICE_CENTS/.test(checkout), "Mollie checkout must default to the standard Premium price");
 
@@ -76,7 +78,7 @@ const publicMarketing = [
   "lib/legal/terms.ts",
 ].filter(Boolean);
 
-const stalePrice = /(Poročni premium|Vjenčani premium|Venčani premium|Wedding Premium|Hochzeits-Premium|Premium para bodas)[^\n"]{0,90}(?:\(?(?:79|84|99|129)\s*€|€(?:79|84|99|129))/gi;
+const stalePrice = /(Poročni paket Premium|Poročni premium|Vjenčani premium|Venčani premium|Wedding Premium|Hochzeits-Premium|Premium para bodas)[^\n"]{0,90}(?:\(?(?:79|84|99|129)\s*€|€(?:79|84|99|129))/gi;
 const staleHits = [];
 for (const p of publicMarketing) {
   const src = await read(p);
@@ -88,7 +90,7 @@ if (staleHits.length) {
   process.exit(1);
 }
 
-const premiumName = "(?:Poročni premium|Vjenčani premium|Venčani premium|Wedding Premium|Hochzeits-Premium|Premium para bodas)";
+const premiumName = "(?:Poročni paket Premium|Poročni premium|Vjenčani premium|Venčani premium|Wedding Premium|Hochzeits-Premium|Premium para bodas)";
 const staleLimit = new RegExp(
   premiumName + "[^\\n\\\"]{0,180}(?:" +
   "(?:do|up to|bis zu|hasta)\\s*100\\s*(?:video|vídeo)" +
@@ -109,4 +111,4 @@ if (staleLimitHits.length) {
 assert(checkout.includes("weddingOffer.reserve") && checkout.includes("expectedPlanCents"), "offer must be reserved and repricing checked before payment");
 const offer = await read("lib/wedding-offer.ts");
 assert(offer.includes("FOR UPDATE SKIP LOCKED") && offer.includes("customer_state") && !offer.includes("document.cookie"), "offer availability must come from real shared inventory");
-console.log("PASS: Wedding Premium standard price 189 EUR; verified launch price 113.40 EUR for eight customer slots; unlimited media and non-expiring retention.");
+console.log("PASS: Wedding Premium standard price 189 EUR; verified launch price 113.40 EUR within a twenty-place maximum with eight places released in the current batch; unlimited media and non-expiring retention.");

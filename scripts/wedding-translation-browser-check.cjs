@@ -10,7 +10,7 @@ const req = createRequire(path.join(root, 'package.json'));
 const { build } = req('esbuild');
 const { chromium } = req('playwright');
 (async () => {
-  const bundle = await build({ stdin: { contents: `import React from 'react';import {createRoot} from 'react-dom/client';import {WeddingSettingsCard} from './components/wedding/WeddingSettingsCard';createRoot(document.getElementById('root')).render(<WeddingSettingsCard slug="translation-fixture" lang="en" plan="premium"/>);`, resolveDir: root, loader: 'tsx' }, bundle: true, write: false, platform: 'browser', format: 'iife', jsx: 'automatic', define: { 'process.env.NODE_ENV': '"production"' }, tsconfig: path.join(root, 'tsconfig.json') });
+  const bundle = await build({ stdin: { contents: `import React from 'react';import {createRoot} from 'react-dom/client';import {WeddingSettingsCard} from './components/wedding/WeddingSettingsCard';createRoot(document.getElementById('root')).render(<WeddingSettingsCard slug="translation-fixture" lang="en" plan="premium"/>);`, resolveDir: root, loader: 'tsx' }, bundle: true, write: false, platform: 'browser', format: 'iife', jsx: 'automatic', define: { 'process.env.NODE_ENV': '"production"', 'process.env.NEXT_PUBLIC_APP_URL': '"https://www.guestcam.si"' }, tsconfig: path.join(root, 'tsconfig.json') });
   const css = fs.readdirSync(root + '/.next/static/chunks').filter(x => x.endsWith('.css')).map(x => fs.readFileSync(root + '/.next/static/chunks/' + x, 'utf8')).join('\n');
   const server = http.createServer((request, response) => {
     if (request.url === '/fixture.js') { response.setHeader('content-type', 'application/javascript'); response.end(bundle.outputFiles[0].text); }

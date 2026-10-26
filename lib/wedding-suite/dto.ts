@@ -5,5 +5,5 @@ export interface EntryView { id: string; kind: EntryKind; locked: boolean; name?
  language?: SuiteLang; approved?: boolean; createdAt: string; url?: string | null; videoId?: string | null; mimeType?: string | null }
 export interface MailView { id: string; recipient: string; subject: string; language: SuiteLang; kind: 'invitation' | 'rsvp' | 'thanks' | 'capsule'; status: 'preview' | 'sending' | 'sent' | 'failed'; createdAt: string }
 export interface SuiteOwnerData { configured: boolean; config: SuiteConfig; attendees: AttendeeView[]; entries: EntryView[]; emails: MailView[]; guestPath: string; preview: boolean }
-export interface SuiteGuestData { config: SuiteConfig; attendee: AttendeeView | null; entries: EntryView[]; language: SuiteLang;
+export interface SuiteGuestData { config: SuiteConfig; attendee: AttendeeView | null; entries: EntryView[]; language: SuiteLang; hasWeddingProgram?: boolean;
  album: { id: string; slug: string; name: string; date: string; maxPhotos: number; photoCount: number; moderationEnabled: boolean; passwordProtected: boolean } }

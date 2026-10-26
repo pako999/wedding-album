@@ -27,7 +27,7 @@ const attemptId = 'a2c41a03-a4ef-44dc-a332-0c8909770111';
 class Rejection extends Error { constructor(status) { super('provider_rejected'); this.status = status; } }
 function fixture({ eligible = true, reserve = true, pending = false, authorized = true, failure = null, discountValid = false } = {}) {
  let calls = 0, reservations = 0, releases = 0, payment, invoice;
- const quote = { verified: true, remaining: eligible ? 1 : 0, capacity: 8, eligible, pending, priceCents: eligible ? 11340 : 18900 };
+ const quote = { verified: true, remaining: eligible ? 1 : 0, capacity: 20, eligible, pending, priceCents: eligible ? 11340 : 18900 };
  const album = { id: 'album-a', slug: 'demo', ownerClerkId: 'customer-a', ownerEmail: 'test@example.test', notifyEmail: 'test@example.test', defaultLang: 'en' };
  const offer = { quote: async () => quote, reserve: async () => { reservations++; return reserve ? { attemptId, slot: 20 } : null; }, bind: async () => {}, releaseRejected: async () => { releases++; } };
  const db = { query: { albums: { findFirst: async () => album } }, update: () => ({ set: () => ({ where: async () => {} }) }), insert: () => ({ values: value => ({ onConflictDoNothing: async () => {}, returning: async () => { invoice = value; return [{ id: 'invoice-a' }]; } }) }) };
@@ -129,4 +129,38 @@ test('production offer initializer only connects in the verified production proj
  await assert.rejects(prepareWeddingOfferProduction({env,connect}),/verified GuestCam/);
  await assert.rejects(prepareWeddingOfferProduction({env:{...env,VERCEL_PROJECT_ID:'prj_EDblP7nig2nLLZTQlxnrkusvxoSj'},connect}),/database is not configured/);
  assert.equal(connections,0);
+});
+
+test('production-target feature branch builds skip offer activation without touching the database', async () => {
+ const { prepareWeddingOfferProduction } = await import('../scripts/prepare-wedding-offer-production.mjs');
+ const env = { VERCEL_ENV: 'production', VERCEL_PROJECT_ID: 'prj_EDblP7nig2nLLZTQlxnrkusvxoSj', DATABASE_URL: 'postgresql://must-not-connect/production' };
+ const unexpected = () => { assert.fail('a non-main build must not access the campaign database or migration'); };
+ for (const branch of ['fix/wedding-autosave', 'feat/wedding-suite-multilingual-preview', '', undefined]) {
+  assert.deepEqual(await prepareWeddingOfferProduction({ env: { ...env, VERCEL_GIT_COMMIT_REF: branch }, connect: unexpected, readFile: unexpected }), {
+   prepared: false, reason: 'not-production-main-branch',
+  });
+ }
+ await assert.rejects(prepareWeddingOfferProduction({ env: { ...env, VERCEL_PROJECT_ID: 'other-project', VERCEL_GIT_COMMIT_REF: 'fix/wedding-autosave' }, connect: unexpected, readFile: unexpected }), /verified GuestCam/);
+});
+
+test('verified main builds still activate the offer with locks and propagate database failures', async () => {
+ const { prepareWeddingOfferProduction } = await import('../scripts/prepare-wedding-offer-production.mjs');
+ const env = { VERCEL_ENV: 'production', VERCEL_PROJECT_ID: 'prj_EDblP7nig2nLLZTQlxnrkusvxoSj', VERCEL_GIT_COMMIT_REF: 'main', DATABASE_URL: 'postgresql://test-only/production' };
+ let connections = 0, migrations = 0;
+ const statements = [];
+ const sql = (strings) => {
+  const statement = strings.join(''); statements.push(statement);
+  return statement.includes('information_schema.columns') ? [{ data_type: 'numeric', numeric_precision: 12, numeric_scale: 2 }] : {};
+ };
+ sql.query = statement => { statements.push(statement); return {}; };
+ sql.transaction = async queries => { assert.equal(queries.length, 4); migrations++; };
+ const args = { env, connect: url => { assert.equal(url, env.DATABASE_URL); connections++; return sql; }, readFile: async () => 'ALTER TABLE bank_orders ALTER COLUMN plan_price TYPE numeric(12,2); INSERT INTO test_campaign VALUES (1);' };
+ assert.deepEqual(await prepareWeddingOfferProduction(args), { prepared: true, reason: 'twenty-place-offer-ready' });
+ assert.equal(connections, 1); assert.equal(migrations, 1);
+ assert.ok(statements.some(statement => statement.includes('pg_advisory_xact_lock')));
+ assert.ok(statements.some(statement => statement.includes('lock_timeout')));
+ assert.ok(statements.includes('INSERT INTO test_campaign VALUES (1)'));
+ assert.ok(!statements.some(statement => statement.startsWith('ALTER TABLE')));
+ sql.transaction = async () => { throw new Error('database unavailable'); };
+ await assert.rejects(prepareWeddingOfferProduction(args), /database unavailable/);
 });

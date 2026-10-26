@@ -3,10 +3,36 @@ on:
   pull_request:
     paths:
       - components/HomeMobileMenu.tsx
+      - components/GuestcamHomePage.tsx
+      - app/page.tsx
+      - lib/wedding/copy.ts
+      - lib/wedding-offer-copy.ts
+      - lib/plan-pricing.ts
+      - lib/wedding-offer.ts
+      - scripts/prepare-wedding-offer-*.mjs
+      - scripts/migrations/*offer.sql
+      - scripts/wedding-offer-database-check.cjs
+      - scripts/wedding-offer-checkout-browser-check.cjs
+      - tests/wedding-offer-checkout.test.mjs
+      - lib/i18n/upgrade-translations.ts
       - components/SiteHeader.tsx
       - components/wedding/WeddingLandingPage.tsx
+      - components/wedding-suite/**
+      - lib/wedding-suite/**
+      - app/api/albums/**/wedding-suite/**
+      - scripts/wedding-autosave-browser-check.cjs
+      - scripts/wedding-page-builder-browser-check.cjs
+      - scripts/wedding-cover-browser-check.cjs
+      - scripts/wedding-suite-database-check.cjs
+      - tests/wedding-suite.test.mjs
       - components/wedding/WeddingFeatureDetails.tsx
       - lib/wedding/feature-details-sl.ts
+      - lib/wedding/feature-details.ts
+      - lib/wedding/package-copy.ts
+      - components/wedding/WeddingWebsiteShowcase.tsx
+      - components/wedding/WeddingWalkthrough.tsx
+      - lib/wedding/demo.ts
+      - public/hero/wedding-garden-template.webp
       - components/wedding/WeddingOfferPrice.tsx
       - components/wedding/WeddingOfferBanner.tsx
       - app/globals.css
@@ -41,23 +67,35 @@ jobs:
       - name: TypeScript
         run: npx tsc --noEmit
       - name: Existing product regressions and all locale checks
-        run: npm run test:regression && npm run audit:i18n && npm run test:wedding && npm run test:premium-offer
+        run: npm run test:regression && npm run audit:i18n && npm run test:wedding && npm run test:wedding-suite && npm run test:premium-offer
       - name: Production build without deployment database mutation
         run: npx next build
       - name: Install browser tools in a separate temporary package
         run: |
           tools="$(mktemp -d)"
-          npm install --prefix "$tools" --no-save --package-lock=false --no-audit --no-fund playwright@1.55.1 esbuild@0.25.10
+          npm install --prefix "$tools" --no-save --package-lock=false --no-audit --no-fund playwright@1.55.1 esbuild@0.25.10 @electric-sql/pglite@0.3.14
           ln -s "$tools/node_modules/playwright" node_modules/playwright
           if [ ! -e node_modules/esbuild ]; then ln -s "$tools/node_modules/esbuild" node_modules/esbuild; fi
           echo "MOBILE_MENU_TOOLS=$tools" >> "$GITHUB_ENV"
+      - name: Wedding routes against an isolated PostgreSQL engine
+        run: |
+          PGLITE_MODULE_PATH="$MOBILE_MENU_TOOLS/node_modules/@electric-sql/pglite" node scripts/wedding-suite-database-check.cjs
+          PGLITE_MODULE_PATH="$MOBILE_MENU_TOOLS/node_modules/@electric-sql/pglite" node scripts/wedding-offer-database-check.cjs
       - name: Real component and production-CSS browser checks
         run: |
           node scripts/mobile-menu-browser-check.mjs
           node scripts/wedding-package-browser-check.cjs
           PACKAGE_BROWSER_ENGINE=webkit node scripts/wedding-package-browser-check.cjs
+          node scripts/wedding-offer-checkout-browser-check.cjs
           node scripts/photo-capture-browser-check.cjs
           PHOTO_CAPTURE_ENGINE=webkit node scripts/photo-capture-browser-check.cjs
+      - name: Wedding builder and autosave in Chromium and WebKit
+        run: |
+          node scripts/wedding-page-builder-browser-check.cjs
+          node scripts/wedding-autosave-browser-check.cjs
+          AUTOSAVE_BROWSER_ENGINE=webkit node scripts/wedding-autosave-browser-check.cjs
+          node scripts/wedding-cover-browser-check.cjs
+          COVER_BROWSER_ENGINE=webkit node scripts/wedding-cover-browser-check.cjs
       - name: Upload mobile screenshots and test results
         if: always()
         uses: actions/upload-artifact@v4

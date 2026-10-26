@@ -5,7 +5,7 @@
   "description": "Uredite web-stranicu vjenčanja, prikupite potvrde dolaska, rasporedite stolove i sačuvajte čestitke gostiju. Novi alati i vodič u tri koraka.",
   "translationKey": "wedding-website-suite-guide-2026",
   "publishedAt": "2026-10-25",
-  "updatedAt": "2026-10-25",
+  "updatedAt": "2026-10-26",
   "author": "Tim Guestcam",
   "category": "novice",
   "readingTime": 5,
@@ -88,7 +88,7 @@
     },
     {
       "type": "callout",
-      "text": "Redovna cijena je 189 €. Kada je uvodna ponuda aktivna i ima slobodnih mjesta, popust od 40 % znači cijenu od 113,40 € za sljedećih 8 prihvatljivih korisničkih računa, najviše jedan uvodni paket po računu. Stranica paketa prikazuje provjerenu zajedničku dostupnost. Ponovni posjet ili brisanje kolačića ne stvara novi popust. Prije plaćanja provjerite prikazanu cijenu."
+      "text": "Redovna cijena je 189 €. Kada je uvodna ponuda aktivna i ima slobodnih mjesta, popust od 40 % znači cijenu od 113,40 € za prvih 20 prihvatljivih korisničkih računa, najviše jedan uvodni paket po računu. Stranica paketa prikazuje provjerenu zajedničku dostupnost. Ponovni posjet ili brisanje kolačića ne stvara novi popust. Prije plaćanja provjerite prikazanu cijenu."
     },
     {
       "type": "faq",

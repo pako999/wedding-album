@@ -33,6 +33,121 @@ const tokens = load('lib/wedding-suite/tokens.ts');
 const config = { ...contracts.EMPTY_SUITE, enabled: true, capsuleUnlockAt: '2027-10-01T00:00:00Z' };
 const uuid = 'a2c41a03-a4ef-44dc-a332-0c8909770111';
 
+test('wedding templates preserve content and starter sections never publish invented event details', () => {
+ const templates = load('lib/wedding-suite/page-templates.ts');
+ const { DEFAULT_PAGE } = load('lib/wedding-suite/page-design.ts');
+ const input = { ...structuredClone(DEFAULT_PAGE), title: { en: 'Our names' }, sections: [{ id: uuid, category: 'custom', title: { de: 'Original' }, visible: false, fields: [] }] };
+ const original = structuredClone(input);
+ for (const style of Object.keys(templates.PAGE_STYLES)) {
+  const result = templates.applyPageStyle(input, style);
+  assert.deepEqual(input, original); assert.deepEqual(result.sections, input.sections); assert.deepEqual(result.title, input.title);
+  assert.ok(contracts.pageDesignSchema.safeParse(result).success); assert.ok(contracts.PAGE_COVER_IMAGES.includes(result.coverImageUrl));
+ }
+ const starter = templates.starterSections(() => require('node:crypto').randomUUID());
+ assert.equal(starter.length, 3); assert.ok(starter.every(section => section.fields.every(field => Object.keys(field.text).length === 0)));
+ const demo = templates.sampleWeddingPage(); assert.ok(contracts.pageDesignSchema.safeParse(demo).success);
+ for (const lang of contracts.SUITE_LANGS) {
+  assert.ok(demo.title[lang]); assert.ok(demo.subtitle[lang]); assert.ok(demo.sections.every(section => section.title[lang] && section.fields[0].text[lang]));
+ }
+ assert.equal(contracts.pageDesignSchema.safeParse({ ...demo, coverImageUrl: 'javascript:bad' }).success, false);
+});
+
+test('template covers stay on the current origin, including previously saved preview URLs', () => {
+ const { pageCoverSource, DEFAULT_PAGE } = load('lib/wedding-suite/page-design.ts');
+ for (const asset of contracts.PAGE_COVER_IMAGES) {
+  assert.equal(pageCoverSource(asset), asset);
+  assert.equal(pageCoverSource(`https://www.guestcam.si${asset}`), asset);
+  assert.equal(pageCoverSource(`https://wedding-album-old-protected.vercel.app${asset}`), asset);
+  assert.equal(contracts.pageDesignSchema.safeParse({ ...DEFAULT_PAGE, coverImageUrl: asset }).success, true);
+ }
+ for (const bad of ['/api/private', '//outside.example/photo.jpg', '/hero/../private', 'javascript:bad', 'https://name:secret@outside.example/photo.jpg']) {
+  assert.equal(contracts.pageDesignSchema.safeParse({ ...DEFAULT_PAGE, coverImageUrl: bad }).success, false);
+  assert.equal(pageCoverSource(bad), undefined);
+ }
+ const own = 'https://photos.example/couple.jpg'; assert.equal(pageCoverSource(own), own);
+ const samePath = 'https://photos.example/hero/wedding-castle.webp'; assert.equal(pageCoverSource(samePath), samePath);
+});
+
+test('professional wedding presentation and all twenty feature explanations are complete in six languages', () => {
+ const { presentationCopy } = load('lib/wedding-suite/presentation-copy.ts');
+ const { weddingFeatureDetails } = load('lib/wedding/feature-details.ts');
+ const keys = Object.keys(presentationCopy('en'));
+ const identifiers = weddingFeatureDetails('sl').map(feature => feature.id);
+ for (const lang of contracts.SUITE_LANGS) {
+  assert.deepEqual(Object.keys(presentationCopy(lang)), keys);
+  assert.ok(Object.values(presentationCopy(lang)).every(text => typeof text === 'string' && text.trim()));
+  const features = weddingFeatureDetails(lang);
+  assert.equal(features.length, 20); assert.deepEqual(features.map(feature => feature.id), identifiers);
+  for (const feature of features) { assert.ok(feature.title && feature.body); assert.ok(feature.points.length >= 2 && feature.points.every(Boolean)); }
+ }
+ assert.equal(presentationCopy('sl').website, 'Vaša spletna poročna stran');
+});
+
+test('autosave compares normalized content independently of PostgreSQL jsonb key order', () => {
+ const { suiteSnapshot } = load('lib/wedding-suite/autosave.ts');
+ const original = { ...structuredClone(contracts.EMPTY_SUITE), welcome: { en: 'Welcome ', sl: 'Pozdrav' } };
+ const reordered = Object.fromEntries(Object.entries(original).reverse()); reordered.welcome = { sl: 'Pozdrav', en: 'Welcome' };
+ assert.equal(suiteSnapshot(original), suiteSnapshot(reordered));
+ assert.equal(original.welcome.en, 'Welcome ', 'Normalization must never mutate the typing buffer');
+ assert.notEqual(suiteSnapshot(original), suiteSnapshot({ ...original, welcome: { en: 'A real change' } }));
+});
+
+test('unfinished draft inputs survive reload but unsafe shapes never reach the editor or server', () => {
+ const { isRecoverableSuiteDraft } = load('lib/wedding-suite/autosave.ts');
+ const unfinished = { ...structuredClone(contracts.EMPTY_SUITE), seatingMapUrl: 'https://', tables: [{ id: uuid, name: '', capacity: 0 }] };
+ assert.equal(configSchemaSafe(unfinished), false);
+ assert.equal(isRecoverableSuiteDraft(unfinished), true);
+ assert.equal(isRecoverableSuiteDraft({ ...unfinished, tables: null }), false);
+ assert.equal(isRecoverableSuiteDraft({ ...unfinished, welcome: 'invalid' }), false);
+ assert.equal(isRecoverableSuiteDraft({ ...unfinished, unexpected: true }), false);
+ function configSchemaSafe(value) { return contracts.configSchema.safeParse(value).success; }
+});
+
+test('background translations preserve newer edits, removed rows, manual translations and page styling', () => {
+ const { mergeSuiteTranslations, translationFingerprint } = load('lib/wedding-suite/autosave.ts');
+ const source = { ...structuredClone(contracts.EMPTY_SUITE), welcome: { en: 'Welcome' }, invitation: { en: 'Join us' },
+  story: [{ id: uuid, title: { en: 'Story' }, text: { en: 'Our story' } }],
+  menuOptions: [{ id: uuid, title: { en: 'Dinner' } }],
+  page: { title: { en: 'Wedding' }, font: 'classic', headingFont: 'classic', backgroundColor: '#ffffff', accentColor: '#123456', textColor: '#000000', sections: [] } };
+ const translated = structuredClone(source);
+ translated.welcome.de = 'Willkommen'; translated.invitation.de = 'Kommt'; translated.menuOptions[0].title.de = 'Abendessen'; translated.page.title.de = 'Hochzeit';
+ const current = structuredClone(source); current.welcome.en = 'A newer source'; current.invitation.de = 'My correction'; current.story = [];
+ current.tables = [{ id: uuid, name: 'New table', capacity: 8 }]; current.page.accentColor = '#ffffff';
+ const original = structuredClone(current);
+ const merged = mergeSuiteTranslations(current, source, translated);
+ assert.deepEqual(current, original); assert.equal(merged.welcome.de, undefined); assert.equal(merged.invitation.de, 'My correction');
+ assert.equal(merged.menuOptions[0].title.de, 'Abendessen'); assert.equal(merged.page.title.de, 'Hochzeit');
+ assert.deepEqual(merged.story, []); assert.deepEqual(merged.tables, current.tables); assert.equal(merged.page.accentColor, '#ffffff');
+ assert.equal(translationFingerprint(contracts.EMPTY_SUITE), null);
+ assert.equal(translationFingerprint(source), translationFingerprint({ ...source, tables: current.tables }));
+ assert.notEqual(translationFingerprint(source), translationFingerprint(current));
+});
+
+test('background translation authorizes and rate-limits before AI, returns suggestions without writing settings', async () => {
+ let authorized = false, sameSite = true, rateAllowed = true, translations = 0, writes = 0;
+ const reply = (body, status = 200) => Response.json(body, { status });
+ class TestError extends Error { constructor(code, status = 400) { super(code); this.code = code; this.status = status; } }
+ const route = modules({
+  '@/lib/wedding/server': { sameOrigin: () => sameSite, reply },
+  '@/lib/wedding-suite/server': { SuiteError: TestError, suiteFailure: e => reply({ error: e.code || 'unavailable' }, e.status || 503), suiteOwner: async () => { if (!authorized) throw new TestError('guestOnly', 401); return { album: { id: 'album-a' }, config }; } },
+  '@/lib/rate-limit': { checkRateLimit: async key => key.startsWith('wedding-translate:') && !rateAllowed ? { ok: false, response: reply({ error: 'rate' }, 429) } : { ok: true } },
+  '@/lib/wedding/translate': { translateSuite: async value => { translations++; return { ...value, welcome: { en: 'Welcome', de: 'Willkommen' } }; } },
+  '@/lib/db': { db: { insert: () => { writes++; throw new Error('Translation must not write'); } } },
+ })('app/api/albums/[slug]/wedding-suite/manage/route.ts');
+ const context = { params: Promise.resolve({ slug: 'demo' }) };
+ const request = value => ({ json: async () => ({ action: 'translate', config: value }) });
+ assert.equal((await route.POST(request(config), context)).status, 401); assert.equal(translations, 0);
+ authorized = true; sameSite = false;
+ assert.equal((await route.POST(request(config), context)).status, 403); assert.equal(translations, 0);
+ sameSite = true; rateAllowed = false;
+ assert.equal((await route.POST(request(config), context)).status, 429); assert.equal(translations, 0);
+ rateAllowed = true;
+ assert.equal((await route.POST(request({ ...config, seatingMapUrl: 'javascript:bad' }), context)).status, 400); assert.equal(translations, 0);
+ const response = await route.POST(request(config), context);
+ assert.equal(response.status, 200); assert.equal((await response.json()).config.welcome.de, 'Willkommen');
+ assert.equal(translations, 1); assert.equal(writes, 0);
+});
+
 test('all six languages have complete interface and email copy', () => {
  const keys = Object.keys(suiteCopy('en'));
  for (const lang of contracts.SUITE_LANGS) {
@@ -96,7 +211,7 @@ function fixture(rows = [], flags = { albumPermission: 'view_upload' }) {
   let payload;
   const q = { values(value) { payload=value; return q; }, onConflictDoNothing() { return q; }, returning() { inserts.push(payload); return Promise.resolve([{id:payload.id}]); } }; return q;
  } };
- const server = modules({ '@/lib/db':{ db }, '@/lib/album-flags': { getAlbumFlags: async () => flags }, '@/lib/wedding/server':{ digest:value=>require('node:crypto').createHash('sha256').update(value).digest('hex'), reply:Response.json },
+ const server = modules({ '@/lib/db':{ db }, '@/lib/album-flags': { getAlbumFlags: async () => flags }, '@/lib/wedding/server':{ digest:value=>require('node:crypto').createHash('sha256').update(value).digest('hex'), reply:Response.json, weddingForAlbum: async () => null },
   '@/lib/album-request-access':{}, '@/lib/storage/bunny':{ bunnyDisplayUrl:value=>value }, resend:{ Resend:class { constructor(){sendCalls++;throw new Error('Sending must not occur in preview');} } },
  })('lib/wedding-suite/server.ts');
  return { server, inserts, sendCalls:()=>sendCalls };
@@ -199,7 +314,7 @@ test('admin plan labels match the same multilingual pricing names while plan IDs
  const { adminPlanLabel }=load('lib/admin-plan-labels.ts');
  const { weddingCopy }=load('lib/wedding/copy.ts');
  for (const lang of contracts.SUITE_LANGS) assert.equal(adminPlanLabel('premium',lang),weddingCopy(lang).plan);
- assert.equal(adminPlanLabel('premium','sl'),'Poročni premium');
+ assert.equal(adminPlanLabel('premium','sl'),'Poročni paket Premium');
 });
 
 test('admin email history prefers a separate key and explains send-only access without a crash', async () => {

@@ -5,7 +5,7 @@
   "description": "WhatsApp compresses photos to 50% quality and the group turns chaotic. Guestcam keeps full quality in one private gallery.",
   "translationKey": "guestcam-vs-whatsapp",
   "publishedAt": "2026-05-22",
-  "updatedAt": "2026-10-25",
+  "updatedAt": "2026-10-26",
   "author": "Guestcam Team",
   "category": "primerjava",
   "readingTime": 5,
@@ -133,7 +133,7 @@
     {
       "type": "faq",
       "q": "Does Guestcam cost more than WhatsApp?",
-      "a": "Wedding Premium has a standard price of €189. When the launch campaign is active, 40% off (€113.40) is available for the next 8 customer accounts. Check live availability on the package page. One launch package per account."
+      "a": "Wedding Premium has a standard price of €189. When the launch campaign is active, 40% off (€113.40) is available for the first 20 customer accounts. Check live availability on the package page. One launch package per account."
     },
     {
       "type": "faq",

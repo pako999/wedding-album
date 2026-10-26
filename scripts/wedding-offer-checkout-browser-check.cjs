@@ -16,8 +16,8 @@ const { build } = req('esbuild'); const { chromium } = req('playwright');
  });
  await new Promise(resolve => server.listen(0,'127.0.0.1',resolve)); let browser;
  try {
-  browser = await chromium.launch({ executablePath: process.env.CHROMIUM_EXECUTABLE_PATH || '/usr/bin/chromium', headless: true, args: ['--no-sandbox'] });
-  let quote = {verified:true,remaining:1,capacity:8,eligible:true,pending:false,priceCents:11340};
+  browser = await chromium.launch({ executablePath: process.env.CHROMIUM_EXECUTABLE_PATH || (fs.existsSync('/usr/bin/chromium') ? '/usr/bin/chromium' : undefined), headless: true, args: ['--no-sandbox'] });
+  let quote = {verified:true,remaining:1,capacity:20,eligible:true,pending:false,priceCents:11340};
   const page = await browser.newPage({viewport:{width:390,height:900}}); const errors=[]; const payments=[]; const invoices=[];
   page.on('pageerror',error=>{errors.push(error.message);console.error('Browser error:',error.message)});page.on('dialog',dialog=>dialog.dismiss());
   await page.route('**/api/wedding-offer**',route=>route.fulfill({json:quote}));

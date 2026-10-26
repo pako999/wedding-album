@@ -23,9 +23,22 @@ const { drizzle } = req('drizzle-orm/pg-proxy'); const { getTableConfig } = req(
   function request(method,body,jar=cookies,extra={}){return new NextRequest('https://preview.test/api/albums/suite-db/wedding-suite',{method,headers:{origin:'https://preview.test',...(method==='GET'?{}:{'Content-Type':'application/json'}),cookie:[...jar].map(([key,value])=>key+'='+value).join('; '),...extra},...(body===undefined?{}:{body:JSON.stringify(body)})});}
   async function invoke(route,method,body,jar=cookies){const response=await route[method](request(method,body,jar),ctx);for(const cookie of response.cookies.getAll())jar.set(cookie.name,cookie.value);return {status:response.status,data:await response.json()};}
   owner=false;assert.equal((await invoke(manage,'GET')).status,401);owner=true;
+  const {EMPTY_SUITE}=load('lib/wedding-suite/contracts.ts');
+  assert.equal((await invoke(manage,'PUT',{...EMPTY_SUITE,enabled:true})).status,200,'a default capsule with no date must not block other settings');
+  assert.equal((await invoke(guest,'GET')).data.config.features.capsule,false,'an undated capsule stays unavailable to guests');
+  const legacyTable=getTableConfig(load('lib/wedding/schema.ts').weddingSettings);
+  await pg.exec('CREATE TABLE wedding_settings ('+legacyTable.columns.map(column=>'\"'+column.name+'\" '+column.getSQLType()).join(',')+')');
+  await pg.query('INSERT INTO wedding_settings (album_id,enabled) VALUES ($1,true)',['album-a']);
+  assert.equal((await invoke(guest,'GET')).data.hasWeddingProgram,true,'the shared QR page exposes enabled program and music links');
+  await pg.query('UPDATE wedding_settings SET enabled=false WHERE album_id=$1',['album-a']);
+  assert.equal((await invoke(guest,'GET')).data.hasWeddingProgram,false,'disabled program links stay hidden');
+  assert.equal((await invoke(guest,'POST',{action:'entry',kind:'capsule',name:'Guest',message:'Not open yet',photoId:null,language:'en'})).status,403);
   const config=JSON.parse(fs.readFileSync(path.join(root,'docs/wedding-suite-test-fixture.json'),'utf8'));config.defaultLang='en';config.tables[0].capacity=2;config.rsvpDeadline=new Date(Date.now()+86400000).toISOString();config.capsuleUnlockAt=new Date(Date.now()+86400000*10).toISOString();
+  config.page=load('lib/wedding-suite/page-templates.ts').sampleWeddingPage();
   assert.equal((await invoke(manage,'PUT',config)).status,200);
+  assert.equal((await invoke(guest,'GET')).data.config.page.coverImageUrl,'/hero/wedding-garden-template.webp','built-in cover paths survive actual route/database round trips');
   const person=(await invoke(manage,'POST',{action:'attendee',attendee:{name:'Test guest',email:'guest@example.test',language:'en',tableId:config.tables[0].id,allowedCompanions:1}})).data.attendee;
+  const deleteAssigned=await invoke(manage,'PUT',{...config,tables:[]});assert.equal(deleteAssigned.status,400);assert.equal(deleteAssigned.data.error,'tableInUse');
   const token=new URL(person.invitePath,'https://preview.test').hash.slice('#invite='.length);
   assert.equal((await invoke(guest,'POST',{action:'invite',token:token+'x'})).status,403);
   assert.equal((await invoke(guest,'POST',{action:'invite',token})).status,200);
@@ -49,6 +62,7 @@ const { drizzle } = req('drizzle-orm/pg-proxy'); const { getTableConfig } = req(
   entries=(await invoke(manage,'GET')).data.entries;const capsule=entries.find(entry=>entry.kind==='capsule');assert.equal(capsule.locked,true);assert.equal(capsule.message,undefined);
   assert.equal((await invoke(manage,'POST',{action:'moderate',id:capsule.id,approved:true})).status,409);
   assert.equal((await invoke(manage,'PUT',{...config,capsuleUnlockAt:new Date().toISOString()})).status,409,'existing sealed messages prevent an earlier opening');
+  assert.equal((await invoke(manage,'PUT',{...config,capsuleUnlockAt:null})).status,409,'removing the date must not expose sealed messages');
   // Test clock progression through fixture data only, without touching application time or customer data.
   config.capsuleUnlockAt='2020-01-01T00:00:00Z';await pg.query('UPDATE wedding_suite_settings SET config=$1::jsonb WHERE album_id=$2',[JSON.stringify(config),'album-a']);
   assert.equal((await invoke(manage,'POST',{action:'moderate',id:capsule.id,approved:true})).status,200);
