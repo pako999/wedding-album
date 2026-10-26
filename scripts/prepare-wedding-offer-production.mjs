@@ -15,7 +15,7 @@ export async function prepareWeddingOfferProduction({ env = process.env, connect
   const column = columns[0];
   const exact = column?.data_type === 'numeric' && Number(column.numeric_precision) === 12 && Number(column.numeric_scale) === 2;
   if (!exact && !['integer','bigint','smallint'].includes(column?.data_type)) throw new Error('Unrecognized invoice price storage; review required before campaign activation.');
-  const source = await readFile(new URL('./migrations/20261026-wedding-twenty-offer.sql', import.meta.url), 'utf8');
+  const source = await readFile(new URL('./migrations/20261026-wedding-batch-offer.sql', import.meta.url), 'utf8');
   const statements = source.split(';').map(statement => statement.trim()).filter(Boolean).filter(statement => !exact || !statement.includes('ALTER TABLE bank_orders'));
   await sql.transaction([
     sql`SET LOCAL lock_timeout = '5s'`, sql`SET LOCAL statement_timeout = '20s'`,

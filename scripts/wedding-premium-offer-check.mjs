@@ -111,4 +111,4 @@ if (staleLimitHits.length) {
 assert(checkout.includes("weddingOffer.reserve") && checkout.includes("expectedPlanCents"), "offer must be reserved and repricing checked before payment");
 const offer = await read("lib/wedding-offer.ts");
 assert(offer.includes("FOR UPDATE SKIP LOCKED") && offer.includes("customer_state") && !offer.includes("document.cookie"), "offer availability must come from real shared inventory");
-console.log("PASS: Wedding Premium standard price 189 EUR; verified launch price 113.40 EUR for twenty customer slots; unlimited media and non-expiring retention.");
+console.log("PASS: Wedding Premium standard price 189 EUR; verified launch price 113.40 EUR within a twenty-place maximum with eight places released in the current batch; unlimited media and non-expiring retention.");

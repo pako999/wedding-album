@@ -40,6 +40,7 @@ const { build } = req('esbuild'); const { chromium, webkit } = req('playwright')
    const guideLink = await page.locator('#guide > div > a').getAttribute('href');
    assert.ok(guideLink.startsWith(['sl','sr','es'].includes(lang) ? '/blog/' : `/${lang}/blog/`), `${lang} guide link uses the wrong public language path`);
    assert.ok(await page.locator('[data-wedding-offer]').first().innerText().then(text => /113[,.]40/.test(text)));
+   assert.ok((await page.locator('[data-wedding-offer]').first().locator('del').innerText()).includes('189'),'The full price must remain visibly crossed out beside the 40% offer');
    for(const img of await page.locator('img').all()){await img.scrollIntoViewIfNeeded();await img.evaluate(image=>image.decode());}
    assert.ok(await page.evaluate(() => Array.from(document.images).every(image => image.complete && image.naturalWidth > 0)));
    if(lang==='sl'&&width===390&&!largeText&&process.env.WEDDING_DETAILS_SCREENSHOT)await page.locator('[data-wedding-showcase]').screenshot({path:process.env.WEDDING_DETAILS_SCREENSHOT});
