@@ -5,7 +5,7 @@
   "description": "Build your wedding website, collect RSVPs, organise seating and save guest messages. Explore the new Wedding Premium tools and a three-step setup guide.",
   "translationKey": "wedding-website-suite-guide-2026",
   "publishedAt": "2026-10-25",
-  "updatedAt": "2026-10-25",
+  "updatedAt": "2026-10-26",
   "author": "Guestcam Team",
   "category": "novice",
   "readingTime": 5,
@@ -88,7 +88,7 @@
     },
     {
       "type": "callout",
-      "text": "The standard package price is €189. When the launch campaign is active and discounted places remain, 40% off brings it to €113.40 for the next 8 eligible customer accounts, with one launch package per account. The package page shows verified shared availability. Visiting again or clearing cookies does not create a new discount. Check the displayed price before checkout."
+      "text": "The standard package price is €189. When the launch campaign is active and discounted places remain, 40% off brings it to €113.40 for the first 20 eligible customer accounts, with one launch package per account. The package page shows verified shared availability. Visiting again or clearing cookies does not create a new discount. Check the displayed price before checkout."
     },
     {
       "type": "faq",

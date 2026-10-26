@@ -5,7 +5,7 @@
   "description": "Uredita poročno spletno stran, zberita potrditve udeležbe, razporedita mize in shranita voščila gostov. Vodnik po novih funkcijah v treh korakih.",
   "translationKey": "wedding-website-suite-guide-2026",
   "publishedAt": "2026-10-25",
-  "updatedAt": "2026-10-25",
+  "updatedAt": "2026-10-26",
   "author": "Ekipa Guestcam",
   "category": "novice",
   "readingTime": 5,
@@ -88,7 +88,7 @@
     },
     {
       "type": "callout",
-      "text": "Redna cena paketa je 189 €. Ko je uvodna ponudba aktivna in so mesta še na voljo, 40 % popusta pomeni ceno 113,40 € za naslednjih 8 upravičenih uporabniških računov, največ en uvodni paket na račun. Stran paketa prikazuje preverjeno skupno razpoložljivost. Ponoven obisk ali brisanje piškotkov ne ustvari novega popusta. Pred plačilom preverita prikazano ceno."
+      "text": "Redna cena paketa je 189 €. Ko je uvodna ponudba aktivna in so mesta še na voljo, 40 % popusta pomeni ceno 113,40 € za prvih 20 upravičenih uporabniških računov, največ en uvodni paket na račun. Stran paketa prikazuje preverjeno skupno razpoložljivost. Ponoven obisk ali brisanje piškotkov ne ustvari novega popusta. Pred plačilom preverita prikazano ceno."
     },
     {
       "type": "faq",

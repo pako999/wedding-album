@@ -5,7 +5,7 @@
   "description": "Usporedite dijeljenje fotografija putem WhatsAppa i Guestcama: kvaliteta datoteka, privatnost, prikupljanje, preuzimanje i trajanje galerije.",
   "translationKey": "guestcam-vs-whatsapp",
   "publishedAt": "2026-05-22",
-  "updatedAt": "2026-10-25",
+  "updatedAt": "2026-10-26",
   "author": "Guestcam Team",
   "category": "primerjava",
   "readingTime": 5,
@@ -133,7 +133,7 @@
     {
       "type": "faq",
       "q": "Košta li Guestcam više od WhatsAppa?",
-      "a": "Redovna cijena Vjenčanog premium paketa je 189 €. Kada je uvodna ponuda aktivna, sljedećih 8 računa može ostvariti 40 % popusta (113,40 €). Provjerite dostupnost na stranici paketa. Jedan paket po uvodnoj cijeni po računu."
+      "a": "Redovna cijena Vjenčanog premium paketa je 189 €. Kada je uvodna ponuda aktivna, prvih 20 računa može ostvariti 40 % popusta (113,40 €). Provjerite dostupnost na stranici paketa. Jedan paket po uvodnoj cijeni po računu."
     },
     {
       "type": "faq",

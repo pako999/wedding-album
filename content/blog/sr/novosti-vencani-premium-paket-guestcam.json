@@ -5,7 +5,7 @@
   "description": "Guestcam Venčani premium sada uključuje program venčanja, digitalni meni, muzičke želje za DJ-a, fotografski bingo i neograničene fotografije, video zapise i čuvanje.",
   "translationKey": "wedding-premium-new-features-2026",
   "publishedAt": "2026-09-27",
-  "updatedAt": "2026-10-25",
+  "updatedAt": "2026-10-26",
   "author": "Guestcam Team",
   "category": "novice",
   "readingTime": 5,
@@ -87,7 +87,7 @@
     },
     {
       "type": "callout",
-      "text": "Redovna cena Venčanog premium paketa je 189 €. Kada je uvodna ponuda aktivna, sledećih 8 naloga može ostvariti 40 % popusta (113,40 €). Proverite dostupnost na stranici paketa. Jedan paket po uvodnoj ceni po nalogu."
+      "text": "Redovna cena Venčanog premium paketa je 189 €. Kada je uvodna ponuda aktivna, prvih 20 naloga može ostvariti 40 % popusta (113,40 €). Proverite dostupnost na stranici paketa. Jedan paket po uvodnoj ceni po nalogu."
     },
     {
       "type": "h2",
@@ -120,7 +120,7 @@
     {
       "type": "faq",
       "q": "Koliko paket trenutno košta?",
-      "a": "Redovna cena Venčanog premium paketa je 189 €. Kada je uvodna ponuda aktivna, sledećih 8 naloga može ostvariti 40 % popusta (113,40 €). Proverite dostupnost na stranici paketa. Jedan paket po uvodnoj ceni po nalogu."
+      "a": "Redovna cena Venčanog premium paketa je 189 €. Kada je uvodna ponuda aktivna, prvih 20 naloga može ostvariti 40 % popusta (113,40 €). Proverite dostupnost na stranici paketa. Jedan paket po uvodnoj ceni po nalogu."
     },
     {
       "type": "cta",
