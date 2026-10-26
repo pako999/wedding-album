@@ -52,6 +52,64 @@ test('card checkout charges exactly 11340 cents and binds its own offer metadata
  assert.equal(f.state().payment.idempotencyKey, attemptId);
  assert.equal(f.state().reservations, 1);
 });
+
+test('the real payment adapter sends exact EUR amounts and idempotency headers to Mollie', async () => {
+ const originalFetch = globalThis.fetch, originalKey = process.env.MOLLIE_API_KEY;
+ const requests = [];
+ try {
+  process.env.MOLLIE_API_KEY = 'test_contract_only_not_a_real_key';
+  globalThis.fetch = async (url, init) => {
+   assert.equal(url, 'https://api.mollie.com/v2/payments');
+   assert.equal(init.method, 'POST');
+   assert.equal(init.headers.Authorization, 'Bearer test_contract_only_not_a_real_key');
+   requests.push({ headers: init.headers, body: JSON.parse(init.body) });
+   return { ok: true, json: async () => ({ id: 'tr_contract_only', _links: { checkout: { href: 'https://checkout.example.test/pay' } } }) };
+  };
+  const { createPayment } = modules({})('lib/mollie.ts');
+  for (const [amountCents, expected] of [[11340,'113.40'],[3900,'39.00'],[4900,'49.00'],[14900,'149.00']]) {
+   await createPayment({ amountCents, idempotencyKey: attemptId, description: 'Contract-only payment', redirectUrl: 'https://example.test/return', webhookUrl: 'https://example.test/webhook', metadata: { albumSlug: 'contract-only' } });
+   assert.deepEqual(requests.at(-1).body.amount, { value: expected, currency: 'EUR' });
+   assert.equal(requests.at(-1).headers['Idempotency-Key'], attemptId);
+  }
+  assert.equal(requests.length, 4);
+ } finally {
+  globalThis.fetch = originalFetch;
+  if (originalKey === undefined) delete process.env.MOLLIE_API_KEY; else process.env.MOLLIE_API_KEY = originalKey;
+ }
+});
+
+test('admin sales charts use actual discounted payments and invoices without repricing history', () => {
+ const { summarizePaidPlanSales } = modules({})('lib/admin-sales.ts');
+ const payment = (value, metadata = {}, extra = {}) => ({ status: 'paid', amount: { value, currency: 'EUR' }, metadata: { planId: 'premium', ...metadata }, ...extra });
+ const totals = summarizePaidPlanSales([
+  payment('113.40'), payment('39.00', { planId: 'basic' }),
+  payment('126.40', { standsCents: '1300' }),
+  payment('113.40', {}, { amountRefunded: { value: '13.40', currency: 'EUR' } }),
+  payment('189.00', {}, { status: 'failed' }),
+ ], [
+  { planId: 'premium', planPrice: 113.4, status: 'paid' },
+  { planId: 'premium', planPrice: 84, status: 'paid' },
+  { planId: 'premium', planPrice: 189, status: 'pending' },
+ ]);
+ assert.equal(totals.byPlan.premium.count, 5);
+ assert.equal(totals.byPlan.premium.revenueCents, 52420);
+ assert.equal(totals.totalRevenueCents, 56320);
+});
+
+test('pricing FAQ and search graphs distinguish regular and verified launch prices in all six languages', () => {
+ const load = modules({});
+ const { weddingStructuredOffer } = load('lib/wedding-offer-presentation.ts');
+ const { weddingPricingFaq } = load('lib/wedding-offer-copy.ts');
+ for (const lang of ['sl','hr','sr','en','de','es']) {
+  const quote = { verified: true, remaining: 8, capacity: 20, eligible: true, pending: false, priceCents: 11340 };
+  const offer = weddingStructuredOffer(lang, quote);
+  assert.equal(offer.price, '113.40'); assert.equal(offer.priceCurrency, 'EUR');
+  assert.equal(offer.availability, 'https://schema.org/LimitedAvailability');
+  for (const inactive of [null, { ...quote, verified: false }, { ...quote, remaining: 0, eligible: false }]) assert.equal(weddingStructuredOffer(lang, inactive).price, '189.00');
+  const [question, answer] = weddingPricingFaq(lang);
+  assert.ok(question.length > 10 && /189/.test(answer) && /113[,.]40/.test(answer) && answer.includes('40') && answer.includes('20'));
+ }
+});
 test('stale price, lost final slot, pending checkout and unauthorized customer never create a payment', async () => {
  for (const options of [{ eligible: false }, { reserve: false }, { pending: true }, { authorized: false }]) {
   const f = fixture(options); const res = await f.run('card'); assert.ok([401,409].includes(res.status)); assert.equal(f.state().calls, 0);

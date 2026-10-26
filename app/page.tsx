@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-import { weddingCopy } from "@/lib/wedding/copy";
 import { SITE_URL } from "@/lib/urls";
 import { GuestcamHomePage, HOME_FAQS } from "@/components/GuestcamHomePage";
 import { withRegionalHreflang } from "@/lib/seo/hreflang";
-import { PREMIUM_REGULAR_PRICE_EUR } from "@/lib/plan-pricing";
+import { weddingOffer, type WeddingOfferQuote } from '@/lib/wedding-offer';
+import { weddingStructuredOffer } from '@/lib/wedding-offer-presentation';
 
 export const metadata: Metadata = {
   title: "Guestcam.si | QR galerija za dogodke in fotografije gostov",
@@ -23,7 +23,7 @@ export const metadata: Metadata = {
   twitter: { card: "summary_large_image", title: "Guestcam.si | QR galerija za dogodke in fotografije gostov", description: "Z eno QR-kodo zberite fotografije in videe gostov z dogodka v zasebni galeriji.", images: ["/og-image.jpg?v=6"] },
 };
 
-const jsonLd = {
+function homeJsonLd(quote: WeddingOfferQuote) { return {
   "@context": "https://schema.org",
   "@graph": [
     { "@type": "Organization", "@id": `${SITE_URL}/#organization`, name: "Guestcam", url: SITE_URL, logo: `${SITE_URL}/icon-512.png` },
@@ -35,7 +35,7 @@ const jsonLd = {
         { "@type": "Offer", name: "Free", price: "0", priceCurrency: "EUR" },
         { "@type": "Offer", name: "Basic", price: "39", priceCurrency: "EUR" },
         { "@type": "Offer", name: "Plus", price: "49", priceCurrency: "EUR" },
-        { "@type": "Offer", name: weddingCopy("sl").plan, price: String(PREMIUM_REGULAR_PRICE_EUR), priceCurrency: "EUR" },
+        weddingStructuredOffer('sl', quote),
       ],
     },
     {
@@ -49,8 +49,9 @@ const jsonLd = {
     },
     { "@type": "FAQPage", mainEntity: HOME_FAQS.map(([q, a]) => ({ "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: a } })) },
   ],
-};
+}; }
 
-export default function Page() {
-  return <><script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} /><GuestcamHomePage /></>;
+export default async function Page() {
+  const quote = await weddingOffer.quote();
+  return <><script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(homeJsonLd(quote)) }} /><GuestcamHomePage /></>;
 }

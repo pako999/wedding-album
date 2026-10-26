@@ -1,5 +1,6 @@
 import { Resend } from "resend";
 import { SITE_URL } from "@/lib/urls";
+import { weddingPriceSummary } from "@/lib/wedding-offer-copy";
 
 const FROM = process.env.RESEND_FROM ?? "info@guestcam.si";
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? SITE_URL;
@@ -30,7 +31,7 @@ const OFFER_COPY: Record<Lang, {
     body: "Posebna ponudba velja za katerikoli GuestCam paket. Nakup zaključite v naslednjih 24 urah; koda je pripravljena samo za vas in se lahko uporabi enkrat.",
     codeLabel: "VAŠA UNIKATNA KODA",
     validUntil: (date) => `Koda velja do ${date}.`,
-    singleUse: "Velja za en nakup in je ni mogoče kombinirati z drugimi popusti.",
+    singleUse: "Velja za en nakup. Končna cena z veljavnimi popusti je prikazana pred plačilom.",
   },
   hr: {
     subject: (event, percent) => `${event}: vaših ${percent} % popusta na GuestCam paket`,
@@ -38,7 +39,7 @@ const OFFER_COPY: Record<Lang, {
     body: "Posebna ponuda vrijedi za bilo koji GuestCam paket. Dovršite kupnju u sljedeća 24 sata; kod je pripremljen samo za vas i može se iskoristiti jednom.",
     codeLabel: "VAŠ JEDINSTVENI KOD",
     validUntil: (date) => `Kod vrijedi do ${date}.`,
-    singleUse: "Vrijedi za jednu kupnju i ne može se kombinirati s drugim popustima.",
+    singleUse: "Vrijedi za jednu kupnju. Konačna cijena s važećim popustima prikazuje se prije plaćanja.",
   },
   sr: {
     subject: (event, percent) => `${event}: vaših ${percent} % popusta na GuestCam paket`,
@@ -46,7 +47,7 @@ const OFFER_COPY: Record<Lang, {
     body: "Posebna ponuda važi za bilo koji GuestCam paket. Završite kupovinu u naredna 24 sata; kod je pripremljen samo za vas i može da se iskoristi jednom.",
     codeLabel: "VAŠ JEDINSTVENI KOD",
     validUntil: (date) => `Kod važi do ${date}.`,
-    singleUse: "Važi za jednu kupovinu i ne može se kombinovati sa drugim popustima.",
+    singleUse: "Važi za jednu kupovinu. Konačna cena sa važećim popustima prikazuje se pre plaćanja.",
   },
   de: {
     subject: (event, percent) => `${event}: Ihr persönlicher ${percent}-%-Rabatt für GuestCam`,
@@ -54,7 +55,7 @@ const OFFER_COPY: Record<Lang, {
     body: "Dieses Angebot gilt für jedes GuestCam-Paket. Schließen Sie den Kauf innerhalb der nächsten 24 Stunden ab; der Code wurde nur für Sie erstellt und kann einmal eingelöst werden.",
     codeLabel: "IHR PERSÖNLICHER CODE",
     validUntil: (date) => `Der Code ist bis ${date} gültig.`,
-    singleUse: "Gültig für einen Kauf und nicht mit anderen Rabatten kombinierbar.",
+    singleUse: "Gültig für einen Kauf. Der Endpreis mit gültigen Rabatten wird vor der Zahlung angezeigt.",
   },
   en: {
     subject: (event, percent) => `${event}: your personal ${percent}% GuestCam discount`,
@@ -62,7 +63,7 @@ const OFFER_COPY: Record<Lang, {
     body: "This offer applies to any GuestCam package. Complete your purchase within the next 24 hours; the code was created just for you and can be redeemed once.",
     codeLabel: "YOUR UNIQUE CODE",
     validUntil: (date) => `The code is valid until ${date}.`,
-    singleUse: "Valid for one purchase and cannot be combined with other discounts.",
+    singleUse: "Valid for one purchase. The final price with applicable discounts is shown before payment.",
   },
   es: {
     subject: (event, percent) => `${event}: tu descuento personal del ${percent} % en GuestCam`,
@@ -70,7 +71,7 @@ const OFFER_COPY: Record<Lang, {
     body: "Esta oferta es válida para cualquier paquete GuestCam. Completa la compra en las próximas 24 horas; el código se ha creado solo para ti y puede utilizarse una vez.",
     codeLabel: "TU CÓDIGO ÚNICO",
     validUntil: (date) => `El código es válido hasta el ${date}.`,
-    singleUse: "Válido para una compra y no acumulable con otros descuentos.",
+    singleUse: "Válido para una compra. El precio final con los descuentos aplicables se muestra antes de pagar.",
   },
 };
 
@@ -107,7 +108,7 @@ const COPY: Record<Lang, Copy> = {
     plansTitle: "Izberite prostor za vse spomine",
     basic: "Basic · 39 €",
     plus: "Plus · 49 €",
-    premium: "Poročni premium · 189 € ",
+    premium: "Poročni paket Premium · redna cena 189 €",
     recommended: "NAJBOLJ PRILJUBLJEN",
     basicFeatures: "Do 1.000 fotografij · do 10 videov · 3 mesece dostopa",
     plusFeatures: "Do 5.000 fotografij · do 100 videov · 1 leto dostopa · Live galerija",
@@ -126,7 +127,7 @@ const COPY: Record<Lang, Copy> = {
     warningTitle: "Trenutni besplatni paket: najviše 20 fotografija",
     warningBody: "Kad se dosegne limit od 20 fotografija, gosti više neće moći dodavati nove fotografije dok ne nadogradite galeriju. Ako očekujete više gostiju, preporučujemo nadogradnju prije događaja.",
     plansTitle: "Odaberite prostor za sve uspomene",
-    basic: "Basic · 39 €", plus: "Plus · 49 €", premium: "Vjenčani premium · 189 € ", recommended: "NAJPOPULARNIJI",
+    basic: "Basic · 39 €", plus: "Plus · 49 €", premium: "Vjenčani premium · redovna cijena 189 €", recommended: "NAJPOPULARNIJI",
     basicFeatures: "Do 1.000 fotografija · do 10 videa · 3 mjeseca pristupa",
     plusFeatures: "Do 5.000 fotografija · do 100 videa · 1 godina pristupa · Live galerija",
     premiumFeatures: "Neograničene fotografije i videozapisi · neograničeno vrijeme pohrane i pristupa · Photo Wall · prioritetna podrška",
@@ -142,7 +143,7 @@ const COPY: Record<Lang, Copy> = {
     warningTitle: "Trenutni besplatni paket: najviše 20 fotografija",
     warningBody: "Kada se dostigne limit od 20 fotografija, gosti više neće moći da dodaju nove fotografije dok ne nadogradite galeriju. Ako očekujete više gostiju, preporučujemo nadogradnju pre događaja.",
     plansTitle: "Izaberite prostor za sve uspomene",
-    basic: "Basic · 39 €", plus: "Plus · 49 €", premium: "Venčani premium · 189 € ", recommended: "NAJPOPULARNIJI",
+    basic: "Basic · 39 €", plus: "Plus · 49 €", premium: "Venčani premium · redovna cena 189 €", recommended: "NAJPOPULARNIJI",
     basicFeatures: "Do 1.000 fotografija · do 10 videa · 3 meseca pristupa",
     plusFeatures: "Do 5.000 fotografija · do 100 videa · 1 godina pristupa · Live galerija",
     premiumFeatures: "Neograničene fotografije i video zapisi · neograničeno vreme čuvanja i pristupa · Photo Wall · prioritetna podrška",
@@ -158,7 +159,7 @@ const COPY: Record<Lang, Copy> = {
     warningTitle: "Aktueller Gratis-Tarif: maximal 20 Fotos",
     warningBody: "Sobald das Limit von 20 Fotos erreicht ist, können Gäste keine weiteren Fotos hochladen, bis Sie die Galerie upgraden. Wenn Sie mehr Gäste erwarten, empfehlen wir das Upgrade vor dem Event.",
     plansTitle: "Genug Platz für alle Erinnerungen",
-    basic: "Basic · 39 €", plus: "Plus · 49 €", premium: "Hochzeits-Premium · 189 € ", recommended: "AM BELIEBTESTEN",
+    basic: "Basic · 39 €", plus: "Plus · 49 €", premium: "Hochzeits-Premium · regulär 189 €", recommended: "AM BELIEBTESTEN",
     basicFeatures: "Bis 1.000 Fotos · bis 10 Videos · 3 Monate Zugriff",
     plusFeatures: "Bis 5.000 Fotos · bis 100 Videos · 1 Jahr Zugriff · Live-Galerie",
     premiumFeatures: "Unbegrenzte Fotos und Videos · unbegrenzte Speicherdauer und Zugriff · Photo Wall · Priority-Support",
@@ -174,7 +175,7 @@ const COPY: Record<Lang, Copy> = {
     warningTitle: "Your current Free plan: maximum 20 photos",
     warningBody: "Once the 20-photo limit is reached, guests will not be able to add more photos until the gallery is upgraded. If you expect more guests, we recommend upgrading before the event.",
     plansTitle: "Make room for every memory",
-    basic: "Basic · €39", plus: "Plus · €49", premium: "Wedding Premium · €189 ", recommended: "MOST POPULAR",
+    basic: "Basic · €39", plus: "Plus · €49", premium: "Wedding Premium · standard price €189", recommended: "MOST POPULAR",
     basicFeatures: "Up to 1,000 photos · up to 10 videos · 3 months access",
     plusFeatures: "Up to 5,000 photos · up to 100 videos · 1 year access · Live gallery",
     premiumFeatures: "Unlimited photos and videos · unlimited storage and access · Photo Wall · priority support",
@@ -190,7 +191,7 @@ const COPY: Record<Lang, Copy> = {
     warningTitle: "Plan gratuito actual: máximo 20 fotos",
     warningBody: "Cuando se alcance el límite de 20 fotos, los invitados no podrán añadir más hasta que mejores la galería. Si esperas más invitados, te recomendamos mejorarla antes del evento.",
     plansTitle: "Haz sitio para todos los recuerdos",
-    basic: "Basic · 39 €", plus: "Plus · 49 €", premium: "Premium para bodas · 189 € ", recommended: "MÁS POPULAR",
+    basic: "Basic · 39 €", plus: "Plus · 49 €", premium: "Premium para bodas · precio habitual 189 €", recommended: "MÁS POPULAR",
     basicFeatures: "Hasta 1.000 fotos · hasta 10 vídeos · 3 meses de acceso",
     plusFeatures: "Hasta 5.000 fotos · hasta 100 vídeos · 1 año de acceso · Galería Live",
     premiumFeatures: "Fotos y vídeos ilimitados · almacenamiento y acceso sin vencimiento · Photo Wall · soporte prioritario",
@@ -290,7 +291,7 @@ export function eventUpgradeReminderEmailHtml(fields: EventUpgradeReminderFields
           <table width="100%" cellpadding="0" cellspacing="0" role="presentation">
             ${planRow(t.basic, t.basicFeatures, basicUrl)}
             ${planRow(t.plus, t.plusFeatures, upgradeUrl, true)}
-            ${planRow(t.premium, t.premiumFeatures, premiumUrl)}
+            ${planRow(t.premium, `${t.premiumFeatures} · ${weddingPriceSummary(lang)}`, premiumUrl)}
           </table>
           <p style="margin:4px 0 0;text-align:center;font-size:12px;color:#7C8593;">${t.trialNote}</p>
         </td></tr>

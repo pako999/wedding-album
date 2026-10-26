@@ -1,3 +1,5 @@
+import { weddingPriceSummary } from '@/lib/wedding-offer-copy';
+
 /**
  * SEO topic-cluster landing pages. Each entry is one topic × one locale.
  * Routes at /<locale>/<slug> render EventTopicPage with the matching entry.
@@ -164,7 +166,7 @@ export const EVENT_TOPICS: Partial<Record<EventLocale, Record<EventTopicKey, Eve
       ],
       faq: [
         { q: "Ali je QR koda za poroko brezplačna?",
-          a: "Z Guestcamom je osnovni paket brezplačen — do 20 slik. Za polni doživeti večer priporočamo Plus paket (49€) ali Poročni premium (189 €)." },
+          a: "Osnovni paket je brezplačen do 20 fotografij; Plus stane 49 €. " + weddingPriceSummary('sl') },
         { q: "Kdo lahko vidi slike, ki jih pošljejo gostje?",
           a: "Samo vi (organizator) in osebe, ki imajo neposredno povezavo do galerije. Galerija ni javno indeksirana in ne pojavi se v Googlu." },
         { q: "Koliko časa ostanejo slike na voljo?",
@@ -501,7 +503,7 @@ export const EVENT_TOPICS: Partial<Record<EventLocale, Record<EventTopicKey, Eve
       ],
       faq: [
         { q: "Je li QR kod za vjenčanje besplatan?",
-          a: "S Guestcamom je osnovni paket besplatan — do 20 fotografija. Za cijelu večer preporučujemo Plus paket (49€) ili Vjenčani premium (189 €)." },
+          a: "Osnovni paket je besplatan do 20 fotografija; Plus košta 49 €. " + weddingPriceSummary('hr') },
         { q: "Tko može vidjeti fotografije koje pošalju gosti?",
           a: "Samo vi (organizator) i osobe koje imaju izravnu poveznicu do galerije. Galerija nije javno indeksirana i ne pojavljuje se u Googleu." },
         { q: "Koliko dugo fotografije ostaju dostupne?",
@@ -778,7 +780,7 @@ export const EVENT_TOPICS: Partial<Record<EventLocale, Record<EventTopicKey, Eve
       ],
       faq: [
         { q: "Da li je QR kod za venčanje besplatan?",
-          a: "Sa Guestcamom je osnovni paket besplatan — do 20 slika. Za celu večer preporučujemo Plus paket (49€) ili Venčani premium (189 €)." },
+          a: "Osnovni paket je besplatan do 20 fotografija; Plus košta 49 €. " + weddingPriceSummary('sr') },
         { q: "Ko može da vidi slike koje pošalju gosti?",
           a: "Samo vi (organizator) i osobe koje imaju direktan link do galerije. Galerija nije javno indeksirana i ne pojavljuje se u Google-u." },
         { q: "Koliko dugo slike ostaju dostupne?",
@@ -1055,7 +1057,7 @@ export const EVENT_TOPICS: Partial<Record<EventLocale, Record<EventTopicKey, Eve
       ],
       faq: [
         { q: "Ist der QR-Code für die Hochzeit kostenlos?",
-          a: "Mit Guestcam ist das Basis-Paket kostenlos — bis zu 20 Fotos. Für den vollen Abend empfehlen wir Plus (49 €) oder Hochzeits-Premium (189 €)." },
+          a: "Das Basispaket ist bis zu 20 Fotos kostenlos; Plus kostet 49 €. " + weddingPriceSummary('de') },
         { q: "Wer sieht die von Gästen hochgeladenen Fotos?",
           a: "Nur Sie (Veranstalter) und Personen mit direktem Link zur Galerie. Die Galerie wird nicht öffentlich indexiert und erscheint nicht bei Google." },
         { q: "Wie lange bleiben Fotos verfügbar?",
@@ -1332,7 +1334,7 @@ export const EVENT_TOPICS: Partial<Record<EventLocale, Record<EventTopicKey, Eve
       ],
       faq: [
         { q: "Is a wedding QR code free?",
-          a: "With Guestcam the basic plan is free — up to 20 photos. For a full evening we recommend Plus (€49) or Wedding Premium (189 €)." },
+          a: "The basic plan is free for up to 20 photos; Plus costs €49. " + weddingPriceSummary('en') },
         { q: "Who can see photos that guests upload?",
           a: "Only you (the organiser) and people who have the direct gallery link. The gallery is never publicly indexed and does not appear in Google." },
         { q: "How long do the photos stay available?",
@@ -1609,7 +1611,7 @@ export const EVENT_TOPICS: Partial<Record<EventLocale, Record<EventTopicKey, Eve
       ],
       faq: [
         { q: "¿Es gratis el código QR para boda?",
-          a: "Con Guestcam el plan básico es gratis — hasta 20 fotos. Para la noche completa recomendamos Plus (49 €) o Premium para bodas (189 €)." },
+          a: "El plan básico es gratis hasta 20 fotos; Plus cuesta 49 €. " + weddingPriceSummary('es') },
         { q: "¿Quién puede ver las fotos que suben los invitados?",
           a: "Sólo tú (organizador) y las personas con enlace directo a la galería. La galería no se indexa públicamente y no aparece en Google." },
         { q: "¿Cuánto tiempo están disponibles las fotos?",
