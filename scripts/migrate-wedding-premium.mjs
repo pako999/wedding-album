@@ -11,11 +11,17 @@ if (isVercelPreview) {
   console.log('[wedding migration] No DATABASE_URL in local build; schema migration not executed.');
 } else {
   const sql = neon(process.env.DATABASE_URL);
-  const source = await fs.readFile(new URL('./migrations/20260926-wedding-premium.sql', import.meta.url), 'utf8');
+  const source = (await Promise.all(['20260926-wedding-premium.sql', '20261026-wedding-suite-production.sql'].map(name => fs.readFile(new URL(`./migrations/${name}`, import.meta.url), 'utf8')))).join('\n');
   const statements = source.split(';').map(x => x.trim()).filter(Boolean);
   await sql.transaction([sql`SELECT pg_advisory_xact_lock(hashtext('guestcam:wedding-premium:20260926'))`, ...statements.map(statement => sql.query(statement))]);
   const expected = {wedding_settings: ['album_id','enabled','requests_open','schedule','menu','challenges','dj_token_hash','updated_at'], wedding_song_requests: ['id','album_id','guest_token_hash','title','artist','requested_by','note','status','created_at'], wedding_bingo_submissions: ['id','album_id','challenge_id','photo_id','guest_token_hash','created_at']};
-  const rows = await sql`SELECT table_name, column_name FROM information_schema.columns WHERE table_schema='public' AND table_name IN ('wedding_settings','wedding_song_requests','wedding_bingo_submissions')`;
+  Object.assign(expected, {
+    wedding_suite_settings: ['album_id', 'config', 'updated_at'],
+    wedding_suite_attendees: ['id','album_id','name','email','language','token_version','table_id','allowed_companions','attending','companions','menu_id','note','notifications','updated_at'],
+    wedding_suite_entries: ['id','album_id','guest_hash','kind','name','message','photo_id','language','approved','created_at'],
+    wedding_suite_emails: ['id','album_id','attendee_id','kind','language','recipient','subject','html','status','provider_id','created_at'],
+  });
+  const rows = await sql`SELECT table_name, column_name FROM information_schema.columns WHERE table_schema='public' AND table_name IN ('wedding_settings','wedding_song_requests','wedding_bingo_submissions','wedding_suite_settings','wedding_suite_attendees','wedding_suite_entries','wedding_suite_emails')`;
   for (const [table, columns] of Object.entries(expected)) for (const column of columns) if (!rows.some(r => r.table_name === table && r.column_name === column)) throw new Error(`Wedding schema mismatch: ${table}.${column}`);
   // A normal deployment must never rewrite existing album limits or lifetimes.
   // Historical entitlement repair requires an explicit, separate invocation:
@@ -40,5 +46,5 @@ if (isVercelPreview) {
     }
     console.log('[wedding migration] Wedding Premium entitlements backfilled: unlimited media sentinel and no expiry.');
   }
-  console.log('[wedding migration] Verified all 3 wedding tables, required columns and additive migration. No core columns changed.');
+  console.log('[wedding migration] Verified all 7 wedding and suite tables, required columns and additive migration. No core columns changed.');
 }

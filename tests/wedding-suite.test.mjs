@@ -280,8 +280,12 @@ test('preview suite access requires a matching database pin before reading setti
 test('production deployment preflight never updates existing albums without an explicit repair argument', async () => {
  const script = readFileSync(resolve(root, 'scripts/migrate-wedding-premium.mjs'), 'utf8')
   .replace(/^import .*;\n/gm, '').replaceAll('import.meta.url', "'file:///isolated/scripts/migrate-wedding-premium.mjs'");
- const migration = readFileSync(resolve(root, 'scripts/migrations/20260926-wedding-premium.sql'), 'utf8');
  const columns = { wedding_settings: ['album_id','enabled','requests_open','schedule','menu','challenges','dj_token_hash','updated_at'], wedding_song_requests: ['id','album_id','guest_token_hash','title','artist','requested_by','note','status','created_at'], wedding_bingo_submissions: ['id','album_id','challenge_id','photo_id','guest_token_hash','created_at'] };
+ for (const table of ['wedding_suite_settings','wedding_suite_attendees','wedding_suite_entries','wedding_suite_emails']) {
+  const migration = readFileSync(resolve(root, 'scripts/migrations/20261026-wedding-suite-production.sql'), 'utf8');
+  const body = migration.split(`CREATE TABLE IF NOT EXISTS "${table}" (`)[1].split('\n);')[0];
+  columns[table] = [...body.matchAll(/^\s*"([^"]+)"/gm)].map(match => match[1]);
+ }
  const queries = [];
  const sql = (strings) => {
   const source = strings.join('?'); queries.push(source);
@@ -292,7 +296,7 @@ test('production deployment preflight never updates existing albums without an e
  sql.query = source => { queries.push(source); return Promise.resolve([]); };
  sql.transaction = values => Promise.all(values);
  const execute = new (Object.getPrototypeOf(async function(){}).constructor)('fs', 'neon', 'process', 'console', script);
- const run = argv => execute({ readFile: async () => migration }, () => sql, { env: { VERCEL_ENV: 'production', DATABASE_URL: 'isolated-test-value' }, argv }, { log() {} });
+ const run = argv => execute({ readFile: async url => readFileSync(url.pathname.includes('suite-production') ? resolve(root, 'scripts/migrations/20261026-wedding-suite-production.sql') : resolve(root, 'scripts/migrations/20260926-wedding-premium.sql'), 'utf8') }, () => sql, { env: { VERCEL_ENV: 'production', DATABASE_URL: 'isolated-test-value' }, argv }, { log() {} });
  await run([]);
  assert.ok(!queries.some(query => /\bUPDATE\s+(albums|user_plan_overrides)\b/i.test(query)));
  queries.length = 0;
@@ -549,4 +553,45 @@ test('deployment identifiers keep old tabs from mixing release assets', () => {
   process.env.NEXT_DEPLOYMENT_ID='platform-deployment';
   assert.equal(modules()('next.config.ts').default.deploymentId,'platform-deployment');
  } finally {for(const [name,value] of Object.entries(original)) {if(value===undefined)delete process.env[name];else process.env[name]=value;}}
+});
+
+test('unified program drafts and AI suggestions preserve existing rows, source text and manual corrections', () => {
+ const { EMPTY_WEDDING, parseWeddingSettings } = load('lib/wedding/contracts.ts');
+ const { recoverableWeddingDraft, mergeWeddingTranslations, weddingSnapshot } = load('lib/wedding/autosave.ts');
+ const source = { ...EMPTY_WEDDING, enabled: true, schedule: [{ id: 'ceremony', title: 'Obred', detail: 'Na vrtu', sourceLang: 'sl', time: '16:00' }], menu: [{ id: 'dinner', title: 'Večerja', detail: '', sourceLang: 'sl' }] };
+ const translated = structuredClone(source);
+ translated.schedule[0].translations = { en: { title: 'Ceremony', detail: 'In the garden' }, de: { title: 'Trauung', detail: 'Im Garten' } };
+ const merged = mergeWeddingTranslations(source, source, translated);
+ assert.deepEqual(merged.schedule[0].translations, translated.schedule[0].translations, 'all missing languages are filled');
+ assert.deepEqual(merged.menu, source.menu);
+ const edited = structuredClone(source); edited.schedule[0].translations = { en: { title: 'My own heading' } };
+ assert.equal(mergeWeddingTranslations(edited, source, translated).schedule[0].translations.en.title, 'My own heading');
+ edited.schedule[0].detail = 'A newer location';
+ assert.equal(mergeWeddingTranslations(edited, source, translated).schedule[0].translations.en.detail, undefined);
+ assert.equal(mergeWeddingTranslations({ ...source, schedule: [] }, source, translated).schedule.length, 0);
+ const draft = { ...source, schedule: [{ id: 'new', title: '', detail: '', time: '', sourceLang: 'sl' }] };
+ assert.equal(recoverableWeddingDraft(draft), true); assert.equal(parseWeddingSettings(draft), null);
+ assert.equal(recoverableWeddingDraft({ ...draft, schedule: [{ ...draft.schedule[0], id: '../bad' }] }), false);
+ assert.equal(weddingSnapshot(source), weddingSnapshot(Object.fromEntries(Object.entries(source).reverse())));
+});
+
+test('program translation suggestions authorize and validate without creating DJ links or writing settings', async () => {
+ let authorized = false, writes = 0, calls = 0;
+ const route = modules({
+  '@/lib/wedding/server': {
+   ownerAccess: async () => authorized ? { album: { id: 'album-a', defaultLang: 'sl' } } : { response: Response.json({}, { status: 401 }) },
+   activePremium: () => true, sameOrigin: () => true,
+   reply: value => Response.json(value), failure: (error, status) => Response.json({ error }, { status }),
+  },
+  '@/lib/rate-limit': { checkRateLimit: async () => ({ ok: true }) },
+  '@/lib/db': { db: { insert() { writes++; throw new Error('Suggestions cannot write'); } } },
+  '@/lib/wedding/translate': { translateWedding: async value => { calls++; return value; } },
+ })('app/api/albums/[slug]/wedding/manage/route.ts');
+ const { EMPTY_WEDDING } = load('lib/wedding/contracts.ts');
+ const request = settings => ({ json: async () => ({ action: 'translate', source: 'sl', settings }) });
+ const context = { params: Promise.resolve({ slug: 'test' }) };
+ assert.equal((await route.POST(request(EMPTY_WEDDING), context)).status, 401); assert.equal(calls, 0);
+ authorized = true;
+ assert.equal((await route.POST(request({ ...EMPTY_WEDDING, schedule: [{ id: 'bad' }] }), context)).status, 400); assert.equal(calls, 0);
+ assert.equal((await route.POST(request(EMPTY_WEDDING), context)).status, 200); assert.equal(calls, 1); assert.equal(writes, 0);
 });

@@ -11,7 +11,7 @@ const until = async (predicate, message) => {
  while (!predicate()) { if (Date.now() > deadline) throw new Error(message); await new Promise(resolve => setTimeout(resolve, 30)); }
 };
 (async () => {
- const bundle = await build({ stdin: { contents: `import React from 'react';import {createRoot} from 'react-dom/client';import {WeddingSuiteManager} from './components/wedding-suite/WeddingSuiteManager';createRoot(document.getElementById('root')).render(<WeddingSuiteManager slug="autosave-fixture" lang={new URLSearchParams(location.search).get('lang')||'en'} plan="premium"/>);`, resolveDir: root, loader: 'tsx' }, bundle: true, write: false, platform: 'browser', format: 'iife', jsx: 'automatic', define: { 'process.env.NODE_ENV': '"production"', 'process.env.NEXT_PUBLIC_APP_URL': '"https://www.guestcam.si"' }, tsconfig: path.join(root, 'tsconfig.json') });
+ const bundle = await build({ stdin: { contents: `import React from 'react';import {createRoot} from 'react-dom/client';import {WeddingSettingsCard} from './components/wedding/WeddingSettingsCard';createRoot(document.getElementById('root')).render(<WeddingSettingsCard slug="autosave-fixture" lang={new URLSearchParams(location.search).get('lang')||'en'} plan="premium"/>);`, resolveDir: root, loader: 'tsx' }, bundle: true, write: false, platform: 'browser', format: 'iife', jsx: 'automatic', define: { 'process.env.NODE_ENV': '"production"', 'process.env.NEXT_PUBLIC_APP_URL': '"https://www.guestcam.si"' }, tsconfig: path.join(root, 'tsconfig.json') });
  const css = fs.readdirSync(root + '/.next/static/chunks').filter(x => x.endsWith('.css')).map(x => fs.readFileSync(root + '/.next/static/chunks/' + x, 'utf8')).join('\n');
  const server = http.createServer((request, response) => {
   if (request.url === '/fixture.js') { response.setHeader('content-type', 'application/javascript'); response.end(bundle.outputFiles[0].text); }
@@ -50,16 +50,32 @@ const until = async (predicate, message) => {
    if (failLoad) return route.fulfill({ status: 503, json: { error: 'unavailable' } });
    return route.fulfill({ json: { configured: true, config: Object.fromEntries(Object.entries(config).reverse()), attendees: [], entries: [], emails: [], guestPath: '/autosave-fixture/celebrate', preview: true } });
   });
+  let program = { enabled: true, requestsOpen: true, schedule: [{ id: 'ceremony', title: 'Our ceremony', detail: 'The garden', time: '16:00', sourceLang: 'en' }], menu: [{ id: 'dinner', title: 'Dinner', detail: 'Seasonal menu', sourceLang: 'en' }], challenges: [] };
+  const programWrites = []; let failProgram = false;
+  await page.route('**/api/albums/autosave-fixture/wedding/manage*', async route => {
+   const request = route.request();
+   if (request.method() === 'PUT') {
+    if (failProgram) return route.fulfill({ status: 503, json: { error: 'unavailable' } });
+    program = request.postDataJSON(); programWrites.push(clone(program)); return route.fulfill({ json: { settings: program } });
+   }
+   if (request.method() === 'POST') return route.fulfill({ json: { path: '/autosave-fixture/dj#token=test', token: 'test' } });
+   return route.fulfill({ json: { settings: program, eligible: true, published: true, hasDjLink: false } });
+  });
   const base = `http://127.0.0.1:${server.address().port}`;
   const saved = () => page.waitForSelector('[data-autosave-state="saved"]');
   const welcome = () => page.getByLabel('Welcome message', { exact: true });
   await page.goto(base);
   await page.getByRole('button', { name: 'Reload editor', exact: true }).waitFor();
-  assert.equal(await welcome().isDisabled(), true);
+  assert.equal(await welcome().count(), 0, 'Failed load must show one error, not an empty disabled editor');
+  assert.equal(await page.getByRole('alert').count(), 1);
   assert.equal(writes.length, 0, 'Loading failure must not write defaults');
   failLoad = false;
   await page.getByRole('button', { name: 'Reload editor', exact: true }).click();
   await saved(); assert.equal(writes.length, 0);
+  assert.equal(await page.locator('[data-wedding-editor]').count(), 1);
+  assert.equal(await page.locator('[data-wedding-builder]').count(), 1);
+  assert.equal(await page.locator('[data-autosave-state]').count(), 1, 'Only the new editor has a sticky save bar');
+  assert.equal(await page.getByRole('button', { name: 'Save settings', exact: true }).count(), 0, 'Old manual-save editor is removed');
   await page.getByRole('checkbox', { name: /Translate missing text/ }).uncheck();
   await page.getByRole('checkbox', { name: 'Enable the wedding suite', exact: true }).check();
   await saved(); assert.equal(config.enabled, true); assert.equal(config.capsuleUnlockAt, null);
@@ -141,6 +157,32 @@ const until = async (predicate, message) => {
   assert.equal(writes.length, conflictWrites); assert.equal(await welcome().isDisabled(), true);
   await page.getByRole('button', { name: 'Keep saved version', exact: true }).click();
   await saved(); assert.equal(await welcome().inputValue(), 'A newer server edit');
+
+  stage='unified program';
+  const programEditor = page.locator('[data-wedding-program-editor]');
+  await programEditor.getByLabel('Title', { exact: true }).fill('Our updated ceremony');
+  await page.waitForSelector('[data-program-save-state="saved"]');
+  assert.equal(program.schedule[0].title, 'Our updated ceremony');
+  assert.equal(program.menu[0].title, 'Dinner', 'Editing program preserves existing menu');
+  await programEditor.getByRole('button', { name: '+ Add', exact: true }).click();
+  await page.waitForSelector('[data-program-save-state="invalid"]');
+  const beforeDraft = programWrites.length;
+  await page.reload(); await page.waitForSelector('[data-program-save-state="invalid"]');
+  await page.getByRole('checkbox', { name: /Translate missing text/ }).uncheck();
+  assert.equal(await programEditor.getByLabel('Title', { exact: true }).count(), 2, 'Unfinished program row survives reload');
+  assert.equal(programWrites.length, beforeDraft, 'Incomplete program is never sent');
+  await programEditor.getByLabel('Title', { exact: true }).last().fill('Reception');
+  await page.waitForSelector('[data-program-save-state="saved"]');
+  assert.equal(program.schedule.length, 2);
+  failProgram = true; await programEditor.getByLabel('Title', { exact: true }).last().fill('Evening reception');
+  await page.waitForSelector('[data-program-save-state="error"]');
+  await page.waitForSelector('[data-autosave-state="error"]');
+  failProgram = false; await programEditor.getByRole('button', { name: 'Retry saving', exact: true }).click();
+  await page.waitForSelector('[data-program-save-state="saved"]');
+  assert.equal(program.schedule[1].title, 'Evening reception');
+  await programEditor.getByRole('button', { name: 'Create DJ link', exact: true }).click();
+  await programEditor.getByRole('textbox', { name: 'DJ desk', exact: true }).waitFor();
+  assert.equal(new URL(await programEditor.getByRole('textbox', { name: 'DJ desk', exact: true }).inputValue()).hash, '#token=test');
 
   stage='translation';
   let releaseTranslation;

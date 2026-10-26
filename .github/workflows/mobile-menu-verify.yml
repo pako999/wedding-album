@@ -25,9 +25,15 @@ on:
       - lib/i18n/upgrade-translations.ts
       - components/SiteHeader.tsx
       - components/wedding/WeddingLandingPage.tsx
+      - components/wedding/WeddingSettingsCard.tsx
+      - lib/wedding/autosave.ts
+      - app/api/albums/**/wedding/manage/route.ts
+      - scripts/migrate-wedding-premium.mjs
+      - scripts/migrations/*suite*.sql
       - components/wedding-suite/**
       - lib/wedding-suite/**
       - app/api/albums/**/wedding-suite/**
+      - scripts/wedding-translation-browser-check.cjs
       - scripts/wedding-autosave-browser-check.cjs
       - scripts/wedding-page-builder-browser-check.cjs
       - scripts/wedding-cover-browser-check.cjs
@@ -102,6 +108,7 @@ jobs:
         run: |
           node scripts/wedding-page-builder-browser-check.cjs
           node scripts/wedding-autosave-browser-check.cjs
+          node scripts/wedding-translation-browser-check.cjs
           AUTOSAVE_BROWSER_ENGINE=webkit node scripts/wedding-autosave-browser-check.cjs
           node scripts/wedding-cover-browser-check.cjs
           COVER_BROWSER_ENGINE=webkit node scripts/wedding-cover-browser-check.cjs

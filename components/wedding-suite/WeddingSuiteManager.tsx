@@ -7,15 +7,18 @@ import type { AttendeeView, SuiteOwnerData } from '@/lib/wedding-suite/dto';
 import { WeddingPanel, fieldClass, buttonClass, secondaryClass } from '@/components/wedding/WeddingViews';
 import { LanguageSelect } from './LanguageSelect';
 import { WeddingPageBuilder } from './WeddingPageBuilder';
+import { WeddingProgramEditor, type ProgramSaveHandle } from './WeddingProgramEditor';
+import { weddingCopy } from '@/lib/wedding/copy';
+import { presentationCopy } from '@/lib/wedding-suite/presentation-copy';
 import { EntryMedia } from './EntryMedia';
 import { useSuiteAutosave } from './useSuiteAutosave';
 import { mergeSuiteTranslations, translationFingerprint } from '@/lib/wedding-suite/autosave';
 
-type ManagerProps = { slug: string; lang: SuiteLang; plan: string };
+type ManagerProps = { slug: string; lang: SuiteLang; plan: string; albumName?: string | null; eventDate?: string | null };
 export function WeddingSuiteManager(props: ManagerProps) {
  return <WeddingSuiteEditor key={`${props.slug}:${props.lang}`} {...props} />;
 }
-function WeddingSuiteEditor({ slug, lang, plan }: ManagerProps) {
+function WeddingSuiteEditor({ slug, lang, plan, albumName, eventDate }: ManagerProps) {
  const t = suiteCopy(lang); const endpoint = `/api/albums/${encodeURIComponent(slug)}/wedding-suite/manage`;
  const [autoTranslate, setAutoTranslate] = useState(true); const [translationWarning, setTranslationWarning] = useState(false);
  const [data, setData] = useState<SuiteOwnerData | null>(null);
@@ -27,13 +30,17 @@ function WeddingSuiteEditor({ slug, lang, plan }: ManagerProps) {
  const translationEnabled = useRef(autoTranslate);
  useEffect(() => { translationEnabled.current = autoTranslate; }, [autoTranslate]);
  const [editLang, setEditLang] = useState<SuiteLang>(lang); const [guestLang, setGuestLang] = useState<SuiteLang>(lang);
+ const [loading, setLoading] = useState(true);
  const [busy, setBusy] = useState(false); const [error, setError] = useState(''); const [message, setMessage] = useState('');
+ const [programSave, setProgramSave] = useState<ProgramSaveHandle | null>(null);
  const [selected, setSelected] = useState<string[]>([]);
  const load = useCallback(async (preserveConfig = false) => {
   if (plan !== 'premium') return;
-  try { const response = await fetch(endpoint, { cache: 'no-store' }); const result = await response.json();
+  if (!preserveConfig) setLoading(true);
+  try { const response = await fetch(endpoint, { cache: 'no-store', signal: AbortSignal.timeout(20_000) }); const result = await response.json();
    if (!response.ok) throw new Error(result.error); setError(''); setData(current => preserveConfig && current ? { ...result, config: current.config } : result); if (!preserveConfig) { initialize(result.configured ? result.config : { ...result.config, defaultLang: lang }); setGuestLang(result.configured ? result.config.defaultLang : lang); }
   } catch (cause) { setError(suiteError(lang, cause instanceof Error ? cause.message : '')); }
+  finally { setLoading(false); }
  }, [endpoint, lang, plan, initialize, setGuestLang]);
  useEffect(() => { void Promise.resolve().then(() => load()); }, [load]);
  // Translation has its own request: basic saving never waits for an AI provider.
@@ -52,7 +59,7 @@ function WeddingSuiteEditor({ slug, lang, plan }: ManagerProps) {
   }, 2500);
   return () => clearTimeout(timer);
  }, [autoTranslate, data, config, autosave.status, autosave.recovery, endpoint, setConfig, translating, translationRetry]);
- function saveNow() { translationAttempt.current = null; setTranslationRetry(value => value + 1); void autosave.flush(); }
+ function saveNow() { translationAttempt.current = null; setTranslationRetry(value => value + 1); void Promise.all([autosave.flush(), programSave?.flush()]); }
  async function request(method: 'POST', body: unknown) {
   if (!await autosave.flush()) return null;
   setBusy(true); setError(''); setMessage('');
@@ -61,7 +68,8 @@ function WeddingSuiteEditor({ slug, lang, plan }: ManagerProps) {
   } catch (cause) { setError(suiteError(lang, cause instanceof Error ? cause.message : '')); return null; }
   finally { setBusy(false); }
  }
- const saveStatus = autosave.status === 'saved' ? t.autoSaved : autosave.status === 'saving' ? t.autoSaving : autosave.status === 'pending' ? t.autoPending : autosave.status === 'invalid' ? t.autoInvalid : autosave.status === 'error' ? `${t.autoFailed} ${suiteError(lang, autosave.error)}` : t.loading;
+ const combinedStatus = [autosave.status, programSave?.status ?? 'loading'].sort((a, b) => ['error','invalid','saving','pending','loading','saved'].indexOf(a) - ['error','invalid','saving','pending','loading','saved'].indexOf(b))[0];
+ const saveStatus = combinedStatus === 'saved' ? t.autoSaved : combinedStatus === 'saving' ? t.autoSaving : combinedStatus === 'pending' ? t.autoPending : combinedStatus === 'invalid' ? t.autoInvalid : combinedStatus === 'error' ? `${t.autoFailed} ${suiteError(lang, autosave.error || programSave?.error)}` : t.loading;
  function textField(key: 'welcome' | 'invitation' | 'thankYou', label: string) {
   return <label className="block space-y-1 text-sm font-medium" key={key}>{label}<textarea aria-label={label} className={fieldClass} rows={3} maxLength={5000}
    value={config[key][editLang] ?? ''} onChange={e => setConfig(c => ({ ...c, [key]: { ...c[key], [editLang]: e.target.value } }))} /></label>;
@@ -85,9 +93,11 @@ function WeddingSuiteEditor({ slug, lang, plan }: ManagerProps) {
   <textarea aria-label={t.message} rows={3} className={fieldClass} maxLength={5000} value={row.text[editLang] ?? ''} onChange={e => setConfig(c => ({ ...c, [key]: c[key].map(r => r.id === row.id ? { ...r, text: { ...r.text, [editLang]: e.target.value } } : r) }))} />
   {<label className="block text-sm">{key === 'story' ? t.photo : t.link}<input type="url" placeholder="https://" className={fieldClass} value={row.url || ''} onChange={e => setConfig(c => ({ ...c, [key]: c[key].map(r => r.id === row.id ? { ...r, url: e.target.value } : r) }))} /></label>}
  </div>)}</div><button type="button" className={`${secondaryClass} mt-3`} disabled={config[key].length >= 30} onClick={() => setConfig(c => ({ ...c, [key]: [...c[key], { id: crypto.randomUUID(), title: {}, text: {} }] }))}>+ {t.addRow}</button></WeddingPanel>;
- if (plan !== 'premium') return null;
- return <section className="space-y-6 border-t border-stone-200 pt-8" id="wedding-suite">
-  {error && !data && <p role="alert" className="rounded-xl bg-red-50 p-4 text-red-800">{error}</p>}
+ if (plan !== 'premium') return <WeddingPanel title={presentationCopy(lang).website}><p>{weddingCopy(lang).premiumRequired}</p></WeddingPanel>;
+ if (!data) return <section id="wedding-suite" data-wedding-editor><WeddingPanel title={presentationCopy(lang).website}>
+  {loading ? <p role="status">{t.loading}</p> : <><p role="alert" className="mb-4 rounded-xl bg-red-50 p-4 text-red-800">{error || t.unavailable}</p><button type="button" className={secondaryClass} onClick={() => void load()}>{t.retryLoad}</button></>}
+ </WeddingPanel></section>;
+ return <section className="min-w-0 space-y-6" id="wedding-suite" data-wedding-editor>
   {autosave.recovery && <div role="alert" className="space-y-3 rounded-xl border border-amber-300 bg-amber-50 p-4"><p>{t.draftConflict}</p><button type="button" className={secondaryClass} onClick={() => autosave.resolveRecovery(true)}>{t.restoreDraft}</button> <button type="button" className={secondaryClass} onClick={() => autosave.resolveRecovery(false)}>{t.keepSaved}</button></div>}
   <fieldset disabled={!data || !!autosave.recovery} className="space-y-6"><WeddingPanel title={t.title}>
   {error && <p role="alert" className="mb-4 rounded-xl bg-red-50 p-4 text-red-800">{error}</p>}
@@ -108,6 +118,7 @@ function WeddingSuiteEditor({ slug, lang, plan }: ManagerProps) {
    {data && <a className={secondaryClass} href={`${data.guestPath}?lang=${editLang}`} target="_blank" rel="noreferrer">{t.guestLink} ↗</a>}
   </div></WeddingPanel>
   <WeddingPageBuilder value={config.page} lang={lang} editLang={editLang} onChange={page => setConfig(current => ({ ...current, page }))} />
+  <WeddingProgramEditor slug={slug} lang={lang} editLang={editLang} autoTranslate={autoTranslate} albumName={albumName} eventDate={eventDate} onSaveState={setProgramSave} />
   <div className="grid gap-6 lg:grid-cols-2">{rows('story')}{rows('travel')}</div>
   <div className="grid gap-6 lg:grid-cols-2"><WeddingPanel title={t.seating}>
    <div className="space-y-3">{config.tables.map(table => <div className="grid grid-cols-[minmax(0,1fr)_90px_auto] gap-2" key={table.id}>
@@ -139,9 +150,9 @@ function WeddingSuiteEditor({ slug, lang, plan }: ManagerProps) {
   <WeddingPanel title={t.entries}><div className="space-y-4">{data?.entries.map(entry => <article className="space-y-2 rounded-xl border p-4" key={entry.id}><h3 className="font-bold">{t[entry.kind]}</h3>{entry.locked ? <p>{t.locked}</p> : <><p className="font-semibold">{entry.name}</p><p className="whitespace-pre-wrap text-sm">{entry.message}</p><EntryMedia entry={entry} slug={slug} lang={lang} /><button type="button" className={secondaryClass} disabled={busy} onClick={() => void request('POST', { action: 'moderate', id: entry.id, approved: !entry.approved })}>{entry.approved ? t.reject : t.approve}</button></>}</article>)}</div><a href={`/${encodeURIComponent(slug)}/celebrate/guestbook?lang=${lang}`} className={`${secondaryClass} mt-4 inline-block`} target="_blank" rel="noreferrer">{t.export}</a></WeddingPanel>
   <WeddingPanel title={t.viewMail}><div className="space-y-3">{data?.emails.map(mail => <article className="flex flex-wrap items-center justify-between gap-3 rounded-xl border p-4" key={mail.id}><div><p className="font-semibold">{mail.subject}</p><p className="break-all text-xs text-stone-600">{mail.recipient} · {mail.language.toUpperCase()} · {mail.status === 'preview' ? t.preview : mail.status === 'failed' ? t.error : mail.status === 'sent' ? t.saved : t.loading}</p>{mail.status === 'preview' && <p className="text-xs text-blue-800">{t.deliveryPreview}</p>}</div><a href={`${endpoint}?mail=${mail.id}`} target="_blank" rel="noreferrer" className={secondaryClass}>{t.preview} ↗</a></article>)}</div></WeddingPanel>
   </fieldset>
-  <div data-autosave-state={autosave.status} className="sticky bottom-3 z-10 space-y-2 rounded-2xl border bg-white/95 p-3 shadow-lg backdrop-blur">
-   <p role="status" aria-live="polite" className={`text-sm ${autosave.status === 'error' || autosave.status === 'invalid' ? 'text-red-800' : 'text-stone-700'}`}>{saveStatus}</p>
-   {!data ? <button type="button" className={`${buttonClass} w-full`} onClick={() => void load()}>{t.retryLoad}</button> : <button type="button" className={`${buttonClass} w-full`} disabled={autosave.status === 'saving' || !!autosave.recovery} onClick={saveNow}>{autosave.status === 'saving' ? t.autoSaving : autosave.status === 'error' ? t.retrySave : t.save}</button>}
+  <div data-autosave-state={combinedStatus} className="sticky bottom-3 z-10 space-y-2 rounded-2xl border bg-white/95 p-3 shadow-lg backdrop-blur">
+   <p role="status" aria-live="polite" className={`text-sm ${combinedStatus === 'error' || combinedStatus === 'invalid' ? 'text-red-800' : 'text-stone-700'}`}>{saveStatus}</p>
+   {!data ? <button type="button" className={`${buttonClass} w-full`} onClick={() => void load()}>{t.retryLoad}</button> : <button type="button" className={`${buttonClass} w-full`} disabled={combinedStatus === 'saving' || !!autosave.recovery || !!programSave?.blocked} onClick={saveNow}>{combinedStatus === 'saving' ? t.autoSaving : combinedStatus === 'error' ? t.retrySave : t.save}</button>}
   </div>
  </section>;
 }
