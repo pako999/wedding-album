@@ -29,7 +29,8 @@ const { chromium } = req('playwright');
       if (route.request().method() === 'PUT') { config = route.request().postDataJSON(); saved++; return route.fulfill({ json: { ok: true, config } }); }
       return route.fulfill({ json: { configured: true, config, attendees: [], entries: [], emails: [], guestPath: '/builder-fixture/celebrate', preview: true } });
     });
-    await page.route('**/api/albums/builder-fixture/wedding-suite', route => route.fulfill({ json: { config, language: 'en', attendee: null, entries: [], hasWeddingProgram: true, album: { id: 'test', slug: 'builder-fixture', name: 'Original album name', date: '2027-07-31', maxPhotos: 1000, photoCount: 0, moderationEnabled: true, passwordProtected: false } } }));
+    await page.route('**/api/albums/builder-fixture/wedding/manage*', route => route.fulfill({ json: { settings: { enabled: false, requestsOpen: true, schedule: [], menu: [], challenges: [] }, eligible: true, published: true, hasDjLink: false } }));
+  await page.route('**/api/albums/builder-fixture/wedding-suite', route => route.fulfill({ json: { config, language: 'en', attendee: null, entries: [], hasWeddingProgram: true, album: { id: 'test', slug: 'builder-fixture', name: 'Original album name', date: '2027-07-31', maxPhotos: 1000, photoCount: 0, moderationEnabled: true, passwordProtected: false } } }));
     const base = `http://127.0.0.1:${server.address().port}`;
     await page.goto(base);
     const editor = page.locator('[data-wedding-builder]');
