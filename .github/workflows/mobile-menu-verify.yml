@@ -7,6 +7,13 @@ on:
       - app/page.tsx
       - lib/wedding/copy.ts
       - lib/wedding-offer-copy.ts
+      - lib/plan-pricing.ts
+      - lib/wedding-offer.ts
+      - scripts/prepare-wedding-offer-*.mjs
+      - scripts/migrations/*offer.sql
+      - scripts/wedding-offer-database-check.cjs
+      - scripts/wedding-offer-checkout-browser-check.cjs
+      - tests/wedding-offer-checkout.test.mjs
       - lib/i18n/upgrade-translations.ts
       - components/SiteHeader.tsx
       - components/wedding/WeddingLandingPage.tsx
@@ -71,12 +78,15 @@ jobs:
           if [ ! -e node_modules/esbuild ]; then ln -s "$tools/node_modules/esbuild" node_modules/esbuild; fi
           echo "MOBILE_MENU_TOOLS=$tools" >> "$GITHUB_ENV"
       - name: Wedding routes against an isolated PostgreSQL engine
-        run: PGLITE_MODULE_PATH="$MOBILE_MENU_TOOLS/node_modules/@electric-sql/pglite" node scripts/wedding-suite-database-check.cjs
+        run: |
+          PGLITE_MODULE_PATH="$MOBILE_MENU_TOOLS/node_modules/@electric-sql/pglite" node scripts/wedding-suite-database-check.cjs
+          PGLITE_MODULE_PATH="$MOBILE_MENU_TOOLS/node_modules/@electric-sql/pglite" node scripts/wedding-offer-database-check.cjs
       - name: Real component and production-CSS browser checks
         run: |
           node scripts/mobile-menu-browser-check.mjs
           node scripts/wedding-package-browser-check.cjs
           PACKAGE_BROWSER_ENGINE=webkit node scripts/wedding-package-browser-check.cjs
+          node scripts/wedding-offer-checkout-browser-check.cjs
           node scripts/photo-capture-browser-check.cjs
           PHOTO_CAPTURE_ENGINE=webkit node scripts/photo-capture-browser-check.cjs
       - name: Wedding builder and autosave in Chromium and WebKit

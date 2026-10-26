@@ -2,7 +2,7 @@ import fs from 'node:fs/promises';
 import { pathToFileURL } from 'node:url';
 import { neon } from '@neondatabase/serverless';
 
-/** Activate the explicitly requested eight-place offer only on the real production build. */
+/** Prepare the twenty-place offer only on the verified production main build. */
 export async function prepareWeddingOfferProduction({ env = process.env, connect = neon, readFile = fs.readFile } = {}) {
   if (env.VERCEL_ENV !== 'production') return { prepared: false, reason: 'not-production' };
   if (env.VERCEL_PROJECT_ID !== 'prj_EDblP7nig2nLLZTQlxnrkusvxoSj') throw new Error('Offer activation requires the verified GuestCam project.');
@@ -15,14 +15,14 @@ export async function prepareWeddingOfferProduction({ env = process.env, connect
   const column = columns[0];
   const exact = column?.data_type === 'numeric' && Number(column.numeric_precision) === 12 && Number(column.numeric_scale) === 2;
   if (!exact && !['integer','bigint','smallint'].includes(column?.data_type)) throw new Error('Unrecognized invoice price storage; review required before campaign activation.');
-  const source = await readFile(new URL('./migrations/20261025-wedding-eight-offer.sql', import.meta.url), 'utf8');
+  const source = await readFile(new URL('./migrations/20261026-wedding-twenty-offer.sql', import.meta.url), 'utf8');
   const statements = source.split(';').map(statement => statement.trim()).filter(Boolean).filter(statement => !exact || !statement.includes('ALTER TABLE bank_orders'));
   await sql.transaction([
     sql`SET LOCAL lock_timeout = '5s'`, sql`SET LOCAL statement_timeout = '20s'`,
     sql`SELECT pg_advisory_xact_lock(hashtext('guestcam:wedding-eight-offer:20261025'))`,
     ...statements.map(statement => sql.query(statement)),
   ]);
-  return { prepared: true, reason: 'eight-place-offer-ready' };
+  return { prepared: true, reason: 'twenty-place-offer-ready' };
 }
 if (process.argv[1] && pathToFileURL(process.argv[1]).href === import.meta.url) {
   console.log('[wedding offer production]', await prepareWeddingOfferProduction());

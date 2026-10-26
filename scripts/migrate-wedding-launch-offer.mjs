@@ -7,7 +7,7 @@ if (new URL(process.env.DATABASE_URL).hostname !== process.env.WEDDING_OFFER_DB_
 const expectedProject = 'prj_EDblP7nig2nLLZTQlxnrkusvxoSj';
 if (process.env.VERCEL_PROJECT_ID && process.env.VERCEL_PROJECT_ID !== expectedProject) throw new Error('Refusing offer migration outside the GuestCam project.');
 const sql = neon(process.env.DATABASE_URL);
-const source = await fs.readFile(new URL('./migrations/20261025-wedding-eight-offer.sql', import.meta.url), 'utf8');
+const source = await fs.readFile(new URL('./migrations/20261026-wedding-twenty-offer.sql', import.meta.url), 'utf8');
 const statements = source.split(';').map(statement => statement.trim()).filter(Boolean);
 await sql.transaction(statements.map(statement => sql.query(statement)));
-console.log('Offer migration completed: exact-decimal invoices and eight durable launch slots. Existing album/photo rows were not modified.');
+console.log('Offer migration completed: exact-decimal invoices and twenty durable launch slots. Existing album/photo rows were not modified.');

@@ -20,7 +20,7 @@ const { build } = req('esbuild'); const { chromium, webkit } = req('playwright')
  try {
   browser = await (process.env.PACKAGE_BROWSER_ENGINE==='webkit'?webkit:chromium).launch(process.env.PACKAGE_BROWSER_ENGINE==='webkit'?{}:{ executablePath: process.env.CHROMIUM_EXECUTABLE_PATH || (fs.existsSync('/usr/bin/chromium')?'/usr/bin/chromium':undefined), headless: true, args: ['--no-sandbox'] });
   let remaining = 8; let available = true; const errors = [];
-  async function context() { const ctx = await browser.newContext(); await ctx.route(/^https:\/\//, route => route.abort('blockedbyclient')); await ctx.route('**/api/wedding-offer', route => route.fulfill({ json: { verified: available, remaining: available ? remaining : null, capacity: 8, eligible: available && remaining > 0, pending: false, priceCents: available && remaining > 0 ? 11340 : 18900 } })); return ctx; }
+  async function context() { const ctx = await browser.newContext(); await ctx.route(/^https:\/\//, route => route.abort('blockedbyclient')); await ctx.route('**/api/wedding-offer', route => route.fulfill({ json: { verified: available, remaining: available ? remaining : null, capacity: 20, eligible: available && remaining > 0, pending: false, priceCents: available && remaining > 0 ? 11340 : 18900 } })); return ctx; }
   const first = await context(); const page = await first.newPage(); page.on('pageerror', error => { errors.push(error.message); console.error('Browser error:', error.message); });
   const base = `http://127.0.0.1:${server.address().port}`;
   for (const lang of ['sl','hr','sr','en','de','es']) for (const width of [320,375,390,430,1280]) for (const largeText of [false,true]) {
@@ -133,16 +133,17 @@ const { build } = req('esbuild'); const { chromium, webkit } = req('playwright')
   assert.equal(await page.evaluate(() => window.__oldDocument), undefined, 'Public offer click must create a fresh document');
   // A second cookie jar sees the same global inventory, and visits never decrement it.
   const second = await context(); const visitor = await second.newPage(); await visitor.goto(base + '/?lang=en');
-  await visitor.getByText('8 of 8 discounted packages available', { exact: true }).first().waitFor(); assert.equal(remaining,8);
-  remaining = 7; await page.goto(base + '/?lang=en'); await page.getByText('7 of 8 discounted packages available', { exact: true }).first().waitFor();
-  await visitor.reload(); await visitor.getByText('7 of 8 discounted packages available', { exact: true }).first().waitFor();
+  await visitor.getByText('8 of 20 discounted packages available', { exact: true }).first().waitFor(); assert.equal(remaining,8);
+  remaining = 7; await page.evaluate(()=>window.dispatchEvent(new Event('focus')));
+  await page.getByText('7 of 20 discounted packages available', { exact: true }).first().waitFor();
+  await visitor.reload(); await visitor.getByText('7 of 20 discounted packages available', { exact: true }).first().waitFor();
   // Remember consenting visitors across a week; genuine inventory alone sets the count.
   assert.ok(!(await page.context().cookies()).some(cookie => cookie.name === 'gc_wedding_offer_seen'));
   await first.addInitScript(() => { window.Cookiebot = {consent:{marketing:true}}; });
   await first.addCookies([{name:'gc_wedding_offer_seen',value:'wedding-launch-189-40-eight-20261025~'+(Date.now()-7*86400000),url:base}]);
   remaining = 4; await page.reload();
   await page.getByText('Welcome back — check the remaining packages.',{exact:true}).waitFor();
-  await page.getByText('4 of 8 discounted packages available',{exact:true}).first().waitFor();
+  await page.getByText('4 of 20 discounted packages available',{exact:true}).first().waitFor();
   assert.equal(remaining,4,'Returning visits never fabricate or decrement inventory');
   await page.evaluate(()=>{window.Cookiebot.consent.marketing=false;window.dispatchEvent(new Event('CookiebotOnDecline'));});
   await page.waitForFunction(()=>!document.cookie.split(';').some(cookie=>cookie.trim().startsWith('gc_wedding_offer_seen=')));
@@ -152,7 +153,7 @@ const { build } = req('esbuild'); const { chromium, webkit } = req('playwright')
   remaining = 0; await page.reload(); await page.getByText('Standard package price', { exact: true }).first().waitFor();
   assert.ok(!await page.locator('[data-wedding-offer]').first().innerText().then(text => text.includes('113')));
   available = false; await page.reload(); await page.getByText('Standard package price', { exact: true }).first().waitFor();
-  assert.ok(!await page.locator('[data-wedding-offer]').first().innerText().then(text => text.includes('of 8')));
+  assert.ok(!await page.locator('[data-wedding-offer]').first().innerText().then(text => text.includes('of 20')));
   assert.deepEqual(errors,[]);
   console.log('PASS package browser: six languages at five widths from 320–1280px, real header/footer, default/larger text and unclipped content bounds, twenty detailed features in every language, a real wedding website preview and three setup steps, exact launch price, shared availability across cookie jars, exhaustion and unavailable-inventory fallback.');
  } finally { await browser?.close(); await new Promise(resolve => server.close(resolve)); }

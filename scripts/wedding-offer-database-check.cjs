@@ -17,21 +17,40 @@ function load(file) {
   const pg = new PGlite();
   try {
     await pg.exec("CREATE TABLE bank_orders (id text PRIMARY KEY, plan_price integer NOT NULL); INSERT INTO bank_orders VALUES ('historical',84); CREATE TABLE albums(id text PRIMARY KEY, plan text); INSERT INTO albums VALUES ('existing','premium');");
-    const migration = fs.readFileSync(path.join(root, 'scripts/migrations/20261025-wedding-eight-offer.sql'), 'utf8');
-    await pg.transaction(tx => tx.exec(migration));
-    await pg.transaction(tx => tx.exec(migration));
+    const legacyMigration = fs.readFileSync(path.join(root, 'scripts/migrations/20261025-wedding-eight-offer.sql'), 'utf8');
+    const migration = fs.readFileSync(path.join(root, 'scripts/migrations/20261026-wedding-twenty-offer.sql'), 'utf8');
+    await pg.transaction(tx => tx.exec(legacyMigration));
     assert.equal((await pg.query("SELECT plan_price FROM bank_orders WHERE id='historical'")).rows[0].plan_price, '84.00');
     await pg.query('INSERT INTO bank_orders VALUES ($1,$2)', ['decimal-invoice', '113.40']);
     assert.equal((await pg.query("SELECT plan_price FROM bank_orders WHERE id='decimal-invoice'")).rows[0].plan_price, '113.40');
     const sql = async (strings, ...values) => (await pg.query(strings.map((text, index) => text + (index < values.length ? '$' + (index + 1) : '')).join(''), values)).rows;
     const { createWeddingOfferStore } = load('lib/wedding-offer.ts'); const store = createWeddingOfferStore(() => sql);
-    assert.equal((await store.quote()).remaining, 8);
+    assert.equal((await store.quote()).verified, false, 'eight old rows cannot verify a twenty-place campaign before expansion');
+    const oldPaid = await store.reserve('existing-paid', 'existing-paid-album', 'card');
+    const oldPending = await store.reserve('existing-pending', 'existing-pending-album', 'invoice');
+    await store.bind(oldPaid.attemptId, 'tr_existing_paid');
+    await store.settle(oldPaid.attemptId, 'tr_existing_paid', 'existing-paid-album', true);
+    await store.bind(oldPending.attemptId, 'bank:existing-pending');
+    const originalRows = (await pg.query('SELECT * FROM wedding_offer_slots ORDER BY slot')).rows;
+    await pg.transaction(tx => tx.exec(migration));
+    await pg.transaction(tx => tx.exec(migration));
+    assert.deepEqual((await pg.query('SELECT * FROM wedding_offer_slots WHERE slot<=8 ORDER BY slot')).rows, originalRows, 'expansion must preserve every old place, payment reference and reservation');
+    assert.equal((await store.quote()).capacity, 20);
+    assert.equal((await store.quote()).remaining, 18);
+    assert.equal((await store.quote('existing-paid')).eligible, false);
+    assert.equal((await store.quote('existing-pending')).pending, true);
+    assert.equal(await store.reserve('existing-paid', 'another-album', 'card'), null);
+    const temporary = await Promise.all(Array.from({length:10}, (_,index) => store.reserve('temporary-'+index, 'temporary-album-'+index, 'card')));
+    assert.equal((await store.quote()).remaining, 8, 'eight of twenty means twelve actual paid/reserved places');
+    for (const claim of temporary) await store.releaseRejected(claim.attemptId);
+    assert.equal((await store.quote()).remaining, 18, 'verified unpaid rejections return their places');
     const duplicates = await Promise.allSettled([store.reserve('same-account', 'one', 'card'), store.reserve('same-account', 'two', 'card')]);
     const duplicateClaims = duplicates.filter(result => result.status === 'fulfilled' && result.value).map(result => result.value);
-    assert.equal(duplicateClaims.length, 1); assert.equal((await store.quote()).remaining, 7);
-    await store.releaseRejected(duplicateClaims[0].attemptId); assert.equal((await store.quote()).remaining, 8);
+    assert.equal(duplicateClaims.length, 1); assert.equal((await store.quote()).remaining, 17);
+    await store.releaseRejected(duplicateClaims[0].attemptId); assert.equal((await store.quote()).remaining, 18);
     const starts = await Promise.all(Array.from({ length: 40 }, (_, i) => store.reserve('customer-' + i, 'album-' + i, i % 2 ? 'card' : 'invoice')));
-    assert.equal(starts.filter(Boolean).length, 8, 'forty simultaneous attempts can claim only eight slots');
+    assert.equal(starts.filter(Boolean).length, 18, 'forty competing attempts can claim only the eighteen remaining places');
+    assert.equal((await pg.query("SELECT count(*)::int AS used FROM wedding_offer_slots WHERE state<>'available'")).rows[0].used, 20);
     assert.equal((await store.quote()).remaining, 0);
     assert.equal((await store.quote()).priceCents, 18900);
     const claim = starts[0]; await store.bind(claim.attemptId, 'bank:one');
@@ -67,7 +86,7 @@ function load(file) {
     await store.settleBank('historical-offer',true);
     assert.equal((await pg.query("SELECT state FROM wedding_offer_slots WHERE attempt_id='historical-attempt'")).rows[0].state,'paid','earlier campaign payments still settle after switching the active campaign');
     assert.equal((await store.quote()).remaining,before.remaining,'earlier campaign cannot consume new inventory');
-    // A missing/uninitialized campaign must not fabricate eight places or a discounted price.
+    // A missing/uninitialized campaign must not fabricate places or a discounted price.
     await pg.exec('DROP TABLE wedding_offer_slots');
     await store.settleBank('historical', true);
     assert.equal((await store.quote()).verified, false); assert.equal((await store.quote()).remaining, null);
@@ -84,10 +103,10 @@ function load(file) {
       assert.equal((await prepareWeddingOfferPreview({ env, connect: () => tagged })).prepared, true);
       await clean.exec("UPDATE wedding_offer_slots SET state='paid', customer_id='verified-test-customer', attempt_id='verified-test-attempt' WHERE slot=1");
       assert.equal((await prepareWeddingOfferPreview({ env, connect: () => tagged })).prepared, true);
-      assert.equal((await clean.query("SELECT count(*)::int AS available FROM wedding_offer_slots WHERE state='available'")).rows[0].available, 7, 'preview rebuild must never reset paid inventory');
+      assert.equal((await clean.query("SELECT count(*)::int AS available FROM wedding_offer_slots WHERE state='available'")).rows[0].available, 19, 'preview rebuild must never reset paid inventory');
       await clean.exec("INSERT INTO albums VALUES ('non-demo-album')");
       assert.equal((await prepareWeddingOfferPreview({ env, connect: () => tagged })).reason, 'existing-data-requires-manual-review');
     } finally { await clean.close(); }
-    console.log('PASS offer database: real PostgreSQL engine, idempotent migration, exact €113.40, forty competing attempts capped at eight, account uniqueness, paid/cancel idempotency, verified releases, safe unavailable fallback, unchanged existing albums and guarded preview rebuilds preserving used inventory.');
+    console.log('PASS offer database: expansion from eight to twenty preserves existing paid/reserved places, a real 8/20 quote, forty competing attempts capped at twenty total, exact €113.40, account uniqueness, paid/cancel idempotency, verified releases, safe unavailable fallback, unchanged existing albums and guarded rebuilds preserving inventory.');
   } finally { await pg.close(); }
 })().catch(error => { console.error(error); process.exitCode = 1; });

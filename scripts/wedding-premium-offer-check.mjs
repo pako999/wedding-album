@@ -9,6 +9,8 @@ assert(/PREMIUM_REGULAR_PRICE_EUR\s*=\s*189/.test(pricing), "regular price must 
 assert(/PREMIUM_SALE_PERCENT\s*=\s*40/.test(pricing), "sale must be 40 percent");
 assert(pricing.includes("PREMIUM_SALE_PRICE_CENTS / 100") && Math.round(18900 * 0.60) === 11340, "launch price must be exactly 113.40 EUR");
 
+assert(/WEDDING_OFFER_CAPACITY\s*=\s*20/.test(pricing), "launch offer must have twenty real places");
+
 const checkout = await read("app/api/checkout/route.ts");
 assert(/premium:[\s\S]*amount:\s*PREMIUM_REGULAR_PRICE_CENTS/.test(checkout), "Mollie checkout must default to the standard Premium price");
 
@@ -109,4 +111,4 @@ if (staleLimitHits.length) {
 assert(checkout.includes("weddingOffer.reserve") && checkout.includes("expectedPlanCents"), "offer must be reserved and repricing checked before payment");
 const offer = await read("lib/wedding-offer.ts");
 assert(offer.includes("FOR UPDATE SKIP LOCKED") && offer.includes("customer_state") && !offer.includes("document.cookie"), "offer availability must come from real shared inventory");
-console.log("PASS: Wedding Premium standard price 189 EUR; verified launch price 113.40 EUR for eight customer slots; unlimited media and non-expiring retention.");
+console.log("PASS: Wedding Premium standard price 189 EUR; verified launch price 113.40 EUR for twenty customer slots; unlimited media and non-expiring retention.");

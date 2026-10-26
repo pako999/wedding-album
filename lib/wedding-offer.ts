@@ -6,7 +6,7 @@ export type WeddingOfferQuote = { verified: boolean; remaining: number | null; c
 export type OfferClaim = { attemptId: string; slot: number };
 export class OfferConflict extends Error {}
 
-/** Eight durable slots for this campaign; cookies and page views never consume inventory. */
+/** Durable campaign inventory; cookies and page views never consume places. */
 export function createWeddingOfferStore(database: () => NeonQueryFunction<false, false>) {
   async function quote(customerId = ''): Promise<WeddingOfferQuote> {
     const unavailable: WeddingOfferQuote = { verified: false, remaining: null, capacity: WEDDING_OFFER_CAPACITY, eligible: false, pending: false, priceCents: PREMIUM_REGULAR_PRICE_CENTS };
