@@ -23,6 +23,8 @@ on:
       - lib/wedding/feature-details.ts
       - lib/wedding/package-copy.ts
       - components/wedding/WeddingWebsiteShowcase.tsx
+      - components/wedding/WeddingWalkthrough.tsx
+      - lib/wedding/demo.ts
       - public/hero/wedding-garden-template.webp
       - components/wedding/WeddingOfferPrice.tsx
       - components/wedding/WeddingOfferBanner.tsx

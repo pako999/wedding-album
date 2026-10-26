@@ -6,6 +6,7 @@ import { WeddingPageContent } from '@/components/wedding-suite/WeddingPageConten
 import { sampleWeddingPage } from '@/lib/wedding-suite/page-templates';
 import { presentationCopy } from '@/lib/wedding-suite/presentation-copy';
 import { WeddingWebsiteShowcase } from './WeddingWebsiteShowcase';
+import { DEMO_WEDDING, demoWeddingDate } from '@/lib/wedding/demo';
 import { SiteHeader } from '@/components/SiteHeader';
 import { SeoFooter } from '@/components/SeoFooter';
 import { WeddingWalkthrough } from './WeddingWalkthrough';
@@ -23,7 +24,7 @@ export function WeddingLandingPage({lang}: {lang:Lang}) {
  const create=localizedAccountPath(lang,'/dashboard/new?plan=premium');
  const sample=sampleWeddingPage();
  const guides=[{title:p.one,body:p.details},{title:p.two,body:p.design},{title:p.three,body:p.rsvp}];
- const sampleDate=new Intl.DateTimeFormat(lang,{dateStyle:'long',timeZone:'UTC'}).format(new Date('2027-07-31T12:00:00Z'));
+ const sampleDate=`${demoWeddingDate(lang)} · ${DEMO_WEDDING.venue}`;
  return <><SiteHeader lang={lang} hreflang={weddingAlternates()}/><main className="w-full min-w-0 overflow-hidden bg-[#fffdf8] text-stone-900">
   <section className="mx-auto grid w-full min-w-0 max-w-7xl grid-cols-1 items-center gap-10 px-5 py-10 sm:px-8 sm:py-14 lg:grid-cols-2 [&>*]:min-w-0">
    <div><p className="text-xs font-bold uppercase tracking-[.16em] text-amber-800">{t.plan}</p><h1 className="mt-5 [overflow-wrap:anywhere] font-serif text-5xl leading-[1.1] sm:text-6xl">{v.website}</h1><p className="mt-5 max-w-xl [overflow-wrap:anywhere] text-lg leading-8 text-stone-600">{v.introduction}</p><WeddingOfferPrice lang={lang}/><div className="flex flex-wrap gap-3"><a href={create} className="rounded-full bg-stone-900 px-7 py-4 font-bold text-white">{t.choose}</a><a href="#guide" className="rounded-full border border-stone-300 px-7 py-4 font-semibold">{t.preview}</a></div></div>

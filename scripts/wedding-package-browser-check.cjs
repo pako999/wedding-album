@@ -32,6 +32,10 @@ const { build } = req('esbuild'); const { chromium, webkit } = req('playwright')
    assert.ok((await page.locator('[data-wedding-offer-banner]').innerText()).includes('40%'));
    assert.equal(await page.locator('#features article').count(), 20); assert.equal(await page.locator('#guide ol > li').count(), 3);
    assert.equal(await page.locator('[data-wedding-showcase]').count(),1);
+   const experience=page.locator('[data-wedding-walkthrough]');
+   assert.equal(await experience.locator('[data-demo-schedule] li').count(),7);
+   assert.equal(await experience.locator('[data-demo-menu] article p').count(),5);
+   assert.equal(await page.locator('[data-wedding-showcase] [data-wedding-page-content] > div:last-child > section').count(),8);
    if(lang==='sl')assert.equal(await page.locator('main h1').innerText(),'Vaša spletna poročna stran');
    const guideLink = await page.locator('#guide > div > a').getAttribute('href');
    assert.ok(guideLink.startsWith(['sl','sr','es'].includes(lang) ? '/blog/' : `/${lang}/blog/`), `${lang} guide link uses the wrong public language path`);
@@ -41,7 +45,7 @@ const { build } = req('esbuild'); const { chromium, webkit } = req('playwright')
    if(lang==='sl'&&width===390&&!largeText&&process.env.WEDDING_DETAILS_SCREENSHOT)await page.locator('[data-wedding-showcase]').screenshot({path:process.env.WEDDING_DETAILS_SCREENSHOT});
    assert.equal(await page.locator('[data-wedding-feature-detail] details').count(),20);
    assert.ok(await page.locator('[data-wedding-feature-detail] li').count()>=55);
-   const clipped=await page.locator('header, header nav, main > section:first-child, main h1, main > section:first-child > div, [data-wedding-offer], [data-wedding-offer-banner], [data-wedding-feature-detail]').evaluateAll(nodes=>nodes.map(node=>({tag:node.tagName,x:node.getBoundingClientRect().x,right:node.getBoundingClientRect().right,width:node.getBoundingClientRect().width})).filter(box=>box.x < -1 || box.right > innerWidth+1));
+   const clipped=await page.locator('header, header nav, main > section:first-child, main h1, main > section:first-child > div, [data-wedding-offer], [data-wedding-offer-banner], [data-wedding-feature-detail], [data-wedding-walkthrough], [data-wedding-walkthrough] h3, [data-wedding-walkthrough] p').evaluateAll(nodes=>nodes.map(node=>({tag:node.tagName,x:node.getBoundingClientRect().x,right:node.getBoundingClientRect().right,width:node.getBoundingClientRect().width})).filter(box=>box.x < -1 || box.right > innerWidth+1));
    assert.deepEqual(clipped,[],`${lang}/${width}px/largeText=${largeText} content is clipped even if the body hides overflow`);
    if(width<1024)assert.ok(await page.locator('header').first().locator('button[aria-haspopup="dialog"]').first().isVisible());
    assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), `${lang} page overflows at ${width}px`);
@@ -81,6 +85,45 @@ const { build } = req('esbuild'); const { chromium, webkit } = req('playwright')
    await showcase.screenshot({path:path.join(output,'wedding-website-'+lang+'.png')});
   }
   assert.deepEqual(mutations,[],'The marketing demo must never save an album, send invitations or create payments');
+  // Organizer edits and DJ moderation are real local interactions, never writes to a customer album.
+  for(const [lang] of labels){
+   await page.goto(base+'/?lang='+lang);
+   const experience=page.locator('[data-wedding-walkthrough]');
+   const tabs=experience.locator('button[aria-pressed]');
+   if(lang==='sl'){
+    const output=path.join(root,'artifacts/mobile-menu');fs.mkdirSync(output,{recursive:true});
+    await page.setViewportSize({width:1280,height:1000});await page.addStyleTag({content:'header{visibility:hidden!important}'});
+    for(const img of await experience.locator('img').all())await img.evaluate(image=>image.decode());
+    await experience.screenshot({path:path.join(output,'wedding-realistic-demo-desktop.png')});
+    await page.locator('[data-wedding-showcase]').screenshot({path:path.join(output,'wedding-realistic-website-desktop.png')});
+    await page.setViewportSize({width:390,height:844});
+    await experience.screenshot({path:path.join(output,'wedding-realistic-demo-mobile.png')});
+   }
+   await tabs.nth(0).click();
+   const rows=experience.locator('[data-demo-organiser] fieldset');
+   assert.equal(await rows.count(),12);
+   await rows.nth(0).locator('input[type=time]').fill('15:45');
+   await rows.nth(0).locator('input:not([type=time])').fill('Demo welcome');
+   await rows.nth(0).locator('textarea').fill('Meet our families in the garden.');
+   await rows.nth(7).locator('textarea').fill('Fresh seasonal vegetables and local cheese.');
+   for(const width of [320,390,1280]){
+    await page.setViewportSize({width,height:900});
+    const clipped=await experience.locator('fieldset,input,textarea,legend').evaluateAll(nodes=>nodes.map(node=>node.getBoundingClientRect()).filter(box=>box.x < -1 || box.right > innerWidth+1));
+    assert.equal(clipped.length,0,lang+' demo editor overflows at '+width);
+   }
+   await tabs.nth(1).click();
+   assert.ok((await experience.locator('[data-demo-schedule] li').first().innerText()).includes('15:45'));
+   assert.ok((await experience.locator('[data-demo-schedule] li').first().innerText()).includes('Meet our families in the garden.'));
+   assert.ok((await experience.locator('[data-demo-menu] article').first().innerText()).includes('Fresh seasonal vegetables and local cheese.'));
+   await tabs.nth(2).click();
+   assert.equal(await experience.locator('[data-demo-dj] article').count(),3);
+   await experience.locator('select').first().selectOption('played');
+   await tabs.nth(1).click();await tabs.nth(2).click();
+   assert.equal(await experience.locator('select').first().inputValue(),'played');
+   await page.reload();await tabs.nth(0).click();
+   assert.notEqual(await experience.locator('input[type=time]').first().inputValue(),'15:45','Demo changes must not leak into a later visit');
+  }
+  assert.deepEqual(mutations,[],'Demo organizer edits and DJ statuses must never make API writes');
   // A stale client router must not be required for the public offer link.
   await page.goto(base + '/?lang=en');
   await page.locator('[data-wedding-offer-banner] a').waitFor();

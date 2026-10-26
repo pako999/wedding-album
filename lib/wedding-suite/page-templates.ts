@@ -1,7 +1,8 @@
 import { PAGE_COVER_IMAGES, SUITE_LANGS, type PageDesign, type LocaleText, type PageSection } from './contracts';
 import { DEFAULT_PAGE } from './page-design';
 import { builderCopy } from './builder-copy';
-import { presentationCopy } from './presentation-copy';
+import { DEMO_WEDDING, weddingDemo, weddingDemoCopy } from '@/lib/wedding/demo';
+import { weddingCopy } from '@/lib/wedding/copy';
 
 export const PAGE_STYLES = {
  garden: { headingFont: 'elegant', bodyFont: 'modern', background: '#ffffff', textColor: '#272b25', accent: '#465c42', image: PAGE_COVER_IMAGES[0] },
@@ -27,11 +28,23 @@ export function starterSections(nextId: () => string = () => crypto.randomUUID()
 export function sampleWeddingPage(): PageDesign {
  let index = 0;
  const nextId = () => `52000000-0000-4000-8000-${String(++index).padStart(12, '0')}`;
- const sections = starterSections(nextId);
- sections[0].title = translated(lang => presentationCopy(lang).sampleCeremony);
- for (const [position, key] of (['sampleCeremonyText', 'sampleReceptionText', 'sampleTravelText'] as const).entries()) {
-  sections[position].fields[0].text = translated(lang => presentationCopy(lang)[key]);
- }
- return { ...applyPageStyle(DEFAULT_PAGE, 'garden'), title: translated(() => 'Ana & Marko'),
-  subtitle: translated(lang => presentationCopy(lang).sampleSubtitle), sections };
+ const categories = ['custom', 'ceremony', 'reception', 'travel', 'accommodation', 'custom'] as const;
+ const sections: PageSection[] = categories.map((category, index) => ({
+  id: nextId(), category, visible: true,
+  title: translated(lang => weddingDemoCopy(lang).page[index][0]),
+  fields: [{ id: nextId(), type: 'text', text: translated(lang => weddingDemoCopy(lang).page[index][1]) }],
+ }));
+ // The website and event walkthrough start from the same program and dishes.
+ sections.splice(3, 0, ...(['schedule', 'menu'] as const).map(kind => ({
+  id: nextId(), category: 'custom' as const, visible: true,
+  title: translated(lang => weddingCopy(lang)[kind]),
+  fields: weddingDemo('sl')[kind].map((_, index) => ({ id: nextId(), type: 'text' as const,
+   text: translated(lang => {
+    const row = weddingDemo(lang)[kind][index];
+    return `${row.time ? `${row.time} · ` : ''}${row.title}\n${row.detail}`;
+   }),
+  })),
+ })));
+ return { ...applyPageStyle(DEFAULT_PAGE, 'garden'), title: translated(() => DEMO_WEDDING.names),
+  subtitle: translated(lang => weddingDemoCopy(lang).subtitle), sections };
 }
