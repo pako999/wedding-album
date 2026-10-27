@@ -5,8 +5,8 @@
  * Desktop uses the dedicated 16:9 cut as a large cinematic block with
  * the explanatory copy above it.
  */
-const DESKTOP_VIDEO =
-  "https://www.dropbox.com/scl/fi/qtuzczykxuoa9q19lktyb/guestcam_16x9.mp4?rlkey=5w335kv6w5b90t8q4js3w7e3u&raw=1";
+const DESKTOP_VIDEO = "/promo/guestcam-home-desktop.mp4";
+const MOBILE_VIDEO = "/promo/guestcam-home-mobile.mp4";
 
 export function PromoVideo() {
   return (
@@ -38,7 +38,7 @@ export function PromoVideo() {
               className="block h-auto w-full"
               aria-label="Predstavitveni video: kako Guestcam zbira fotografije gostov prek QR-kode"
             >
-              <source src="/promo/kako-deluje.mp4" type="video/mp4" />
+              <source src={MOBILE_VIDEO} type="video/mp4" />
             </video>
           </div>
         </div>
