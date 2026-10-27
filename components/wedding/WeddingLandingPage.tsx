@@ -9,7 +9,6 @@ import { WeddingWebsiteShowcase } from './WeddingWebsiteShowcase';
 import { DEMO_WEDDING, demoWeddingDate } from '@/lib/wedding/demo';
 import { SiteHeader } from '@/components/SiteHeader';
 import { SeoFooter } from '@/components/SeoFooter';
-import { WeddingWalkthrough } from './WeddingWalkthrough';
 import type { Lang } from '@/lib/i18n/translations';
 import { weddingCopy } from '@/lib/wedding/copy';
 import { WEDDING_PATHS,WEDDING_LANGS } from '@/lib/wedding/contracts';
@@ -32,7 +31,6 @@ export function WeddingLandingPage({lang}: {lang:Lang}) {
   </section>
   <section id="guide" className="scroll-mt-40 border-y border-stone-200 bg-[#f5f6f3] py-14 sm:py-20"><div className="mx-auto max-w-7xl px-5 sm:px-8"><h2 className="max-w-3xl font-serif text-4xl leading-tight sm:text-5xl">{v.showcase}</h2><p className="mt-5 max-w-2xl text-base leading-8 text-stone-600">{v.showcaseIntro}</p><WeddingWebsiteShowcase lang={lang}/><ol className="mt-10 grid gap-7 md:grid-cols-3">{guides.map((guide,index)=><li key={guide.title} className="border-t border-stone-300 pt-5"><span className="text-sm font-semibold text-stone-600">{index+1}</span><h3 className="mt-3 text-xl font-semibold">{guide.title}</h3><p className="mt-3 text-sm leading-7 text-stone-600">{guide.body}</p></li>)}</ol><a href={localePublicPath(lang,WEDDING_GUIDE_PATHS[lang])} className="mt-8 inline-flex rounded-full border border-stone-400 px-5 py-3 font-semibold">{p.readGuide} →</a></div></section>
   <section id="features" className="mx-auto max-w-7xl scroll-mt-40 px-5 py-14 sm:px-8 sm:py-20"><h2 className="max-w-3xl font-serif text-4xl leading-tight sm:text-5xl">{v.detailsTitle}</h2><WeddingFeatureDetails lang={lang}/><ul className="mt-10 grid gap-4 rounded-2xl border border-stone-300 bg-white p-6 text-sm font-medium sm:grid-cols-2 lg:grid-cols-3">{[t.photosBenefit,t.videosBenefit,t.storageBenefit,t.zipBenefit,t.wallBenefit,'Film Studio',t.supportBenefit].map(label=><li key={label}>✓ {label}</li>)}</ul></section>
-  <section id="experience" className="mx-auto max-w-6xl scroll-mt-40 px-5 pb-20 sm:px-8"><div className="mb-8"><h2 className="font-serif text-4xl sm:text-5xl">{t.nav}</h2><p className="mt-4 text-base leading-8 text-stone-600">{v.detailsIntro}</p></div><WeddingWalkthrough lang={lang}/></section>
   <section className="border-t border-stone-200 bg-[#f5f6f3] px-5 py-14 text-center sm:py-20"><div className="mx-auto max-w-xl"><h2 className="font-serif text-4xl sm:text-5xl">{p.all}</h2><WeddingOfferPrice lang={lang}/><a href={create} className="inline-flex rounded-full bg-stone-900 px-8 py-4 font-bold text-white">{t.choose} →</a></div></section>
  </main><SeoFooter lang={lang}/></>;
 }
