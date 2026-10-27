@@ -4,12 +4,33 @@ const assert = require('node:assert/strict');
 const { build } = require('esbuild'), playwright = require('playwright'), sharp = require('sharp');
 const root = path.resolve(__dirname, '..');
 const engine = process.env.WEDDING_UPLOAD_ENGINE || 'chromium';
+function report(error) {
+ console.error(error);
+ if(process.env.GITHUB_ACTIONS)console.error('::error::'+String(error?.stack || error).replace(/%/g,'%25').replace(/\r/g,'%0D').replace(/\n/g,'%0A'));
+}
+process.on('unhandledRejection', error => { report(error); process.exit(1); });
+process.on('uncaughtException', error => { report(error); process.exit(1); });
 (async () => {
  const bundle = await build({ stdin: { resolveDir: root, loader: 'tsx', contents: `import React from 'react';import {createRoot} from 'react-dom/client';import {WeddingSuiteManager} from './components/wedding-suite/WeddingSuiteManager';import {WeddingSuiteGuest} from './components/wedding-suite/WeddingSuiteGuest';import {imageCopy} from './lib/wedding-suite/image-copy';import {builderCopy} from './lib/wedding-suite/builder-copy';import {presentationCopy} from './lib/wedding-suite/presentation-copy';import {TRANSLATION_COPY} from './components/wedding/TranslationOptions';const lang=new URLSearchParams(location.search).get('lang')||'sl';window.fixtureCopy={image:imageCopy(lang),builder:builderCopy(lang),presentation:presentationCopy(lang),translation:TRANSLATION_COPY[lang]};createRoot(document.getElementById('root')).render(location.search.includes('guest')?<WeddingSuiteGuest slug="image-fixture" initialLang={lang}/>:<WeddingSuiteManager slug="image-fixture" lang={lang} plan="premium"/>);` }, bundle: true, write: false, platform: 'browser', format: 'iife', jsx: 'automatic', tsconfig: root + '/tsconfig.json', define: { 'process.env.NODE_ENV': '"production"', 'process.env.NEXT_PUBLIC_APP_URL': '"https://www.guestcam.si"' } });
  const css = fs.readdirSync(root + '/.next/static/chunks').filter(file => file.endsWith('.css')).map(file => fs.readFileSync(root + '/.next/static/chunks/' + file, 'utf8')).join('\n');
- const server = http.createServer((request, response) => {
+ const errors = [], images = new Map();
+ let uploadCount = 0, failUpload = false, holdUpload;
+ const server = http.createServer(async (request, response) => {
   const pathname = new URL(request.url, 'http://fixture.test').pathname;
-  if (pathname === '/app.js') { response.setHeader('Content-Type', 'text/javascript'); response.end(bundle.outputFiles[0].text); }
+  if (pathname === '/api/albums/image-fixture/wedding-suite/images') {
+   // WebKit's network inspector can omit Blob request bodies. Read the real HTTP
+   // upload instead, so this checks the bytes that the API actually receives.
+   try {
+    assert.equal(request.method,'PUT'); const chunks=[]; for await (const chunk of request) chunks.push(chunk); const bytes=Buffer.concat(chunks);
+    assert.ok(bytes.length && bytes.length<=3*1024*1024); const meta=await sharp(bytes).metadata(); assert.equal(Math.max(meta.width,meta.height),2400);
+    assert.ok(['image/webp','image/jpeg'].includes(request.headers['content-type']));
+    const id=++uploadCount; if(holdUpload)await holdUpload;
+    response.setHeader('Content-Type','application/json');
+    if(failUpload){response.writeHead(502);response.end(JSON.stringify({error:'unavailable'}));return;}
+    const url=`https://wedding-images.example.test/photo-${id}.webp`;images.set(url,await sharp(bytes).webp().toBuffer());response.end(JSON.stringify({url}));
+   } catch(error) {errors.push(String(error));report(error);response.writeHead(500);response.end('{}');}
+  }
+  else if (pathname === '/app.js') { response.setHeader('Content-Type', 'text/javascript'); response.end(bundle.outputFiles[0].text); }
   else if (pathname === '/app.css') { response.setHeader('Content-Type', 'text/css'); response.end(css); }
   else if (pathname.startsWith('/hero/')) { const file = path.resolve(root, 'public', '.' + pathname); if (!file.startsWith(root + '/public/hero/') || !fs.existsSync(file)) { response.writeHead(404); response.end(); return; } response.setHeader('Content-Type', 'image/webp'); response.end(fs.readFileSync(file)); }
   else { response.setHeader('Content-Type', 'text/html'); response.end('<html><head><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="/app.css"></head><body><div id="root"></div><script src="/app.js"></script></body></html>'); }
@@ -19,23 +40,12 @@ const engine = process.env.WEDDING_UPLOAD_ENGINE || 'chromium';
  try {
   browser = await playwright[engine].launch(engine === 'chromium' ? { executablePath: process.env.CHROMIUM_EXECUTABLE_PATH || (fs.existsSync('/usr/bin/chromium') ? '/usr/bin/chromium' : undefined), args: ['--no-sandbox'] } : {});
   const page = await browser.newPage({ viewport: { width: 1280, height: 1000 } });
-  page.on('dialog', dialog => dialog.accept()); const errors = []; page.on('pageerror', error => errors.push(error.message));
+  page.on('dialog', dialog => { void dialog.accept().catch(() => {}); }); page.on('pageerror', error => errors.push(error.message));
   const languages = ['sl','hr','sr','en','de','es'];
   let config = JSON.parse(fs.readFileSync(root + '/docs/wedding-suite-test-fixture.json', 'utf8'));
   config.story = []; config.travel = []; config.page = { title: Object.fromEntries(languages.map(lang => [lang,'Ana & Marko'])), headingFont: 'elegant', bodyFont: 'modern', background: '#fcfaf6', textColor: '#1c1917', accent: '#92400e', coverImageUrl: '/hero/wedding-garden-template.webp', sections: [{ id: 'a2c41a03-a4ef-44dc-a332-0c8909770111', category: 'custom', title: { sl: 'Najina zgodba', en: 'Our story' }, visible: true, fields: [] }] };
-  let uploadCount = 0, failUpload = false, holdUpload;
-  const images = new Map();
   const file = { name: 'wedding-photo.jpg', mimeType: 'image/jpeg', buffer: await sharp(root + '/public/hero/wedding-walk.webp').resize({ width: 3600 }).jpeg({ quality: 93 }).toBuffer() };
   await page.route('https://wedding-images.example.test/**', route => { const bytes = images.get(route.request().url()); return route.fulfill({ status: bytes ? 200 : 404, contentType: 'image/webp', body: bytes || '' }); });
-  await page.route('**/api/albums/image-fixture/wedding-suite/images', async route => {
-   assert.equal(route.request().method(), 'PUT'); const bytes = route.request().postDataBuffer();
-   assert.ok(bytes.length <= 3 * 1024 * 1024); const meta = await sharp(bytes).metadata(); assert.equal(Math.max(meta.width,meta.height),2400);
-   assert.ok(['image/webp','image/jpeg'].includes(route.request().headers()['content-type']));
-   const id = ++uploadCount; if (holdUpload) await holdUpload;
-   if (failUpload) return route.fulfill({ status: 502, json: { error: 'unavailable' } });
-   const url = `https://wedding-images.example.test/photo-${id}.webp`; images.set(url, await sharp(bytes).webp().toBuffer());
-   return route.fulfill({ json: { url } });
-  });
   await page.route('**/api/albums/image-fixture/wedding-suite/manage*', route => {
    if (route.request().method() === 'PUT') { config = route.request().postDataJSON(); return route.fulfill({ json: { config } }); }
    return route.fulfill({ json: { config, configured: true, attendees: [], entries: [], emails: [], guestPath: '/image-fixture/celebrate', preview: true } });
@@ -90,4 +100,4 @@ const engine = process.env.WEDDING_UPLOAD_ENGINE || 'chromium';
   assert.deepEqual(errors,[]);
   console.log(`PASS wedding image uploads (${engine}): real image decoding/resize, cover + section photos, autosave/reload, actual guest rendering, pending-edit safety, replacement safety, failure/retry, invalid/oversize rejection, six locales and 320–1280px controls.`);
  } finally { await browser?.close(); await new Promise(resolve=>server.close(resolve)); }
-})().catch(error=>{console.error(error);if(process.env.GITHUB_ACTIONS)console.error('::error::'+String(error).replace(/%/g,'%25').replace(/\r/g,'%0D').replace(/\n/g,'%0A'));process.exitCode=1;});
+})().catch(error=>{report(error);process.exitCode=1;});
