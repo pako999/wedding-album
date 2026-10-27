@@ -4,6 +4,10 @@ const assert = require('node:assert/strict');
 const { build } = require('esbuild'), playwright = require('playwright'), sharp = require('sharp');
 const root = path.resolve(__dirname, '..');
 const engine = process.env.WEDDING_UPLOAD_ENGINE || 'chromium';
+async function until(predicate, message) {
+ const deadline=Date.now()+20_000;
+ while(!predicate()){if(Date.now()>deadline)throw new Error(message);await new Promise(resolve=>setTimeout(resolve,30));}
+}
 function report(error) {
  console.error(error);
  if(process.env.GITHUB_ACTIONS)console.error('::error::'+String(error?.stack || error).replace(/%/g,'%25').replace(/\r/g,'%0D').replace(/\n/g,'%0A'));
@@ -64,24 +68,24 @@ process.on('uncaughtException', error => { report(error); process.exit(1); });
   await cover.locator('input[type="file"]').setInputFiles(file);
   await page.waitForSelector('[data-autosave-state="uploading"]');
   await builder.getByLabel(copy.builder.pageTitle,{exact:true}).fill('Ana & Marko · najin dan');
-  holdUpload = null; release(); await saved();
+  holdUpload = null; release(); await until(()=>config.page.coverImageUrl==='https://wedding-images.example.test/photo-1.webp','First cover did not autosave'); await saved();
   assert.equal(config.page.title.sl,'Ana & Marko · najin dan'); assert.equal(config.page.coverImageUrl,'https://wedding-images.example.test/photo-1.webp');
   await builder.locator('aside [data-wedding-cover] img').evaluate(image => image.decode());
   const previous = config.page.coverImageUrl;
   failUpload = true; await cover.locator('input[type="file"]').setInputFiles(file); await cover.getByRole('alert').waitFor(); assert.equal(config.page.coverImageUrl,previous);
-  failUpload = false; await cover.locator('input[type="file"]').setInputFiles(file); await saved(); assert.notEqual(config.page.coverImageUrl,previous);
+  failUpload = false; await cover.locator('input[type="file"]').setInputFiles(file); await until(()=>config.page.coverImageUrl!==previous,'Retried cover did not autosave'); await saved(); assert.notEqual(config.page.coverImageUrl,previous);
   const beforeInvalid = uploadCount;
   await cover.locator('input[type="file"]').setInputFiles({name:'bad.txt',mimeType:'text/plain',buffer:Buffer.from('not a photo')}); await cover.getByText(copy.image.invalid_image,{exact:true}).waitFor();
   await cover.locator('input[type="file"]').setInputFiles({name:'large.jpg',mimeType:'image/jpeg',buffer:Buffer.alloc(26*1024*1024)}); await cover.getByText(copy.image.too_large,{exact:true}).waitFor(); assert.equal(uploadCount,beforeInvalid);
   holdUpload = new Promise(resolve => { release = resolve; });
   await cover.locator('input[type="file"]').setInputFiles(file); await page.waitForSelector('[data-autosave-state="uploading"]');
-  await builder.getByRole('button',{name:copy.presentation.modern,exact:true}).click(); holdUpload = null; release(); await saved();
-  assert.equal(config.page.coverImageUrl,'/hero/wedding-walk.webp'); await cover.getByText(copy.image.superseded,{exact:true}).waitFor();
-  await cover.locator('input[type="file"]').setInputFiles(file); await saved();
+  await builder.getByRole('button',{name:copy.presentation.modern,exact:true}).click(); holdUpload = null; release(); await cover.getByText(copy.image.superseded,{exact:true}).waitFor(); await until(()=>config.page.coverImageUrl==='/hero/wedding-walk.webp','Newer template did not autosave'); await saved();
+  assert.equal(config.page.coverImageUrl,'/hero/wedding-walk.webp');
+  await cover.locator('input[type="file"]').setInputFiles(file); await until(()=>config.page.coverImageUrl.startsWith('https://wedding-images.example.test/'),'Final cover did not autosave'); await saved();
   const finalCover = config.page.coverImageUrl;
   await builder.getByLabel(copy.builder.fieldType,{exact:true}).selectOption('image'); await builder.getByRole('button',{name:'+ '+copy.builder.addField,exact:true}).click();
   const field = builder.locator('[data-page-field]').last(); await field.getByLabel(copy.image.caption,{exact:true}).fill('Najin prvi skupni spomin');
-  await field.locator('input[type="file"]').setInputFiles(file); await saved();
+  await field.locator('input[type="file"]').setInputFiles(file); await until(()=>!!config.page.sections[0].fields[0]?.url,'Section photo did not autosave'); await saved();
   const contentImage = config.page.sections[0].fields[0].url; assert.ok(contentImage.startsWith('https://wedding-images.example.test/'));
   await builder.locator('aside figure img').evaluate(image=>image.decode());
   await page.reload(); await saved(); assert.equal(config.page.coverImageUrl,finalCover); assert.equal(config.page.sections[0].fields[0].url,contentImage);
@@ -95,7 +99,7 @@ process.on('uncaughtException', error => { report(error); process.exit(1); });
    await page.goto(base+'/?lang='+lang); await saved(); copy = await page.evaluate(()=>window.fixtureCopy); await page.getByRole('checkbox',{name:copy.translation.auto,exact:true}).uncheck();
    const details = builder.locator('details').first(); await details.locator('summary').click();
    await details.getByRole('button',{name:copy.image.upload,exact:true}).waitFor();
-   if (lang === 'sl') { await details.getByRole('button',{name:copy.image.remove+' · '+copy.presentation.cover,exact:true}).click(); await saved(); assert.equal(config.page.coverImageUrl,''); }
+   if (lang === 'sl') { await details.getByRole('button',{name:copy.image.remove+' · '+copy.presentation.cover,exact:true}).click(); await until(()=>config.page.coverImageUrl==='','Removed cover did not autosave'); await saved(); assert.equal(config.page.coverImageUrl,''); }
   }
   assert.deepEqual(errors,[]);
   console.log(`PASS wedding image uploads (${engine}): real image decoding/resize, cover + section photos, autosave/reload, actual guest rendering, pending-edit safety, replacement safety, failure/retry, invalid/oversize rejection, six locales and 320–1280px controls.`);
