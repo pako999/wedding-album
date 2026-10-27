@@ -88,10 +88,11 @@ process.on('uncaughtException', error => { report(error); process.exit(1); });
   await field.locator('input[type="file"]').setInputFiles(file); await until(()=>!!config.page.sections[0].fields[0]?.url,'Section photo did not autosave'); await saved();
   let contentImage = config.page.sections[0].fields[0].url; assert.ok(contentImage.startsWith('https://wedding-images.example.test/'));
   await builder.locator('aside figure img').evaluate(image=>image.decode());
-  // Completing two uploads in one batch must keep both URLs and newer text.
+  // Overlapping uploads preserve both URLs and text, even when WebKit serializes their HTTP transport.
   const beforeParallel=uploadCount;holdUpload=new Promise(resolve=>{release=resolve;});
   await cover.locator('input[type="file"]').setInputFiles(file);await field.locator('input[type="file"]').setInputFiles(file);
-  await until(()=>uploadCount>=beforeParallel+2,'Parallel uploads did not arrive');
+  await page.waitForFunction(()=>Array.from(document.querySelectorAll('[data-wedding-builder] input[type=file]')).filter(input=>input.disabled).length===2);
+  await until(()=>uploadCount>beforeParallel,'Overlapping uploads did not start');
   await field.getByLabel(copy.image.caption,{exact:true}).fill('Najin poročni spomin');holdUpload=null;release();
   await until(()=>config.page.coverImageUrl!==finalCover&&config.page.sections[0].fields[0].url!==contentImage,'Parallel photo updates overwrote each other');await saved();
   finalCover=config.page.coverImageUrl;contentImage=config.page.sections[0].fields[0].url;assert.equal(config.page.sections[0].fields[0].text.sl,'Najin poročni spomin');
