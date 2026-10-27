@@ -3,7 +3,7 @@ const fs = require('node:fs'); const http = require('node:http'); const path = r
 const { createRequire } = require('node:module'); const root = path.resolve(__dirname, '..'); const req = createRequire(path.join(root, 'package.json'));
 const { build } = req('esbuild'); const { chromium, webkit } = req('playwright');
 (async () => {
- const bundle = await build({ stdin: { contents: `import React from 'react';import {createRoot} from 'react-dom/client';import {WeddingLandingPage} from './components/wedding/WeddingLandingPage';createRoot(document.getElementById('root')).render(<WeddingLandingPage lang={new URLSearchParams(location.search).get('lang')||'en'}/>);`, resolveDir: root, loader: 'tsx' }, bundle: true, write: false, platform: 'browser', format: 'iife', jsx: 'automatic', tsconfig: path.join(root, 'tsconfig.json'), define: { 'process.env.NODE_ENV': '"production"', 'process.env.NEXT_PUBLIC_APP_URL': '"https://www.guestcam.si"' }, plugins: [{ name: 'next-fixture-shell', setup(builder) {
+ const bundle = await build({ stdin: { contents: `import React from 'react';import {createRoot} from 'react-dom/client';import {WeddingLandingPage} from './components/wedding/WeddingLandingPage';import {WeddingWalkthrough} from './components/wedding/WeddingWalkthrough';const query=new URLSearchParams(location.search);const lang=query.get('lang')||'en';createRoot(document.getElementById('root')).render(query.has('walkthrough')?<WeddingWalkthrough lang={lang}/>:<WeddingLandingPage lang={lang}/>);`, resolveDir: root, loader: 'tsx' }, bundle: true, write: false, platform: 'browser', format: 'iife', jsx: 'automatic', tsconfig: path.join(root, 'tsconfig.json'), define: { 'process.env.NODE_ENV': '"production"', 'process.env.NEXT_PUBLIC_APP_URL': '"https://www.guestcam.si"' }, plugins: [{ name: 'next-fixture-shell', setup(builder) {
   builder.onResolve({ filter: /^(next\/link|next\/image|@clerk\/nextjs\/server|@\/components\/HeaderAuthButtons)$/ }, args => ({ path: args.path, namespace: 'fixture' }));
   builder.onLoad({ filter: /.*/, namespace: 'fixture' }, args => ({ resolveDir: root, loader: 'jsx', contents: args.path === 'next/link' ? 'export default function Link({href,children,...props}){return <a href={href} {...props}>{children}</a>}' : args.path === 'next/image' ? 'export default function Image({fill,priority,quality,sizes,...props}){return <img {...props} style={fill?{position:"absolute",width:"100%",height:"100%"}:undefined}/>}' : args.path === '@clerk/nextjs/server' ? 'export function auth(){return {userId:null}}' : 'export function HeaderAuthButtons(){return null}' }));
   builder.onLoad({filter:/SiteHeader\.tsx$/}, args=>({resolveDir:path.dirname(args.path),loader:'tsx',contents:fs.readFileSync(args.path,'utf8').replace('export async function SiteHeader','export function SiteHeader').replace('const session = await auth();','const session = {userId:null};')}));
@@ -32,9 +32,7 @@ const { build } = req('esbuild'); const { chromium, webkit } = req('playwright')
    assert.ok((await page.locator('[data-wedding-offer-banner]').innerText()).includes('40%'));
    assert.equal(await page.locator('#features article').count(), 20); assert.equal(await page.locator('#guide ol > li').count(), 3);
    assert.equal(await page.locator('[data-wedding-showcase]').count(),1);
-   const experience=page.locator('[data-wedding-walkthrough]');
-   assert.equal(await experience.locator('[data-demo-schedule] li').count(),7);
-   assert.equal(await experience.locator('[data-demo-menu] article p').count(),5);
+   assert.equal(await page.locator('[data-wedding-walkthrough]').count(),0,'The retired extra walkthrough must not reappear on the package page');
    assert.equal(await page.locator('[data-wedding-showcase] [data-wedding-page-content] > div:last-child > section').count(),8);
    if(lang==='sl')assert.equal(await page.locator('main h1').innerText(),'Vaša spletna poročna stran');
    const guideLink = await page.locator('#guide > div > a').getAttribute('href');
@@ -46,7 +44,7 @@ const { build } = req('esbuild'); const { chromium, webkit } = req('playwright')
    if(lang==='sl'&&width===390&&!largeText&&process.env.WEDDING_DETAILS_SCREENSHOT)await page.locator('[data-wedding-showcase]').screenshot({path:process.env.WEDDING_DETAILS_SCREENSHOT});
    assert.equal(await page.locator('[data-wedding-feature-detail] details').count(),20);
    assert.ok(await page.locator('[data-wedding-feature-detail] li').count()>=55);
-   const clipped=await page.locator('header, header nav, main > section:first-child, main h1, main > section:first-child > div, [data-wedding-offer], [data-wedding-offer-banner], [data-wedding-feature-detail], [data-wedding-walkthrough], [data-wedding-walkthrough] h3, [data-wedding-walkthrough] p').evaluateAll(nodes=>nodes.map(node=>({tag:node.tagName,x:node.getBoundingClientRect().x,right:node.getBoundingClientRect().right,width:node.getBoundingClientRect().width})).filter(box=>box.x < -1 || box.right > innerWidth+1));
+   const clipped=await page.locator('header, header nav, main > section:first-child, main h1, main > section:first-child > div, [data-wedding-offer], [data-wedding-offer-banner], [data-wedding-feature-detail], [data-wedding-showcase]').evaluateAll(nodes=>nodes.map(node=>({tag:node.tagName,x:node.getBoundingClientRect().x,right:node.getBoundingClientRect().right,width:node.getBoundingClientRect().width})).filter(box=>box.x < -1 || box.right > innerWidth+1));
    assert.deepEqual(clipped,[],`${lang}/${width}px/largeText=${largeText} content is clipped even if the body hides overflow`);
    if(width<1024)assert.ok(await page.locator('header').first().locator('button[aria-haspopup="dialog"]').first().isVisible());
    assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), `${lang} page overflows at ${width}px`);
@@ -88,15 +86,16 @@ const { build } = req('esbuild'); const { chromium, webkit } = req('playwright')
   assert.deepEqual(mutations,[],'The marketing demo must never save an album, send invitations or create payments');
   // Organizer edits and DJ moderation are real local interactions, never writes to a customer album.
   for(const [lang] of labels){
-   await page.goto(base+'/?lang='+lang);
+   await page.goto(base+'/?lang='+lang+'&walkthrough=1');
    const experience=page.locator('[data-wedding-walkthrough]');
+   assert.equal(await experience.locator('[data-demo-schedule] li').count(),7);
+   assert.equal(await experience.locator('[data-demo-menu] article p').count(),5);
    const tabs=experience.locator('button[aria-pressed]');
    if(lang==='sl'){
     const output=path.join(root,'artifacts/mobile-menu');fs.mkdirSync(output,{recursive:true});
     await page.setViewportSize({width:1280,height:1000});await page.addStyleTag({content:'header{visibility:hidden!important}'});
     for(const img of await experience.locator('img').all())await img.evaluate(image=>image.decode());
     await experience.screenshot({path:path.join(output,'wedding-realistic-demo-desktop.png')});
-    await page.locator('[data-wedding-showcase]').screenshot({path:path.join(output,'wedding-realistic-website-desktop.png')});
     await page.setViewportSize({width:390,height:844});
     await experience.screenshot({path:path.join(output,'wedding-realistic-demo-mobile.png')});
    }
