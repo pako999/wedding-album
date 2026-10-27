@@ -155,6 +155,10 @@ const { build } = req('esbuild'); const { chromium, webkit } = req('playwright')
   assert.ok(!await page.locator('[data-wedding-offer]').first().innerText().then(text => text.includes('113')));
   available = false; await page.reload(); await page.getByText('Standard package price', { exact: true }).first().waitFor();
   assert.ok(!await page.locator('[data-wedding-offer]').first().innerText().then(text => text.includes('of 20')));
+  // First observe a loaded quote: the standard-price placeholder can appear
+  // before React's effects/listeners have mounted after a full navigation.
+  available=true;remaining=5;await page.evaluate(()=>window.dispatchEvent(new Event('focus')));
+  await page.getByText('5 of 20 discounted packages available',{exact:true}).first().waitFor();
   // An old WebKit document must not start quote reads while being dismissed.
   const lifecycleReads=[];page.on('request',request=>{if(request.url().includes('/api/wedding-offer'))lifecycleReads.push(request.url());});
   await page.evaluate(()=>{window.dispatchEvent(new Event('pagehide'));window.dispatchEvent(new Event('focus'));});

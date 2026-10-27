@@ -1,5 +1,5 @@
 'use client';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useLayoutEffect, useRef, useState } from 'react';
 import type { WeddingOfferQuote } from '@/lib/wedding-offer';
 import type { Lang } from '@/lib/i18n/translations';
 import { OFFER_COPY } from '@/lib/wedding-offer-copy';
@@ -21,7 +21,7 @@ export function useWeddingOffer(customer = false) {
       if (mounted.current && !closing.current && !controller.signal.aborted && request.current === controller) setQuote(null);
     } finally { if (request.current === controller) request.current = null; }
   }, [customer]);
-  useEffect(() => {
+  useLayoutEffect(() => {
     mounted.current = true; closing.current = false;
     const initial = setTimeout(() => void refresh(), 0);
     const timer = setInterval(() => void refresh(), 30_000);
