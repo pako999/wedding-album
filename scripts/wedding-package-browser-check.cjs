@@ -9,8 +9,10 @@ const { build } = req('esbuild'); const { chromium, webkit } = req('playwright')
   builder.onLoad({filter:/SiteHeader\.tsx$/}, args=>({resolveDir:path.dirname(args.path),loader:'tsx',contents:fs.readFileSync(args.path,'utf8').replace('export async function SiteHeader','export function SiteHeader').replace('const session = await auth();','const session = {userId:null};')}));
  }}] });
  const css = fs.readdirSync(root + '/.next/static/chunks').filter(x => x.endsWith('.css')).map(x => fs.readFileSync(root + '/.next/static/chunks/' + x, 'utf8')).join('\n');
+ const errors=[];let remaining=8,available=true;
  const server = http.createServer((request, response) => {
-  if (request.url === '/fixture.js') { response.setHeader('content-type','application/javascript'); response.end(bundle.outputFiles[0].text); }
+  if(request.url.startsWith('/api/wedding-offer')){response.setHeader('content-type','application/json');response.setHeader('cache-control','no-store');response.end(JSON.stringify({verified:available,remaining:available?remaining:null,capacity:20,eligible:available&&remaining>0,pending:false,priceCents:available&&remaining>0?11340:18900}));}
+  else if (request.url === '/fixture.js') { response.setHeader('content-type','application/javascript'); response.end(bundle.outputFiles[0].text); }
   else if (request.url === '/fixture.css') { response.setHeader('content-type','text/css'); response.end(css+'\nhtml{--font-dm-sans:"DM Sans","DM Sans Fallback";--font-cormorant:"Cormorant Garamond","Cormorant Garamond Fallback"}'); }
   else if (request.url.startsWith('/media/')) { const file=path.join(root,'.next/static/media',path.basename(request.url)); if(!fs.existsSync(file)){response.writeHead(404);response.end();return;} response.setHeader('content-type','font/woff2');response.end(fs.readFileSync(file)); }
   else if (request.url.startsWith('/hero/')) { const filename = path.resolve(root, 'public', '.' + request.url); if (!filename.startsWith(root + '/public/hero/') || !fs.existsSync(filename)) { response.writeHead(404); response.end(); return; } response.setHeader('content-type', filename.endsWith('.png') ? 'image/png' : 'image/webp'); response.end(fs.readFileSync(filename)); }
@@ -19,8 +21,7 @@ const { build } = req('esbuild'); const { chromium, webkit } = req('playwright')
  await new Promise(resolve => server.listen(0,'127.0.0.1',resolve)); let browser;
  try {
   browser = await (process.env.PACKAGE_BROWSER_ENGINE==='webkit'?webkit:chromium).launch(process.env.PACKAGE_BROWSER_ENGINE==='webkit'?{}:{ executablePath: process.env.CHROMIUM_EXECUTABLE_PATH || (fs.existsSync('/usr/bin/chromium')?'/usr/bin/chromium':undefined), headless: true, args: ['--no-sandbox'] });
-  let remaining = 8; let available = true; const errors = [];
-  async function context() { const ctx = await browser.newContext(); await ctx.route(/^https:\/\//, route => route.abort('blockedbyclient')); await ctx.route('**/api/wedding-offer', route => route.fulfill({ json: { verified: available, remaining: available ? remaining : null, capacity: 20, eligible: available && remaining > 0, pending: false, priceCents: available && remaining > 0 ? 11340 : 18900 } })); return ctx; }
+  async function context() { return browser.newContext(); }
   const first = await context(); const page = await first.newPage(); page.on('pageerror', error => { errors.push(error.message); console.error('Browser error:', error.message); });
   const base = `http://127.0.0.1:${server.address().port}`;
   for (const lang of ['sl','hr','sr','en','de','es']) for (const width of [320,375,390,430,1280]) for (const largeText of [false,true]) {
