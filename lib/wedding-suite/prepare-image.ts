@@ -22,7 +22,11 @@ export async function prepareWeddingImage(file: File): Promise<Blob> {
    context.drawImage(source, 0, 0, canvas.width, canvas.height);
    for (const quality of [.85, .75, .6]) {
     let blob = await new Promise<Blob | null>(resolve => canvas.toBlob(resolve, 'image/webp', quality));
-    if (!blob || blob.type !== 'image/webp') blob = await new Promise<Blob | null>(resolve => canvas.toBlob(resolve, 'image/jpeg', quality));
+    if (!blob || blob.type !== 'image/webp') {
+     // JPEG has no alpha channel: keep transparent seating maps readable.
+     context.globalCompositeOperation = 'destination-over'; context.fillStyle = '#ffffff'; context.fillRect(0, 0, canvas.width, canvas.height); context.globalCompositeOperation = 'source-over';
+     blob = await new Promise<Blob | null>(resolve => canvas.toBlob(resolve, 'image/jpeg', quality));
+    }
     if (blob && blob.size && blob.size <= WEDDING_IMAGE_UPLOAD_LIMIT) return blob;
    }
    throw new Error('invalid_image');

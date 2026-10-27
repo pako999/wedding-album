@@ -23,8 +23,8 @@ export function WeddingImageField({ value, onChange, lang, label, uploadEndpoint
   setBusy(true); setError(''); setMessage(''); notify?.(true);
   const timeout = setTimeout(() => controller.abort(), 60_000);
   try {
-   const blob = await prepareWeddingImage(file); controller.signal.throwIfAborted();
-   const response = await fetch(uploadEndpoint, { method: 'PUT', headers: { 'Content-Type': blob.type }, body: blob, signal: controller.signal });
+   const blob = await prepareWeddingImage(file); const bytes = await blob.arrayBuffer(); controller.signal.throwIfAborted();
+   const response = await fetch(uploadEndpoint, { method: 'PUT', headers: { 'Content-Type': blob.type }, body: bytes, signal: controller.signal });
    const result = await response.json();
    if (!response.ok) throw new Error(result.error);
    const url = safePageLink(result.url); if (!url) throw new Error('invalid_image');
