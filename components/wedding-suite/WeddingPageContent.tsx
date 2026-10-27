@@ -26,6 +26,10 @@ export function WeddingPageContent({ page = DEFAULT_PAGE, lang, showTitle = true
    {localized(section.title, lang) && <><h2 className={`text-3xl leading-tight sm:text-4xl ${showcaseStyle ? "text-center" : ""}`} style={{ color: page.accent, fontFamily: FONT_FAMILIES[page.headingFont] }}>{localized(section.title, lang)}</h2>{showcaseStyle && <div className="mx-auto h-px w-14" style={{ backgroundColor: page.accent }} />}</>}
    {section.fields.map(field => {
     const text = localized(field.text, lang);
+    if (field.type === 'image') {
+     const src = safePageLink(field.url); if (!src) return null;
+     return <figure key={field.id} className="space-y-3"><img src={src} alt={text} width={1600} height={1067} loading="lazy" className="h-auto w-full rounded-2xl object-contain" />{text && <figcaption className="text-center text-sm leading-6" style={{ color: page.textColor }}>{text}</figcaption>}</figure>;
+    }
     if (!text) return null;
     const style = fieldTheme(field, page);
     const lines = text.split(/\r?\n/);

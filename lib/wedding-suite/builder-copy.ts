@@ -9,6 +9,7 @@ const copy = {
   fieldType: ['Vrsta polja','Vrsta polja','Vrsta polja','Field type','Feldtyp','Tipo de campo'],
   heading: ['Naslov','Naslov','Naslov','Heading','Überschrift','Encabezado'],
   text: ['Besedilo','Tekst','Tekst','Text','Text','Texto'],
+  image: ['Fotografija','Fotografija','Fotografija','Photo','Foto','Foto'],
   link: ['Povezava','Poveznica','Link','Link','Link','Enlace'],
   url: ['Spletni naslov','Web adresa','Web adresa','Website address','Webadresse','Dirección web'],
   pageTitle: ['Naslov poročne strani','Naslov stranice vjenčanja','Naslov stranice venčanja','Wedding page title','Titel der Hochzeitsseite','Título de la página de boda'],

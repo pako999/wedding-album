@@ -6,6 +6,9 @@ import { suiteCopy, suiteError } from '@/lib/wedding-suite/copy';
 import type { AttendeeView, SuiteOwnerData } from '@/lib/wedding-suite/dto';
 import { WeddingPanel, fieldClass, buttonClass, secondaryClass } from '@/components/wedding/WeddingViews';
 import { LanguageSelect } from './LanguageSelect';
+import { DEFAULT_PAGE } from '@/lib/wedding-suite/page-design';
+import { WeddingImageField } from './WeddingImageField';
+import { imageCopy } from '@/lib/wedding-suite/image-copy';
 import { WeddingPageBuilder } from './WeddingPageBuilder';
 import { WeddingProgramEditor, type ProgramSaveHandle } from './WeddingProgramEditor';
 import { weddingCopy } from '@/lib/wedding/copy';
@@ -32,6 +35,14 @@ function WeddingSuiteEditor({ slug, lang, plan, albumName, eventDate }: ManagerP
  const [editLang, setEditLang] = useState<SuiteLang>(lang); const [guestLang, setGuestLang] = useState<SuiteLang>(lang);
  const [loading, setLoading] = useState(true);
  const [busy, setBusy] = useState(false); const [error, setError] = useState(''); const [message, setMessage] = useState('');
+ const [activeUploads, setActiveUploads] = useState(0);
+ const uploadBusy = useCallback((busy: boolean) => setActiveUploads(count => Math.max(0, count + (busy ? 1 : -1))), []);
+ const imageEndpoint = `/api/albums/${encodeURIComponent(slug)}/wedding-suite/images`;
+ useEffect(() => {
+  if (!activeUploads) return;
+  const warn = (event: BeforeUnloadEvent) => { event.preventDefault(); event.returnValue = ''; };
+  window.addEventListener('beforeunload', warn); return () => window.removeEventListener('beforeunload', warn);
+ }, [activeUploads]);
  const [programSave, setProgramSave] = useState<ProgramSaveHandle | null>(null);
  const [selected, setSelected] = useState<string[]>([]);
  const load = useCallback(async (preserveConfig = false) => {
@@ -68,8 +79,8 @@ function WeddingSuiteEditor({ slug, lang, plan, albumName, eventDate }: ManagerP
   } catch (cause) { setError(suiteError(lang, cause instanceof Error ? cause.message : '')); return null; }
   finally { setBusy(false); }
  }
- const combinedStatus = [autosave.status, programSave?.status ?? 'loading'].sort((a, b) => ['error','invalid','saving','pending','loading','saved'].indexOf(a) - ['error','invalid','saving','pending','loading','saved'].indexOf(b))[0];
- const saveStatus = combinedStatus === 'saved' ? t.autoSaved : combinedStatus === 'saving' ? t.autoSaving : combinedStatus === 'pending' ? t.autoPending : combinedStatus === 'invalid' ? t.autoInvalid : combinedStatus === 'error' ? `${t.autoFailed} ${suiteError(lang, autosave.error || programSave?.error)}` : t.loading;
+ const combinedStatus = activeUploads ? 'uploading' : [autosave.status, programSave?.status ?? 'loading'].sort((a, b) => ['error','invalid','saving','pending','loading','saved'].indexOf(a) - ['error','invalid','saving','pending','loading','saved'].indexOf(b))[0];
+ const saveStatus = combinedStatus === 'uploading' ? imageCopy(lang).uploading : combinedStatus === 'saved' ? t.autoSaved : combinedStatus === 'saving' ? t.autoSaving : combinedStatus === 'pending' ? t.autoPending : combinedStatus === 'invalid' ? t.autoInvalid : combinedStatus === 'error' ? `${t.autoFailed} ${suiteError(lang, autosave.error || programSave?.error)}` : t.loading;
  function textField(key: 'welcome' | 'invitation' | 'thankYou', label: string) {
   return <label className="block space-y-1 text-sm font-medium" key={key}>{label}<textarea aria-label={label} className={fieldClass} rows={3} maxLength={5000}
    value={config[key][editLang] ?? ''} onChange={e => setConfig(c => ({ ...c, [key]: { ...c[key], [editLang]: e.target.value } }))} /></label>;
@@ -91,7 +102,7 @@ function WeddingSuiteEditor({ slug, lang, plan, albumName, eventDate }: ManagerP
   {key === 'story' && <label className="block text-sm">{t.date}<input type="date" className={fieldClass} value={row.date || ''} onChange={e => setConfig(c => ({ ...c, [key]: c[key].map(r => r.id === row.id ? { ...r, date: e.target.value } : r) }))} /></label>}
   <label className="block text-sm">{t.message}<input className={fieldClass} maxLength={180} value={row.title[editLang] ?? ''} onChange={e => setConfig(c => ({ ...c, [key]: c[key].map(r => r.id === row.id ? { ...r, title: { ...r.title, [editLang]: e.target.value } } : r) }))} /></label>
   <textarea aria-label={t.message} rows={3} className={fieldClass} maxLength={5000} value={row.text[editLang] ?? ''} onChange={e => setConfig(c => ({ ...c, [key]: c[key].map(r => r.id === row.id ? { ...r, text: { ...r.text, [editLang]: e.target.value } } : r) }))} />
-  {<label className="block text-sm">{key === 'story' ? t.photo : t.link}<input type="url" placeholder="https://" className={fieldClass} value={row.url || ''} onChange={e => setConfig(c => ({ ...c, [key]: c[key].map(r => r.id === row.id ? { ...r, url: e.target.value } : r) }))} /></label>}
+  {key === 'story' ? <WeddingImageField lang={lang} label={t.photo} value={row.url || ''} uploadEndpoint={imageEndpoint} onUploadBusy={uploadBusy} onChange={url => setConfig(c => ({ ...c, story: c.story.map(r => r.id === row.id ? { ...r, url } : r) }))} /> : <label className="block text-sm">{t.link}<input type="url" placeholder="https://" className={fieldClass} value={row.url || ''} onChange={e => setConfig(c => ({ ...c, travel: c.travel.map(r => r.id === row.id ? { ...r, url: e.target.value } : r) }))} /></label>}
  </div>)}</div><button type="button" className={`${secondaryClass} mt-3`} disabled={config[key].length >= 30} onClick={() => setConfig(c => ({ ...c, [key]: [...c[key], { id: crypto.randomUUID(), title: {}, text: {} }] }))}>+ {t.addRow}</button></WeddingPanel>;
  if (plan !== 'premium') return <WeddingPanel title={presentationCopy(lang).website}><p>{weddingCopy(lang).premiumRequired}</p></WeddingPanel>;
  if (!data) return <section id="wedding-suite" data-wedding-editor><WeddingPanel title={presentationCopy(lang).website}>
@@ -112,12 +123,12 @@ function WeddingSuiteEditor({ slug, lang, plan, albumName, eventDate }: ManagerP
   <div className="mt-5 grid gap-4 sm:grid-cols-2"><label className="block text-sm">{t.unlockAt}<input type="datetime-local" className={fieldClass} value={config.capsuleUnlockAt ? new Date(new Date(config.capsuleUnlockAt).getTime() - new Date(config.capsuleUnlockAt).getTimezoneOffset() * 60000).toISOString().slice(0,16) : ''} onChange={e => setConfig(c => ({ ...c, capsuleUnlockAt: e.target.value ? new Date(e.target.value).toISOString() : null }))} /></label>
    <label className="block text-sm">{t.deadline}<input type="datetime-local" className={fieldClass} value={config.rsvpDeadline ? new Date(new Date(config.rsvpDeadline).getTime() - new Date(config.rsvpDeadline).getTimezoneOffset() * 60000).toISOString().slice(0,16) : ''} onChange={e => setConfig(c => ({ ...c, rsvpDeadline: e.target.value ? new Date(e.target.value).toISOString() : null }))} /></label>
    <label className="block text-sm">{t.companions}<input type="number" min={0} max={10} className={fieldClass} value={config.maxCompanions} onChange={e => setConfig(c => ({ ...c, maxCompanions: Number(e.target.value) }))} /></label>
-   <label className="block text-sm">{t.photo} · {t.thanks}<input type="url" className={fieldClass} placeholder="https://" value={config.thankYouPhotoUrl} onChange={e => setConfig(c => ({ ...c, thankYouPhotoUrl: e.target.value }))} /></label>
+   <WeddingImageField lang={lang} label={`${t.photo} · ${t.thanks}`} value={config.thankYouPhotoUrl} uploadEndpoint={imageEndpoint} onUploadBusy={uploadBusy} onChange={url => setConfig(c => ({ ...c, thankYouPhotoUrl: url }))} />
   </div>
-  <div className="mt-5 flex flex-wrap gap-3"><button type="button" className={buttonClass} disabled={!data || autosave.status === 'saving'} onClick={saveNow}>{autosave.status === 'saving' ? t.autoSaving : t.save}</button>
+  <div className="mt-5 flex flex-wrap gap-3"><button type="button" className={buttonClass} disabled={!data || !!activeUploads || autosave.status === 'saving'} onClick={saveNow}>{autosave.status === 'saving' ? t.autoSaving : t.save}</button>
    {data && <a className={secondaryClass} href={`${data.guestPath}?lang=${editLang}`} target="_blank" rel="noreferrer">{t.guestLink} ↗</a>}
   </div></WeddingPanel>
-  <WeddingPageBuilder value={config.page} lang={lang} editLang={editLang} onChange={page => setConfig(current => ({ ...current, page }))} />
+  <WeddingPageBuilder value={config.page} lang={lang} editLang={editLang} onChange={change => setConfig(current => ({ ...current, page: typeof change === 'function' ? change(current.page ?? DEFAULT_PAGE) : change }))} uploadEndpoint={imageEndpoint} onUploadBusy={uploadBusy} />
   <WeddingProgramEditor slug={slug} lang={lang} editLang={editLang} autoTranslate={autoTranslate} albumName={albumName} eventDate={eventDate} onSaveState={setProgramSave} />
   <div className="grid gap-6 lg:grid-cols-2">{rows('story')}{rows('travel')}</div>
   <div className="grid gap-6 lg:grid-cols-2"><WeddingPanel title={t.seating}>
@@ -126,7 +137,7 @@ function WeddingSuiteEditor({ slug, lang, plan, albumName, eventDate }: ManagerP
     <label className="text-xs">{t.capacity}<input type="number" min={1} max={100} className={fieldClass} value={table.capacity} onChange={e => setConfig(c => ({ ...c, tables: c.tables.map(r => r.id === table.id ? { ...r, capacity: Number(e.target.value) } : r) }))} /></label>
     <button type="button" className="self-end min-h-11 px-2 text-sm text-red-700" onClick={() => setConfig(c => ({ ...c, tables: c.tables.filter(r => r.id !== table.id) }))}>{t.remove}</button>
    </div>)}</div><button className={`${secondaryClass} mt-3`} type="button" disabled={config.tables.length >= 100} onClick={() => setConfig(c => ({ ...c, tables: [...c.tables, { id: crypto.randomUUID(), name: `${t.table} ${c.tables.length + 1}`, capacity: 8 }] }))}>+ {t.addTable}</button>
-   <label className="mt-4 block text-sm">{t.seating} · {t.photo}<input type="url" placeholder="https://" className={fieldClass} value={config.seatingMapUrl} onChange={e => setConfig(c => ({ ...c, seatingMapUrl: e.target.value }))} /></label>
+   <div className="mt-4"><WeddingImageField lang={lang} label={`${t.seating} · ${t.photo}`} value={config.seatingMapUrl} uploadEndpoint={imageEndpoint} onUploadBusy={uploadBusy} onChange={url => setConfig(c => ({ ...c, seatingMapUrl: url }))} /></div>
   </WeddingPanel><WeddingPanel title={t.menu}>
    <div className="space-y-3">{config.menuOptions.map(row => <div className="flex items-center gap-2" key={row.id}><label className="flex-1 text-sm">{t.menu}<input className={fieldClass} maxLength={180} value={row.title[editLang] ?? ''} onChange={e => setConfig(c => ({ ...c, menuOptions: c.menuOptions.map(r => r.id === row.id ? { ...r, title: { ...r.title, [editLang]: e.target.value } } : r) }))} /></label><button type="button" className="text-sm text-red-700" onClick={() => setConfig(c => ({ ...c, menuOptions: c.menuOptions.filter(r => r.id !== row.id) }))}>{t.remove}</button></div>)}</div>
    <button type="button" className={`${secondaryClass} mt-3`} disabled={config.menuOptions.length >= 20} onClick={() => setConfig(c => ({ ...c, menuOptions: [...c.menuOptions, { id: crypto.randomUUID(), title: {} }] }))}>+ {t.addRow}</button>
@@ -152,7 +163,7 @@ function WeddingSuiteEditor({ slug, lang, plan, albumName, eventDate }: ManagerP
   </fieldset>
   <div data-autosave-state={combinedStatus} className="sticky bottom-3 z-10 space-y-2 rounded-2xl border bg-white/95 p-3 shadow-lg backdrop-blur">
    <p role="status" aria-live="polite" className={`text-sm ${combinedStatus === 'error' || combinedStatus === 'invalid' ? 'text-red-800' : 'text-stone-700'}`}>{saveStatus}</p>
-   {!data ? <button type="button" className={`${buttonClass} w-full`} onClick={() => void load()}>{t.retryLoad}</button> : <button type="button" className={`${buttonClass} w-full`} disabled={combinedStatus === 'saving' || !!autosave.recovery || !!programSave?.blocked} onClick={saveNow}>{combinedStatus === 'saving' ? t.autoSaving : combinedStatus === 'error' ? t.retrySave : t.save}</button>}
+   {!data ? <button type="button" className={`${buttonClass} w-full`} onClick={() => void load()}>{t.retryLoad}</button> : <button type="button" className={`${buttonClass} w-full`} disabled={combinedStatus === 'uploading' || combinedStatus === 'saving' || !!autosave.recovery || !!programSave?.blocked} onClick={saveNow}>{combinedStatus === 'uploading' ? imageCopy(lang).uploading : combinedStatus === 'saving' ? t.autoSaving : combinedStatus === 'error' ? t.retrySave : t.save}</button>}
   </div>
  </section>;
 }

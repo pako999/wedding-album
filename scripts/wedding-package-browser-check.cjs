@@ -3,14 +3,16 @@ const fs = require('node:fs'); const http = require('node:http'); const path = r
 const { createRequire } = require('node:module'); const root = path.resolve(__dirname, '..'); const req = createRequire(path.join(root, 'package.json'));
 const { build } = req('esbuild'); const { chromium, webkit } = req('playwright');
 (async () => {
- const bundle = await build({ stdin: { contents: `import React from 'react';import {createRoot} from 'react-dom/client';import {WeddingLandingPage} from './components/wedding/WeddingLandingPage';createRoot(document.getElementById('root')).render(<WeddingLandingPage lang={new URLSearchParams(location.search).get('lang')||'en'}/>);`, resolveDir: root, loader: 'tsx' }, bundle: true, write: false, platform: 'browser', format: 'iife', jsx: 'automatic', tsconfig: path.join(root, 'tsconfig.json'), define: { 'process.env.NODE_ENV': '"production"', 'process.env.NEXT_PUBLIC_APP_URL': '"https://www.guestcam.si"' }, plugins: [{ name: 'next-fixture-shell', setup(builder) {
+ const bundle = await build({ stdin: { contents: `import React from 'react';import {createRoot} from 'react-dom/client';import {WeddingLandingPage} from './components/wedding/WeddingLandingPage';import {WeddingWalkthrough} from './components/wedding/WeddingWalkthrough';const query=new URLSearchParams(location.search);const lang=query.get('lang')||'en';createRoot(document.getElementById('root')).render(query.has('walkthrough')?<WeddingWalkthrough lang={lang}/>:<WeddingLandingPage lang={lang}/>);`, resolveDir: root, loader: 'tsx' }, bundle: true, write: false, platform: 'browser', format: 'iife', jsx: 'automatic', tsconfig: path.join(root, 'tsconfig.json'), define: { 'process.env.NODE_ENV': '"production"', 'process.env.NEXT_PUBLIC_APP_URL': '"https://www.guestcam.si"' }, plugins: [{ name: 'next-fixture-shell', setup(builder) {
   builder.onResolve({ filter: /^(next\/link|next\/image|@clerk\/nextjs\/server|@\/components\/HeaderAuthButtons)$/ }, args => ({ path: args.path, namespace: 'fixture' }));
   builder.onLoad({ filter: /.*/, namespace: 'fixture' }, args => ({ resolveDir: root, loader: 'jsx', contents: args.path === 'next/link' ? 'export default function Link({href,children,...props}){return <a href={href} {...props}>{children}</a>}' : args.path === 'next/image' ? 'export default function Image({fill,priority,quality,sizes,...props}){return <img {...props} style={fill?{position:"absolute",width:"100%",height:"100%"}:undefined}/>}' : args.path === '@clerk/nextjs/server' ? 'export function auth(){return {userId:null}}' : 'export function HeaderAuthButtons(){return null}' }));
   builder.onLoad({filter:/SiteHeader\.tsx$/}, args=>({resolveDir:path.dirname(args.path),loader:'tsx',contents:fs.readFileSync(args.path,'utf8').replace('export async function SiteHeader','export function SiteHeader').replace('const session = await auth();','const session = {userId:null};')}));
  }}] });
  const css = fs.readdirSync(root + '/.next/static/chunks').filter(x => x.endsWith('.css')).map(x => fs.readFileSync(root + '/.next/static/chunks/' + x, 'utf8')).join('\n');
+ const errors=[];let remaining=8,available=true;
  const server = http.createServer((request, response) => {
-  if (request.url === '/fixture.js') { response.setHeader('content-type','application/javascript'); response.end(bundle.outputFiles[0].text); }
+  if(request.url.startsWith('/api/wedding-offer')){response.setHeader('content-type','application/json');response.setHeader('cache-control','no-store');response.end(JSON.stringify({verified:available,remaining:available?remaining:null,capacity:20,eligible:available&&remaining>0,pending:false,priceCents:available&&remaining>0?11340:18900}));}
+  else if (request.url === '/fixture.js') { response.setHeader('content-type','application/javascript'); response.end(bundle.outputFiles[0].text); }
   else if (request.url === '/fixture.css') { response.setHeader('content-type','text/css'); response.end(css+'\nhtml{--font-dm-sans:"DM Sans","DM Sans Fallback";--font-cormorant:"Cormorant Garamond","Cormorant Garamond Fallback"}'); }
   else if (request.url.startsWith('/media/')) { const file=path.join(root,'.next/static/media',path.basename(request.url)); if(!fs.existsSync(file)){response.writeHead(404);response.end();return;} response.setHeader('content-type','font/woff2');response.end(fs.readFileSync(file)); }
   else if (request.url.startsWith('/hero/')) { const filename = path.resolve(root, 'public', '.' + request.url); if (!filename.startsWith(root + '/public/hero/') || !fs.existsSync(filename)) { response.writeHead(404); response.end(); return; } response.setHeader('content-type', filename.endsWith('.png') ? 'image/png' : 'image/webp'); response.end(fs.readFileSync(filename)); }
@@ -19,8 +21,7 @@ const { build } = req('esbuild'); const { chromium, webkit } = req('playwright')
  await new Promise(resolve => server.listen(0,'127.0.0.1',resolve)); let browser;
  try {
   browser = await (process.env.PACKAGE_BROWSER_ENGINE==='webkit'?webkit:chromium).launch(process.env.PACKAGE_BROWSER_ENGINE==='webkit'?{}:{ executablePath: process.env.CHROMIUM_EXECUTABLE_PATH || (fs.existsSync('/usr/bin/chromium')?'/usr/bin/chromium':undefined), headless: true, args: ['--no-sandbox'] });
-  let remaining = 8; let available = true; const errors = [];
-  async function context() { const ctx = await browser.newContext(); await ctx.route(/^https:\/\//, route => route.abort('blockedbyclient')); await ctx.route('**/api/wedding-offer', route => route.fulfill({ json: { verified: available, remaining: available ? remaining : null, capacity: 20, eligible: available && remaining > 0, pending: false, priceCents: available && remaining > 0 ? 11340 : 18900 } })); return ctx; }
+  async function context() { return browser.newContext(); }
   const first = await context(); const page = await first.newPage(); page.on('pageerror', error => { errors.push(error.message); console.error('Browser error:', error.message); });
   const base = `http://127.0.0.1:${server.address().port}`;
   for (const lang of ['sl','hr','sr','en','de','es']) for (const width of [320,375,390,430,1280]) for (const largeText of [false,true]) {
@@ -32,9 +33,7 @@ const { build } = req('esbuild'); const { chromium, webkit } = req('playwright')
    assert.ok((await page.locator('[data-wedding-offer-banner]').innerText()).includes('40%'));
    assert.equal(await page.locator('#features article').count(), 20); assert.equal(await page.locator('#guide ol > li').count(), 3);
    assert.equal(await page.locator('[data-wedding-showcase]').count(),1);
-   const experience=page.locator('[data-wedding-walkthrough]');
-   assert.equal(await experience.locator('[data-demo-schedule] li').count(),7);
-   assert.equal(await experience.locator('[data-demo-menu] article p').count(),5);
+   assert.equal(await page.locator('[data-wedding-walkthrough]').count(),0,'The retired extra walkthrough must not reappear on the package page');
    assert.equal(await page.locator('[data-wedding-showcase] [data-wedding-page-content] > div:last-child > section').count(),8);
    if(lang==='sl')assert.equal(await page.locator('main h1').innerText(),'Vaša spletna poročna stran');
    const guideLink = await page.locator('#guide > div > a').getAttribute('href');
@@ -46,7 +45,7 @@ const { build } = req('esbuild'); const { chromium, webkit } = req('playwright')
    if(lang==='sl'&&width===390&&!largeText&&process.env.WEDDING_DETAILS_SCREENSHOT)await page.locator('[data-wedding-showcase]').screenshot({path:process.env.WEDDING_DETAILS_SCREENSHOT});
    assert.equal(await page.locator('[data-wedding-feature-detail] details').count(),20);
    assert.ok(await page.locator('[data-wedding-feature-detail] li').count()>=55);
-   const clipped=await page.locator('header, header nav, main > section:first-child, main h1, main > section:first-child > div, [data-wedding-offer], [data-wedding-offer-banner], [data-wedding-feature-detail], [data-wedding-walkthrough], [data-wedding-walkthrough] h3, [data-wedding-walkthrough] p').evaluateAll(nodes=>nodes.map(node=>({tag:node.tagName,x:node.getBoundingClientRect().x,right:node.getBoundingClientRect().right,width:node.getBoundingClientRect().width})).filter(box=>box.x < -1 || box.right > innerWidth+1));
+   const clipped=await page.locator('header, header nav, main > section:first-child, main h1, main > section:first-child > div, [data-wedding-offer], [data-wedding-offer-banner], [data-wedding-feature-detail], [data-wedding-showcase]').evaluateAll(nodes=>nodes.map(node=>({tag:node.tagName,x:node.getBoundingClientRect().x,right:node.getBoundingClientRect().right,width:node.getBoundingClientRect().width})).filter(box=>box.x < -1 || box.right > innerWidth+1));
    assert.deepEqual(clipped,[],`${lang}/${width}px/largeText=${largeText} content is clipped even if the body hides overflow`);
    if(width<1024)assert.ok(await page.locator('header').first().locator('button[aria-haspopup="dialog"]').first().isVisible());
    assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), `${lang} page overflows at ${width}px`);
@@ -88,15 +87,16 @@ const { build } = req('esbuild'); const { chromium, webkit } = req('playwright')
   assert.deepEqual(mutations,[],'The marketing demo must never save an album, send invitations or create payments');
   // Organizer edits and DJ moderation are real local interactions, never writes to a customer album.
   for(const [lang] of labels){
-   await page.goto(base+'/?lang='+lang);
+   await page.goto(base+'/?lang='+lang+'&walkthrough=1');
    const experience=page.locator('[data-wedding-walkthrough]');
+   assert.equal(await experience.locator('[data-demo-schedule] li').count(),7);
+   assert.equal(await experience.locator('[data-demo-menu] article p').count(),5);
    const tabs=experience.locator('button[aria-pressed]');
    if(lang==='sl'){
     const output=path.join(root,'artifacts/mobile-menu');fs.mkdirSync(output,{recursive:true});
     await page.setViewportSize({width:1280,height:1000});await page.addStyleTag({content:'header{visibility:hidden!important}'});
     for(const img of await experience.locator('img').all())await img.evaluate(image=>image.decode());
     await experience.screenshot({path:path.join(output,'wedding-realistic-demo-desktop.png')});
-    await page.locator('[data-wedding-showcase]').screenshot({path:path.join(output,'wedding-realistic-website-desktop.png')});
     await page.setViewportSize({width:390,height:844});
     await experience.screenshot({path:path.join(output,'wedding-realistic-demo-mobile.png')});
    }
@@ -155,6 +155,17 @@ const { build } = req('esbuild'); const { chromium, webkit } = req('playwright')
   assert.ok(!await page.locator('[data-wedding-offer]').first().innerText().then(text => text.includes('113')));
   available = false; await page.reload(); await page.getByText('Standard package price', { exact: true }).first().waitFor();
   assert.ok(!await page.locator('[data-wedding-offer]').first().innerText().then(text => text.includes('of 20')));
+  // First observe a loaded quote: the standard-price placeholder can appear
+  // before React's effects/listeners have mounted after a full navigation.
+  available=true;remaining=5;await page.evaluate(()=>window.dispatchEvent(new Event('focus')));
+  await page.getByText('5 of 20 discounted packages available',{exact:true}).first().waitFor();
+  // An old WebKit document must not start quote reads while being dismissed.
+  const lifecycleReads=[];page.on('request',request=>{if(request.url().includes('/api/wedding-offer'))lifecycleReads.push(request.url());});
+  await page.evaluate(()=>{window.dispatchEvent(new Event('pagehide'));window.dispatchEvent(new Event('focus'));});
+  await page.waitForTimeout(300);assert.equal(lifecycleReads.length,0,'A dismissing page must not fetch inventory on focus');
+  available=true;remaining=4;await page.evaluate(()=>window.dispatchEvent(new PageTransitionEvent('pageshow',{persisted:true})));
+  await page.getByText('4 of 20 discounted packages available',{exact:true}).first().waitFor();
+  assert.ok(lifecycleReads.length>0,'Returning from the browser cache refreshes the real quote');
   assert.deepEqual(errors,[]);
   console.log('PASS package browser: six languages at five widths from 320–1280px, real header/footer, default/larger text and unclipped content bounds, twenty detailed features in every language, a real wedding website preview and three setup steps, exact launch price, shared availability across cookie jars, exhaustion and unavailable-inventory fallback.');
  } finally { await browser?.close(); await new Promise(resolve => server.close(resolve)); }

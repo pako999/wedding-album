@@ -1,5 +1,5 @@
 'use client';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useLayoutEffect, useRef, useState } from 'react';
 import type { WeddingOfferQuote } from '@/lib/wedding-offer';
 import type { Lang } from '@/lib/i18n/translations';
 import { OFFER_COPY } from '@/lib/wedding-offer-copy';
@@ -7,18 +7,33 @@ import { PREMIUM_REGULAR_PRICE_CENTS, PREMIUM_SALE_PERCENT } from '@/lib/plan-pr
 
 export function useWeddingOffer(customer = false) {
   const [quote, setQuote] = useState<WeddingOfferQuote | null>(null);
+  const mounted = useRef(false), closing = useRef(false);
+  const request = useRef<AbortController | null>(null);
   const refresh = useCallback(async () => {
+    if (!mounted.current || closing.current || document.visibilityState === 'hidden') return;
+    request.current?.abort(); const controller = new AbortController(); request.current = controller;
     try {
-      const res = await fetch(`/api/wedding-offer${customer ? '?customer=1' : ''}`, { cache: 'no-store' });
+      const res = await fetch(`/api/wedding-offer${customer ? '?customer=1' : ''}`, { cache: 'no-store', signal: controller.signal });
       if (!res.ok) throw new Error('unavailable');
-      setQuote(await res.json());
-    } catch { setQuote(null); }
+      const next = await res.json();
+      if (mounted.current && !closing.current && !controller.signal.aborted && request.current === controller) setQuote(next);
+    } catch {
+      if (mounted.current && !closing.current && !controller.signal.aborted && request.current === controller) setQuote(null);
+    } finally { if (request.current === controller) request.current = null; }
   }, [customer]);
-  useEffect(() => {
+  useLayoutEffect(() => {
+    mounted.current = true; closing.current = false;
     const initial = setTimeout(() => void refresh(), 0);
     const timer = setInterval(() => void refresh(), 30_000);
-    const focus = () => void refresh(); window.addEventListener('focus', focus);
-    return () => { clearTimeout(initial); clearInterval(timer); window.removeEventListener('focus', focus); };
+    let resume: ReturnType<typeof setTimeout> | undefined;
+    // WebKit can emit focus while the old document is being dismissed. Defer
+    // resuming so pagehide can cancel that read before a new fetch is started.
+    const focus = () => { clearTimeout(resume); if (!closing.current && document.visibilityState === 'visible') resume = setTimeout(() => void refresh(), 150); };
+    const hide = () => { closing.current = true; clearTimeout(initial); clearTimeout(resume); request.current?.abort(); };
+    const show = (event: PageTransitionEvent) => { if (event.persisted) { closing.current = false; focus(); } };
+    const visibility = () => { if (document.visibilityState === 'hidden') { clearTimeout(resume); request.current?.abort(); } else focus(); };
+    window.addEventListener('focus', focus); window.addEventListener('pagehide', hide); window.addEventListener('pageshow', show); document.addEventListener('visibilitychange', visibility);
+    return () => { mounted.current = false; closing.current = true; clearTimeout(initial); clearTimeout(resume); clearInterval(timer); request.current?.abort(); window.removeEventListener('focus', focus); window.removeEventListener('pagehide', hide); window.removeEventListener('pageshow', show); document.removeEventListener('visibilitychange', visibility); };
   }, [refresh]);
   return { quote, refresh };
 }
