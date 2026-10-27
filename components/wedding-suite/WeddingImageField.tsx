@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useLayoutEffect, useRef, useState } from 'react';
 import type { SuiteLang } from '@/lib/wedding-suite/contracts';
 import { imageCopy } from '@/lib/wedding-suite/image-copy';
 import { prepareWeddingImage } from '@/lib/wedding-suite/prepare-image';
@@ -15,7 +15,7 @@ export function WeddingImageField({ value, onChange, lang, label, uploadEndpoint
  const latest = useRef({ value, onChange, onUploadBusy });
  const [busy, setBusy] = useState(false), [error, setError] = useState(''), [message, setMessage] = useState('');
  useLayoutEffect(() => { latest.current = { value, onChange, onUploadBusy }; }, [value, onChange, onUploadBusy]);
- useEffect(() => { alive.current = true; return () => { alive.current = false; flight.current?.abort(); }; }, []);
+ useLayoutEffect(() => { alive.current = true; return () => { alive.current = false; flight.current?.abort(); }; }, []);
  async function upload(file: File) {
   if (!uploadEndpoint || flight.current) return;
   const controller = new AbortController(); flight.current = controller;
