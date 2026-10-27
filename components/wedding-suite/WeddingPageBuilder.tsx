@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type SetStateAction } from 'react';
 import { localized, PAGE_CATEGORIES, PAGE_FIELD_TYPES, PAGE_FONTS, type PageDesign, type PageField, type PageSection, type SuiteLang } from '@/lib/wedding-suite/contracts';
 import { DEFAULT_PAGE, FONT_FAMILIES, movePageItem } from '@/lib/wedding-suite/page-design';
 import { builderCopy } from '@/lib/wedding-suite/builder-copy';
@@ -11,7 +11,7 @@ import { presentationCopy } from '@/lib/wedding-suite/presentation-copy';
 import { applyPageStyle, PAGE_STYLES, starterSections, type PageStyle } from '@/lib/wedding-suite/page-templates';
 
 export function WeddingPageBuilder({ value, lang, editLang, onChange, uploadEndpoint, onUploadBusy }: {
-  value?: PageDesign; lang: SuiteLang; editLang: SuiteLang; onChange: (page: PageDesign) => void; uploadEndpoint?: string; onUploadBusy?: (busy: boolean) => void;
+  value?: PageDesign; lang: SuiteLang; editLang: SuiteLang; onChange: (page: SetStateAction<PageDesign>) => void; uploadEndpoint?: string; onUploadBusy?: (busy: boolean) => void;
 }) {
   const page = value ?? DEFAULT_PAGE; const t = builderCopy(lang); const p = presentationCopy(lang);
   const previewRef = useRef<HTMLElement>(null); const editorRef = useRef<HTMLDivElement>(null);
@@ -26,6 +26,10 @@ export function WeddingPageBuilder({ value, lang, editLang, onChange, uploadEndp
   function updateSection(next: PageSection) { onChange({ ...page, sections: page.sections.map(item => item.id === next.id ? next : item) }); }
   function updateField(id: string, patch: Partial<PageField>) {
     if (section) updateSection({ ...section, fields: section.fields.map(field => field.id === id ? { ...field, ...patch } : field) });
+  }
+  function updateImageField(sectionId: string, fieldId: string, url: string) {
+    onChange(current => ({ ...current, sections: current.sections.map(item => item.id === sectionId
+      ? { ...item, fields: item.fields.map(field => field.id === fieldId ? { ...field, url } : field) } : item) }));
   }
   function addCategory() {
     if (page.sections.length >= 12) return;
@@ -47,12 +51,12 @@ export function WeddingPageBuilder({ value, lang, editLang, onChange, uploadEndp
       <button type="button" className={`${secondaryClass} xl:hidden`} onClick={() => previewRef.current?.scrollIntoView({ block: 'start' })}>{t.preview} ↓</button>
       <div className="grid min-w-0 gap-6 xl:grid-cols-2">
         <div className="min-w-0 space-y-5">
-          <div className="space-y-3"><h3 className="text-sm font-semibold">{p.templates}</h3><div className="grid grid-cols-3 gap-3">{(Object.keys(PAGE_STYLES) as PageStyle[]).map(style => <button key={style} type="button" className="min-w-0 overflow-hidden rounded-xl border border-stone-300 bg-white text-left transition hover:border-stone-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-700" onClick={() => { onChange(applyPageStyle(page, style)); previewScrollRef.current?.scrollTo(0, 0); }}>
+          <div className="space-y-3"><h3 className="text-sm font-semibold">{p.templates}</h3><div className="grid grid-cols-3 gap-3">{(Object.keys(PAGE_STYLES) as PageStyle[]).map(style => <button key={style} type="button" className="min-w-0 overflow-hidden rounded-xl border border-stone-300 bg-white text-left transition hover:border-stone-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-700" onClick={() => { onChange(current => applyPageStyle(current, style)); previewScrollRef.current?.scrollTo(0, 0); }}>
             <img src={PAGE_STYLES[style].image} alt="" width={320} height={240} loading="lazy" className="aspect-[4/3] w-full object-cover" /><span className="block px-2 py-3 text-xs font-semibold leading-5 [overflow-wrap:anywhere]">{p[style]}</span>
           </button>)}</div></div>
           <label className="block text-sm font-semibold">{t.pageTitle}<input className={fieldClass} maxLength={180} value={page.title[editLang] ?? ''} onChange={event => onChange({ ...page, title: { ...page.title, [editLang]: event.target.value } })} /></label>
           <label className="block text-sm">{p.subtitle}<input className={fieldClass} maxLength={180} value={page.subtitle?.[editLang] ?? ''} onChange={event => onChange({ ...page, subtitle: { ...page.subtitle, [editLang]: event.target.value } })} /></label>
-          <details className="rounded-xl border border-stone-200 p-4"><summary className="cursor-pointer text-sm font-semibold">{p.cover}</summary><div className="mt-4"><WeddingImageField value={page.coverImageUrl || ''} lang={lang} label={p.cover} uploadEndpoint={uploadEndpoint} onUploadBusy={onUploadBusy} onChange={url => onChange({ ...page, coverImageUrl: url })} />{!uploadEndpoint && <p className="mt-2 text-xs leading-5 text-stone-600">{p.coverHint}</p>}</div></details>
+          <details className="rounded-xl border border-stone-200 p-4"><summary className="cursor-pointer text-sm font-semibold">{p.cover}</summary><div className="mt-4"><WeddingImageField value={page.coverImageUrl || ''} lang={lang} label={p.cover} uploadEndpoint={uploadEndpoint} onUploadBusy={onUploadBusy} onChange={url => onChange(current => ({ ...current, coverImageUrl: url }))} />{!uploadEndpoint && <p className="mt-2 text-xs leading-5 text-stone-600">{p.coverHint}</p>}</div></details>
           <details className="rounded-xl border border-stone-200 p-4">
             <summary className="cursor-pointer font-semibold">{t.design}</summary>
             <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -92,7 +96,7 @@ export function WeddingPageBuilder({ value, lang, editLang, onChange, uploadEndp
               <label className="block text-sm">{field.type === 'image' ? imageCopy(lang).caption : t[field.type]}{field.type === 'text'
                 ? <textarea aria-label={t[field.type]} className={fieldClass} rows={3} maxLength={5000} value={field.text[editLang] ?? ''} onChange={event => updateField(field.id, { text: { ...field.text, [editLang]: event.target.value } })} />
                 : <input className={fieldClass} maxLength={180} value={field.text[editLang] ?? ''} onChange={event => updateField(field.id, { text: { ...field.text, [editLang]: event.target.value } })} />}</label>
-              {field.type === 'image' && <WeddingImageField key={field.id} value={field.url || ''} lang={lang} label={imageCopy(lang).image} uploadEndpoint={uploadEndpoint} onUploadBusy={onUploadBusy} onChange={url => updateField(field.id, { url })} />}
+              {field.type === 'image' && <WeddingImageField key={field.id} value={field.url || ''} lang={lang} label={imageCopy(lang).image} uploadEndpoint={uploadEndpoint} onUploadBusy={onUploadBusy} onChange={url => updateImageField(section.id, field.id, url)} />}
               {field.type === 'link' && <label className="block text-sm">{t.url}<input type="url" required placeholder="https://" className={fieldClass} value={field.url || ''} onChange={event => updateField(field.id, { url: event.target.value })} /></label>}
               {field.type !== 'image' && <details className="rounded-lg border border-stone-200 bg-white p-3"><summary className="cursor-pointer text-xs font-semibold">{p.fieldStyle}</summary><div className="mt-3 grid gap-3 sm:grid-cols-2">
                 <label className="block text-sm">{t.font}<select aria-label={`${t.font} ${index + 1}`} className={fieldClass} value={field.font || ''} onChange={event => updateField(field.id, { font: event.target.value ? event.target.value as PageField['font'] : undefined })}><option value="">{t.inherit}</option>{PAGE_FONTS.map(font => <option key={font} value={font} style={{ fontFamily: FONT_FAMILIES[font] }}>{t[font]}</option>)}</select></label>

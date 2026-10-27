@@ -82,19 +82,26 @@ process.on('uncaughtException', error => { report(error); process.exit(1); });
   await builder.getByRole('button',{name:copy.presentation.modern,exact:true}).click(); holdUpload = null; release(); await cover.getByText(copy.image.superseded,{exact:true}).waitFor(); await until(()=>config.page.coverImageUrl==='/hero/wedding-walk.webp','Newer template did not autosave'); await saved();
   assert.equal(config.page.coverImageUrl,'/hero/wedding-walk.webp');
   await cover.locator('input[type="file"]').setInputFiles(file); await until(()=>config.page.coverImageUrl.startsWith('https://wedding-images.example.test/'),'Final cover did not autosave'); await saved();
-  const finalCover = config.page.coverImageUrl;
+  let finalCover = config.page.coverImageUrl;
   await builder.getByLabel(copy.builder.fieldType,{exact:true}).selectOption('image'); await builder.getByRole('button',{name:'+ '+copy.builder.addField,exact:true}).click();
   const field = builder.locator('[data-page-field]').last(); await field.getByLabel(copy.image.caption,{exact:true}).fill('Najin prvi skupni spomin');
   await field.locator('input[type="file"]').setInputFiles(file); await until(()=>!!config.page.sections[0].fields[0]?.url,'Section photo did not autosave'); await saved();
-  const contentImage = config.page.sections[0].fields[0].url; assert.ok(contentImage.startsWith('https://wedding-images.example.test/'));
+  let contentImage = config.page.sections[0].fields[0].url; assert.ok(contentImage.startsWith('https://wedding-images.example.test/'));
   await builder.locator('aside figure img').evaluate(image=>image.decode());
+  // Completing two uploads in one batch must keep both URLs and newer text.
+  const beforeParallel=uploadCount;holdUpload=new Promise(resolve=>{release=resolve;});
+  await cover.locator('input[type="file"]').setInputFiles(file);await field.locator('input[type="file"]').setInputFiles(file);
+  await until(()=>uploadCount>=beforeParallel+2,'Parallel uploads did not arrive');
+  await field.getByLabel(copy.image.caption,{exact:true}).fill('Najin poročni spomin');holdUpload=null;release();
+  await until(()=>config.page.coverImageUrl!==finalCover&&config.page.sections[0].fields[0].url!==contentImage,'Parallel photo updates overwrote each other');await saved();
+  finalCover=config.page.coverImageUrl;contentImage=config.page.sections[0].fields[0].url;assert.equal(config.page.sections[0].fields[0].text.sl,'Najin poročni spomin');
   await page.reload(); await saved(); assert.equal(config.page.coverImageUrl,finalCover); assert.equal(config.page.sections[0].fields[0].url,contentImage);
   await page.getByRole('checkbox',{name:copy.translation.auto,exact:true}).uncheck();
   for (const width of [320,390,1280]) { await page.setViewportSize({width,height:1000}); assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),`upload controls overflow at ${width}`); }
   const output = root + '/artifacts/mobile-menu'; fs.mkdirSync(output,{recursive:true});
   await page.setViewportSize({width:1280,height:1000}); await builder.locator('details').first().locator('summary').click(); await builder.getByLabel(copy.builder.pageTitle,{exact:true}).scrollIntoViewIfNeeded(); await page.screenshot({path:output+`/wedding-image-upload-${engine}.png`});
   await page.goto(base+'/?guest=1&lang=sl'); await page.locator('[data-wedding-page-content] figure img').waitFor();
-  assert.equal(await page.locator('[data-wedding-page-content] figure img').getAttribute('src'),contentImage); await page.getByText('Najin prvi skupni spomin',{exact:true}).waitFor();
+  assert.equal(await page.locator('[data-wedding-page-content] figure img').getAttribute('src'),contentImage); await page.getByText('Najin poročni spomin',{exact:true}).waitFor();
   for (const lang of languages) {
    await page.goto(base+'/?lang='+lang); await saved(); copy = await page.evaluate(()=>window.fixtureCopy); await page.getByRole('checkbox',{name:copy.translation.auto,exact:true}).uncheck();
    const details = builder.locator('details').first(); await details.locator('summary').click();

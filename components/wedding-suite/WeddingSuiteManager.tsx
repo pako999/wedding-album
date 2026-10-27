@@ -6,6 +6,7 @@ import { suiteCopy, suiteError } from '@/lib/wedding-suite/copy';
 import type { AttendeeView, SuiteOwnerData } from '@/lib/wedding-suite/dto';
 import { WeddingPanel, fieldClass, buttonClass, secondaryClass } from '@/components/wedding/WeddingViews';
 import { LanguageSelect } from './LanguageSelect';
+import { DEFAULT_PAGE } from '@/lib/wedding-suite/page-design';
 import { WeddingImageField } from './WeddingImageField';
 import { imageCopy } from '@/lib/wedding-suite/image-copy';
 import { WeddingPageBuilder } from './WeddingPageBuilder';
@@ -127,7 +128,7 @@ function WeddingSuiteEditor({ slug, lang, plan, albumName, eventDate }: ManagerP
   <div className="mt-5 flex flex-wrap gap-3"><button type="button" className={buttonClass} disabled={!data || !!activeUploads || autosave.status === 'saving'} onClick={saveNow}>{autosave.status === 'saving' ? t.autoSaving : t.save}</button>
    {data && <a className={secondaryClass} href={`${data.guestPath}?lang=${editLang}`} target="_blank" rel="noreferrer">{t.guestLink} ↗</a>}
   </div></WeddingPanel>
-  <WeddingPageBuilder value={config.page} lang={lang} editLang={editLang} onChange={page => setConfig(current => ({ ...current, page }))} uploadEndpoint={imageEndpoint} onUploadBusy={uploadBusy} />
+  <WeddingPageBuilder value={config.page} lang={lang} editLang={editLang} onChange={change => setConfig(current => ({ ...current, page: typeof change === 'function' ? change(current.page ?? DEFAULT_PAGE) : change }))} uploadEndpoint={imageEndpoint} onUploadBusy={uploadBusy} />
   <WeddingProgramEditor slug={slug} lang={lang} editLang={editLang} autoTranslate={autoTranslate} albumName={albumName} eventDate={eventDate} onSaveState={setProgramSave} />
   <div className="grid gap-6 lg:grid-cols-2">{rows('story')}{rows('travel')}</div>
   <div className="grid gap-6 lg:grid-cols-2"><WeddingPanel title={t.seating}>

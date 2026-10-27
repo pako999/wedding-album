@@ -154,6 +154,13 @@ const { build } = req('esbuild'); const { chromium, webkit } = req('playwright')
   assert.ok(!await page.locator('[data-wedding-offer]').first().innerText().then(text => text.includes('113')));
   available = false; await page.reload(); await page.getByText('Standard package price', { exact: true }).first().waitFor();
   assert.ok(!await page.locator('[data-wedding-offer]').first().innerText().then(text => text.includes('of 20')));
+  // An old WebKit document must not start quote reads while being dismissed.
+  const lifecycleReads=[];page.on('request',request=>{if(request.url().includes('/api/wedding-offer'))lifecycleReads.push(request.url());});
+  await page.evaluate(()=>{window.dispatchEvent(new Event('pagehide'));window.dispatchEvent(new Event('focus'));});
+  await page.waitForTimeout(300);assert.equal(lifecycleReads.length,0,'A dismissing page must not fetch inventory on focus');
+  available=true;remaining=4;await page.evaluate(()=>window.dispatchEvent(new PageTransitionEvent('pageshow',{persisted:true})));
+  await page.getByText('4 of 20 discounted packages available',{exact:true}).first().waitFor();
+  assert.ok(lifecycleReads.length>0,'Returning from the browser cache refreshes the real quote');
   assert.deepEqual(errors,[]);
   console.log('PASS package browser: six languages at five widths from 320–1280px, real header/footer, default/larger text and unclipped content bounds, twenty detailed features in every language, a real wedding website preview and three setup steps, exact launch price, shared availability across cookie jars, exhaustion and unavailable-inventory fallback.');
  } finally { await browser?.close(); await new Promise(resolve => server.close(resolve)); }
