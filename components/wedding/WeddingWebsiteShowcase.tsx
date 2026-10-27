@@ -18,6 +18,6 @@ export function WeddingWebsiteShowcase({ lang }: { lang: SuiteLang }) {
   <p className="border-b border-stone-200 bg-stone-50 px-4 py-3 text-xs leading-5 text-stone-600 sm:px-6">{demo.notice}</p>
   <div className={view === 'editorView' ? 'p-3 sm:p-6' : 'mx-auto max-w-4xl p-3 sm:p-8'}>{view === 'editorView'
    ? <WeddingPageBuilder value={page} lang={lang} editLang={lang} onChange={setPage} />
-   : <WeddingPageContent page={page} lang={lang} meta={date} idPrefix="showcase-" />}</div>
+   : <WeddingPageContent page={page} lang={lang} meta={date} idPrefix="showcase-" showcaseStyle />}</div>
  </div>;
 }
