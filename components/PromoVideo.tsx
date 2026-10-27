@@ -34,7 +34,7 @@ export function PromoVideo() {
               controls
               playsInline
               preload="metadata"
-              poster="/promo/kako-deluje-poster.webp"
+              poster="/promo/guestcam-home-mobile-poster.webp"
               className="block h-auto w-full"
               aria-label="Predstavitveni video: kako Guestcam zbira fotografije gostov prek QR-kode"
             >
