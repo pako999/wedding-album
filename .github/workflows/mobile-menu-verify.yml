@@ -33,6 +33,7 @@ on:
       - components/wedding-suite/**
       - lib/wedding-suite/**
       - app/api/albums/**/wedding-suite/**
+      - scripts/wedding-image-upload-browser-check.cjs
       - scripts/wedding-translation-browser-check.cjs
       - scripts/wedding-autosave-browser-check.cjs
       - scripts/wedding-page-builder-browser-check.cjs
@@ -106,6 +107,8 @@ jobs:
           PHOTO_CAPTURE_ENGINE=webkit node scripts/photo-capture-browser-check.cjs
       - name: Wedding builder and autosave in Chromium and WebKit
         run: |
+          node scripts/wedding-image-upload-browser-check.cjs
+          WEDDING_UPLOAD_ENGINE=webkit node scripts/wedding-image-upload-browser-check.cjs
           node scripts/wedding-page-builder-browser-check.cjs
           node scripts/wedding-autosave-browser-check.cjs
           node scripts/wedding-translation-browser-check.cjs

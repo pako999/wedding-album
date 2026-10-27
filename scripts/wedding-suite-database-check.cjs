@@ -45,11 +45,13 @@ const { drizzle } = req('drizzle-orm/pg-proxy'); const { getTableConfig } = req(
   assert.equal((await invoke(guest,'POST',{action:'entry',kind:'capsule',name:'Guest',message:'Not open yet',photoId:null,language:'en'})).status,403);
   const config=JSON.parse(fs.readFileSync(path.join(root,'docs/wedding-suite-test-fixture.json'),'utf8'));config.defaultLang='en';config.tables[0].capacity=2;config.rsvpDeadline=new Date(Date.now()+86400000).toISOString();config.capsuleUnlockAt=new Date(Date.now()+86400000*10).toISOString();
   config.page=load('lib/wedding-suite/page-templates.ts').sampleWeddingPage();
+  config.page.sections[0].fields.push({id:'62000000-0000-4000-8000-000000000001',type:'image',text:{en:'A wedding memory'},url:'https://cdn.example.test/wedding-site/memory.webp'});
   assert.equal((await invoke(manage,'PUT',config)).status,200);
   const preserved = (await pg.query('SELECT * FROM wedding_suite_settings')).rows;
   await pg.exec(productionMigration);
   assert.deepEqual((await pg.query('SELECT * FROM wedding_suite_settings')).rows, preserved, 'repeated production migration preserves saved page content');
   assert.equal((await invoke(guest,'GET')).data.config.page.coverImageUrl,'/hero/wedding-garden-template.webp','built-in cover paths survive actual route/database round trips');
+  assert.equal((await invoke(guest,'GET')).data.config.page.sections[0].fields.at(-1).url,'https://cdn.example.test/wedding-site/memory.webp','website image fields survive actual save/database/guest API reads');
   const person=(await invoke(manage,'POST',{action:'attendee',attendee:{name:'Test guest',email:'guest@example.test',language:'en',tableId:config.tables[0].id,allowedCompanions:1}})).data.attendee;
   const deleteAssigned=await invoke(manage,'PUT',{...config,tables:[]});assert.equal(deleteAssigned.status,400);assert.equal(deleteAssigned.data.error,'tableInUse');
   const token=new URL(person.invitePath,'https://preview.test').hash.slice('#invite='.length);

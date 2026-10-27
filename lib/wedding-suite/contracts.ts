@@ -17,7 +17,7 @@ const coverImageUrl = z.string().max(2000).refine(value => PAGE_COVER_IMAGES.som
 const translatedRow = z.object({ id, date: z.union([z.iso.date(), z.literal('')]).optional(), title: localeTextSchema, text: localeTextSchema, url: safeUrl.optional() }).strict();
 export const PAGE_FONTS = ['elegant', 'modern', 'classic', 'handwritten'] as const;
 export const PAGE_CATEGORIES = ['ceremony', 'reception', 'travel', 'accommodation', 'custom'] as const;
-export const PAGE_FIELD_TYPES = ['heading', 'text', 'link'] as const;
+export const PAGE_FIELD_TYPES = ['heading', 'text', 'link', 'image'] as const;
 const color = z.string().regex(/^#[0-9a-fA-F]{6}$/);
 const pageFieldSchema = z.object({ id, type: z.enum(PAGE_FIELD_TYPES), text: localeTextSchema,
   url: safeUrl.optional(), font: z.enum(PAGE_FONTS).optional(), color: color.optional(),

@@ -595,3 +595,67 @@ test('program translation suggestions authorize and validate without creating DJ
  assert.equal((await route.POST(request({ ...EMPTY_WEDDING, schedule: [{ id: 'bad' }] }), context)).status, 400); assert.equal(calls, 0);
  assert.equal((await route.POST(request(EMPTY_WEDDING), context)).status, 200); assert.equal(calls, 1); assert.equal(writes, 0);
 });
+
+test('wedding artwork uploads enforce owner access and limits, optimize real image bytes, and never update album/gallery records', async () => {
+ const sharp = require('sharp'); const { NextRequest } = require('next/server');
+ let authorized = false, allowed = true, storage = true, storageFails = false, ownerReads = 0;
+ const uploads = [];
+ const route = modules({
+  sharp: { default: sharp },
+  '@/lib/wedding-suite/server': {
+   suiteOwner: async () => { ownerReads++; if (!authorized) throw Object.assign(new Error('denied'), { status: 401 }); return { album: { id: 'album-only' } }; },
+   suiteFailure: cause => Response.json({ error: 'unavailable' }, { status: cause.status || 503 }),
+  },
+  '@/lib/wedding/server': {
+   sameOrigin: req => req.headers.get('origin') === new URL(req.url).origin,
+   reply: (data, status = 200) => Response.json(data, { status }),
+  },
+  '@/lib/rate-limit': { checkRateLimit: async () => allowed ? { ok: true } : { ok: false, response: Response.json({}, { status: 429 }) } },
+  '@/lib/storage/bunny': {
+   isBunnyStorageConfigured: () => storage,
+   uploadToBunnyStorage: async (stream, key, type) => {
+    if (storageFails) throw new Error('provider error');
+    uploads.push({ key, type, bytes: Buffer.from(await new Response(stream).arrayBuffer()) });
+    return `https://cdn.example.test/${key}`;
+   },
+  },
+  '@/lib/db': { db: new Proxy({}, { get() { throw new Error('Image upload must not write album or gallery data'); } }) },
+ })('app/api/albums/[slug]/wedding-suite/images/route.ts');
+ const context = { params: Promise.resolve({ slug: 'isolated' }) };
+ const image = await sharp({ create: { width: 3200, height: 1600, channels: 3, background: '#855477' } }).jpeg().toBuffer();
+ const request = (body = image, type = 'image/jpeg', extra = {}) => new NextRequest('https://preview.test/api/albums/isolated/wedding-suite/images', { method: 'PUT', headers: { origin: 'https://preview.test', 'content-type': type, ...extra }, body, duplex: 'half' });
+ assert.equal((await route.PUT(request(), context)).status, 401); assert.equal(uploads.length, 0);
+ authorized = true; const beforeCsrf = ownerReads;
+ assert.equal((await route.PUT(request(image, 'image/jpeg', { origin: 'https://foreign.test' }), context)).status, 403); assert.equal(ownerReads, beforeCsrf);
+ allowed = false; assert.equal((await route.PUT(request(), context)).status, 429); allowed = true;
+ storage = false; assert.equal((await route.PUT(request(), context)).status, 503); storage = true;
+ assert.equal((await route.PUT(request(image, 'image/svg+xml'), context)).status, 400);
+ assert.equal((await route.PUT(request(Buffer.from('<svg xmlns="http://www.w3.org/2000/svg" width="1" height="1"/>'), 'image/png'), context)).status, 400);
+ assert.equal((await route.PUT(request(Buffer.from('not an image')), context)).status, 400);
+ assert.equal((await route.PUT(request(Buffer.alloc(0)), context)).status, 400);
+ assert.equal((await route.PUT(request(image, 'image/jpeg', { 'content-length': String(4 * 1024 * 1024) }), context)).status, 413);
+ const stream = new ReadableStream({ start(controller) { controller.enqueue(new Uint8Array(2 * 1024 * 1024)); controller.enqueue(new Uint8Array(2 * 1024 * 1024)); controller.close(); } });
+ assert.equal((await route.PUT(request(stream), context)).status, 413);
+ assert.equal(uploads.length, 0);
+ const response = await route.PUT(request(), context); assert.equal(response.status, 200);
+ const result = await response.json(); assert.match(result.url, /^https:\/\/cdn\.example\.test\/albums\/album-only\/wedding-site\/[a-f0-9-]+\.webp$/);
+ const info = await sharp(uploads[0].bytes).metadata(); assert.equal(info.format, 'webp'); assert.equal(info.width, 2400); assert.equal(info.height, 1200); assert.equal(info.exif, undefined); assert.equal(uploads[0].type, 'image/webp');
+ storageFails = true; assert.equal((await route.PUT(request(), context)).status, 502);
+});
+
+test('page image fields round-trip with optional translated captions, preserve older pages, and reject unsafe photo URLs', async () => {
+ const { pageDesignSchema } = load('lib/wedding-suite/contracts.ts');
+ const { imageCopy } = load('lib/wedding-suite/image-copy.ts');
+ const { builderCopy } = load('lib/wedding-suite/builder-copy.ts');
+ const { DEFAULT_PAGE } = load('lib/wedding-suite/page-design.ts');
+ const page = { ...DEFAULT_PAGE, sections: [{ id: uuid, category: 'custom', title: { en: 'Our story' }, visible: true, fields: [{ id: 'b2c41a03-a4ef-44dc-a332-0c8909770111', type: 'image', text: {}, url: 'https://cdn.example.test/wedding.webp' }] }] };
+ assert.equal(pageDesignSchema.safeParse(DEFAULT_PAGE).success, true);
+ assert.deepEqual(pageDesignSchema.parse(page), page);
+ assert.equal(pageDesignSchema.safeParse({ ...page, sections: [{ ...page.sections[0], fields: [{ ...page.sections[0].fields[0], url: 'javascript:alert(1)' }] }] }).success, false);
+ const translated = await load('lib/wedding/translate.ts').translateSuite({ ...config, page: { ...page, sections: [{ ...page.sections[0], fields: [{ ...page.sections[0].fields[0], text: { en: 'A special memory' } }] }] } }, async tasks => tasks.map(task => ({ id: task.id, text: `${task.targetLanguage}: ${task.source}` })));
+ assert.equal(translated.page.sections[0].fields[0].url, page.sections[0].fields[0].url);
+ for (const lang of contracts.SUITE_LANGS) {
+  assert.ok(Object.values(imageCopy(lang)).every(value => value.trim())); assert.ok(builderCopy(lang).image);
+  assert.ok(translated.page.sections[0].fields[0].text[lang]);
+ }
+});
