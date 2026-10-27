@@ -77,8 +77,8 @@ process.on('uncaughtException', error => { report(error); process.exit(1); });
   const beforeInvalid = uploadCount;
   await cover.locator('input[type="file"]').setInputFiles({name:'bad.txt',mimeType:'text/plain',buffer:Buffer.from('not a photo')}); await cover.getByText(copy.image.invalid_image,{exact:true}).waitFor();
   await cover.locator('input[type="file"]').setInputFiles({name:'large.jpg',mimeType:'image/jpeg',buffer:Buffer.alloc(26*1024*1024)}); await cover.getByText(copy.image.too_large,{exact:true}).waitFor(); assert.equal(uploadCount,beforeInvalid);
-  holdUpload = new Promise(resolve => { release = resolve; });
-  await cover.locator('input[type="file"]').setInputFiles(file); await page.waitForSelector('[data-autosave-state="uploading"]');
+  const beforeSuperseded=uploadCount;holdUpload = new Promise(resolve => { release = resolve; });
+  await cover.locator('input[type="file"]').setInputFiles(file); await until(()=>uploadCount>beforeSuperseded,'Superseded upload did not reach the server: '+errors.join('; '));
   await builder.getByRole('button',{name:copy.presentation.modern,exact:true}).click(); holdUpload = null; release(); await cover.getByText(copy.image.superseded,{exact:true}).waitFor(); await until(()=>config.page.coverImageUrl==='/hero/wedding-walk.webp','Newer template did not autosave'); await saved();
   assert.equal(config.page.coverImageUrl,'/hero/wedding-walk.webp');
   await cover.locator('input[type="file"]').setInputFiles(file); await until(()=>config.page.coverImageUrl.startsWith('https://wedding-images.example.test/'),'Final cover did not autosave'); await saved();
@@ -95,13 +95,17 @@ process.on('uncaughtException', error => { report(error); process.exit(1); });
   await field.getByLabel(copy.image.caption,{exact:true}).fill('Najin poročni spomin');holdUpload=null;release();
   await until(()=>config.page.coverImageUrl!==finalCover&&config.page.sections[0].fields[0].url!==contentImage,'Parallel photo updates overwrote each other');await saved();
   finalCover=config.page.coverImageUrl;contentImage=config.page.sections[0].fields[0].url;assert.equal(config.page.sections[0].fields[0].text.sl,'Najin poročni spomin');
-  await page.reload(); await saved(); assert.equal(config.page.coverImageUrl,finalCover); assert.equal(config.page.sections[0].fields[0].url,contentImage);
+  const seating=page.locator('section').filter({has:page.getByRole('heading',{name:'Poišči svojo mizo',exact:true})}).last();
+  const previousMap=config.seatingMapUrl;await seating.locator('input[type="file"]').setInputFiles(file);
+  await until(()=>config.seatingMapUrl!==previousMap&&config.seatingMapUrl.startsWith('https://wedding-images.example.test/'),'Seating map did not autosave');await saved();const seatingMap=config.seatingMapUrl;
+  await page.reload(); await saved(); assert.equal(config.page.coverImageUrl,finalCover); assert.equal(config.page.sections[0].fields[0].url,contentImage);assert.equal(config.seatingMapUrl,seatingMap);
   await page.getByRole('checkbox',{name:copy.translation.auto,exact:true}).uncheck();
   for (const width of [320,390,1280]) { await page.setViewportSize({width,height:1000}); assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),`upload controls overflow at ${width}`); }
   const output = root + '/artifacts/mobile-menu'; fs.mkdirSync(output,{recursive:true});
   await page.setViewportSize({width:1280,height:1000}); await builder.locator('details').first().locator('summary').click(); await builder.getByLabel(copy.builder.pageTitle,{exact:true}).scrollIntoViewIfNeeded(); await page.screenshot({path:output+`/wedding-image-upload-${engine}.png`});
   await page.goto(base+'/?guest=1&lang=sl'); await page.locator('[data-wedding-page-content] figure img').waitFor();
   assert.equal(await page.locator('[data-wedding-page-content] figure img').getAttribute('src'),contentImage); await page.getByText('Najin poročni spomin',{exact:true}).waitFor();
+  await page.getByRole('button',{name:/Poišči svojo mizo/}).click();const guestMap=page.getByRole('img',{name:'Poišči svojo mizo',exact:true});await guestMap.waitFor();assert.equal(await guestMap.getAttribute('src'),seatingMap);await guestMap.evaluate(image=>image.decode());
   for (const lang of languages) {
    await page.goto(base+'/?lang='+lang); await saved(); copy = await page.evaluate(()=>window.fixtureCopy); await page.getByRole('checkbox',{name:copy.translation.auto,exact:true}).uncheck();
    const details = builder.locator('details').first(); await details.locator('summary').click();
@@ -109,6 +113,6 @@ process.on('uncaughtException', error => { report(error); process.exit(1); });
    if (lang === 'sl') { await details.getByRole('button',{name:copy.image.remove+' · '+copy.presentation.cover,exact:true}).click(); await until(()=>config.page.coverImageUrl==='','Removed cover did not autosave'); await saved(); assert.equal(config.page.coverImageUrl,''); }
   }
   assert.deepEqual(errors,[]);
-  console.log(`PASS wedding image uploads (${engine}): real image decoding/resize, cover + section photos, autosave/reload, actual guest rendering, pending-edit safety, replacement safety, failure/retry, invalid/oversize rejection, six locales and 320–1280px controls.`);
+  console.log(`PASS wedding image uploads (${engine}): real image decoding/resize, cover + section + seating-map photos, autosave/reload, actual guest rendering, pending-edit safety, replacement safety, failure/retry, invalid/oversize rejection, six locales and 320–1280px controls.`);
  } finally { await browser?.close(); await new Promise(resolve=>server.close(resolve)); }
 })().catch(error=>{report(error);process.exitCode=1;});
