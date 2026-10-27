@@ -38,7 +38,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ slug
   } catch { return reply({ error: 'invalid_image' }, 400); }
   try {
    const key = `albums/${album.id}/wedding-site/${crypto.randomUUID()}.webp`;
-   const url = await uploadToBunnyStorage(new Blob([Uint8Array.from(optimized)]).stream(), key, 'image/webp');
+   const url = await uploadToBunnyStorage(new Blob([Uint8Array.from(optimized)]).stream(), key, 'image/webp', optimized.byteLength);
    if (new URL(url).protocol !== 'https:') throw new Error('Invalid storage URL');
    return reply({ url });
   } catch { return reply({ error: 'unavailable' }, 502); }

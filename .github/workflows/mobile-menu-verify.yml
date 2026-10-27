@@ -9,6 +9,7 @@ on:
       - lib/wedding/copy.ts
       - lib/wedding-offer-copy.ts
       - lib/wedding-offer-presentation.ts
+      - lib/storage/bunny.ts
       - lib/mollie.ts
       - lib/admin-sales.ts
       - lib/email/event-upgrade-reminder.ts

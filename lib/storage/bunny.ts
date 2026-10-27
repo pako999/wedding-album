@@ -192,6 +192,7 @@ export async function uploadToBunnyStorage(
   body: ReadableStream,
   key: string,
   contentType: string,
+  contentLength?: number,
 ): Promise<string> {
   const endpoint = `https://storage.bunnycdn.com/${storageZone()}/${key}`;
 
@@ -200,6 +201,7 @@ export async function uploadToBunnyStorage(
     headers: {
       AccessKey: storageApiKey(),
       "Content-Type": contentType,
+      ...(contentLength !== undefined ? { "Content-Length": String(contentLength) } : {}),
     },
     body: body as BodyInit,
     // duplex:"half" is required in Node.js 18+ undici for streaming request bodies.

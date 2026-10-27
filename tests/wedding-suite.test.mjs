@@ -659,3 +659,24 @@ test('page image fields round-trip with optional translated captions, preserve o
   assert.ok(translated.page.sections[0].fields[0].text[lang]);
  }
 });
+
+test('wedding artwork storage sends a known content length to the existing Bunny storage API', async () => {
+ const originalFetch = globalThis.fetch;
+ const names = ['BUNNY_STORAGE_API_KEY','BUNNY_STORAGE_ZONE','BUNNY_CDN_URL'];
+ const saved = Object.fromEntries(names.map(name=>[name,process.env[name]]));
+ try {
+  Object.assign(process.env,{BUNNY_STORAGE_API_KEY:'isolated-dummy',BUNNY_STORAGE_ZONE:'isolated-zone',BUNNY_CDN_URL:'https://cdn.example.test'});
+  const bytes = new Uint8Array([1,2,3,4]);
+  globalThis.fetch = async (url, request) => {
+   assert.equal(url,'https://storage.bunnycdn.com/isolated-zone/albums/test/wedding-site/test.webp');
+   assert.equal(request.method,'PUT'); assert.equal(request.headers['Content-Type'],'image/webp'); assert.equal(request.headers['Content-Length'],'4');
+   assert.deepEqual(new Uint8Array(await new Response(request.body).arrayBuffer()), bytes);
+   return new Response('',{status:201});
+  };
+  const storage = modules()('lib/storage/bunny.ts');
+  assert.equal(await storage.uploadToBunnyStorage(new Blob([bytes]).stream(),'albums/test/wedding-site/test.webp','image/webp',bytes.length),'https://cdn.example.test/albums/test/wedding-site/test.webp');
+ } finally {
+  globalThis.fetch = originalFetch;
+  for(const [name,value]of Object.entries(saved)){if(value===undefined)delete process.env[name];else process.env[name]=value;}
+ }
+});
