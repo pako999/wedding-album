@@ -17,7 +17,7 @@ const engine = process.env.WEDDING_UPLOAD_ENGINE || 'chromium';
  await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
  let browser;
  try {
-  browser = await playwright[engine].launch(engine === 'chromium' ? { executablePath: process.env.CHROMIUM_EXECUTABLE_PATH || '/usr/bin/chromium', args: ['--no-sandbox'] } : {});
+  browser = await playwright[engine].launch(engine === 'chromium' ? { executablePath: process.env.CHROMIUM_EXECUTABLE_PATH || (fs.existsSync('/usr/bin/chromium') ? '/usr/bin/chromium' : undefined), args: ['--no-sandbox'] } : {});
   const page = await browser.newPage({ viewport: { width: 1280, height: 1000 } });
   page.on('dialog', dialog => dialog.accept()); const errors = []; page.on('pageerror', error => errors.push(error.message));
   const languages = ['sl','hr','sr','en','de','es'];
@@ -90,4 +90,4 @@ const engine = process.env.WEDDING_UPLOAD_ENGINE || 'chromium';
   assert.deepEqual(errors,[]);
   console.log(`PASS wedding image uploads (${engine}): real image decoding/resize, cover + section photos, autosave/reload, actual guest rendering, pending-edit safety, replacement safety, failure/retry, invalid/oversize rejection, six locales and 320–1280px controls.`);
  } finally { await browser?.close(); await new Promise(resolve=>server.close(resolve)); }
-})().catch(error=>{console.error(error);process.exitCode=1;});
+})().catch(error=>{console.error(error);if(process.env.GITHUB_ACTIONS)console.error('::error::'+String(error).replace(/%/g,'%25').replace(/\r/g,'%0D').replace(/\n/g,'%0A'));process.exitCode=1;});
