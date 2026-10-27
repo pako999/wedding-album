@@ -60,4 +60,4 @@ const { chromium } = req('playwright');
     assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), 'Editor must fit mobile viewport');
     console.log('PASS translation browser: manual menu/timeline corrections, source preservation, guest preview, language switching, automatic-save flag and visible AI failure warning at 390px.');
   } finally { await browser?.close(); await new Promise(resolve => server.close(resolve)); }
-})().catch(error => { console.error(error); process.exitCode = 1; });
+})().catch(error => { console.error(error); if(process.env.GITHUB_ACTIONS)console.error('::error::'+String(error).replace(/%/g,'%25').replace(/\r/g,'%0D').replace(/\n/g,'%0A')); process.exitCode = 1; });

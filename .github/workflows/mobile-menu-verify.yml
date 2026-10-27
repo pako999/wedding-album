@@ -106,16 +106,22 @@ jobs:
           node scripts/wedding-offer-checkout-browser-check.cjs
           node scripts/photo-capture-browser-check.cjs
           PHOTO_CAPTURE_ENGINE=webkit node scripts/photo-capture-browser-check.cjs
-      - name: Wedding builder and autosave in Chromium and WebKit
-        run: |
-          node scripts/wedding-image-upload-browser-check.cjs
-          WEDDING_UPLOAD_ENGINE=webkit node scripts/wedding-image-upload-browser-check.cjs
-          node scripts/wedding-page-builder-browser-check.cjs
-          node scripts/wedding-autosave-browser-check.cjs
-          node scripts/wedding-translation-browser-check.cjs
-          AUTOSAVE_BROWSER_ENGINE=webkit node scripts/wedding-autosave-browser-check.cjs
-          node scripts/wedding-cover-browser-check.cjs
-          COVER_BROWSER_ENGINE=webkit node scripts/wedding-cover-browser-check.cjs
+      - name: Wedding photo uploads in Chromium
+        run: node scripts/wedding-image-upload-browser-check.cjs
+      - name: Wedding photo uploads in WebKit
+        run: WEDDING_UPLOAD_ENGINE=webkit node scripts/wedding-image-upload-browser-check.cjs
+      - name: Wedding page builder
+        run: node scripts/wedding-page-builder-browser-check.cjs
+      - name: Wedding autosave in Chromium
+        run: node scripts/wedding-autosave-browser-check.cjs
+      - name: Wedding translation corrections
+        run: node scripts/wedding-translation-browser-check.cjs
+      - name: Wedding autosave in WebKit
+        run: AUTOSAVE_BROWSER_ENGINE=webkit node scripts/wedding-autosave-browser-check.cjs
+      - name: Wedding cover photos in Chromium
+        run: node scripts/wedding-cover-browser-check.cjs
+      - name: Wedding cover photos in WebKit
+        run: COVER_BROWSER_ENGINE=webkit node scripts/wedding-cover-browser-check.cjs
       - name: Upload mobile screenshots and test results
         if: always()
         uses: actions/upload-artifact@v4
