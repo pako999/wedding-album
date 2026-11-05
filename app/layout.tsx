@@ -85,14 +85,6 @@ export const metadata: Metadata = {
   description:
     "Z eno QR kodo zberite vse fotografije in videe gostov v zasebni galeriji. Brez aplikacije, polna kakovost, brezplačen začetek. Za poroke in dogodke.",
   applicationName: "Guestcam",
-  keywords: [
-    "QR koda za poroko",
-    "poročni album",
-    "zbiranje fotografij gostov",
-    "deljenje fotografij",
-    "galerija dogodka",
-    "Guestcam",
-  ],
   authors: [{ name: "Guestcam" }],
   manifest: "/manifest.json",
   // Explicit SVG icon — Google accepts SVG with no size restriction.
