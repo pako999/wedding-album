@@ -16,7 +16,7 @@ import { localeAbsoluteUrl,localePublicPath,localizedAccountPath } from '@/lib/u
 import { withRegionalHreflang } from '@/lib/seo/hreflang';
 import { ogImage, localizedOgImageUrl } from '@/lib/og';
 export function weddingAlternates(){return Object.fromEntries(WEDDING_LANGS.map(lang=>[lang,localeAbsoluteUrl(lang,WEDDING_PATHS[lang])])) as Record<Lang,string>;}
-export function weddingMetadata(lang:Lang):Metadata{const t=weddingCopy(lang);const links=weddingAlternates();const title=`${presentationCopy(lang).website} | ${t.plan} | Guestcam`;return {title,description:presentationCopy(lang).introduction,alternates:{canonical:links[lang],languages:withRegionalHreflang({...links,'x-default':links.sl})},robots:{index:true,follow:true},openGraph:{title,description:presentationCopy(lang).introduction,url:links[lang],type:'website',images:[ogImage(presentationCopy(lang).website,lang)]},twitter:{card:'summary_large_image',images:[localizedOgImageUrl(lang)]}};}
+export function weddingMetadata(lang:Lang):Metadata{const t=weddingCopy(lang);const links=weddingAlternates();const title=`${presentationCopy(lang).website} | ${t.plan} | Guestcam`;return {title:{absolute:title},description:presentationCopy(lang).introduction,alternates:{canonical:links[lang],languages:withRegionalHreflang({...links,'x-default':links.sl})},robots:{index:true,follow:true},openGraph:{title,description:presentationCopy(lang).introduction,url:links[lang],type:'website',images:[ogImage(presentationCopy(lang).website,lang)]},twitter:{card:'summary_large_image',images:[localizedOgImageUrl(lang)]}};}
 
 export function WeddingLandingPage({lang}: {lang:Lang}) {
  const t=weddingCopy(lang), p=packageCopy(lang), v=presentationCopy(lang);
