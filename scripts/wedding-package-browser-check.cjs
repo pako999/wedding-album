@@ -77,7 +77,11 @@ const { build } = req('esbuild'); const { chromium, webkit } = req('playwright')
     assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),lang+' editor overflow at '+width);
    }
    await showcase.getByRole('button',{name:guest,exact:true}).click();
-   await showcase.getByRole('heading',{name:'Maja & Luka',exact:true}).waitFor();
+   // The sample couple is demo content, rendered as styled text (headingLevel="none")
+   // so it does not compete with the landing page's own H1/H2 outline.
+   const demoContent=showcase.locator('[data-wedding-page-content]');
+   await demoContent.getByText('Maja & Luka',{exact:true}).waitFor();
+   assert.equal(await demoContent.locator('h1,h2,h3,h4,h5,h6').count(),0,lang+' sample wedding must not render heading elements');
    assert.ok((await showcase.locator('[data-wedding-page-content] img').getAttribute('src')).endsWith('/hero/wedding-castle.webp'));
    assert.ok((await showcase.locator('[data-wedding-page-content]').innerText()).includes('31. 07. 2027'));
    const output=path.join(root,'artifacts/mobile-menu');fs.mkdirSync(output,{recursive:true});

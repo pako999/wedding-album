@@ -31,7 +31,7 @@ function WeddingDemo({ lang }: { lang: Lang }) {
   <p className="border-b border-stone-200 bg-white px-4 py-4 text-xs leading-6 text-stone-600 sm:px-7">{copy.notice}</p>
   <div className="min-w-0 p-4 sm:p-8">
    {tab === 'guest' ? <div data-demo-guest className="space-y-5">
-    <WeddingPageContent page={{ ...page, sections: [] }} lang={lang} meta={`${demoWeddingDate(lang)} · ${DEMO_WEDDING.venue} · ${copy.location}`} idPrefix="experience-" />
+    <WeddingPageContent page={{ ...page, sections: [] }} lang={lang} meta={`${demoWeddingDate(lang)} · ${DEMO_WEDDING.venue} · ${copy.location}`} idPrefix="experience-"  headingLevel="none" />
     <div className="border-y border-stone-300 px-1 py-6 sm:px-3"><h3 className="text-xl font-semibold text-stone-900">{copy.qrTitle}</h3><p className="mt-3 max-w-3xl text-sm leading-7 text-stone-600">{copy.qrText}</p></div>
     <div className="grid grid-cols-1 items-start gap-4 md:grid-cols-2">
      <div data-demo-schedule className="min-w-0"><WeddingPanel title={t.schedule}><ScheduleView rows={data.schedule} lang={lang} /></WeddingPanel></div>
