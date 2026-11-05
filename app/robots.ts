@@ -7,6 +7,8 @@ import {
   SERBIAN_GUESTCAM_ORIGIN,
   SPANISH_GUESTCAM_ORIGIN,
 } from "@/lib/site-domains";
+import { WEDDING_PATHS } from "@/lib/wedding/contracts";
+import { LEGAL_DOCUMENTS } from "@/lib/seo/legal-alternates";
 
 /**
  * Production robots.txt.
@@ -20,6 +22,84 @@ import {
  * That mechanism is per-page, so we don't list a wildcard here — adding
  * "Disallow: /" would block /blog, /contact, etc. by accident.
  */
+
+/** Paths that must never be crawled by anyone. */
+const PRIVATE_PATHS = [
+  "/dashboard",
+  "/dashboard/",
+  "/admin",
+  "/admin/",
+  "/api/",
+  "/sign-in",
+  "/sign-up",
+  "/dev/",
+];
+
+/**
+ * Public marketing URLs on www.guestcam.si that AI crawlers may read.
+ *
+ * AI crawlers get `Disallow: /` on the main host because album guest pages
+ * live at root-level dynamic slugs (/<slug>) and GPTBot & co. ignore
+ * X-Robots-Tag. Everything public therefore has to be allow-listed here.
+ *
+ * Root-level pages use a `$` end anchor (RFC 9309, honoured by Google,
+ * OpenAI, Anthropic, Perplexity) so the rule matches the exact page and can
+ * never accidentally match an album slug that merely starts with the same
+ * text (e.g. "/blog" would otherwise also match "/blogger-wedding").
+ * Longest match wins, so "/$" (2 chars) beats "Disallow: /" (1 char).
+ */
+const AI_MAIN_HOST_ALLOW = [
+  // Discovery files
+  "/llms.txt",
+  "/.well-known/",
+
+  // Homepages — "/hr/" alone does NOT match "/hr", so list them exactly.
+  "/$",
+  "/hr$",
+  "/de$",
+  "/en$",
+
+  // Language-prefixed sections (landings, localized blog, wedding package,
+  // localized legal/contact/affiliate pages).
+  "/sl/",
+  "/hr/",
+  "/de/",
+  "/en/",
+
+  // Slovenian blog (index + posts)
+  "/blog$",
+  "/blog/",
+
+  // Root-level Slovenian commercial pages
+  ...Object.values(WEDDING_PATHS)
+    .filter((p) => !/^\/(sl|hr|sr|de|en|es)\//.test(p))
+    .map((p) => `${p}$`), // → "/porocni-paket$"
+  "/za-podjetja$",
+  "/affiliate/apply$",
+  "/contact$",
+
+  // Root-level Slovenian legal pages
+  ...LEGAL_DOCUMENTS.map((doc) => `/${doc}$`),
+];
+
+/**
+ * AI crawlers: search/answer bots (cite us in ChatGPT, Perplexity, Claude…)
+ * and training crawlers. All get the same allow-list: public marketing
+ * content in, album guest pages out.
+ *
+ * NB: deliberately EXCLUDED from this list are the social link-preview
+ * scrapers (FacebookBot / facebookexternalhit, Twitterbot, LinkedInBot,
+ * Slackbot, TelegramBot, WhatsApp, Discordbot, Applebot). Blocking those
+ * breaks OG link previews when someone shares guestcam.si on social.
+ */
+const AI_USER_AGENTS = [
+  "GPTBot", "ChatGPT-User", "OAI-SearchBot", "ClaudeBot", "Claude-Web",
+  "Claude-SearchBot", "Claude-User",
+  "PerplexityBot", "Perplexity-User", "Google-Extended", "CCBot",
+  "anthropic-ai", "Bytespider", "PetalBot",
+  "ImagesiftBot", "Diffbot", "Omgilibot", "Applebot-Extended",
+];
+
 export default async function robots(): Promise<MetadataRoute.Robots> {
   const requestHeaders = await headers();
   const requestHost = (
@@ -35,65 +115,25 @@ export default async function robots(): Promise<MetadataRoute.Robots> {
 
   return {
     rules: [
-      // Default rule for every crawler — Google, Bing, Perplexity, ChatGPT,
-      // Claude, etc. AI assistants are explicitly welcome on public
-      // content (blog/SEO landings) because that's how we get cited.
-      //
-      // Album guest pages (/<slug>) are blocked *additionally* at the
-      // HTTP-header level via X-Robots-Tag in middleware.ts — we can't
-      // list every album slug here (they're dynamic) and a blanket
-      // Disallow: / would block the public marketing pages too. The
-      // per-page noindex meta + middleware header pair handles it.
+      // Default rule for every crawler — Google, Bing, etc.
+      // Album guest pages (/<slug>) are blocked additionally at the
+      // HTTP-header level via X-Robots-Tag in middleware plus per-page
+      // noindex meta — they can't be listed here because slugs are dynamic.
       {
         userAgent: "*",
         allow: "/",
-        disallow: [
-          "/dashboard",
-          "/dashboard/",
-          "/admin",
-          "/admin/",
-          "/api/",
-          "/sign-in",
-          "/sign-up",
-          "/dev/",
-        ],
+        disallow: PRIVATE_PATHS,
       },
-      // AI-training crawlers: keep them out of album guest pages
-      // entirely. Different vendors honour different markers (GPTBot
-      // ignores X-Robots-Tag in practice, robots.txt is its only signal).
-      // We still allow them on /blog and the SEO landings — that's
-      // the public content we WANT cited.
-      //
-      // NB: deliberately EXCLUDED from this list are the social
-      // link-preview scrapers (FacebookBot / facebookexternalhit,
-      // Twitterbot, LinkedInBot, Slackbot, TelegramBot, WhatsApp,
-      // Discordbot, Applebot). Blocking those breaks OG link previews
-      // when someone shares guestcam.si on social — exactly the bug
-      // the user just reported.
-      ...["GPTBot", "ChatGPT-User", "OAI-SearchBot", "ClaudeBot", "Claude-Web",
-          "PerplexityBot", "Perplexity-User", "Google-Extended", "CCBot",
-          "anthropic-ai", "Bytespider", "PetalBot",
-          "ImagesiftBot", "Diffbot", "Omgilibot", "Applebot-Extended"].map(
-        (userAgent) => ({
-          userAgent,
-          // /llms.txt and /.well-known/ai-content.md MUST stay reachable
-          // — they're the "cite this instead" files these bots look for
-          // before deciding whether to quote us. Also allow the localised
-          // homepages + blog + contact so we're citeable in every language.
-          allow: countryMarketingHost
-            ? ["/"]
-            : [
-                "/llms.txt",
-                "/.well-known/",
-                "/blog",
-                "/sl/", "/hr/", "/de/", "/en/",
-                "/contact",
-              ],
-          disallow: countryMarketingHost
-            ? ["/dashboard", "/admin", "/api/", "/sign-in", "/sign-up"]
-            : ["/"],
-        }),
-      ),
+      // AI crawlers: allow-list public marketing pages on the main host,
+      // keep album guest pages out. Country marketing hosts (guestcam.rs,
+      // guestcam.es) host no albums, so they are fully open.
+      ...AI_USER_AGENTS.map((userAgent) => ({
+        userAgent,
+        allow: countryMarketingHost ? ["/"] : AI_MAIN_HOST_ALLOW,
+        disallow: countryMarketingHost
+          ? ["/dashboard", "/admin", "/api/", "/sign-in", "/sign-up"]
+          : ["/"],
+      })),
     ],
     sitemap: `${publicOrigin}/sitemap.xml`,
     host: publicOrigin,
