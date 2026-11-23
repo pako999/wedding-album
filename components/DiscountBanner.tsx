@@ -6,61 +6,60 @@ import { usePathname } from "next/navigation";
 import type { LangCode } from "@/components/LanguageSwitcher";
 import { localizedAccountPath } from "@/lib/urls";
 
-const DISCOUNT_CODE = "WELCOME15";
-const STORAGE_KEY = "gc_banner_closed";
+// Black Friday 2026 — 30% off every plan. The code row is seeded in
+// lib/db/migrations.ts (idempotent). Changing this string alone does NOT
+// change what the DB accepts — keep the two in sync.
+const DISCOUNT_CODE = "BLACKFRIDAY";
+// Bumped from gc_banner_closed so a visitor who dismissed the old WELCOME15
+// banner still sees the Black Friday one this session.
+const STORAGE_KEY = "gc_bf_banner_closed";
 
 const COPY: Record<LangCode, { text: string; cta: string; copy: string; copied: string }> = {
   sl: {
-    text: "🎉 Samo zdaj: 15 % popust na prvi paket — koda",
-    cta: "Vzamem popust →",
+    text: "🖤 BLACK FRIDAY: −30 % na vse pakete — koda",
+    cta: "Izkoristi −30 % →",
     copy: "kopiraj",
     copied: "Kopirano ✓",
   },
   hr: {
-    text: "🎉 Samo sada: 15 % popusta na prvi paket — kod",
-    cta: "Uzimam popust →",
+    text: "🖤 BLACK FRIDAY: −30 % na sve pakete — kod",
+    cta: "Iskoristi −30 % →",
     copy: "kopiraj",
     copied: "Kopirano ✓",
   },
   sr: {
-    text: "🎉 Samo sada: 15 % popusta na prvi paket — kod",
-    cta: "Uzimam popust →",
+    text: "🖤 BLACK FRIDAY: −30 % na sve pakete — kod",
+    cta: "Iskoristi −30 % →",
     copy: "kopiraj",
     copied: "Kopirano ✓",
   },
   de: {
-    text: "🎉 Nur jetzt: 15 % Rabatt auf das erste Paket — Code",
-    cta: "Rabatt sichern →",
+    text: "🖤 BLACK FRIDAY: −30 % auf alle Pakete — Code",
+    cta: "−30 % sichern →",
     copy: "kopieren",
     copied: "Kopiert ✓",
   },
   en: {
-    text: "🎉 Only now: 15% off your first plan — code",
-    cta: "Get discount →",
+    text: "🖤 BLACK FRIDAY: −30% on every plan — code",
+    cta: "Get −30% →",
     copy: "copy",
     copied: "Copied ✓",
   },
   es: {
-    text: "🎉 Solo ahora: 15 % en tu primer plan — código",
-    cta: "Quiero el descuento →",
+    text: "🖤 BLACK FRIDAY: −30 % en todos los planes — código",
+    cta: "Consigue −30 % →",
     copy: "copiar",
-    copied: "¡Copiado ✓",
+    copied: "Copiado ✓",
   },
 };
 
 export function DiscountBanner({ lang }: { lang: LangCode }) {
   const pathname = usePathname();
 
-  // Language comes from the PATH, not the `lang` prop.
-  //
-  // The root layout derives that prop from request headers, which don't
-  // exist while a route is statically prerendered — so every localized
-  // static page (/es, /en, /de/blog …) fell back to "sl" and rendered
-  // this banner in Slovenian regardless of the page around it. The
-  // pathname is correct under both static and dynamic rendering.
-  // COPY is keyed by exactly the supported languages, so membership in
-  // it doubles as the validity check; anything else (/blog, /contact —
-  // the Slovenian routes) falls back to the prop.
+  // Language comes from the PATH, not the `lang` prop (see git history): the
+  // root layout derives the prop from request headers, absent during static
+  // prerender, so localized static pages fell back to "sl". COPY is keyed by
+  // exactly the supported languages, so membership doubles as validity.
   const seg = pathname.split("/").filter(Boolean)[0] ?? "";
   const effectiveLang: LangCode = (seg in COPY ? seg : lang) as LangCode;
   const t = COPY[effectiveLang] ?? COPY.en;
@@ -70,9 +69,8 @@ export function DiscountBanner({ lang }: { lang: LangCode }) {
   });
   const [copied, setCopied] = useState(false);
 
-  // Live path check — the root layout doesn't re-render on client-side
-  // navigation, so this banner can persist onto the checkout/dashboard.
-  // Hide it there: a customer on the upgrade page is already buying.
+  // Hide on checkout/dashboard/affiliate surfaces — a customer already buying
+  // doesn't need the acquisition banner.
   if (
     pathname.startsWith("/dashboard") ||
     pathname.startsWith("/admin") ||
@@ -96,18 +94,18 @@ export function DiscountBanner({ lang }: { lang: LangCode }) {
 
   return (
     <div
-      className="w-full flex items-center justify-center gap-3 px-4 py-2.5 text-sm font-semibold text-[#0F1729] relative"
-      style={{ background: "linear-gradient(90deg, #FFD966 0%, #FFC94D 60%, #F0B429 100%)" }}
+      className="relative flex w-full items-center justify-center gap-3 px-4 py-2.5 text-sm font-semibold text-white"
+      style={{ background: "linear-gradient(90deg, #0a0a0a 0%, #171717 50%, #0a0a0a 100%)" }}
     >
       {/* Text + code */}
-      <span className="flex items-center gap-2 flex-wrap justify-center">
+      <span className="flex flex-wrap items-center justify-center gap-2">
         <span>{t.text}</span>
         <button
           onClick={copyCode}
-          className="inline-flex items-center gap-1.5 bg-[#0F1729] text-[#FFC94D] font-mono font-bold text-xs px-2.5 py-1 rounded-lg hover:bg-[#1a2540] transition-colors"
+          className="inline-flex items-center gap-1.5 rounded-lg bg-[#FFC94D] px-2.5 py-1 font-mono text-xs font-bold text-[#0a0a0a] transition-colors hover:bg-[#ffd666]"
         >
           {DISCOUNT_CODE}
-          <span className="text-[10px] font-sans font-semibold opacity-70">
+          <span className="font-sans text-[10px] font-semibold opacity-70">
             {copied ? t.copied : t.copy}
           </span>
         </button>
@@ -116,7 +114,7 @@ export function DiscountBanner({ lang }: { lang: LangCode }) {
       {/* CTA */}
       <Link
         href={localizedAccountPath(effectiveLang, "/dashboard/new")}
-        className="hidden sm:inline-flex items-center text-xs font-bold underline underline-offset-2 hover:opacity-70 transition-opacity whitespace-nowrap"
+        className="hidden whitespace-nowrap text-xs font-bold text-[#FFC94D] underline underline-offset-2 transition-opacity hover:opacity-70 sm:inline-flex"
       >
         {t.cta}
       </Link>
@@ -125,7 +123,7 @@ export function DiscountBanner({ lang }: { lang: LangCode }) {
       <button
         onClick={close}
         aria-label="Close"
-        className="absolute right-3 top-1/2 -translate-y-1/2 w-6 h-6 flex items-center justify-center rounded-full hover:bg-black/10 transition-colors text-base leading-none"
+        className="absolute right-3 top-1/2 flex h-6 w-6 -translate-y-1/2 items-center justify-center rounded-full text-base leading-none transition-colors hover:bg-white/10"
       >
         ×
       </button>
