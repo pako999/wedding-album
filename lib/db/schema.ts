@@ -522,6 +522,37 @@ export const guestEmails = pgTable(
   ],
 );
 
+// ─── Marketing contacts (registered-user promo list) ─────────────────────────
+// Registered account owners live in Clerk, which has no unsubscribe/suppression
+// field. This table is our OWN marketing-suppression list for promotional email
+// to registered users (e.g. the Black Friday campaign): one row per email, with
+// an opaque unsubscribe token and an unsubscribedAt stamp. A row with
+// unsubscribedAt set means "do not send promotional email to this address".
+// Transactional mail (receipts, reminders) does not consult this list.
+
+export const marketingContacts = pgTable(
+  "marketing_contacts",
+  {
+    id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+    email: text("email").notNull(),
+    /** Clerk user id, when the contact is a registered account owner. */
+    clerkUserId: text("clerk_user_id"),
+    /** Preferred language at send time (sl/hr/sr/de/en/es). */
+    locale: varchar("locale", { length: 5 }),
+    /** Random opaque token used as the unsubscribe link — never the row id. */
+    unsubscribeToken: text("unsubscribe_token")
+      .notNull()
+      .$defaultFn(() => crypto.randomUUID()),
+    /** Set when the contact opts out. Non-null = suppressed from promo email. */
+    unsubscribedAt: timestamp("unsubscribed_at"),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+  },
+  (t) => [
+    unique("marketing_contacts_email_unique").on(t.email),
+    unique("marketing_contacts_unsubscribe_token_unique").on(t.unsubscribeToken),
+  ],
+);
+
 // ─── Referral conversions (K-factor source of truth) ─────────────────────────
 // One row per new user whose signup was attributed to an existing album.
 // convertedToPaidAt fills in when they buy — that's when it counts toward K.

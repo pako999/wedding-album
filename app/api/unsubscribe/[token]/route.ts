@@ -19,6 +19,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { guestEmails } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
+import { marketingContactByToken, unsubscribeMarketingContact } from "@/lib/marketing-contacts";
 
 export const runtime = "nodejs";
 
@@ -153,7 +154,10 @@ async function localeForToken(token: string | undefined): Promise<Lang> {
       .from(guestEmails)
       .where(eq(guestEmails.unsubscribeToken, token))
       .limit(1);
-    return pickLang(row[0]?.locale);
+    if (row[0]) return pickLang(row[0].locale);
+    // Not a guest token — may be a registered-user marketing contact.
+    const contact = await marketingContactByToken(token);
+    return pickLang(contact?.locale ?? null);
   } catch {
     return "sl";
   }
@@ -195,6 +199,13 @@ export async function POST(
             unsubscribedAt: new Date(),
           })
           .where(eq(guestEmails.id, row[0].id));
+      } else {
+        // Not a guest token — try the registered-user marketing list.
+        const contact = await marketingContactByToken(token);
+        if (contact) {
+          lang = pickLang(contact.locale);
+          await unsubscribeMarketingContact(contact.id);
+        }
       }
     } catch (err) {
       console.error("[unsubscribe] db error (still showing OK page):", err);

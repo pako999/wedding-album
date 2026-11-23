@@ -395,6 +395,23 @@ export async function runMigrations() {
     ON CONFLICT (code) DO NOTHING
   `);
 
+  // ── Marketing contacts (registered-user promo suppression list) ───────────
+  // Clerk has no unsubscribe field, so promotional email to registered users
+  // consults this table. A row with unsubscribed_at set = do not send promo.
+  await run("create marketing_contacts", (q) => q`
+    CREATE TABLE IF NOT EXISTS marketing_contacts (
+      id                TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
+      email             TEXT NOT NULL,
+      clerk_user_id     TEXT,
+      locale            VARCHAR(5),
+      unsubscribe_token TEXT NOT NULL DEFAULT gen_random_uuid()::text,
+      unsubscribed_at   TIMESTAMPTZ,
+      created_at        TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )
+  `);
+  await run("marketing_contacts email unique", (q) => q`CREATE UNIQUE INDEX IF NOT EXISTS marketing_contacts_email_unique ON marketing_contacts (email)`);
+  await run("marketing_contacts token unique", (q) => q`CREATE UNIQUE INDEX IF NOT EXISTS marketing_contacts_unsubscribe_token_unique ON marketing_contacts (unsubscribe_token)`);
+
   // ── Affiliates ────────────────────────────────────────────────────────────
   await run("create affiliates", (q) => q`
     CREATE TABLE IF NOT EXISTS affiliates (

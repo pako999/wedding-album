@@ -9,7 +9,7 @@ const LOCALE_TAG: Record<LifecycleEmailLang, string> = {
   sl: "sl-SI", hr: "hr-HR", sr: "sr-Latn", de: "de-DE", en: "en-GB", es: "es-ES",
 };
 
-function escapeHtml(value: string): string {
+export function escapeHtml(value: string): string {
   return value.replace(/[&<>"']/g, (char) => (
     { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[char] ?? char
   ));
@@ -19,7 +19,7 @@ export function lifecycleEmailLang(value?: string | null): LifecycleEmailLang {
   return value === "hr" || value === "sr" || value === "de" || value === "en" || value === "es" ? value : "sl";
 }
 
-function formatDate(value: string | Date, lang: LifecycleEmailLang): string {
+export function formatDate(value: string | Date, lang: LifecycleEmailLang): string {
   const date = typeof value === "string" ? new Date(`${value}T12:00:00Z`) : value;
   return new Intl.DateTimeFormat(LOCALE_TAG[lang], {
     day: "numeric", month: "long", year: "numeric", timeZone: "Europe/Ljubljana",
@@ -143,9 +143,11 @@ const COPY: Record<LifecycleEmailLang, Copy> = {
   },
 };
 
-function shell({ lang, eyebrow, title, greeting, content, primary, secondary, footer }: {
+export function shell({ lang, eyebrow, title, greeting, content, primary, secondary, footer, unsubscribe }: {
   lang: LifecycleEmailLang; eyebrow: string; title: string; greeting?: string; content: string;
   primary: { href: string; label: string }; secondary?: { href: string; label: string }; footer: string;
+  /** Promotional email only: renders an unsubscribe link in the footer. */
+  unsubscribe?: { href: string; label: string };
 }) {
   return `<!DOCTYPE html><html lang="${lang}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${escapeHtml(title)}</title></head>
 <body style="margin:0;background:#F2F4F8;font-family:Arial,sans-serif;color:#0F1729"><table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="padding:28px 14px;background:#F2F4F8"><tr><td align="center">
@@ -153,11 +155,11 @@ function shell({ lang, eyebrow, title, greeting, content, primary, secondary, fo
 <tr><td style="padding:30px 32px;background:#FFC94D"><p style="margin:0 0 7px;font-size:11px;letter-spacing:2.5px;font-weight:800">${escapeHtml(eyebrow)}</p><h1 style="margin:0;font-size:25px;line-height:1.25">${escapeHtml(title)}</h1></td></tr>
 <tr><td style="padding:30px 32px 8px">${greeting ? `<p style="margin:0 0 16px;font-size:16px">${greeting}</p>` : ""}<div style="font-size:15px;line-height:1.7;color:#475569">${content}</div></td></tr>
 <tr><td style="padding:22px 32px 30px;text-align:center"><a href="${primary.href}" style="display:inline-block;margin:4px;padding:14px 24px;border-radius:11px;background:#0F1729;color:#fff;text-decoration:none;font-size:14px;font-weight:800">${escapeHtml(primary.label)}</a>${secondary ? `<a href="${secondary.href}" style="display:inline-block;margin:4px;padding:13px 22px;border-radius:11px;border:1.5px solid #0F1729;color:#0F1729;text-decoration:none;font-size:14px;font-weight:800">${escapeHtml(secondary.label)}</a>` : ""}</td></tr>
-<tr><td style="padding:18px 32px;background:#F8FAFC;border-top:1px solid #E2E8F0"><p style="margin:0 0 8px;font-size:11px;line-height:1.6;color:#64748B">${escapeHtml(footer)}</p><p style="margin:0;font-size:11px;color:#94A3B8">Guestcam · <a href="mailto:info@guestcam.si" style="color:#3551A8">info@guestcam.si</a></p></td></tr>
+<tr><td style="padding:18px 32px;background:#F8FAFC;border-top:1px solid #E2E8F0"><p style="margin:0 0 8px;font-size:11px;line-height:1.6;color:#64748B">${escapeHtml(footer)}</p><p style="margin:0;font-size:11px;color:#94A3B8">Guestcam · <a href="mailto:info@guestcam.si" style="color:#3551A8">info@guestcam.si</a>${unsubscribe ? ` · <a href="${unsubscribe.href}" style="color:#94A3B8;text-decoration:underline">${escapeHtml(unsubscribe.label)}</a>` : ""}</p></td></tr>
 </table></td></tr></table></body></html>`;
 }
 
-async function send(to: string, subject: string, html: string, idempotencyKey: string) {
+export async function send(to: string, subject: string, html: string, idempotencyKey: string) {
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) throw new Error("RESEND_API_KEY not configured for lifecycle email");
   const { error } = await new Resend(apiKey).emails.send({
