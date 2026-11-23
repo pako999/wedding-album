@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { clerkClient } from "@clerk/nextjs/server";
 import { and, count, eq, isNotNull } from "drizzle-orm";
 import { requireAdmin } from "@/lib/admin";
+import { ensureMigrations } from "@/lib/db/bootstrap";
 import { db } from "@/lib/db";
 import { discountCodes, marketingContacts } from "@/lib/db/schema";
 import { ensureMarketingContact } from "@/lib/marketing-contacts";
@@ -224,6 +225,9 @@ export async function GET() {
   const admin = await requireAdmin();
   if (!admin) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   try {
+    // Self-heal: this API function may run on an instance that never hit the
+    // admin layout, so make sure marketing_contacts etc. exist before querying.
+    await ensureMigrations();
     return await dryRun();
   } catch (err) {
     console.error("[blackfriday-blast] dry-run", err);
@@ -240,6 +244,8 @@ export async function POST(req: NextRequest) {
   const confirm = url.searchParams.get("confirm");
 
   try {
+    // Self-heal schema before any contact upsert / send.
+    await ensureMigrations();
     if (test) {
       return await sendTest(test.trim().toLowerCase(), url.searchParams.get("lang") ?? "sl");
     }

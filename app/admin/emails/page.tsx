@@ -6,6 +6,8 @@ import {
   type AdminEmailRow,
   type AdminEmailStatus,
 } from "@/lib/admin-emails";
+import { requireAdmin } from "@/lib/admin";
+import { BlackFridayBlastPanel } from "@/components/admin/BlackFridayBlastPanel";
 
 export const dynamic = "force-dynamic";
 
@@ -72,6 +74,7 @@ export default async function AdminEmailsPage({
   searchParams: Promise<{ status?: string; after?: string }>;
 }) {
   const params = await searchParams;
+  const admin = await requireAdmin();
   const status = parseStatus(params.status);
   const result = await listAdminEmails(params.after);
   const visible = result.emails.filter((email) => matchesAdminEmailStatus(email, status));
@@ -88,6 +91,8 @@ export default async function AdminEmailsPage({
           Zgodovina pošiljanja in stanje odpiranja neposredno iz Resend.
         </p>
       </header>
+
+      <BlackFridayBlastPanel defaultEmail={admin?.email ?? ""} />
 
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         <Summary label="Prikazanih" value={result.emails.length} />
