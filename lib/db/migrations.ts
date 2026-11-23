@@ -309,6 +309,18 @@ export async function runMigrations() {
   `);
   await run("discount_codes affiliate idx", (q) => q`CREATE INDEX IF NOT EXISTS discount_codes_affiliate_idx ON discount_codes (affiliate_id)`);
 
+  // ── Black Friday 2026 promo code ──────────────────────────────────────────
+  // 30% off every plan. Seeded idempotently: ON CONFLICT DO NOTHING means a
+  // redeploy never resets its usage count, and admin can deactivate, re-price
+  // or extend it afterwards without this seed overriding the change. To turn
+  // "limited packages" into a real cap, set max_uses to a number here (or in
+  // the admin panel); null = unlimited. Expiry is end of Cyber Monday (UTC).
+  await run("seed BLACKFRIDAY code", (q) => q`
+    INSERT INTO discount_codes (code, percent_off, max_uses, expires_at, is_active)
+    VALUES ('BLACKFRIDAY', 30, NULL, '2026-12-01T23:59:59Z', true)
+    ON CONFLICT (code) DO NOTHING
+  `);
+
   // ── Affiliates ────────────────────────────────────────────────────────────
   await run("create affiliates", (q) => q`
     CREATE TABLE IF NOT EXISTS affiliates (
