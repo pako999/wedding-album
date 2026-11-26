@@ -46,7 +46,10 @@ export async function validateDiscount(
   if (row.expiresAt && row.expiresAt < new Date()) return { valid: false, error: "Koda je potekla." };
   if (row.maxUses !== null && row.usedCount >= row.maxUses) return { valid: false, error: "Koda je bila že v celoti izkoriščena." };
 
-  const finalCents = planId === 'premium' ? Math.round(originalPrice * 100 * (1 - row.percentOff / 100)) : Math.round(originalPrice * (1 - row.percentOff / 100)) * 100;
+  // Apply the percentage to cents for every plan; rounding whole euros
+  // would turn a 40% discount on €39 into €23 instead of €23.40.
+  const originalCents = basePriceCents ?? Math.round(originalPrice * 100);
+  const finalCents = Math.round(originalCents * (1 - row.percentOff / 100));
   const finalPrice = finalCents / 100;
 
   return {
