@@ -395,6 +395,16 @@ export async function runMigrations() {
     ON CONFLICT (code) DO NOTHING
   `);
 
+  // ── Black Friday 40% checkout code ──────────────────────────────────────
+  // BLACK40 is a separate, reusable 40% code. Keep the existing BLACKFRIDAY
+  // 30% campaign intact. No expiry or usage cap unless changed by an admin.
+  // Provide id explicitly: older databases may not have a DB-side id default.
+  await run("seed BLACK40 code", (q) => q`
+    INSERT INTO discount_codes (id, code, percent_off, max_uses, expires_at, is_active)
+    VALUES (gen_random_uuid()::text, 'BLACK40', 40, NULL, NULL, true)
+    ON CONFLICT (code) DO NOTHING
+  `);
+
   // ── Marketing contacts (registered-user promo suppression list) ───────────
   // Clerk has no unsubscribe field, so promotional email to registered users
   // consults this table. A row with unsubscribed_at set = do not send promo.
