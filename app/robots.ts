@@ -58,6 +58,8 @@ const AI_MAIN_HOST_ALLOW = [
   "/hr$",
   "/de$",
   "/en$",
+  "/sr$",
+  "/es$",
 
   // Language-prefixed sections (landings, localized blog, wedding package,
   // localized legal/contact/affiliate pages).
@@ -65,6 +67,8 @@ const AI_MAIN_HOST_ALLOW = [
   "/hr/",
   "/de/",
   "/en/",
+  "/sr/",
+  "/es/",
 
   // Slovenian blog (index + posts)
   "/blog$",

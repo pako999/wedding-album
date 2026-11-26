@@ -10,7 +10,7 @@ import { OG_IMAGE_URL, ogImage } from "@/lib/og";
 import { safeJsonLd } from "@/lib/seo/jsonld-safe";
 
 export const metadata: Metadata = {
-  title: "QR-koda za poroko • Fotografije gostov | Guestcam",
+  title: { absolute: "QR-koda za poroko • Fotografije gostov | Guestcam" },
   description:
     "Z eno QR-kodo zberite fotografije in videe gostov v zasebni poročni galeriji. Brez aplikacije in registracije, v polni kakovosti.",
   openGraph: {
@@ -48,12 +48,14 @@ const articleSchema = {
   headline: "QR-koda za poroko: zberite fotografije in videe gostov",
   description: "Kako z eno QR-kodo zbrati fotografije in videe poročnih gostov v zasebni galeriji brez aplikacije in registracije.",
   inLanguage: "sl-SI",
+  datePublished: "2026-05-15",
   dateModified: "2026-10-19",
+  image: { "@type": "ImageObject", url: OG_IMAGE_URL, width: 1200, height: 630 },
   author: { "@type": "Organization", name: "Guestcam" },
   publisher: {
     "@type": "Organization",
     name: "Guestcam",
-    logo: `${SITE_URL}/icon-512.png`,
+    logo: { "@type": "ImageObject", url: `${SITE_URL}/icon-512.png`, width: 512, height: 512 },
   },
   mainEntityOfPage: `${SITE_URL}/sl/qr-koda-poroka`,
 };

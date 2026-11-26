@@ -49,11 +49,14 @@ const articleSchema = {
   description:
     "Comparativa: Guestcam vs Google Photos vs WhatsApp vs Dropbox. ¿Cuál es la mejor app para recopilar fotos de boda?",
   inLanguage: "es-ES",
+  datePublished: "2026-08-28",
+  dateModified: "2026-08-28",
+  image: { "@type": "ImageObject", url: localizedOgImageUrl("es"), width: 1200, height: 630 },
   author: { "@type": "Organization", name: "Guestcam" },
   publisher: {
     "@type": "Organization",
     name: "Guestcam",
-    logo: `${SITE_URL}/icon-512.png`,
+    logo: { "@type": "ImageObject", url: `${SITE_URL}/icon-512.png`, width: 512, height: 512 },
   },
   mainEntityOfPage: spanishGuestcamUrl("/es/alternativas"),
 };

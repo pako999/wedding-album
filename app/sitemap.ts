@@ -37,6 +37,7 @@ const LAST_EDITED = {
   contact: "2026-07-01",
   corporateLandings: "2026-08-11",
   blogIndex: "2026-10-25",
+  affiliateApply: "2026-07-01",
 };
 
 function clusterLinks(paths: Record<Locale, string>): Record<string, string> {
@@ -183,7 +184,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { path: "/en/wedding-photo-sharing", priority: 0.8, changeFrequency: "monthly", lastModified: LAST_EDITED.seoLandings, alternates: SEO_LANDING_CLUSTER },
     { path: "/es/fotos-boda-qr", priority: 0.8, changeFrequency: "monthly", lastModified: LAST_EDITED.seoLandings, alternates: SEO_LANDING_CLUSTER },
     { path: "/sl/qr-koda-za-poslovne-dogodke", priority: 0.7, changeFrequency: "monthly", lastModified: LAST_EDITED.corporateLandings, alternates: CORPORATE_LANDING_CLUSTER },
-    { path: "/za-podjetja", priority: 0.85, changeFrequency: "monthly", lastModified: "2026-10-20" },
+    { path: "/za-podjetja", priority: 0.85, changeFrequency: "monthly", lastModified: "2026-10-20", alternates: { sl: `${SITE_URL}/za-podjetja`, "x-default": `${SITE_URL}/za-podjetja` } },
 
     ...WEDDING_LANGS.map(lang => ({path: WEDDING_PATHS[lang], priority: 0.85, changeFrequency: "monthly" as ChangeFreq, lastModified: lang === "sl" ? "2026-10-25" : "2026-09-26", alternates: clusterLinks(WEDDING_PATHS)})),
     ...eventTopicEntries(),
@@ -198,8 +199,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...LEGAL_DOCUMENTS.map((doc) => ({ path: `/${doc}`, priority: 0.3, changeFrequency: "yearly" as ChangeFreq, lastModified: LAST_EDITED.legalSl, alternates: legalAlternates(doc) })),
     ...(["hr", "sr", "de", "en", "es"] as Locale[]).flatMap((lang) => LEGAL_DOCUMENTS.map((doc) => ({ path: `/${lang}/${doc}`, priority: 0.25, changeFrequency: "yearly" as ChangeFreq, lastModified: LAST_EDITED.legalIntl, alternates: legalAlternates(doc) }))),
 
-    { path: "/affiliate/apply", priority: 0.55, changeFrequency: "monthly", alternates: AFFILIATE_APPLY_CLUSTER },
-    ...(["hr", "sr", "de", "en", "es"] as Locale[]).map((lang) => ({ path: `/${lang}/affiliate/apply`, priority: 0.5, changeFrequency: "monthly" as ChangeFreq, alternates: AFFILIATE_APPLY_CLUSTER })),
+    { path: "/affiliate/apply", priority: 0.55, changeFrequency: "monthly", lastModified: LAST_EDITED.affiliateApply, alternates: AFFILIATE_APPLY_CLUSTER },
+    ...(["hr", "sr", "de", "en", "es"] as Locale[]).map((lang) => ({ path: `/${lang}/affiliate/apply`, priority: 0.5, changeFrequency: "monthly" as ChangeFreq, lastModified: LAST_EDITED.affiliateApply, alternates: AFFILIATE_APPLY_CLUSTER })),
 
     { path: "/contact", priority: 0.5, changeFrequency: "yearly", lastModified: LAST_EDITED.contact, alternates: CONTACT_CLUSTER },
     ...(["hr", "sr", "de", "en", "es"] as Locale[]).map((lang) => ({ path: `/${lang}/contact`, priority: 0.45, changeFrequency: "yearly" as ChangeFreq, lastModified: LAST_EDITED.contact, alternates: CONTACT_CLUSTER })),

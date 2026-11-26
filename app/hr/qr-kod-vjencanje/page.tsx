@@ -47,12 +47,14 @@ const articleSchema = {
   headline: "QR kod za vjenčanje — potpuni vodič 2026",
   description: "Kako prikupiti fotografije gostiju s vjenčanja u privatnu galeriju s pomoću QR koda, bez aplikacije i registracije.",
   inLanguage: "hr-HR",
+  datePublished: "2026-05-15",
   dateModified: "2026-10-19",
+  image: { "@type": "ImageObject", url: OG_IMAGE_URL, width: 1200, height: 630 },
   author: { "@type": "Organization", name: "Guestcam" },
   publisher: {
     "@type": "Organization",
     name: "Guestcam",
-    logo: `${SITE_URL}/icon-512.png`,
+    logo: { "@type": "ImageObject", url: `${SITE_URL}/icon-512.png`, width: 512, height: 512 },
   },
   mainEntityOfPage: `${SITE_URL}/hr/qr-kod-vjencanje`,
 };

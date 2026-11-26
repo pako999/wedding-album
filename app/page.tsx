@@ -26,7 +26,7 @@ export const metadata: Metadata = {
 function homeJsonLd(quote: WeddingOfferQuote) { return {
   "@context": "https://schema.org",
   "@graph": [
-    { "@type": "Organization", "@id": `${SITE_URL}/#organization`, name: "Guestcam", url: SITE_URL, logo: `${SITE_URL}/icon-512.png` },
+    { "@type": "Organization", "@id": `${SITE_URL}/#organization`, name: "Guestcam", url: SITE_URL, logo: { "@type": "ImageObject", url: `${SITE_URL}/icon-512.png`, width: 512, height: 512 } },
     { "@type": "WebSite", "@id": `${SITE_URL}/#website`, name: "Guestcam.si", alternateName: "Guestcam", url: `${SITE_URL}/`, inLanguage: "sl-SI", publisher: { "@id": `${SITE_URL}/#organization` } },
     {
       "@type": "SoftwareApplication", "@id": `${SITE_URL}/#app`, name: "Guestcam", applicationCategory: "PhotographyApplication", operatingSystem: "Web", url: SITE_URL,
